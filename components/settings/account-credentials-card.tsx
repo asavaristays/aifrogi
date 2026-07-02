@@ -53,8 +53,8 @@ export function AccountCredentialsCard({ initialUsername, initialPassword, initi
         <div>
           <h3 className="text-xl font-extrabold">Username & Password</h3>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
-            Update the single AiFrogi login credential used to access the workspace. The password is stored hashed and
-            will not be shown again after save.
+            Update the AiFrogi access password. Approved Super Admin and client support identities use this credential,
+            while their email determines which dashboard they can access. The password is stored hashed and is never shown again.
           </p>
         </div>
         <div className="rounded-full bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--text-muted)]">
@@ -65,7 +65,7 @@ export function AccountCredentialsCard({ initialUsername, initialPassword, initi
       <form className="mt-6 space-y-6" onSubmit={saveCredentials}>
         <div className="grid gap-6 lg:grid-cols-2">
           <label className="space-y-2 text-sm font-semibold text-[var(--text)]">
-            <span>Login username</span>
+            <span>Primary login username</span>
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}

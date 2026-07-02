@@ -18,6 +18,20 @@ type StoredCredentialSettings = {
 const runtimeDir = path.join(process.cwd(), "data", "runtime");
 const runtimeFile = path.join(runtimeDir, "credentials.json");
 const HASH_PREFIX = "scrypt";
+const DEFAULT_LOGIN_IDENTITIES = ["info@aifrogi.com", "support@hotelradar.in"];
+
+function allowedLoginIdentities(primaryUsername: string) {
+  const configured = process.env.AIFROGI_LOGIN_IDENTITIES
+    ?.split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean) ?? [];
+
+  return new Set([
+    primaryUsername.trim().toLowerCase(),
+    ...DEFAULT_LOGIN_IDENTITIES,
+    ...configured
+  ].filter(Boolean));
+}
 
 function defaultCredentialSettings(): CredentialSettings {
   return {
@@ -130,7 +144,7 @@ export async function writeCredentialSettings(next: Partial<CredentialSettings>)
 export async function verifyCredential(username: string, password: string) {
   const settings = await readCredentialSettings();
   const normalizedUsername = username.trim().toLowerCase();
-  if (!normalizedUsername || !password || normalizedUsername !== settings.username.trim().toLowerCase()) {
+  if (!normalizedUsername || !password || !allowedLoginIdentities(settings.username).has(normalizedUsername)) {
     return null;
   }
 
@@ -147,7 +161,7 @@ export async function verifyCredential(username: string, password: string) {
 
   if (!valid) return null;
   return {
-    username: settings.username,
+    username: normalizedUsername,
     label: settings.label || "AiFrogi Administrator"
   };
 }

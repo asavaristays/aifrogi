@@ -30,4 +30,6 @@ Current role mapping:
 - `support@hotelradar.in` -> `hotel_owner`
 - `admin@hotelradar.in` -> `hotel_owner`
 
+The first production access model permits the two approved identities to verify against the existing hashed app credential. Their submitted email, not the credential label, determines the role and destination. This shared-hash bridge is temporary until team management introduces separate per-user credentials and password reset flows.
+
 Passwords, mailbox credentials, and temporary access secrets must never be written into product memory.
