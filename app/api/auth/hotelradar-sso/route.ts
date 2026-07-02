@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSessionToken, getSessionCookieName, labelForRole, roleForEmail, type SessionUser } from "@/lib/auth";
 import { sanitizeReturnTo, verifyUnifiedHandoffToken } from "@/lib/hotelradar-sso";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
+import { getMemberRoleByEmail } from "@/lib/repositories/onboarding-repository";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const COOKIE_MAX_AGE = 60 * 60 * 8;
@@ -24,7 +25,8 @@ export async function GET(request: Request) {
     role,
     label: labelForRole(role),
     sessionId: payload.sessionId,
-    authSource: "hotelradar"
+    authSource: "hotelradar",
+    workspaceRole: role === "admin" ? undefined : await getMemberRoleByEmail(payload.email) || "AGENT"
   };
 
   const requestedDestination = sanitizeReturnTo(url.searchParams.get("returnTo"));

@@ -5,6 +5,7 @@ export type AppUserRole = "admin" | "hotel_owner";
 export type SessionUser = {
   username: string;
   role: AppUserRole;
+  workspaceRole?: "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
   label: string;
   sessionId?: string;
   authSource?: "hotelradar" | "local";

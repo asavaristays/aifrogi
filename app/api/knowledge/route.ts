@@ -1,0 +1,51 @@
+import { NextResponse } from "next/server";
+import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { getKnowledgeWorkspaceSummary, getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
+import { writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+
+export async function GET() {
+  const access = await getCurrentClientAccess();
+  if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const propertySlug = await getCurrentWorkspaceSlug();
+  const summary = await getKnowledgeWorkspaceSummary(propertySlug);
+  return NextResponse.json({ ...summary, propertySlug, canManage: canManageWorkspace(access.role) });
+}
+
+export async function PATCH(request: Request) {
+  const access = await getCurrentClientAccess();
+  if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
+
+  const propertySlug = await getCurrentWorkspaceSlug();
+  const payload = await request.json().catch(() => null) as Record<string, unknown> | null;
+  try {
+    const settings = await writeKnowledgeSettings(propertySlug, {
+      sourceUrl: typeof payload?.sourceUrl === "string" ? payload.sourceUrl : undefined,
+      approvedForAi: typeof payload?.approvedForAi === "boolean" ? payload.approvedForAi : undefined,
+      autoRefreshHours: typeof payload?.autoRefreshHours === "number" ? payload.autoRefreshHours : undefined,
+      customInstructions: typeof payload?.customInstructions === "string" ? payload.customInstructions : undefined,
+      handoffTopics: Array.isArray(payload?.handoffTopics) ? payload.handoffTopics.map(String) : undefined,
+      status: typeof payload?.sourceUrl === "string" ? "DRAFT" : undefined
+    });
+    return NextResponse.json({ ok: true, settings });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Could not save knowledge settings." }, { status: 400 });
+  }
+}
+
+export async function POST() {
+  const access = await getCurrentClientAccess();
+  if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
+
+  const propertySlug = await getCurrentWorkspaceSlug();
+  try {
+    const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug, true);
+    const summary = await getKnowledgeWorkspaceSummary(propertySlug);
+    return NextResponse.json({ ok: true, ...summary, pagesSynced: knowledgeBase.pages.length });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Knowledge sync failed." }, { status: 502 });
+  }
+}
+

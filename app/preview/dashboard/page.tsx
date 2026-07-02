@@ -26,7 +26,7 @@ export default async function DashboardPreviewPage({ searchParams }: { searchPar
           ];
   const connected = !disconnected;
 
-  return <AppShell workspaces={[{ id: "preview", name: "AiFrogi Demo", slug: "hotelradar", status: connected ? "CONNECTED" : "NOT_CONFIGURED", displayPhoneNumber: connected ? "+91 70589 63898" : "" }]} currentWorkspaceSlug="hotelradar"><ClientDashboardView
+  return <AppShell workspaces={[{ id: "preview", name: "AiFrogi Demo", slug: "hotelradar", status: connected ? "CONNECTED" : "NOT_CONFIGURED", displayPhoneNumber: connected ? "+91 70589 63898" : "" }]} currentWorkspaceSlug="hotelradar" accessRole="OWNER"><ClientDashboardView
     ownerName="Manish Purohit"
     greeting="Good afternoon"
     todayLabel="Thursday, 2 July"
@@ -35,6 +35,8 @@ export default async function DashboardPreviewPage({ searchParams }: { searchPar
     displayPhoneNumber={connected ? "+91 70589 63898" : ""}
     connected={connected}
     metaStatus={connected ? "LIVE" : "NOT_STARTED"}
+    accessRole="OWNER"
+    knowledgeReady={connected}
     attention={attention}
     readiness={[
       { label: "Business", value: "Verified", ok: true },

@@ -6,6 +6,7 @@ import { loadLeads } from "@/lib/services/lead-service";
 import { loadWhatsAppIntegration } from "@/lib/services/whatsapp-service";
 import { buildWhatsAppMetrics, filterWhatsAppLeads } from "@/lib/whatsapp-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { getKnowledgeWorkspaceSummary } from "@/lib/services/website-knowledge-service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -13,10 +14,11 @@ export const revalidate = 0;
 export default async function DashboardPage() {
   const [propertySlug, user] = await Promise.all([getCurrentWorkspaceSlug(), getCurrentUser()]);
   const organization = user && user.role !== "admin" ? await getOrganizationForMember(user.username) : null;
-  const [allLeads, integration, tickets] = await Promise.all([
+  const [allLeads, integration, tickets, knowledge] = await Promise.all([
     loadLeads(propertySlug),
     loadWhatsAppIntegration(propertySlug),
-    organization ? listSupportTickets({ organizationId: organization.id }) : Promise.resolve([])
+    organization ? listSupportTickets({ organizationId: organization.id }) : Promise.resolve([]),
+    getKnowledgeWorkspaceSummary(propertySlug)
   ]);
   const leads = filterWhatsAppLeads(allLeads);
   const metrics = buildWhatsAppMetrics(leads);
@@ -38,9 +40,11 @@ export default async function DashboardPage() {
   if (failedEngagement) attention.push({ title: "Campaign delivery was limited", reason: "Reduce frequency and use recent, opted-in contacts before retrying.", action: "Review audience", href: "/campaigns", tone: "waiting", owner: "Meta" });
   if (failedRecipient) attention.push({ title: "A recipient could not receive WhatsApp", reason: "Validate the unavailable number before another attempt.", action: "Review contacts", href: "/contacts", tone: "waiting", owner: "You" });
   if (!connected) attention.push({ title: "WhatsApp setup is incomplete", reason: "Messaging remains unavailable until the secure connection is complete.", action: "Resume setup", href: "/onboarding", tone: "urgent", owner: "You" });
+  if (!knowledge.pages.length) attention.push({ title: "Knowledge is not ready", reason: "Sync the approved business website before enabling grounded AI answers.", action: "Set up knowledge", href: "/knowledge", tone: "waiting", owner: "You" });
   if (!attention.length) attention.push({ title: "Messaging is operating normally", reason: "No reply, billing, template, or connection blockers are visible.", action: "Open inbox", href: "/whatsapp-bot", tone: "ready", owner: "AiFrogi" });
 
   const workspace = organization?.properties.find((property) => property.slug === propertySlug) || organization?.properties[0];
+  const membership = organization?.members.find((member) => member.email.toLowerCase() === user?.username.toLowerCase());
   const indiaHour = Number(new Intl.DateTimeFormat("en-IN", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(new Date()));
   const greeting = indiaHour < 12 ? "Good morning" : indiaHour < 17 ? "Good afternoon" : "Good evening";
   const todayLabel = new Intl.DateTimeFormat("en-IN", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Kolkata" }).format(new Date());
@@ -53,12 +57,15 @@ export default async function DashboardPage() {
     displayPhoneNumber={integration.displayPhoneNumber || organization?.onboarding?.displayPhoneNumber || ""}
     connected={connected}
     metaStatus={metaStatus}
+    accessRole={membership?.role || "AGENT"}
+    knowledgeReady={knowledge.pages.length > 0 && knowledge.settings.status === "READY" && knowledge.settings.approvedForAi}
     attention={attention}
     readiness={[
       { label: "Business", value: organization?.onboarding?.kycStatus === "APPROVED" || !organization ? "Verified" : "In review", ok: organization?.onboarding?.kycStatus === "APPROVED" || !organization },
       { label: "Meta", value: metaStatus === "LIVE" ? "Live" : metaStatus.replaceAll("_", " "), ok: metaStatus === "LIVE" },
       { label: "WhatsApp", value: connected ? "Connected" : "Needs setup", ok: connected },
-      { label: "Billing", value: failedPayment ? "Action required" : "No blocker", ok: !failedPayment }
+      { label: "Billing", value: failedPayment ? "Action required" : "No blocker", ok: !failedPayment },
+      { label: "Knowledge", value: knowledge.pages.length ? `${knowledge.pages.length} pages` : "Needs setup", ok: knowledge.pages.length > 0 }
     ]}
     recent={recent}
     metrics={metrics}

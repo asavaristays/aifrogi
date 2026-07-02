@@ -13,6 +13,8 @@ const protectedPrefixes = [
   "/dashboard",
   "/contacts",
   "/campaigns",
+  "/workflows",
+  "/knowledge",
   "/analytics",
   "/whatsapp-bot",
   "/setup",
@@ -52,6 +54,7 @@ const publicApiPrefixes = [
 type SessionUser = {
   username?: string;
   role?: string;
+  workspaceRole?: string;
   label?: string;
   sessionId?: string;
   authSource?: string;
@@ -197,6 +200,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
+  const clientManagementPrefixes = ["/campaigns", "/workflows", "/analytics", "/setup", "/settings", "/onboarding"];
+  const limitedWorkspaceRole = session.workspaceRole === "AGENT" || session.workspaceRole === "VIEWER";
+  if (session.role !== "admin" && limitedWorkspaceRole && clientManagementPrefixes.some((prefix) => pathname.startsWith(prefix))) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return NextResponse.next();
 }
 
@@ -209,6 +218,8 @@ export const config = {
     "/contacts/:path*",
     "/lead-inbox/:path*",
     "/campaigns/:path*",
+    "/workflows/:path*",
+    "/knowledge/:path*",
     "/analytics/:path*",
     "/ota-recapture/:path*",
     "/whatsapp-bot/:path*",

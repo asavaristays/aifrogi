@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth-server";
 import { listPropertiesForMember } from "@/lib/repositories/property-repository";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import type { ClientAccessRole } from "@/lib/client-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -38,6 +39,8 @@ export default async function ProductLayout({ children }: { children: React.Reac
   const selectedSlug = workspaces.some((workspace) => workspace.slug === currentWorkspaceSlug)
     ? currentWorkspaceSlug
     : workspaces[0]?.slug ?? currentWorkspaceSlug;
+  const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
+  const accessRole = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
 
-  return <AppShell workspaces={workspaces} currentWorkspaceSlug={selectedSlug}>{children}</AppShell>;
+  return <AppShell workspaces={workspaces} currentWorkspaceSlug={selectedSlug} accessRole={accessRole}>{children}</AppShell>;
 }

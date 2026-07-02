@@ -22,6 +22,8 @@ export type ClientDashboardViewProps = {
   displayPhoneNumber: string;
   connected: boolean;
   metaStatus: string;
+  accessRole: string;
+  knowledgeReady: boolean;
   attention: DashboardAttention[];
   readiness: DashboardReadiness[];
   recent: Lead[];
@@ -52,6 +54,8 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
               <span>{props.organizationName}</span>
               <span className="text-black/20">/</span>
               <span>{props.workspaceName}</span>
+              <span className="text-black/20">/</span>
+              <span>{props.accessRole === "OWNER" ? "Client Admin" : props.accessRole === "ADMIN" ? "Workspace Admin" : props.accessRole}</span>
             </div>
             <h1 className="mt-0.5 text-[22px] font-semibold leading-tight text-[var(--text)]">Today</h1>
           </div>
@@ -199,7 +203,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
               </div>
               <div className="mt-4 space-y-3">
                 <SystemTask label="Inbound capture" active={props.connected} />
-                <SystemTask label="Knowledge replies" active={props.connected} />
+                <SystemTask label="Knowledge replies" active={props.knowledgeReady} />
                 <SystemTask label="Delivery monitoring" active={props.connected} />
               </div>
               <Link href="/workflows" className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary-strong)]">

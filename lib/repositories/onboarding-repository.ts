@@ -62,6 +62,18 @@ export async function getOrganizationForMember(email: string) {
   return membership?.organization ?? null;
 }
 
+export async function getMemberRoleByEmail(email: string) {
+  const db = getDb();
+  if (!db) return null;
+  const membership = await db.organizationMember.findFirst({
+    where: { email: email.toLowerCase(), status: "ACTIVE" },
+    select: { role: true },
+    orderBy: { createdAt: "asc" }
+  });
+  const role = membership?.role?.toUpperCase();
+  return role === "OWNER" || role === "ADMIN" || role === "AGENT" || role === "VIEWER" ? role : null;
+}
+
 export async function createOrganizationForOwner(input: {
   name: string;
   slug: string;

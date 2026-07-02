@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSessionToken, getSessionCookieName, labelForRole, roleForEmail, type SessionUser } from "@/lib/auth";
 import { verifyCredential } from "@/lib/credential-store";
+import { getMemberRoleByEmail } from "@/lib/repositories/onboarding-repository";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const CENTRAL_AUTH_URL =
@@ -72,10 +73,12 @@ export async function POST(request: Request) {
   }
 
   const role = roleForEmail(credential.username);
+  const workspaceRole = role === "admin" ? undefined : await getMemberRoleByEmail(credential.username) || "AGENT";
   const token = await createSessionToken({
     username: credential.username,
     label: role === "admin" ? credential.label || labelForRole(role) : labelForRole(role),
     role,
+    workspaceRole,
     sessionId: credential.sessionId,
     authSource: credential.authSource
   });

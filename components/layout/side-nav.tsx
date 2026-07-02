@@ -9,6 +9,7 @@ import { Icon } from "@/components/icons";
 import { useAppState } from "@/components/providers/app-state-provider";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { WorkspaceSwitcher, type WorkspaceOption } from "@/components/layout/workspace-switcher";
+import type { ClientAccessRole } from "@/lib/client-access";
 
 const toneStyles = {
   primary: {
@@ -35,7 +36,7 @@ const toneStyles = {
 
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
-  { label: "Grow", helper: "Campaigns and insight", hrefs: ["/campaigns", "/workflows", "/analytics"] },
+  { label: "Grow", helper: "Campaigns and intelligence", hrefs: ["/campaigns", "/workflows", "/knowledge", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/support", "/settings"] }
 ];
 
@@ -44,15 +45,21 @@ type SideNavTone = "dark" | "light";
 export function SideNav({
   tone = "dark",
   workspaces = [],
-  currentWorkspaceSlug = ""
+  currentWorkspaceSlug = "",
+  accessRole = "AGENT"
 }: {
   tone?: SideNavTone;
   workspaces?: WorkspaceOption[];
   currentWorkspaceSlug?: string;
+  accessRole?: ClientAccessRole;
 } = {}) {
   const pathname = usePathname();
   const { sidebarOpen, setSidebarOpen } = useAppState();
   const isLight = tone === "light";
+  const canManage = accessRole === "OWNER" || accessRole === "ADMIN";
+  const allowedHrefs = new Set(canManage
+    ? navItems.map((item) => item.href)
+    : ["/dashboard", "/whatsapp-bot", "/contacts", "/knowledge", "/support"]);
 
   return (
     <>
@@ -104,7 +111,7 @@ export function SideNav({
               <p className={cn("text-[11px] font-semibold", isLight ? "text-black/48" : "text-white/54")}>{group.label}</p>
               <p className={cn("truncate text-[10px]", isLight ? "text-black/28" : "text-white/30")}>{group.helper}</p>
             </div>
-            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href)).map((item) => {
+            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href)).map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const tone = toneStyles[item.tone ?? "neutral"];
             return (
@@ -144,6 +151,7 @@ export function SideNav({
         </nav>
 
         <div className={cn("mt-2 border-t px-1.5 pt-4", isLight ? "border-black/6" : "border-white/8")}>
+          <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className={isLight ? "text-black/45" : "text-white/45"}>Access</span><strong className={isLight ? "text-[#8d1884]" : "text-white/80"}>{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
           {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className={`h-2 w-2 rounded-full ${workspaces[0].status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d9902f]"}`} /><span className={isLight ? "text-black/55" : "text-white/58"}>{workspaces[0].status === "CONNECTED" ? "WhatsApp connected" : "Setup needs attention"}</span></div> : null}
           <LogoutButton variant="sidebar" className={cn("w-full rounded-md px-2.5 py-2 text-xs font-medium tracking-normal", isLight ? "border border-transparent !bg-white text-black/55 hover:!bg-black/5 hover:text-black" : "")} />
         </div>
