@@ -1,35 +1,13 @@
-import { TopBar } from "@/components/layout/top-bar";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { redirect } from "next/navigation";
+import { TeamAccessManager } from "@/components/settings/team-access-manager";
+import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { listTeamMembers } from "@/lib/repositories/team-repository";
 
-export default function SettingsUsersPage() {
-  return (
-    <>
-      <TopBar title="Users & Roles" subtitle="Manage hotel-side access with role-based controls and least-privilege access." />
-      <div className="space-y-8 px-5 py-6 sm:px-8">
-        <Card className="p-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-xl font-extrabold">Role Model</h2>
-              <p className="mt-2 text-sm text-[var(--text-muted)]">
-                Users are configured from the hotel’s real saved login and role assignments. Add actual team members
-                here once the workspace is ready for live access.
-              </p>
-            </div>
-            <Button>Invite User</Button>
-          </div>
-        </Card>
+export const dynamic = "force-dynamic";
 
-        <Card className="p-6">
-          <div className="rounded-[24px] border border-dashed border-black/10 bg-[var(--surface-soft)] p-6">
-            <h3 className="text-lg font-extrabold">No team members configured yet</h3>
-            <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-              Add real hotel staff after login, then assign roles based on who should manage lead replies, settings,
-              and read-only reporting.
-            </p>
-          </div>
-        </Card>
-      </div>
-    </>
-  );
+export default async function SettingsUsersPage() {
+  const access = await getCurrentClientAccess();
+  if (!access || !canManageWorkspace(access.role)) redirect("/dashboard");
+  const members = await listTeamMembers(access.organization.id);
+  return <TeamAccessManager organizationName={access.organization.name} currentEmail={access.user.username} initialMembers={members.map((member) => ({ ...member, invitedAt: member.invitedAt.toISOString(), joinedAt: member.joinedAt?.toISOString() || null, lastLoginAt: member.lastLoginAt?.toISOString() || null, invitationExpiresAt: member.invitationExpiresAt?.toISOString() || null }))} />;
 }

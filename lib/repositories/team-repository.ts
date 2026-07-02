@@ -1,0 +1,89 @@
+import { createHash, randomBytes } from "crypto";
+import { getDb } from "@/lib/db";
+import { hashCredentialPassword, verifyCredentialPassword } from "@/lib/credential-store";
+
+export type TeamRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
+
+function normalizeRole(value: string): TeamRole {
+  const role = value.toUpperCase();
+  return role === "OWNER" || role === "ADMIN" || role === "VIEWER" ? role : "AGENT";
+}
+
+function tokenHash(token: string) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+export async function listTeamMembers(organizationId: string) {
+  const db = getDb();
+  if (!db) return [];
+  return db.organizationMember.findMany({
+    where: { organizationId },
+    select: { id: true, email: true, name: true, role: true, status: true, invitedAt: true, joinedAt: true, lastLoginAt: true, invitationExpiresAt: true },
+    orderBy: [{ role: "asc" }, { createdAt: "asc" }]
+  });
+}
+
+export async function inviteTeamMember(input: { organizationId: string; email: string; name: string; role: string; invitedBy: string }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const email = input.email.trim().toLowerCase();
+  if (!email || !email.includes("@")) throw new Error("Enter a valid email address.");
+  const token = randomBytes(32).toString("base64url");
+  const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
+  const role = normalizeRole(input.role);
+  const member = await db.organizationMember.upsert({
+    where: { organizationId_email: { organizationId: input.organizationId, email } },
+    update: { name: input.name.trim() || null, role, status: "INVITED", invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt, invitedBy: input.invitedBy, invitedAt: new Date() },
+    create: { organizationId: input.organizationId, email, name: input.name.trim() || null, role, status: "INVITED", invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt, invitedBy: input.invitedBy }
+  });
+  return { member, token, expiresAt };
+}
+
+export async function getInvitation(token: string) {
+  const db = getDb();
+  if (!db || !token) return null;
+  return db.organizationMember.findUnique({
+    where: { invitationTokenHash: tokenHash(token) },
+    select: { id: true, email: true, name: true, role: true, status: true, invitationExpiresAt: true, organization: { select: { name: true } } }
+  });
+}
+
+export async function activateInvitation(token: string, password: string) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const invitation = await getInvitation(token);
+  if (!invitation || invitation.status !== "INVITED" || !invitation.invitationExpiresAt || invitation.invitationExpiresAt < new Date()) throw new Error("This invitation is invalid or has expired.");
+  if (password.length < 10) throw new Error("Use at least 10 characters for your password.");
+  return db.organizationMember.update({
+    where: { id: invitation.id },
+    data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
+    select: { email: true, name: true, role: true, organizationId: true }
+  });
+}
+
+export async function verifyTeamMemberCredential(email: string, password: string) {
+  const db = getDb();
+  if (!db || !email || !password) return null;
+  const member = await db.organizationMember.findFirst({
+    where: { email: email.trim().toLowerCase(), status: "ACTIVE", passwordHash: { not: null } },
+    select: { id: true, email: true, name: true, role: true, passwordHash: true }
+  });
+  if (!member?.passwordHash || !verifyCredentialPassword(password, member.passwordHash)) return null;
+  await db.organizationMember.update({ where: { id: member.id }, data: { lastLoginAt: new Date() } });
+  return { username: member.email, label: member.name || "AiFrogi Team Member", workspaceRole: normalizeRole(member.role) };
+}
+
+export async function updateTeamMember(input: { organizationId: string; memberId: string; role?: string; status?: string }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const member = await db.organizationMember.findFirst({ where: { id: input.memberId, organizationId: input.organizationId } });
+  if (!member) throw new Error("Team member not found.");
+  const nextRole = input.role ? normalizeRole(input.role) : normalizeRole(member.role);
+  const nextStatus = input.status === "SUSPENDED" ? "SUSPENDED" : input.status === "ACTIVE" ? "ACTIVE" : member.status;
+  if (member.role === "OWNER" && (nextRole !== "OWNER" || nextStatus !== "ACTIVE")) {
+    const activeOwners = await db.organizationMember.count({ where: { organizationId: input.organizationId, role: "OWNER", status: "ACTIVE" } });
+    if (activeOwners <= 1) throw new Error("Assign another active owner before changing this account.");
+  }
+  return db.organizationMember.update({ where: { id: member.id }, data: { role: nextRole, status: nextStatus }, select: { id: true, email: true, name: true, role: true, status: true, joinedAt: true, lastLoginAt: true } });
+}
+

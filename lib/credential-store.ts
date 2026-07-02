@@ -41,13 +41,13 @@ function defaultCredentialSettings(): CredentialSettings {
   };
 }
 
-function hashPassword(password: string) {
+export function hashCredentialPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
   const derived = scryptSync(password, salt, 64).toString("hex");
   return `${HASH_PREFIX}$${salt}$${derived}`;
 }
 
-function verifyPassword(password: string, hashed: string) {
+export function verifyCredentialPassword(password: string, hashed: string) {
   const parts = hashed.split("$");
   if (parts.length !== 3 || parts[0] !== HASH_PREFIX) return false;
   const [, salt, derived] = parts;
@@ -92,7 +92,7 @@ export async function readCredentialSettings(): Promise<CredentialSettings> {
         await persistCredentialSettings({
           username,
           label,
-          passwordHash: hashPassword(password),
+          passwordHash: hashCredentialPassword(password),
         });
       }
       return { username, password: "", label };
@@ -101,7 +101,7 @@ export async function readCredentialSettings(): Promise<CredentialSettings> {
       await persistCredentialSettings({
         username,
         label,
-        passwordHash: hashPassword(parsed.password)
+        passwordHash: hashCredentialPassword(parsed.password)
       });
       return { username, password: "", label };
     }
@@ -128,7 +128,7 @@ export async function writeCredentialSettings(next: Partial<CredentialSettings>)
   };
 
   if (password) {
-    merged.passwordHash = hashPassword(password);
+    merged.passwordHash = hashCredentialPassword(password);
   } else if (stored.passwordHash) {
     merged.passwordHash = stored.passwordHash;
   }
@@ -156,7 +156,7 @@ export async function verifyCredential(username: string, password: string) {
   }
 
   const valid = stored.passwordHash
-    ? verifyPassword(password, stored.passwordHash)
+    ? verifyCredentialPassword(password, stored.passwordHash)
     : Boolean(process.env.LEADOS_LOGIN_PASSWORD) && password === process.env.LEADOS_LOGIN_PASSWORD;
 
   if (!valid) return null;

@@ -1931,8 +1931,13 @@ export const OrganizationMemberScalarFieldEnum = {
   name: 'name',
   role: 'role',
   status: 'status',
+  passwordHash: 'passwordHash',
+  invitationTokenHash: 'invitationTokenHash',
+  invitationExpiresAt: 'invitationExpiresAt',
+  invitedBy: 'invitedBy',
   invitedAt: 'invitedAt',
   joinedAt: 'joinedAt',
+  lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

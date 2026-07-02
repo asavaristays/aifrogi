@@ -2,8 +2,6 @@ import Link from "next/link";
 import { TopBar } from "@/components/layout/top-bar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AccountCredentialsCard } from "@/components/settings/account-credentials-card";
-import { readCredentialSettings } from "@/lib/credential-store";
 
 const sections = [
   {
@@ -23,33 +21,18 @@ const sections = [
   }
 ];
 
-export default async function SettingsPage() {
-  const credentials = await readCredentialSettings();
-
+export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-[linear-gradient(135deg,#f1fbf5_0%,#ffffff_50%,#eef8f5_100%)]">
-      <TopBar title="Settings" subtitle="WhatsApp API, account access and security" />
-      <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-        <Card className="border border-[#25d366]/15 bg-[linear-gradient(135deg,#2c243b,#c725ba)] p-7 text-white shadow-[0_24px_60px_rgba(12,74,62,0.18)]">
-          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#7ff0ae]">AiFrogi</p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight">WhatsApp control center</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-white/72">
-            Only settings required to operate the WhatsApp API platform are shown here.
-          </p>
-        </Card>
-
-        <AccountCredentialsCard
-          initialUsername={credentials.username}
-          initialPassword={credentials.password}
-          initialLabel={credentials.label}
-        />
-
-        <div className="grid gap-5 lg:grid-cols-3">
+    <div className="product-surface min-h-screen">
+      <TopBar title="Settings" subtitle="Workspace access, WhatsApp connection, and security" />
+      <div className="mx-auto max-w-[1500px] space-y-6 px-5 py-6 sm:px-8">
+        <section className="border-b border-[var(--border)] pb-5"><p className="product-eyebrow">Client administration</p><h2 className="mt-2 text-2xl font-semibold">Workspace controls</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">Each team member uses a personal password. Technical credentials remain protected inside AiFrogi and are never shown to workspace users.</p></section>
+        <div className="grid gap-4 lg:grid-cols-3">
           {sections.map((section) => (
-            <Card key={section.href} className="p-6 shadow-[0_16px_45px_rgba(15,61,53,0.07)]">
-              <h3 className="text-xl font-black">{section.title}</h3>
-              <p className="mt-3 min-h-16 text-sm leading-6 text-[var(--text-muted)]">{section.description}</p>
-              <Link href={section.href} className="mt-5 inline-flex"><Button>Open</Button></Link>
+            <Card key={section.href} className="rounded-lg p-5 shadow-[var(--shadow-card)]">
+              <h3 className="text-lg font-semibold">{section.title}</h3>
+              <p className="mt-2 min-h-16 text-sm leading-6 text-[var(--text-muted)]">{section.description}</p>
+              <Link href={section.href} className="mt-4 inline-flex"><Button>Open</Button></Link>
             </Card>
           ))}
         </div>

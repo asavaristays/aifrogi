@@ -47,6 +47,7 @@ const publicApiPrefixes = [
   "/api/auth/logout",
   "/api/auth/session",
   "/api/auth/hotelradar-sso",
+  "/api/auth/invitation",
   "/api/integrations/whatsapp/webhook",
   "/api/public/whatsapp-bot",
 ];

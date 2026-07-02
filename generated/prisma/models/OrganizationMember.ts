@@ -31,8 +31,13 @@ export type OrganizationMemberMinAggregateOutputType = {
   name: string | null
   role: string | null
   status: string | null
+  passwordHash: string | null
+  invitationTokenHash: string | null
+  invitationExpiresAt: Date | null
+  invitedBy: string | null
   invitedAt: Date | null
   joinedAt: Date | null
+  lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,8 +49,13 @@ export type OrganizationMemberMaxAggregateOutputType = {
   name: string | null
   role: string | null
   status: string | null
+  passwordHash: string | null
+  invitationTokenHash: string | null
+  invitationExpiresAt: Date | null
+  invitedBy: string | null
   invitedAt: Date | null
   joinedAt: Date | null
+  lastLoginAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,8 +67,13 @@ export type OrganizationMemberCountAggregateOutputType = {
   name: number
   role: number
   status: number
+  passwordHash: number
+  invitationTokenHash: number
+  invitationExpiresAt: number
+  invitedBy: number
   invitedAt: number
   joinedAt: number
+  lastLoginAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -72,8 +87,13 @@ export type OrganizationMemberMinAggregateInputType = {
   name?: true
   role?: true
   status?: true
+  passwordHash?: true
+  invitationTokenHash?: true
+  invitationExpiresAt?: true
+  invitedBy?: true
   invitedAt?: true
   joinedAt?: true
+  lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -85,8 +105,13 @@ export type OrganizationMemberMaxAggregateInputType = {
   name?: true
   role?: true
   status?: true
+  passwordHash?: true
+  invitationTokenHash?: true
+  invitationExpiresAt?: true
+  invitedBy?: true
   invitedAt?: true
   joinedAt?: true
+  lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -98,8 +123,13 @@ export type OrganizationMemberCountAggregateInputType = {
   name?: true
   role?: true
   status?: true
+  passwordHash?: true
+  invitationTokenHash?: true
+  invitationExpiresAt?: true
+  invitedBy?: true
   invitedAt?: true
   joinedAt?: true
+  lastLoginAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -184,8 +214,13 @@ export type OrganizationMemberGroupByOutputType = {
   name: string | null
   role: string
   status: string
+  passwordHash: string | null
+  invitationTokenHash: string | null
+  invitationExpiresAt: Date | null
+  invitedBy: string | null
   invitedAt: Date
   joinedAt: Date | null
+  lastLoginAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: OrganizationMemberCountAggregateOutputType | null
@@ -218,8 +253,13 @@ export type OrganizationMemberWhereInput = {
   name?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringFilter<"OrganizationMember"> | string
   status?: Prisma.StringFilter<"OrganizationMember"> | string
+  passwordHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
+  invitationTokenHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
+  invitationExpiresAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
+  invitedBy?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   invitedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   joinedAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
+  lastLoginAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -232,8 +272,13 @@ export type OrganizationMemberOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitationTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitationExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   invitedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -241,6 +286,7 @@ export type OrganizationMemberOrderByWithRelationInput = {
 
 export type OrganizationMemberWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  invitationTokenHash?: string
   organizationId_email?: Prisma.OrganizationMemberOrganizationIdEmailCompoundUniqueInput
   AND?: Prisma.OrganizationMemberWhereInput | Prisma.OrganizationMemberWhereInput[]
   OR?: Prisma.OrganizationMemberWhereInput[]
@@ -250,12 +296,16 @@ export type OrganizationMemberWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringFilter<"OrganizationMember"> | string
   status?: Prisma.StringFilter<"OrganizationMember"> | string
+  passwordHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
+  invitationExpiresAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
+  invitedBy?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   invitedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   joinedAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
+  lastLoginAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
-}, "id" | "organizationId_email">
+}, "id" | "invitationTokenHash" | "organizationId_email">
 
 export type OrganizationMemberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -264,8 +314,13 @@ export type OrganizationMemberOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitationTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitationExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   invitedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrganizationMemberCountOrderByAggregateInput
@@ -283,8 +338,13 @@ export type OrganizationMemberScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringWithAggregatesFilter<"OrganizationMember"> | string
   status?: Prisma.StringWithAggregatesFilter<"OrganizationMember"> | string
+  passwordHash?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
+  invitationTokenHash?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
+  invitationExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OrganizationMember"> | Date | string | null
+  invitedBy?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
   invitedAt?: Prisma.DateTimeWithAggregatesFilter<"OrganizationMember"> | Date | string
   joinedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OrganizationMember"> | Date | string | null
+  lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OrganizationMember"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OrganizationMember"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OrganizationMember"> | Date | string
 }
@@ -295,8 +355,13 @@ export type OrganizationMemberCreateInput = {
   name?: string | null
   role?: string
   status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
   invitedAt?: Date | string
   joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutMembersInput
@@ -309,8 +374,13 @@ export type OrganizationMemberUncheckedCreateInput = {
   name?: string | null
   role?: string
   status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
   invitedAt?: Date | string
   joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -321,8 +391,13 @@ export type OrganizationMemberUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembersNestedInput
@@ -335,8 +410,13 @@ export type OrganizationMemberUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -348,8 +428,13 @@ export type OrganizationMemberCreateManyInput = {
   name?: string | null
   role?: string
   status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
   invitedAt?: Date | string
   joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -360,8 +445,13 @@ export type OrganizationMemberUpdateManyMutationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -373,8 +463,13 @@ export type OrganizationMemberUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -401,8 +496,13 @@ export type OrganizationMemberCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrder
+  invitationTokenHash?: Prisma.SortOrder
+  invitationExpiresAt?: Prisma.SortOrder
+  invitedBy?: Prisma.SortOrder
   invitedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -414,8 +514,13 @@ export type OrganizationMemberMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrder
+  invitationTokenHash?: Prisma.SortOrder
+  invitationExpiresAt?: Prisma.SortOrder
+  invitedBy?: Prisma.SortOrder
   invitedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -427,8 +532,13 @@ export type OrganizationMemberMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  passwordHash?: Prisma.SortOrder
+  invitationTokenHash?: Prisma.SortOrder
+  invitationExpiresAt?: Prisma.SortOrder
+  invitedBy?: Prisma.SortOrder
   invitedAt?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  lastLoginAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -485,8 +595,13 @@ export type OrganizationMemberCreateWithoutOrganizationInput = {
   name?: string | null
   role?: string
   status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
   invitedAt?: Date | string
   joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -497,8 +612,13 @@ export type OrganizationMemberUncheckedCreateWithoutOrganizationInput = {
   name?: string | null
   role?: string
   status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
   invitedAt?: Date | string
   joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -539,8 +659,13 @@ export type OrganizationMemberScalarWhereInput = {
   name?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringFilter<"OrganizationMember"> | string
   status?: Prisma.StringFilter<"OrganizationMember"> | string
+  passwordHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
+  invitationTokenHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
+  invitationExpiresAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
+  invitedBy?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   invitedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   joinedAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
+  lastLoginAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
 }
@@ -551,8 +676,13 @@ export type OrganizationMemberCreateManyOrganizationInput = {
   name?: string | null
   role?: string
   status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
   invitedAt?: Date | string
   joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -563,8 +693,13 @@ export type OrganizationMemberUpdateWithoutOrganizationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -575,8 +710,13 @@ export type OrganizationMemberUncheckedUpdateWithoutOrganizationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -587,8 +727,13 @@ export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -602,8 +747,13 @@ export type OrganizationMemberSelect<ExtArgs extends runtime.Types.Extensions.In
   name?: boolean
   role?: boolean
   status?: boolean
+  passwordHash?: boolean
+  invitationTokenHash?: boolean
+  invitationExpiresAt?: boolean
+  invitedBy?: boolean
   invitedAt?: boolean
   joinedAt?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -616,8 +766,13 @@ export type OrganizationMemberSelectCreateManyAndReturn<ExtArgs extends runtime.
   name?: boolean
   role?: boolean
   status?: boolean
+  passwordHash?: boolean
+  invitationTokenHash?: boolean
+  invitationExpiresAt?: boolean
+  invitedBy?: boolean
   invitedAt?: boolean
   joinedAt?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -630,8 +785,13 @@ export type OrganizationMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.
   name?: boolean
   role?: boolean
   status?: boolean
+  passwordHash?: boolean
+  invitationTokenHash?: boolean
+  invitationExpiresAt?: boolean
+  invitedBy?: boolean
   invitedAt?: boolean
   joinedAt?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -644,13 +804,18 @@ export type OrganizationMemberSelectScalar = {
   name?: boolean
   role?: boolean
   status?: boolean
+  passwordHash?: boolean
+  invitationTokenHash?: boolean
+  invitationExpiresAt?: boolean
+  invitedBy?: boolean
   invitedAt?: boolean
   joinedAt?: boolean
+  lastLoginAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrganizationMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "email" | "name" | "role" | "status" | "invitedAt" | "joinedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMember"]>
+export type OrganizationMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "email" | "name" | "role" | "status" | "passwordHash" | "invitationTokenHash" | "invitationExpiresAt" | "invitedBy" | "invitedAt" | "joinedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMember"]>
 export type OrganizationMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -673,8 +838,13 @@ export type $OrganizationMemberPayload<ExtArgs extends runtime.Types.Extensions.
     name: string | null
     role: string
     status: string
+    passwordHash: string | null
+    invitationTokenHash: string | null
+    invitationExpiresAt: Date | null
+    invitedBy: string | null
     invitedAt: Date
     joinedAt: Date | null
+    lastLoginAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["organizationMember"]>
@@ -1107,8 +1277,13 @@ export interface OrganizationMemberFieldRefs {
   readonly name: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly role: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly status: Prisma.FieldRef<"OrganizationMember", 'String'>
+  readonly passwordHash: Prisma.FieldRef<"OrganizationMember", 'String'>
+  readonly invitationTokenHash: Prisma.FieldRef<"OrganizationMember", 'String'>
+  readonly invitationExpiresAt: Prisma.FieldRef<"OrganizationMember", 'DateTime'>
+  readonly invitedBy: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly invitedAt: Prisma.FieldRef<"OrganizationMember", 'DateTime'>
   readonly joinedAt: Prisma.FieldRef<"OrganizationMember", 'DateTime'>
+  readonly lastLoginAt: Prisma.FieldRef<"OrganizationMember", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"OrganizationMember", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"OrganizationMember", 'DateTime'>
 }
