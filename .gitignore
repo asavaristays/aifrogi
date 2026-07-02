@@ -1,0 +1,33 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime state and user-provided data
+data/runtime/
+public/media/
+public/uploads/
+uploads/
+*.log
+
+# Contact and campaign exports
+goa-hotel-villa-contact-crawl.csv
+goa-hotel-villa-contact-crawl.json
+goa-hotel-villa-whatsapp-confirmed.csv
+goa-hotel-villa-whatsapp-test-20.csv
+
+# Editor and operating-system files
+.DS_Store
+.idea/
+.vscode/
+*.swp

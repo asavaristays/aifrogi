@@ -1,0 +1,427 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadLanguage {
+  HI
+  EN
+}
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  BOOKED
+  LOST
+}
+
+enum MessageSender {
+  GUEST
+  AGENT
+  AI
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO_LINK
+  PDF
+  INVOICE_LINK
+  PAYMENT_LINK
+  BROCHURE_LINK
+  DOCUMENT_LINK
+}
+
+enum AssetCategory {
+  ROOM
+  EXPERIENCE
+  PROPERTY
+  WEDDING
+  DINING
+  BROCHURE
+  INVOICE
+  PAYMENT
+  OTHER
+}
+
+model Property {
+  id          String      @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String      @unique
+  city        String?
+  state       String?
+  timezone    String      @default("Asia/Kolkata")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  leads       Lead[]
+  metrics     MetricDaily[]
+  campaigns   Campaign[]
+  assets      Asset[]
+  whatsappIntegration WhatsAppIntegration?
+
+  @@index([organizationId])
+}
+
+model Organization {
+  id              String                 @id @default(cuid())
+  name            String
+  slug            String                 @unique
+  industry        String?
+  website         String?
+  country         String                 @default("India")
+  timezone        String                 @default("Asia/Kolkata")
+  gstNumber       String?
+  businessAddress String?
+  ownerName       String
+  ownerEmail      String
+  ownerMobile     String?
+  status          String                 @default("DRAFT")
+  plan            String                 @default("TRIAL")
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  properties      Property[]
+  members         OrganizationMember[]
+  onboarding      OnboardingProfile?
+  onboardingCredential OnboardingCredential?
+  botConfiguration WhatsAppBotConfiguration?
+  documents       OnboardingDocument[]
+  activities      OnboardingActivity[]
+  supportTickets  SupportTicket[]
+
+  @@index([ownerEmail])
+  @@index([status])
+}
+
+model WhatsAppBotConfiguration {
+  id                     String       @id @default(cuid())
+  organizationId         String       @unique
+  organization           Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  enabled                Boolean      @default(true)
+  language               String       @default("EN")
+  welcomeEnabled         Boolean      @default(true)
+  welcomeMessage         String       @db.Text
+  serviceBuckets         String[]
+  auditEnabled           Boolean      @default(true)
+  trialEnabled           Boolean      @default(true)
+  humanHandoffEnabled    Boolean      @default(true)
+  collectLeadDetails     Boolean      @default(true)
+  updatedBy              String?
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  name           String?
+  role           String       @default("OWNER")
+  status         String       @default("ACTIVE")
+  invitedAt      DateTime     @default(now())
+  joinedAt       DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([organizationId, email])
+  @@index([email, status])
+}
+
+model OnboardingProfile {
+  id                      String       @id @default(cuid())
+  organizationId          String       @unique
+  organization            Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  currentStep              Int          @default(1)
+  progressPercent          Int          @default(10)
+  lifecycleStatus          String       @default("DRAFT")
+  legalName                String?
+  registrationNumber      String?
+  facebookPage             String?
+  businessCategory        String?
+  logoUrl                  String?
+  kycStatus                String       @default("NOT_SUBMITTED")
+  kycSubmittedAt           DateTime?
+  kycReviewedAt            DateTime?
+  kycReviewedBy            String?
+  kycRejectionReason       String?
+  phoneCountryCode        String       @default("+91")
+  phoneNumber              String?
+  whatsappActiveOnNumber  Boolean?
+  numberConnectionPath    String?
+  phoneVerificationStatus String       @default("NOT_STARTED")
+  facebookStatus          String       @default("NOT_CONNECTED")
+  metaStatus              String       @default("NOT_STARTED")
+  metaBusinessId          String?
+  wabaId                   String?
+  phoneNumberId           String?
+  displayPhoneNumber      String?
+  qualityRating           String?
+  webhookStatus           String       @default("NOT_CONFIGURED")
+  tokenStatus             String       @default("NOT_CONFIGURED")
+  lastStatusCheckAt       DateTime?
+  lastError               String?
+  completedAt             DateTime?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  @@index([lifecycleStatus])
+  @@index([kycStatus])
+  @@index([metaStatus])
+}
+
+model OnboardingCredential {
+  id              String       @id @default(cuid())
+  organizationId  String       @unique
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  registrationPin String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model OnboardingDocument {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type           String
+  fileName       String
+  mimeType       String
+  sizeBytes      Int
+  content        Bytes
+  status         String       @default("UPLOADED")
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId, type])
+}
+
+model OnboardingActivity {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actorEmail     String?
+  action         String
+  detail         String?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, createdAt])
+}
+
+model Lead {
+  id              String        @id @default(cuid())
+  propertyId      String
+  property        Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name            String
+  initials        String
+  score           Int
+  source          String
+  stage           LeadStage
+  language        LeadLanguage  @default(EN)
+  intent          String
+  stayLabel       String
+  partyLabel      String
+  budgetLabel     String
+  phone           String
+  lastActivityAt  DateTime      @default(now())
+  isHighPriority  Boolean       @default(false)
+  tags            LeadTag[]
+  messages        LeadMessage[]
+  assetShares     LeadAssetShare[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([propertyId, stage])
+  @@index([propertyId, score])
+  @@unique([propertyId, phone])
+}
+
+model LeadTag {
+  id        String   @id @default(cuid())
+  leadId     String
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  value      String
+  createdAt  DateTime @default(now())
+}
+
+model LeadMessage {
+  id                String        @id @default(cuid())
+  leadId            String
+  lead              Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sender            MessageSender
+  body              String
+  externalMessageId String?       @unique
+  deliveryStatus    String?
+  statusUpdatedAt   DateTime?
+  sentAt            DateTime
+  createdAt         DateTime      @default(now())
+
+  @@index([leadId, sentAt])
+}
+
+model MetricDaily {
+  id                    String   @id @default(cuid())
+  propertyId            String
+  property              Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  date                  DateTime
+  totalLeads            Int      @default(0)
+  confirmedRevenue      Int      @default(0)
+  otaCommissionSaved    Int      @default(0)
+  averageLeadScore      Float    @default(0)
+  highScoreLeadCount    Int      @default(0)
+  confirmedBookings     Int      @default(0)
+  directGuestsAcquired  Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([propertyId, date])
+  @@index([propertyId, date])
+}
+
+model Campaign {
+  id                 String   @id @default(cuid())
+  propertyId         String
+  property           Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name               String
+  festivalName       String   @default("")
+  templateName       String?
+  languageCode       String   @default("en_US")
+  messageType        String   @default("TEMPLATE")
+  metaChargeCategory String?
+  scheduledFor       DateTime?
+  estimatedReach     Int      @default(0)
+  estimatedRevenue   Int      @default(0)
+  estimatedCostPaisa Int      @default(0)
+  requestedCount     Int      @default(0)
+  sentCount          Int      @default(0)
+  deliveredCount     Int      @default(0)
+  readCount          Int      @default(0)
+  failedCount        Int      @default(0)
+  createdBy          String?
+  errorSummary       String?
+  status             String   @default("DRAFT")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  recipients         CampaignRecipient[]
+
+  @@index([propertyId, createdAt])
+  @@index([status])
+}
+
+model CampaignRecipient {
+  id                String   @id @default(cuid())
+  campaignId        String
+  campaign          Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  phone             String
+  status            String   @default("QUEUED")
+  externalMessageId String?  @unique
+  error             String?
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  readAt            DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([campaignId, phone])
+  @@index([campaignId, status])
+}
+
+model SupportTicket {
+  id               String       @id @default(cuid())
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reference        String       @unique
+  subject          String
+  category         String
+  priority         String       @default("NORMAL")
+  status           String       @default("OPEN")
+  description      String       @db.Text
+  createdByEmail   String
+  assignedToEmail  String?
+  resolution       String?      @db.Text
+  resolvedAt       DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  messages         SupportTicketMessage[]
+
+  @@index([organizationId, status])
+  @@index([status, priority])
+  @@index([createdAt])
+}
+
+model SupportTicketMessage {
+  id          String        @id @default(cuid())
+  ticketId    String
+  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorEmail String
+  authorRole  String
+  body        String        @db.Text
+  createdAt   DateTime      @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+model Asset {
+  id            String        @id @default(cuid())
+  propertyId     String
+  property       Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  title          String
+  description    String?
+  type           AssetType
+  category       AssetCategory
+  url            String
+  thumbnailUrl   String?
+  tags           String[]
+  isActive       Boolean       @default(true)
+  createdBy      String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  shares         LeadAssetShare[]
+
+  @@index([propertyId, category])
+  @@index([propertyId, type])
+}
+
+model LeadAssetShare {
+  id          String    @id @default(cuid())
+  leadId       String
+  lead         Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  assetId      String
+  asset        Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  channel      String    @default("WHATSAPP")
+  note         String?
+  sharedBy     String?
+  sharedAt     DateTime  @default(now())
+  openedAt     DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([leadId, sharedAt])
+  @@index([assetId, sharedAt])
+}
+
+model WhatsAppIntegration {
+  id                  String   @id @default(cuid())
+  propertyId          String   @unique
+  property            Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  provider            String   @default("META_CLOUD_API")
+  businessAccountId   String?
+  phoneNumberId       String?
+  displayPhoneNumber  String?
+  webhookVerifyToken  String?
+  accessToken         String?
+  status              String   @default("DISCONNECTED")
+  approvedBy          String?
+  approvedAt          DateTime?
+  lastValidatedAt     DateTime?
+  notes               String?
+  aiModeEnabled       Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

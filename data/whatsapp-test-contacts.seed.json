@@ -1,0 +1,202 @@
+[
+  {
+    "id": "goa-test-001",
+    "businessName": "Amadi Beach Front Resort",
+    "website": "amadi.in",
+    "whatsappMobile": "+918882815939",
+    "email": "",
+    "sourceUrl": "https://www.amadi.in/room/sunflower/",
+    "contactBasis": "WhatsApp link found during official website crawl; manually verify before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-002",
+    "businessName": "De Alturas Resort",
+    "website": "resortdealturas.com",
+    "whatsappMobile": "+919112244433",
+    "email": "reservations@resortdealturas.com",
+    "sourceUrl": "https://resortdealturas.com/contact/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-003",
+    "businessName": "The Flora Grand",
+    "website": "thefloragrand.com",
+    "whatsappMobile": "+917410047887",
+    "email": "info@thefloragrand.com",
+    "sourceUrl": "https://www.thefloragrand.com/contact",
+    "contactBasis": "WhatsApp link found during official website crawl; manually verify before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-004",
+    "businessName": "Palm Forest Palolem",
+    "website": "palmforestpalolem.com",
+    "whatsappMobile": "+918007727269",
+    "email": "info@palmforestpalolem.com",
+    "sourceUrl": "https://thepalmcollection.in/contact/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-005",
+    "businessName": "Oceanic Hotel",
+    "website": "oceanicgoa.com",
+    "whatsappMobile": "+919156268118",
+    "email": "oceanicgoa@gmail.com",
+    "sourceUrl": "https://oceanicgoa.com/amenities.html",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-006",
+    "businessName": "Brit's Palace, Goa.",
+    "website": "britspalace.com",
+    "whatsappMobile": "+919158857777",
+    "email": "info@britspalace.com",
+    "sourceUrl": "https://britspalace.com/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-007",
+    "businessName": "Hotel Casablanca Bar & Restaurant",
+    "website": "goacasablanca.com",
+    "whatsappMobile": "+919822985576",
+    "email": "goacasablanca@gmail.com",
+    "sourceUrl": "https://goacasablanca.com/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-008",
+    "businessName": "De Mandarin Hotel goa",
+    "website": "demandarin.in",
+    "whatsappMobile": "+918956287443",
+    "email": "bookings@demandarin.in",
+    "sourceUrl": "https://www.demandarin.in/de-mandarin-beach-resort-suites-and-villas/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-009",
+    "businessName": "Rofinos Cottages",
+    "website": "rofinos.in",
+    "whatsappMobile": "+918468843063",
+    "email": "bookings@rofinos.in",
+    "sourceUrl": "https://rofinos.in/contact-us-i/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-010",
+    "businessName": "Alfreds Jewel Resort",
+    "website": "alfredsjewel.com",
+    "whatsappMobile": "+918669696700",
+    "email": "info@alfredsjewel.com",
+    "sourceUrl": "https://alfredsjewel.com/contact-us.php",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-011",
+    "businessName": "Su Casa service apartment",
+    "website": "sucasagoa.com",
+    "whatsappMobile": "+919819091091",
+    "email": "info@sucasagoa.com",
+    "sourceUrl": "https://sucasagoa.com/contact.html",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-012",
+    "businessName": "JW Heritage Hotel",
+    "website": "jw-heritage.com",
+    "whatsappMobile": "+918793891226",
+    "email": "reservations@jw-heritage.com",
+    "sourceUrl": "https://jw-heritage.com/book-now",
+    "contactBasis": "WhatsApp link found during official website crawl; manually verify before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-013",
+    "businessName": "Goan Beach Villa",
+    "website": "goanbeachvilla.com",
+    "whatsappMobile": "+919892312224",
+    "email": "",
+    "sourceUrl": "https://goanbeachvilla.com/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-014",
+    "businessName": "Hilia's Retreat",
+    "website": "hilias.com",
+    "whatsappMobile": "+919850485475",
+    "email": "hiliasretreat@gmail.com",
+    "sourceUrl": "https://hilias.com/adventure-travel-thrilling-activities-for-adrenaline-junkies.html",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-015",
+    "businessName": "Calvin's Retreat",
+    "website": "calvinsretreat.com",
+    "whatsappMobile": "+919075089488",
+    "email": "",
+    "sourceUrl": "https://www.calvinsretreat.com/contact",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-016",
+    "businessName": "Morjim Sunset Hotel",
+    "website": "morjimsunset.com",
+    "whatsappMobile": "+919673804372",
+    "email": "bookings@morjimsunset.com",
+    "sourceUrl": "https://www.morjimsunset.com/apartments/",
+    "contactBasis": "WhatsApp link found during official website crawl; manually verify before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-017",
+    "businessName": "Coastal Pearl Hotel Miramar Panaji",
+    "website": "coastalpearlgoa.in",
+    "whatsappMobile": "+919881393407",
+    "email": "contact@sansoxygen.com",
+    "sourceUrl": "https://coastalpearlgoa.in/contact-us",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-018",
+    "businessName": "Turtle Hill",
+    "website": "turtlehillgoa.co.in",
+    "whatsappMobile": "+918767893292",
+    "email": "info@turtlehillgoa.co.in",
+    "sourceUrl": "https://turtlehillgoa.co.in/contact-us/",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-019",
+    "businessName": "Casa De Concord",
+    "website": "casadeconcord.com",
+    "whatsappMobile": "+917330747744",
+    "email": "info@casadeconcord.com",
+    "sourceUrl": "https://casadeconcord.com/casa-de-concord-villa-09.html",
+    "contactBasis": "WhatsApp link verified on source page; verify consent before campaign",
+    "campaignStatus": "needs_consent_check"
+  },
+  {
+    "id": "goa-test-020",
+    "businessName": "Palm Heaven Guest house",
+    "website": "palmheaven.in",
+    "whatsappMobile": "+919730249077",
+    "email": "",
+    "sourceUrl": "https://palmheaven.in/contact/",
+    "contactBasis": "WhatsApp link found during official website crawl; manually verify before campaign",
+    "campaignStatus": "needs_consent_check"
+  }
+]
