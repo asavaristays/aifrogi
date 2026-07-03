@@ -4,82 +4,52 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { Icon } from "@/components/icons";
 
-const steps = [
+const stages = [
   {
-    title: "Check readiness",
-    owner: "Customer",
-    icon: "help-circle" as const,
-    outcome: "10 minute check",
-    customer: "Share business email, company details, website or social page, and WhatsApp number.",
-    aifrogi: "Checks readiness before documents or Meta connection.",
-    meta: "No Meta action yet."
-  },
-  {
-    title: "Validate business",
-    owner: "Customer + AiFrogi",
-    icon: "file-text" as const,
-    outcome: "Same day review",
-    customer: "Send legal name, address, GST/trade licence, owner contact, and proof link.",
-    aifrogi: "Flags mismatch risk before Meta submission.",
-    meta: "May request business verification."
-  },
-  {
-    title: "Prepare SIM",
-    owner: "Customer",
+    badge: "Before Meta",
+    title: "Prepare",
+    time: "10 min",
     icon: "smartphone" as const,
-    outcome: "OTP ready",
-    customer: <>Number must receive <strong>OTP or voice</strong>. If already on WhatsApp App, <strong>remove or migrate first</strong>.</>,
-    aifrogi: "Confirms whether existing number or fresh SIM is safer.",
-    meta: <><strong>Without OTP or voice access, onboarding stops here.</strong></>
+    headline: <>SIM + proof ready</>,
+    customer: <>SIM receives <strong>OTP/voice</strong>. Business proof matches display name.</>,
+    aifrogi: "We check readiness and mismatch risk.",
+    note: <>Already on WhatsApp App? <strong>Remove or migrate first.</strong></>
   },
   {
-    title: "Connect Meta",
-    owner: "Customer + Meta",
+    badge: "Meta gate",
+    title: "Meta approval",
+    time: "Meta time",
     icon: "plug" as const,
-    outcome: "After approval: 30-60 min",
-    customer: "Login to Meta, select business, approve permissions, verify number.",
-    aifrogi: "Connects API and shows phone, webhook, token, billing status.",
-    meta: "Confirms WABA, number, display name, and permissions."
+    headline: <>Meta approves number</>,
+    customer: "You approve Meta permissions.",
+    aifrogi: "We handhold the flow and track status.",
+    note: <>Business, display-name, or template review can add time.</>
   },
   {
-    title: "Set workflows",
-    owner: "AiFrogi + Team",
-    icon: "refresh-cw" as const,
-    outcome: "After live: 1-2 days",
-    customer: "Pick first flow: chatbot, reminders, payments, forms, reviews, retargeting.",
-    aifrogi: "Sets templates, routing, automation, AI knowledge, handoff.",
-    meta: "Reviews outbound templates when required."
+    badge: "After approval",
+    title: "API activation",
+    time: "30-60 min",
+    icon: "settings" as const,
+    headline: <>Connect + test</>,
+    customer: "No technical work from your side.",
+    aifrogi: "API, webhook, token, billing, and test messages.",
+    note: <>Number approval is <strong>not</strong> final launch.</>
   },
   {
-    title: "Test & go live",
-    owner: "AiFrogi + Team",
+    badge: "First launch",
+    title: "Go live",
+    time: "1-2 days",
     icon: "bar-chart-3" as const,
-    outcome: "Live + monitored",
-    customer: "Test messages, approve flow, invite agents.",
-    aifrogi: "Monitors delivery, wallet, templates, automation, failures.",
-    meta: "Controls quality, approvals, display name, limits."
-  }
-] as const;
-
-const prerequisites = [
-  {
-    title: "SIM must be available",
-    copy: <>Number must receive <strong>OTP or voice</strong>. Already on WhatsApp App? <strong>Remove or migrate first.</strong></>
-  },
-  {
-    title: "Business proof must match",
-    copy: <><strong>Legal name, address, GST/trade licence, website/social, display name</strong> must match.</>
-  },
-  {
-    title: "After Meta approval",
-    copy: <>Number approval is not final launch. <strong>API check: 30-60 min. First workflow: 1-2 days.</strong></>
+    headline: <>First workflow live</>,
+    customer: "Choose the first use case.",
+    aifrogi: "Chatbot, campaign, reminder, payment, form, review, or handoff.",
+    note: <>AiFrogi monitors failures and next actions.</>
   }
 ] as const;
 
 export function OnboardingJourney() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const active = steps[activeIndex];
-  const progress = activeIndex / (steps.length - 1) * 100;
+  const active = stages[activeIndex];
 
   return (
     <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
@@ -87,62 +57,61 @@ export function OnboardingJourney() {
         <div className="max-w-3xl">
           <p className="product-eyebrow">Meta Tech Provider guided setup</p>
           <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">We handhold your WhatsApp API onboarding.</h2>
-          <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">Bring SIM + business proof. After Meta approves the number, AiFrogi connects, tests, and launches the first workflow.</p>
+          <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">One glance: what you need, what Meta approves, and what happens after approval.</p>
         </div>
 
-        <div className="mt-8 grid gap-3 lg:grid-cols-3">
-          {prerequisites.map((item, index) => (
-            <article key={item.title} className="rounded-xl border border-[#eadfed] bg-white p-5 shadow-[0_16px_45px_rgba(44,36,59,.05)]">
-              <div className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-[#fde9fb] text-xs font-black text-[#c725ba]">{index + 1}</span>
-                <h3 className="text-sm font-bold text-[#2c243b]">{item.title}</h3>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-[#70697d]">{item.copy}</p>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-10 overflow-hidden rounded-xl border border-[#e6dbe9] bg-white shadow-[0_24px_70px_rgba(44,36,59,.07)]">
-          <div className="bg-[#2c243b] px-4 pb-7 pt-6 text-white sm:px-7">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-xs font-semibold text-white/48">Realtime onboarding tracker</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">Hover or tap each step</span>
-            </div>
-
-            <div className="mt-7 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div role="tablist" aria-label="AiFrogi onboarding journey" className="relative grid min-w-[850px] grid-cols-6 gap-3 px-3 pt-3">
-                <div className="absolute left-[8.5%] right-[8.5%] top-[34px] h-px bg-white/12" aria-hidden="true"/>
-                <div className="absolute left-[8.5%] top-[34px] h-px bg-[#d92bcb] transition-[width] duration-500 ease-out" style={{width:`${progress * .83}%`}} aria-hidden="true"/>
-                {steps.map((step, index) => {
-                  const selected = index === activeIndex;
-                  const complete = index < activeIndex;
-                  return <button key={step.title} type="button" role="tab" aria-label={step.title} aria-selected={selected} onMouseEnter={() => setActiveIndex(index)} onFocus={() => setActiveIndex(index)} onClick={() => setActiveIndex(index)} className="group relative flex flex-col items-center text-center">
-                    <span className={`relative z-10 grid h-11 w-11 place-items-center rounded-full border transition-all duration-300 ${selected ? "scale-110 border-[#ff8af1] bg-[#d92bcb] text-white shadow-[0_0_0_7px_rgba(217,43,203,.12),0_0_25px_rgba(217,43,203,.35)]" : complete ? "border-[#d92bcb] bg-[#4b3152] text-[#ff8af1]" : "border-white/15 bg-[#342a42] text-white/38 group-hover:border-white/30 group-hover:text-white/75"}`}><Icon name={complete ? "arrow-right" : step.icon}/></span>
-                    <span className={`mt-4 text-[11px] font-semibold transition ${selected ? "text-white" : "text-white/48 group-hover:text-white/75"}`}>{step.title}</span>
-                    <span className={`mt-1 text-[9px] transition ${selected ? "text-[#ff8af1]" : "text-white/25"}`}>{step.owner}</span>
-                  </button>;
-                })}
-              </div>
-            </div>
+        <div className="mt-9 overflow-hidden rounded-2xl border border-[#e6dbe9] bg-[#2c243b] text-white shadow-[0_24px_70px_rgba(44,36,59,.12)]">
+          <div className="grid gap-px bg-white/8 lg:grid-cols-3">
+            <CriticalStrip label="You bring" copy={<><strong>OTP/voice SIM</strong> + matching business proof</>} />
+            <CriticalStrip label="Meta approves" copy={<>Business / number / display name</>} />
+            <CriticalStrip label="After approval" copy={<><strong>API 30-60 min</strong> → workflow <strong>1-2 days</strong></>} />
           </div>
 
-          <div key={active.title} className="feature-showcase-reveal p-5 sm:p-7">
-            <div className="flex flex-col gap-4 border-b border-[#eee6f0] pb-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-4"><span className="grid h-11 w-11 place-items-center rounded-lg bg-[#fde9fb] text-[#a21c98]"><Icon name={active.icon}/></span><div><span className="text-[10px] font-bold uppercase tracking-[.12em] text-[#c725ba]">Stage {String(activeIndex + 1).padStart(2,"0")}</span><h3 className="mt-1 text-xl font-semibold text-[#2c243b]">{active.title}</h3></div></div>
-              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#f3edf5] px-3 py-1.5 text-xs font-semibold text-[#655b70]"><i className="h-1.5 w-1.5 rounded-full bg-[#d92bcb]"/>{active.outcome}</span>
+          <div className="p-5 sm:p-7">
+            <div className="grid gap-3 lg:grid-cols-4">
+              {stages.map((stage, index) => {
+                const selected = index === activeIndex;
+                return (
+                  <button
+                    key={stage.title}
+                    type="button"
+                    aria-label={stage.title}
+                    aria-pressed={selected}
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onFocus={() => setActiveIndex(index)}
+                    onClick={() => setActiveIndex(index)}
+                    className={`group relative overflow-hidden rounded-xl border p-4 text-left transition duration-300 ${
+                      selected
+                        ? "border-[#ff8af1] bg-white text-[#2c243b] shadow-[0_18px_45px_rgba(217,43,203,.22)]"
+                        : "border-white/10 bg-white/5 text-white hover:border-white/25 hover:bg-white/8"
+                    }`}
+                  >
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-[.12em] ${selected ? "bg-[#fde9fb] text-[#b923ae]" : "bg-white/8 text-white/45"}`}>
+                      {stage.badge}
+                    </span>
+                    <div className="mt-5 flex items-center gap-3">
+                      <span className={`grid h-12 w-12 place-items-center rounded-full ${selected ? "bg-[#d92bcb] text-white" : "bg-[#342a42] text-[#ff8af1]"}`}>
+                        <Icon name={stage.icon} className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <h3 className="text-lg font-black">{stage.title}</h3>
+                        <p className={`mt-1 text-xs font-bold ${selected ? "text-[#b923ae]" : "text-white/48"}`}>{stage.time}</p>
+                      </div>
+                    </div>
+                    <p className={`mt-5 text-sm font-semibold leading-6 ${selected ? "text-[#4f4658]" : "text-white/62"}`}>{stage.headline}</p>
+                    {index < stages.length - 1 ? <span className={`absolute right-4 top-1/2 hidden -translate-y-1/2 text-xl lg:block ${selected ? "text-[#d92bcb]" : "text-white/22"}`}>→</span> : null}
+                  </button>
+                );
+              })}
             </div>
+          </div>
+        </div>
 
-            <div className="mt-5 grid gap-3 lg:grid-cols-3">
-              <NarrativeLane label="What you do" number="01" copy={active.customer}/>
-              <NarrativeLane label="What AiFrogi does" number="02" copy={active.aifrogi} featured/>
-              <NarrativeLane label="What Meta confirms" number="03" copy={active.meta}/>
-            </div>
-
-            <div className="mt-5 grid gap-3 rounded-lg border border-[#eadfed] bg-[#fbf8fc] p-4 text-xs text-[#70697d] sm:grid-cols-3">
-              <StatusNote label="Client sees" copy="Done, missing, waiting, next action." />
-              <StatusNote label="After approval" copy={<><strong>API check 30-60 min</strong>; first workflow usually <strong>1-2 days</strong>.</>} />
-              <StatusNote label="No hidden blocker" copy={<><strong>SIM, business proof, Meta, billing, tests</strong> stay visible.</>} />
-            </div>
+        <div key={active.title} className="feature-showcase-reveal mt-5 rounded-2xl border border-[#eadfed] bg-white p-5 shadow-[0_16px_45px_rgba(44,36,59,.06)] sm:p-6">
+          <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr_1fr]">
+            <InfoBlock label="Client action" copy={active.customer} />
+            <InfoBlock label="AiFrogi handhold" copy={active.aifrogi} highlighted />
+            <InfoBlock label="Critical note" copy={active.note} />
           </div>
         </div>
       </div>
@@ -150,10 +119,20 @@ export function OnboardingJourney() {
   );
 }
 
-function NarrativeLane({ label, number, copy, featured = false }: { label: string; number: string; copy: ReactNode; featured?: boolean }) {
-  return <article className={`rounded-lg border p-5 ${featured ? "border-[#d92bcb]/35 bg-[#fff7fe]" : "border-[#eadfed] bg-[#fbf8fc]"}`}><div className="flex items-center justify-between gap-3"><strong className="text-xs text-[#2c243b]">{label}</strong><span className={`text-[10px] font-bold ${featured ? "text-[#c725ba]" : "text-[#a99ead]"}`}>{number}</span></div><p className="mt-4 text-sm leading-6 text-[#70697d]">{copy}</p></article>;
+function CriticalStrip({ label, copy }: { label: string; copy: ReactNode }) {
+  return (
+    <div className="bg-[#2c243b] p-4">
+      <p className="text-[10px] font-black uppercase tracking-[.15em] text-[#ff8af1]">{label}</p>
+      <p className="mt-2 text-sm leading-6 text-white/82">{copy}</p>
+    </div>
+  );
 }
 
-function StatusNote({ label, copy }: { label: string; copy: ReactNode }) {
-  return <div><strong className="text-[#2c243b]">{label}</strong><p className="mt-1 leading-5">{copy}</p></div>;
+function InfoBlock({ label, copy, highlighted = false }: { label: string; copy: ReactNode; highlighted?: boolean }) {
+  return (
+    <div className={`rounded-xl border p-4 ${highlighted ? "border-[#d92bcb]/35 bg-[#fff7fe]" : "border-[#eadfed] bg-[#fbf8fc]"}`}>
+      <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#c725ba]">{label}</p>
+      <p className="mt-3 text-sm font-medium leading-6 text-[#5f5668]">{copy}</p>
+    </div>
+  );
 }
