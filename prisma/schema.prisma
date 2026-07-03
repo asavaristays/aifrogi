@@ -65,8 +65,72 @@ model Property {
   campaigns   Campaign[]
   assets      Asset[]
   whatsappIntegration WhatsAppIntegration?
+  knowledgeDocuments KnowledgeDocument[]
+  knowledgeEntries KnowledgeEntry[]
+  knowledgeGaps KnowledgeGap[]
 
   @@index([organizationId])
+}
+
+model KnowledgeDocument {
+  id              String    @id @default(cuid())
+  propertyId      String
+  property        Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  fileName        String
+  mimeType        String
+  sizeBytes       Int
+  content         Bytes
+  extractedText   String    @db.Text
+  status          String    @default("PENDING")
+  conflictSummary String?   @db.Text
+  uploadedBy      String
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  entries         KnowledgeEntry[]
+
+  @@index([propertyId, status])
+}
+
+model KnowledgeEntry {
+  id              String             @id @default(cuid())
+  propertyId      String
+  property        Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  documentId      String?
+  document        KnowledgeDocument? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  question        String             @db.Text
+  answer          String             @db.Text
+  category        String             @default("General")
+  status          String             @default("DRAFT")
+  conflictSummary String?            @db.Text
+  createdBy       String
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  resolvedGaps    KnowledgeGap[]
+
+  @@index([propertyId, status])
+  @@index([documentId])
+}
+
+model KnowledgeGap {
+  id                String         @id @default(cuid())
+  propertyId        String
+  property          Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  question          String         @db.Text
+  normalizedQuestion String
+  occurrenceCount   Int            @default(1)
+  status            String         @default("OPEN")
+  lastAskedAt       DateTime       @default(now())
+  resolutionEntryId String?
+  resolutionEntry   KnowledgeEntry? @relation(fields: [resolutionEntryId], references: [id], onDelete: SetNull)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([propertyId, normalizedQuestion])
+  @@index([propertyId, status, occurrenceCount])
 }
 
 model Organization {

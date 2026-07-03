@@ -3,13 +3,15 @@ import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access"
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeWorkspaceSummary, getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
 import { writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
 
 export async function GET() {
   const access = await getCurrentClientAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const propertySlug = await getCurrentWorkspaceSlug();
   const summary = await getKnowledgeWorkspaceSummary(propertySlug);
-  return NextResponse.json({ ...summary, propertySlug, canManage: canManageWorkspace(access.role) });
+  const governance = await getKnowledgeGovernanceSummary(propertySlug);
+  return NextResponse.json({ ...summary, ...governance, propertySlug, canManage: canManageWorkspace(access.role) });
 }
 
 export async function PATCH(request: Request) {
@@ -48,4 +50,3 @@ export async function POST() {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Knowledge sync failed." }, { status: 502 });
   }
 }
-

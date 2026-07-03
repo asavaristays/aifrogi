@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { buildWhatsAppBotMenuOptions, type WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+import { getApprovedKnowledgeContext, recordKnowledgeGap } from "@/lib/repositories/knowledge-content-repository";
 
 export type KnowledgePage = {
   url: string;
@@ -345,17 +346,23 @@ export async function buildWebsiteKnowledgeAnswer({
   propertySlug: string;
   configuration: WhatsAppBotConfiguration;
 }): Promise<KnowledgeAnswer | null> {
+  if (!question.trim()) return null;
+
   const apiKey = process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey || !question.trim()) return null;
 
   const settings = await readKnowledgeSettings(propertySlug);
   if (!settings.approvedForAi) return null;
 
-  const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug);
-  if (!knowledgeBase.pages.length) return null;
+  const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
+  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, question) : { context: "", sourceUrls: [] as string[] };
+  const governedContext = await getApprovedKnowledgeContext(propertySlug, question);
+  const context = [websiteResult.context, governedContext].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
+  if (!context.trim()) {
+    await recordKnowledgeGap(propertySlug, question);
+    return null;
+  }
 
-  const { context, sourceUrls } = buildContext(knowledgeBase, question);
-  if (!context.trim()) return null;
+  if (!apiKey) return null;
 
   const menu = buildWhatsAppBotMenuOptions(configuration)
     .map((option, index) => `${index + 1}. ${option.label}: ${option.description}`)
@@ -376,7 +383,7 @@ export async function buildWebsiteKnowledgeAnswer({
         },
         {
           role: "user",
-          content: `Website knowledge base:\n${context}\n\nCustomer question:\n${question.trim()}`
+          content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}`
         }
       ],
       max_output_tokens: 320
@@ -394,7 +401,7 @@ export async function buildWebsiteKnowledgeAnswer({
 
   return {
     answer,
-    sourceUrls,
+    sourceUrls: websiteResult.sourceUrls,
     usedOpenAi: true
   };
 }
