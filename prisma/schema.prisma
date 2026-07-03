@@ -63,6 +63,7 @@ model Property {
   leads       Lead[]
   metrics     MetricDaily[]
   campaigns   Campaign[]
+  automationJobs AutomationJob[]
   assets      Asset[]
   whatsappIntegration WhatsAppIntegration?
   knowledgeDocuments KnowledgeDocument[]
@@ -411,6 +412,39 @@ model CampaignRecipient {
 
   @@unique([campaignId, phone])
   @@index([campaignId, status])
+}
+
+model AutomationJob {
+  id                String   @id @default(cuid())
+  propertyId        String
+  property          Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  workflowId        String
+  workflowVersion   Int      @default(1)
+  triggerType       String
+  triggerRef        String?
+  actionType        String
+  status            String   @default("QUEUED")
+  priority          Int      @default(5)
+  payload           Json
+  result            Json?
+  idempotencyKey    String   @unique
+  scheduledFor      DateTime @default(now())
+  nextRunAt         DateTime @default(now())
+  maxAttempts       Int      @default(3)
+  attemptCount      Int      @default(0)
+  lockedAt          DateTime?
+  lockedBy          String?
+  leaseExpiresAt    DateTime?
+  lastError         String?  @db.Text
+  deadLetterReason  String?  @db.Text
+  createdBy         String?
+  completedAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([propertyId, status, nextRunAt])
+  @@index([workflowId, status])
+  @@index([leaseExpiresAt])
 }
 
 model SupportTicket {

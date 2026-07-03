@@ -6,6 +6,8 @@ import { buildAutomationWorkflows, getWorkflowReadiness, type AutomationWorkflow
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { BOT_ANSWER_CONSTITUTION, getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
 import { loadWhatsAppIntegration } from "@/lib/services/whatsapp-service";
+import { getDb } from "@/lib/db";
+import { getAutomationQueueSummary, listAutomationJobs } from "@/lib/automation-engine";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -29,6 +31,11 @@ export default async function WorkflowsPage() {
     getWebsiteKnowledgeBase(propertySlug).catch(() => null),
     loadWhatsAppIntegration(propertySlug)
   ]);
+  const db = getDb();
+  const property = db ? await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } }) : null;
+  const [queueSummary, recentJobs] = property
+    ? await Promise.all([getAutomationQueueSummary(property.id), listAutomationJobs(property.id, 8)])
+    : [null, []];
   const workflows = buildAutomationWorkflows(leads);
   const readiness = getWorkflowReadiness(workflows);
   const liveWorkflows = workflows.filter((workflow) => workflow.activeCount > 0).length;
@@ -56,6 +63,69 @@ export default async function WorkflowsPage() {
             <div className="mt-5 grid gap-3 sm:grid-cols-3"><InfoBlock label="Knowledge pages" value={String(knowledgeBase?.pages.length || 0)} /><InfoBlock label="Knowledge buckets" value={String(new Set(knowledgeBase?.pages.map((page) => page.bucket) || []).size)} /><InfoBlock label="Last crawl" value={knowledgeBase?.crawledAt ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(knowledgeBase.crawledAt)) : "Not available"} /></div>
           </Card>
           <Card className="border border-black/6 bg-[#2c243b] p-6 text-white shadow-sm"><p className="text-xs font-bold uppercase tracking-[0.08em] text-[#ff8af1]">Answer constitution</p><h2 className="mt-2 text-2xl font-semibold">AI has explicit boundaries.</h2><div className="mt-5 max-h-80 space-y-3 overflow-auto pr-2">{BOT_ANSWER_CONSTITUTION.split("\n").map((rule, index) => <div key={rule} className="flex gap-3 border-t border-white/8 pt-3"><span className="text-xs font-bold text-[#ff8af1]">{String(index + 1).padStart(2, "0")}</span><p className="text-xs leading-5 text-white/68">{rule}</p></div>)}</div></Card>
+        </section>
+        <section className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+          <Card className="border border-black/6 bg-white p-6 shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="product-eyebrow">Section 05 executor</p>
+                <h2 className="mt-2 text-2xl font-semibold text-[#15131f]">Durable automation queue</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
+                  Timed and event-driven automations are now reserved as durable jobs before any action runs. Visual workflow design stays locked until this executor is reliable.
+                </p>
+              </div>
+              <span className={`status-pill ${(queueSummary?.dead || 0) > 0 ? "status-warning" : "status-success"}`}>
+                {(queueSummary?.dead || 0) > 0 ? "Needs review" : "Executor ready"}
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-4">
+              <QueueStat label="Due now" value={String(queueSummary?.dueNow ?? 0)} tone="pink" />
+              <QueueStat label="Queued" value={String(queueSummary?.queued ?? 0)} tone="blue" />
+              <QueueStat label="Retry" value={String(queueSummary?.retry ?? 0)} tone="amber" />
+              <QueueStat label="Dead letter" value={String(queueSummary?.dead ?? 0)} tone="red" />
+            </div>
+            <div className="mt-5 rounded-lg border border-black/5 bg-[#f8fafc] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--text-muted)]">Safety model</p>
+              <div className="mt-3 grid gap-2 text-sm font-semibold leading-5 text-[#23312d] sm:grid-cols-2">
+                <p>Idempotency blocks duplicate customer actions.</p>
+                <p>Worker leases survive process restarts.</p>
+                <p>Retries use backoff before dead-lettering.</p>
+                <p>Current executor records safe internal outcomes only.</p>
+              </div>
+            </div>
+          </Card>
+          <Card className="border border-black/6 bg-white p-6 shadow-sm">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="product-eyebrow">Operations timeline</p>
+                <h2 className="mt-2 text-2xl font-semibold text-[#15131f]">Recent automation jobs</h2>
+              </div>
+              <Badge tone="neutral">Next due {queueSummary?.nextDueAt ? formatWorkflowDate(queueSummary.nextDueAt) : "None"}</Badge>
+            </div>
+            <div className="mt-5 space-y-3">
+              {recentJobs.length ? recentJobs.map((job) => (
+                <div key={job.id} className="grid gap-3 rounded-lg border border-black/5 bg-[#fbfcfb] p-4 sm:grid-cols-[1fr_auto]">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge tone={job.status === "SUCCEEDED" ? "secondary" : job.status === "DEAD" ? "tertiary" : "primary"}>{job.status}</Badge>
+                      <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#c725ba]">{job.actionType}</span>
+                    </div>
+                    <p className="mt-2 text-sm font-black text-[#111827]">{job.workflowId}</p>
+                    <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{job.lastError || `Trigger: ${job.triggerType}`}</p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--text-muted)]">Attempts</p>
+                    <p className="mt-1 text-lg font-black text-[#15131f]">{job.attemptCount}/{job.maxAttempts}</p>
+                    <p className="mt-1 text-xs text-[var(--text-muted)]">{formatWorkflowDate(job.nextRunAt)}</p>
+                  </div>
+                </div>
+              )) : (
+                <div className="rounded-lg border border-dashed border-[#d9eadf] bg-[#f7fbf8] p-6 text-sm font-semibold text-[var(--text-muted)]">
+                  No automation jobs yet. Create a safe demo digest from the API or wait for a scheduled workflow trigger.
+                </div>
+              )}
+            </div>
+          </Card>
         </section>
         <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
           <Card className="overflow-hidden border border-black/5 bg-[#102f2a] text-white shadow-[0_18px_50px_rgba(16,47,42,0.18)]">
@@ -222,4 +292,28 @@ function InfoBlock({ label, value }: { label: string; value: string }) {
       <p className="mt-2 text-sm font-semibold leading-5 text-[#23312d]">{value}</p>
     </div>
   );
+}
+
+function QueueStat({ label, value, tone }: { label: string; value: string; tone: "pink" | "blue" | "amber" | "red" }) {
+  const toneClass = {
+    pink: "bg-[#fff0fb] text-[#c725ba] border-[#ffd3f6]",
+    blue: "bg-[#eff6ff] text-[#1d4ed8] border-[#bfdbfe]",
+    amber: "bg-[#fffbeb] text-[#b45309] border-[#fde68a]",
+    red: "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]"
+  }[tone];
+
+  return (
+    <div className={`rounded-lg border p-4 ${toneClass}`}>
+      <p className="text-xs font-black uppercase tracking-[0.14em] opacity-70">{label}</p>
+      <p className="mt-2 text-3xl font-black">{value}</p>
+    </div>
+  );
+}
+
+function formatWorkflowDate(value: Date) {
+  return new Intl.DateTimeFormat("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Asia/Kolkata"
+  }).format(new Date(value));
 }

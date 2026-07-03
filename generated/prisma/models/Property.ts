@@ -218,6 +218,7 @@ export type PropertyWhereInput = {
   leads?: Prisma.LeadListRelationFilter
   metrics?: Prisma.MetricDailyListRelationFilter
   campaigns?: Prisma.CampaignListRelationFilter
+  automationJobs?: Prisma.AutomationJobListRelationFilter
   assets?: Prisma.AssetListRelationFilter
   whatsappIntegration?: Prisma.XOR<Prisma.WhatsAppIntegrationNullableScalarRelationFilter, Prisma.WhatsAppIntegrationWhereInput> | null
   knowledgeDocuments?: Prisma.KnowledgeDocumentListRelationFilter
@@ -239,6 +240,7 @@ export type PropertyOrderByWithRelationInput = {
   leads?: Prisma.LeadOrderByRelationAggregateInput
   metrics?: Prisma.MetricDailyOrderByRelationAggregateInput
   campaigns?: Prisma.CampaignOrderByRelationAggregateInput
+  automationJobs?: Prisma.AutomationJobOrderByRelationAggregateInput
   assets?: Prisma.AssetOrderByRelationAggregateInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationOrderByWithRelationInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentOrderByRelationAggregateInput
@@ -263,6 +265,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   leads?: Prisma.LeadListRelationFilter
   metrics?: Prisma.MetricDailyListRelationFilter
   campaigns?: Prisma.CampaignListRelationFilter
+  automationJobs?: Prisma.AutomationJobListRelationFilter
   assets?: Prisma.AssetListRelationFilter
   whatsappIntegration?: Prisma.XOR<Prisma.WhatsAppIntegrationNullableScalarRelationFilter, Prisma.WhatsAppIntegrationWhereInput> | null
   knowledgeDocuments?: Prisma.KnowledgeDocumentListRelationFilter
@@ -313,6 +316,7 @@ export type PropertyCreateInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -333,6 +337,7 @@ export type PropertyUncheckedCreateInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -353,6 +358,7 @@ export type PropertyUpdateInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -373,6 +379,7 @@ export type PropertyUncheckedUpdateInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -604,6 +611,20 @@ export type PropertyUpdateOneRequiredWithoutCampaignsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutCampaignsInput, Prisma.PropertyUpdateWithoutCampaignsInput>, Prisma.PropertyUncheckedUpdateWithoutCampaignsInput>
 }
 
+export type PropertyCreateNestedOneWithoutAutomationJobsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutAutomationJobsInput, Prisma.PropertyUncheckedCreateWithoutAutomationJobsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutAutomationJobsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutAutomationJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutAutomationJobsInput, Prisma.PropertyUncheckedCreateWithoutAutomationJobsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutAutomationJobsInput
+  upsert?: Prisma.PropertyUpsertWithoutAutomationJobsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutAutomationJobsInput, Prisma.PropertyUpdateWithoutAutomationJobsInput>, Prisma.PropertyUncheckedUpdateWithoutAutomationJobsInput>
+}
+
 export type PropertyCreateNestedOneWithoutAssetsInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutAssetsInput, Prisma.PropertyUncheckedCreateWithoutAssetsInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutAssetsInput
@@ -645,6 +666,7 @@ export type PropertyCreateWithoutKnowledgeDocumentsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
@@ -664,6 +686,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
@@ -699,6 +722,7 @@ export type PropertyUpdateWithoutKnowledgeDocumentsInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
@@ -718,6 +742,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -737,6 +762,7 @@ export type PropertyCreateWithoutKnowledgeEntriesInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -756,6 +782,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -791,6 +818,7 @@ export type PropertyUpdateWithoutKnowledgeEntriesInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -810,6 +838,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -829,6 +858,7 @@ export type PropertyCreateWithoutKnowledgeGapsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -848,6 +878,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -883,6 +914,7 @@ export type PropertyUpdateWithoutKnowledgeGapsInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -902,6 +934,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -920,6 +953,7 @@ export type PropertyCreateWithoutOrganizationInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -939,6 +973,7 @@ export type PropertyUncheckedCreateWithoutOrganizationInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -999,6 +1034,7 @@ export type PropertyCreateWithoutLeadsInput = {
   organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -1018,6 +1054,7 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   updatedAt?: Date | string
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -1053,6 +1090,7 @@ export type PropertyUpdateWithoutLeadsInput = {
   organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -1072,6 +1110,7 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1091,6 +1130,7 @@ export type PropertyCreateWithoutMetricsInput = {
   organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -1110,6 +1150,7 @@ export type PropertyUncheckedCreateWithoutMetricsInput = {
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -1145,6 +1186,7 @@ export type PropertyUpdateWithoutMetricsInput = {
   organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -1164,6 +1206,7 @@ export type PropertyUncheckedUpdateWithoutMetricsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1183,6 +1226,7 @@ export type PropertyCreateWithoutCampaignsInput = {
   organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
@@ -1202,6 +1246,7 @@ export type PropertyUncheckedCreateWithoutCampaignsInput = {
   updatedAt?: Date | string
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
@@ -1237,6 +1282,7 @@ export type PropertyUpdateWithoutCampaignsInput = {
   organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -1256,6 +1302,103 @@ export type PropertyUncheckedUpdateWithoutCampaignsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutAutomationJobsInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutAutomationJobsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutAutomationJobsInput, Prisma.PropertyUncheckedCreateWithoutAutomationJobsInput>
+}
+
+export type PropertyUpsertWithoutAutomationJobsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutAutomationJobsInput, Prisma.PropertyUncheckedUpdateWithoutAutomationJobsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutAutomationJobsInput, Prisma.PropertyUncheckedCreateWithoutAutomationJobsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutAutomationJobsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutAutomationJobsInput, Prisma.PropertyUncheckedUpdateWithoutAutomationJobsInput>
+}
+
+export type PropertyUpdateWithoutAutomationJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1276,6 +1419,7 @@ export type PropertyCreateWithoutAssetsInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
@@ -1295,6 +1439,7 @@ export type PropertyUncheckedCreateWithoutAssetsInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
@@ -1330,6 +1475,7 @@ export type PropertyUpdateWithoutAssetsInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
@@ -1349,6 +1495,7 @@ export type PropertyUncheckedUpdateWithoutAssetsInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1368,6 +1515,7 @@ export type PropertyCreateWithoutWhatsappIntegrationInput = {
   leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
@@ -1387,6 +1535,7 @@ export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
   metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
@@ -1422,6 +1571,7 @@ export type PropertyUpdateWithoutWhatsappIntegrationInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
@@ -1441,6 +1591,7 @@ export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1470,6 +1621,7 @@ export type PropertyUpdateWithoutOrganizationInput = {
   leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
@@ -1489,6 +1641,7 @@ export type PropertyUncheckedUpdateWithoutOrganizationInput = {
   leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1516,6 +1669,7 @@ export type PropertyCountOutputType = {
   leads: number
   metrics: number
   campaigns: number
+  automationJobs: number
   assets: number
   knowledgeDocuments: number
   knowledgeEntries: number
@@ -1526,6 +1680,7 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   leads?: boolean | PropertyCountOutputTypeCountLeadsArgs
   metrics?: boolean | PropertyCountOutputTypeCountMetricsArgs
   campaigns?: boolean | PropertyCountOutputTypeCountCampaignsArgs
+  automationJobs?: boolean | PropertyCountOutputTypeCountAutomationJobsArgs
   assets?: boolean | PropertyCountOutputTypeCountAssetsArgs
   knowledgeDocuments?: boolean | PropertyCountOutputTypeCountKnowledgeDocumentsArgs
   knowledgeEntries?: boolean | PropertyCountOutputTypeCountKnowledgeEntriesArgs
@@ -1561,6 +1716,13 @@ export type PropertyCountOutputTypeCountMetricsArgs<ExtArgs extends runtime.Type
  */
 export type PropertyCountOutputTypeCountCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CampaignWhereInput
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountAutomationJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AutomationJobWhereInput
 }
 
 /**
@@ -1606,6 +1768,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   leads?: boolean | Prisma.Property$leadsArgs<ExtArgs>
   metrics?: boolean | Prisma.Property$metricsArgs<ExtArgs>
   campaigns?: boolean | Prisma.Property$campaignsArgs<ExtArgs>
+  automationJobs?: boolean | Prisma.Property$automationJobsArgs<ExtArgs>
   assets?: boolean | Prisma.Property$assetsArgs<ExtArgs>
   whatsappIntegration?: boolean | Prisma.Property$whatsappIntegrationArgs<ExtArgs>
   knowledgeDocuments?: boolean | Prisma.Property$knowledgeDocumentsArgs<ExtArgs>
@@ -1658,6 +1821,7 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   leads?: boolean | Prisma.Property$leadsArgs<ExtArgs>
   metrics?: boolean | Prisma.Property$metricsArgs<ExtArgs>
   campaigns?: boolean | Prisma.Property$campaignsArgs<ExtArgs>
+  automationJobs?: boolean | Prisma.Property$automationJobsArgs<ExtArgs>
   assets?: boolean | Prisma.Property$assetsArgs<ExtArgs>
   whatsappIntegration?: boolean | Prisma.Property$whatsappIntegrationArgs<ExtArgs>
   knowledgeDocuments?: boolean | Prisma.Property$knowledgeDocumentsArgs<ExtArgs>
@@ -1679,6 +1843,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     leads: Prisma.$LeadPayload<ExtArgs>[]
     metrics: Prisma.$MetricDailyPayload<ExtArgs>[]
     campaigns: Prisma.$CampaignPayload<ExtArgs>[]
+    automationJobs: Prisma.$AutomationJobPayload<ExtArgs>[]
     assets: Prisma.$AssetPayload<ExtArgs>[]
     whatsappIntegration: Prisma.$WhatsAppIntegrationPayload<ExtArgs> | null
     knowledgeDocuments: Prisma.$KnowledgeDocumentPayload<ExtArgs>[]
@@ -2093,6 +2258,7 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   leads<T extends Prisma.Property$leadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   metrics<T extends Prisma.Property$metricsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$metricsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MetricDailyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   campaigns<T extends Prisma.Property$campaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$campaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  automationJobs<T extends Prisma.Property$automationJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$automationJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assets<T extends Prisma.Property$assetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$assetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappIntegration<T extends Prisma.Property$whatsappIntegrationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$whatsappIntegrationArgs<ExtArgs>>): Prisma.Prisma__WhatsAppIntegrationClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   knowledgeDocuments<T extends Prisma.Property$knowledgeDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2625,6 +2791,30 @@ export type Property$campaignsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.CampaignScalarFieldEnum | Prisma.CampaignScalarFieldEnum[]
+}
+
+/**
+ * Property.automationJobs
+ */
+export type Property$automationJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AutomationJob
+   */
+  select?: Prisma.AutomationJobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationJob
+   */
+  omit?: Prisma.AutomationJobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationJobInclude<ExtArgs> | null
+  where?: Prisma.AutomationJobWhereInput
+  orderBy?: Prisma.AutomationJobOrderByWithRelationInput | Prisma.AutomationJobOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationJobWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationJobScalarFieldEnum | Prisma.AutomationJobScalarFieldEnum[]
 }
 
 /**

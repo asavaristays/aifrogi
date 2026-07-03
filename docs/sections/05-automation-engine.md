@@ -1,6 +1,6 @@
 # Section 05: Automation Engine
 
-Status: Planned
+Status: First executor slice implemented on 2026-07-03
 Target score: 8.5/10
 
 ## Think
@@ -35,3 +35,33 @@ Approved trigger -> Eligibility and consent -> Conditions -> Quiet-hours decisio
 ## Achieve Definition
 
 The section is complete when timed and event-driven workflows survive process restarts, remain auditable, and can be operated safely by a non-technical Client Admin.
+
+## 2026-07-03 Implementation Slice
+
+This slice deliberately avoids a visual workflow builder. The product now has the reliability layer that must exist before drag-and-drop automation is safe.
+
+### Added
+
+- Durable `AutomationJob` model tied to each client workspace.
+- Idempotency key per job so repeated triggers do not duplicate work.
+- Worker claim leases with `lockedBy`, `lockedAt`, and `leaseExpiresAt`.
+- Attempt tracking, retry state, exponential backoff, and dead-letter status.
+- Safe executor actions for internal notes, follow-up reminders, human handoff flags, and digest simulation.
+- Manual API operations:
+  - `GET /api/automation/jobs` for queue summary and recent jobs.
+  - `POST /api/automation/jobs` with `enqueue_demo` for a safe digest simulation.
+  - `POST /api/automation/jobs` with `run_due` to execute due jobs in dry-run mode.
+- Workflow dashboard queue health: due now, queued, retry, dead-letter, recent attempts, and next due time.
+- Verification script: `npm run verify:automation`.
+
+### Guardrail
+
+The first executor records safe internal outcomes only. It does not send WhatsApp messages, spend Meta balance, or create customer-facing automation until the queue proves reliable in production.
+
+### Next Slice
+
+1. Add central consent, opt-out, quiet-hours, and frequency-cap checks before any message action.
+2. Add workflow run timeline and event table once job execution patterns stabilize.
+3. Connect approved Section 04 campaign templates to scheduled jobs.
+4. Add operator controls: pause, resume, retry, cancel.
+5. Start the visual builder only after the executor handles real scheduled workflows without duplicate actions.

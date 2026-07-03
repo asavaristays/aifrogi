@@ -13,7 +13,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "verify:knowledge": "tsx scripts/verify-governed-knowledge.ts",
     "verify:registration": "tsx scripts/verify-trial-registration.ts",
-    "verify:campaigns": "tsx scripts/verify-campaign-compliance.ts"
+    "verify:campaigns": "tsx scripts/verify-campaign-compliance.ts",
+    "verify:automation": "tsx scripts/verify-automation-engine.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "latest",
