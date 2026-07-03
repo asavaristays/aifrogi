@@ -31,9 +31,11 @@ export function SiteFooter() {
           <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#ff8af1]">Contact</p>
           <div className="mt-3 space-y-2 text-sm leading-6 text-white/62">
             <p>H.No 746 - TF, New Wada, Morjim, Goa 403512, India</p>
-            <p><a className="hover:text-white" href="tel:+917410582898">+91-7410582898</a></p>
             <p><a className="hover:text-white" href="mailto:info@aifrogi.com">info@aifrogi.com</a></p>
           </div>
+          <a href="tel:+917410582898" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_26px_rgba(217,43,203,.22)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">
+            Call +91-7410582898
+          </a>
         </address>
       </div>
 
