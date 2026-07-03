@@ -10,7 +10,7 @@ export function RotatingUseCase() {
   useEffect(() => {
     const interval = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % useCases.length);
-    }, 1800);
+    }, 2600);
 
     return () => window.clearInterval(interval);
   }, []);

@@ -5,13 +5,16 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-@keyframes hero-use-case-reveal {
-  from { opacity: 0; transform: translateY(.4em); filter: blur(5px); }
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+@keyframes hero-use-case-cycle {
+  0% { opacity: 0; transform: translateY(.18em); filter: blur(2px); }
+  16% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  82% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  100% { opacity: 0; transform: translateY(-.14em); filter: blur(2px); }
 }
 
 .hero-use-case {
-  animation: hero-use-case-reveal .5s cubic-bezier(.2,.8,.2,1);
+  animation: hero-use-case-cycle 2.6s cubic-bezier(.4,0,.2,1) both;
+  will-change: opacity, transform, filter;
 }
 
 .feature-showcase-reveal {
