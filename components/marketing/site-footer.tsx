@@ -40,7 +40,7 @@ export function SiteFooter() {
       </div>
 
       <div className="mx-auto mt-10 flex max-w-7xl flex-col gap-3 border-t border-white/10 pt-5 text-xs text-white/38 sm:flex-row sm:items-center sm:justify-between">
-        <p>© AiFrogi. Operated by webtechnosys.</p>
+        <p>© AiFrogi. Operated by <a href="https://webtechnosys.com" className="font-semibold hover:text-white" target="_blank" rel="noreferrer">webtechnosys</a>.</p>
         <a href="https://website.hotelradar.in" className="font-semibold hover:text-white" target="_blank" rel="noreferrer">Reference business profile</a>
       </div>
     </footer>
