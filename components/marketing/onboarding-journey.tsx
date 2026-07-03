@@ -5,58 +5,73 @@ import { Icon } from "@/components/icons";
 
 const steps = [
   {
-    title: "Create workspace",
+    title: "Check readiness",
     owner: "Customer",
-    icon: "grid" as const,
-    outcome: "Workspace ready",
-    customer: "Add the business profile and confirm the workspace owner.",
-    aifrogi: "Creates an isolated workspace with the right access boundaries.",
-    meta: "No Meta action is needed at this stage."
+    icon: "help-circle" as const,
+    outcome: "10 minute check",
+    customer: "Keep one business email, company details, website or social page, and the WhatsApp number you want to use.",
+    aifrogi: "Checks the setup path before asking for documents, so the first call does not become a guessing exercise.",
+    meta: "No Meta action yet. This stage confirms whether you are ready to start Meta onboarding."
   },
   {
-    title: "Connect WhatsApp",
+    title: "Validate business",
+    owner: "Customer + AiFrogi",
+    icon: "file-text" as const,
+    outcome: "Same day review",
+    customer: "Share legal business name, address, GST or trade licence details, owner contact, and website or social proof.",
+    aifrogi: "Reviews the information, highlights mismatch risk, and shows what is ready or missing before Meta submission.",
+    meta: "May request business verification depending on account history, country, category, and display-name confidence."
+  },
+  {
+    title: "Prepare SIM",
+    owner: "Customer",
+    icon: "smartphone" as const,
+    outcome: "OTP ready",
+    customer: "Use a number that can receive OTP or voice. If it is already on WhatsApp App or Business App, it must be removed or migrated before API activation.",
+    aifrogi: "Explains the safest number path before connection, including whether to use an existing number or a fresh SIM.",
+    meta: "Verifies the phone during the official connection flow. Without OTP or voice access, onboarding stops here."
+  },
+  {
+    title: "Connect Meta",
     owner: "Customer + Meta",
     icon: "plug" as const,
-    outcome: "Number connected",
-    customer: "Choose the business and WhatsApp number through Meta's secure flow.",
-    aifrogi: "Guides embedded signup and checks every connection signal.",
-    meta: "Confirms the approved business assets and permissions."
+    outcome: "30-60 minutes",
+    customer: "Login to Meta, choose the business portfolio, accept permissions, and verify the WhatsApp number.",
+    aifrogi: "Runs the guided connection, stores only approved API access, and shows live status for phone, webhook, token, and billing readiness.",
+    meta: "Confirms the WhatsApp Business account, phone number, display name, and messaging permissions."
   },
   {
-    title: "Approve knowledge",
-    owner: "Customer",
-    icon: "file-text" as const,
-    outcome: "Knowledge approved",
-    customer: "Review business content, instructions, and sensitive-topic rules.",
-    aifrogi: "Maps answer coverage, finds gaps, and previews safe responses.",
-    meta: "Credentials and private account access remain outside the knowledge layer."
-  },
-  {
-    title: "Choose workflows",
-    owner: "AiFrogi",
+    title: "Set workflows",
+    owner: "AiFrogi + Team",
     icon: "refresh-cw" as const,
-    outcome: "Automation ready",
-    customer: "Select goals such as qualification, reminders, sales, or support.",
-    aifrogi: "Builds the triggers, decisions, messages, and human handoffs.",
-    meta: "Reviews message templates when an outbound workflow requires one."
+    outcome: "1-2 days",
+    customer: "Confirm what should happen first: enquiry reply, chatbot, reminders, payment collection, forms, reviews, or retargeting.",
+    aifrogi: "Configures templates, inbox routing, automation rules, AI knowledge, and human handoff with visible progress.",
+    meta: "Reviews outbound template messages where required. Inbound replies and service conversations can start once the number is live."
   },
   {
-    title: "Test safely",
-    owner: "Team",
-    icon: "sparkles" as const,
-    outcome: "Checklist green",
-    customer: "Run real scenarios and confirm the expected customer experience.",
-    aifrogi: "Shows every decision, delivery event, exception, and handoff.",
-    meta: "Delivers test traffic through the official WhatsApp channel."
-  },
-  {
-    title: "Go live",
+    title: "Test & go live",
     owner: "AiFrogi + Team",
     icon: "bar-chart-3" as const,
-    outcome: "Monitored operations",
-    customer: "Invite agents, approve launch, and own daily conversations.",
-    aifrogi: "Monitors delivery, automation health, usage, and next actions.",
-    meta: "Keeps official messaging and template status continuously available."
+    outcome: "Live + monitored",
+    customer: "Send test messages, approve the first workflow, invite agents, and confirm who handles exceptions.",
+    aifrogi: "Monitors delivery, wallet risk, template status, automation health, failed recipients, and next actions in real time.",
+    meta: "Continues to control quality rating, template approval, display name status, and messaging limits."
+  }
+] as const;
+
+const prerequisites = [
+  {
+    title: "SIM must be available",
+    copy: "The WhatsApp number must receive OTP or voice. If it is already used in WhatsApp App or Business App, plan removal or migration before API activation."
+  },
+  {
+    title: "Business proof must match",
+    copy: "Legal name, address, GST/trade licence, website or social profile, and display name should tell the same story."
+  },
+  {
+    title: "Meta timing is visible",
+    copy: "Simple setups can connect the same day. Business verification or template review can take longer, and AiFrogi shows exactly what is waiting."
   }
 ] as const;
 
@@ -69,16 +84,28 @@ export function OnboardingJourney() {
     <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
-          <p className="product-eyebrow">Predictive onboarding</p>
-          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">One clear step at a time.</h2>
-          <p className="mt-4 text-sm text-[var(--text-muted)]">Follow the journey from first setup to monitored go-live.</p>
+          <p className="product-eyebrow">WhatsApp API onboarding</p>
+          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">Know what is needed before you start.</h2>
+          <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">AiFrogi shows the exact prerequisites, who is responsible, and how long each step usually takes — no generic setup checklist.</p>
+        </div>
+
+        <div className="mt-8 grid gap-3 lg:grid-cols-3">
+          {prerequisites.map((item, index) => (
+            <article key={item.title} className="rounded-xl border border-[#eadfed] bg-white p-5 shadow-[0_16px_45px_rgba(44,36,59,.05)]">
+              <div className="flex items-center gap-3">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-[#fde9fb] text-xs font-black text-[#c725ba]">{index + 1}</span>
+                <h3 className="text-sm font-bold text-[#2c243b]">{item.title}</h3>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-[#70697d]">{item.copy}</p>
+            </article>
+          ))}
         </div>
 
         <div className="mt-10 overflow-hidden rounded-xl border border-[#e6dbe9] bg-white shadow-[0_24px_70px_rgba(44,36,59,.07)]">
           <div className="bg-[#2c243b] px-4 pb-7 pt-6 text-white sm:px-7">
             <div className="flex items-center justify-between gap-4">
-              <span className="text-xs font-semibold text-white/48">Customer activation journey</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">Hover or tap each stage</span>
+              <span className="text-xs font-semibold text-white/48">Realtime onboarding tracker</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">Hover or tap for timing and responsibility</span>
             </div>
 
             <div className="mt-7 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -110,7 +137,11 @@ export function OnboardingJourney() {
               <NarrativeLane label="What Meta confirms" number="03" copy={active.meta}/>
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3 text-[11px] font-semibold text-[#817789]"><span className="text-[#c725ba]">Always visible:</span><span>Completed</span><i className="h-1 w-1 rounded-full bg-[#d4c8d8]"/><span>Waiting on AiFrogi</span><i className="h-1 w-1 rounded-full bg-[#d4c8d8]"/><span>Waiting on Meta</span><i className="h-1 w-1 rounded-full bg-[#d4c8d8]"/><span>Your next action</span></div>
+            <div className="mt-5 grid gap-3 rounded-lg border border-[#eadfed] bg-[#fbf8fc] p-4 text-xs text-[#70697d] sm:grid-cols-3">
+              <StatusNote label="Client sees" copy="Completed, missing, waiting on AiFrogi, waiting on Meta, and your next action." />
+              <StatusNote label="Typical timing" copy="Fast cases can go live same day; verification, display-name, or template review may add 1-3+ days." />
+              <StatusNote label="No hidden blocker" copy="SIM access, business proof, Meta approval, billing readiness, and test status stay visible." />
+            </div>
           </div>
         </div>
       </div>
@@ -120,4 +151,8 @@ export function OnboardingJourney() {
 
 function NarrativeLane({ label, number, copy, featured = false }: { label: string; number: string; copy: string; featured?: boolean }) {
   return <article className={`rounded-lg border p-5 ${featured ? "border-[#d92bcb]/35 bg-[#fff7fe]" : "border-[#eadfed] bg-[#fbf8fc]"}`}><div className="flex items-center justify-between gap-3"><strong className="text-xs text-[#2c243b]">{label}</strong><span className={`text-[10px] font-bold ${featured ? "text-[#c725ba]" : "text-[#a99ead]"}`}>{number}</span></div><p className="mt-4 text-sm leading-6 text-[#70697d]">{copy}</p></article>;
+}
+
+function StatusNote({ label, copy }: { label: string; copy: string }) {
+  return <div><strong className="text-[#2c243b]">{label}</strong><p className="mt-1 leading-5">{copy}</p></div>;
 }
