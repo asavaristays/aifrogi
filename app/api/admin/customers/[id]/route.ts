@@ -7,6 +7,7 @@ import {
 } from "@/lib/repositories/onboarding-repository";
 import { saveOrganizationWhatsAppBotConfiguration } from "@/lib/repositories/bot-configuration-repository";
 import { normalizeWhatsAppBotConfiguration, type WhatsAppBotConfigurationInput } from "@/lib/whatsapp-bot-config";
+import { updateOrganizationPlan } from "@/lib/billing-super-admin";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -57,6 +58,11 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       return NextResponse.json({ error: "Opening message must be 500 characters or fewer" }, { status: 400 });
     }
 
+    await updateOrganizationPlan({
+      organizationId: id,
+      planCode: plan,
+      actorEmail: user.username
+    });
     const updated = await saveOrganizationWhatsAppBotConfiguration({
       organizationId: id,
       plan,

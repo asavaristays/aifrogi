@@ -1,6 +1,6 @@
 # Section 06: Billing And Super Admin
 
-Status: Planned
+Status: Billing foundation implemented on 2026-07-03
 Target score: 8.5/10
 
 ## Think
@@ -35,3 +35,46 @@ Trial -> Plan selection -> Payment authorization -> Subscription activation -> U
 ## Achieve Definition
 
 The section is complete when AiFrogi can charge, reconcile, limit, support, and monitor multiple customers without spreadsheets or shared credentials.
+
+## 2026-07-03 Implementation Slice
+
+This first slice establishes AiFrogi as the billing system of record without adding Razorpay yet.
+
+### Added
+
+- Server-owned plan catalogue for Trial, Starter, Growth, AI Tools, and Custom.
+- Persistent subscriptions with trial, billing period, payment provider, status, grace, and cancellation fields.
+- Manual invoices with separate fields for:
+  - AiFrogi platform fee
+  - Meta charges
+  - AI overage
+  - Services
+  - Tax
+  - Adjustments
+- Usage allowances for contacts, messages, campaigns, AI replies, and team users.
+- Customer health score using onboarding, webhook, support, incidents, billing, message failures, automation failures, and usage pressure.
+- Customer-scoped and platform-wide incident records.
+- Platform audit trail for plan changes, invoices, payments, and incident actions.
+- Super Admin billing command center at `/admin/billing`.
+- Customer-level audited controls for plan changes, manual invoice issue, payment confirmation, and incident creation.
+- Verification script: `npm run verify:billing`.
+
+### Payment Decision
+
+Payment provider remains `MANUAL` in this slice. AiFrogi can issue invoices and record UPI, bank transfer, or manually generated payment-link references. Razorpay should connect later to the same subscription and invoice records through authenticated, idempotent webhooks.
+
+### Guardrails
+
+- Plan and usage limits are server-owned.
+- Client and Super Admin dashboards remain separate.
+- No payment card data is stored.
+- Meta charges remain visibly separate from AiFrogi fees.
+- Every billing and incident action creates an audit record.
+
+### Next Slice
+
+1. Add entitlement enforcement and graceful limit warnings.
+2. Add client-facing billing and usage view.
+3. Add overdue recovery and read-only states without deleting customer data.
+4. Stabilize pricing with early customers.
+5. Integrate Razorpay checkout and webhook reconciliation after pricing is confirmed.

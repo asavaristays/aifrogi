@@ -68,6 +68,12 @@ export const ModelName = {
   MetricDaily: 'MetricDaily',
   Campaign: 'Campaign',
   CampaignRecipient: 'CampaignRecipient',
+  BillingPlan: 'BillingPlan',
+  Subscription: 'Subscription',
+  BillingInvoice: 'BillingInvoice',
+  UsageRecord: 'UsageRecord',
+  PlatformIncident: 'PlatformIncident',
+  PlatformAuditLog: 'PlatformAuditLog',
   AutomationJob: 'AutomationJob',
   SupportTicket: 'SupportTicket',
   SupportTicketMessage: 'SupportTicketMessage',
@@ -426,6 +432,125 @@ export const CampaignRecipientScalarFieldEnum = {
 } as const
 
 export type CampaignRecipientScalarFieldEnum = (typeof CampaignRecipientScalarFieldEnum)[keyof typeof CampaignRecipientScalarFieldEnum]
+
+
+export const BillingPlanScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  billingInterval: 'billingInterval',
+  amountPaisa: 'amountPaisa',
+  currency: 'currency',
+  trialDays: 'trialDays',
+  limits: 'limits',
+  isActive: 'isActive',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BillingPlanScalarFieldEnum = (typeof BillingPlanScalarFieldEnum)[keyof typeof BillingPlanScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  planId: 'planId',
+  status: 'status',
+  paymentProvider: 'paymentProvider',
+  externalSubscriptionId: 'externalSubscriptionId',
+  startedAt: 'startedAt',
+  trialEndsAt: 'trialEndsAt',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  graceEndsAt: 'graceEndsAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const BillingInvoiceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  subscriptionId: 'subscriptionId',
+  invoiceNumber: 'invoiceNumber',
+  status: 'status',
+  currency: 'currency',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  platformFeePaisa: 'platformFeePaisa',
+  metaChargesPaisa: 'metaChargesPaisa',
+  aiOveragePaisa: 'aiOveragePaisa',
+  servicesPaisa: 'servicesPaisa',
+  taxPaisa: 'taxPaisa',
+  adjustmentPaisa: 'adjustmentPaisa',
+  totalPaisa: 'totalPaisa',
+  dueAt: 'dueAt',
+  paidAt: 'paidAt',
+  paymentReference: 'paymentReference',
+  notes: 'notes',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BillingInvoiceScalarFieldEnum = (typeof BillingInvoiceScalarFieldEnum)[keyof typeof BillingInvoiceScalarFieldEnum]
+
+
+export const UsageRecordScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  metric: 'metric',
+  quantity: 'quantity',
+  unit: 'unit',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  sourceRef: 'sourceRef',
+  idempotencyKey: 'idempotencyKey',
+  recordedAt: 'recordedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
+
+
+export const PlatformIncidentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  severity: 'severity',
+  status: 'status',
+  category: 'category',
+  title: 'title',
+  description: 'description',
+  ownerEmail: 'ownerEmail',
+  startedAt: 'startedAt',
+  resolvedAt: 'resolvedAt',
+  resolution: 'resolution',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformIncidentScalarFieldEnum = (typeof PlatformIncidentScalarFieldEnum)[keyof typeof PlatformIncidentScalarFieldEnum]
+
+
+export const PlatformAuditLogScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  actorEmail: 'actorEmail',
+  actorRole: 'actorRole',
+  action: 'action',
+  targetType: 'targetType',
+  targetId: 'targetId',
+  summary: 'summary',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type PlatformAuditLogScalarFieldEnum = (typeof PlatformAuditLogScalarFieldEnum)[keyof typeof PlatformAuditLogScalarFieldEnum]
 
 
 export const AutomationJobScalarFieldEnum = {

@@ -103,6 +103,36 @@ export type Campaign = Prisma.CampaignModel
  */
 export type CampaignRecipient = Prisma.CampaignRecipientModel
 /**
+ * Model BillingPlan
+ *
+ */
+export type BillingPlan = Prisma.BillingPlanModel
+/**
+ * Model Subscription
+ *
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
+ * Model BillingInvoice
+ *
+ */
+export type BillingInvoice = Prisma.BillingInvoiceModel
+/**
+ * Model UsageRecord
+ *
+ */
+export type UsageRecord = Prisma.UsageRecordModel
+/**
+ * Model PlatformIncident
+ *
+ */
+export type PlatformIncident = Prisma.PlatformIncidentModel
+/**
+ * Model PlatformAuditLog
+ *
+ */
+export type PlatformAuditLog = Prisma.PlatformAuditLogModel
+/**
  * Model AutomationJob
  *
  */

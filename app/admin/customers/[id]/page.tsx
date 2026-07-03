@@ -3,15 +3,21 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { CustomerReviewActions } from "@/components/admin/customer-review-actions";
 import { BotSubscriptionConfig } from "@/components/admin/bot-subscription-config";
+import { BillingControls } from "@/components/admin/billing-controls";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
 import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
+import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const organization = await getOrganizationById(id);
+  const [organization, billing, plans] = await Promise.all([
+    getOrganizationById(id),
+    getCustomerBillingDetail(id),
+    ensureBillingPlans()
+  ]);
   if (!organization) notFound();
   const onboarding = organization.onboarding;
   const guidance = getOnboardingGuidance(organization);
@@ -45,6 +51,12 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
       </section>
 
       <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+        {billing ? <BillingControls
+          organizationId={organization.id}
+          plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}
+          initialPlan={billing.subscription.plan.code}
+          invoices={billing.organization.invoices.map((invoice) => ({ id: invoice.id, invoiceNumber: invoice.invoiceNumber, status: invoice.status, totalPaisa: invoice.totalPaisa }))}
+        /> : null}
         <BotSubscriptionConfig
           organizationId={organization.id}
           initialPlan={organization.plan}
@@ -53,6 +65,15 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
         <div className="space-y-6">
           <Section title="Company details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="GST / registration" value={onboarding?.registrationNumber || organization.gstNumber} /><Detail label="Address" value={organization.businessAddress} /></Section>
           <Section title="WhatsApp health"><Detail label="Phone" value={onboarding?.displayPhoneNumber || onboarding?.phoneNumber} /><Detail label="Phone verification" value={onboarding?.phoneVerificationStatus} /><Detail label="Connection" value={onboarding?.facebookStatus} /><Detail label="API status" value={onboarding?.metaStatus} /><Detail label="Webhook" value={onboarding?.webhookStatus} /><Detail label="Credential" value={onboarding?.tokenStatus} /><Detail label="Quality rating" value={onboarding?.qualityRating} /></Section>
+          {billing ? <Section title="Subscription and usage">
+            <Detail label="Plan" value={billing.subscription.plan.name} />
+            <Detail label="Status" value={billing.subscription.status} />
+            <Detail label="Payment mode" value={billing.subscription.paymentProvider} />
+            <UsageDetail label="Messages" value={billing.usage.messages} limit={billing.limits.messages} />
+            <UsageDetail label="AI replies" value={billing.usage.aiReplies} limit={billing.limits.aiReplies} />
+            <UsageDetail label="Campaigns" value={billing.usage.campaigns} limit={billing.limits.campaigns} />
+            <UsageDetail label="Team users" value={billing.usage.teamUsers} limit={billing.limits.teamUsers} />
+          </Section> : null}
           <Section title="Business documents">
             {organization.documents.map((document) => <a key={document.id} href={`/api/onboarding/documents/${document.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-between border-b border-black/5 py-3 text-sm font-semibold"><span>{document.type.replaceAll("_", " ")}</span><span className="text-[#c725ba]">Open</span></a>)}
             {!organization.documents.length ? <p className="text-sm text-[#6d7487]">No documents uploaded.</p> : null}
@@ -64,6 +85,18 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
             {!organization.activities.length ? <p className="text-sm text-[#6d7487]">No activity yet.</p> : null}
           </div>
         </Section>
+        {billing ? <Section title="Invoices">
+          <div className="space-y-3">
+            {billing.organization.invoices.map((invoice) => <div key={invoice.id} className="rounded-md border border-black/6 bg-[#fbfcfb] p-4"><div className="flex items-start justify-between gap-3"><div><strong className="text-sm">{invoice.invoiceNumber}</strong><p className="mt-1 text-xs text-[#6d7487]">{invoice.status.replaceAll("_", " ")}</p></div><strong>{formatMoney(invoice.totalPaisa)}</strong></div><p className="mt-2 text-xs text-[#6d7487]">Platform {formatMoney(invoice.platformFeePaisa)} · Meta {formatMoney(invoice.metaChargesPaisa)} · AI {formatMoney(invoice.aiOveragePaisa)} · Tax {formatMoney(invoice.taxPaisa)}</p></div>)}
+            {!billing.organization.invoices.length ? <p className="text-sm text-[#6d7487]">No invoices issued.</p> : null}
+          </div>
+        </Section> : null}
+        {billing ? <Section title="Platform audit trail">
+          <div className="space-y-4">
+            {billing.organization.auditLogs.map((log) => <div key={log.id} className="border-l-2 border-[#b923ae] pl-4"><p className="text-sm font-black">{log.summary}</p><p className="mt-1 text-xs text-[#6d7487]">{log.actorEmail} · {log.action.replaceAll("_", " ")}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(log.createdAt)}</p></div>)}
+            {!billing.organization.auditLogs.length ? <p className="text-sm text-[#6d7487]">No billing actions recorded.</p> : null}
+          </div>
+        </Section> : null}
         <CustomerReviewActions organizationId={organization.id} kycStatus={onboarding?.kycStatus || "NOT_SUBMITTED"} organizationStatus={organization.status} />
       </div>
     </main>
@@ -76,6 +109,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Detail({ label, value }: { label: string; value?: string | null }) {
   return <div className="flex items-start justify-between gap-5 border-b border-black/5 py-3 text-sm"><span className="text-[#6d7487]">{label}</span><strong className="max-w-[65%] text-right">{value || "Not provided"}</strong></div>;
+}
+
+function UsageDetail({ label, value, limit }: { label: string; value: number; limit: number }) {
+  return <div className="border-b border-black/5 py-3"><div className="flex items-center justify-between gap-4 text-sm"><span className="text-[#6d7487]">{label}</span><strong>{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</strong></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/7"><div className="h-full rounded-full bg-[#b923ae]" style={{ width: `${Math.min(usagePercent(value, limit), 100)}%` }} /></div></div>;
 }
 
 function OwnerBadge({ owner }: { owner: string }) {

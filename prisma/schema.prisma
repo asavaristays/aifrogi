@@ -159,6 +159,11 @@ model Organization {
   documents       OnboardingDocument[]
   activities      OnboardingActivity[]
   supportTickets  SupportTicket[]
+  subscription    Subscription?
+  invoices        BillingInvoice[]
+  usageRecords    UsageRecord[]
+  incidents       PlatformIncident[]
+  auditLogs       PlatformAuditLog[]
 
   @@index([ownerEmail])
   @@index([status])
@@ -412,6 +417,133 @@ model CampaignRecipient {
 
   @@unique([campaignId, phone])
   @@index([campaignId, status])
+}
+
+model BillingPlan {
+  id               String         @id @default(cuid())
+  code             String         @unique
+  name             String
+  description      String?
+  billingInterval  String         @default("QUARTERLY")
+  amountPaisa      Int            @default(0)
+  currency         String         @default("INR")
+  trialDays        Int            @default(0)
+  limits           Json
+  isActive         Boolean        @default(true)
+  sortOrder        Int            @default(0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  subscriptions    Subscription[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Subscription {
+  id                    String           @id @default(cuid())
+  organizationId        String           @unique
+  organization          Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planId                String
+  plan                  BillingPlan      @relation(fields: [planId], references: [id])
+  status                String           @default("TRIALING")
+  paymentProvider       String           @default("MANUAL")
+  externalSubscriptionId String?
+  startedAt             DateTime         @default(now())
+  trialEndsAt           DateTime?
+  currentPeriodStart    DateTime         @default(now())
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean          @default(false)
+  graceEndsAt           DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  invoices              BillingInvoice[]
+
+  @@index([status, currentPeriodEnd])
+  @@index([planId])
+}
+
+model BillingInvoice {
+  id                    String        @id @default(cuid())
+  organizationId        String
+  organization          Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscriptionId        String?
+  subscription          Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  invoiceNumber         String        @unique
+  status                String        @default("DRAFT")
+  currency              String        @default("INR")
+  periodStart           DateTime
+  periodEnd             DateTime
+  platformFeePaisa      Int           @default(0)
+  metaChargesPaisa      Int           @default(0)
+  aiOveragePaisa        Int           @default(0)
+  servicesPaisa         Int           @default(0)
+  taxPaisa              Int           @default(0)
+  adjustmentPaisa       Int           @default(0)
+  totalPaisa            Int           @default(0)
+  dueAt                 DateTime?
+  paidAt                DateTime?
+  paymentReference      String?
+  notes                 String?       @db.Text
+  createdBy             String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([organizationId, status])
+  @@index([dueAt, status])
+}
+
+model UsageRecord {
+  id              String       @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  metric          String
+  quantity        Int          @default(0)
+  unit            String       @default("COUNT")
+  periodStart     DateTime
+  periodEnd       DateTime
+  sourceRef       String?
+  idempotencyKey  String       @unique
+  recordedAt      DateTime     @default(now())
+  createdAt       DateTime     @default(now())
+
+  @@index([organizationId, metric, periodStart])
+}
+
+model PlatformIncident {
+  id              String        @id @default(cuid())
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  severity        String        @default("MEDIUM")
+  status          String        @default("OPEN")
+  category        String
+  title           String
+  description     String        @db.Text
+  ownerEmail      String?
+  startedAt       DateTime      @default(now())
+  resolvedAt      DateTime?
+  resolution      String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([status, severity])
+  @@index([organizationId, status])
+}
+
+model PlatformAuditLog {
+  id              String        @id @default(cuid())
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  actorEmail      String
+  actorRole       String
+  action          String
+  targetType      String
+  targetId        String?
+  summary         String        @db.Text
+  metadata        Json?
+  createdAt       DateTime      @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([action, createdAt])
+  @@index([actorEmail, createdAt])
 }
 
 model AutomationJob {
