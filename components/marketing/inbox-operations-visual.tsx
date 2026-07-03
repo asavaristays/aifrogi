@@ -3,46 +3,51 @@
 import { useState } from "react";
 import { Icon } from "@/components/icons";
 
-const conversations = [
-  ["Broadcast reply", "Interested in the offer"],
-  ["Chatbot", "Need product details"],
-  ["Payment", "Link sent"],
-  ["Review", "Feedback requested"]
-];
-
 const useCases = [
   {
     title: "Broadcast message",
+    conversation: "Broadcast reply",
+    message: "Interested in the offer",
     short: "Approved campaign → replies in inbox",
     detail: "Send approved WhatsApp campaigns to opted-in audiences and continue every response as a normal customer conversation.",
     outcome: "More replies, less manual follow-up"
   },
   {
     title: "AI chatbot",
+    conversation: "Chatbot enquiry",
+    message: "Need product details",
     short: "Answer → qualify → handoff",
     detail: "Handle common questions instantly, qualify intent, collect details, and pass sensitive or high-value chats to a person.",
     outcome: "Faster response without losing control"
   },
   {
     title: "E-commerce retargeting",
+    conversation: "Cart recovery",
+    message: "Still thinking",
     short: "Cart / interest → useful follow-up",
     detail: "Bring back buyers who viewed, clicked, abandoned, or purchased with a relevant next message instead of a generic blast.",
     outcome: "Higher conversion from warm customers"
   },
   {
     title: "Reminders",
+    conversation: "Reminder reply",
+    message: "Confirming today",
     short: "Due date → confirmation",
     detail: "Send appointment, booking, payment, renewal, and service reminders with simple customer replies and team visibility.",
     outcome: "Fewer misses, clearer operations"
   },
   {
     title: "Payment collection",
+    conversation: "Payment pending",
+    message: "Link sent",
     short: "Payment link → status → receipt",
     detail: "Share payment links, watch status, follow up when pending, and confirm collection inside the same WhatsApp thread.",
     outcome: "Less chasing, faster collection"
   },
   {
     title: "Forms, survey, review",
+    conversation: "Review request",
+    message: "Feedback requested",
     short: "Answers → record → feedback",
     detail: "Collect lead forms, surveys, preferences, feedback, and review requests conversationally without sending customers elsewhere.",
     outcome: "Better data and better customer experience"
@@ -66,17 +71,24 @@ export function InboxOperationsVisual() {
       <div className="grid min-h-[420px] md:grid-cols-[250px_1fr]">
         <aside className="border-b border-white/8 p-4 md:border-b-0 md:border-r">
           <p className="text-[10px] font-black uppercase tracking-[.14em] text-white/38">Open conversations</p>
-          <div className="mt-5 space-y-3">
-            {conversations.map(([title, copy], index) => (
-              <div key={title} className={`rounded-xl p-3 ${index === 0 ? "bg-[#d92bcb]/16" : "bg-white/[.045]"}`}>
+          <div className="mt-5 space-y-2">
+            {useCases.map((item, index) => (
+              <button
+                key={item.title}
+                type="button"
+                onMouseEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                onClick={() => setActiveIndex(index)}
+                className={`w-full rounded-xl p-3 text-left transition ${index === activeIndex ? "bg-[#d92bcb]/18 shadow-[inset_0_0_0_1px_rgba(255,138,241,.25)]" : "bg-white/[.045] hover:bg-white/[.075]"}`}
+              >
                 <div className="flex items-center gap-3">
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-[#5a3561] text-[10px] font-black text-white">{title.slice(0, 2).toUpperCase()}</span>
+                  <span className={`grid h-8 w-8 place-items-center rounded-full text-[10px] font-black text-white ${index === activeIndex ? "bg-[#d92bcb]" : "bg-[#5a3561]"}`}>{item.conversation.slice(0, 2).toUpperCase()}</span>
                   <div>
-                    <strong className="block text-xs">{title}</strong>
-                    <span className="text-[10px] text-white/38">{copy}</span>
+                    <strong className="block text-xs">{item.conversation}</strong>
+                    <span className="text-[10px] text-white/38">{item.message}</span>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </aside>
