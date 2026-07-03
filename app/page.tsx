@@ -1,8 +1,8 @@
-import Link from "next/link";
-import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
+import { SiteFooter } from "@/components/marketing/site-footer";
+import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
 
 const loginUrl = "https://app.aifrogi.com/login";
@@ -36,17 +36,7 @@ const plans = [
 export default function HomePage() {
   return (
     <main className="overflow-hidden bg-white text-[#2c243b]">
-      <nav className="sticky top-0 z-30 border-b border-white/10 bg-[#251f2d]/90 px-5 text-white backdrop-blur-xl sm:px-8">
-        <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-5">
-          <Link href="/" className="flex items-center" aria-label="AiFrogi home">
-            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] sm:w-[158px]" />
-          </Link>
-          <div className="hidden items-center gap-7 text-sm font-semibold text-white/65 md:flex">
-            <a className="transition hover:text-white" href="#product">Product experience</a><a className="transition hover:text-white" href="#calculator">Calculator</a><a className="transition hover:text-white" href="#pricing">Pricing</a><Link className="transition hover:text-white" href="/product-tour">Tour</Link>
-          </div>
-          <div className="flex items-center gap-3"><a href={loginUrl} className="hidden text-sm font-semibold text-white/70 hover:text-white sm:inline-flex">Log in</a><a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a></div>
-        </div>
-      </nav>
+      <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#2c243b] px-5 pb-0 pt-20 text-white sm:px-8 sm:pt-24">
         <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
@@ -55,7 +45,7 @@ export default function HomePage() {
           <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70"><span className="h-1.5 w-1.5 rounded-full bg-[#ff8af1] shadow-[0_0_12px_#ff8af1]" />Built on the official WhatsApp Business Platform</p>
           <h1 className="mx-auto mt-7 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp conversations into <span className="bg-gradient-to-r from-[#ff8af1] to-[#d92bcb] bg-clip-text text-transparent">revenue.</span></h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Messaging, campaigns, automation, and AI assistance in one workspace—with the context and human control your team needs.</p>
-          <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a><Link href="/product-tour" className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10">Watch product tour</Link></div>
+          <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-white/40"><span>No credit card</span><span>•</span><span>Guided setup</span><span>•</span><span>Human handover built in</span></div>
 
           <FeatureShowcase />
@@ -83,7 +73,7 @@ export default function HomePage() {
 
       <section id="support" className="px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2"><div><p className="product-eyebrow">Trust by design</p><h2 className="mt-3 text-3xl font-semibold">Clear boundaries for data, AI, and Meta.</h2></div><div className="grid gap-4 sm:grid-cols-2"><TrustItem title="Client-controlled access" copy="No Facebook password, email password, permanent token, or OTP sharing."/><TrustItem title="Bounded AI" copy="Answers use approved knowledge; uncertainty routes to a human."/><TrustItem title="Consent-aware campaigns" copy="Audience preview, permission confirmation, cost estimate, and approved template."/><TrustItem title="Operational support" copy="Tickets include the customer's setup context without exposing credentials."/></div></div></section>
 
-      <footer className="border-t border-[#eee6f0] bg-white px-5 py-10 text-[#2c243b] sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} className="h-auto w-[160px]" /><p className="mt-1 text-xs text-[#756b80]">WhatsApp messaging, automation, and human operations.</p></div><div className="flex flex-wrap gap-5 text-xs font-semibold text-[#655b70]"><Link href="/product-tour">Product tour</Link><Link href="/help">Help Center</Link><Link href="/security">Security</Link><Link href="/privacy-policy">Privacy</Link><Link href="/terms-of-service">Terms</Link><Link href="/disclaimer">Disclaimer</Link><Link href="/data-deletion">Data deletion</Link></div></div></footer>
+      <SiteFooter />
     </main>
   );
 }
