@@ -2,10 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { CustomerReviewActions } from "@/components/admin/customer-review-actions";
+import { CustomerFlowActions } from "@/components/admin/customer-flow-actions";
 import { BotSubscriptionConfig } from "@/components/admin/bot-subscription-config";
 import { BillingControls } from "@/components/admin/billing-controls";
+import { ProductFlowCenter } from "@/components/setup/product-flow-center";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
-import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
+import { getTrialWindow } from "@/lib/onboarding-guidance";
+import { loadOrganizationProductFlow } from "@/lib/product-flow";
 import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 
 export const dynamic = "force-dynamic";
@@ -13,14 +16,14 @@ export const revalidate = 0;
 
 export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [organization, billing, plans] = await Promise.all([
+  const [organization, billing, plans, flow] = await Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id),
-    ensureBillingPlans()
+    ensureBillingPlans(),
+    loadOrganizationProductFlow(id)
   ]);
   if (!organization) notFound();
   const onboarding = organization.onboarding;
-  const guidance = getOnboardingGuidance(organization);
   const trial = getTrialWindow(organization);
 
   return (
@@ -31,26 +34,16 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
         <Badge tone={onboarding?.metaStatus === "LIVE" ? "secondary" : onboarding?.metaStatus === "REJECTED" ? "error" : "tertiary"}>{(onboarding?.metaStatus || "NOT STARTED").replaceAll("_", " ")}</Badge>
       </div>
 
-      <section className="mt-7 rounded-lg border border-black/6 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="product-eyebrow">Current blocker</p>
-              <OwnerBadge owner={guidance.owner} />
-              <Badge tone={guidance.tone === "urgent" ? "error" : guidance.tone === "ready" ? "secondary" : "tertiary"}>{guidance.eta}</Badge>
-              {trial.enabled ? <Badge tone="primary">{trial.label}</Badge> : null}
-            </div>
-            <h2 className="mt-3 text-2xl font-semibold">{guidance.title}</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#6d7487]">{guidance.description}</p>
-          </div>
-          <div className="rounded-md border border-black/6 bg-[#faf8fb] p-4 lg:w-72">
-            <p className="text-xs font-semibold text-[#6d7487]">Support note</p>
-            <p className="mt-2 text-sm font-semibold">{guidance.supportNote}</p>
-          </div>
-        </div>
-      </section>
+      {trial.enabled ? <div className="mt-5"><Badge tone="primary">{trial.label}</Badge></div> : null}
+      {flow ? <div className="mt-7"><ProductFlowCenter flow={flow} mode="admin" /></div> : null}
 
       <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+        <CustomerFlowActions
+          organizationId={organization.id}
+          metaBillingStatus={onboarding?.metaBillingStatus}
+          templateStatus={onboarding?.templateStatus}
+          firstMessageStatus={onboarding?.firstMessageStatus}
+        />
         {billing ? <BillingControls
           organizationId={organization.id}
           plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}
@@ -113,9 +106,4 @@ function Detail({ label, value }: { label: string; value?: string | null }) {
 
 function UsageDetail({ label, value, limit }: { label: string; value: number; limit: number }) {
   return <div className="border-b border-black/5 py-3"><div className="flex items-center justify-between gap-4 text-sm"><span className="text-[#6d7487]">{label}</span><strong>{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</strong></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/7"><div className="h-full rounded-full bg-[#b923ae]" style={{ width: `${Math.min(usagePercent(value, limit), 100)}%` }} /></div></div>;
-}
-
-function OwnerBadge({ owner }: { owner: string }) {
-  const tone = owner === "AiFrogi" ? "secondary" : owner === "Meta" ? "tertiary" : "neutral";
-  return <Badge tone={tone}>{owner}</Badge>;
 }

@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth-server";
 import {
   getOrganizationById,
   reviewOrganizationKyc,
+  updateOrganizationFlowStatus,
   updateOrganizationStatus
 } from "@/lib/repositories/onboarding-repository";
 import { saveOrganizationWhatsAppBotConfiguration } from "@/lib/repositories/bot-configuration-repository";
@@ -24,7 +25,11 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   const payload = (await request.json().catch(() => null)) as {
     action?: string;
     reason?: string;
+    note?: string;
     plan?: string;
+    metaBillingStatus?: string;
+    templateStatus?: string;
+    firstMessageStatus?: string;
     configuration?: WhatsAppBotConfigurationInput;
   } | null;
   const action = payload?.action?.trim().toUpperCase();
@@ -44,6 +49,22 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   if (action === "SUSPEND" || action === "ACTIVATE") {
     await updateOrganizationStatus(id, action === "SUSPEND" ? "SUSPENDED" : "ACTIVE");
     return NextResponse.json({ organization: await getOrganizationById(id) });
+  }
+
+  if (action === "UPDATE_FLOW_STATUS") {
+    try {
+      const updated = await updateOrganizationFlowStatus({
+        organizationId: id,
+        actorEmail: user.username,
+        metaBillingStatus: payload?.metaBillingStatus,
+        templateStatus: payload?.templateStatus,
+        firstMessageStatus: payload?.firstMessageStatus,
+        note: payload?.note
+      });
+      return NextResponse.json({ organization: updated });
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Flow status could not be updated" }, { status: 400 });
+    }
   }
 
   if (action === "SAVE_BOT_CONFIGURATION") {

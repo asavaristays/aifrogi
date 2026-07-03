@@ -240,6 +240,9 @@ model OnboardingProfile {
   qualityRating           String?
   webhookStatus           String       @default("NOT_CONFIGURED")
   tokenStatus             String       @default("NOT_CONFIGURED")
+  metaBillingStatus       String       @default("NOT_CONFIRMED")
+  templateStatus          String       @default("NOT_STARTED")
+  firstMessageStatus      String       @default("NOT_STARTED")
   lastStatusCheckAt       DateTime?
   lastError               String?
   completedAt             DateTime?

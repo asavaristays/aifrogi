@@ -308,6 +308,69 @@ export async function updateOrganizationStatus(id: string, status: string) {
   return db.organization.update({ where: { id }, data: { status } });
 }
 
+const flowStatusOptions = {
+  metaBillingStatus: new Set(["NOT_CONFIRMED", "CONFIRMED", "BLOCKED"]),
+  templateStatus: new Set(["NOT_STARTED", "PENDING", "APPROVED", "REJECTED"]),
+  firstMessageStatus: new Set(["NOT_STARTED", "READY", "PASSED", "FAILED"])
+};
+
+export async function updateOrganizationFlowStatus(input: {
+  organizationId: string;
+  actorEmail: string;
+  metaBillingStatus?: string;
+  templateStatus?: string;
+  firstMessageStatus?: string;
+  note?: string;
+}) {
+  const db = getDb();
+  if (!db) return null;
+
+  const changes: Record<string, string> = {};
+  for (const key of ["metaBillingStatus", "templateStatus", "firstMessageStatus"] as const) {
+    const value = input[key]?.trim().toUpperCase();
+    if (value) {
+      if (!flowStatusOptions[key].has(value)) {
+        throw new Error(`Unsupported ${key}`);
+      }
+      changes[key] = value;
+    }
+  }
+
+  if (!Object.keys(changes).length) {
+    return getOrganizationById(input.organizationId);
+  }
+
+  const detail = input.note?.trim() || `Updated operating flow: ${Object.entries(changes).map(([key, value]) => `${key}=${value}`).join(", ")}`;
+  await db.$transaction([
+    db.onboardingProfile.update({
+      where: { organizationId: input.organizationId },
+      data: changes
+    }),
+    db.onboardingActivity.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        action: "FLOW_STATUS_UPDATED",
+        detail
+      }
+    }),
+    db.platformAuditLog.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        actorRole: "SUPER_ADMIN",
+        action: "FLOW_STATUS_UPDATED",
+        targetType: "ONBOARDING_PROFILE",
+        targetId: input.organizationId,
+        summary: detail,
+        metadata: changes
+      }
+    })
+  ]);
+
+  return getOrganizationById(input.organizationId);
+}
+
 export async function reviewOrganizationKyc(input: {
   organizationId: string;
   reviewerEmail: string;

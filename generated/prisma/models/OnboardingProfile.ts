@@ -66,6 +66,9 @@ export type OnboardingProfileMinAggregateOutputType = {
   qualityRating: string | null
   webhookStatus: string | null
   tokenStatus: string | null
+  metaBillingStatus: string | null
+  templateStatus: string | null
+  firstMessageStatus: string | null
   lastStatusCheckAt: Date | null
   lastError: string | null
   completedAt: Date | null
@@ -103,6 +106,9 @@ export type OnboardingProfileMaxAggregateOutputType = {
   qualityRating: string | null
   webhookStatus: string | null
   tokenStatus: string | null
+  metaBillingStatus: string | null
+  templateStatus: string | null
+  firstMessageStatus: string | null
   lastStatusCheckAt: Date | null
   lastError: string | null
   completedAt: Date | null
@@ -140,6 +146,9 @@ export type OnboardingProfileCountAggregateOutputType = {
   qualityRating: number
   webhookStatus: number
   tokenStatus: number
+  metaBillingStatus: number
+  templateStatus: number
+  firstMessageStatus: number
   lastStatusCheckAt: number
   lastError: number
   completedAt: number
@@ -189,6 +198,9 @@ export type OnboardingProfileMinAggregateInputType = {
   qualityRating?: true
   webhookStatus?: true
   tokenStatus?: true
+  metaBillingStatus?: true
+  templateStatus?: true
+  firstMessageStatus?: true
   lastStatusCheckAt?: true
   lastError?: true
   completedAt?: true
@@ -226,6 +238,9 @@ export type OnboardingProfileMaxAggregateInputType = {
   qualityRating?: true
   webhookStatus?: true
   tokenStatus?: true
+  metaBillingStatus?: true
+  templateStatus?: true
+  firstMessageStatus?: true
   lastStatusCheckAt?: true
   lastError?: true
   completedAt?: true
@@ -263,6 +278,9 @@ export type OnboardingProfileCountAggregateInputType = {
   qualityRating?: true
   webhookStatus?: true
   tokenStatus?: true
+  metaBillingStatus?: true
+  templateStatus?: true
+  firstMessageStatus?: true
   lastStatusCheckAt?: true
   lastError?: true
   completedAt?: true
@@ -387,6 +405,9 @@ export type OnboardingProfileGroupByOutputType = {
   qualityRating: string | null
   webhookStatus: string
   tokenStatus: string
+  metaBillingStatus: string
+  templateStatus: string
+  firstMessageStatus: string
   lastStatusCheckAt: Date | null
   lastError: string | null
   completedAt: Date | null
@@ -447,6 +468,9 @@ export type OnboardingProfileWhereInput = {
   qualityRating?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   webhookStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
   tokenStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
+  metaBillingStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
+  templateStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
+  firstMessageStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
   lastStatusCheckAt?: Prisma.DateTimeNullableFilter<"OnboardingProfile"> | Date | string | null
   lastError?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"OnboardingProfile"> | Date | string | null
@@ -485,6 +509,9 @@ export type OnboardingProfileOrderByWithRelationInput = {
   qualityRating?: Prisma.SortOrderInput | Prisma.SortOrder
   webhookStatus?: Prisma.SortOrder
   tokenStatus?: Prisma.SortOrder
+  metaBillingStatus?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  firstMessageStatus?: Prisma.SortOrder
   lastStatusCheckAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastError?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -526,6 +553,9 @@ export type OnboardingProfileWhereUniqueInput = Prisma.AtLeast<{
   qualityRating?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   webhookStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
   tokenStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
+  metaBillingStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
+  templateStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
+  firstMessageStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
   lastStatusCheckAt?: Prisma.DateTimeNullableFilter<"OnboardingProfile"> | Date | string | null
   lastError?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"OnboardingProfile"> | Date | string | null
@@ -564,6 +594,9 @@ export type OnboardingProfileOrderByWithAggregationInput = {
   qualityRating?: Prisma.SortOrderInput | Prisma.SortOrder
   webhookStatus?: Prisma.SortOrder
   tokenStatus?: Prisma.SortOrder
+  metaBillingStatus?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  firstMessageStatus?: Prisma.SortOrder
   lastStatusCheckAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastError?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -609,6 +642,9 @@ export type OnboardingProfileScalarWhereWithAggregatesInput = {
   qualityRating?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
   webhookStatus?: Prisma.StringWithAggregatesFilter<"OnboardingProfile"> | string
   tokenStatus?: Prisma.StringWithAggregatesFilter<"OnboardingProfile"> | string
+  metaBillingStatus?: Prisma.StringWithAggregatesFilter<"OnboardingProfile"> | string
+  templateStatus?: Prisma.StringWithAggregatesFilter<"OnboardingProfile"> | string
+  firstMessageStatus?: Prisma.StringWithAggregatesFilter<"OnboardingProfile"> | string
   lastStatusCheckAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OnboardingProfile"> | Date | string | null
   lastError?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OnboardingProfile"> | Date | string | null
@@ -645,6 +681,9 @@ export type OnboardingProfileCreateInput = {
   qualityRating?: string | null
   webhookStatus?: string
   tokenStatus?: string
+  metaBillingStatus?: string
+  templateStatus?: string
+  firstMessageStatus?: string
   lastStatusCheckAt?: Date | string | null
   lastError?: string | null
   completedAt?: Date | string | null
@@ -683,6 +722,9 @@ export type OnboardingProfileUncheckedCreateInput = {
   qualityRating?: string | null
   webhookStatus?: string
   tokenStatus?: string
+  metaBillingStatus?: string
+  templateStatus?: string
+  firstMessageStatus?: string
   lastStatusCheckAt?: Date | string | null
   lastError?: string | null
   completedAt?: Date | string | null
@@ -719,6 +761,9 @@ export type OnboardingProfileUpdateInput = {
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhookStatus?: Prisma.StringFieldUpdateOperationsInput | string
   tokenStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  metaBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  firstMessageStatus?: Prisma.StringFieldUpdateOperationsInput | string
   lastStatusCheckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -757,6 +802,9 @@ export type OnboardingProfileUncheckedUpdateInput = {
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhookStatus?: Prisma.StringFieldUpdateOperationsInput | string
   tokenStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  metaBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  firstMessageStatus?: Prisma.StringFieldUpdateOperationsInput | string
   lastStatusCheckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -794,6 +842,9 @@ export type OnboardingProfileCreateManyInput = {
   qualityRating?: string | null
   webhookStatus?: string
   tokenStatus?: string
+  metaBillingStatus?: string
+  templateStatus?: string
+  firstMessageStatus?: string
   lastStatusCheckAt?: Date | string | null
   lastError?: string | null
   completedAt?: Date | string | null
@@ -830,6 +881,9 @@ export type OnboardingProfileUpdateManyMutationInput = {
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhookStatus?: Prisma.StringFieldUpdateOperationsInput | string
   tokenStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  metaBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  firstMessageStatus?: Prisma.StringFieldUpdateOperationsInput | string
   lastStatusCheckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -867,6 +921,9 @@ export type OnboardingProfileUncheckedUpdateManyInput = {
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhookStatus?: Prisma.StringFieldUpdateOperationsInput | string
   tokenStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  metaBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  firstMessageStatus?: Prisma.StringFieldUpdateOperationsInput | string
   lastStatusCheckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -909,6 +966,9 @@ export type OnboardingProfileCountOrderByAggregateInput = {
   qualityRating?: Prisma.SortOrder
   webhookStatus?: Prisma.SortOrder
   tokenStatus?: Prisma.SortOrder
+  metaBillingStatus?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  firstMessageStatus?: Prisma.SortOrder
   lastStatusCheckAt?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -951,6 +1011,9 @@ export type OnboardingProfileMaxOrderByAggregateInput = {
   qualityRating?: Prisma.SortOrder
   webhookStatus?: Prisma.SortOrder
   tokenStatus?: Prisma.SortOrder
+  metaBillingStatus?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  firstMessageStatus?: Prisma.SortOrder
   lastStatusCheckAt?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -988,6 +1051,9 @@ export type OnboardingProfileMinOrderByAggregateInput = {
   qualityRating?: Prisma.SortOrder
   webhookStatus?: Prisma.SortOrder
   tokenStatus?: Prisma.SortOrder
+  metaBillingStatus?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  firstMessageStatus?: Prisma.SortOrder
   lastStatusCheckAt?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -1065,6 +1131,9 @@ export type OnboardingProfileCreateWithoutOrganizationInput = {
   qualityRating?: string | null
   webhookStatus?: string
   tokenStatus?: string
+  metaBillingStatus?: string
+  templateStatus?: string
+  firstMessageStatus?: string
   lastStatusCheckAt?: Date | string | null
   lastError?: string | null
   completedAt?: Date | string | null
@@ -1101,6 +1170,9 @@ export type OnboardingProfileUncheckedCreateWithoutOrganizationInput = {
   qualityRating?: string | null
   webhookStatus?: string
   tokenStatus?: string
+  metaBillingStatus?: string
+  templateStatus?: string
+  firstMessageStatus?: string
   lastStatusCheckAt?: Date | string | null
   lastError?: string | null
   completedAt?: Date | string | null
@@ -1153,6 +1225,9 @@ export type OnboardingProfileUpdateWithoutOrganizationInput = {
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhookStatus?: Prisma.StringFieldUpdateOperationsInput | string
   tokenStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  metaBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  firstMessageStatus?: Prisma.StringFieldUpdateOperationsInput | string
   lastStatusCheckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1189,6 +1264,9 @@ export type OnboardingProfileUncheckedUpdateWithoutOrganizationInput = {
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   webhookStatus?: Prisma.StringFieldUpdateOperationsInput | string
   tokenStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  metaBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  firstMessageStatus?: Prisma.StringFieldUpdateOperationsInput | string
   lastStatusCheckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1228,6 +1306,9 @@ export type OnboardingProfileSelect<ExtArgs extends runtime.Types.Extensions.Int
   qualityRating?: boolean
   webhookStatus?: boolean
   tokenStatus?: boolean
+  metaBillingStatus?: boolean
+  templateStatus?: boolean
+  firstMessageStatus?: boolean
   lastStatusCheckAt?: boolean
   lastError?: boolean
   completedAt?: boolean
@@ -1266,6 +1347,9 @@ export type OnboardingProfileSelectCreateManyAndReturn<ExtArgs extends runtime.T
   qualityRating?: boolean
   webhookStatus?: boolean
   tokenStatus?: boolean
+  metaBillingStatus?: boolean
+  templateStatus?: boolean
+  firstMessageStatus?: boolean
   lastStatusCheckAt?: boolean
   lastError?: boolean
   completedAt?: boolean
@@ -1304,6 +1388,9 @@ export type OnboardingProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   qualityRating?: boolean
   webhookStatus?: boolean
   tokenStatus?: boolean
+  metaBillingStatus?: boolean
+  templateStatus?: boolean
+  firstMessageStatus?: boolean
   lastStatusCheckAt?: boolean
   lastError?: boolean
   completedAt?: boolean
@@ -1342,6 +1429,9 @@ export type OnboardingProfileSelectScalar = {
   qualityRating?: boolean
   webhookStatus?: boolean
   tokenStatus?: boolean
+  metaBillingStatus?: boolean
+  templateStatus?: boolean
+  firstMessageStatus?: boolean
   lastStatusCheckAt?: boolean
   lastError?: boolean
   completedAt?: boolean
@@ -1349,7 +1439,7 @@ export type OnboardingProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OnboardingProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "currentStep" | "progressPercent" | "lifecycleStatus" | "legalName" | "registrationNumber" | "facebookPage" | "businessCategory" | "logoUrl" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewedBy" | "kycRejectionReason" | "phoneCountryCode" | "phoneNumber" | "whatsappActiveOnNumber" | "numberConnectionPath" | "phoneVerificationStatus" | "facebookStatus" | "metaStatus" | "metaBusinessId" | "wabaId" | "phoneNumberId" | "displayPhoneNumber" | "qualityRating" | "webhookStatus" | "tokenStatus" | "lastStatusCheckAt" | "lastError" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingProfile"]>
+export type OnboardingProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "currentStep" | "progressPercent" | "lifecycleStatus" | "legalName" | "registrationNumber" | "facebookPage" | "businessCategory" | "logoUrl" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewedBy" | "kycRejectionReason" | "phoneCountryCode" | "phoneNumber" | "whatsappActiveOnNumber" | "numberConnectionPath" | "phoneVerificationStatus" | "facebookStatus" | "metaStatus" | "metaBusinessId" | "wabaId" | "phoneNumberId" | "displayPhoneNumber" | "qualityRating" | "webhookStatus" | "tokenStatus" | "metaBillingStatus" | "templateStatus" | "firstMessageStatus" | "lastStatusCheckAt" | "lastError" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingProfile"]>
 export type OnboardingProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -1395,6 +1485,9 @@ export type $OnboardingProfilePayload<ExtArgs extends runtime.Types.Extensions.I
     qualityRating: string | null
     webhookStatus: string
     tokenStatus: string
+    metaBillingStatus: string
+    templateStatus: string
+    firstMessageStatus: string
     lastStatusCheckAt: Date | null
     lastError: string | null
     completedAt: Date | null
@@ -1853,6 +1946,9 @@ export interface OnboardingProfileFieldRefs {
   readonly qualityRating: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly webhookStatus: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly tokenStatus: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly metaBillingStatus: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly templateStatus: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly firstMessageStatus: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly lastStatusCheckAt: Prisma.FieldRef<"OnboardingProfile", 'DateTime'>
   readonly lastError: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly completedAt: Prisma.FieldRef<"OnboardingProfile", 'DateTime'>
