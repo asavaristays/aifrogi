@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdminLogoutButton } from "@/components/admin/admin-logout-button";
 import { getCurrentUser } from "@/lib/auth-server";
 
 export const dynamic = "force-dynamic";
@@ -13,18 +14,21 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-[#f4f7f6] text-[#14241f]">
       <header className="border-b border-black/5 bg-[#2c243b] px-5 py-4 text-white sm:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-5">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <p className="text-lg font-bold">AiFrogi Control</p>
             <p className="mt-1 text-xs text-white/65">Customer operations and platform health</p>
           </div>
-          <nav className="flex items-center gap-2 text-sm font-bold">
-            <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin">Overview</Link>
-            <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/customers">Customers</Link>
-            <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/billing">Billing</Link>
-            <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/knowledge">Knowledge</Link>
-            <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/support">Support</Link>
-          </nav>
+          <div className="flex flex-wrap items-center gap-3">
+            <nav className="flex flex-wrap items-center gap-1 text-sm font-bold sm:gap-2">
+              <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin">Overview</Link>
+              <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/customers">Customers</Link>
+              <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/billing">Billing</Link>
+              <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/knowledge">Knowledge</Link>
+              <Link className="rounded-md px-3 py-2 hover:bg-white/10" href="/admin/support">Support</Link>
+            </nav>
+            <AdminLogoutButton />
+          </div>
         </div>
       </header>
       {children}
