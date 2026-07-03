@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import { hashCredentialPassword, verifyCredentialPassword } from "@/lib/credential-store";
+import { SELF_SERVICE_REGISTRATION } from "@/lib/repositories/trial-registration-repository";
 
 export type TeamRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -44,7 +45,7 @@ export async function getInvitation(token: string) {
   if (!db || !token) return null;
   return db.organizationMember.findUnique({
     where: { invitationTokenHash: tokenHash(token) },
-    select: { id: true, email: true, name: true, role: true, status: true, invitationExpiresAt: true, organization: { select: { name: true } } }
+    select: { id: true, email: true, name: true, role: true, status: true, invitedBy: true, invitationExpiresAt: true, organization: { select: { id: true, name: true, status: true } } }
   });
 }
 
@@ -54,10 +55,18 @@ export async function activateInvitation(token: string, password: string) {
   const invitation = await getInvitation(token);
   if (!invitation || invitation.status !== "INVITED" || !invitation.invitationExpiresAt || invitation.invitationExpiresAt < new Date()) throw new Error("This invitation is invalid or has expired.");
   if (password.length < 10) throw new Error("Use at least 10 characters for your password.");
-  return db.organizationMember.update({
-    where: { id: invitation.id },
-    data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
-    select: { email: true, name: true, role: true, organizationId: true }
+  return db.$transaction(async (tx) => {
+    const member = await tx.organizationMember.update({
+      where: { id: invitation.id },
+      data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
+      select: { email: true, name: true, role: true, organizationId: true }
+    });
+    if (invitation.invitedBy === SELF_SERVICE_REGISTRATION) {
+      await tx.organization.update({ where: { id: invitation.organization.id }, data: { status: "ONBOARDING" } });
+      await tx.onboardingProfile.update({ where: { organizationId: invitation.organization.id }, data: { lifecycleStatus: "DRAFT", currentStep: 1, progressPercent: 10 } });
+      await tx.onboardingActivity.create({ data: { organizationId: invitation.organization.id, actorEmail: invitation.email, action: "EMAIL_VERIFIED", detail: "Owner activated the trial workspace" } });
+    }
+    return { ...member, registration: invitation.invitedBy === SELF_SERVICE_REGISTRATION };
   });
 }
 
@@ -86,4 +95,3 @@ export async function updateTeamMember(input: { organizationId: string; memberId
   }
   return db.organizationMember.update({ where: { id: member.id }, data: { role: nextRole, status: nextStatus }, select: { id: true, email: true, name: true, role: true, status: true, joinedAt: true, lastLoginAt: true } });
 }
-

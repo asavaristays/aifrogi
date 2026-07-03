@@ -44,6 +44,7 @@ const retiredPrefixes = [
 
 const publicApiPrefixes = [
   "/api/auth/login",
+  "/api/auth/register",
   "/api/auth/logout",
   "/api/auth/session",
   "/api/auth/hotelradar-sso",
@@ -159,7 +160,7 @@ export async function proxy(request: NextRequest) {
   const isMarketingHost = hostname === "aifrogi.com" || hostname === "www.aifrogi.com";
   const isAppHost = hostname === "app.aifrogi.com";
 
-  if (isMarketingHost && (pathname === "/login" || protectedPrefixes.some((prefix) => pathname.startsWith(prefix)))) {
+  if (isMarketingHost && ((pathname === "/login" || pathname === "/register") || protectedPrefixes.some((prefix) => pathname.startsWith(prefix)))) {
     return NextResponse.redirect(new URL(`${pathname}${request.nextUrl.search}`, "https://app.aifrogi.com"));
   }
 
@@ -214,6 +215,7 @@ export const config = {
   matcher: [
     "/",
     "/login",
+    "/register",
     "/api/:path*",
     "/dashboard/:path*",
     "/contacts/:path*",

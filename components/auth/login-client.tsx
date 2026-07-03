@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export function LoginClient({ returnTo }: { returnTo?: string }) {
@@ -66,7 +67,8 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
               {submitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
-          <p className="mt-8 text-xs leading-5 text-[#817789]">Need access or forgot your password? Contact your AiFrogi administrator. Never share OTPs or Meta credentials.</p>
+          <p className="mt-7 text-sm text-[#70697d]">New to AiFrogi? <Link href="/register" className="font-semibold text-[#a21c98]">Start a 30-day trial</Link></p>
+          <p className="mt-5 text-xs leading-5 text-[#817789]">Need access or forgot your password? Contact your AiFrogi administrator. Never share OTPs or Meta credentials.</p>
           <a href="https://aifrogi.com" className="mt-6 inline-flex text-sm font-semibold text-[#a21c98]">Back to aifrogi.com</a>
         </div>
       </section>
