@@ -7,12 +7,6 @@ import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-cal
 const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register";
 
-const platformRoles = [
-  { role: "User", title: "Handle the conversation", copy: "Agents see assigned chats, priority, approved AI drafts, customer context, and the exact reason for a human handover.", items: ["Today queue", "Shared inbox", "Contacts and notes", "Safe AI replies"] },
-  { role: "Client Admin", title: "Run the workspace", copy: "Business owners control onboarding, campaigns, knowledge, automation, team access, usage, and support without handling Meta credentials.", items: ["Business setup", "Knowledge controls", "Campaign approval", "Automation health"] },
-  { role: "AiFrogi Super Admin", title: "Protect every customer", copy: "Platform operators monitor onboarding, Meta status, delivery, knowledge readiness, billing, support, and audited customer assistance.", items: ["Customer pipeline", "Platform health", "Template governance", "Support context"] }
-];
-
 const onboardingSteps = ["Create workspace", "Connect WhatsApp", "Approve knowledge", "Choose workflows", "Test safely", "Go live"];
 
 const plans = [
@@ -49,7 +43,7 @@ export default function HomePage() {
             <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] sm:w-[158px]" />
           </Link>
           <div className="hidden items-center gap-7 text-sm font-semibold text-white/65 md:flex">
-            <a className="transition hover:text-white" href="#product">Platform</a><a className="transition hover:text-white" href="#roles">Solutions</a><a className="transition hover:text-white" href="#calculator">Calculator</a><a className="transition hover:text-white" href="#pricing">Pricing</a><Link className="transition hover:text-white" href="/product-tour">Tour</Link>
+            <a className="transition hover:text-white" href="#product">Product experience</a><a className="transition hover:text-white" href="#calculator">Calculator</a><a className="transition hover:text-white" href="#pricing">Pricing</a><Link className="transition hover:text-white" href="/product-tour">Tour</Link>
           </div>
           <div className="flex items-center gap-3"><a href={loginUrl} className="hidden text-sm font-semibold text-white/70 hover:text-white sm:inline-flex">Log in</a><a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a></div>
         </div>
@@ -66,24 +60,6 @@ export default function HomePage() {
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-white/40"><span>No credit card</span><span>•</span><span>Guided setup</span><span>•</span><span>Human handover built in</span></div>
 
           <FeatureShowcase />
-        </div>
-      </section>
-
-      <section id="product" className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl"><p className="product-eyebrow">One operating loop</p><h2 className="mt-3 text-3xl font-semibold sm:text-4xl">From customer message to the right next action.</h2><p className="mt-4 text-base leading-7 text-[var(--text-muted)]">AiFrogi joins onboarding, messaging, campaigns, knowledge, automation, and support without exposing Meta credentials or asking teams to become API experts.</p></div>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-lg border border-black/8 bg-black/8 lg:grid-cols-3">
-            <ProductStep number="01" title="Connect once" copy="The client selects their business and WhatsApp number. AiFrogi configures and monitors the technical connection." />
-            <ProductStep number="02" title="Work from one inbox" copy="Every inbound message becomes an owned conversation with response status, context, and a clear handoff path." />
-            <ProductStep number="03" title="Automate with boundaries" copy="Approved knowledge and workflows handle repeatable work. Low confidence, exceptions, and sales intent reach a human." />
-          </div>
-        </div>
-      </section>
-
-      <section id="roles" className="border-b border-[#eee6f0] bg-white px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl"><p className="product-eyebrow">One platform, clear responsibilities</p><h2 className="mt-3 text-3xl font-semibold sm:text-4xl">Every person sees the work they own.</h2><p className="mt-4 text-base leading-7 text-[var(--text-muted)]">AiFrogi separates daily conversations, business administration, and platform operations. This keeps the interface focused and customer data properly bounded.</p></div>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-lg border border-[#eadfed] bg-[#eadfed] lg:grid-cols-3">{platformRoles.map((item, index) => <article key={item.role} className="bg-white p-7"><div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold text-[#c725ba]">{item.role}</span><span className="text-xs text-[#a99ead]">0{index + 1}</span></div><h3 className="mt-7 text-xl font-semibold">{item.title}</h3><p className="mt-3 min-h-20 text-sm leading-6 text-[var(--text-muted)]">{item.copy}</p><ul className="mt-6 space-y-2 border-t border-[#eee6f0] pt-5 text-sm">{item.items.map((feature) => <li key={feature} className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-[#d92bcb]" />{feature}</li>)}</ul></article>)}</div>
         </div>
       </section>
 
@@ -128,7 +104,6 @@ export default function HomePage() {
   );
 }
 
-function ProductStep({ number, title, copy }: { number: string; title: string; copy: string }) { return <article className="bg-white p-7"><span className="text-xs font-bold text-[#c725ba]">{number}</span><h3 className="mt-8 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></article>; }
 function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
 function TrustItem({ title, copy }: { title: string; copy: string }) { return <div className="border-t border-black/10 pt-4"><strong className="text-sm">{title}</strong><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></div>; }
 function PricingPlan({ name, monthly, quarterly, bestFor, features, featured }: { name: string; monthly: string; quarterly: string; bestFor: string; features: string[]; featured?: boolean }) { return <article className={`rounded-lg border bg-white p-6 ${featured ? "border-[#d92bcb] shadow-lg" : "border-black/8"}`}><div className="flex items-center justify-between gap-3"><h3 className="text-lg font-bold">{name}</h3>{featured ? <span className="status-pill bg-[#fde9fb] text-[#a21c98]">Recommended</span> : null}</div><p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">{bestFor}</p><p className="mt-7 text-3xl font-semibold">{monthly}<small className="text-sm font-medium text-[var(--text-muted)]"> / month</small></p><p className="mt-1 text-xs text-[var(--text-muted)]">{quarterly}</p><ul className="mt-6 space-y-3 text-sm">{features.map((feature) => <li key={feature} className="flex gap-2"><span className="text-[#d92bcb]">✓</span>{feature}</li>)}</ul><a href={registerUrl} className={`mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-md text-sm font-bold ${featured ? "bg-[#d92bcb] text-white" : "border border-black/10"}`}>Start trial</a></article>; }

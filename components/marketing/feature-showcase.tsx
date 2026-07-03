@@ -115,7 +115,7 @@ export function FeatureShowcase() {
   const active = features.find((feature) => feature.id === activeId) ?? features[0];
 
   return (
-    <div className="relative mx-auto mt-16 max-w-6xl translate-y-px text-left shadow-[0_45px_100px_rgba(0,0,0,.45)]">
+    <div id="product" className="relative mx-auto mt-16 max-w-6xl scroll-mt-24 translate-y-px text-left shadow-[0_45px_100px_rgba(0,0,0,.45)]">
       <div className="overflow-hidden rounded-t-2xl border border-white/15 bg-[#17131d] p-2 pb-0 sm:p-3 sm:pb-0">
         <div className="flex items-center gap-2 border-b border-white/8 px-3 py-2.5">
           <i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/>
