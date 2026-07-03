@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Icon } from "@/components/icons";
 
 const conversations = [
@@ -7,16 +10,49 @@ const conversations = [
   ["Review", "Feedback requested"]
 ];
 
-const lanes = [
-  ["Broadcast", "Approved template → audience → replies"],
-  ["AI chatbot", "Answer → qualify → handoff"],
-  ["Retargeting", "Abandoned cart → useful follow-up"],
-  ["Reminders", "Due date → confirmation"],
-  ["Payments", "Link → status → receipt"],
-  ["Forms & reviews", "Collect answers → sync record"]
+const useCases = [
+  {
+    title: "Broadcast message",
+    short: "Approved campaign → replies in inbox",
+    detail: "Send approved WhatsApp campaigns to opted-in audiences and continue every response as a normal customer conversation.",
+    outcome: "More replies, less manual follow-up"
+  },
+  {
+    title: "AI chatbot",
+    short: "Answer → qualify → handoff",
+    detail: "Handle common questions instantly, qualify intent, collect details, and pass sensitive or high-value chats to a person.",
+    outcome: "Faster response without losing control"
+  },
+  {
+    title: "E-commerce retargeting",
+    short: "Cart / interest → useful follow-up",
+    detail: "Bring back buyers who viewed, clicked, abandoned, or purchased with a relevant next message instead of a generic blast.",
+    outcome: "Higher conversion from warm customers"
+  },
+  {
+    title: "Reminders",
+    short: "Due date → confirmation",
+    detail: "Send appointment, booking, payment, renewal, and service reminders with simple customer replies and team visibility.",
+    outcome: "Fewer misses, clearer operations"
+  },
+  {
+    title: "Payment collection",
+    short: "Payment link → status → receipt",
+    detail: "Share payment links, watch status, follow up when pending, and confirm collection inside the same WhatsApp thread.",
+    outcome: "Less chasing, faster collection"
+  },
+  {
+    title: "Forms, survey, review",
+    short: "Answers → record → feedback",
+    detail: "Collect lead forms, surveys, preferences, feedback, and review requests conversationally without sending customers elsewhere.",
+    outcome: "Better data and better customer experience"
+  }
 ];
 
 export function InboxOperationsVisual() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = useCases[activeIndex];
+
   return (
     <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#17131d] text-white shadow-[0_30px_90px_rgba(0,0,0,.35)]">
       <div className="flex items-center gap-2 border-b border-white/8 px-4 py-3">
@@ -54,18 +90,27 @@ export function InboxOperationsVisual() {
             <Icon name="message-circle" className="h-6 w-6 text-[#ff8af1]" />
           </div>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            {lanes.map(([title, flow]) => (
-              <div key={title} className="border-t border-white/10 pt-4">
-                <strong className="text-sm">{title}</strong>
-                <p className="mt-2 text-xs leading-5 text-white/48">{flow}</p>
-              </div>
+          <div className="mt-8 grid gap-2 sm:grid-cols-2">
+            {useCases.map((item, index) => (
+              <button
+                key={item.title}
+                type="button"
+                onMouseEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                onClick={() => setActiveIndex(index)}
+                className={`border-t pt-4 text-left transition ${index === activeIndex ? "border-[#ff8af1] text-white" : "border-white/10 text-white/70 hover:border-white/25 hover:text-white"}`}
+              >
+                <strong className="text-sm">{item.title}</strong>
+                <p className="mt-2 text-xs leading-5 text-white/48">{item.short}</p>
+              </button>
             ))}
           </div>
 
-          <div className="mt-8 flex items-center gap-3 rounded-full bg-white/[.045] px-4 py-3 text-xs text-white/58">
-            <span className="h-2 w-2 rounded-full bg-[#ff8af1] shadow-[0_0_12px_#ff8af1]" />
-            Human handoff stays available whenever automation is unsure.
+          <div key={active.title} className="feature-showcase-reveal mt-8 border-l-2 border-[#ff8af1] pl-4">
+            <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#ff8af1]">Use case detail</p>
+            <h4 className="mt-2 text-xl font-semibold">{active.title}</h4>
+            <p className="mt-3 text-sm leading-6 text-white/58">{active.detail}</p>
+            <p className="mt-4 text-sm font-semibold text-white">{active.outcome}</p>
           </div>
         </section>
       </div>
