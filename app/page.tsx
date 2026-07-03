@@ -71,19 +71,6 @@ export default function HomePage() {
 
       <OnboardingJourney />
 
-      <section className="px-5 py-20 sm:px-8">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
-          <div><p className="product-eyebrow">Product walkthrough</p><h2 className="mt-3 text-3xl font-semibold">Understand the day in under 90 seconds.</h2><p className="mt-4 text-base leading-7 text-[var(--text-muted)]">The home dashboard starts with attention, not analytics. It explains each issue, who owns it, and the next safe action.</p><Link href="/product-tour" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#c725ba]">Watch the product tour <Icon name="arrow-right" /></Link></div>
-          <div className="overflow-hidden rounded-lg border border-[#3a2f4d] bg-[#2c243b] text-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4"><strong className="text-sm">Today in AiFrogi</strong><span className="status-pill bg-[#4b3152] text-[#ff8af1]">Live</span></div>
-            <div className="grid gap-4 p-5 sm:grid-cols-[1.2fr_0.8fr]">
-              <div className="rounded-md bg-white p-5 text-[#2c243b]"><p className="product-eyebrow">Needs attention</p><h3 className="mt-2 text-xl font-bold">2 conversations need a reply</h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">The last customer message is unanswered. Replying now protects the active service window.</p><span className="tour-signal mt-5 block h-2 w-3/4 rounded bg-[#e33bd4]"/></div>
-              <div className="space-y-3">{[["WhatsApp","Connected"],["Meta review","Live"],["Wallet","Check before campaign"]].map(([label,value]) => <div key={label} className="rounded-md border border-white/8 bg-white/5 p-4"><small className="text-white/52">{label}</small><strong className="mt-1 block text-sm">{value}</strong></div>)}</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <WhatsAppCostCalculator />
 
       <section id="pricing" className="border-y border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
