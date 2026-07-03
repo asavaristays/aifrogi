@@ -15,7 +15,9 @@
     "verify:registration": "tsx scripts/verify-trial-registration.ts",
     "verify:campaigns": "tsx scripts/verify-campaign-compliance.ts",
     "verify:automation": "tsx scripts/verify-automation-engine.ts",
-    "verify:billing": "tsx scripts/verify-billing-super-admin.ts"
+    "verify:billing": "tsx scripts/verify-billing-super-admin.ts",
+    "verify:launch": "tsx scripts/verify-commercial-launch.ts",
+    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:billing && npm run verify:launch"
   },
   "dependencies": {
     "@prisma/adapter-pg": "latest",

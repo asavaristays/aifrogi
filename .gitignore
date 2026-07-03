@@ -15,7 +15,9 @@ coverage/
 
 # Runtime state and user-provided data
 data/runtime/
-public/media/
+public/media/*
+!public/media/product-video/
+!public/media/product-video/**
 public/uploads/
 uploads/
 *.log

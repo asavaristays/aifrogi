@@ -51,6 +51,8 @@ const publicApiPrefixes = [
   "/api/auth/invitation",
   "/api/integrations/whatsapp/webhook",
   "/api/public/whatsapp-bot",
+  "/api/health/live",
+  "/api/health/ready",
 ];
 
 type SessionUser = {

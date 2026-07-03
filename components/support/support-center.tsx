@@ -16,10 +16,10 @@ type Ticket = {
 };
 
 const resources = [
-  { title: "Connect WhatsApp", helper: "Business, phone, and Meta connection prerequisites", href: "/onboarding" },
-  { title: "Fix message delivery", helper: "Payment, template, recipient, and 24-hour window checks", href: "/setup" },
-  { title: "Prepare a campaign", helper: "Consent, approved template, audience, cost, and test send", href: "/campaigns" },
-  { title: "Configure automation", helper: "Knowledge, fallback, human handoff, and workflow readiness", href: "/workflows" }
+  { title: "Connect WhatsApp", helper: "Business, phone, and Meta connection prerequisites", href: "/help/connect-whatsapp" },
+  { title: "Fix message delivery", helper: "Payment, template, recipient, and 24-hour window checks", href: "/help/resolve-message-delivery" },
+  { title: "Prepare a campaign", helper: "Consent, approved template, audience, cost, and test send", href: "/help/send-compliant-campaign" },
+  { title: "Govern AI answers", helper: "Knowledge, fallback, human handoff, and workflow readiness", href: "/help/govern-ai-answers" }
 ];
 
 export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) {

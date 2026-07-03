@@ -1,6 +1,6 @@
 # Section 07: Commercial Launch
 
-Status: Planned
+Status: Launch foundation implemented on 2026-07-03
 Target score: 8.5/10
 
 ## Think
@@ -35,3 +35,23 @@ Marketing discovery -> Product explanation -> Pricing and trust -> Trial registr
 ## Achieve Definition
 
 The section is complete when AiFrogi can intentionally acquire, activate, support, bill, retain, and safely offboard real customers with measurable service quality.
+
+## 2026-07-03 Implementation
+
+- Original 71-second AiFrogi product film built from real product screens, branded motion, original ambient audio, English captions, and a static poster.
+- Public `/product-tour` and `/help` surfaces with six task-based customer guides.
+- Help links embedded in customer support and the marketing site.
+- Global skip navigation, strong focus visibility, reduced-motion support, increased-contrast support, accessible failure pages, and captioned video.
+- Public liveness and dependency-aware readiness endpoints.
+- Stateful external health monitor with down and recovery notifications.
+- Encrypted PostgreSQL backup with catalogue validation, checksum, retention, and a guarded non-production restore drill.
+- Incident response, monitoring, backup/restore, and launch QA runbooks.
+- `npm run verify:launch` and aggregate `npm run verify:all` release gates.
+
+## Remaining Commercial Decisions
+
+- Product-owner visual acceptance at 8.5/10.
+- Configure an external alert destination and off-VPS backup replication.
+- Record the first production restore drill.
+- Complete the manual browser/device journey before paid acquisition.
+- Keep Razorpay deferred until pricing and early-customer billing behavior stabilize.

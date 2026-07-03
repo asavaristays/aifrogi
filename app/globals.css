@@ -36,6 +36,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -64,8 +68,32 @@ select {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(217, 43, 203, 0.24);
+  outline: 3px solid rgba(185, 30, 172, 0.5);
   outline-offset: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  border-radius: 0.375rem;
+  background: var(--primary-strong);
+  color: white;
+  padding: 0.7rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition: transform 120ms ease-out;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+::selection {
+  background: #f5c7f1;
+  color: #251f2d;
 }
 
 .app-card {
@@ -250,5 +278,17 @@ select {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-muted: #514a58;
+    --border: #bdb6c2;
+  }
+
+  :focus-visible {
+    outline-color: #7d0c74;
+    outline-width: 4px;
   }
 }

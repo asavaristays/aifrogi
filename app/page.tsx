@@ -47,7 +47,7 @@ export default function HomePage() {
             <Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] sm:w-[162px]" />
           </Link>
           <div className="hidden items-center gap-6 text-sm font-semibold text-[#6e6478] md:flex">
-            <a href="#product">Product</a><a href="#roles">Who it serves</a><a href="#pricing">Pricing</a><Link href="/security">Security</Link>
+            <a href="#product">Product</a><a href="#roles">Who it serves</a><a href="#pricing">Pricing</a><Link href="/product-tour">Tour</Link><Link href="/help">Help</Link><Link href="/security">Security</Link>
           </div>
           <a href={loginUrl} className="inline-flex min-h-9 items-center rounded-md border border-[#eadfed] px-3 text-sm font-bold text-[#a21c98] hover:bg-[#fde9fb]">Sign in</a>
         </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
 
       <section className="px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
-          <div><p className="product-eyebrow">Product walkthrough</p><h2 className="mt-3 text-3xl font-semibold">Understand the day in under 90 seconds.</h2><p className="mt-4 text-base leading-7 text-[var(--text-muted)]">The home dashboard starts with attention, not analytics. It explains each issue, who owns it, and the next safe action.</p><a href={loginUrl} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#c725ba]">Open the working product <Icon name="arrow-right" /></a></div>
+          <div><p className="product-eyebrow">Product walkthrough</p><h2 className="mt-3 text-3xl font-semibold">Understand the day in under 90 seconds.</h2><p className="mt-4 text-base leading-7 text-[var(--text-muted)]">The home dashboard starts with attention, not analytics. It explains each issue, who owns it, and the next safe action.</p><Link href="/product-tour" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#c725ba]">Watch the product tour <Icon name="arrow-right" /></Link></div>
           <div className="overflow-hidden rounded-lg border border-[#3a2f4d] bg-[#2c243b] text-white shadow-xl">
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4"><strong className="text-sm">Today in AiFrogi</strong><span className="status-pill bg-[#4b3152] text-[#ff8af1]">Live</span></div>
             <div className="grid gap-4 p-5 sm:grid-cols-[1.2fr_0.8fr]">
@@ -120,7 +120,7 @@ export default function HomePage() {
 
       <section id="support" className="px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2"><div><p className="product-eyebrow">Trust by design</p><h2 className="mt-3 text-3xl font-semibold">Clear boundaries for data, AI, and Meta.</h2></div><div className="grid gap-4 sm:grid-cols-2"><TrustItem title="Client-controlled access" copy="No Facebook password, email password, permanent token, or OTP sharing."/><TrustItem title="Bounded AI" copy="Answers use approved knowledge; uncertainty routes to a human."/><TrustItem title="Consent-aware campaigns" copy="Audience preview, permission confirmation, cost estimate, and approved template."/><TrustItem title="Operational support" copy="Tickets include the customer's setup context without exposing credentials."/></div></div></section>
 
-      <footer className="border-t border-[#eee6f0] bg-white px-5 py-10 text-[#2c243b] sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} className="h-auto w-[160px]" /><p className="mt-1 text-xs text-[#756b80]">WhatsApp messaging, automation, and human operations.</p></div><div className="flex flex-wrap gap-5 text-xs font-semibold text-[#655b70]"><Link href="/security">Security</Link><Link href="/privacy-policy">Privacy</Link><Link href="/terms-of-service">Terms</Link><Link href="/disclaimer">Disclaimer</Link><Link href="/data-deletion">Data deletion</Link></div></div></footer>
+      <footer className="border-t border-[#eee6f0] bg-white px-5 py-10 text-[#2c243b] sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} className="h-auto w-[160px]" /><p className="mt-1 text-xs text-[#756b80]">WhatsApp messaging, automation, and human operations.</p></div><div className="flex flex-wrap gap-5 text-xs font-semibold text-[#655b70]"><Link href="/product-tour">Product tour</Link><Link href="/help">Help Center</Link><Link href="/security">Security</Link><Link href="/privacy-policy">Privacy</Link><Link href="/terms-of-service">Terms</Link><Link href="/disclaimer">Disclaimer</Link><Link href="/data-deletion">Data deletion</Link></div></div></footer>
     </main>
   );
 }
