@@ -2,12 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
+import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
 
 const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register";
-
-const onboardingSteps = ["Create workspace", "Connect WhatsApp", "Approve knowledge", "Choose workflows", "Test safely", "Go live"];
 
 const plans = [
   {
@@ -70,9 +69,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl"><div className="grid gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:items-end"><div><p className="product-eyebrow">Predictive onboarding</p><h2 className="mt-3 text-3xl font-semibold">One clear step at a time.</h2><p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">Customers always know what is complete, what AiFrogi is handling, what is waiting on Meta, and what they need to do next.</p></div><div className="grid gap-2 sm:grid-cols-3">{onboardingSteps.map((step, index) => <div key={step} className="flex min-h-20 items-center gap-3 rounded-md border border-[#eadfed] bg-white px-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#fde9fb] text-xs font-semibold text-[#a21c98]">{index + 1}</span><strong className="text-sm">{step}</strong></div>)}</div></div></div>
-      </section>
+      <OnboardingJourney />
 
       <section className="px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
