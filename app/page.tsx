@@ -40,32 +40,39 @@ const plans = [
 
 export default function HomePage() {
   return (
-    <main className="bg-white text-[#2c243b]">
-      <nav className="sticky top-0 z-30 border-b border-[#eee6f0] bg-white/95 px-5 text-[#2c243b] backdrop-blur sm:px-8">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-5">
+    <main className="overflow-hidden bg-white text-[#2c243b]">
+      <nav className="sticky top-0 z-30 border-b border-white/10 bg-[#251f2d]/90 px-5 text-white backdrop-blur-xl sm:px-8">
+        <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-5">
           <Link href="/" className="flex items-center" aria-label="AiFrogi home">
-            <Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] sm:w-[162px]" />
+            <span className="rounded-lg bg-white px-3 py-1.5"><Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[132px] sm:w-[148px]" /></span>
           </Link>
-          <div className="hidden items-center gap-6 text-sm font-semibold text-[#6e6478] md:flex">
-            <a href="#product">Product</a><a href="#roles">Who it serves</a><a href="#pricing">Pricing</a><Link href="/product-tour">Tour</Link><Link href="/help">Help</Link><Link href="/security">Security</Link>
+          <div className="hidden items-center gap-7 text-sm font-semibold text-white/65 md:flex">
+            <a className="transition hover:text-white" href="#product">Platform</a><a className="transition hover:text-white" href="#roles">Solutions</a><a className="transition hover:text-white" href="#pricing">Pricing</a><Link className="transition hover:text-white" href="/product-tour">Product tour</Link><Link className="transition hover:text-white" href="/security">Security</Link>
           </div>
-          <a href={loginUrl} className="inline-flex min-h-9 items-center rounded-md border border-[#eadfed] px-3 text-sm font-bold text-[#a21c98] hover:bg-[#fde9fb]">Sign in</a>
+          <div className="flex items-center gap-3"><a href={loginUrl} className="hidden text-sm font-semibold text-white/70 hover:text-white sm:inline-flex">Log in</a><a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a></div>
         </div>
       </nav>
 
-      <section className="relative min-h-[600px] overflow-hidden bg-white text-[#2c243b] sm:min-h-[620px] lg:min-h-[640px]">
-        <Image src="/brand/aifrogi-dashboard.png" alt="AiFrogi customer operations dashboard" fill priority className="object-cover object-center opacity-35" sizes="100vw" />
-        <div className="absolute inset-0 bg-white/78" aria-hidden="true" />
-        <div className="relative mx-auto flex min-h-[600px] max-w-7xl flex-col justify-center px-5 pb-16 pt-16 sm:min-h-[620px] sm:px-8 lg:min-h-[640px]">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#c725ba]">Built by a verified Meta Tech Provider</p>
-          <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.04] sm:text-6xl lg:text-7xl">AiFrogi</h1>
-          <p className="mt-5 max-w-2xl text-xl leading-8 text-[#655b70] sm:text-2xl">WhatsApp operations that tell your team what matters now, what happens next, and when a human should take over.</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-md bg-[#d92bcb] px-5 text-sm font-bold text-white hover:bg-[#bb20af]">Start 30-day trial <Icon name="arrow-right" /></a>
-            <a href="#product" className="inline-flex min-h-12 items-center rounded-md border border-[#d9cedd] bg-white px-5 text-sm font-bold hover:bg-[#faf3fb]">See how it works</a>
+      <section className="relative overflow-hidden bg-[#2c243b] px-5 pb-0 pt-20 text-white sm:px-8 sm:pt-24">
+        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
+        <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#d92bcb]/20 blur-[130px]" aria-hidden="true" />
+        <div className="relative mx-auto max-w-7xl text-center">
+          <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70"><span className="h-1.5 w-1.5 rounded-full bg-[#ff8af1] shadow-[0_0_12px_#ff8af1]" />Built on the official WhatsApp Business Platform</p>
+          <h1 className="mx-auto mt-7 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp conversations into <span className="bg-gradient-to-r from-[#ff8af1] to-[#d92bcb] bg-clip-text text-transparent">revenue.</span></h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Messaging, campaigns, automation, and AI assistance in one workspace—with the context and human control your team needs.</p>
+          <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a><Link href="/product-tour" className="inline-flex min-h-12 items-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10">Watch product tour</Link></div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-white/40"><span>No credit card</span><span>•</span><span>Guided setup</span><span>•</span><span>Human handover built in</span></div>
+
+          <div className="relative mx-auto mt-16 max-w-5xl translate-y-px rounded-t-2xl border border-white/15 bg-[#17131d] p-2 text-left shadow-[0_45px_100px_rgba(0,0,0,.45)] sm:p-3">
+            <div className="flex items-center gap-2 border-b border-white/8 px-3 py-2.5"><i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="ml-2 text-[11px] text-white/30">app.aifrogi.com — Inbox</span></div>
+            <div className="grid min-h-[370px] grid-cols-[54px_1fr] sm:grid-cols-[54px_230px_1fr]">
+              <aside className="flex flex-col items-center gap-5 border-r border-white/8 py-5 text-white/30"><Icon name="message-circle"/><Icon name="sparkles"/><Icon name="file-text"/></aside>
+              <div className="hidden border-r border-white/8 sm:block"><div className="border-b border-white/8 px-4 py-4 text-[11px] font-bold uppercase tracking-[.1em] text-white/35">Open conversations <b className="float-right rounded-full bg-white/8 px-2 text-white/55">24</b></div>{[["RS","Rohit Sharma","Perfect, book it"],["AK","Anita Kamat","Booking for 2 nights…"],["MF","Maria Fernandes","Invoice received, thank you"],["DP","Dev Patel","What are your corporate rates?"]].map(([initial,name,message],index)=><div key={name} className={`flex gap-3 border-b border-white/6 px-3 py-3 ${index===0?"border-l-2 border-l-[#d92bcb] bg-white/5":""}`}><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#4b3152] text-[10px] font-bold text-[#ff8af1]">{initial}</span><div className="min-w-0"><b className="block text-xs font-semibold text-white/85">{name}</b><small className="block truncate text-[10px] text-white/30">{message}</small></div></div>)}</div>
+              <div className="flex min-w-0 flex-col"><div className="flex items-center justify-between border-b border-white/8 px-5 py-4"><b className="text-xs">Rohit Sharma</b><span className="rounded-full border border-[#d92bcb]/35 bg-[#d92bcb]/10 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">AI assistant active</span></div><div className="flex flex-1 flex-col gap-3 p-5 text-xs"><span className="max-w-[78%] rounded-xl bg-white/6 px-4 py-3 text-white/75">Is the ceramic dinner set still in stock?</span><span className="max-w-[78%] self-end rounded-xl border border-[#d92bcb]/20 bg-[#d92bcb]/10 px-4 py-3 text-white/85">Yes—2 left in Sage Green. Want me to hold one?</span><small className="self-end text-[10px] text-white/25">AI checked approved inventory knowledge</small><span className="max-w-[78%] rounded-xl bg-white/6 px-4 py-3 text-white/75">Perfect, book it.</span><span className="max-w-[78%] self-end rounded-xl border border-[#d92bcb]/20 bg-[#d92bcb]/10 px-4 py-3 text-white/85">I’ve prepared the order. Priya will confirm payment and delivery.</span><small className="self-end text-[10px] text-[#ff8af1]/55">Human handover · full context included</small></div></div>
+            </div>
           </div>
-          <div className="mt-12 grid max-w-3xl gap-3 text-sm font-medium text-[#756b80] sm:grid-cols-3"><span>Client-safe onboarding</span><span>Approved campaign templates</span><span>AI with human control</span></div>
         </div>
+        <div className="relative -mx-5 border-t border-white/8 bg-[#251f2d] px-5 py-5 sm:-mx-8 sm:px-8"><div className="mx-auto flex max-w-7xl flex-wrap justify-center gap-x-10 gap-y-3 text-xs font-semibold text-white/38"><span>Official Meta APIs</span><span>Role-based access</span><span>Approved knowledge</span><span>Consent-aware campaigns</span><span>Human-in-the-loop AI</span></div></div>
       </section>
 
       <section id="product" className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
