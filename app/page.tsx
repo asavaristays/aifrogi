@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
+import { RotatingUseCase } from "@/components/marketing/rotating-use-case";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
@@ -43,7 +44,7 @@ export default function HomePage() {
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#d92bcb]/20 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl text-center">
           <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70"><span className="h-1.5 w-1.5 rounded-full bg-[#ff8af1] shadow-[0_0_12px_#ff8af1]" />Meta Verified Tech Provider</p>
-          <h1 className="mx-auto mt-7 max-w-4xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp conversations into <span className="bg-gradient-to-r from-[#ff8af1] to-[#d92bcb] bg-clip-text text-transparent">revenue.</span></h1>
+          <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp conversations into <RotatingUseCase /></h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Messaging, campaigns, automation, and AI assistance in one workspace—with the context and human control your team needs.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
 

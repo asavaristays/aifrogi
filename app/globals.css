@@ -5,12 +5,22 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes hero-use-case-reveal {
+  from { opacity: 0; transform: translateY(.4em); filter: blur(5px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.hero-use-case {
+  animation: hero-use-case-reveal .5s cubic-bezier(.2,.8,.2,1);
+}
+
 .feature-showcase-reveal {
   animation: feature-showcase-reveal .38s cubic-bezier(.2,.8,.2,1);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .feature-showcase-reveal { animation: none; }
+  .hero-use-case { animation: none; }
 }
 
 :root {
