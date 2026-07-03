@@ -10,69 +10,69 @@ const steps = [
     owner: "Customer",
     icon: "help-circle" as const,
     outcome: "10 minute check",
-    customer: "Keep one business email, company details, website or social page, and the WhatsApp number you want to use.",
-    aifrogi: "Checks the setup path before asking for documents, so the first call does not become a guessing exercise.",
-    meta: "No Meta action yet. This stage confirms whether you are ready to start Meta onboarding."
+    customer: "Share business email, company details, website or social page, and WhatsApp number.",
+    aifrogi: "Checks readiness before documents or Meta connection.",
+    meta: "No Meta action yet."
   },
   {
     title: "Validate business",
     owner: "Customer + AiFrogi",
     icon: "file-text" as const,
     outcome: "Same day review",
-    customer: "Share legal business name, address, GST or trade licence details, owner contact, and website or social proof.",
-    aifrogi: "Reviews the information, highlights mismatch risk, and shows what is ready or missing before Meta submission.",
-    meta: "May request business verification depending on account history, country, category, and display-name confidence."
+    customer: "Send legal name, address, GST/trade licence, owner contact, and proof link.",
+    aifrogi: "Flags mismatch risk before Meta submission.",
+    meta: "May request business verification."
   },
   {
     title: "Prepare SIM",
     owner: "Customer",
     icon: "smartphone" as const,
     outcome: "OTP ready",
-    customer: <>Use a number that can receive <strong>OTP or voice</strong>. If it is already on WhatsApp App or Business App, it must be <strong>removed or migrated before API activation</strong>.</>,
-    aifrogi: "Explains the safest number path before connection, including whether to use an existing number or a fresh SIM.",
-    meta: <>Verifies the phone during the official connection flow. <strong>Without OTP or voice access, onboarding stops here.</strong></>
+    customer: <>Number must receive <strong>OTP or voice</strong>. If already on WhatsApp App, <strong>remove or migrate first</strong>.</>,
+    aifrogi: "Confirms whether existing number or fresh SIM is safer.",
+    meta: <><strong>Without OTP or voice access, onboarding stops here.</strong></>
   },
   {
     title: "Connect Meta",
     owner: "Customer + Meta",
     icon: "plug" as const,
-    outcome: "30-60 minutes",
-    customer: "Login to Meta, choose the business portfolio, accept permissions, and verify the WhatsApp number.",
-    aifrogi: "Runs the guided connection, stores only approved API access, and shows live status for phone, webhook, token, and billing readiness.",
-    meta: "Confirms the WhatsApp Business account, phone number, display name, and messaging permissions."
+    outcome: "After approval: 30-60 min",
+    customer: "Login to Meta, select business, approve permissions, verify number.",
+    aifrogi: "Connects API and shows phone, webhook, token, billing status.",
+    meta: "Confirms WABA, number, display name, and permissions."
   },
   {
     title: "Set workflows",
     owner: "AiFrogi + Team",
     icon: "refresh-cw" as const,
-    outcome: "1-2 days",
-    customer: "Confirm what should happen first: enquiry reply, chatbot, reminders, payment collection, forms, reviews, or retargeting.",
-    aifrogi: "Configures templates, inbox routing, automation rules, AI knowledge, and human handoff with visible progress.",
-    meta: "Reviews outbound template messages where required. Inbound replies and service conversations can start once the number is live."
+    outcome: "After live: 1-2 days",
+    customer: "Pick first flow: chatbot, reminders, payments, forms, reviews, retargeting.",
+    aifrogi: "Sets templates, routing, automation, AI knowledge, handoff.",
+    meta: "Reviews outbound templates when required."
   },
   {
     title: "Test & go live",
     owner: "AiFrogi + Team",
     icon: "bar-chart-3" as const,
     outcome: "Live + monitored",
-    customer: "Send test messages, approve the first workflow, invite agents, and confirm who handles exceptions.",
-    aifrogi: "Monitors delivery, wallet risk, template status, automation health, failed recipients, and next actions in real time.",
-    meta: "Continues to control quality rating, template approval, display name status, and messaging limits."
+    customer: "Test messages, approve flow, invite agents.",
+    aifrogi: "Monitors delivery, wallet, templates, automation, failures.",
+    meta: "Controls quality, approvals, display name, limits."
   }
 ] as const;
 
 const prerequisites = [
   {
     title: "SIM must be available",
-    copy: <>The WhatsApp number must receive <strong>OTP or voice</strong>. If it is already used in <strong>WhatsApp App or Business App</strong>, plan <strong>removal or migration before API activation</strong>.</>
+    copy: <>Number must receive <strong>OTP or voice</strong>. Already on WhatsApp App? <strong>Remove or migrate first.</strong></>
   },
   {
     title: "Business proof must match",
-    copy: <><strong>Legal name, address, GST/trade licence, website or social profile, and display name</strong> should tell the same story.</>
+    copy: <><strong>Legal name, address, GST/trade licence, website/social, display name</strong> must match.</>
   },
   {
-    title: "Meta timing is visible",
-    copy: <>Simple setups can connect the same day. <strong>Business verification or template review can take longer</strong>, and AiFrogi shows exactly what is waiting.</>
+    title: "After Meta approval",
+    copy: <>Number approval is not final launch. <strong>API check: 30-60 min. First workflow: 1-2 days.</strong></>
   }
 ] as const;
 
@@ -85,9 +85,9 @@ export function OnboardingJourney() {
     <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
-          <p className="product-eyebrow">WhatsApp API onboarding</p>
-          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">Know what is needed before you start.</h2>
-          <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">AiFrogi shows the exact prerequisites, who is responsible, and how long each step usually takes — no generic setup checklist.</p>
+          <p className="product-eyebrow">Meta Tech Provider guided setup</p>
+          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">We handhold your WhatsApp API onboarding.</h2>
+          <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">Bring SIM + business proof. After Meta approves the number, AiFrogi connects, tests, and launches the first workflow.</p>
         </div>
 
         <div className="mt-8 grid gap-3 lg:grid-cols-3">
@@ -106,7 +106,7 @@ export function OnboardingJourney() {
           <div className="bg-[#2c243b] px-4 pb-7 pt-6 text-white sm:px-7">
             <div className="flex items-center justify-between gap-4">
               <span className="text-xs font-semibold text-white/48">Realtime onboarding tracker</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">Hover or tap for timing and responsibility</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">Hover or tap each step</span>
             </div>
 
             <div className="mt-7 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -139,9 +139,9 @@ export function OnboardingJourney() {
             </div>
 
             <div className="mt-5 grid gap-3 rounded-lg border border-[#eadfed] bg-[#fbf8fc] p-4 text-xs text-[#70697d] sm:grid-cols-3">
-              <StatusNote label="Client sees" copy="Completed, missing, waiting on AiFrogi, waiting on Meta, and your next action." />
-              <StatusNote label="Typical timing" copy={<>Fast cases can go live same day; <strong>verification, display-name, or template review may add 1-3+ days</strong>.</>} />
-              <StatusNote label="No hidden blocker" copy={<><strong>SIM access, business proof, Meta approval, billing readiness, and test status</strong> stay visible.</>} />
+              <StatusNote label="Client sees" copy="Done, missing, waiting, next action." />
+              <StatusNote label="After approval" copy={<><strong>API check 30-60 min</strong>; first workflow usually <strong>1-2 days</strong>.</>} />
+              <StatusNote label="No hidden blocker" copy={<><strong>SIM, business proof, Meta, billing, tests</strong> stay visible.</>} />
             </div>
           </div>
         </div>
