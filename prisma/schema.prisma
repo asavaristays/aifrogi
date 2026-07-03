@@ -373,6 +373,13 @@ model Campaign {
   deliveredCount     Int      @default(0)
   readCount          Int      @default(0)
   failedCount        Int      @default(0)
+  templateStatus     String   @default("UNKNOWN")
+  consentSource      String?
+  consentProof       String?  @db.Text
+  consentConfirmedAt DateTime?
+  consentConfirmedBy String?
+  audienceSnapshot   String?  @db.Text
+  testMode           Boolean  @default(false)
   createdBy          String?
   errorSummary       String?
   status             String   @default("DRAFT")
@@ -392,6 +399,10 @@ model CampaignRecipient {
   status            String   @default("QUEUED")
   externalMessageId String?  @unique
   error             String?
+  consentStatus     String   @default("UNVERIFIED")
+  consentSource     String?
+  consentProof      String?  @db.Text
+  suppressionReason String?
   sentAt            DateTime?
   deliveredAt       DateTime?
   readAt            DateTime?

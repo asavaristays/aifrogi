@@ -5,19 +5,26 @@ import { Card } from "@/components/ui/card";
 import { loadLeads } from "@/lib/services/lead-service";
 import { loadWhatsAppIntegration } from "@/lib/services/whatsapp-service";
 import { listWhatsAppTestContacts } from "@/lib/repositories/whatsapp-test-contact-repository";
+import { getCampaignSummary, listCampaignRuns } from "@/lib/repositories/campaign-repository";
+import { CAMPAIGN_TEMPLATES, CONSENT_SOURCES } from "@/lib/campaign-compliance";
 import { filterWhatsAppLeads } from "@/lib/whatsapp-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { getPropertyBySlug } from "@/lib/repositories/property-repository";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function CampaignsPage() {
   const propertySlug = await getCurrentWorkspaceSlug();
-  const [allLeads, integration, testContacts] = await Promise.all([
+  const [allLeads, integration, testContacts, property] = await Promise.all([
     loadLeads(propertySlug),
     loadWhatsAppIntegration(propertySlug),
-    listWhatsAppTestContacts()
+    listWhatsAppTestContacts(),
+    getPropertyBySlug(propertySlug)
   ]);
+  const [campaignRuns, campaignSummary] = property
+    ? await Promise.all([listCampaignRuns(property.id, 8), getCampaignSummary(property.id)])
+    : [[], { total: 0, sent: 0, failed: 0, delivered: 0, read: 0, estimatedCostPaisa: 0 }];
   const contacts = filterWhatsAppLeads(allLeads);
   const connected = integration.status === "CONNECTED";
   const broadcastContacts = contacts.map((contact) => ({
@@ -33,8 +40,8 @@ export default async function CampaignsPage() {
       <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         <section className="grid gap-4 md:grid-cols-4">
           <Metric label="Audience" value={String(contacts.length)} helper="WhatsApp contacts" />
-          <Metric label="Mode" value="Template" helper="Approved campaign messages" />
-          <Metric label="Replies" value="Inbox" helper="Inbound replies become leads" />
+          <Metric label="Campaign runs" value={String(campaignSummary.total)} helper={`${campaignSummary.sent} accepted`} />
+          <Metric label="Read rate" value={campaignSummary.sent ? `${Math.round((campaignSummary.read / campaignSummary.sent) * 100)}%` : "0%"} helper={`${campaignSummary.read} reads tracked`} />
           <Metric label="Status" value={connected ? "Ready" : "Blocked"} helper={connected ? "Connection active" : "Review WhatsApp setup"} />
         </section>
 
@@ -51,7 +58,29 @@ export default async function CampaignsPage() {
           </div>
         </Card>
 
-        <BroadcastBuilder connected={connected} contacts={broadcastContacts} testContacts={testContacts} propertySlug={propertySlug} />
+        <BroadcastBuilder
+          connected={connected}
+          contacts={broadcastContacts}
+          testContacts={testContacts}
+          propertySlug={propertySlug}
+          templates={CAMPAIGN_TEMPLATES}
+          consentSources={CONSENT_SOURCES}
+          campaignRuns={campaignRuns.map((campaign) => ({
+            id: campaign.id,
+            name: campaign.name,
+            status: campaign.status,
+            templateName: campaign.templateName,
+            requestedCount: campaign.requestedCount,
+            sentCount: campaign.sentCount,
+            deliveredCount: campaign.deliveredCount,
+            readCount: campaign.readCount,
+            failedCount: campaign.failedCount,
+            estimatedCostPaisa: campaign.estimatedCostPaisa,
+            consentSource: campaign.consentSource,
+            testMode: campaign.testMode,
+            createdAt: campaign.createdAt.toISOString()
+          }))}
+        />
       </div>
     </div>
   );

@@ -31,6 +31,10 @@ export type CampaignRecipientMinAggregateOutputType = {
   status: string | null
   externalMessageId: string | null
   error: string | null
+  consentStatus: string | null
+  consentSource: string | null
+  consentProof: string | null
+  suppressionReason: string | null
   sentAt: Date | null
   deliveredAt: Date | null
   readAt: Date | null
@@ -45,6 +49,10 @@ export type CampaignRecipientMaxAggregateOutputType = {
   status: string | null
   externalMessageId: string | null
   error: string | null
+  consentStatus: string | null
+  consentSource: string | null
+  consentProof: string | null
+  suppressionReason: string | null
   sentAt: Date | null
   deliveredAt: Date | null
   readAt: Date | null
@@ -59,6 +67,10 @@ export type CampaignRecipientCountAggregateOutputType = {
   status: number
   externalMessageId: number
   error: number
+  consentStatus: number
+  consentSource: number
+  consentProof: number
+  suppressionReason: number
   sentAt: number
   deliveredAt: number
   readAt: number
@@ -75,6 +87,10 @@ export type CampaignRecipientMinAggregateInputType = {
   status?: true
   externalMessageId?: true
   error?: true
+  consentStatus?: true
+  consentSource?: true
+  consentProof?: true
+  suppressionReason?: true
   sentAt?: true
   deliveredAt?: true
   readAt?: true
@@ -89,6 +105,10 @@ export type CampaignRecipientMaxAggregateInputType = {
   status?: true
   externalMessageId?: true
   error?: true
+  consentStatus?: true
+  consentSource?: true
+  consentProof?: true
+  suppressionReason?: true
   sentAt?: true
   deliveredAt?: true
   readAt?: true
@@ -103,6 +123,10 @@ export type CampaignRecipientCountAggregateInputType = {
   status?: true
   externalMessageId?: true
   error?: true
+  consentStatus?: true
+  consentSource?: true
+  consentProof?: true
+  suppressionReason?: true
   sentAt?: true
   deliveredAt?: true
   readAt?: true
@@ -190,6 +214,10 @@ export type CampaignRecipientGroupByOutputType = {
   status: string
   externalMessageId: string | null
   error: string | null
+  consentStatus: string
+  consentSource: string | null
+  consentProof: string | null
+  suppressionReason: string | null
   sentAt: Date | null
   deliveredAt: Date | null
   readAt: Date | null
@@ -225,6 +253,10 @@ export type CampaignRecipientWhereInput = {
   status?: Prisma.StringFilter<"CampaignRecipient"> | string
   externalMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   error?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  consentStatus?: Prisma.StringFilter<"CampaignRecipient"> | string
+  consentSource?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  consentProof?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  suppressionReason?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -240,6 +272,10 @@ export type CampaignRecipientOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   externalMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentProof?: Prisma.SortOrderInput | Prisma.SortOrder
+  suppressionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -259,6 +295,10 @@ export type CampaignRecipientWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringFilter<"CampaignRecipient"> | string
   status?: Prisma.StringFilter<"CampaignRecipient"> | string
   error?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  consentStatus?: Prisma.StringFilter<"CampaignRecipient"> | string
+  consentSource?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  consentProof?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  suppressionReason?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -274,6 +314,10 @@ export type CampaignRecipientOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   externalMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentProof?: Prisma.SortOrderInput | Prisma.SortOrder
+  suppressionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -294,6 +338,10 @@ export type CampaignRecipientScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
   externalMessageId?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
   error?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  consentStatus?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
+  consentSource?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  consentProof?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  suppressionReason?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
@@ -307,6 +355,10 @@ export type CampaignRecipientCreateInput = {
   status?: string
   externalMessageId?: string | null
   error?: string | null
+  consentStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  suppressionReason?: string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -322,6 +374,10 @@ export type CampaignRecipientUncheckedCreateInput = {
   status?: string
   externalMessageId?: string | null
   error?: string | null
+  consentStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  suppressionReason?: string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -335,6 +391,10 @@ export type CampaignRecipientUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -350,6 +410,10 @@ export type CampaignRecipientUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -364,6 +428,10 @@ export type CampaignRecipientCreateManyInput = {
   status?: string
   externalMessageId?: string | null
   error?: string | null
+  consentStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  suppressionReason?: string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -377,6 +445,10 @@ export type CampaignRecipientUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -391,6 +463,10 @@ export type CampaignRecipientUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -420,6 +496,10 @@ export type CampaignRecipientCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   externalMessageId?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  consentStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrder
+  consentProof?: Prisma.SortOrder
+  suppressionReason?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
@@ -434,6 +514,10 @@ export type CampaignRecipientMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   externalMessageId?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  consentStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrder
+  consentProof?: Prisma.SortOrder
+  suppressionReason?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
@@ -448,6 +532,10 @@ export type CampaignRecipientMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   externalMessageId?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  consentStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrder
+  consentProof?: Prisma.SortOrder
+  suppressionReason?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
@@ -503,6 +591,10 @@ export type CampaignRecipientCreateWithoutCampaignInput = {
   status?: string
   externalMessageId?: string | null
   error?: string | null
+  consentStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  suppressionReason?: string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -516,6 +608,10 @@ export type CampaignRecipientUncheckedCreateWithoutCampaignInput = {
   status?: string
   externalMessageId?: string | null
   error?: string | null
+  consentStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  suppressionReason?: string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -559,6 +655,10 @@ export type CampaignRecipientScalarWhereInput = {
   status?: Prisma.StringFilter<"CampaignRecipient"> | string
   externalMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   error?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  consentStatus?: Prisma.StringFilter<"CampaignRecipient"> | string
+  consentSource?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  consentProof?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  suppressionReason?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -572,6 +672,10 @@ export type CampaignRecipientCreateManyCampaignInput = {
   status?: string
   externalMessageId?: string | null
   error?: string | null
+  consentStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  suppressionReason?: string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -585,6 +689,10 @@ export type CampaignRecipientUpdateWithoutCampaignInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -598,6 +706,10 @@ export type CampaignRecipientUncheckedUpdateWithoutCampaignInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -611,6 +723,10 @@ export type CampaignRecipientUncheckedUpdateManyWithoutCampaignInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  suppressionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -627,6 +743,10 @@ export type CampaignRecipientSelect<ExtArgs extends runtime.Types.Extensions.Int
   status?: boolean
   externalMessageId?: boolean
   error?: boolean
+  consentStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  suppressionReason?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -642,6 +762,10 @@ export type CampaignRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.T
   status?: boolean
   externalMessageId?: boolean
   error?: boolean
+  consentStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  suppressionReason?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -657,6 +781,10 @@ export type CampaignRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   status?: boolean
   externalMessageId?: boolean
   error?: boolean
+  consentStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  suppressionReason?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -672,6 +800,10 @@ export type CampaignRecipientSelectScalar = {
   status?: boolean
   externalMessageId?: boolean
   error?: boolean
+  consentStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  suppressionReason?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -679,7 +811,7 @@ export type CampaignRecipientSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "phone" | "status" | "externalMessageId" | "error" | "sentAt" | "deliveredAt" | "readAt" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
+export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "phone" | "status" | "externalMessageId" | "error" | "consentStatus" | "consentSource" | "consentProof" | "suppressionReason" | "sentAt" | "deliveredAt" | "readAt" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
 export type CampaignRecipientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
 }
@@ -702,6 +834,10 @@ export type $CampaignRecipientPayload<ExtArgs extends runtime.Types.Extensions.I
     status: string
     externalMessageId: string | null
     error: string | null
+    consentStatus: string
+    consentSource: string | null
+    consentProof: string | null
+    suppressionReason: string | null
     sentAt: Date | null
     deliveredAt: Date | null
     readAt: Date | null
@@ -1137,6 +1273,10 @@ export interface CampaignRecipientFieldRefs {
   readonly status: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly externalMessageId: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly error: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly consentStatus: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly consentSource: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly consentProof: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly suppressionReason: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly sentAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly deliveredAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly readAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>

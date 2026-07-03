@@ -12,7 +12,8 @@
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "verify:knowledge": "tsx scripts/verify-governed-knowledge.ts",
-    "verify:registration": "tsx scripts/verify-trial-registration.ts"
+    "verify:registration": "tsx scripts/verify-trial-registration.ts",
+    "verify:campaigns": "tsx scripts/verify-campaign-compliance.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "latest",

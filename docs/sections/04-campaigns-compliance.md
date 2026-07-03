@@ -1,6 +1,6 @@
 # Section 04: Campaigns And Compliance
 
-Status: Planned
+Status: In progress
 Target score: 8.5/10
 
 ## Think
@@ -22,6 +22,24 @@ Campaign objective -> Audience segment -> Consent evidence check -> Approved Met
 5. Test send, final confirmation, cost ceiling, scheduling, and cancellation.
 6. Durable run history and recipient-level delivery explanations.
 7. Reply, conversion, opt-out, and estimated-spend analytics.
+
+## Implemented Increment 1
+
+- Added campaign compliance fields to persisted campaign runs and recipients:
+  - template status,
+  - consent source,
+  - consent proof,
+  - consent confirmation actor/time,
+  - audience snapshot,
+  - test-mode flag,
+  - recipient consent status,
+  - suppression reason placeholder.
+- Added a governed local template catalogue with the correct approved `goa_ai_audit_image_v2` image template, approved text templates, and pending template visibility.
+- Bulk campaign API now requires authentication, validates the selected template against the approved catalogue, blocks pending/unknown templates, requires consent proof, and records the consent audit trail.
+- Campaign page now passes approved templates, consent source options, recent campaign runs, and aggregate campaign analytics into the client UI.
+- Replaced raw template-name entry with a guided wizard: template, audience, consent, confirmation.
+- The UI now supports internal test send mode, approved test DB fill, recent-contact fill, template preview, default image header, estimated Meta charge, and recent run analytics.
+- Added synthetic `npm run verify:campaigns` verifier covering template blocking, consent validation, campaign persistence, recipient audit fields, finalization, summary metrics, and cleanup.
 
 ## Acceptance Gates
 

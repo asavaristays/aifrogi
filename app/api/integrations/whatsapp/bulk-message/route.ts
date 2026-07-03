@@ -4,6 +4,12 @@ import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getCurrentUser } from "@/lib/auth-server";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
 import {
+  buildAudienceSnapshot,
+  estimateTemplateCostPaisa,
+  validateCampaignTemplate,
+  validateConsent
+} from "@/lib/campaign-compliance";
+import {
   createCampaignRun,
   finalizeCampaignRun,
   recordCampaignRecipientResult
@@ -61,7 +67,10 @@ export async function POST(request: Request) {
   const metaChargeCategory = typeof payload?.metaChargeCategory === "string"
     ? payload.metaChargeCategory.trim().toUpperCase()
     : "MARKETING";
-  const estimatedUnitCostPaisa = metaChargeCategory === "MARKETING" ? 109 : 15;
+  const consentConfirmed = Boolean(payload?.consentConfirmed ?? payload?.hasConsent);
+  const consentSource = typeof payload?.consentSource === "string" ? payload.consentSource.trim() : "";
+  const consentProof = typeof payload?.consentProof === "string" ? payload.consentProof.trim() : "";
+  const testMode = Boolean(payload?.testMode);
   const selectedWorkspaceSlug = await getCurrentWorkspaceSlug();
   const propertySlug = typeof payload?.propertySlug === "string" && payload.propertySlug.trim()
     ? payload.propertySlug.trim()
@@ -71,12 +80,21 @@ export async function POST(request: Request) {
   const isTemplateMode = mode === "template";
   const [user, property] = await Promise.all([getCurrentUser(), getPropertyBySlug(propertySlug)]);
 
+  if (!user) {
+    return NextResponse.json({ error: "Sign in before sending a campaign." }, { status: 401 });
+  }
+
   if (!isTemplateMode && !message) {
     return NextResponse.json({ error: "message is required" }, { status: 400 });
   }
 
   if (isTemplateMode && !templateName) {
     return NextResponse.json({ error: "Approved WhatsApp template name is required" }, { status: 400 });
+  }
+
+  const templateValidation = isTemplateMode ? validateCampaignTemplate(templateName) : { template: null, error: null };
+  if (templateValidation.error) {
+    return NextResponse.json({ error: templateValidation.error }, { status: 400 });
   }
 
   if (!recipients.length) {
@@ -90,19 +108,38 @@ export async function POST(request: Request) {
     );
   }
 
+  const consentValidation = isTemplateMode
+    ? validateConsent({ confirmed: consentConfirmed, source: consentSource, proof: consentProof }, recipients.length)
+    : { error: null };
+  if (consentValidation.error) {
+    return NextResponse.json({ error: consentValidation.error }, { status: 400 });
+  }
+
   if (!property) {
     return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
   }
+
+  const template = templateValidation.template;
+  const category = template?.category || metaChargeCategory;
+  const estimatedCostPaisa = isTemplateMode
+    ? estimateTemplateCostPaisa(category as "MARKETING" | "UTILITY" | "AUTHENTICATION", recipients.length)
+    : 0;
 
   const campaign = await createCampaignRun({
     propertyId: property.id,
     name: campaignName,
     templateName: isTemplateMode ? templateName : undefined,
-    languageCode,
+    languageCode: template?.languageCode || languageCode,
     messageType: isTemplateMode ? "TEMPLATE" : "SESSION_TEXT",
-    metaChargeCategory: isTemplateMode ? metaChargeCategory : undefined,
-    estimatedCostPaisa: isTemplateMode ? recipients.length * estimatedUnitCostPaisa : 0,
+    metaChargeCategory: isTemplateMode ? category : undefined,
+    estimatedCostPaisa,
     requestedCount: recipients.length,
+    templateStatus: template?.status || "UNKNOWN",
+    consentSource: isTemplateMode ? consentSource : undefined,
+    consentProof: isTemplateMode ? consentProof : undefined,
+    consentConfirmedBy: isTemplateMode ? user?.username : undefined,
+    audienceSnapshot: isTemplateMode ? buildAudienceSnapshot({ requestedCount: recipients.length, recipients, source: consentSource, templateName, testMode }) : undefined,
+    testMode,
     createdBy: user?.username,
     recipients
   });
@@ -114,10 +151,10 @@ export async function POST(request: Request) {
       ? await sendWhatsAppTemplateMessage({
           to,
           templateName,
-          languageCode,
+          languageCode: template?.languageCode || languageCode,
           propertySlug,
           bodyVariables,
-          headerImageUrl
+          headerImageUrl: headerImageUrl || template?.defaultHeaderImageUrl || ""
         })
       : await sendWhatsAppTestMessage({
           to,
@@ -166,7 +203,8 @@ export async function POST(request: Request) {
       sent,
       failed,
       mode: isTemplateMode ? "template" : "text",
-      templateName: isTemplateMode ? templateName : null
+      templateName: isTemplateMode ? templateName : null,
+      testMode
     },
     campaignId: campaign?.id ?? null,
     results

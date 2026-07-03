@@ -66,6 +66,13 @@ export type CampaignMinAggregateOutputType = {
   deliveredCount: number | null
   readCount: number | null
   failedCount: number | null
+  templateStatus: string | null
+  consentSource: string | null
+  consentProof: string | null
+  consentConfirmedAt: Date | null
+  consentConfirmedBy: string | null
+  audienceSnapshot: string | null
+  testMode: boolean | null
   createdBy: string | null
   errorSummary: string | null
   status: string | null
@@ -91,6 +98,13 @@ export type CampaignMaxAggregateOutputType = {
   deliveredCount: number | null
   readCount: number | null
   failedCount: number | null
+  templateStatus: string | null
+  consentSource: string | null
+  consentProof: string | null
+  consentConfirmedAt: Date | null
+  consentConfirmedBy: string | null
+  audienceSnapshot: string | null
+  testMode: boolean | null
   createdBy: string | null
   errorSummary: string | null
   status: string | null
@@ -116,6 +130,13 @@ export type CampaignCountAggregateOutputType = {
   deliveredCount: number
   readCount: number
   failedCount: number
+  templateStatus: number
+  consentSource: number
+  consentProof: number
+  consentConfirmedAt: number
+  consentConfirmedBy: number
+  audienceSnapshot: number
+  testMode: number
   createdBy: number
   errorSummary: number
   status: number
@@ -165,6 +186,13 @@ export type CampaignMinAggregateInputType = {
   deliveredCount?: true
   readCount?: true
   failedCount?: true
+  templateStatus?: true
+  consentSource?: true
+  consentProof?: true
+  consentConfirmedAt?: true
+  consentConfirmedBy?: true
+  audienceSnapshot?: true
+  testMode?: true
   createdBy?: true
   errorSummary?: true
   status?: true
@@ -190,6 +218,13 @@ export type CampaignMaxAggregateInputType = {
   deliveredCount?: true
   readCount?: true
   failedCount?: true
+  templateStatus?: true
+  consentSource?: true
+  consentProof?: true
+  consentConfirmedAt?: true
+  consentConfirmedBy?: true
+  audienceSnapshot?: true
+  testMode?: true
   createdBy?: true
   errorSummary?: true
   status?: true
@@ -215,6 +250,13 @@ export type CampaignCountAggregateInputType = {
   deliveredCount?: true
   readCount?: true
   failedCount?: true
+  templateStatus?: true
+  consentSource?: true
+  consentProof?: true
+  consentConfirmedAt?: true
+  consentConfirmedBy?: true
+  audienceSnapshot?: true
+  testMode?: true
   createdBy?: true
   errorSummary?: true
   status?: true
@@ -327,6 +369,13 @@ export type CampaignGroupByOutputType = {
   deliveredCount: number
   readCount: number
   failedCount: number
+  templateStatus: string
+  consentSource: string | null
+  consentProof: string | null
+  consentConfirmedAt: Date | null
+  consentConfirmedBy: string | null
+  audienceSnapshot: string | null
+  testMode: boolean
   createdBy: string | null
   errorSummary: string | null
   status: string
@@ -375,6 +424,13 @@ export type CampaignWhereInput = {
   deliveredCount?: Prisma.IntFilter<"Campaign"> | number
   readCount?: Prisma.IntFilter<"Campaign"> | number
   failedCount?: Prisma.IntFilter<"Campaign"> | number
+  templateStatus?: Prisma.StringFilter<"Campaign"> | string
+  consentSource?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  consentProof?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  consentConfirmedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
+  consentConfirmedBy?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  audienceSnapshot?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  testMode?: Prisma.BoolFilter<"Campaign"> | boolean
   createdBy?: Prisma.StringNullableFilter<"Campaign"> | string | null
   errorSummary?: Prisma.StringNullableFilter<"Campaign"> | string | null
   status?: Prisma.StringFilter<"Campaign"> | string
@@ -402,6 +458,13 @@ export type CampaignOrderByWithRelationInput = {
   deliveredCount?: Prisma.SortOrder
   readCount?: Prisma.SortOrder
   failedCount?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentProof?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentConfirmedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  audienceSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
+  testMode?: Prisma.SortOrder
   createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
   errorSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -432,6 +495,13 @@ export type CampaignWhereUniqueInput = Prisma.AtLeast<{
   deliveredCount?: Prisma.IntFilter<"Campaign"> | number
   readCount?: Prisma.IntFilter<"Campaign"> | number
   failedCount?: Prisma.IntFilter<"Campaign"> | number
+  templateStatus?: Prisma.StringFilter<"Campaign"> | string
+  consentSource?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  consentProof?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  consentConfirmedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
+  consentConfirmedBy?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  audienceSnapshot?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  testMode?: Prisma.BoolFilter<"Campaign"> | boolean
   createdBy?: Prisma.StringNullableFilter<"Campaign"> | string | null
   errorSummary?: Prisma.StringNullableFilter<"Campaign"> | string | null
   status?: Prisma.StringFilter<"Campaign"> | string
@@ -459,6 +529,13 @@ export type CampaignOrderByWithAggregationInput = {
   deliveredCount?: Prisma.SortOrder
   readCount?: Prisma.SortOrder
   failedCount?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentProof?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  consentConfirmedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  audienceSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
+  testMode?: Prisma.SortOrder
   createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
   errorSummary?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -492,6 +569,13 @@ export type CampaignScalarWhereWithAggregatesInput = {
   deliveredCount?: Prisma.IntWithAggregatesFilter<"Campaign"> | number
   readCount?: Prisma.IntWithAggregatesFilter<"Campaign"> | number
   failedCount?: Prisma.IntWithAggregatesFilter<"Campaign"> | number
+  templateStatus?: Prisma.StringWithAggregatesFilter<"Campaign"> | string
+  consentSource?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  consentProof?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  consentConfirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
+  consentConfirmedBy?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  audienceSnapshot?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  testMode?: Prisma.BoolWithAggregatesFilter<"Campaign"> | boolean
   createdBy?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   errorSummary?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Campaign"> | string
@@ -516,6 +600,13 @@ export type CampaignCreateInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -543,6 +634,13 @@ export type CampaignUncheckedCreateInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -568,6 +666,13 @@ export type CampaignUpdateInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -595,6 +700,13 @@ export type CampaignUncheckedUpdateInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -621,6 +733,13 @@ export type CampaignCreateManyInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -645,6 +764,13 @@ export type CampaignUpdateManyMutationInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -670,6 +796,13 @@ export type CampaignUncheckedUpdateManyInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -705,6 +838,13 @@ export type CampaignCountOrderByAggregateInput = {
   deliveredCount?: Prisma.SortOrder
   readCount?: Prisma.SortOrder
   failedCount?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrder
+  consentProof?: Prisma.SortOrder
+  consentConfirmedAt?: Prisma.SortOrder
+  consentConfirmedBy?: Prisma.SortOrder
+  audienceSnapshot?: Prisma.SortOrder
+  testMode?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   errorSummary?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -741,6 +881,13 @@ export type CampaignMaxOrderByAggregateInput = {
   deliveredCount?: Prisma.SortOrder
   readCount?: Prisma.SortOrder
   failedCount?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrder
+  consentProof?: Prisma.SortOrder
+  consentConfirmedAt?: Prisma.SortOrder
+  consentConfirmedBy?: Prisma.SortOrder
+  audienceSnapshot?: Prisma.SortOrder
+  testMode?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   errorSummary?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -766,6 +913,13 @@ export type CampaignMinOrderByAggregateInput = {
   deliveredCount?: Prisma.SortOrder
   readCount?: Prisma.SortOrder
   failedCount?: Prisma.SortOrder
+  templateStatus?: Prisma.SortOrder
+  consentSource?: Prisma.SortOrder
+  consentProof?: Prisma.SortOrder
+  consentConfirmedAt?: Prisma.SortOrder
+  consentConfirmedBy?: Prisma.SortOrder
+  audienceSnapshot?: Prisma.SortOrder
+  testMode?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   errorSummary?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -862,6 +1016,13 @@ export type CampaignCreateWithoutPropertyInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -887,6 +1048,13 @@ export type CampaignUncheckedCreateWithoutPropertyInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -942,6 +1110,13 @@ export type CampaignScalarWhereInput = {
   deliveredCount?: Prisma.IntFilter<"Campaign"> | number
   readCount?: Prisma.IntFilter<"Campaign"> | number
   failedCount?: Prisma.IntFilter<"Campaign"> | number
+  templateStatus?: Prisma.StringFilter<"Campaign"> | string
+  consentSource?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  consentProof?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  consentConfirmedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
+  consentConfirmedBy?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  audienceSnapshot?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  testMode?: Prisma.BoolFilter<"Campaign"> | boolean
   createdBy?: Prisma.StringNullableFilter<"Campaign"> | string | null
   errorSummary?: Prisma.StringNullableFilter<"Campaign"> | string | null
   status?: Prisma.StringFilter<"Campaign"> | string
@@ -966,6 +1141,13 @@ export type CampaignCreateWithoutRecipientsInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -992,6 +1174,13 @@ export type CampaignUncheckedCreateWithoutRecipientsInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -1032,6 +1221,13 @@ export type CampaignUpdateWithoutRecipientsInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1058,6 +1254,13 @@ export type CampaignUncheckedUpdateWithoutRecipientsInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1082,6 +1285,13 @@ export type CampaignCreateManyPropertyInput = {
   deliveredCount?: number
   readCount?: number
   failedCount?: number
+  templateStatus?: string
+  consentSource?: string | null
+  consentProof?: string | null
+  consentConfirmedAt?: Date | string | null
+  consentConfirmedBy?: string | null
+  audienceSnapshot?: string | null
+  testMode?: boolean
   createdBy?: string | null
   errorSummary?: string | null
   status?: string
@@ -1106,6 +1316,13 @@ export type CampaignUpdateWithoutPropertyInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1131,6 +1348,13 @@ export type CampaignUncheckedUpdateWithoutPropertyInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1156,6 +1380,13 @@ export type CampaignUncheckedUpdateManyWithoutPropertyInput = {
   deliveredCount?: Prisma.IntFieldUpdateOperationsInput | number
   readCount?: Prisma.IntFieldUpdateOperationsInput | number
   failedCount?: Prisma.IntFieldUpdateOperationsInput | number
+  templateStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  consentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentProof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  consentConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consentConfirmedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audienceSnapshot?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  testMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   errorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1212,6 +1443,13 @@ export type CampaignSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   deliveredCount?: boolean
   readCount?: boolean
   failedCount?: boolean
+  templateStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  consentConfirmedAt?: boolean
+  consentConfirmedBy?: boolean
+  audienceSnapshot?: boolean
+  testMode?: boolean
   createdBy?: boolean
   errorSummary?: boolean
   status?: boolean
@@ -1240,6 +1478,13 @@ export type CampaignSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   deliveredCount?: boolean
   readCount?: boolean
   failedCount?: boolean
+  templateStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  consentConfirmedAt?: boolean
+  consentConfirmedBy?: boolean
+  audienceSnapshot?: boolean
+  testMode?: boolean
   createdBy?: boolean
   errorSummary?: boolean
   status?: boolean
@@ -1266,6 +1511,13 @@ export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   deliveredCount?: boolean
   readCount?: boolean
   failedCount?: boolean
+  templateStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  consentConfirmedAt?: boolean
+  consentConfirmedBy?: boolean
+  audienceSnapshot?: boolean
+  testMode?: boolean
   createdBy?: boolean
   errorSummary?: boolean
   status?: boolean
@@ -1292,6 +1544,13 @@ export type CampaignSelectScalar = {
   deliveredCount?: boolean
   readCount?: boolean
   failedCount?: boolean
+  templateStatus?: boolean
+  consentSource?: boolean
+  consentProof?: boolean
+  consentConfirmedAt?: boolean
+  consentConfirmedBy?: boolean
+  audienceSnapshot?: boolean
+  testMode?: boolean
   createdBy?: boolean
   errorSummary?: boolean
   status?: boolean
@@ -1299,7 +1558,7 @@ export type CampaignSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "name" | "festivalName" | "templateName" | "languageCode" | "messageType" | "metaChargeCategory" | "scheduledFor" | "estimatedReach" | "estimatedRevenue" | "estimatedCostPaisa" | "requestedCount" | "sentCount" | "deliveredCount" | "readCount" | "failedCount" | "createdBy" | "errorSummary" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
+export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "name" | "festivalName" | "templateName" | "languageCode" | "messageType" | "metaChargeCategory" | "scheduledFor" | "estimatedReach" | "estimatedRevenue" | "estimatedCostPaisa" | "requestedCount" | "sentCount" | "deliveredCount" | "readCount" | "failedCount" | "templateStatus" | "consentSource" | "consentProof" | "consentConfirmedAt" | "consentConfirmedBy" | "audienceSnapshot" | "testMode" | "createdBy" | "errorSummary" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
 export type CampaignInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   recipients?: boolean | Prisma.Campaign$recipientsArgs<ExtArgs>
@@ -1336,6 +1595,13 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     deliveredCount: number
     readCount: number
     failedCount: number
+    templateStatus: string
+    consentSource: string | null
+    consentProof: string | null
+    consentConfirmedAt: Date | null
+    consentConfirmedBy: string | null
+    audienceSnapshot: string | null
+    testMode: boolean
     createdBy: string | null
     errorSummary: string | null
     status: string
@@ -1783,6 +2049,13 @@ export interface CampaignFieldRefs {
   readonly deliveredCount: Prisma.FieldRef<"Campaign", 'Int'>
   readonly readCount: Prisma.FieldRef<"Campaign", 'Int'>
   readonly failedCount: Prisma.FieldRef<"Campaign", 'Int'>
+  readonly templateStatus: Prisma.FieldRef<"Campaign", 'String'>
+  readonly consentSource: Prisma.FieldRef<"Campaign", 'String'>
+  readonly consentProof: Prisma.FieldRef<"Campaign", 'String'>
+  readonly consentConfirmedAt: Prisma.FieldRef<"Campaign", 'DateTime'>
+  readonly consentConfirmedBy: Prisma.FieldRef<"Campaign", 'String'>
+  readonly audienceSnapshot: Prisma.FieldRef<"Campaign", 'String'>
+  readonly testMode: Prisma.FieldRef<"Campaign", 'Boolean'>
   readonly createdBy: Prisma.FieldRef<"Campaign", 'String'>
   readonly errorSummary: Prisma.FieldRef<"Campaign", 'String'>
   readonly status: Prisma.FieldRef<"Campaign", 'String'>
