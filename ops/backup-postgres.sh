@@ -10,12 +10,14 @@ timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
 base="${BACKUP_DIR}/aifrogi-${timestamp}.dump"
 encrypted="${base}.gz.enc"
 temporary="${base}.tmp"
+pg_database_url="$(node -e 'const url=new URL(process.argv[1]); url.searchParams.delete("schema"); process.stdout.write(url.toString())' "$DATABASE_URL")"
+pg_schema="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.searchParams.get("schema") || "public")' "$DATABASE_URL")"
 
 mkdir -p "$BACKUP_DIR"
 umask 077
 trap 'rm -f "$temporary" "${base}.gz"' EXIT
 
-pg_dump --format=custom --no-owner --no-privileges --file "$temporary" "$DATABASE_URL"
+pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database_url"
 pg_restore --list "$temporary" >/dev/null
 gzip -c "$temporary" > "${base}.gz"
 openssl enc -aes-256-cbc -pbkdf2 -salt -in "${base}.gz" -out "$encrypted" -pass env:BACKUP_ENCRYPTION_PASSPHRASE
