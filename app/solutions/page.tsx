@@ -6,11 +6,11 @@ export default function SolutionsPage() {
   return (
     <main className="bg-white text-[#2c243b]">
       <SiteHeader />
-      <section className="bg-[#2c243b] px-5 py-20 text-white sm:px-8">
+      <section className="bg-[#2c243b] px-5 py-14 text-white sm:px-8 sm:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
           <div>
             <p className="product-eyebrow text-[#ff8af1]">Solutions</p>
-            <h1 className="mt-4 text-5xl font-semibold leading-tight tracking-[-0.04em] sm:text-6xl">One inbox. Many business outcomes.</h1>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-6xl">One inbox. Many business outcomes.</h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/64">Broadcasts, chatbot, retargeting, reminders, payments, forms, surveys, and reviews work from the same customer conversation.</p>
           </div>
           <InboxOperationsVisual />

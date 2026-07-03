@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { Icon } from "@/components/icons";
 
 const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register";
@@ -14,27 +18,66 @@ const navItems = [
 ];
 
 export function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#251f2d]/92 px-5 text-white backdrop-blur-xl sm:px-8">
-      <div className="mx-auto flex min-h-[68px] max-w-7xl flex-wrap items-center justify-between gap-4 py-3">
-        <Link href="/" className="flex items-center" aria-label="AiFrogi home">
-          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] sm:w-[158px]" />
-        </Link>
+    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#251f2d]/95 px-4 text-white backdrop-blur-xl sm:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex min-h-[68px] items-center justify-between gap-3">
+          <Link href="/" className="flex shrink-0 items-center" aria-label="AiFrogi home" onClick={() => setMenuOpen(false)}>
+            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[122px] sm:w-[158px]" />
+          </Link>
 
-        <nav aria-label="Main navigation" className="order-3 flex w-full gap-4 overflow-x-auto text-sm font-semibold text-white/62 [scrollbar-width:none] md:order-2 md:w-auto md:gap-6 [&::-webkit-scrollbar]:hidden">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="shrink-0 transition hover:text-white">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 md:flex">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className="transition hover:text-white">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="order-2 flex items-center gap-3 md:order-3">
-          <a href={loginUrl} className="hidden text-sm font-semibold text-white/70 hover:text-white sm:inline-flex">Login</a>
-          <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a>
+          <div className="hidden items-center gap-3 md:flex">
+            <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a>
+          </div>
+
+          <div className="flex items-center gap-2 md:hidden">
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-3 text-xs font-bold text-white shadow-[0_0_24px_rgba(217,43,203,.2)]">
+              Start trial
+            </a>
+            <button
+              type="button"
+              aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="grid min-h-10 min-w-10 place-items-center rounded-lg border border-white/15 bg-white/5 text-white"
+            >
+              <Icon name={menuOpen ? "x" : "menu"} className="h-5 w-5" />
+            </button>
+          </div>
         </div>
+
+        {menuOpen ? (
+          <div id="mobile-navigation" className="border-t border-white/10 pb-4 md:hidden">
+            <nav aria-label="Mobile navigation" className="grid grid-cols-2 gap-1 py-3">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-white/76 transition hover:bg-white/8 hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <a href={loginUrl} className="flex min-h-11 items-center justify-center rounded-lg border border-white/15 text-sm font-bold text-white">
+              Login to AiFrogi
+            </a>
+          </div>
+        ) : null}
       </div>
     </header>
   );
 }
-

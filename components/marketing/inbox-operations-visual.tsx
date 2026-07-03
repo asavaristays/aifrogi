@@ -68,10 +68,10 @@ export function InboxOperationsVisual() {
         <span className="ml-auto rounded-full bg-[#d92bcb]/15 px-3 py-1 text-[10px] font-bold text-[#ff8af1]">Live operations</span>
       </div>
 
-      <div className="grid min-h-[420px] md:grid-cols-[250px_1fr]">
+      <div className="grid md:min-h-[420px] md:grid-cols-[250px_1fr]">
         <aside className="border-b border-white/8 p-4 md:border-b-0 md:border-r">
           <p className="text-[10px] font-black uppercase tracking-[.14em] text-white/38">Open conversations</p>
-          <div className="mt-5 space-y-2">
+          <div className="mt-4 flex snap-x gap-2 overflow-x-auto pb-2 [scrollbar-width:none] md:mt-5 md:block md:space-y-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden">
             {useCases.map((item, index) => (
               <button
                 key={item.title}
@@ -79,7 +79,7 @@ export function InboxOperationsVisual() {
                 onMouseEnter={() => setActiveIndex(index)}
                 onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
-                className={`w-full rounded-xl p-3 text-left transition ${index === activeIndex ? "bg-[#d92bcb]/18 shadow-[inset_0_0_0_1px_rgba(255,138,241,.25)]" : "bg-white/[.045] hover:bg-white/[.075]"}`}
+                className={`w-[184px] shrink-0 snap-start rounded-xl p-3 text-left transition md:w-full ${index === activeIndex ? "bg-[#d92bcb]/18 shadow-[inset_0_0_0_1px_rgba(255,138,241,.25)]" : "bg-white/[.045] hover:bg-white/[.075]"}`}
               >
                 <div className="flex items-center gap-3">
                   <span className={`grid h-8 w-8 place-items-center rounded-full text-[10px] font-black text-white ${index === activeIndex ? "bg-[#d92bcb]" : "bg-[#5a3561]"}`}>{item.conversation.slice(0, 2).toUpperCase()}</span>
@@ -93,16 +93,16 @@ export function InboxOperationsVisual() {
           </div>
         </aside>
 
-        <section className="p-5">
+        <section className="p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#ff8af1]">One inbox, many outcomes</p>
-              <h3 className="mt-2 text-2xl font-semibold">Every reply becomes the right next action.</h3>
+              <h3 className="mt-2 text-xl font-semibold sm:text-2xl">Every reply becomes the right next action.</h3>
             </div>
             <Icon name="message-circle" className="h-6 w-6 text-[#ff8af1]" />
           </div>
 
-          <div className="mt-8 grid gap-2 sm:grid-cols-2">
+          <div className="mt-6 grid gap-2 sm:mt-8 sm:grid-cols-2">
             {useCases.map((item, index) => (
               <button
                 key={item.title}
@@ -118,7 +118,7 @@ export function InboxOperationsVisual() {
             ))}
           </div>
 
-          <div key={active.title} className="feature-showcase-reveal mt-8 border-l-2 border-[#ff8af1] pl-4">
+          <div key={active.title} className="feature-showcase-reveal mt-6 border-l-2 border-[#ff8af1] pl-4 sm:mt-8">
             <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#ff8af1]">Use case detail</p>
             <h4 className="mt-2 text-xl font-semibold">{active.title}</h4>
             <p className="mt-3 text-sm leading-6 text-white/58">{active.detail}</p>

@@ -52,7 +52,7 @@ export function OnboardingJourney() {
   const active = stages[activeIndex];
 
   return (
-    <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
+    <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-14 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <p className="product-eyebrow">Meta Tech Provider guided setup</p>
@@ -67,8 +67,8 @@ export function OnboardingJourney() {
             <CriticalStrip label="After approval" copy={<><strong>API 30-60 min</strong> → workflow <strong>1-2 days</strong></>} />
           </div>
 
-          <div className="p-5 sm:p-7">
-            <div className="grid gap-3 lg:grid-cols-4">
+          <div className="p-4 sm:p-7">
+            <div className="grid auto-cols-[230px] grid-flow-col gap-3 overflow-x-auto pb-2 [scrollbar-width:none] lg:grid-flow-row lg:grid-cols-4 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden">
               {stages.map((stage, index) => {
                 const selected = index === activeIndex;
                 return (
@@ -107,7 +107,7 @@ export function OnboardingJourney() {
           </div>
         </div>
 
-        <div key={active.title} className="feature-showcase-reveal mt-5 rounded-2xl border border-[#eadfed] bg-white p-5 shadow-[0_16px_45px_rgba(44,36,59,.06)] sm:p-6">
+        <div key={active.title} className="feature-showcase-reveal mt-5 rounded-2xl border border-[#eadfed] bg-white p-4 shadow-[0_16px_45px_rgba(44,36,59,.06)] sm:p-6">
           <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr_1fr]">
             <InfoBlock label="Client action" copy={active.customer} />
             <InfoBlock label="AiFrogi handhold" copy={active.aifrogi} highlighted />
