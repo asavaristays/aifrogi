@@ -97,7 +97,7 @@ export function SideNav({
       >
         <div className={cn("mb-4 px-2 pb-4 pt-1", isLight ? "border-b border-black/6" : "border-b border-white/8")}>
           <div className="flex min-h-11 items-center">
-            <Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[158px]" />
+            <Image src={isLight ? "/brand/aifrogi-logo.png" : "/brand/aifrogi-logo-transparent.png"} alt="AiFrogi" width={800} height={300} priority className="h-auto w-[158px]" />
           </div>
           {workspaces.length ? <WorkspaceSwitcher workspaces={workspaces} currentSlug={currentWorkspaceSlug} /> : null}
         </div>

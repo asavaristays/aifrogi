@@ -37,7 +37,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
     <main className="grid min-h-screen bg-white text-[#2c243b] lg:grid-cols-[0.92fr_1.08fr]">
       <section className="flex items-center bg-[#2c243b] px-7 py-12 text-white sm:px-12 lg:px-16">
         <div className="mx-auto w-full max-w-xl">
-          <Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[210px] brightness-0 invert" />
+          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[210px]" />
           <p className="mt-16 text-sm font-semibold text-[#ff8af1]">AI messaging platform for business</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">One calm place for customer conversations.</h1>
           <p className="mt-5 max-w-lg text-base leading-7 text-white/68">Manage WhatsApp messages, campaigns, automation, and human handoffs without exposing technical complexity to your team.</p>
