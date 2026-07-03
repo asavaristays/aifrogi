@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { Icon } from "@/components/icons";
 
@@ -27,9 +28,9 @@ const steps = [
     owner: "Customer",
     icon: "smartphone" as const,
     outcome: "OTP ready",
-    customer: "Use a number that can receive OTP or voice. If it is already on WhatsApp App or Business App, it must be removed or migrated before API activation.",
+    customer: <>Use a number that can receive <strong>OTP or voice</strong>. If it is already on WhatsApp App or Business App, it must be <strong>removed or migrated before API activation</strong>.</>,
     aifrogi: "Explains the safest number path before connection, including whether to use an existing number or a fresh SIM.",
-    meta: "Verifies the phone during the official connection flow. Without OTP or voice access, onboarding stops here."
+    meta: <>Verifies the phone during the official connection flow. <strong>Without OTP or voice access, onboarding stops here.</strong></>
   },
   {
     title: "Connect Meta",
@@ -63,15 +64,15 @@ const steps = [
 const prerequisites = [
   {
     title: "SIM must be available",
-    copy: "The WhatsApp number must receive OTP or voice. If it is already used in WhatsApp App or Business App, plan removal or migration before API activation."
+    copy: <>The WhatsApp number must receive <strong>OTP or voice</strong>. If it is already used in <strong>WhatsApp App or Business App</strong>, plan <strong>removal or migration before API activation</strong>.</>
   },
   {
     title: "Business proof must match",
-    copy: "Legal name, address, GST/trade licence, website or social profile, and display name should tell the same story."
+    copy: <><strong>Legal name, address, GST/trade licence, website or social profile, and display name</strong> should tell the same story.</>
   },
   {
     title: "Meta timing is visible",
-    copy: "Simple setups can connect the same day. Business verification or template review can take longer, and AiFrogi shows exactly what is waiting."
+    copy: <>Simple setups can connect the same day. <strong>Business verification or template review can take longer</strong>, and AiFrogi shows exactly what is waiting.</>
   }
 ] as const;
 
@@ -139,8 +140,8 @@ export function OnboardingJourney() {
 
             <div className="mt-5 grid gap-3 rounded-lg border border-[#eadfed] bg-[#fbf8fc] p-4 text-xs text-[#70697d] sm:grid-cols-3">
               <StatusNote label="Client sees" copy="Completed, missing, waiting on AiFrogi, waiting on Meta, and your next action." />
-              <StatusNote label="Typical timing" copy="Fast cases can go live same day; verification, display-name, or template review may add 1-3+ days." />
-              <StatusNote label="No hidden blocker" copy="SIM access, business proof, Meta approval, billing readiness, and test status stay visible." />
+              <StatusNote label="Typical timing" copy={<>Fast cases can go live same day; <strong>verification, display-name, or template review may add 1-3+ days</strong>.</>} />
+              <StatusNote label="No hidden blocker" copy={<><strong>SIM access, business proof, Meta approval, billing readiness, and test status</strong> stay visible.</>} />
             </div>
           </div>
         </div>
@@ -149,10 +150,10 @@ export function OnboardingJourney() {
   );
 }
 
-function NarrativeLane({ label, number, copy, featured = false }: { label: string; number: string; copy: string; featured?: boolean }) {
+function NarrativeLane({ label, number, copy, featured = false }: { label: string; number: string; copy: ReactNode; featured?: boolean }) {
   return <article className={`rounded-lg border p-5 ${featured ? "border-[#d92bcb]/35 bg-[#fff7fe]" : "border-[#eadfed] bg-[#fbf8fc]"}`}><div className="flex items-center justify-between gap-3"><strong className="text-xs text-[#2c243b]">{label}</strong><span className={`text-[10px] font-bold ${featured ? "text-[#c725ba]" : "text-[#a99ead]"}`}>{number}</span></div><p className="mt-4 text-sm leading-6 text-[#70697d]">{copy}</p></article>;
 }
 
-function StatusNote({ label, copy }: { label: string; copy: string }) {
+function StatusNote({ label, copy }: { label: string; copy: ReactNode }) {
   return <div><strong className="text-[#2c243b]">{label}</strong><p className="mt-1 leading-5">{copy}</p></div>;
 }
