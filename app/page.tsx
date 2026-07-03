@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/icons";
+import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
 
 const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register";
@@ -47,7 +48,7 @@ export default function HomePage() {
             <HeaderLogo />
           </Link>
           <div className="hidden items-center gap-7 text-sm font-semibold text-white/65 md:flex">
-            <a className="transition hover:text-white" href="#product">Platform</a><a className="transition hover:text-white" href="#roles">Solutions</a><a className="transition hover:text-white" href="#pricing">Pricing</a><Link className="transition hover:text-white" href="/product-tour">Product tour</Link><Link className="transition hover:text-white" href="/security">Security</Link>
+            <a className="transition hover:text-white" href="#product">Platform</a><a className="transition hover:text-white" href="#roles">Solutions</a><a className="transition hover:text-white" href="#calculator">Calculator</a><a className="transition hover:text-white" href="#pricing">Pricing</a><Link className="transition hover:text-white" href="/product-tour">Tour</Link>
           </div>
           <div className="flex items-center gap-3"><a href={loginUrl} className="hidden text-sm font-semibold text-white/70 hover:text-white sm:inline-flex">Log in</a><a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a></div>
         </div>
@@ -116,6 +117,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <WhatsAppCostCalculator />
 
       <section id="pricing" className="border-y border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
