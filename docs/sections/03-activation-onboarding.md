@@ -44,7 +44,17 @@ Marketing trial CTA -> Business registration -> Email ownership verification -> 
 - A disposable lifecycle verification covers registration, token rotation, owner activation, state transitions, audit activity, and complete cleanup.
 - Desktop and 390px mobile layouts were visually verified with no horizontal overflow; mobile shows the form before explanatory content.
 
-Remaining increments: trial dates and telemetry, first-screen activation guidance, Meta reconciliation, template readiness, first test-message proof, and lifecycle email/help content.
+## Implemented Increment 2
+
+- A shared onboarding guidance engine classifies the current blocker, owner, next action, ETA, support note, and target step.
+- The authenticated onboarding screen now opens with a `Today` action card so the client sees the next move before forms and technical detail.
+- 30-day trial timing is calculated from workspace creation and shown in the onboarding sidebar.
+- The first messaging-test readiness check now accepts the live `CONNECTED` webhook state.
+- Super Admin customer lists show next action, owner, ETA, trial status, and an AiFrogi-owned queue count.
+- Super Admin customer detail pages show the current blocker and support note before detailed configuration panels.
+- Registration verification now tests guidance and trial-window calculation as part of the lifecycle.
+
+Remaining increments: Meta reconciliation, template readiness, first test-message proof, welcome/lifecycle email content, and drop-off analytics beyond activity history.
 
 ## Acceptance Gates
 

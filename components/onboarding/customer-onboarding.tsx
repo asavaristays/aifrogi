@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
 
 type DocumentRecord = {
   id: string;
@@ -11,6 +12,14 @@ type DocumentRecord = {
   fileName: string;
   sizeBytes: number;
   status: string;
+};
+
+type ActivityRecord = {
+  id: string;
+  action: string;
+  detail: string | null;
+  actorEmail: string | null;
+  createdAt: string | Date;
 };
 
 type OnboardingRecord = {
@@ -35,6 +44,7 @@ type OnboardingRecord = {
   webhookStatus: string;
   tokenStatus: string;
   lastError: string | null;
+  updatedAt?: string | Date;
 };
 
 export type CustomerOnboardingOrganization = {
@@ -51,8 +61,11 @@ export type CustomerOnboardingOrganization = {
   ownerMobile: string | null;
   status: string;
   plan: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
   onboarding: OnboardingRecord | null;
   documents: DocumentRecord[];
+  activities: ActivityRecord[];
   properties: Array<{ id: string; name: string; slug: string }>;
 };
 
@@ -164,6 +177,8 @@ export function CustomerOnboarding({
   const live = organization?.onboarding?.metaStatus === "LIVE";
   const rejected = organization?.onboarding?.metaStatus === "REJECTED";
   const pending = ["CONNECTING", "CONFIGURING", "REVIEW"].includes(organization?.onboarding?.metaStatus || "");
+  const guidance = getOnboardingGuidance(organization);
+  const trial = getTrialWindow(organization);
 
   const completedSteps = useMemo(() => {
     const onboarding = organization?.onboarding;
@@ -360,6 +375,18 @@ export function CustomerOnboarding({
             <div className="h-full rounded-full bg-[#25d366] transition-all" style={{ width: `${progress}%` }} />
           </div>
           <p className="mt-3 text-sm font-semibold text-[#4d5a55] lg:hidden">Step {activeStep} of {steps.length}: {steps[activeStep - 1].title}</p>
+          {trial.enabled ? (
+            <div className="mt-5 rounded-md border border-[#f2d2ef] bg-[#fdf4fc] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-black text-[#493b62]">30-day trial</p>
+                <span className="text-xs font-black text-[#b91eac]">{trial.label}</span>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
+                <div className="h-full rounded-full bg-[#df35d2]" style={{ width: `${trial.percentElapsed}%` }} />
+              </div>
+              <p className="mt-3 text-xs leading-5 text-[#746d7c]">Use this window to finish activation, test messaging, and prove the first workflow.</p>
+            </div>
+          ) : null}
           <nav className="mt-6 hidden space-y-1 lg:block" aria-label="Onboarding steps">
             {steps.map((step, index) => {
               const stepNumber = index + 1;
@@ -389,6 +416,13 @@ export function CustomerOnboarding({
         </aside>
 
         <div className="space-y-6">
+          <TodayActionCard
+            guidance={guidance}
+            progress={progress}
+            onGo={() => setActiveStep(guidance.step)}
+            live={live}
+            onOpenWorkspace={() => router.push("/dashboard")}
+          />
           <OnboardingReadiness organization={organization} />
           <TechProviderGuide />
 
@@ -456,7 +490,7 @@ function OnboardingReadiness({ organization }: { organization: CustomerOnboardin
     { label: "WhatsApp phone", owner: "You", ready: Boolean(onboarding?.phoneNumber), helper: "Access to the SIM for OTP or voice verification" },
     { label: "Secure Meta connection", owner: "AiFrogi", ready: onboarding?.facebookStatus === "CONNECTED", helper: "You approve the business and number; no passwords are shared" },
     { label: "Platform review", owner: "Meta", ready: onboarding?.metaStatus === "LIVE", helper: onboarding?.metaStatus === "REJECTED" ? onboarding.lastError || "A correction is required" : "Timing is controlled by Meta; AiFrogi monitors the result" },
-    { label: "First messaging test", owner: "AiFrogi", ready: onboarding?.metaStatus === "LIVE" && onboarding?.webhookStatus === "CONFIGURED", helper: "Inbound, outbound, delivery receipt, and human handoff" }
+    { label: "First messaging test", owner: "AiFrogi", ready: onboarding?.metaStatus === "LIVE" && (onboarding?.webhookStatus === "CONNECTED" || onboarding?.webhookStatus === "CONFIGURED"), helper: "Inbound, outbound, delivery receipt, and human handoff" }
   ];
   const ready = items.filter((item) => item.ready).length;
   return (
@@ -467,6 +501,62 @@ function OnboardingReadiness({ organization }: { organization: CustomerOnboardin
       </div>
       <div className="mt-5 grid gap-px overflow-hidden rounded-md border border-black/7 bg-black/7 md:grid-cols-2">
         {items.map((item) => <div key={item.label} className="flex gap-3 bg-[#fbfcfb] p-4"><span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${item.ready ? "bg-[#dff2ea] text-[#b923ae]" : "bg-[#eef1f0] text-[#78827e]"}`}>{item.ready ? "✓" : "·"}</span><span className="min-w-0"><span className="flex flex-wrap items-center gap-2"><strong className="text-sm">{item.label}</strong><small className="status-pill status-info !min-h-5 !px-2 !py-0 text-[9px]">{item.owner}</small></span><small className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{item.helper}</small></span></div>)}
+      </div>
+    </section>
+  );
+}
+
+function TodayActionCard({
+  guidance,
+  progress,
+  live,
+  onGo,
+  onOpenWorkspace
+}: {
+  guidance: ReturnType<typeof getOnboardingGuidance>;
+  progress: number;
+  live: boolean;
+  onGo: () => void;
+  onOpenWorkspace: () => void;
+}) {
+  const toneClass = {
+    ready: "border-[#bce8d6] bg-[#effaf5]",
+    waiting: "border-[#ead7f3] bg-[#fbf6fe]",
+    urgent: "border-[#f0c2e9] bg-[#fff4fd]",
+    info: "border-[#d8e2f3] bg-[#f7faff]"
+  }[guidance.tone];
+  const ownerClass = guidance.owner === "You" ? "status-warning" : guidance.owner === "Meta" ? "status-info" : "status-success";
+
+  return (
+    <section className={`overflow-hidden rounded-lg border p-5 shadow-sm ${toneClass}`}>
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="product-eyebrow">Today</p>
+            <span className={`status-pill ${ownerClass}`}>{guidance.owner}</span>
+            <span className="status-pill status-info">{guidance.eta}</span>
+          </div>
+          <h2 className="mt-3 text-2xl font-semibold text-[#251f2d]">{guidance.title}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#746d7c]">{guidance.description}</p>
+        </div>
+        <div className="shrink-0">
+          <Button onClick={live ? onOpenWorkspace : onGo}>{guidance.action}</Button>
+        </div>
+      </div>
+      <div className="mt-5 grid gap-3 md:grid-cols-[1fr_220px]">
+        <div className="rounded-md border border-white/70 bg-white/75 p-4">
+          <p className="text-xs font-semibold text-[#746d7c]">Why this matters</p>
+          <p className="mt-1 text-sm font-semibold text-[#3a3145]">{guidance.supportNote}</p>
+        </div>
+        <div className="rounded-md border border-white/70 bg-white/75 p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-[#746d7c]">Activation</p>
+            <strong className="text-sm">{progress}%</strong>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#efe9f1]">
+            <div className="h-full rounded-full bg-[#b91eac]" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
       </div>
     </section>
   );
