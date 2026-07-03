@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@keyframes feature-showcase-reveal {
+  from { opacity: 0; transform: translateY(8px) scale(.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.feature-showcase-reveal {
+  animation: feature-showcase-reveal .38s cubic-bezier(.2,.8,.2,1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-showcase-reveal { animation: none; }
+}
+
 :root {
   --background: #f6f6f9;
   --surface: #ffffff;
