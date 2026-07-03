@@ -35,6 +35,8 @@ The following legacy technical identifiers intentionally remain unchanged until 
 
 Changing these identifiers now would create avoidable session, webhook, deployment, or credential risk. They are internal compatibility keys and are not displayed as the product brand.
 
+For the current deployment source of truth, use `2026-07-03-aifrogi-deployment-source-of-truth.md`. The important operational point is that production still runs from `/var/www/lead-os-ai` under PM2 process `lead-os-ai`, while the customer-facing brand and domains are AiFrogi.
+
 ## Next Domain Migration
 
 ### Fixed Migration Scope
