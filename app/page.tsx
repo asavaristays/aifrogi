@@ -35,7 +35,31 @@ export default function HomePage() {
 
       <OnboardingJourney />
 
-      <section id="support" className="px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2"><div><p className="product-eyebrow">Trust by design</p><h2 className="mt-3 text-3xl font-semibold">Clear boundaries for data, AI, and Meta.</h2></div><div className="grid gap-4 sm:grid-cols-2"><TrustItem title="Client-controlled access" copy="No Facebook password, email password, permanent token, or OTP sharing."/><TrustItem title="Bounded AI" copy="Answers use approved knowledge; uncertainty routes to a human."/><TrustItem title="Consent-aware campaigns" copy="Audience preview, permission confirmation, cost estimate, and approved template."/><TrustItem title="Operational support" copy="Tickets include the customer's setup context without exposing credentials."/></div></div></section>
+      <section id="security" className="relative overflow-hidden bg-[#211a2d] px-5 py-20 text-white sm:px-8 sm:py-24">
+        <div className="absolute -right-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-[#d92bcb]/15 blur-[100px]" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Trust by design</p>
+            <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.04em] sm:text-5xl">Your customer data stays inside clear boundaries.</h2>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/62">AiFrogi connects through Meta&apos;s secure authorization flow, encrypts access credentials, and keeps every organization&apos;s data separated.</p>
+            <a href="/security" className="group mt-8 inline-flex min-h-14 items-center gap-3 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_38px_rgba(217,43,203,.3)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">
+              Review Data Security
+              <Icon name="arrow-right" className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </a>
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/45">
+              <a href="/privacy-policy" className="transition hover:text-white">Privacy policy</a>
+              <a href="/data-deletion" className="transition hover:text-white">Data deletion</a>
+              <a href="mailto:info@aifrogi.com" className="transition hover:text-white">Report a concern</a>
+            </div>
+          </div>
+
+          <div className="border-y border-white/12">
+            <SecurityControl icon="settings" title="No shared credentials" copy="Never share a Facebook password, email password, OTP, or permanent access token." />
+            <SecurityControl icon="grid" title="Encrypted and separated" copy="Access secrets are encrypted at rest. Contacts, messages, and documents stay scoped to the correct workspace." />
+            <SecurityControl icon="sparkles" title="AI stays controlled" copy="Approved knowledge, role-based access, confidence fallback, and human handover keep automation bounded." />
+          </div>
+        </div>
+      </section>
 
       <SiteFooter />
     </main>
@@ -43,4 +67,4 @@ export default function HomePage() {
 }
 
 function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
-function TrustItem({ title, copy }: { title: string; copy: string }) { return <div className="border-t border-black/10 pt-4"><strong className="text-sm">{title}</strong><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></div>; }
+function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }
