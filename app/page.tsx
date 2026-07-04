@@ -26,8 +26,8 @@ export default function HomePage() {
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#d92bcb]/20 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl text-center">
           <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#ff8af1]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Tech Provider verified by Meta <span className="text-[#ff8af1] transition-transform group-hover:translate-x-0.5">→</span></a>
-          <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Broadcast. Automate. Convert — on WhatsApp.</h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Messaging, campaigns, automation, and AI assistance in one workspace—with the context and human control your team needs.</p>
+          <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp chats into bookings, payments, and repeat customers.</h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Campaigns, AI answers, reminders, payment links, forms, reviews, and human handover in one controlled workspace.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
 
           <IntegrationLogoStrip />
@@ -50,7 +50,7 @@ export default function HomePage() {
           <div>
             <p className="product-eyebrow">Customer story · Nupur Purohit</p>
             <h2 className="mt-4 max-w-xl text-3xl font-semibold leading-tight tracking-[-.035em] sm:text-5xl">A visual story starts desire. WhatsApp carries it to booking.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays, HotelRadar, and AiFrogi connect discovery, retargeting, and human follow-up without losing guest context.</p>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays connects visual discovery, WhatsApp retargeting, and human follow-up without losing guest context.</p>
             <span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#a21c98]">View the journey <Icon name="arrow-right" className="transition-transform group-hover:translate-x-1" /></span>
           </div>
           <div className="relative min-h-[360px] overflow-hidden rounded-xl bg-[#2c243b] p-7 text-white shadow-[0_28px_80px_rgba(44,36,59,.15)]">
@@ -66,6 +66,21 @@ export default function HomePage() {
             <p className="relative mt-16 max-w-md text-2xl font-semibold leading-tight">The guest returns to the experience they already wanted.</p>
           </div>
         </a>
+      </section>
+
+      <section className="border-b border-black/8 bg-white px-5 py-16 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl">
+            <p className="product-eyebrow">Proof without fake logos</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, the Meta status, and the security boundaries.</h2>
+          </div>
+          <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <ProofLink title="Meta Tech Provider" copy="Verification evidence and platform responsibility notes." href="/security#meta-verification" icon="settings" />
+            <ProofLink title="Company details" copy="AiFrogi is operated by webtechnosys from Goa, India." href="/about" icon="file-text" />
+            <ProofLink title="Service status" copy="Public status page for platform availability and incidents." href="/status" icon="bar-chart-3" />
+            <ProofLink title="Security policy" copy="Data separation, credential handling, and AI handover rules." href="/security" icon="grid" />
+          </div>
+        </div>
       </section>
 
       <section id="security" className="relative overflow-hidden bg-[#211a2d] px-5 py-20 text-white sm:px-8 sm:py-24">
@@ -102,4 +117,5 @@ export default function HomePage() {
 
 function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
 function CaseStudyStep({ icon, label }: { icon: "image" | "refresh-cw" | "message-circle"; label: string }) { return <div><span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-[#ff8af1]"><Icon name={icon} /></span><p className="mt-3 text-xs font-bold">{label}</p></div>; }
+function ProofLink({ title, copy, href, icon }: { title: string; copy: string; href: string; icon: "settings" | "file-text" | "bar-chart-3" | "grid" }) { return <a href={href} className="group border-t border-black/10 pt-5"><span className="grid h-10 w-10 place-items-center rounded-lg bg-[#fceafb] text-[#b923ae]"><Icon name={icon} /></span><h3 className="mt-5 flex items-center justify-between gap-3 text-lg font-bold">{title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></a>; }
 function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }

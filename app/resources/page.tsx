@@ -38,7 +38,7 @@ export default function ResourcesPage() {
           <div>
             <p className="product-eyebrow">Customer story · Nupur Purohit</p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">From a beautiful stay to a booking conversation.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays, HotelRadar, and AiFrogi connect visual storytelling, WhatsApp retargeting, and human follow-up.</p>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays connects visual storytelling, WhatsApp retargeting, and human follow-up.</p>
             <span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#a21c98]">View case study <Icon name="arrow-right" className="transition-transform group-hover:translate-x-1" /></span>
           </div>
           <div className="relative min-h-[320px] overflow-hidden rounded-xl bg-[#2c243b] p-7 text-white shadow-[0_24px_70px_rgba(44,36,59,.12)]">

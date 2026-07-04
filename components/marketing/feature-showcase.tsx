@@ -132,9 +132,9 @@ export function FeatureShowcase() {
             <span className="text-[10px] font-bold uppercase tracking-[.12em] text-[#ff8af1]">{active.label}</span>
             <p className="mt-4 text-[11px] leading-5 text-white/42">{active.description}</p>
             <div className="mt-auto rounded-xl border border-[#d92bcb]/20 bg-[#d92bcb]/8 p-4">
-              <strong className="block text-3xl tracking-[-.04em] text-white">{active.metric}</strong>
-              <span className="mt-1 block text-[10px] text-white/38">{active.metricLabel}</span>
-              <span className="mt-4 inline-flex rounded-full bg-[#d92bcb]/14 px-2.5 py-1 text-[10px] font-semibold text-[#ff8af1]">{active.accent}</span>
+              <span className="block text-[10px] font-bold uppercase tracking-[.12em] text-[#ff8af1]">Use case</span>
+              <strong className="mt-2 block text-base leading-5 text-white">{active.screen}</strong>
+              <p className="mt-3 text-[11px] leading-5 text-white/45">Every reply, status, and next action stays visible to the team.</p>
             </div>
           </aside>
 

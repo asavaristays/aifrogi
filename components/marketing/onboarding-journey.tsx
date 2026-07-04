@@ -22,7 +22,7 @@ const stages = [
     icon: "plug" as const,
     headline: <>Meta approves number</>,
     customer: "You approve Meta permissions.",
-    aifrogi: "We handhold the flow and track status.",
+    aifrogi: "We guide the flow and track status.",
     note: <>Business, display-name, or template review can add time.</>
   },
   {
@@ -56,7 +56,7 @@ export function OnboardingJourney() {
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <p className="product-eyebrow">Meta Tech Provider guided setup</p>
-          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">We handhold your WhatsApp API onboarding.</h2>
+          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">Hands-on WhatsApp API onboarding.</h2>
           <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">One glance: what you need, what Meta approves, and what happens after approval.</p>
         </div>
 
@@ -110,7 +110,7 @@ export function OnboardingJourney() {
         <div key={active.title} className="feature-showcase-reveal mt-5 rounded-2xl border border-[#eadfed] bg-white p-4 shadow-[0_16px_45px_rgba(44,36,59,.06)] sm:p-6">
           <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr_1fr]">
             <InfoBlock label="Client action" copy={active.customer} />
-            <InfoBlock label="AiFrogi handhold" copy={active.aifrogi} highlighted />
+            <InfoBlock label="AiFrogi support" copy={active.aifrogi} highlighted />
             <InfoBlock label="Critical note" copy={active.note} />
           </div>
         </div>
