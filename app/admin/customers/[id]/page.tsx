@@ -6,25 +6,40 @@ import { CustomerFlowActions } from "@/components/admin/customer-flow-actions";
 import { BotSubscriptionConfig } from "@/components/admin/bot-subscription-config";
 import { BillingControls } from "@/components/admin/billing-controls";
 import { ProductFlowCenter } from "@/components/setup/product-flow-center";
+import { getCurrentUser } from "@/lib/auth-server";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
 import { getTrialWindow } from "@/lib/onboarding-guidance";
 import { loadOrganizationProductFlow } from "@/lib/product-flow";
 import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
+import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [organization, billing, plans, flow] = await Promise.all([
+  const [organization, billing, plans, flow, user] = await Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id),
     ensureBillingPlans(),
-    loadOrganizationProductFlow(id)
+    loadOrganizationProductFlow(id),
+    getCurrentUser()
   ]);
   if (!organization) notFound();
   const onboarding = organization.onboarding;
   const trial = getTrialWindow(organization);
+  const canReadDocuments = await hasActiveSupportAccess(organization.id, "DOCUMENTS");
+  if (user) {
+    await logSupportDataAccess({
+      organizationId: organization.id,
+      actorEmail: user.username,
+      scope: "DOCUMENTS",
+      targetType: "ORGANIZATION",
+      targetId: organization.id,
+      granted: canReadDocuments,
+      summary: canReadDocuments ? "Support viewed customer document links." : "Support document links hidden because customer access was not granted."
+    });
+  }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
@@ -68,7 +83,8 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
             <UsageDetail label="Team users" value={billing.usage.teamUsers} limit={billing.limits.teamUsers} />
           </Section> : null}
           <Section title="Business documents">
-            {organization.documents.map((document) => <a key={document.id} href={`/api/onboarding/documents/${document.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-between border-b border-black/5 py-3 text-sm font-semibold"><span>{document.type.replaceAll("_", " ")}</span><span className="text-[#c725ba]">Open</span></a>)}
+            <p className="mb-3 text-xs leading-5 text-[#6d7487]">{canReadDocuments ? "Customer granted document access. Opening a document is logged." : "Document metadata is visible for operations. File contents are locked until the customer grants document access."}</p>
+            {organization.documents.map((document) => canReadDocuments ? <a key={document.id} href={`/api/onboarding/documents/${document.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-between border-b border-black/5 py-3 text-sm font-semibold"><span>{document.type.replaceAll("_", " ")}</span><span className="text-[#c725ba]">Open</span></a> : <div key={document.id} className="flex items-center justify-between border-b border-black/5 py-3 text-sm"><span><strong className="block">{document.type.replaceAll("_", " ")}</strong><small className="text-[#6d7487]">{document.fileName} · {(document.sizeBytes / 1024).toFixed(1)} KB</small></span><span className="status-pill status-success">Locked</span></div>)}
             {!organization.documents.length ? <p className="text-sm text-[#6d7487]">No documents uploaded.</p> : null}
           </Section>
         </div>

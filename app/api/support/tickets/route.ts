@@ -8,6 +8,7 @@ import {
   listSupportTickets,
   updateSupportTicket
 } from "@/lib/repositories/support-repository";
+import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-access";
 
 const categories = new Set(["ONBOARDING", "WHATSAPP", "BILLING", "CAMPAIGN", "AUTOMATION", "ACCOUNT", "OTHER"]);
 const priorities = new Set(["LOW", "NORMAL", "HIGH", "URGENT"]);
@@ -61,6 +62,21 @@ export async function PATCH(request: Request) {
 
   const message = String(payload?.message || "").trim();
   if (message) {
+    if (user.role === "admin") {
+      const allowed = await hasActiveSupportAccess(ticket.organizationId, "CONVERSATIONS");
+      await logSupportDataAccess({
+        organizationId: ticket.organizationId,
+        actorEmail: user.username,
+        scope: "CONVERSATIONS",
+        targetType: "SUPPORT_TICKET",
+        targetId: ticket.id,
+        granted: allowed,
+        summary: allowed ? "Support replied to a customer support conversation." : "Support reply blocked because customer conversation access was not granted."
+      });
+      if (!allowed) {
+        return NextResponse.json({ error: "Customer support conversation access is required before replying." }, { status: 403 });
+      }
+    }
     const updated = await addSupportTicketMessage({
       ticketId,
       authorEmail: user.username,

@@ -15,7 +15,7 @@ function createReference() {
   return `LOS-${date}-${suffix}`;
 }
 
-export async function listSupportTickets(input: { organizationId?: string; status?: string }) {
+export async function listSupportTickets(input: { organizationId?: string; status?: string; includeMessages?: boolean }) {
   const db = getDb();
   if (!db) return [];
   return db.supportTicket.findMany({
@@ -23,7 +23,7 @@ export async function listSupportTickets(input: { organizationId?: string; statu
       ...(input.organizationId ? { organizationId: input.organizationId } : {}),
       ...(input.status ? { status: input.status } : {})
     },
-    include: ticketInclude,
+    include: input.includeMessages ? ticketInclude : { organization: ticketInclude.organization },
     orderBy: [{ status: "asc" }, { updatedAt: "desc" }]
   });
 }

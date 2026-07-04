@@ -17,7 +17,8 @@ const controls = [
   ["Transport", "Production traffic uses HTTPS. Meta webhooks are verified before message data is processed."],
   ["Data boundaries", "Organizations and workspaces scope contacts, messages, documents, campaigns, and configuration."],
   ["AI controls", "Approved knowledge, confidence fallback, opt-out handling, and human handoff bound automated replies."],
-  ["Operations", "Delivery status, activity history, support cases, and connection health provide an audit trail."]
+  ["Operations", "Delivery status, activity history, support cases, and connection health provide an audit trail."],
+  ["Support access", "AiFrogi support cannot read private customer content by default. Customers grant time-bound access and can revoke it anytime."]
 ];
 
 const verificationFacts = [
@@ -69,6 +70,24 @@ export default function SecurityPage() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl"><p className="product-eyebrow">Security controls</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Clear controls across every customer workspace.</h2></div>
           <div className="mt-10 grid gap-x-10 md:grid-cols-2">{controls.map(([title, copy]) => <article key={title} className="border-t border-black/10 py-6"><h3 className="text-lg font-bold">{title}</h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></article>)}</div>
+        </div>
+      </section>
+
+      <section className="border-y border-black/8 bg-[#2c243b] px-5 py-16 text-white sm:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.75fr_1.25fr] lg:items-start">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Customer-controlled support</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Support access is locked until the customer opens it.</h2>
+            <p className="mt-5 text-sm leading-7 text-white/62">Super admin sees platform health by default. Private conversations, uploaded documents, knowledge content, and integration details require a time-bound customer grant.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              ["Choose scope", "Conversation, document, knowledge, and integration access are granted separately."],
+              ["Choose duration", "Access can be limited to 30 minutes, 2 hours, or 24 hours."],
+              ["Revoke anytime", "Workspace owners and admins can revoke support access immediately."],
+              ["Audit trail", "Every grant, revoke, blocked attempt, and support view is recorded."]
+            ].map(([title, copy]) => <article key={title} className="border-t border-white/12 pt-5"><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/55">{copy}</p></article>)}
+          </div>
         </div>
       </section>
 
