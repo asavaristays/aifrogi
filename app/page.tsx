@@ -4,35 +4,9 @@ import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { RotatingUseCase } from "@/components/marketing/rotating-use-case";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
-import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
 
 const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register";
-
-const plans = [
-  {
-    name: "Starter",
-    monthly: "₹1,650",
-    quarterly: "₹4,950 billed quarterly",
-    bestFor: "A focused WhatsApp inbox and first campaigns",
-    features: ["1 WhatsApp number", "Shared inbox", "Contacts and templates", "Basic broadcasts", "Onboarding support"]
-  },
-  {
-    name: "Growth",
-    monthly: "₹3,550",
-    quarterly: "₹10,650 billed quarterly",
-    bestFor: "Teams that need campaigns and workflow follow-up",
-    featured: true,
-    features: ["Everything in Starter", "Multi-agent operations", "Campaign analytics", "5 automation workflows", "Priority support"]
-  },
-  {
-    name: "AI Operations",
-    monthly: "₹5,500",
-    quarterly: "₹16,500 billed quarterly",
-    bestFor: "Knowledge answers, qualification, and assisted automation",
-    features: ["Everything in Growth", "Knowledge assistant", "AI lead qualification", "Human handoff controls", "Advanced workflow design"]
-  }
-];
 
 export default function HomePage() {
   return (
@@ -61,16 +35,6 @@ export default function HomePage() {
 
       <OnboardingJourney />
 
-      <WhatsAppCostCalculator />
-
-      <section id="pricing" className="border-y border-[#eee6f0] bg-[#fbf8fc] px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl"><p className="product-eyebrow">Clear pricing</p><h2 className="mt-3 text-3xl font-semibold sm:text-4xl">Platform fee and Meta usage stay separate.</h2><p className="mt-4 leading-7 text-[var(--text-muted)]">All plans include a 30-day working trial. Meta template-message charges, taxes, optional custom integrations, and unusually high AI usage are billed separately and shown before commitment.</p></div>
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">{plans.map((plan) => <PricingPlan key={plan.name} {...plan} />)}</div>
-          <div className="mt-6 grid gap-4 rounded-lg border border-black/8 bg-white p-5 text-sm leading-6 text-[var(--text-muted)] md:grid-cols-3"><p><strong className="block text-[#18211e]">Meta message charges</strong>Pass-through usage based on template category and recipient country.</p><p><strong className="block text-[#18211e]">Wallet responsibility</strong>The client funds or authorizes the connected Meta billing account.</p><p><strong className="block text-[#18211e]">No credential sharing</strong>Clients approve access through Meta&apos;s secure connection flow.</p></div>
-        </div>
-      </section>
-
       <section id="support" className="px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2"><div><p className="product-eyebrow">Trust by design</p><h2 className="mt-3 text-3xl font-semibold">Clear boundaries for data, AI, and Meta.</h2></div><div className="grid gap-4 sm:grid-cols-2"><TrustItem title="Client-controlled access" copy="No Facebook password, email password, permanent token, or OTP sharing."/><TrustItem title="Bounded AI" copy="Answers use approved knowledge; uncertainty routes to a human."/><TrustItem title="Consent-aware campaigns" copy="Audience preview, permission confirmation, cost estimate, and approved template."/><TrustItem title="Operational support" copy="Tickets include the customer's setup context without exposing credentials."/></div></div></section>
 
       <SiteFooter />
@@ -80,4 +44,3 @@ export default function HomePage() {
 
 function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
 function TrustItem({ title, copy }: { title: string; copy: string }) { return <div className="border-t border-black/10 pt-4"><strong className="text-sm">{title}</strong><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></div>; }
-function PricingPlan({ name, monthly, quarterly, bestFor, features, featured }: { name: string; monthly: string; quarterly: string; bestFor: string; features: string[]; featured?: boolean }) { return <article className={`rounded-lg border bg-white p-6 ${featured ? "border-[#d92bcb] shadow-lg" : "border-black/8"}`}><div className="flex items-center justify-between gap-3"><h3 className="text-lg font-bold">{name}</h3>{featured ? <span className="status-pill bg-[#fde9fb] text-[#a21c98]">Recommended</span> : null}</div><p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">{bestFor}</p><p className="mt-7 text-3xl font-semibold">{monthly}<small className="text-sm font-medium text-[var(--text-muted)]"> / month</small></p><p className="mt-1 text-xs text-[var(--text-muted)]">{quarterly}</p><ul className="mt-6 space-y-3 text-sm">{features.map((feature) => <li key={feature} className="flex gap-2"><span className="text-[#d92bcb]">✓</span>{feature}</li>)}</ul><a href={registerUrl} className={`mt-7 inline-flex min-h-11 w-full items-center justify-center rounded-md text-sm font-bold ${featured ? "bg-[#d92bcb] text-white" : "border border-black/10"}`}>Start trial</a></article>; }
