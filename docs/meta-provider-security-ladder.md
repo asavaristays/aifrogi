@@ -13,10 +13,11 @@ AiFrogi handles WhatsApp customer conversations, customer documents, Meta creden
 - Credential protection: WhatsApp access tokens and webhook registration secrets are encrypted at rest.
 - No-store support endpoints: support-access APIs avoid cached customer access state.
 - Privileged login OTP: platform admin and workspace OWNER/ADMIN accounts require email OTP after password verification before a session is created.
-- Repeatable boundary verifier: `npm run verify:security-boundaries` checks covered unauthenticated, cross-workspace, and role-gated refusal paths when staging credentials are provided.
+- Repeatable boundary verifier: `npm run verify:security-boundaries` checks covered unauthenticated, cross-workspace, and role-gated refusal paths. The temporary-fixture runner creates disposable `SECURITY_TEST` workspaces, verifies the deep suite, proves the harness can go red through a negative-control check, and cleans up fixtures.
 
 ## Level 2 — Next controls to add
 
+- Required CI gate for security verifiers on sensitive API/auth/integration changes.
 - Mandatory MFA for super admin and workspace owners.
 - Support reason capture before granting support access, so every grant has a business purpose.
 - Session/device management for workspace users: active sessions, revoke session, forced logout.
@@ -46,3 +47,5 @@ Use [Security boundary verification](./runbooks/security-boundary-verification.m
 Use [Security acceptance checklist](./runbooks/security-acceptance-checklist.md) to record the Meta secret verification, deep boundary run, deliberate-failure sanity check, and final restored green run.
 
 Use [Privileged login OTP](./runbooks/login-otp.md) to understand the admin/owner/admin email OTP login flow and operational mailbox dependency.
+
+Use [Deferred security items](./security-deferred-items.md) to keep the verified posture honest as the platform adds customers, routes, integrations, and operators.
