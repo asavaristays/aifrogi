@@ -12,6 +12,7 @@ AiFrogi handles WhatsApp customer conversations, customer documents, Meta creden
 - Legacy inbound webhook protection: production inbound capture requires `LEADOS_WHATSAPP_INBOUND_TOKEN` unless deliberately disabled for a non-production environment.
 - Credential protection: WhatsApp access tokens and webhook registration secrets are encrypted at rest.
 - No-store support endpoints: support-access APIs avoid cached customer access state.
+- Repeatable boundary verifier: `npm run verify:security-boundaries` checks covered unauthenticated, cross-workspace, and role-gated refusal paths when staging credentials are provided.
 
 ## Level 2 — Next controls to add
 
@@ -19,7 +20,7 @@ AiFrogi handles WhatsApp customer conversations, customer documents, Meta creden
 - Support reason capture before granting support access, so every grant has a business purpose.
 - Session/device management for workspace users: active sessions, revoke session, forced logout.
 - Rate limits for outbound message APIs and webhook endpoints.
-- Automated tenant-isolation tests covering every API that accepts `propertySlug`, `propertyId`, `organizationId`, `leadId`, or `conversationId`.
+- Expand automated tenant-isolation tests to every API that accepts `propertyId`, `organizationId`, `leadId`, or `conversationId`.
 - Backup restore drill evidence: monthly restore test, result logged, and owner notified.
 - Incident runbook: detection, containment, notification, recovery, and customer communication template.
 
@@ -38,3 +39,5 @@ AiFrogi is operated by webtechnosys and built for the official WhatsApp Business
 ## Operational runbook
 
 Use [Meta webhook enforcement](./runbooks/meta-webhook-enforcement.md) to add the production `META_APP_SECRET`, restart PM2 safely, verify `/api/health/ready`, test unsigned webhook rejection, and confirm a real Meta-signed event.
+
+Use [Security boundary verification](./runbooks/security-boundary-verification.md) to run repeatable unauthenticated, cross-workspace, and role-gated API checks before calling a release security-verified.
