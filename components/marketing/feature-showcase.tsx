@@ -11,9 +11,9 @@ const features = [
     screen: "Campaign studio",
     title: "Broadcast messages at the right moment",
     description: "Segment opted-in audiences, use approved templates, schedule delivery, and see replies without leaving the campaign.",
-    metric: "12,480",
+    metric: "8,940",
     metricLabel: "recipients ready",
-    accent: "92.4% delivered",
+    accent: "91.8% delivered",
     steps: ["Choose audience", "Approve template", "Schedule & monitor"],
     activity: [["Monsoon stay offer", "Scheduled · 6:30 PM"], ["VIP repeat guests", "2,140 contacts"], ["Template quality", "High"]]
   },
