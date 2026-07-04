@@ -14,7 +14,7 @@ export const metadata = marketingMetadata({
 const controls = [
   ["Access", "Role-based workspaces, signed sessions, and server-side authorization protect customer operations."],
   ["Credentials", "WhatsApp access tokens and registration secrets are encrypted at rest and never displayed to clients."],
-  ["Transport", "Production traffic uses HTTPS. Meta webhooks are verified before message data is processed."],
+  ["Transport", "Production traffic uses HTTPS. Meta webhook signatures are supported with the Meta app secret, and readiness checks flag missing enforcement."],
   ["Data boundaries", "Organizations and workspaces scope contacts, messages, documents, campaigns, and configuration."],
   ["AI controls", "Approved knowledge, confidence fallback, opt-out handling, and human handoff bound automated replies."],
   ["Operations", "Delivery status, activity history, support cases, and connection health provide an audit trail."],
@@ -26,6 +26,12 @@ const verificationFacts = [
   ["Verified business", "webtechnosys"],
   ["Platform", "AiFrogi"],
   ["Confirmation", "1 July 2026"]
+];
+
+const trustLadder = [
+  ["Enforced now", "Customer-controlled support access, workspace-scoped WhatsApp APIs, encrypted credentials, support-audit trails, and readiness checks for webhook enforcement."],
+  ["Next controls", "MFA, rate limits, session/device controls, support reason capture, tenant-isolation tests, and restore-drill evidence."],
+  ["Enterprise evidence", "Public status, subprocessors, external assessment, and SOC 2 or ISO readiness as AiFrogi scales."]
 ];
 
 export default function SecurityPage() {
@@ -87,6 +93,19 @@ export default function SecurityPage() {
               ["Revoke anytime", "Workspace owners and admins can revoke support access immediately."],
               ["Audit trail", "Every grant, revoke, blocked attempt, and support view is recorded."]
             ].map(([title, copy]) => <article key={title} className="border-t border-white/12 pt-5"><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/55">{copy}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="product-eyebrow">Trust ladder</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">The standard goes higher as customer data grows.</h2>
+            <p className="mt-5 text-sm leading-7 text-[var(--text-muted)]">AiFrogi treats Meta-connected messaging as critical infrastructure. Controls start with strict workspace boundaries and customer-approved support access, then mature into external evidence as the platform scales.</p>
+          </div>
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {trustLadder.map(([title, copy], index) => <article key={title} className="rounded-2xl border border-black/8 bg-[#fbf8fc] p-6"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2c243b] text-xs font-bold text-white">{index + 1}</div><h3 className="mt-5 text-lg font-bold">{title}</h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></article>)}
           </div>
         </div>
       </section>

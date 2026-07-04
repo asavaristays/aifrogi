@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendWhatsAppTestMessage } from "@/lib/services/whatsapp-service";
-import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 export async function POST(request: Request) {
   const contentType = request.headers.get("content-type") ?? "";
@@ -29,11 +29,12 @@ export async function POST(request: Request) {
   const to = typeof payload?.to === "string" ? payload.to : "";
   const message = typeof payload?.message === "string" ? payload.message : "";
   const leadId = typeof payload?.leadId === "string" ? payload.leadId : "";
-  const propertyId = typeof payload?.propertyId === "string" ? payload.propertyId : "";
-  const selectedWorkspaceSlug = await getCurrentWorkspaceSlug();
-  const propertySlug = typeof payload?.propertySlug === "string" && payload.propertySlug.trim()
-    ? payload.propertySlug.trim()
-    : selectedWorkspaceSlug;
+  const workspace = await resolveClientWorkspaceAccess({
+    propertySlug: typeof payload?.propertySlug === "string" ? payload.propertySlug : null
+  });
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
   const operatorId = typeof payload?.operatorId === "string" ? payload.operatorId : "lead-os-operator";
   const conversationId = typeof payload?.conversationId === "string" ? payload.conversationId : "";
 
@@ -41,8 +42,8 @@ export async function POST(request: Request) {
     to,
     message,
     leadId,
-    propertyId,
-    propertySlug,
+    propertyId: workspace.propertyId,
+    propertySlug: workspace.propertySlug,
     operatorId,
     conversationId,
     attachment

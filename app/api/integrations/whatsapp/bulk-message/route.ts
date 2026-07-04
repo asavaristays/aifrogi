@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendWhatsAppTemplateMessage, sendWhatsAppTestMessage } from "@/lib/services/whatsapp-service";
-import { getCurrentWorkspaceSlug } from "@/lib/workspace";
-import { getCurrentUser } from "@/lib/auth-server";
-import { getPropertyBySlug } from "@/lib/repositories/property-repository";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import {
   buildAudienceSnapshot,
   estimateTemplateCostPaisa,
@@ -71,17 +69,15 @@ export async function POST(request: Request) {
   const consentSource = typeof payload?.consentSource === "string" ? payload.consentSource.trim() : "";
   const consentProof = typeof payload?.consentProof === "string" ? payload.consentProof.trim() : "";
   const testMode = Boolean(payload?.testMode);
-  const selectedWorkspaceSlug = await getCurrentWorkspaceSlug();
-  const propertySlug = typeof payload?.propertySlug === "string" && payload.propertySlug.trim()
-    ? payload.propertySlug.trim()
-    : selectedWorkspaceSlug;
-  const propertyId = typeof payload?.propertyId === "string" ? payload.propertyId.trim() : "";
+  const workspace = await resolveClientWorkspaceAccess({
+    propertySlug: typeof payload?.propertySlug === "string" ? payload.propertySlug : null,
+    requireManage: true
+  });
   const operatorId = typeof payload?.operatorId === "string" ? payload.operatorId.trim() : "lead-os-bulk-operator";
   const isTemplateMode = mode === "template";
-  const [user, property] = await Promise.all([getCurrentUser(), getPropertyBySlug(propertySlug)]);
 
-  if (!user) {
-    return NextResponse.json({ error: "Sign in before sending a campaign." }, { status: 401 });
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
   }
 
   if (!isTemplateMode && !message) {
@@ -115,10 +111,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: consentValidation.error }, { status: 400 });
   }
 
-  if (!property) {
-    return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
-  }
-
   const template = templateValidation.template;
   const category = template?.category || metaChargeCategory;
   const estimatedCostPaisa = isTemplateMode
@@ -126,7 +118,7 @@ export async function POST(request: Request) {
     : 0;
 
   const campaign = await createCampaignRun({
-    propertyId: property.id,
+    propertyId: workspace.propertyId,
     name: campaignName,
     templateName: isTemplateMode ? templateName : undefined,
     languageCode: template?.languageCode || languageCode,
@@ -137,10 +129,10 @@ export async function POST(request: Request) {
     templateStatus: template?.status || "UNKNOWN",
     consentSource: isTemplateMode ? consentSource : undefined,
     consentProof: isTemplateMode ? consentProof : undefined,
-    consentConfirmedBy: isTemplateMode ? user?.username : undefined,
+    consentConfirmedBy: isTemplateMode ? workspace.user.username : undefined,
     audienceSnapshot: isTemplateMode ? buildAudienceSnapshot({ requestedCount: recipients.length, recipients, source: consentSource, templateName, testMode }) : undefined,
     testMode,
-    createdBy: user?.username,
+    createdBy: workspace.user.username,
     recipients
   });
 
@@ -152,15 +144,15 @@ export async function POST(request: Request) {
           to,
           templateName,
           languageCode: template?.languageCode || languageCode,
-          propertySlug,
+          propertySlug: workspace.propertySlug,
           bodyVariables,
           headerImageUrl: headerImageUrl || template?.defaultHeaderImageUrl || ""
         })
       : await sendWhatsAppTestMessage({
           to,
           message,
-          propertySlug,
-          propertyId,
+          propertySlug: workspace.propertySlug,
+          propertyId: workspace.propertyId,
           operatorId
         });
 

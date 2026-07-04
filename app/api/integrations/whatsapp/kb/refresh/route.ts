@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import { getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
-import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 export async function POST() {
-  const propertySlug = await getCurrentWorkspaceSlug();
-  const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug, true);
+  const workspace = await resolveClientWorkspaceAccess({ requireManage: true });
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
+
+  const knowledgeBase = await getWebsiteKnowledgeBase(workspace.propertySlug, true);
 
   return NextResponse.json({
     ok: true,
-    propertySlug,
+    propertySlug: workspace.propertySlug,
     baseUrl: knowledgeBase.baseUrl,
     pages: knowledgeBase.pages.length,
     crawledAt: knowledgeBase.crawledAt,

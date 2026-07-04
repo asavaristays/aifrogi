@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendWhatsAppTemplateMessage } from "@/lib/services/whatsapp-service";
-import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 function parseVariables(value: unknown) {
   if (Array.isArray(value)) {
@@ -23,10 +23,12 @@ export async function POST(request: Request) {
   const to = typeof payload?.to === "string" ? payload.to : "";
   const templateName = typeof payload?.templateName === "string" ? payload.templateName : "";
   const languageCode = typeof payload?.languageCode === "string" ? payload.languageCode : "en_US";
-  const selectedWorkspaceSlug = await getCurrentWorkspaceSlug();
-  const propertySlug = typeof payload?.propertySlug === "string" && payload.propertySlug.trim()
-    ? payload.propertySlug.trim()
-    : selectedWorkspaceSlug;
+  const workspace = await resolveClientWorkspaceAccess({
+    propertySlug: typeof payload?.propertySlug === "string" ? payload.propertySlug : null
+  });
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
   const bodyVariables = parseVariables(payload?.bodyVariables);
   const headerImageUrl = typeof payload?.headerImageUrl === "string" ? payload.headerImageUrl.trim() : "";
 
@@ -34,7 +36,7 @@ export async function POST(request: Request) {
     to,
     templateName,
     languageCode,
-    propertySlug,
+    propertySlug: workspace.propertySlug,
     bodyVariables,
     headerImageUrl
   });

@@ -9,7 +9,8 @@ export async function GET() {
     status: health.status,
     service: health.service,
     release: health.release,
-    timestamp: health.timestamp
+    timestamp: health.timestamp,
+    checks: health.checks
   }, {
     status: health.status === "ok" ? 200 : 503,
     headers: { "Cache-Control": "no-store" }

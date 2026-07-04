@@ -1,17 +1,25 @@
 import { NextResponse } from "next/server";
 import { loadWhatsAppIntegration, saveWhatsAppIntegration } from "@/lib/services/whatsapp-service";
-import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 export async function GET() {
-  const propertySlug = await getCurrentWorkspaceSlug();
-  const integration = await loadWhatsAppIntegration(propertySlug);
+  const workspace = await resolveClientWorkspaceAccess();
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
+
+  const integration = await loadWhatsAppIntegration(workspace.propertySlug);
   return NextResponse.json({ integration });
 }
 
 export async function POST(request: Request) {
   const payload = await request.json();
-  const propertySlug = await getCurrentWorkspaceSlug();
-  const result = await saveWhatsAppIntegration(payload, propertySlug);
+  const workspace = await resolveClientWorkspaceAccess({ requireManage: true });
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
+
+  const result = await saveWhatsAppIntegration(payload, workspace.propertySlug);
 
   if (result.error) {
     return NextResponse.json({ error: result.error }, { status: result.status });

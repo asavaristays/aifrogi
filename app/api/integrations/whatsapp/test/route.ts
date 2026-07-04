@@ -1,19 +1,23 @@
 import { NextResponse } from "next/server";
 import { sendWhatsAppTestMessage } from "@/lib/services/whatsapp-service";
-import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 export async function POST(request: Request) {
   const payload = await request.json().catch(() => null);
   const to = typeof payload?.to === "string" ? payload.to.trim() : "";
   const message = typeof payload?.message === "string" ? payload.message.trim() : "";
-  const propertySlug = typeof payload?.propertySlug === "string" && payload.propertySlug.trim()
-    ? payload.propertySlug.trim()
-    : await getCurrentWorkspaceSlug();
+  const workspace = await resolveClientWorkspaceAccess({
+    propertySlug: typeof payload?.propertySlug === "string" ? payload.propertySlug : null,
+    requireManage: true
+  });
+  if (!workspace.ok) {
+    return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
 
   const result = await sendWhatsAppTestMessage({
     to,
     message,
-    propertySlug,
+    propertySlug: workspace.propertySlug,
     operatorId: "lead-os-settings-test"
   });
 

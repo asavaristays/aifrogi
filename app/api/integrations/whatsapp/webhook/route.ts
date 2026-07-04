@@ -5,6 +5,7 @@ import {
   processIncomingTwilioWebhook,
   validateTwilioWebhookSignature
 } from "@/lib/services/whatsapp-service";
+import { validateMetaWebhookSignature } from "@/lib/meta-webhook-security";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -36,9 +37,24 @@ export async function POST(request: Request) {
   const contentType = request.headers.get("content-type") ?? "";
 
   if (contentType.includes("application/json")) {
-    const payload = (await request.json()) as Parameters<typeof processIncomingMetaWebhook>[0]["payload"] & {
-      object?: string;
-    };
+    const rawBody = await request.text();
+    const signature = validateMetaWebhookSignature({
+      rawBody,
+      signatureHeader: request.headers.get("x-hub-signature-256")
+    });
+
+    if (!signature.ok) {
+      return NextResponse.json({ error: signature.error }, { status: signature.status });
+    }
+
+    let payload: Parameters<typeof processIncomingMetaWebhook>[0]["payload"] & { object?: string };
+    try {
+      payload = JSON.parse(rawBody) as Parameters<typeof processIncomingMetaWebhook>[0]["payload"] & {
+        object?: string;
+      };
+    } catch {
+      return NextResponse.json({ error: "Invalid Meta webhook JSON payload" }, { status: 400 });
+    }
 
     if (payload.object !== "whatsapp_business_account") {
       return NextResponse.json({ error: "Unsupported Meta webhook payload" }, { status: 400 });

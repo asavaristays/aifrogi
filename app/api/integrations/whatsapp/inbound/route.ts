@@ -7,6 +7,8 @@ const INBOUND_TOKEN = String(
     process.env.AI_BOT_AGENT_REPLY_TOKEN ||
     ""
 ).trim();
+const INBOUND_TOKEN_REQUIRED =
+  process.env.LEADOS_WHATSAPP_INBOUND_TOKEN_REQUIRED === "true" || process.env.NODE_ENV === "production";
 
 function normalizePayload(payload: unknown) {
   if (!payload || typeof payload !== "object") {
@@ -85,6 +87,10 @@ export async function POST(request: Request) {
     rawBody && typeof rawBody === "object" && typeof (rawBody as Record<string, unknown>).token === "string"
       ? String((rawBody as Record<string, unknown>).token || "").trim()
       : "";
+
+  if (!INBOUND_TOKEN && INBOUND_TOKEN_REQUIRED) {
+    return NextResponse.json({ error: "inbound authorization is not configured" }, { status: 503 });
+  }
 
   if (INBOUND_TOKEN) {
     const bearer = getBearerToken(request);
