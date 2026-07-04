@@ -41,3 +41,5 @@ AiFrogi is operated by webtechnosys and built for the official WhatsApp Business
 Use [Meta webhook enforcement](./runbooks/meta-webhook-enforcement.md) to add the production `META_APP_SECRET`, restart PM2 safely, verify `/api/health/ready`, test unsigned webhook rejection, and confirm a real Meta-signed event.
 
 Use [Security boundary verification](./runbooks/security-boundary-verification.md) to run repeatable unauthenticated, cross-workspace, and role-gated API checks before calling a release security-verified.
+
+Use [Security acceptance checklist](./runbooks/security-acceptance-checklist.md) to record the Meta secret verification, deep boundary run, deliberate-failure sanity check, and final restored green run.
