@@ -4,6 +4,7 @@ import { siteUrl } from "@/lib/seo";
 
 const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], number]> = [
   ["/", "weekly", 1],
+  ["/about", "monthly", 0.7],
   ["/solutions", "monthly", 0.9],
   ["/pricing", "weekly", 0.9],
   ["/onboarding-process", "monthly", 0.8],
@@ -12,6 +13,7 @@ const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], nu
   ["/resources", "weekly", 0.7],
   ["/help", "weekly", 0.7],
   ["/security", "monthly", 0.6],
+  ["/status", "weekly", 0.6],
   ["/product-tour", "monthly", 0.6],
   ["/privacy-policy", "yearly", 0.3],
   ["/terms-of-service", "yearly", 0.3],

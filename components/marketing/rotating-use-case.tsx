@@ -16,11 +16,10 @@ export function RotatingUseCase() {
   }, []);
 
   return (
-    <span className="inline-grid min-w-[6.8em] grid-cols-1 text-left align-bottom sm:min-w-[6.6em]" aria-live="off">
+    <span className="inline-grid min-w-[6.8em] grid-cols-1 text-left align-bottom sm:min-w-[6.6em]" aria-hidden="true">
       <span key={useCases[activeIndex]} className="hero-use-case col-start-1 row-start-1 bg-gradient-to-r from-[#ff8af1] to-[#d92bcb] bg-clip-text text-transparent">
         {useCases[activeIndex]}
       </span>
-      <span className="sr-only">Broadcast, ChatBot, Payment, Review, E-Commerce, Reminder, and Forms</span>
     </span>
   );
 }

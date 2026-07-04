@@ -11,7 +11,7 @@ export const metadata: Metadata = marketingMetadata({
   path: "/help"
 });
 
-const categories = ["Get started", "Messaging", "Campaigns", "Knowledge and AI", "Account and security", "Support"];
+const categories = ["Buying guide", "Get started", "Messaging", "Campaigns", "Knowledge and AI", "Account and security", "Support"];
 
 export default function HelpCenterPage() {
   return <main className="min-h-screen bg-white text-[var(--text)]">

@@ -11,6 +11,21 @@ export type HelpArticle = {
 
 export const helpArticles: HelpArticle[] = [
   {
+    slug: "whatsapp-business-app-vs-api",
+    category: "Buying guide",
+    title: "WhatsApp Business App vs API: when to move",
+    summary: "Choose between the WhatsApp Business App and Business Platform based on team access, automation, campaigns, integrations, and operational control.",
+    outcome: "You know whether the free Business App still fits or a managed Business Platform workspace is justified.",
+    minutes: 6,
+    steps: [
+      { title: "Stay with the App for simple, manual work", body: "The WhatsApp Business App is a strong fit when a small team handles conversations manually and does not need governed automation, campaign operations, integrations, or detailed reporting." },
+      { title: "Consider the Platform when work becomes shared", body: "The Business Platform becomes useful when several people need defined access, one inbox, reliable routing, approved campaign workflows, automation, integrations, and an operational record." },
+      { title: "Compare total operating effort", body: "Look beyond subscription price. Include missed enquiries, repeated manual follow-up, shared-device risk, integration work, Meta message charges, onboarding, and the time needed to manage quality and consent." },
+      { title: "Plan the number path before changing anything", body: "Do not remove or migrate a working number until its current WhatsApp setup, Meta business, SIM access, billing, and onboarding path have been checked. Eligibility and number options can vary." }
+    ],
+    checks: ["Number ownership and SIM access confirmed", "Team and permission needs documented", "Automation use cases are specific", "Meta charges and onboarding work understood"]
+  },
+  {
     slug: "connect-whatsapp",
     category: "Get started",
     title: "Connect your WhatsApp number",
