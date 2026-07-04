@@ -8,7 +8,7 @@ AiFrogi handles WhatsApp customer conversations, customer documents, Meta creden
 - Workspace-scoped WhatsApp APIs: outbound messages, campaign sends, knowledge previews, integration save, integration validation, and test sends require a signed-in customer workspace account.
 - Tenant-safe workspace resolution: submitted `propertySlug` and `propertyId` values are treated as untrusted input. The server resolves the workspace from the authenticated customer membership.
 - Campaign control: bulk WhatsApp campaign sends require workspace owner/admin access because they affect consent, Meta billing, and brand risk.
-- Meta webhook authenticity: Meta JSON webhooks are validated with `X-Hub-Signature-256` when `META_APP_SECRET` or `FACEBOOK_APP_SECRET` is configured.
+- Meta webhook authenticity: production Meta JSON webhooks fail closed until `META_APP_SECRET` is configured, then require a valid `X-Hub-Signature-256` signature before message data is processed.
 - Legacy inbound webhook protection: production inbound capture requires `LEADOS_WHATSAPP_INBOUND_TOKEN` unless deliberately disabled for a non-production environment.
 - Credential protection: WhatsApp access tokens and webhook registration secrets are encrypted at rest.
 - No-store support endpoints: support-access APIs avoid cached customer access state.
@@ -33,5 +33,8 @@ AiFrogi handles WhatsApp customer conversations, customer documents, Meta creden
 
 ## Customer-facing confidence statement
 
-AiFrogi is operated by webtechnosys and built for the official WhatsApp Business Platform. Customer data is workspace-scoped. AiFrogi support cannot read private customer content unless a workspace owner/admin grants temporary access for a defined purpose. Meta webhook traffic is verified when the Meta app secret is configured, and outbound WhatsApp actions are allowed only from the customer’s authenticated workspace.
+AiFrogi is operated by webtechnosys and built for the official WhatsApp Business Platform. Customer data is workspace-scoped. AiFrogi support cannot read private customer content unless a workspace owner/admin grants temporary access for a defined purpose. Production Meta webhook traffic fails closed until the Meta app secret is configured, then requires Meta's webhook signature. Outbound WhatsApp actions are allowed only from the customer’s authenticated workspace.
 
+## Operational runbook
+
+Use [Meta webhook enforcement](./runbooks/meta-webhook-enforcement.md) to add the production `META_APP_SECRET`, restart PM2 safely, verify `/api/health/ready`, test unsigned webhook rejection, and confirm a real Meta-signed event.

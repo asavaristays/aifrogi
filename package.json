@@ -16,6 +16,7 @@
     "verify:campaigns": "tsx scripts/verify-campaign-compliance.ts",
     "verify:automation": "tsx scripts/verify-automation-engine.ts",
     "verify:billing": "tsx scripts/verify-billing-super-admin.ts",
+    "verify:meta-webhook": "tsx scripts/verify-meta-webhook-enforcement.ts",
     "verify:flow": "tsx scripts/verify-product-flow.ts",
     "verify:launch": "tsx scripts/verify-commercial-launch.ts",
     "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:billing && npm run verify:flow && npm run verify:launch"
