@@ -74,7 +74,7 @@ export default function HomePage() {
       <section className="border-b border-black/8 bg-white px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
-            <p className="product-eyebrow">Proof without fake logos</p>
+            <p className="product-eyebrow">Verified trust signals</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, the Meta status, and the security boundaries.</h2>
           </div>
           <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
