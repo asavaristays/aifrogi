@@ -1,31 +1,49 @@
 import Link from "next/link";
+import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { helpArticles } from "@/lib/help-center";
 
-const resources = [
-  ["WhatsApp setup guide", "/help/connect-whatsapp"],
-  ["Campaign compliance", "/help/send-compliant-campaign"],
-  ["Security", "/security"],
-  ["Privacy", "/privacy-policy"]
+const trustResources = [
+  { title: "Data security", copy: "How access, credentials, customer data, and AI boundaries are protected.", href: "/security" },
+  { title: "Privacy policy", copy: "What information is collected, why it is used, and how it is protected.", href: "/privacy-policy" },
+  { title: "Terms of service", copy: "Platform responsibilities, acceptable use, billing, and service boundaries.", href: "/terms-of-service" },
+  { title: "Data deletion", copy: "How to request removal of customer or account information.", href: "/data-deletion" }
 ];
 
 export default function ResourcesPage() {
   return (
     <main className="bg-white text-[#2c243b]">
       <SiteHeader />
-      <section className="px-5 py-14 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <p className="product-eyebrow">Resources</p>
-          <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-6xl">Practical guides, no noise.</h1>
-          <div className="mt-10 space-y-5">
-            {resources.map(([label, href]) => (
-              <Link key={href} href={href} className="block border-t border-[#eadfed] pt-5 text-xl font-semibold text-[#2c243b] hover:text-[#b923ae]">
-                {label}
-              </Link>
-            ))}
+
+      <section className="relative overflow-hidden bg-[#2c243b] px-5 py-16 text-white sm:px-8 sm:py-24">
+        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-[#d92bcb]/15 blur-[100px]" aria-hidden="true" />
+        <div className="relative mx-auto max-w-7xl">
+          <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Resources</p>
+          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-.04em] sm:text-6xl">Practical guides. Clear answers.</h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Set up WhatsApp, run compliant campaigns, control AI, protect access, and resolve issues without unnecessary reading.</p>
+          <a href="#guides" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Browse guides <Icon name="arrow-right" /></a>
+        </div>
+      </section>
+
+      <section id="guides" className="scroll-mt-20 px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl"><p className="product-eyebrow">Help guides</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Start with the task in front of you.</h2></div>
+          <div className="mt-10 grid gap-x-10 md:grid-cols-2">
+            {helpArticles.map((article) => <Link key={article.slug} href={`/help/${article.slug}`} className="group border-t border-black/10 py-6"><div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-[.1em] text-[#a21c98]">{article.category} · {article.minutes} min</span><Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></div><h3 className="mt-4 text-xl font-semibold transition group-hover:text-[#a21c98]">{article.title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)]">{article.summary}</p></Link>)}
           </div>
         </div>
       </section>
+
+      <section className="border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl"><p className="product-eyebrow">Trust resources</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Understand the boundaries before you connect.</h2></div>
+          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">{trustResources.map((resource) => <Link key={resource.href} href={resource.href} className="group border-t border-black/10 py-5"><h3 className="flex items-center justify-between gap-3 font-bold">{resource.title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{resource.copy}</p></Link>)}</div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-xl bg-[#251f2d] px-6 py-8 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8"><div><h2 className="text-2xl font-semibold">Still need a person?</h2><p className="mt-2 text-sm text-white/55">Share the blocker without passwords, OTPs, or access tokens.</p></div><a href="mailto:info@aifrogi.com?subject=AiFrogi%20support" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold">Contact support <Icon name="arrow-right" /></a></div></section>
+
       <SiteFooter />
     </main>
   );
