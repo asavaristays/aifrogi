@@ -1,6 +1,7 @@
 import { Icon } from "@/components/icons";
 import { IntegrationCatalog } from "@/components/marketing/integration-catalog";
 import { IntegrationLogo } from "@/components/marketing/integration-logo";
+import { IntegrationPricing } from "@/components/marketing/integration-pricing";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 
@@ -51,6 +52,8 @@ export default function IntegrationPage() {
       </section>
 
       <IntegrationCatalog />
+
+      <IntegrationPricing />
 
       <section className="px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">

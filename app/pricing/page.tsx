@@ -1,3 +1,4 @@
+import { IntegrationPricing } from "@/components/marketing/integration-pricing";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
@@ -71,6 +72,8 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      <IntegrationPricing />
 
       <WhatsAppCostCalculator />
       <SiteFooter />

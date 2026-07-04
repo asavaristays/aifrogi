@@ -13,32 +13,30 @@ const integrations = [
 
 export function IntegrationLogoStrip() {
   return (
-    <section aria-labelledby="homepage-integrations-title" className="border-y border-black/8 bg-white px-5 py-10 sm:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-sm shrink-0">
-            <p className="product-eyebrow">Connected operations</p>
-            <h2 id="homepage-integrations-title" className="mt-2 text-xl font-semibold tracking-[-.02em]">Works with the tools that run your business.</h2>
+    <section aria-labelledby="homepage-integrations-title" className="mt-12 border-y border-white/10 py-7 text-left text-white">
+      <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
+          <div className="max-w-xs shrink-0">
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#ff8af1]">Connected operations</p>
+            <h2 id="homepage-integrations-title" className="mt-2 text-lg font-semibold tracking-[-.02em]">Works with the tools that run your business.</h2>
           </div>
 
-          <div className="-mx-5 overflow-x-auto px-5 sm:-mx-8 sm:px-8 lg:mx-0 lg:overflow-visible lg:px-0">
-            <div className="flex min-w-max items-center gap-7 lg:min-w-0 lg:gap-8">
+          <div className="-mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0 xl:overflow-visible">
+            <div className="flex min-w-max items-center gap-7 xl:min-w-0 xl:gap-8">
               {integrations.map((integration) => (
                 <div key={integration.name} className="group flex items-center gap-2.5" title={`${integration.name} — ${integration.status}`}>
                   <IntegrationLogo src={integration.src} name={integration.name} size="sm" />
                   <span>
-                    <strong className="block whitespace-nowrap text-xs font-bold text-[#40364b]">{integration.name}</strong>
-                    <small className={`block text-[10px] font-semibold ${integration.status === "Available" ? "text-[#178665]" : "text-[#8a8290]"}`}>{integration.status}</small>
+                    <strong className="block whitespace-nowrap text-xs font-bold text-white/82">{integration.name}</strong>
+                    <small className={`block text-[10px] font-semibold ${integration.status === "Available" ? "text-[#6fe0b8]" : "text-white/38"}`}>{integration.status}</small>
                   </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <Link href="/integration" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-bold text-[#a21c98] transition hover:text-[#d92bcb]">
+          <Link href="/integration" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-bold text-[#ff8af1] transition hover:text-white">
             Explore integrations <Icon name="arrow-right" />
           </Link>
-        </div>
       </div>
     </section>
   );

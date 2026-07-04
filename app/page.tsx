@@ -23,11 +23,11 @@ export default function HomePage() {
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Messaging, campaigns, automation, and AI assistance in one workspace—with the context and human control your team needs.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
 
+          <IntegrationLogoStrip />
+
           <FeatureShowcase />
         </div>
       </section>
-
-      <IntegrationLogoStrip />
 
       <section className="bg-[#2c243b] px-5 py-20 text-white sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
