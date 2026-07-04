@@ -18,7 +18,7 @@ export default function OnboardingProcessPage() {
         <div className="mx-auto max-w-5xl">
           <p className="product-eyebrow text-[#ff8af1]">Onboarding</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-6xl">From SIM readiness to first workflow live.</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/64">AiFrogi guides the Meta Tech Provider process and keeps the post-approval timeline visible.</p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/64">AiFrogi guides the Meta access flow and keeps the post-approval timeline visible.</p>
         </div>
       </section>
       <OnboardingJourney />

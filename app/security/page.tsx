@@ -7,7 +7,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
   title: "WhatsApp Business Data Security | AiFrogi",
-  description: "Review AiFrogi security controls, customer-approved support access, privileged login OTP, signed Meta webhooks, workspace data boundaries, and Meta Tech Provider verification.",
+  description: "Review AiFrogi security controls, customer-approved support access, privileged login OTP, signed Meta webhooks, workspace data boundaries, and Meta access verification.",
   path: "/security"
 });
 
@@ -59,20 +59,20 @@ export default function SecurityPage() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
           <div>
             <p className="product-eyebrow">Meta access verification</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">webtechnosys is verified by Meta as a Tech Provider.</h2>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">Meta access verification is confirmed for webtechnosys.</h2>
             <p className="mt-5 leading-7 text-[var(--text-muted)]">Verification was confirmed after Meta completed its access-verification submission and review.</p>
 
             <dl className="mt-8 grid gap-x-7 sm:grid-cols-2">
               {verificationFacts.map(([label, value]) => <div key={label} className="border-t border-black/10 py-4"><dt className="text-[10px] font-bold uppercase tracking-[.12em] text-[var(--text-muted)]">{label}</dt><dd className="mt-2 text-sm font-bold text-[#2c243b]">{value}</dd></div>)}
             </dl>
 
-            <p className="mt-5 text-xs leading-5 text-[var(--text-muted)]">This confirms Tech Provider access verification for webtechnosys. It does not claim Meta endorsement, Accelerate Partner membership, or guaranteed approval of any customer account.</p>
+            <p className="mt-5 text-xs leading-5 text-[var(--text-muted)]">This confirms Meta access verification for webtechnosys in the WhatsApp platform setup flow. It does not claim Meta endorsement, Accelerate Partner membership, or guaranteed approval of any customer account.</p>
             <a href="https://www.facebook.com/legal/BM-tech-provider-terms" target="_blank" rel="noreferrer" className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#a21c98]">Read Meta Tech Provider terms <Icon name="arrow-right" /></a>
           </div>
 
           <figure className="overflow-hidden rounded-xl border border-black/8 bg-white shadow-[0_24px_70px_rgba(44,36,59,.1)]">
-            <a href="/brand/meta-tech-provider-verification.png" target="_blank" aria-label="Open the Meta Tech Provider verification evidence at full size">
-              <Image src="/brand/meta-tech-provider-verification.png" alt="Meta Access Verification page showing webtechnosys verified as a Tech Provider" width={1890} height={734} className="h-auto w-full" priority />
+            <a href="/brand/meta-tech-provider-verification.png" target="_blank" aria-label="Open the Meta access verification evidence at full size">
+              <Image src="/brand/meta-tech-provider-verification.png" alt="Meta Access Verification page showing webtechnosys access verification" width={1890} height={734} className="h-auto w-full" priority />
             </a>
             <figcaption className="border-t border-black/8 px-5 py-4 text-xs leading-5 text-[var(--text-muted)]"><strong className="text-[#2c243b]">Verification evidence.</strong> Captured from Meta Access Verification on 1 July 2026. Open for full-size review.</figcaption>
           </figure>

@@ -582,13 +582,13 @@ function TechProviderGuide() {
     <section className="rounded-lg border border-black/5 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Verified Tech Provider flow</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Verified Meta access flow</p>
           <h2 className="mt-2 text-xl font-black">WhatsApp setup without exposing Meta complexity</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-[#6d7487]">
             Customers complete a guided onboarding journey. Behind the scenes, the platform connects their WhatsApp Business account, stores the approved API access, and keeps the inbox, campaigns, webhooks, and support status in one place.
           </p>
         </div>
-        <Badge tone="secondary">Partner-ready</Badge>
+        <Badge tone="secondary">Access-ready</Badge>
       </div>
       <div className="mt-5 grid gap-3 md:grid-cols-3">
         {points.map((point) => (

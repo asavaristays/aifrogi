@@ -51,7 +51,7 @@ export default async function CampaignsPage() {
               <Badge tone="secondary">SaaS model</Badge>
               <h2 className="mt-3 text-2xl font-black">Client sends campaigns without handling credentials</h2>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">
-                Your team completes the WhatsApp Business setup through the Tech Provider flow. The client sees simple actions: choose audience, select approved template, confirm consent, send, and handle replies from the inbox.
+                Your team completes the WhatsApp Business setup through the verified Meta access flow. The client sees simple actions: choose audience, select approved template, confirm consent, send, and handle replies from the inbox.
               </p>
             </div>
             <Badge tone={connected ? "secondary" : "error"}>{connected ? "API connected" : "Needs setup"}</Badge>

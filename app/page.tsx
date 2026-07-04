@@ -83,7 +83,7 @@ export default function HomePage() {
             <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, the Meta status, and the security boundaries.</h2>
           </div>
           <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <ProofLink title="Meta access verification" copy="webtechnosys Tech Provider access evidence and responsibility notes." href="/security#meta-verification" icon="settings" />
+            <ProofLink title="Meta access verification" copy="webtechnosys access evidence and platform responsibility notes." href="/security#meta-verification" icon="settings" />
             <ProofLink title="Company details" copy="AiFrogi is operated by webtechnosys from Goa, India." href="/about" icon="file-text" />
             <ProofLink title="Service status" copy="Public status page for platform availability and incidents." href="/status" icon="bar-chart-3" />
             <ProofLink title="Verified controls" copy="Support access, OTP, signed webhooks, and boundary tests." href="/security" icon="grid" />

@@ -7,7 +7,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
   title: "About AiFrogi and webtechnosys",
-  description: "Meet the company behind AiFrogi, its Meta Tech Provider verification, operating principles, location, and approach to customer onboarding and support.",
+  description: "Meet the company behind AiFrogi, its Meta access verification, operating principles, location, and approach to customer onboarding and support.",
   path: "/about"
 });
 
@@ -15,7 +15,7 @@ const facts = [
   ["Platform", "AiFrogi"],
   ["Operator", "webtechnosys"],
   ["Location", "Morjim, Goa, India"],
-  ["Meta status", "Tech Provider verification confirmed 1 July 2026"]
+  ["Meta status", "Access verification confirmed 1 July 2026"]
 ];
 
 export default function AboutPage() {
