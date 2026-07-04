@@ -7,20 +7,40 @@ import { FormEvent, useState } from "react";
 export function LoginClient({ returnTo }: { returnTo?: string }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpChallengeId, setOtpChallengeId] = useState("");
+  const [otpExpiresAt, setOtpExpiresAt] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const otpStep = Boolean(otpChallengeId);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
     setError("");
+    setNotice("");
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, returnTo })
+        body: JSON.stringify({ username, password, returnTo, otpChallengeId, otpCode })
       });
-      const result = (await response.json()) as { error?: string; redirectUrl?: string };
+      const result = (await response.json()) as {
+        error?: string;
+        redirectUrl?: string;
+        otpRequired?: boolean;
+        otpChallengeId?: string;
+        expiresAt?: string;
+        message?: string;
+      };
+      if (response.status === 202 && result.otpRequired && result.otpChallengeId) {
+        setOtpChallengeId(result.otpChallengeId);
+        setOtpExpiresAt(result.expiresAt || "");
+        setOtpCode("");
+        setNotice(result.message || "Enter the 6-digit code sent to your email.");
+        return;
+      }
       if (!response.ok || !result.redirectUrl) {
         setError(result.error || "Sign in could not be completed.");
         return;
@@ -31,6 +51,14 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function resetOtpStep() {
+    setOtpChallengeId("");
+    setOtpExpiresAt("");
+    setOtpCode("");
+    setError("");
+    setNotice("");
   }
 
   return (
@@ -51,21 +79,44 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
         <div className="mx-auto w-full max-w-md">
           <p className="text-sm font-semibold text-[#c725ba]">Welcome back</p>
           <h2 className="mt-2 text-3xl font-semibold">Sign in to AiFrogi</h2>
-          <p className="mt-3 text-sm leading-6 text-[#70697d]">Use the email and password assigned to your workspace.</p>
+          <p className="mt-3 text-sm leading-6 text-[#70697d]">{otpStep ? "Enter the email code to finish secure sign-in." : "Use the email and password assigned to your workspace."}</p>
 
           <form className="mt-9 space-y-5" onSubmit={submit}>
             <label className="block">
               <span className="mb-2 block text-sm font-semibold">Email</span>
-              <input className="product-input min-h-12" type="email" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} required autoFocus />
+              <input className="product-input min-h-12" type="email" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} required autoFocus disabled={otpStep || submitting} />
             </label>
             <label className="block">
               <span className="mb-2 block text-sm font-semibold">Password</span>
-              <input className="product-input min-h-12" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+              <input className="product-input min-h-12" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required disabled={otpStep || submitting} />
             </label>
+            {otpStep ? (
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold">Email OTP</span>
+                <input
+                  className="product-input min-h-12 tracking-[.28em]"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(event) => setOtpCode(event.target.value.replace(/[^\d]/g, "").slice(0, 6))}
+                  required
+                />
+                <span className="mt-2 block text-xs leading-5 text-[#817789]">
+                  Code expires in 10 minutes{otpExpiresAt ? ` (${new Date(otpExpiresAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})` : ""}.
+                </span>
+              </label>
+            ) : null}
+            {notice ? <p className="rounded-md border border-[#d92bcb]/20 bg-[#fff5fe] px-4 py-3 text-sm text-[#73346f]">{notice}</p> : null}
             {error ? <p role="alert" className="rounded-md border border-[#b23a32]/20 bg-[#fff0ee] px-4 py-3 text-sm text-[#9b2f28]">{error}</p> : null}
             <button type="submit" disabled={submitting} className="flex min-h-12 w-full items-center justify-center rounded-md bg-[#d92bcb] px-5 text-sm font-bold text-white hover:bg-[#bb20af] disabled:cursor-wait disabled:opacity-60">
-              {submitting ? "Signing in..." : "Sign in"}
+              {submitting ? "Signing in..." : otpStep ? "Verify and sign in" : "Sign in"}
             </button>
+            {otpStep ? (
+              <button type="button" onClick={resetOtpStep} disabled={submitting} className="w-full text-sm font-semibold text-[#a21c98] disabled:opacity-60">
+                Use a different email or resend code
+              </button>
+            ) : null}
           </form>
           <p className="mt-7 text-sm text-[#70697d]">New to AiFrogi? <Link href="/register" className="font-semibold text-[#a21c98]">Start a 30-day trial</Link></p>
           <p className="mt-5 text-xs leading-5 text-[#817789]">Need access or forgot your password? Contact your AiFrogi administrator. Never share OTPs or Meta credentials.</p>

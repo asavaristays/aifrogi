@@ -12,6 +12,7 @@ AiFrogi handles WhatsApp customer conversations, customer documents, Meta creden
 - Legacy inbound webhook protection: production inbound capture requires `LEADOS_WHATSAPP_INBOUND_TOKEN` unless deliberately disabled for a non-production environment.
 - Credential protection: WhatsApp access tokens and webhook registration secrets are encrypted at rest.
 - No-store support endpoints: support-access APIs avoid cached customer access state.
+- Privileged login OTP: platform admin and workspace OWNER/ADMIN accounts require email OTP after password verification before a session is created.
 - Repeatable boundary verifier: `npm run verify:security-boundaries` checks covered unauthenticated, cross-workspace, and role-gated refusal paths when staging credentials are provided.
 
 ## Level 2 — Next controls to add
@@ -43,3 +44,5 @@ Use [Meta webhook enforcement](./runbooks/meta-webhook-enforcement.md) to add th
 Use [Security boundary verification](./runbooks/security-boundary-verification.md) to run repeatable unauthenticated, cross-workspace, and role-gated API checks before calling a release security-verified.
 
 Use [Security acceptance checklist](./runbooks/security-acceptance-checklist.md) to record the Meta secret verification, deep boundary run, deliberate-failure sanity check, and final restored green run.
+
+Use [Privileged login OTP](./runbooks/login-otp.md) to understand the admin/owner/admin email OTP login flow and operational mailbox dependency.
