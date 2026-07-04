@@ -38,6 +38,29 @@ export default function HomePage() {
 
       <OnboardingJourney />
 
+      <section className="border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8 sm:py-24">
+        <a href="/case-studies/asavari-stays" className="group mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="product-eyebrow">Customer story · Nupur Purohit</p>
+            <h2 className="mt-4 max-w-xl text-3xl font-semibold leading-tight tracking-[-.035em] sm:text-5xl">A visual story starts desire. WhatsApp carries it to booking.</h2>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays, HotelRadar, and AiFrogi connect discovery, retargeting, and human follow-up without losing guest context.</p>
+            <span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#a21c98]">View the journey <Icon name="arrow-right" className="transition-transform group-hover:translate-x-1" /></span>
+          </div>
+          <div className="relative min-h-[360px] overflow-hidden rounded-xl bg-[#2c243b] p-7 text-white shadow-[0_28px_80px_rgba(44,36,59,.15)]">
+            <div className="absolute -right-14 -top-14 h-64 w-64 rounded-full bg-[#d92bcb]/25 blur-3xl" aria-hidden="true" />
+            <div className="relative flex items-center justify-between text-[10px] font-bold uppercase tracking-[.14em] text-white/45"><span>Asavari Stays</span><span>HotelRadar</span></div>
+            <div className="relative mt-16 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-3">
+              <CaseStudyStep icon="image" label="Visual story" />
+              <Icon name="arrow-right" className="mt-4 text-[#ff8af1]" />
+              <CaseStudyStep icon="refresh-cw" label="Retarget" />
+              <Icon name="arrow-right" className="mt-4 text-[#ff8af1]" />
+              <CaseStudyStep icon="message-circle" label="Booking chat" />
+            </div>
+            <p className="relative mt-16 max-w-md text-2xl font-semibold leading-tight">The guest returns to the experience they already wanted.</p>
+          </div>
+        </a>
+      </section>
+
       <section id="security" className="relative overflow-hidden bg-[#211a2d] px-5 py-20 text-white sm:px-8 sm:py-24">
         <div className="absolute -right-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-[#d92bcb]/15 blur-[100px]" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20">
@@ -70,4 +93,5 @@ export default function HomePage() {
 }
 
 function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
+function CaseStudyStep({ icon, label }: { icon: "image" | "refresh-cw" | "message-circle"; label: string }) { return <div><span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-[#ff8af1]"><Icon name={icon} /></span><p className="mt-3 text-xs font-bold">{label}</p></div>; }
 function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }
