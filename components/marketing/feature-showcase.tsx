@@ -106,7 +106,7 @@ const features = [
     metricLabel: "average customer rating",
     accent: "186 new reviews",
     steps: ["Detect success", "Request feedback", "Route the response"],
-    activity: [["Post-stay review flow", "Live"], ["Private feedback", "14 responses"], ["Public review clicks", "63%"]]
+    activity: [["Review", "Live"], ["Private feedback", "14 responses"], ["Public review clicks", "63%"]]
   }
 ] as const;
 
