@@ -203,6 +203,22 @@ async function main() {
     }
 
     console.log("PASS: Deep security-boundary verifier passed with temporary fixtures.");
+
+    const negativeControl = spawnSync("npm", ["run", "verify:security-boundaries"], {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        ...fixture.env,
+        AIFROGI_SECURITY_NEGATIVE_CONTROL: "true"
+      },
+      stdio: "inherit"
+    });
+
+    if (negativeControl.status !== 0) {
+      throw new Error(`Negative-control verifier failed with status ${negativeControl.status ?? "unknown"}.`);
+    }
+
+    console.log("PASS: Negative-control sanity check proved the verifier can go red on a protected mutation path.");
   } finally {
     await cleanup(fixture.slugs);
     console.log("Temporary security fixtures cleaned up.");

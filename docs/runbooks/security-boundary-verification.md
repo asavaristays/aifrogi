@@ -44,10 +44,13 @@ Expected:
 ```text
 PASS: Covered unauthenticated, cross-workspace propertySlug, and role-gated API boundary checks were correctly refused.
 PASS: Deep security-boundary verifier passed with temporary fixtures.
+PASS: Negative-control sanity check proved the verifier can go red on a protected mutation path.
 Temporary security fixtures cleaned up.
 ```
 
 Use this only against staging or when temporary production fixtures are explicitly approved.
+
+The fixture runner also performs a safe negative-control check. It intentionally expects the protected bulk-campaign mutation to return `200` for a limited user. The app correctly returns `403`, so the verifier observes a controlled `FAIL` signal and reports that the harness can go red without weakening production code.
 
 ## Environment variables
 

@@ -72,6 +72,8 @@ AIFROGI_SECURITY_FIXTURE_CONFIRM=create-temporary-security-fixtures \
 
 This creates temporary `SECURITY_TEST` workspaces, runs the deep checks, and deletes the fixtures.
 
+It also runs the deliberate-failure sanity check safely: the verifier intentionally expects a limited user to reach the protected bulk-campaign mutation path, observes the real `403` refusal, and reports that the harness can go red without weakening production code.
+
 Manual credential run:
 
 Set staging test credentials:
@@ -121,7 +123,7 @@ What this does not prove:
 
 This step is required. A green suite that has never been shown to go red is not fully trusted.
 
-Perform only in staging or a disposable branch/environment.
+The temporary-fixture runner already performs this safely. If you need a manual staging proof, perform only in staging or a disposable branch/environment.
 
 Recommended realistic break:
 

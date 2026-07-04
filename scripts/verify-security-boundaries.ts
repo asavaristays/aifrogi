@@ -14,6 +14,7 @@ type TestResult = {
 
 const baseUrl = (process.env.AIFROGI_SECURITY_TEST_BASE_URL || process.env.AIFROGI_MONITOR_URL || "https://aifrogi.com")
   .replace(/\/+$/, "");
+const negativeControl = process.env.AIFROGI_SECURITY_NEGATIVE_CONTROL === "true";
 
 const config = {
   userAUser: process.env.AIFROGI_TEST_WORKSPACE_A_USER || process.env.AIFROGI_TEST_WORKSPACE_A_ADMIN_USER || "",
@@ -107,6 +108,9 @@ async function main() {
   console.log("AiFrogi security-boundary verifier");
   console.log(`Target: ${baseUrl}`);
   console.log("Important: PASS means the attack attempt was correctly refused. This proves the covered checks, not every possible endpoint.");
+  if (negativeControl) {
+    console.log("Negative-control mode: one protected mutation check is intentionally expected to fail. The harness passes only if that failure is observed.");
+  }
   console.log("");
 
   const publicChecks = [
@@ -145,6 +149,32 @@ async function main() {
     login("Workspace A user", config.userAUser, config.userAPassword),
     login("Workspace A limited user", config.limitedAUser, config.limitedAPassword)
   ]);
+
+  if (negativeControl) {
+    const mutationShouldFail = await expectStatus(
+      "NEGATIVE CONTROL: limited user bulk campaign would be dangerous if allowed",
+      "intentional wrong expectation: HTTP 200",
+      [200],
+      "/api/integrations/whatsapp/bulk-message",
+      {
+        method: "POST",
+        session: limitedA,
+        body: {
+          mode: "text",
+          message: "security negative-control probe",
+          recipients: ["+919999999999"],
+          testMode: true
+        }
+      }
+    );
+    printResult(mutationShouldFail);
+    if (mutationShouldFail.ok) {
+      console.error("FAIL: Negative control unexpectedly passed. A limited user reached a protected mutation path.");
+      process.exit(1);
+    }
+    console.log("PASS: Negative control produced the expected FAIL signal on a role-gated mutation path.");
+    process.exit(0);
+  }
 
   const boundaryChecks: TestResult[] = [];
 
