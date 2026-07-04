@@ -7,12 +7,31 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
   title: "WhatsApp Business Guides & Resources | AiFrogi",
-  description: "Practical guides for WhatsApp onboarding, messaging, compliant campaigns, AI knowledge, account access, security, and customer support.",
+  description: "Practical guides for WhatsApp onboarding, messaging, compliant campaigns, AI knowledge, verified security controls, account access, and customer support.",
   path: "/resources"
 });
 
+const securityProofs = [
+  {
+    title: "Customer-approved support",
+    copy: "Private conversations, documents, knowledge, and integration details stay locked until an owner/admin grants time-bound support access."
+  },
+  {
+    title: "Privileged login OTP",
+    copy: "Platform admin and workspace owner/admin sign-in requires password verification plus an email OTP before a session is created."
+  },
+  {
+    title: "Signed Meta webhooks",
+    copy: "Production Meta webhook traffic is verified with the app secret. Unsigned or forged webhook requests are rejected."
+  },
+  {
+    title: "Boundary verifier",
+    copy: "Repeatable fixture tests confirm covered sensitive routes reject workspace spoofing and role-bypass attempts."
+  }
+];
+
 const trustResources = [
-  { title: "Data security", copy: "How access, credentials, customer data, and AI boundaries are protected.", href: "/security" },
+  { title: "Data security", copy: "How support access, OTP, Meta webhook signatures, credentials, and workspace boundaries are protected.", href: "/security" },
   { title: "Privacy policy", copy: "What information is collected, why it is used, and how it is protected.", href: "/privacy-policy" },
   { title: "Terms of service", copy: "Platform responsibilities, acceptable use, billing, and service boundaries.", href: "/terms-of-service" },
   { title: "Data deletion", copy: "How to request removal of customer or account information.", href: "/data-deletion" }
@@ -30,6 +49,27 @@ export default function ResourcesPage() {
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-.04em] sm:text-6xl">Practical guides. Clear answers.</h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Set up WhatsApp, run compliant campaigns, control AI, protect access, and resolve issues without unnecessary reading.</p>
           <a href="#guides" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Browse guides <Icon name="arrow-right" /></a>
+        </div>
+      </section>
+
+      <section className="border-b border-black/8 bg-white px-5 py-20 sm:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
+          <div>
+            <p className="product-eyebrow">Security proof</p>
+            <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">Not just policy text. Controls customers can understand.</h2>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">AiFrogi is built for customer data boundaries: support access is customer-controlled, privileged users complete OTP, Meta webhooks are signed, and sensitive routes are checked with repeatable verifier tests.</p>
+            <Link href="/security" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Open security center <Icon name="arrow-right" /></Link>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {securityProofs.map((proof) => (
+              <article key={proof.title} className="rounded-xl border border-black/8 bg-[#fbf8fc] p-5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2c243b] text-sm font-bold text-white">✓</div>
+                <h3 className="mt-5 text-lg font-bold">{proof.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{proof.copy}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

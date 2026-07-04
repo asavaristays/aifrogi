@@ -7,17 +7,17 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
   title: "WhatsApp Business Data Security | AiFrogi",
-  description: "Review AiFrogi security controls, workspace data boundaries, encrypted credentials, AI safeguards, and Meta Tech Provider verification.",
+  description: "Review AiFrogi security controls, customer-approved support access, privileged login OTP, signed Meta webhooks, workspace data boundaries, and Meta Tech Provider verification.",
   path: "/security"
 });
 
 const controls = [
-  ["Access", "Role-based workspaces, signed sessions, and server-side authorization protect customer operations."],
+  ["Access", "Role-based workspaces, signed sessions, privileged login OTP, and server-side authorization protect customer operations."],
   ["Credentials", "WhatsApp access tokens and registration secrets are encrypted at rest and never displayed to clients."],
-  ["Transport", "Production traffic uses HTTPS. Meta webhook signatures are supported with the Meta app secret, and readiness checks flag missing enforcement."],
+  ["Transport", "Production traffic uses HTTPS. Meta webhook signatures are enforced with the Meta app secret, and unsigned webhook requests are rejected."],
   ["Data boundaries", "Organizations and workspaces scope contacts, messages, documents, campaigns, and configuration."],
   ["AI controls", "Approved knowledge, confidence fallback, opt-out handling, and human handoff bound automated replies."],
-  ["Operations", "Delivery status, activity history, support cases, and connection health provide an audit trail."],
+  ["Operations", "Delivery status, activity history, support grants, blocked support attempts, and connection health provide an audit trail."],
   ["Support access", "AiFrogi support cannot read private customer content by default. Customers grant time-bound access and can revoke it anytime."]
 ];
 
@@ -29,9 +29,16 @@ const verificationFacts = [
 ];
 
 const trustLadder = [
-  ["Enforced now", "Customer-controlled support access, workspace-scoped WhatsApp APIs, encrypted credentials, support-audit trails, and readiness checks for webhook enforcement."],
-  ["Next controls", "MFA, rate limits, session/device controls, support reason capture, tenant-isolation tests, and restore-drill evidence."],
+  ["Enforced now", "Customer-controlled support access, privileged login OTP, workspace-scoped WhatsApp APIs, encrypted credentials, signed Meta webhooks, and support-audit trails."],
+  ["Verified behavior", "Repeatable security-boundary tests confirm covered sensitive routes reject unauthenticated access, workspace spoofing, and role-bypassing mutation attempts."],
   ["Enterprise evidence", "Public status, subprocessors, external assessment, and SOC 2 or ISO readiness as AiFrogi scales."]
+];
+
+const verifiedControls = [
+  ["Support access", "Private customer content is locked by default. Owners/admins grant scope and duration before support can view sensitive areas."],
+  ["Privileged OTP", "Platform admin and workspace owner/admin accounts require an email OTP after password verification."],
+  ["Meta webhook signing", "Production webhook processing requires Meta's signature. Missing or invalid signatures are refused."],
+  ["Boundary tests", "Fixture-based checks prove covered routes refuse cross-workspace and role-bypass attempts before release."]
 ];
 
 export default function SecurityPage() {
@@ -79,7 +86,26 @@ export default function SecurityPage() {
         </div>
       </section>
 
-      <section className="border-y border-black/8 bg-[#2c243b] px-5 py-16 text-white sm:px-8">
+      <section className="border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.75fr_1.25fr] lg:items-start">
+          <div>
+            <p className="product-eyebrow">Verified security posture</p>
+            <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Built controls, then tested refusal paths.</h2>
+            <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--text-muted)]">Security confidence comes from behavior, not slogans. AiFrogi records the controls below as current platform behavior and keeps the claim limited to the routes and workflows covered by verification.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {verifiedControls.map(([title, copy]) => (
+              <article key={title} className="rounded-xl border border-black/8 bg-white p-5">
+                <span className="inline-flex rounded-full bg-[#eaf9ef] px-3 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#178665]">Active</span>
+                <h3 className="mt-5 text-lg font-bold">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#2c243b] px-5 py-16 text-white sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.75fr_1.25fr] lg:items-start">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Customer-controlled support</p>

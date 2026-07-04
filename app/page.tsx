@@ -12,7 +12,7 @@ const registerUrl = "https://app.aifrogi.com/register";
 
 export const metadata: Metadata = marketingMetadata({
   title: "AiFrogi | WhatsApp Automation for Business",
-  description: "Run WhatsApp broadcasts, AI chatbots, reminders, payments, retargeting, and human handover from one secure business workspace.",
+  description: "Run WhatsApp broadcasts, AI chatbots, reminders, payments, retargeting, and human handover from one secure business workspace with verified security controls.",
   path: "/"
 });
 
@@ -86,7 +86,7 @@ export default function HomePage() {
             <ProofLink title="Meta Tech Provider" copy="Verification evidence and platform responsibility notes." href="/security#meta-verification" icon="settings" />
             <ProofLink title="Company details" copy="AiFrogi is operated by webtechnosys from Goa, India." href="/about" icon="file-text" />
             <ProofLink title="Service status" copy="Public status page for platform availability and incidents." href="/status" icon="bar-chart-3" />
-            <ProofLink title="Security policy" copy="Data separation, credential handling, and AI handover rules." href="/security" icon="grid" />
+            <ProofLink title="Verified controls" copy="Support access, OTP, signed webhooks, and boundary tests." href="/security" icon="grid" />
           </div>
         </div>
       </section>
@@ -96,8 +96,20 @@ export default function HomePage() {
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Trust by design</p>
-            <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.04em] sm:text-5xl">Your customer data stays inside clear boundaries.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/62">AiFrogi connects through Meta&apos;s secure authorization flow, encrypts access credentials, and keeps every organization&apos;s data separated.</p>
+            <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.04em] sm:text-5xl">Security controls customers can understand and verify.</h2>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/62">AiFrogi protects WhatsApp workspaces with customer-approved support access, privileged login OTP, signed Meta webhooks, encrypted credentials, and repeatable boundary tests for covered routes.</p>
+            <div className="mt-7 grid max-w-xl gap-3 sm:grid-cols-3">
+              {[
+                ["Meta webhook", "Signed traffic only"],
+                ["Admin login", "Password + email OTP"],
+                ["Boundary tests", "Verified refusal paths"]
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-lg border border-white/12 bg-white/5 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[.12em] text-white/38">{label}</p>
+                  <p className="mt-2 text-sm font-bold text-white">{value}</p>
+                </div>
+              ))}
+            </div>
             <a href="/security" className="group mt-8 inline-flex min-h-14 items-center gap-3 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_38px_rgba(217,43,203,.3)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">
               Review Data Security
               <Icon name="arrow-right" className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -111,8 +123,10 @@ export default function HomePage() {
           </div>
 
           <div className="border-y border-white/12">
-            <SecurityControl icon="settings" title="No shared credentials" copy="Never share a Facebook password, email password, OTP, or permanent access token." />
-            <SecurityControl icon="grid" title="Encrypted and separated" copy="Access secrets are encrypted at rest. Contacts, messages, and documents stay scoped to the correct workspace." />
+            <SecurityControl icon="settings" title="Customer-approved support access" copy="Super admin cannot freely read private customer content. Owners/admins grant time-bound support access by scope." />
+            <SecurityControl icon="phone" title="Privileged login OTP" copy="Platform admin and workspace owner/admin sign-in requires password plus email OTP before a session is created." />
+            <SecurityControl icon="link" title="Signed Meta webhooks" copy="Meta webhook traffic is verified with the app secret. Unsigned or forged webhook requests are rejected." />
+            <SecurityControl icon="grid" title="Verified workspace boundaries" copy="Temporary fixture tests confirm covered routes reject cross-workspace slugs and role-bypassing mutation attempts." />
             <SecurityControl icon="sparkles" title="AI stays controlled" copy="Approved knowledge, role-based access, confidence fallback, and human handover keep automation bounded." />
           </div>
         </div>
@@ -126,4 +140,4 @@ export default function HomePage() {
 function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
 function CaseStudyStep({ icon, label }: { icon: "image" | "refresh-cw" | "message-circle"; label: string }) { return <div><span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-[#ff8af1]"><Icon name={icon} /></span><p className="mt-3 text-xs font-bold">{label}</p></div>; }
 function ProofLink({ title, copy, href, icon }: { title: string; copy: string; href: string; icon: "settings" | "file-text" | "bar-chart-3" | "grid" }) { return <a href={href} className="group border-t border-black/10 pt-5"><span className="grid h-10 w-10 place-items-center rounded-lg bg-[#fceafb] text-[#b923ae]"><Icon name={icon} /></span><h3 className="mt-5 flex items-center justify-between gap-3 text-lg font-bold">{title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></a>; }
-function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }
+function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles" | "phone" | "link"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }
