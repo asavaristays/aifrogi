@@ -17,7 +17,7 @@ export const metadata: Metadata = marketingMetadata({
 });
 
 metadata.other = {
-  "aifrogi-homepage-release": "2026-07-04-clean-hero-metrics-copy"
+  "aifrogi-homepage-release": "2026-07-04-claim-hygiene"
 };
 
 export const dynamic = "force-dynamic";
@@ -25,15 +25,15 @@ export const revalidate = 0;
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[#2c243b]" data-aifrogi-homepage-release="2026-07-04-clean-hero-metrics-copy">
-      <span hidden>AiFrogi homepage canary 2026-07-04 clean hero metrics copy</span>
+    <main className="overflow-hidden bg-white text-[#2c243b]" data-aifrogi-homepage-release="2026-07-04-claim-hygiene">
+      <span hidden>AiFrogi homepage canary 2026-07-04 claim hygiene</span>
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#2c243b] px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
         <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#d92bcb]/20 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl text-center">
-          <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#ff8af1]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Tech Provider verified by Meta <span className="text-[#ff8af1] transition-transform group-hover:translate-x-0.5">→</span></a>
+          <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#ff8af1]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Meta access verified for webtechnosys <span className="text-[#ff8af1] transition-transform group-hover:translate-x-0.5">→</span></a>
           <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp chats into bookings, payments, and repeat customers.</h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Campaigns, AI answers, reminders, payment links, forms, reviews, and human handover in one controlled workspace.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
@@ -83,7 +83,7 @@ export default function HomePage() {
             <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, the Meta status, and the security boundaries.</h2>
           </div>
           <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <ProofLink title="Meta Tech Provider" copy="Verification evidence and platform responsibility notes." href="/security#meta-verification" icon="settings" />
+            <ProofLink title="Meta access verification" copy="webtechnosys Tech Provider access evidence and responsibility notes." href="/security#meta-verification" icon="settings" />
             <ProofLink title="Company details" copy="AiFrogi is operated by webtechnosys from Goa, India." href="/about" icon="file-text" />
             <ProofLink title="Service status" copy="Public status page for platform availability and incidents." href="/status" icon="bar-chart-3" />
             <ProofLink title="Verified controls" copy="Support access, OTP, signed webhooks, and boundary tests." href="/security" icon="grid" />

@@ -120,7 +120,7 @@ export function FeatureShowcase() {
         <div className="flex items-center gap-2 border-b border-white/8 px-3 py-2.5">
           <i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/>
           <span className="ml-2 text-[11px] text-white/30">app.aifrogi.com — {active.screen}</span>
-          <span className="ml-auto hidden items-center gap-2 text-[10px] font-semibold text-white/35 sm:flex"><i className="h-1.5 w-1.5 rounded-full bg-[#ff8af1] shadow-[0_0_8px_#ff8af1]"/>Hover or tap a capability</span>
+          <span className="ml-auto hidden items-center gap-2 text-[10px] font-semibold text-white/35 sm:flex"><i className="h-1.5 w-1.5 rounded-full bg-[#ff8af1] shadow-[0_0_8px_#ff8af1]"/>Sample UI · hover or tap</span>
         </div>
 
         <div className="grid min-h-[390px] grid-cols-[54px_1fr] sm:grid-cols-[54px_220px_1fr]">
@@ -151,7 +151,7 @@ export function FeatureShowcase() {
 
               <div className="grid flex-1 gap-3 lg:grid-cols-[1.25fr_.75fr]">
                 <div className="rounded-xl border border-white/8 bg-[#201a28] p-4">
-                  <div className="flex items-center justify-between"><span className="text-[10px] font-semibold text-white/38">Automation performance</span><span className="text-[10px] text-[#ff8af1]">Last 30 days</span></div>
+                  <div className="flex items-center justify-between"><span className="text-[10px] font-semibold text-white/38">Sample performance view</span><span className="text-[10px] text-[#ff8af1]">Illustrative data</span></div>
                   <div className="mt-5 flex h-24 items-end gap-2">
                     {[36,54,43,68,57,82,72,91,78,96].map((height,index)=><i key={index} style={{height:`${height}%`}} className="flex-1 rounded-t-sm bg-gradient-to-t from-[#d92bcb]/20 to-[#e95bdd]/80 transition-all duration-500"/>)}
                   </div>

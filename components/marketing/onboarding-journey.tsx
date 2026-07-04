@@ -55,7 +55,7 @@ export function OnboardingJourney() {
     <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-14 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
-          <p className="product-eyebrow">Meta Tech Provider guided setup</p>
+          <p className="product-eyebrow">Meta access guided setup</p>
           <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">We guide you through WhatsApp API onboarding.</h2>
           <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">One glance: what you need, what Meta approves, and what happens after approval.</p>
         </div>
