@@ -16,12 +16,17 @@ export const metadata: Metadata = marketingMetadata({
   path: "/"
 });
 
+metadata.other = {
+  "aifrogi-homepage-release": "2026-07-04-clean-hero-metrics-copy"
+};
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[#2c243b]">
+    <main className="overflow-hidden bg-white text-[#2c243b]" data-aifrogi-homepage-release="2026-07-04-clean-hero-metrics-copy">
+      <span hidden>AiFrogi homepage canary 2026-07-04 clean hero metrics copy</span>
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#2c243b] px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
