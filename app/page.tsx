@@ -1,5 +1,6 @@
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
+import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-strip";
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { RotatingUseCase } from "@/components/marketing/rotating-use-case";
 import { SiteFooter } from "@/components/marketing/site-footer";
@@ -25,6 +26,8 @@ export default function HomePage() {
           <FeatureShowcase />
         </div>
       </section>
+
+      <IntegrationLogoStrip />
 
       <section className="bg-[#2c243b] px-5 py-20 text-white sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
