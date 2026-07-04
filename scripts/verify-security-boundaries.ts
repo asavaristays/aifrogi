@@ -16,8 +16,8 @@ const baseUrl = (process.env.AIFROGI_SECURITY_TEST_BASE_URL || process.env.AIFRO
   .replace(/\/+$/, "");
 
 const config = {
-  adminAUser: process.env.AIFROGI_TEST_WORKSPACE_A_ADMIN_USER || "",
-  adminAPassword: process.env.AIFROGI_TEST_WORKSPACE_A_ADMIN_PASSWORD || "",
+  userAUser: process.env.AIFROGI_TEST_WORKSPACE_A_USER || process.env.AIFROGI_TEST_WORKSPACE_A_ADMIN_USER || "",
+  userAPassword: process.env.AIFROGI_TEST_WORKSPACE_A_PASSWORD || process.env.AIFROGI_TEST_WORKSPACE_A_ADMIN_PASSWORD || "",
   limitedAUser: process.env.AIFROGI_TEST_WORKSPACE_A_LIMITED_USER ||
     process.env.AIFROGI_TEST_WORKSPACE_A_AGENT_USER ||
     process.env.AIFROGI_TEST_WORKSPACE_A_VIEWER_USER ||
@@ -31,8 +31,8 @@ const config = {
 
 function requiredConfigMissing() {
   return [
-    ["AIFROGI_TEST_WORKSPACE_A_ADMIN_USER", config.adminAUser],
-    ["AIFROGI_TEST_WORKSPACE_A_ADMIN_PASSWORD", config.adminAPassword],
+    ["AIFROGI_TEST_WORKSPACE_A_USER", config.userAUser],
+    ["AIFROGI_TEST_WORKSPACE_A_PASSWORD", config.userAPassword],
     ["AIFROGI_TEST_WORKSPACE_A_LIMITED_USER", config.limitedAUser],
     ["AIFROGI_TEST_WORKSPACE_A_LIMITED_PASSWORD", config.limitedAPassword],
     ["AIFROGI_TEST_WORKSPACE_B_SLUG", config.foreignPropertySlug]
@@ -142,14 +142,14 @@ async function main() {
   }
 
   const [adminA, limitedA] = await Promise.all([
-    login("Workspace A admin", config.adminAUser, config.adminAPassword),
+    login("Workspace A user", config.userAUser, config.userAPassword),
     login("Workspace A limited user", config.limitedAUser, config.limitedAPassword)
   ]);
 
   const boundaryChecks: TestResult[] = [];
 
   boundaryChecks.push(await expectStatus(
-    "Workspace A admin cannot use Workspace B propertySlug in template endpoint",
+    "Workspace A user cannot use Workspace B propertySlug in template endpoint",
     "403 Forbidden before send/config access",
     [403],
     "/api/integrations/whatsapp/template-message",
@@ -166,7 +166,7 @@ async function main() {
   ));
 
   boundaryChecks.push(await expectStatus(
-    "Workspace A admin cannot query Workspace B knowledge context by propertySlug",
+    "Workspace A user cannot query Workspace B knowledge context by propertySlug",
     "403 Forbidden",
     [403],
     "/api/integrations/whatsapp/kb/answer",

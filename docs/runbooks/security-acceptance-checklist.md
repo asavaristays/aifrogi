@@ -63,6 +63,17 @@ What this does not prove:
 
 Use [Security boundary verification](./security-boundary-verification.md).
 
+Preferred temporary-fixture run:
+
+```bash
+AIFROGI_SECURITY_FIXTURE_CONFIRM=create-temporary-security-fixtures \
+  npm run verify:security-boundaries:fixtures
+```
+
+This creates temporary `SECURITY_TEST` workspaces, runs the deep checks, and deletes the fixtures.
+
+Manual credential run:
+
 Set staging test credentials:
 
 ```bash
@@ -203,4 +214,3 @@ When adding any sensitive route that accepts or derives:
 - integration IDs
 
 update `npm run verify:security-boundaries` or add a new verifier before release.
-

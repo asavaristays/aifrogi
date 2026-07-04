@@ -28,6 +28,27 @@ Create or identify:
 - Workspace A limited user, such as AGENT or VIEWER.
 - Workspace B property slug that does not belong to Workspace A.
 
+Alternatively, use the temporary fixture runner below. This is the preferred repeatable path when you can run the verifier in the same environment that owns the target database.
+
+## Preferred: run with temporary fixtures
+
+This creates temporary `SECURITY_TEST` workspaces, runs the deep boundary verifier, and deletes the fixtures afterwards.
+
+```bash
+AIFROGI_SECURITY_FIXTURE_CONFIRM=create-temporary-security-fixtures \
+  npm run verify:security-boundaries:fixtures
+```
+
+Expected:
+
+```text
+PASS: Covered unauthenticated, cross-workspace propertySlug, and role-gated API boundary checks were correctly refused.
+PASS: Deep security-boundary verifier passed with temporary fixtures.
+Temporary security fixtures cleaned up.
+```
+
+Use this only against staging or when temporary production fixtures are explicitly approved.
+
 ## Environment variables
 
 ```bash
@@ -69,4 +90,3 @@ PASS: Limited user cannot refresh knowledge crawl
 ```
 
 If any covered attack returns `200`, treat it as a release blocker.
-
