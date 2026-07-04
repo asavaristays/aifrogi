@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { AppShell } from "@/components/layout/app-shell";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth-server";
@@ -8,6 +9,7 @@ import type { ClientAccessRole } from "@/lib/client-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function ProductLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();

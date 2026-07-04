@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { LegalPage, LegalSection } from "@/components/legal/legal-page";
+import { marketingMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = marketingMetadata({
   title: "Privacy Policy | AiFrogi",
-  description: "AiFrogi privacy policy."
-};
+  description: "How AiFrogi and webtechnosys collect, use, store, protect, and delete account, customer, and WhatsApp Business information.",
+  path: "/privacy-policy"
+});
 
 export default function PrivacyPolicyPage() {
   return (

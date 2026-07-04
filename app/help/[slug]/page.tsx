@@ -4,14 +4,16 @@ import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { getHelpArticle, helpArticles } from "@/lib/help-center";
+import { marketingMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return helpArticles.map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const article = getHelpArticle((await params).slug);
-  return article ? { title: `${article.title} | AiFrogi Help`, description: article.summary } : {};
+  const slug = (await params).slug;
+  const article = getHelpArticle(slug);
+  return article ? marketingMetadata({ title: `${article.title} | AiFrogi Help`, description: article.summary, path: `/help/${slug}` }) : {};
 }
 
 export default async function HelpArticlePage({ params }: { params: Promise<{ slug: string }> }) {

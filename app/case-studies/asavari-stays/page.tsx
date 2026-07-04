@@ -2,6 +2,13 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { marketingMetadata } from "@/lib/seo";
+
+export const metadata = marketingMetadata({
+  title: "Hotel WhatsApp Retargeting | Asavari Stays Case Study",
+  description: "See how Asavari Stays, HotelRadar, and AiFrogi connect visual storytelling, WhatsApp retargeting, and human follow-up for booking conversations.",
+  path: "/case-studies/asavari-stays"
+});
 
 const journey = [
   ["01", "A stay catches attention", "HotelRadar turns the property, room, and experience into a visual story—not another rate advertisement."],

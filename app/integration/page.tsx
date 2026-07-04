@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import { Icon } from "@/components/icons";
 import { IntegrationCatalog } from "@/components/marketing/integration-catalog";
 import { IntegrationLogo } from "@/components/marketing/integration-logo";
 import { IntegrationPricing } from "@/components/marketing/integration-pricing";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { marketingMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = marketingMetadata({
+  title: "WhatsApp Integrations for Shopify, Razorpay & CRM | AiFrogi",
+  description: "Connect WhatsApp with Shopify, WooCommerce, Razorpay, Stripe, HubSpot, Zoho, Google Sheets, calendars, and custom business systems.",
+  path: "/integration"
+});
 
 const heroIntegrations = [
   { name: "Shopify", src: "/integrations/shopify.svg" },

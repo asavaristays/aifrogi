@@ -3,6 +3,13 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { marketingMetadata } from "@/lib/seo";
+
+export const metadata = marketingMetadata({
+  title: "WhatsApp Business Data Security | AiFrogi",
+  description: "Review AiFrogi security controls, workspace data boundaries, encrypted credentials, AI safeguards, and Meta Tech Provider verification.",
+  path: "/security"
+});
 
 const controls = [
   ["Access", "Role-based workspaces, signed sessions, and server-side authorization protect customer operations."],

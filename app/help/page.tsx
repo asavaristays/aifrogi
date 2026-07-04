@@ -3,11 +3,13 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { helpArticles } from "@/lib/help-center";
+import { marketingMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "AiFrogi Help Center",
-  description: "Clear guides for WhatsApp onboarding, messaging, campaigns, AI knowledge, access, and support."
-};
+export const metadata: Metadata = marketingMetadata({
+  title: "WhatsApp Business Help Center | AiFrogi",
+  description: "Clear guides for WhatsApp onboarding, messaging, campaigns, AI knowledge, account access, security, and support.",
+  path: "/help"
+});
 
 const categories = ["Get started", "Messaging", "Campaigns", "Knowledge and AI", "Account and security", "Support"];
 

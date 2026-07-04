@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { InboxOperationsVisual } from "@/components/marketing/inbox-operations-visual";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { marketingMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = marketingMetadata({
+  title: "WhatsApp Broadcasts, Chatbots & Payments | AiFrogi",
+  description: "Explore WhatsApp broadcasts, AI chatbots, e-commerce retargeting, reminders, payments, forms, reviews, and human-assisted conversations.",
+  path: "/solutions"
+});
 
 export default function SolutionsPage() {
   return (

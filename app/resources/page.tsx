@@ -3,6 +3,13 @@ import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { helpArticles } from "@/lib/help-center";
+import { marketingMetadata } from "@/lib/seo";
+
+export const metadata = marketingMetadata({
+  title: "WhatsApp Business Guides & Resources | AiFrogi",
+  description: "Practical guides for WhatsApp onboarding, messaging, compliant campaigns, AI knowledge, account access, security, and customer support.",
+  path: "/resources"
+});
 
 const trustResources = [
   { title: "Data security", copy: "How access, credentials, customer data, and AI boundaries are protected.", href: "/security" },

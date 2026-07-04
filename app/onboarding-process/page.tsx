@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { marketingMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = marketingMetadata({
+  title: "WhatsApp Business API Onboarding | AiFrogi",
+  description: "See WhatsApp onboarding prerequisites, Meta business verification, number approval, expected timing, go-live checks, and guided support.",
+  path: "/onboarding-process"
+});
 
 export default function OnboardingProcessPage() {
   return (

@@ -1,10 +1,18 @@
+import type { Metadata } from "next";
 import { IntegrationPricing } from "@/components/marketing/integration-pricing";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
+import { marketingMetadata } from "@/lib/seo";
 
 const registerUrl = "https://app.aifrogi.com/register";
+
+export const metadata: Metadata = marketingMetadata({
+  title: "WhatsApp Business Platform Pricing | AiFrogi",
+  description: "Compare AiFrogi plans from a free workspace to campaigns, retargeting, automation, and AI. Platform fees and Meta usage stay separate.",
+  path: "/pricing"
+});
 
 const plans = [
   {

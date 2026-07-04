@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { LegalPage, LegalSection } from "@/components/legal/legal-page";
+import { marketingMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = marketingMetadata({
   title: "Terms of Service | AiFrogi",
-  description: "Terms governing use of AiFrogi."
-};
+  description: "Terms governing AiFrogi accounts, WhatsApp Business messaging, customer data, acceptable use, service operation, and billing.",
+  path: "/terms-of-service"
+});
 
 export default function TermsOfServicePage() {
   return (

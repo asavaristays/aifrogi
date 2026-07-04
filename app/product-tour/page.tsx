@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { marketingMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "AiFrogi Product Tour",
-  description: "See how AiFrogi brings WhatsApp operations, campaigns, knowledge, automation, and human support into one clear workspace."
-};
+export const metadata: Metadata = marketingMetadata({
+  title: "WhatsApp Automation Product Tour | AiFrogi",
+  description: "See how AiFrogi brings WhatsApp conversations, campaigns, approved knowledge, automation, analytics, and human support into one workspace.",
+  path: "/product-tour"
+});
 
 export default function ProductTourPage() {
   return <main className="min-h-screen bg-[#211a2b] text-white">

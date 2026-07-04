@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
 import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-strip";
@@ -5,9 +6,16 @@ import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { RotatingUseCase } from "@/components/marketing/rotating-use-case";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { marketingMetadata } from "@/lib/seo";
 
 const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register";
+
+export const metadata: Metadata = marketingMetadata({
+  title: "AiFrogi | WhatsApp Automation for Business",
+  description: "Run WhatsApp broadcasts, AI chatbots, reminders, payments, retargeting, and human handover from one secure business workspace.",
+  path: "/"
+});
 
 export default function HomePage() {
   return (

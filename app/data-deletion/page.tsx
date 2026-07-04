@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { LegalPage, LegalSection } from "@/components/legal/legal-page";
+import { marketingMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = marketingMetadata({
   title: "Data Deletion Instructions | AiFrogi",
-  description: "Instructions for requesting deletion of data processed through AiFrogi."
-};
+  description: "How businesses and individuals can request deletion of eligible account, contact, message, attachment, and integration data from AiFrogi.",
+  path: "/data-deletion"
+});
 
 export default function DataDeletionPage() {
   return (
