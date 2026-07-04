@@ -1,4 +1,5 @@
 import { IntegrationPricing } from "@/components/marketing/integration-pricing";
+import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
@@ -64,6 +65,11 @@ export default function PricingPage() {
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {plans.map((plan) => <PricingPlan key={plan.name} {...plan} />)}
           </div>
+
+          <a href="/case-studies/asavari-stays" className="group mt-10 flex flex-col gap-3 border-t border-black/10 pt-7 sm:flex-row sm:items-center sm:justify-between">
+            <div><p className="text-xs font-bold uppercase tracking-[.12em] text-[#a21c98]">See Growth in action</p><p className="mt-2 text-lg font-semibold">How Asavari Stays connects visual storytelling, retargeting, and booking conversations.</p></div>
+            <span className="inline-flex shrink-0 items-center gap-2 text-sm font-bold text-[#a21c98]">Read case study <Icon name="arrow-right" className="transition-transform group-hover:translate-x-1" /></span>
+          </a>
 
           <div className="mt-12 grid gap-6 border-y border-black/10 py-8 text-sm leading-6 md:grid-cols-3">
             <p><strong className="block text-[#2c243b]">Meta charges</strong><span className="text-[var(--text-muted)]">Based on message category and the customer&apos;s country.</span></p>
