@@ -3,12 +3,12 @@ import { Icon } from "@/components/icons";
 import { IntegrationLogo } from "@/components/marketing/integration-logo";
 
 const integrations = [
-  { name: "Shopify", src: "/integrations/shopify.svg", status: "Available" },
-  { name: "Razorpay", src: "/integrations/razorpay.svg", status: "Available" },
-  { name: "WooCommerce", src: "/integrations/woocommerce.svg", status: "Custom" },
-  { name: "Zoho CRM", src: "/integrations/zoho.svg", status: "Custom" },
-  { name: "HubSpot", src: "/integrations/hubspot.svg", status: "Custom" },
-  { name: "Google Sheets", src: "/integrations/google-sheets.svg", status: "Custom" }
+  { name: "Shopify", src: "/integrations/shopify.svg", status: "Ready" },
+  { name: "Razorpay", src: "/integrations/razorpay.svg", status: "Ready" },
+  { name: "WooCommerce", src: "/integrations/woocommerce.svg", status: "Assisted" },
+  { name: "Zoho CRM", src: "/integrations/zoho.svg", status: "Assisted" },
+  { name: "HubSpot", src: "/integrations/hubspot.svg", status: "Assisted" },
+  { name: "Google Sheets", src: "/integrations/google-sheets.svg", status: "Assisted" }
 ];
 
 export function IntegrationLogoStrip() {
@@ -27,7 +27,7 @@ export function IntegrationLogoStrip() {
                   <IntegrationLogo src={integration.src} name={integration.name} size="sm" />
                   <span>
                     <strong className="block whitespace-nowrap text-xs font-bold text-white/82">{integration.name}</strong>
-                    <small className={`block text-[10px] font-semibold ${integration.status === "Available" ? "text-[#6fe0b8]" : "text-white/38"}`}>{integration.status}</small>
+                    <small className={`block text-[10px] font-semibold ${integration.status === "Ready" ? "text-[#6fe0b8]" : "text-white/45"}`}>{integration.status}</small>
                   </span>
                 </div>
               ))}

@@ -3,7 +3,6 @@ import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
 import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-strip";
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
-import { RotatingUseCase } from "@/components/marketing/rotating-use-case";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
@@ -27,7 +26,7 @@ export default function HomePage() {
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#d92bcb]/20 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl text-center">
           <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#ff8af1]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Tech Provider verified by Meta <span className="text-[#ff8af1] transition-transform group-hover:translate-x-0.5">→</span></a>
-          <h1 aria-label="Turn WhatsApp conversations into business outcomes" className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp conversations into <RotatingUseCase /></h1>
+          <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Broadcast. Automate. Convert — on WhatsApp.</h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Messaging, campaigns, automation, and AI assistance in one workspace—with the context and human control your team needs.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
 
@@ -81,6 +80,7 @@ export default function HomePage() {
               <Icon name="arrow-right" className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </a>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/45">
+              <a href="/about" className="transition hover:text-white">About webtechnosys</a>
               <a href="/privacy-policy" className="transition hover:text-white">Privacy policy</a>
               <a href="/data-deletion" className="transition hover:text-white">Data deletion</a>
               <a href="mailto:info@aifrogi.com" className="transition hover:text-white">Report a concern</a>

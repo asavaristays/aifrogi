@@ -10,7 +10,7 @@ const integrations = [
     name: "Shopify",
     src: "/integrations/shopify.svg",
     category: "Commerce",
-    status: "Available",
+    status: "Ready",
     title: "Recover checkout and keep every order moving.",
     description: "Connect Shopify storefront and checkout events to timely WhatsApp conversations.",
     outcomes: ["Abandoned checkout recovery", "Order and payment confirmation", "Fulfilment and delivery updates"],
@@ -22,7 +22,7 @@ const integrations = [
     name: "Razorpay",
     src: "/integrations/razorpay.svg",
     category: "Payments",
-    status: "Available",
+    status: "Ready",
     title: "Collect and confirm payment without leaving the conversation.",
     description: "Create a hosted payment link, share it in WhatsApp, and update the conversation when its status changes.",
     outcomes: ["Secure hosted payment links", "Paid, partial, expired, and cancelled status", "Automatic confirmation and follow-up"],
@@ -34,7 +34,7 @@ const integrations = [
     name: "WooCommerce",
     src: "/integrations/woocommerce.svg",
     category: "Commerce",
-    status: "Custom",
+    status: "Assisted",
     title: "Turn store events into useful customer updates.",
     description: "Connect order, customer, and product events through WooCommerce REST APIs and signed webhooks.",
     outcomes: ["Order confirmations", "Cart and product follow-up", "Delivery and repeat-purchase journeys"],
@@ -46,7 +46,7 @@ const integrations = [
     name: "Zoho CRM",
     src: "/integrations/zoho.svg",
     category: "CRM",
-    status: "Custom",
+    status: "Assisted",
     title: "Keep leads, owners, and follow-ups synchronized.",
     description: "Create or update CRM records from WhatsApp and react to lead or deal-stage changes.",
     outcomes: ["Lead capture and deduplication", "Owner and stage synchronization", "Sales reminders and handover"],
@@ -58,7 +58,7 @@ const integrations = [
     name: "HubSpot",
     src: "/integrations/hubspot.svg",
     category: "CRM",
-    status: "Custom",
+    status: "Assisted",
     title: "Connect conversations with contacts, deals, and tickets.",
     description: "Use CRM events to trigger relevant follow-up while keeping sales context available to agents.",
     outcomes: ["Contact and deal updates", "Ticket creation", "Lifecycle-based WhatsApp workflows"],
@@ -70,7 +70,7 @@ const integrations = [
     name: "Google Sheets",
     src: "/integrations/google-sheets.svg",
     category: "Data",
-    status: "Custom",
+    status: "Assisted",
     title: "Move structured WhatsApp responses into familiar sheets.",
     description: "Send form answers, survey responses, leads, and operational updates to an approved spreadsheet.",
     outcomes: ["Lead and form collection", "Survey exports", "Simple operational reporting"],
@@ -142,7 +142,7 @@ export function IntegrationCatalog() {
                 >
                   <IntegrationLogo src={integration.src} name={integration.name} />
                   <strong className="mt-3 block text-sm">{integration.name}</strong>
-                  <span className={`mt-1 block text-[10px] font-bold uppercase tracking-[.08em] ${integration.status === "Available" ? "text-[#178665]" : "text-[#8a8290]"}`}>{integration.status}</span>
+                  <span className={`mt-1 block text-[10px] font-bold uppercase tracking-[.08em] ${integration.status === "Ready" ? "text-[#178665]" : "text-[#8a8290]"}`}>{integration.status}</span>
                 </button>
               );
             })}
@@ -154,7 +154,7 @@ export function IntegrationCatalog() {
                 <span className="grid h-14 w-14 place-items-center rounded-xl bg-white p-2.5"><IntegrationLogo src={active.src} name={active.name} size="lg" /></span>
                 <div><p className="text-xs font-bold uppercase tracking-[.12em] text-[#ff8af1]">{active.category}</p><h3 className="mt-1 text-xl font-bold">{active.name}</h3></div>
               </div>
-              <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${active.status === "Available" ? "bg-[#dff7ed] text-[#116d51]" : "bg-white/8 text-white/58"}`}>{active.status}</span>
+              <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${active.status === "Ready" ? "bg-[#dff7ed] text-[#116d51]" : "bg-white/8 text-white/58"}`}>{active.status}</span>
             </div>
 
             <h4 className="mt-7 max-w-xl text-2xl font-semibold tracking-[-.025em] sm:text-3xl">{active.title}</h4>

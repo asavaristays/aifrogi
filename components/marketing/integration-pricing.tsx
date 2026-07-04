@@ -5,20 +5,20 @@ const options = [
     name: "Standard connector",
     price: "₹2,500",
     billing: "one-time / connector",
-    copy: "Shopify or Razorpay activation, field mapping, webhook validation, and go-live testing."
+    copy: "Shopify, Razorpay, or Google Sheets activation, field mapping, webhook validation, and go-live testing."
   },
   {
-    name: "Commerce + payment",
-    price: "₹4,500",
-    billing: "one-time bundle",
-    copy: "Shopify and Razorpay configured together as one checkout, payment, and confirmation journey.",
+    name: "Assisted connector",
+    price: "₹7,500",
+    billing: "one-time / connector",
+    copy: "WooCommerce, Zoho CRM, HubSpot, booking tools, or similar supported APIs configured with agreed fields and tests.",
     featured: true
   },
   {
     name: "Custom API connector",
     price: "From ₹15,000",
     billing: "one-time after scope review",
-    copy: "CRM, booking, support, WooCommerce, internal software, or another API-enabled system."
+    copy: "Internal software, complex multi-step operations, private APIs, or systems that need custom middleware."
   }
 ];
 
