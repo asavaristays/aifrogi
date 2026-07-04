@@ -101,6 +101,23 @@ export const helpArticles: HelpArticle[] = [
     checks: ["No shared user accounts", "Every person has the correct role", "Former users are suspended", "Sensitive credentials stay out of tickets"]
   },
   {
+    slug: "protect-whatsapp-customer-data",
+    category: "Account and security",
+    title: "How AiFrogi protects WhatsApp customer data",
+    summary: "A plain-English guide to workspace boundaries, customer-approved support access, OTP, signed Meta webhooks, and safe AI handover.",
+    outcome: "You know what AiFrogi protects, what customers control, and what should never be shared with support.",
+    minutes: 5,
+    steps: [
+      { title: "Each customer workspace stays separated", body: "Contacts, messages, documents, campaign activity, knowledge, and integration settings are scoped to the customer workspace. Server-side checks refuse covered cross-workspace access attempts." },
+      { title: "Support access is customer-approved", body: "AiFrogi support cannot freely read private customer content by default. Workspace owners/admins grant time-bound access by scope, and access activity is recorded." },
+      { title: "Privileged sign-in uses OTP", body: "Platform admin and workspace owner/admin accounts require password verification plus an email OTP before a session is created." },
+      { title: "Meta webhook traffic is signed", body: "Production Meta webhook requests must include a valid signature from the Meta app secret. Unsigned or forged JSON webhook requests are rejected." },
+      { title: "AI stays inside approved knowledge", body: "AI replies use approved business sources, workspace instructions, confidence fallback, and human handover for sensitive or uncertain conversations." },
+      { title: "Never share secrets in support", body: "Do not send passwords, OTPs, permanent Meta tokens, payment card details, customer exports, or raw webhook secrets in tickets, chat, screenshots, or email." }
+    ],
+    checks: ["Support access is granted only when needed", "Owners/admins use their own login and OTP", "No password, OTP, or Meta token is shared", "Sensitive AI replies can reach a human"]
+  },
+  {
     slug: "get-support",
     category: "Support",
     title: "Get help with useful context",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
 import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-strip";
@@ -115,6 +116,7 @@ export default function HomePage() {
               <Icon name="arrow-right" className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </a>
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/45">
+              <Link href="/help/protect-whatsapp-customer-data" className="transition hover:text-white">Plain-English security guide</Link>
               <a href="/about" className="transition hover:text-white">About webtechnosys</a>
               <a href="/privacy-policy" className="transition hover:text-white">Privacy policy</a>
               <a href="/data-deletion" className="transition hover:text-white">Data deletion</a>
