@@ -9,7 +9,7 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
 
 const loginUrl = "https://app.aifrogi.com/login";
-const registerUrl = "https://app.aifrogi.com/register";
+const registerUrl = "https://app.aifrogi.com/register?source=homepage";
 
 export const metadata: Metadata = marketingMetadata({
   title: "AiFrogi | WhatsApp Automation for Business",

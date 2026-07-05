@@ -10,6 +10,8 @@ export type OnboardingGuidanceRecord = {
   metaStatus?: string | null;
   webhookStatus?: string | null;
   tokenStatus?: string | null;
+  templateStatus?: string | null;
+  firstMessageStatus?: string | null;
   lastError?: string | null;
   completedAt?: Date | string | null;
   updatedAt?: Date | string | null;
@@ -75,7 +77,7 @@ export function getTrialWindow(organization: OnboardingGuidanceOrganization | nu
     endsAt,
     daysLeft,
     percentElapsed: Math.round((elapsedMs / totalMs) * 100),
-    label: daysLeft > 0 ? `${daysLeft} trial day${daysLeft === 1 ? "" : "s"} left` : "Trial review due"
+    label: daysLeft > 0 ? `${daysLeft} trial day${daysLeft === 1 ? "" : "s"} left` : "Trial ended · actions paused"
   };
 }
 
@@ -225,6 +227,32 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
       tone: "waiting",
       eta: "10 minutes",
       supportNote: "Live account still needs platform verification."
+    };
+  }
+
+  if (onboarding.templateStatus !== "APPROVED") {
+    return {
+      title: "Approve the first message template",
+      description: "AiFrogi is checking Meta for an approved template before customer-initiated outreach begins.",
+      action: "Refresh template status",
+      owner: onboarding.templateStatus === "REJECTED" ? "You" : "Meta",
+      step: 6,
+      tone: onboarding.templateStatus === "REJECTED" ? "urgent" : "waiting",
+      eta: "Usually minutes to 24 hours",
+      supportNote: "WhatsApp is connected; template approval is still pending."
+    };
+  }
+
+  if (onboarding.firstMessageStatus !== "VERIFIED") {
+    return {
+      title: "Send the first test message",
+      description: "Use an approved internal number. AiFrogi records provider acceptance as the final go-live proof.",
+      action: "Send test message",
+      owner: "You",
+      step: 6,
+      tone: "urgent",
+      eta: "2 minutes",
+      supportNote: "Connection and template are ready; first-message proof is pending."
     };
   }
 

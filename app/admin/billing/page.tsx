@@ -104,7 +104,7 @@ export default async function AdminBillingPage() {
                 <div key={plan.id} className="rounded-lg border border-black/6 bg-[#fbfcfb] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div><strong>{plan.name}</strong><p className="mt-1 text-xs text-[var(--text-muted)]">{plan.billingInterval}</p></div>
-                    <Badge tone={plan.code === "TRIAL" ? "primary" : "secondary"}>{plan.amountPaisa ? formatMoney(plan.amountPaisa) : plan.code === "CUSTOM" ? "Contract" : "Free"}</Badge>
+                    <Badge tone={plan.code === "TRIAL" ? "primary" : "secondary"}>{plan.amountPaisa ? formatMoney(plan.amountPaisa) : plan.code === "CUSTOM" ? "Contract" : "30 days"}</Badge>
                   </div>
                   <p className="mt-3 text-xs leading-5 text-[var(--text-muted)]">{plan.description}</p>
                   <div className="mt-4 grid grid-cols-2 gap-2 text-xs">

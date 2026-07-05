@@ -2,16 +2,19 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { loadAdminOrganizations } from "@/lib/services/onboarding-service";
 import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminCustomersPage() {
   const organizations = await loadAdminOrganizations();
+  const subscriptionStates = new Map((await Promise.all(organizations.map(async (organization) => [organization.id, await getOrganizationSubscriptionAccess(organization.id)] as const))));
   const live = organizations.filter((item) => item.onboarding?.metaStatus === "LIVE").length;
   const pending = organizations.filter((item) => !["LIVE", "REJECTED"].includes(item.onboarding?.metaStatus || "")).length;
   const rejected = organizations.filter((item) => item.onboarding?.metaStatus === "REJECTED").length;
   const needsAifrogi = organizations.filter((item) => getOnboardingGuidance(item).owner === "AiFrogi").length;
+  const paused = Array.from(subscriptionStates.values()).filter((state) => state?.paused).length;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
@@ -30,6 +33,7 @@ export default async function AdminCustomersPage() {
         <Metric label="Pending" value={pending} />
         <Metric label="Action required" value={rejected} />
         <Metric label="AiFrogi queue" value={needsAifrogi} />
+        <Metric label="Trial paused" value={paused} />
       </section>
 
       <section className="mt-6 overflow-hidden rounded-lg border border-black/6 bg-white shadow-sm">
@@ -52,7 +56,7 @@ export default async function AdminCustomersPage() {
                       <strong className="block">{guidance.action}</strong>
                       <span className="mt-1 flex items-center gap-2 text-xs text-[#6d7487]"><OwnerBadge owner={guidance.owner} /> {guidance.eta}</span>
                     </td>
-                    <td className="px-5 py-4">{trial.enabled ? trial.label : organization.plan}</td>
+                    <td className="px-5 py-4">{subscriptionStates.get(organization.id)?.paused ? <Badge tone="error">PAUSED</Badge> : trial.enabled ? trial.label : organization.plan}</td>
                     <td className="px-5 py-4 text-right"><Link className="font-black text-[#c725ba]" href={`/admin/customers/${organization.id}`}>Review</Link></td>
                   </tr>
                 );

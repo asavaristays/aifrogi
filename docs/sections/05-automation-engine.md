@@ -1,6 +1,6 @@
 # Section 05: Automation Engine
 
-Status: First executor slice implemented on 2026-07-03
+Status: Durable executor plus governed scheduled-campaign action implemented
 Target score: 8.5/10
 
 ## Think
@@ -65,3 +65,10 @@ The first executor records safe internal outcomes only. It does not send WhatsAp
 3. Connect approved Section 04 campaign templates to scheduled jobs.
 4. Add operator controls: pause, resume, retry, cancel.
 5. Start the visual builder only after the executor handles real scheduled workflows without duplicate actions.
+
+### 2026-07-05 Increment
+
+- Added live scheduled-template execution behind a bearer-protected cron route.
+- External jobs re-check subscription, template approval, consent, quiet hours, opt-outs, and frequency caps at execution time.
+- Quiet-hour deferral does not consume a retry or dead-letter a valid campaign.
+- Customer dry runs exclude external-message actions.

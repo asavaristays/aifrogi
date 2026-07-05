@@ -6,9 +6,10 @@ function assert(condition: unknown, message: string): asserts condition {
 
 async function main() {
   loadEnvConfig(process.cwd());
-  const [{ getDb }, billing] = await Promise.all([
+  const [{ getDb }, billing, subscriptionAccess] = await Promise.all([
     import("@/lib/db"),
-    import("@/lib/billing-super-admin")
+    import("@/lib/billing-super-admin"),
+    import("@/lib/subscription-access")
   ]);
   const db = getDb();
   if (!db) throw new Error("DATABASE_URL is required.");
@@ -36,6 +37,11 @@ async function main() {
 
     const trial = await billing.ensureOrganizationSubscription(organizationId);
     assert(trial?.plan.code === "TRIAL" && trial.status === "TRIALING", "Trial subscription was not created.");
+    await db.subscription.update({ where: { organizationId }, data: { trialEndsAt: new Date(Date.now() - 1000) } });
+    const expired = await subscriptionAccess.getOrganizationSubscriptionAccess(organizationId);
+    assert(expired?.paused && !expired.canUsePaidActions && expired.status === "PAUSED", "Expired trial did not pause automatically.");
+    const pauseAudit = await db.platformAuditLog.count({ where: { organizationId, action: "TRIAL_AUTOMATICALLY_PAUSED" } });
+    assert(pauseAudit === 1, "Automatic trial pause was not audited exactly once.");
 
     await billing.updateOrganizationPlan({
       organizationId,
@@ -82,7 +88,7 @@ async function main() {
 
     const detail = await billing.getCustomerBillingDetail(organizationId);
     assert(detail?.subscription.plan.code === "GROWTH", "Billing detail did not return the active plan.");
-    assert(detail.organization.auditLogs.length >= 5, "Audit trail did not record billing operations.");
+    assert(detail.organization.auditLogs.length >= 6, "Audit trail did not record billing operations and trial pause.");
 
     const health = billing.calculateCustomerHealth({
       metaStatus: "LIVE",

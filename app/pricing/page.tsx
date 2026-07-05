@@ -6,22 +6,22 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
 import { marketingMetadata } from "@/lib/seo";
 
-const registerUrl = "https://app.aifrogi.com/register";
+const registerUrl = "https://app.aifrogi.com/register?source=pricing";
 
 export const metadata: Metadata = marketingMetadata({
   title: "WhatsApp Business Platform Pricing | AiFrogi",
-  description: "Compare AiFrogi plans from a free workspace to campaigns, retargeting, automation, and AI. Platform fees and Meta usage stay separate.",
+  description: "Compare AiFrogi plans for campaigns, retargeting, automation, and AI. Start with a 30-day trial; platform fees and Meta usage stay separate.",
   path: "/pricing"
 });
 
 const plans = [
   {
-    name: "Free",
+    name: "30-Day Trial",
     price: "₹0",
-    billing: "Free forever",
-    bestFor: "Explore the official WhatsApp workspace before adding automation.",
-    cta: "Start free",
-    features: ["1 WhatsApp number", "1 user", "Shared team inbox", "Contacts and template sync", "Manual customer replies", "Basic support"]
+    billing: "30 days only · pauses automatically",
+    bestFor: "Prove the WhatsApp workflow before choosing a paid plan.",
+    cta: "Start 30-day trial",
+    features: ["1 WhatsApp number", "2 users", "Shared team inbox", "Contacts and template sync", "Manual customer replies", "Basic support"]
   },
   {
     name: "Starter",
@@ -29,7 +29,7 @@ const plans = [
     billing: "₹4,950 billed quarterly",
     bestFor: "Small teams starting campaigns and customer follow-up.",
     cta: "Start 30-day trial",
-    features: ["Everything in Free", "Basic broadcasts", "Campaign history", "Contact segmentation", "Basic performance analytics", "Guided onboarding support"]
+    features: ["Everything in Trial", "Basic broadcasts", "Campaign history", "Contact segmentation", "Basic performance analytics", "Guided onboarding support"]
   },
   {
     name: "Growth",
@@ -58,7 +58,7 @@ export default function PricingPage() {
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Clear pricing</p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-6xl">Platform fee and Meta usage stay separate.</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Start free. Upgrade when you need campaigns, automation, or AI. Meta template-message charges remain visible and separate.</p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Start with a 30-day trial. Choose a paid plan to continue after the trial; Meta template-message charges remain visible and separate.</p>
         </div>
       </section>
 
@@ -67,7 +67,7 @@ export default function PricingPage() {
           <div className="max-w-2xl">
             <p className="product-eyebrow">Choose your workspace</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">A simple plan for every stage.</h2>
-            <p className="mt-4 leading-7 text-[var(--text-muted)]">The Free plan has no platform fee. Paid plans include a 30-day working trial.</p>
+            <p className="mt-4 leading-7 text-[var(--text-muted)]">The trial is available for 30 days only. When it ends, messaging, campaigns, and automation pause automatically while your data remains preserved.</p>
           </div>
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">

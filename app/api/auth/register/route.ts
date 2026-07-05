@@ -46,6 +46,7 @@ export async function POST(request: Request) {
   const industry = clean(payload.industry) || "Other";
   const country = clean(payload.country, 80) || "India";
   const timezone = clean(payload.timezone, 80) || "Asia/Kolkata";
+  const source = clean(payload.source, 80) || "direct";
   if (companyName.length < 2 || ownerName.length < 2 || !validEmail(ownerEmail)) return NextResponse.json({ error: "Add your company name, owner name, and a valid work email." }, { status: 400 });
   if (!validTimezone(timezone)) return NextResponse.json({ error: "Choose a valid business time zone." }, { status: 400 });
   const emailLimit = consumeRateLimit(`register:email:${ownerEmail}`, 4, 60 * 60 * 1000);
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const registration = await registerTrialOrganization({ companyName, ownerName, ownerEmail, ownerMobile, website, industry, country, timezone });
+    const registration = await registerTrialOrganization({ companyName, ownerName, ownerEmail, ownerMobile, website, industry, country, timezone, source });
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || origin || requestUrl.origin).replace(/\/$/, "");
     const activationUrl = `${appUrl}/activate?token=${encodeURIComponent(registration.token)}`;
     let emailDelivered = false;
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
       const mail = await sendBookingMail({
         to: ownerEmail,
         subject: "Activate your AiFrogi trial workspace",
-        body: `Hello ${ownerName},\n\nYour AiFrogi trial workspace for ${companyName} is ready to activate.\n\nCreate your personal password within 24 hours:\n${activationUrl}\n\nAfter signing in, AiFrogi will guide you through business verification, WhatsApp connection, template readiness, and your first test message.\n\nNever share passwords, OTPs, or Meta credentials with anyone.\n\nAiFrogi`
+        body: `Hello ${ownerName},\n\nYour 30-day AiFrogi trial workspace for ${companyName} is ready to activate.\n\nCreate your personal password within 24 hours:\n${activationUrl}\n\nAfter signing in, AiFrogi will guide you through business verification, WhatsApp connection, template readiness, and your first test message. The trial is not free forever: when 30 days end, messaging, campaigns, and automation pause until a paid plan is activated. Your data remains preserved.\n\nNever share passwords, OTPs, or Meta credentials with anyone.\n\nAiFrogi`
       });
       emailDelivered = !mail.error;
     } catch {

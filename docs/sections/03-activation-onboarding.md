@@ -1,6 +1,6 @@
 # Section 03: Activation And Onboarding
 
-Status: In progress
+Status: End-to-end activation path implemented; awaiting external-customer acceptance
 Target score: 8.5/10
 
 ## Think
@@ -54,7 +54,15 @@ Marketing trial CTA -> Business registration -> Email ownership verification -> 
 - Super Admin customer detail pages show the current blocker and support note before detailed configuration panels.
 - Registration verification now tests guidance and trial-window calculation as part of the lifecycle.
 
-Remaining increments: Meta reconciliation, template readiness, first test-message proof, welcome/lifecycle email content, and drop-off analytics beyond activity history.
+## Implemented Increment 3
+
+- Meta status refresh now reconciles phone health and the live WABA template catalogue.
+- Approved-template count and errors are returned without exposing access tokens.
+- The first provider-accepted outbound or template message records final go-live proof.
+- Registration source, owner activation, blocker ownership, and time-to-live activity are measurable.
+- Trial terms are explicit at registration: 30 days only, followed by automatic pause of paid actions while data remains preserved.
+
+Remaining increment: richer lifecycle email sequencing and aggregate drop-off reporting beyond the Super Admin registration/activation funnel.
 
 ## Acceptance Gates
 

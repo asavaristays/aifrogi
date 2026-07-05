@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createRevocationProof, getSessionCookieName, readVerifiedSessionToken } from "@/lib/auth";
+import { revokeUserSession } from "@/lib/session-registry";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const HOTELRADAR_AUTH_BASE_URL =
@@ -16,6 +17,10 @@ function parseCookieValue(cookieHeader: string, name: string) {
 export async function POST(request: Request) {
   const sessionCookie = parseCookieValue(request.headers.get("cookie") || "", getSessionCookieName());
   const session = readVerifiedSessionToken(sessionCookie);
+
+  if (session?.sessionId) {
+    await revokeUserSession({ sessionId: session.sessionId, email: session.username, revokedBy: session.username });
+  }
 
   if (session?.sessionId && session.authSource !== "local") {
     try {

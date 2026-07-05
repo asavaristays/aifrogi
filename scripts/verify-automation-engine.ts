@@ -74,8 +74,20 @@ async function main() {
     assert(deadJob?.status === engine.AUTOMATION_JOB_STATUS.DEAD, "Failed job was not dead-lettered after max attempts.");
     assert(deadJob.deadLetterReason?.includes("Verification failure"), "Dead-letter reason was not stored.");
 
+    const outbound = await engine.enqueueAutomationJob({
+      propertyId,
+      workflowId: "qa_scheduled_campaign",
+      triggerType: "verification",
+      actionType: engine.AUTOMATION_ACTION_TYPE.WHATSAPP_TEMPLATE_CAMPAIGN,
+      idempotencyKey: `automation:qa:${runId}:outbound`,
+      payload: { campaignId: "not-executed-in-dry-run" }
+    });
+    const dryRun = await engine.runDueAutomationJobs({ propertyId, workerId: `qa-worker-${runId}`, take: 5, dryRun: true });
+    const outboundAfterDryRun = await db.automationJob.findUnique({ where: { id: outbound!.id } });
+    assert(dryRun.claimed === 0 && outboundAfterDryRun?.status === engine.AUTOMATION_JOB_STATUS.QUEUED, "Dry run consumed an external-message job.");
+
     const summary = await engine.getAutomationQueueSummary(propertyId);
-    assert(summary.total === 2, "Queue summary did not include both jobs.");
+    assert(summary.total === 3, "Queue summary did not include all jobs.");
     assert(summary.dead === 1 && summary.succeeded24h === 1, "Queue summary did not reflect final statuses.");
 
     console.log("Automation engine verification passed.");

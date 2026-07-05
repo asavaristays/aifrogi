@@ -17,6 +17,7 @@ export function RegisterClient() {
     setError("");
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(form.entries());
+    payload.source = new URLSearchParams(window.location.search).get("source") || "direct";
     try {
       const response = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const result = await response.json().catch(() => null) as { error?: string; email?: string } | null;
@@ -48,7 +49,7 @@ export function RegisterClient() {
             <FlowRow number="2" title="Complete business setup" copy="Save progress while AiFrogi explains what you, AiFrogi, and Meta need to do." />
             <FlowRow number="3" title="Test before going live" copy="Approve a template and send a controlled first message." />
           </div>
-          <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]">No Facebook password, email password, permanent token, or OTP is requested.</p>
+          <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>30 days only:</strong> after the trial, messaging, campaigns, and automation pause automatically until a paid plan is activated. Your data remains preserved. No Facebook password, email password, permanent token, or OTP is requested.</p>
         </section>
 
         <section className="order-1 rounded-lg border border-[#e5dce8] bg-white p-6 shadow-[0_18px_55px_rgba(44,36,59,0.08)] sm:p-8 lg:order-2">
@@ -77,7 +78,7 @@ export function RegisterClient() {
                 <input name="fax" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                 {error ? <p role="alert" className="rounded-md border border-[#b23a32]/20 bg-[#fff0ee] px-4 py-3 text-sm text-[#9b2f28] sm:col-span-2">{error}</p> : null}
                 <button disabled={saving} className="min-h-12 rounded-md bg-[#d92bcb] px-5 text-sm font-bold text-white hover:bg-[#bb20af] disabled:cursor-wait disabled:opacity-60 sm:col-span-2">{saving ? "Reserving workspace..." : "Create trial workspace"}</button>
-                <p className="text-xs leading-5 text-[var(--text-muted)] sm:col-span-2">By continuing, you agree to the <Link href="/terms-of-service" className="font-semibold text-[#a21c98]">Terms</Link> and acknowledge the <Link href="/privacy-policy" className="font-semibold text-[#a21c98]">Privacy Policy</Link>.</p>
+                <p className="text-xs leading-5 text-[var(--text-muted)] sm:col-span-2">The trial lasts 30 days and then pauses automatically; it is not a free-forever plan. By continuing, you agree to the <Link href="/terms-of-service" className="font-semibold text-[#a21c98]">Terms</Link> and acknowledge the <Link href="/privacy-policy" className="font-semibold text-[#a21c98]">Privacy Policy</Link>.</p>
               </form>
             </>
           )}

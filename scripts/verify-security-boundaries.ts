@@ -129,6 +129,26 @@ async function main() {
         method: "POST",
         body: { to: "+919999999999", templateName: "security_probe", propertySlug: "security-probe" }
       }
+    ),
+    await expectStatus(
+      "Unauthenticated session inventory is blocked",
+      "401 Unauthorized",
+      [401],
+      "/api/auth/sessions"
+    ),
+    await expectStatus(
+      "Automation cron refuses requests without its bearer secret",
+      "401 Unauthorized",
+      [401],
+      "/api/automation/run",
+      { method: "POST" }
+    ),
+    await expectStatus(
+      "Unauthenticated campaign cancellation is blocked",
+      "401 Unauthorized",
+      [401],
+      "/api/campaigns/security-probe",
+      { method: "PATCH", body: { action: "cancel", propertySlug: "security-probe" } }
     )
   ];
 
@@ -270,6 +290,30 @@ async function main() {
     {
       method: "POST",
       session: limitedA
+    }
+  ));
+
+  boundaryChecks.push(await expectStatus(
+    "Limited user cannot enqueue or execute automation",
+    "403 Forbidden before queue mutation",
+    [403],
+    "/api/automation/jobs",
+    {
+      method: "POST",
+      session: limitedA,
+      body: { action: "enqueue_demo" }
+    }
+  ));
+
+  boundaryChecks.push(await expectStatus(
+    "Limited user cannot cancel scheduled campaigns",
+    "403 Forbidden before campaign mutation",
+    [403],
+    "/api/campaigns/security-probe",
+    {
+      method: "PATCH",
+      session: limitedA,
+      body: { action: "cancel" }
     }
   ));
 

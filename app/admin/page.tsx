@@ -7,12 +7,14 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const db = getDb();
-  const [organizations, tickets, messageCount, failedMessages, campaignCount] = await Promise.all([
+  const [organizations, tickets, messageCount, failedMessages, campaignCount, trialRegistrations, ownerActivations] = await Promise.all([
     listOrganizationsForAdmin(),
     listSupportTickets({}),
     db?.leadMessage.count() ?? 0,
     db?.leadMessage.count({ where: { deliveryStatus: { startsWith: "failed" } } }) ?? 0,
-    db?.campaign.count() ?? 0
+    db?.campaign.count() ?? 0,
+    db?.onboardingActivity.count({ where: { action: "TRIAL_REGISTERED" } }) ?? 0,
+    db?.onboardingActivity.count({ where: { action: "EMAIL_VERIFIED" } }) ?? 0
   ]);
   const live = organizations.filter((item) => item.onboarding?.metaStatus === "LIVE").length;
   const waiting = organizations.filter((item) => !["LIVE", "REJECTED"].includes(item.onboarding?.metaStatus || "")).length;
@@ -27,7 +29,7 @@ export default async function AdminPage() {
   return <main className="mx-auto max-w-7xl space-y-6 px-4 py-7 sm:px-8">
     <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="product-eyebrow">Super Admin</p><h1 className="mt-2 text-3xl font-semibold">Platform command center</h1><p className="mt-2 text-sm text-[var(--text-muted)]">Customer readiness, delivery health, support, and the next operator action.</p></div><span className={`status-pill ${failedMessages || urgentTickets.length ? "status-warning" : "status-success"}`}>{failedMessages || urgentTickets.length ? "Attention needed" : "Operating normally"}</span></section>
 
-    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><AdminMetric label="Customers live" value={String(live)} helper={`${waiting} waiting`} /><AdminMetric label="Open support" value={String(openTickets.length)} helper={`${urgentTickets.length} high priority`} /><AdminMetric label="Messages" value={String(messageCount)} helper={`${failedMessages} failures`} /><AdminMetric label="Campaign runs" value={String(campaignCount)} helper="Persisted and auditable" /><AdminMetric label="Meta access" value="Verified" helper="Embedded onboarding eligible" /></section>
+    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7"><AdminMetric label="Customers live" value={String(live)} helper={`${waiting} waiting`} /><AdminMetric label="Trial registrations" value={String(trialRegistrations)} helper={`${ownerActivations} owners activated`} /><AdminMetric label="Activation rate" value={trialRegistrations ? `${Math.round((ownerActivations / trialRegistrations) * 100)}%` : "0%"} helper="Email verified" /><AdminMetric label="Open support" value={String(openTickets.length)} helper={`${urgentTickets.length} high priority`} /><AdminMetric label="Messages" value={String(messageCount)} helper={`${failedMessages} failures`} /><AdminMetric label="Campaign runs" value={String(campaignCount)} helper="Persisted and auditable" /><AdminMetric label="Meta access" value="Verified" helper="Embedded onboarding eligible" /></section>
 
     <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
       <div className="overflow-hidden rounded-lg border border-black/7 bg-white shadow-sm"><div className="flex items-center justify-between border-b border-black/6 px-5 py-4"><div><p className="product-eyebrow">Operator queue</p><h2 className="mt-1 text-xl font-semibold">What needs action</h2></div><span className="status-pill status-info">{attention.length}</span></div><div className="divide-y divide-black/6">{attention.length ? attention.map((item) => <Link key={`${item.title}-${item.helper}`} href={item.href} className="flex items-center gap-4 px-5 py-4 hover:bg-[#f8faf9]"><span className={`h-2.5 w-2.5 rounded-full ${item.tone === "urgent" ? "bg-[#c84b42]" : "bg-[#d4842f]"}`}/><span className="min-w-0 flex-1"><strong className="block truncate text-sm">{item.title}</strong><small className="mt-1 block truncate text-[var(--text-muted)]">{item.helper}</small></span><span className="text-[#b923ae]">→</span></Link>) : <p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">No customer or platform blockers require action.</p>}</div></div>

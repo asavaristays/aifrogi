@@ -126,6 +126,8 @@ export function buildAudienceSnapshot(input: {
   source: string;
   templateName: string;
   testMode: boolean;
+  bodyVariables?: string[];
+  headerImageUrl?: string;
 }) {
   return JSON.stringify({
     requestedCount: input.requestedCount,
@@ -133,6 +135,8 @@ export function buildAudienceSnapshot(input: {
     source: input.source,
     templateName: input.templateName,
     testMode: input.testMode,
+    bodyVariables: input.bodyVariables || [],
+    headerImageUrl: input.headerImageUrl || "",
     capturedAt: new Date().toISOString()
   });
 }

@@ -11,6 +11,21 @@ export type HelpArticle = {
 
 export const helpArticles: HelpArticle[] = [
   {
+    slug: "whatsapp-api-cost-india-uae",
+    category: "Buying guide",
+    title: "WhatsApp Business API cost in India and UAE",
+    summary: "Understand the separate costs for AiFrogi, Meta messages, tax, AI usage, and optional integration work before choosing a plan.",
+    outcome: "You can estimate the total operating cost for an India or UAE audience without confusing Meta charges with the platform subscription.",
+    minutes: 5,
+    steps: [
+      { title: "Separate platform and Meta costs", body: "AiFrogi charges for the workspace, automation, support, and plan allowances. Meta separately charges eligible template messages according to category, destination market, and applicable volume rules." },
+      { title: "Choose India or UAE by recipient", body: "Meta pricing follows the recipient market rather than only the sender's business location. Estimate India and UAE audiences separately when a campaign contains both." },
+      { title: "Include implementation only when needed", body: "Standard available connectors and custom integration work are shown separately. Payment-provider, commerce, CRM, or bespoke API fees are not hidden inside Meta usage." },
+      { title: "Start with the 30-day trial", body: "The trial lasts 30 days and then paid actions pause automatically. Use it to validate onboarding, inbox, template, and workflow fit before activating a paid plan." }
+    ],
+    checks: ["Recipient markets identified", "Meta usage separated from AiFrogi fee", "Tax and integration work considered", "Trial expiry understood"]
+  },
+  {
     slug: "whatsapp-business-app-vs-api",
     category: "Buying guide",
     title: "WhatsApp Business App vs API: when to move",
@@ -116,6 +131,21 @@ export const helpArticles: HelpArticle[] = [
       { title: "Never share secrets in support", body: "Do not send passwords, OTPs, permanent Meta tokens, payment card details, customer exports, or raw webhook secrets in tickets, chat, screenshots, or email." }
     ],
     checks: ["Support access is granted only when needed", "Owners/admins use their own login and OTP", "No password, OTP, or Meta token is shared", "Sensitive AI replies can reach a human"]
+  },
+  {
+    slug: "support-response-standards",
+    category: "Support",
+    title: "AiFrogi support response standards",
+    summary: "Know how incidents are prioritized, when to expect an initial response, and what information support can access.",
+    outcome: "You can choose the correct priority and understand the response target without sharing private credentials.",
+    minutes: 3,
+    steps: [
+      { title: "Urgent: live messaging stopped", body: "For a confirmed platform-wide or workspace messaging outage, AiFrogi targets an initial response within 1 business hour during support hours. Availability and recovery depend on whether the issue belongs to AiFrogi, Meta, or another provider." },
+      { title: "High: important work is blocked", body: "For onboarding, campaign, billing, or access blockers without a full outage, AiFrogi targets an initial response within 4 business hours." },
+      { title: "Normal: guidance and planned changes", body: "For how-to questions, configuration requests, and planned integration work, AiFrogi targets an initial response within 1 business day." },
+      { title: "Customer data remains controlled", body: "Support starts with operational metadata. Private conversations, documents, or knowledge require a workspace owner/admin to grant time-bound, scoped support access." }
+    ],
+    checks: ["Correct priority selected", "Workspace and approximate time included", "No password, OTP, or Meta token included", "Customer content access granted only if required"]
   },
   {
     slug: "get-support",

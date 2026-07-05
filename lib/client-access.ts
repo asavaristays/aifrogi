@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth-server";
 import { getOrganizationForMember } from "@/lib/repositories/onboarding-repository";
+import { getOrganizationSubscriptionAccess, type SubscriptionAccessState } from "@/lib/subscription-access";
 
 export type ClientAccessRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -26,16 +27,18 @@ export type ClientWorkspaceAccessResult =
       property: NonNullable<Awaited<ReturnType<typeof getCurrentClientAccess>>>["organization"]["properties"][number];
       propertySlug: string;
       propertyId: string;
+      subscriptionAccess: SubscriptionAccessState | null;
     }
   | {
       ok: false;
-      status: 401 | 403 | 404;
+      status: 401 | 402 | 403 | 404;
       error: string;
     };
 
 export async function resolveClientWorkspaceAccess(input?: {
   propertySlug?: string | null;
   requireManage?: boolean;
+  requireActiveSubscription?: boolean;
 }): Promise<ClientWorkspaceAccessResult> {
   const access = await getCurrentClientAccess();
   if (!access) {
@@ -59,6 +62,11 @@ export async function resolveClientWorkspaceAccess(input?: {
     return { ok: false, status: 404, error: "No workspace is available for your account." };
   }
 
+  const subscriptionAccess = await getOrganizationSubscriptionAccess(access.organization.id);
+  if (input?.requireActiveSubscription && subscriptionAccess && !subscriptionAccess.canUsePaidActions) {
+    return { ok: false, status: 402, error: subscriptionAccess.message };
+  }
+
   return {
     ok: true,
     user: access.user,
@@ -66,6 +74,7 @@ export async function resolveClientWorkspaceAccess(input?: {
     role: access.role,
     property,
     propertySlug: property.slug,
-    propertyId: property.id
+    propertyId: property.id,
+    subscriptionAccess
   };
 }

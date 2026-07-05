@@ -78,7 +78,8 @@ export default async function CampaignsPage() {
             estimatedCostPaisa: campaign.estimatedCostPaisa,
             consentSource: campaign.consentSource,
             testMode: campaign.testMode,
-            createdAt: campaign.createdAt.toISOString()
+            createdAt: campaign.createdAt.toISOString(),
+            scheduledFor: campaign.scheduledFor?.toISOString() || null
           }))}
         />
       </div>

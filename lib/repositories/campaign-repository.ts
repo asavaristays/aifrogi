@@ -17,6 +17,8 @@ export async function createCampaignRun(input: {
   testMode?: boolean;
   createdBy?: string;
   recipients: string[];
+  scheduledFor?: Date | null;
+  initialStatus?: "SENDING" | "SCHEDULED";
 }) {
   const db = getDb();
   if (!db) return null;
@@ -39,7 +41,8 @@ export async function createCampaignRun(input: {
       audienceSnapshot: input.audienceSnapshot || null,
       testMode: Boolean(input.testMode),
       createdBy: input.createdBy || null,
-      status: "SENDING",
+      scheduledFor: input.scheduledFor || null,
+      status: input.initialStatus || "SENDING",
       recipients: {
         create: input.recipients.map((phone) => ({
           phone,
@@ -50,6 +53,23 @@ export async function createCampaignRun(input: {
       }
     },
     include: { recipients: true }
+  });
+}
+
+export async function cancelScheduledCampaign(input: { campaignId: string; propertyId: string; actorEmail: string }) {
+  const db = getDb();
+  if (!db) return null;
+  const campaign = await db.campaign.findFirst({
+    where: { id: input.campaignId, propertyId: input.propertyId, status: "SCHEDULED" }
+  });
+  if (!campaign) return null;
+  return db.$transaction(async (tx) => {
+    const updated = await tx.campaign.update({ where: { id: campaign.id }, data: { status: "CANCELED" } });
+    await tx.automationJob.updateMany({
+      where: { propertyId: input.propertyId, triggerRef: campaign.id, status: { in: ["QUEUED", "RETRY"] } },
+      data: { status: "CANCELED", completedAt: new Date(), deadLetterReason: `Canceled by ${input.actorEmail}` }
+    });
+    return updated;
   });
 }
 
@@ -70,6 +90,15 @@ export async function recordCampaignRecipientResult(input: {
       error: input.error || null,
       sentAt: input.ok ? new Date() : null
     }
+  });
+}
+
+export async function suppressCampaignRecipient(input: { campaignId: string; phone: string; reason: string }) {
+  const db = getDb();
+  if (!db) return null;
+  return db.campaignRecipient.update({
+    where: { campaignId_phone: { campaignId: input.campaignId, phone: input.phone } },
+    data: { status: "SUPPRESSED", suppressionReason: input.reason }
   });
 }
 

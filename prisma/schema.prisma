@@ -164,9 +164,30 @@ model Organization {
   usageRecords    UsageRecord[]
   incidents       PlatformIncident[]
   auditLogs       PlatformAuditLog[]
+  userSessions    UserSession[]
 
   @@index([ownerEmail])
   @@index([status])
+}
+
+model UserSession {
+  id             String        @id @default(cuid())
+  sessionId      String        @unique
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String
+  authSource     String        @default("local")
+  userAgent      String?
+  ipAddress      String?
+  createdAt      DateTime      @default(now())
+  lastSeenAt     DateTime      @default(now())
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  revokedBy      String?
+
+  @@index([email, revokedAt, expiresAt])
+  @@index([organizationId, revokedAt])
 }
 
 model WhatsAppBotConfiguration {

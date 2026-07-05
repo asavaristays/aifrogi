@@ -31,6 +31,7 @@ const securityProofs = [
 ];
 
 const trustResources = [
+  { title: "Support standards", copy: "Published response targets, priority definitions, and customer-controlled access boundaries.", href: "/help/support-response-standards" },
   { title: "Security guide", copy: "Plain-English explanation of workspace boundaries, support access, OTP, signed webhooks, and safe AI.", href: "/help/protect-whatsapp-customer-data" },
   { title: "Data security", copy: "How support access, OTP, Meta webhook signatures, credentials, and workspace boundaries are protected.", href: "/security" },
   { title: "Privacy policy", copy: "What information is collected, why it is used, and how it is protected.", href: "/privacy-policy" },
@@ -105,7 +106,7 @@ export default function ResourcesPage() {
       <section className="border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl"><p className="product-eyebrow">Trust resources</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Understand the boundaries before you connect.</h2></div>
-          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-5">{trustResources.map((resource) => <Link key={resource.href} href={resource.href} className="group border-t border-black/10 py-5"><h3 className="flex items-center justify-between gap-3 font-bold">{resource.title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{resource.copy}</p></Link>)}</div>
+          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">{trustResources.map((resource) => <Link key={resource.href} href={resource.href} className="group border-t border-black/10 py-5"><h3 className="flex items-center justify-between gap-3 font-bold">{resource.title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{resource.copy}</p></Link>)}</div>
         </div>
       </section>
 

@@ -37,7 +37,7 @@ const toneStyles = {
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
   { label: "Grow", helper: "Campaigns and intelligence", hrefs: ["/campaigns", "/workflows", "/knowledge", "/analytics"] },
-  { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/support", "/settings"] }
+  { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
 
 type SideNavTone = "dark" | "light";

@@ -1,6 +1,6 @@
 # Section 04: Campaigns And Compliance
 
-Status: In progress
+Status: Governed immediate and scheduled campaign path implemented; awaiting customer acceptance
 Target score: 8.5/10
 
 ## Think
@@ -40,6 +40,14 @@ Campaign objective -> Audience segment -> Consent evidence check -> Approved Met
 - Replaced raw template-name entry with a guided wizard: template, audience, consent, confirmation.
 - The UI now supports internal test send mode, approved test DB fill, recent-contact fill, template preview, default image header, estimated Meta charge, and recent run analytics.
 - Added synthetic `npm run verify:campaigns` verifier covering template blocking, consent validation, campaign persistence, recipient audit fields, finalization, summary metrics, and cleanup.
+
+## Implemented Increment 2
+
+- Campaigns can be scheduled and canceled before execution.
+- A protected cron executor processes due campaign jobs using idempotent reservations.
+- Immediate and scheduled sends enforce subscription state, plan allowance, consent evidence, quiet hours, opt-out suppression, and a 24-hour frequency cap.
+- Scheduled sends preserve template variables and media context without exposing credentials.
+- Dry-run automation cannot consume a customer-facing campaign job.
 
 ## Acceptance Gates
 

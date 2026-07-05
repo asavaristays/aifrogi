@@ -6,6 +6,7 @@ import { listPropertiesForMember } from "@/lib/repositories/property-repository"
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import type { ClientAccessRole } from "@/lib/client-access";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -27,9 +28,10 @@ export default async function ProductLayout({ children }: { children: React.Reac
     redirect("/onboarding");
   }
 
-  const [records, currentWorkspaceSlug] = await Promise.all([
+  const [records, currentWorkspaceSlug, subscriptionAccess] = await Promise.all([
     listPropertiesForMember(user.username, false),
-    getCurrentWorkspaceSlug()
+    getCurrentWorkspaceSlug(),
+    getOrganizationSubscriptionAccess(organization.id)
   ]);
   const workspaces = records.map((record) => ({
     id: record.id,
@@ -44,5 +46,16 @@ export default async function ProductLayout({ children }: { children: React.Reac
   const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   const accessRole = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
 
-  return <AppShell workspaces={workspaces} currentWorkspaceSlug={selectedSlug} accessRole={accessRole}>{children}</AppShell>;
+  return <AppShell
+    workspaces={workspaces}
+    currentWorkspaceSlug={selectedSlug}
+    accessRole={accessRole}
+    subscriptionAccess={subscriptionAccess ? {
+      planCode: subscriptionAccess.planCode,
+      status: subscriptionAccess.status,
+      daysLeft: subscriptionAccess.daysLeft,
+      paused: subscriptionAccess.paused,
+      message: subscriptionAccess.message
+    } : null}
+  >{children}</AppShell>;
 }

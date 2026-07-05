@@ -48,7 +48,7 @@ export const BILLING_PLAN_CATALOGUE = [
   },
   {
     code: "AI_TOOLS",
-    name: "AI Tools",
+    name: "AI Operations",
     description: "Advanced AI assistance, knowledge and automation capacity.",
     billingInterval: "QUARTERLY",
     amountPaisa: 1650000,
@@ -492,7 +492,7 @@ export function calculateCustomerHealth(input: {
   };
 }
 
-async function getOrganizationUsage(organizationId: string, periodStart: Date, periodEnd: Date | null): Promise<PlanLimits> {
+export async function getOrganizationUsage(organizationId: string, periodStart: Date, periodEnd: Date | null): Promise<PlanLimits> {
   const db = getDb();
   if (!db) return emptyUsage();
   const dateWhere = { gte: periodStart, ...(periodEnd ? { lt: periodEnd } : {}) };
@@ -504,6 +504,28 @@ async function getOrganizationUsage(organizationId: string, periodStart: Date, p
     db.organizationMember.count({ where: { organizationId, status: "ACTIVE" } })
   ]);
   return { contacts, messages, campaigns, aiReplies, teamUsers };
+}
+
+export async function checkOrganizationEntitlement(
+  organizationId: string,
+  metric: keyof PlanLimits,
+  additional = 1
+) {
+  const db = getDb();
+  if (!db) return { allowed: false, error: "Billing service is unavailable.", used: 0, limit: 0 };
+  const subscription = await ensureOrganizationSubscription(organizationId);
+  if (!subscription) return { allowed: false, error: "Subscription is unavailable.", used: 0, limit: 0 };
+  const limits = readLimits(subscription.plan.limits);
+  const usage = await getOrganizationUsage(organizationId, subscription.currentPeriodStart, subscription.currentPeriodEnd);
+  const used = usage[metric];
+  const limit = limits[metric];
+  const allowed = limit === 0 || used + Math.max(0, additional) <= limit;
+  return {
+    allowed,
+    used,
+    limit,
+    error: allowed ? null : `${metric} allowance reached (${used}/${limit}). Choose a higher plan before continuing.`
+  };
 }
 
 function emptyUsage(): PlanLimits {

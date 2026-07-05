@@ -1,5 +1,8 @@
 import { getDb } from "@/lib/db";
 import { Prisma, type AutomationJob } from "../generated/prisma/client";
+import { sendWhatsAppTemplateMessage } from "@/lib/services/whatsapp-service";
+import { finalizeCampaignRun, recordCampaignRecipientResult } from "@/lib/repositories/campaign-repository";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export const AUTOMATION_JOB_STATUS = {
   QUEUED: "QUEUED",
@@ -17,6 +20,7 @@ export const AUTOMATION_ACTION_TYPE = {
   FOLLOW_UP_REMINDER: "FOLLOW_UP_REMINDER",
   HUMAN_HANDOFF: "HUMAN_HANDOFF",
   DAILY_DIGEST_SIMULATION: "DAILY_DIGEST_SIMULATION",
+  WHATSAPP_TEMPLATE_CAMPAIGN: "WHATSAPP_TEMPLATE_CAMPAIGN",
   FAIL_VERIFICATION: "FAIL_VERIFICATION"
 } as const;
 
@@ -54,6 +58,7 @@ export type ClaimAutomationJobsInput = {
   take?: number;
   leaseSeconds?: number;
   now?: Date;
+  excludeActionTypes?: string[];
 };
 
 export type RunAutomationJobsInput = ClaimAutomationJobsInput & {
@@ -110,6 +115,7 @@ export async function claimDueAutomationJobs(input: ClaimAutomationJobsInput) {
   const candidates = await db.automationJob.findMany({
     where: {
       ...(input.propertyId ? { propertyId: input.propertyId } : {}),
+      ...(input.excludeActionTypes?.length ? { actionType: { notIn: input.excludeActionTypes } } : {}),
       OR: [
         { status: { in: [AUTOMATION_JOB_STATUS.QUEUED, AUTOMATION_JOB_STATUS.RETRY] }, nextRunAt: { lte: now } },
         { status: AUTOMATION_JOB_STATUS.RUNNING, leaseExpiresAt: { lt: now } }
@@ -214,6 +220,10 @@ export async function executeAutomationJob(job: AutomationJob, options: { dryRun
     throw new Error("Verification failure requested by automation test.");
   }
 
+  if (job.actionType === AUTOMATION_ACTION_TYPE.WHATSAPP_TEMPLATE_CAMPAIGN) {
+    return executeScheduledWhatsAppCampaign(job, options);
+  }
+
   const result = {
     dryRun: Boolean(options.dryRun),
     actionType: job.actionType,
@@ -225,15 +235,131 @@ export async function executeAutomationJob(job: AutomationJob, options: { dryRun
   return completeAutomationJob(job.id, result);
 }
 
+async function executeScheduledWhatsAppCampaign(job: AutomationJob, options: { dryRun?: boolean }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const payload = job.payload && typeof job.payload === "object" && !Array.isArray(job.payload)
+    ? job.payload as Record<string, unknown>
+    : {};
+  const campaignId = String(payload.campaignId || job.triggerRef || "");
+  const campaign = await db.campaign.findFirst({
+    where: { id: campaignId, propertyId: job.propertyId },
+    include: { recipients: true, property: true }
+  });
+  if (!campaign) throw new Error("Scheduled campaign no longer exists.");
+  if (campaign.status === "CANCELED") return completeAutomationJob(job.id, { skipped: true, reason: "Campaign canceled" });
+  if (!["SCHEDULED", "SENDING"].includes(campaign.status)) throw new Error(`Campaign is ${campaign.status}, not executable.`);
+  if (!campaign.property.organizationId) throw new Error("Campaign workspace is not attached to an organization.");
+
+  const subscription = await getOrganizationSubscriptionAccess(campaign.property.organizationId);
+  if (subscription && !subscription.canUsePaidActions) throw new Error("Subscription is paused; scheduled campaign was not sent.");
+  if (campaign.templateStatus !== "APPROVED" || !campaign.templateName) throw new Error("Approved template is required.");
+  if (!campaign.consentSource || !campaign.consentProof || !campaign.consentConfirmedAt) throw new Error("Consent evidence is incomplete.");
+
+  const localHour = Number(new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    hourCycle: "h23",
+    timeZone: campaign.property.timezone || "Asia/Kolkata"
+  }).format(new Date()));
+  if (localHour < 9 || localHour >= 20) {
+    await db.automationJob.update({
+      where: { id: job.id },
+      data: {
+        status: AUTOMATION_JOB_STATUS.QUEUED,
+        nextRunAt: new Date(Date.now() + 60 * 60 * 1000),
+        attemptCount: { decrement: 1 },
+        lockedAt: null,
+        lockedBy: null,
+        leaseExpiresAt: null,
+        lastError: "Quiet hours active; deferred without consuming a retry."
+      }
+    });
+    return null;
+  }
+
+  if (options.dryRun) {
+    return completeAutomationJob(job.id, { dryRun: true, campaignId, recipients: campaign.recipients.length });
+  }
+
+  const snapshot = (() => {
+    try { return JSON.parse(campaign.audienceSnapshot || "{}") as { bodyVariables?: string[]; headerImageUrl?: string }; }
+    catch { return {}; }
+  })();
+  let sent = campaign.recipients.filter((recipient) => ["ACCEPTED", "DELIVERED", "READ"].includes(recipient.status)).length;
+  let failed = campaign.recipients.filter((recipient) => ["SUPPRESSED", "SENDING"].includes(recipient.status)).length;
+  const errors: string[] = [];
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  if (campaign.status === "SCHEDULED") await db.campaign.update({ where: { id: campaign.id }, data: { status: "SENDING" } });
+  for (const recipient of campaign.recipients) {
+    if (["ACCEPTED", "DELIVERED", "READ", "SUPPRESSED", "SENDING"].includes(recipient.status)) continue;
+    const [optedOutLead, recentSend] = await Promise.all([
+      db.lead.findFirst({
+        where: {
+          propertyId: campaign.propertyId,
+          phone: recipient.phone,
+          tags: { some: { value: { in: ["STOP", "OPTED_OUT", "DO_NOT_CONTACT"], mode: "insensitive" } } }
+        },
+        select: { id: true }
+      }),
+      db.campaignRecipient.findFirst({
+        where: {
+          phone: recipient.phone,
+          campaign: { propertyId: campaign.propertyId },
+          sentAt: { gte: oneDayAgo },
+          campaignId: { not: campaign.id }
+        },
+        select: { id: true }
+      })
+    ]);
+    if (optedOutLead || recentSend) {
+      const reason = optedOutLead ? "Recipient opted out." : "24-hour frequency cap applied.";
+      await db.campaignRecipient.update({ where: { id: recipient.id }, data: { status: "SUPPRESSED", suppressionReason: reason } });
+      failed += 1;
+      errors.push(reason);
+      continue;
+    }
+
+    await db.campaignRecipient.update({ where: { id: recipient.id }, data: { status: "SENDING" } });
+    const result = await sendWhatsAppTemplateMessage({
+      to: recipient.phone,
+      templateName: campaign.templateName,
+      languageCode: campaign.languageCode,
+      propertySlug: campaign.property.slug,
+      bodyVariables: snapshot.bodyVariables || [],
+      headerImageUrl: snapshot.headerImageUrl || ""
+    });
+    await recordCampaignRecipientResult({
+      campaignId: campaign.id,
+      phone: recipient.phone,
+      ok: !result.error,
+      externalMessageId: result.result?.sid || null,
+      error: result.error || null
+    });
+    if (result.error) { failed += 1; errors.push(result.error); } else { sent += 1; }
+  }
+
+  await finalizeCampaignRun({
+    campaignId: campaign.id,
+    sentCount: sent,
+    failedCount: failed,
+    errorSummary: Array.from(new Set(errors)).join(" | ").slice(0, 1000) || null
+  });
+  return completeAutomationJob(job.id, { campaignId, sent, failed });
+}
+
 export async function runDueAutomationJobs(input: RunAutomationJobsInput) {
-  const claimed = await claimDueAutomationJobs(input);
+  const claimed = await claimDueAutomationJobs({
+    ...input,
+    excludeActionTypes: input.dryRun ? [AUTOMATION_ACTION_TYPE.WHATSAPP_TEMPLATE_CAMPAIGN] : input.excludeActionTypes
+  });
   const completed: string[] = [];
   const failed: string[] = [];
 
   for (const job of claimed) {
     try {
-      await executeAutomationJob(job, { dryRun: input.dryRun });
-      completed.push(job.id);
+      const execution = await executeAutomationJob(job, { dryRun: input.dryRun });
+      if (execution) completed.push(job.id);
     } catch (error) {
       await failAutomationJob(job, error);
       failed.push(job.id);

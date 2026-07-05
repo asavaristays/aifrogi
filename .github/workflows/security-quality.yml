@@ -1,0 +1,27 @@
+name: Security and quality gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/aifrogi_ci
+      AUTH_SESSION_SECRET: ci-only-session-secret-not-used-in-production
+      AIFROGI_PUBLIC_URL: https://aifrogi.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run verify:client-secrets

@@ -1,6 +1,6 @@
 # Section 06: Billing And Super Admin
 
-Status: Billing foundation implemented on 2026-07-03
+Status: Billing enforcement and customer visibility implemented; payment-provider automation deferred
 Target score: 8.5/10
 
 ## Think
@@ -78,3 +78,12 @@ Payment provider remains `MANUAL` in this slice. AiFrogi can issue invoices and 
 3. Add overdue recovery and read-only states without deleting customer data.
 4. Stabilize pricing with early customers.
 5. Integrate Razorpay checkout and webhook reconciliation after pricing is confirmed.
+
+### 2026-07-05 Increment
+
+- The TRIAL plan is strictly limited to 30 days and automatically changes to `PAUSED` when it expires.
+- Paused workspaces retain data and read access while messaging, campaigns, automation, and new team invitations are refused server-side.
+- Customer billing now shows plan state, trial days, allowances, usage, invoices, and paid-plan choices.
+- Plan allowances are enforced server-side for messages, campaigns, and team users.
+- Super Admin now has a dedicated platform audit trail and visible paused-trial count.
+- Customers can review and revoke active sessions; local session revocation is checked in both the application and request proxy.

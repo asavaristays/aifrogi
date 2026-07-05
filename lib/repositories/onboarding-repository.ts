@@ -3,6 +3,7 @@ import { encryptSecretValue } from "@/lib/field-encryption";
 
 const organizationInclude = {
   onboarding: true,
+  subscription: { include: { plan: true } },
   botConfiguration: true,
   documents: {
     select: {

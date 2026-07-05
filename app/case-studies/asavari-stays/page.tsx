@@ -97,7 +97,7 @@ export default function AsavariStaysCaseStudyPage() {
             ].map(([title, copy]) => <div key={title} className="grid gap-2 border-b border-black/10 py-5 last:border-b-0 sm:grid-cols-[110px_1fr]"><strong>{title}</strong><p className="text-sm leading-6 text-[var(--text-muted)]">{copy}</p></div>)}
           </div>
         </div>
-        <div className="mx-auto mt-16 max-w-7xl rounded-xl bg-[#2c243b] px-6 py-10 text-white sm:px-10 lg:flex lg:items-center lg:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-[#ff8af1]">Build your journey</p><h2 className="mt-3 text-2xl font-semibold">Turn visual interest into a conversation your team can close.</h2></div><a href="https://app.aifrogi.com/register" className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold lg:mt-0">Start free trial <Icon name="arrow-right" /></a></div>
+        <div className="mx-auto mt-16 max-w-7xl rounded-xl bg-[#2c243b] px-6 py-10 text-white sm:px-10 lg:flex lg:items-center lg:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-[#ff8af1]">Build your journey</p><h2 className="mt-3 text-2xl font-semibold">Turn visual interest into a conversation your team can close.</h2></div><a href="https://app.aifrogi.com/register" className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold lg:mt-0">Start 30-day trial <Icon name="arrow-right" /></a></div>
       </section>
 
       <SiteFooter />

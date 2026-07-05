@@ -1210,6 +1210,36 @@ export async function validateWhatsAppIntegration(propertySlug = DEFAULT_PROPERT
   };
 }
 
+export async function listMetaMessageTemplates(propertySlug = DEFAULT_PROPERTY_SLUG) {
+  const config = await getResolvedMetaConfig(propertySlug);
+  if (!config?.businessAccountId || !config.accessToken) {
+    return { error: "A WhatsApp Business Account ID and Meta token are required to sync templates.", templates: [], status: 400 };
+  }
+
+  const response = await fetch(
+    `https://graph.facebook.com/${getMetaGraphVersion()}/${encodeURIComponent(config.businessAccountId)}/message_templates?fields=name,status,category,language&limit=100`,
+    { headers: { Authorization: `Bearer ${config.accessToken}` }, cache: "no-store" }
+  );
+  const payload = await response.json().catch(() => null) as {
+    data?: Array<{ name?: string; status?: string; category?: string; language?: string }>;
+    error?: { message?: string; code?: number; error_subcode?: number };
+  } | null;
+  if (!response.ok || payload?.error) {
+    return { error: formatMetaAuthError(payload?.error), templates: [], status: response.status || 502 };
+  }
+
+  return {
+    error: null,
+    templates: (payload?.data || []).map((template) => ({
+      name: template.name || "",
+      status: (template.status || "UNKNOWN").toUpperCase(),
+      category: (template.category || "UNKNOWN").toUpperCase(),
+      language: template.language || ""
+    })),
+    status: 200
+  };
+}
+
 export async function sendWhatsAppTestMessage(input: {
   to: string;
   message: string;

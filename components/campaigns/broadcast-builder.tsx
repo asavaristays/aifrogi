@@ -39,6 +39,7 @@ type CampaignRun = {
   consentSource: string | null;
   testMode: boolean;
   createdAt: string;
+  scheduledFor: string | null;
 };
 
 type BroadcastResult = {
@@ -58,8 +59,10 @@ type BroadcastPayload = {
     mode: string;
     templateName: string | null;
     testMode: boolean;
+    scheduled?: boolean;
   };
   campaignId: string | null;
+  scheduledFor?: string;
   results: BroadcastResult[];
 };
 
@@ -103,9 +106,12 @@ export function BroadcastBuilder({
   const [consentProof, setConsentProof] = useState("");
   const [finalConfirmed, setFinalConfirmed] = useState(false);
   const [testMode, setTestMode] = useState(true);
+  const [scheduledFor, setScheduledFor] = useState("");
+  const [minimumScheduleTime] = useState(() => new Date(Date.now() + 5 * 60_000).toISOString().slice(0, 16));
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<BroadcastPayload | null>(null);
+  const [runs, setRuns] = useState(campaignRuns);
 
   const recipientList = useMemo(() => Array.from(new Set(parseLines(recipients))), [recipients]);
   const recipientCount = recipientList.length;
@@ -168,6 +174,7 @@ export function BroadcastBuilder({
         consentSource,
         consentProof,
         testMode,
+        scheduledFor: scheduledFor ? new Date(scheduledFor).toISOString() : null,
         propertySlug
       })
     });
@@ -180,6 +187,35 @@ export function BroadcastBuilder({
     }
 
     setResult(payload);
+    if (payload?.summary?.scheduled && payload.campaignId) {
+      setRuns((current) => [{
+        id: payload.campaignId,
+        name: campaignName,
+        status: "SCHEDULED",
+        templateName: selectedTemplate.name,
+        requestedCount: recipientCount,
+        sentCount: 0,
+        deliveredCount: 0,
+        readCount: 0,
+        failedCount: 0,
+        estimatedCostPaisa,
+        consentSource,
+        testMode,
+        createdAt: new Date().toISOString(),
+        scheduledFor: payload.scheduledFor || null
+      }, ...current]);
+    }
+  }
+
+  async function cancelCampaign(campaignId: string) {
+    const response = await fetch(`/api/campaigns/${campaignId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "cancel", propertySlug })
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) { setError(payload?.error || "Campaign could not be canceled."); return; }
+    setRuns((current) => current.map((campaign) => campaign.id === campaignId ? { ...campaign, status: "CANCELED" } : campaign));
   }
 
   return (
@@ -242,6 +278,11 @@ export function BroadcastBuilder({
             <input className="product-input mt-2" value={headerImageUrl} onChange={(event) => setHeaderImageUrl(event.target.value)} placeholder="Required only for approved image-header templates" />
             <p className="mt-2 text-xs text-[var(--text-muted)]">The default image is filled only when the approved template expects it.</p>
           </label>
+          <label className="block md:col-span-2">
+            <span className="field-label">Send later (optional)</span>
+            <input type="datetime-local" className="product-input mt-2" value={scheduledFor} onChange={(event) => setScheduledFor(event.target.value)} min={minimumScheduleTime} />
+            <p className="mt-2 text-xs text-[var(--text-muted)]">Scheduled campaigns respect consent, subscription status, local quiet hours, opt-outs, and a 24-hour frequency cap.</p>
+          </label>
 
           <label className="block md:col-span-2">
             <span className="field-label">Template variables</span>
@@ -286,7 +327,7 @@ export function BroadcastBuilder({
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Button type="button" disabled={!canSend} onClick={sendBroadcast}>
-            {sending ? "Sending" : testMode ? "Send test campaign" : "Send campaign"}
+            {sending ? "Working" : scheduledFor ? "Schedule campaign" : testMode ? "Send test campaign" : "Send campaign"}
           </Button>
           {!connected ? <span className="text-sm font-semibold text-[#a45f16]">Connect WhatsApp API before sending.</span> : null}
           {!templateReady ? <span className="text-sm font-semibold text-[#a45f16]">Only approved templates can be sent.</span> : null}
@@ -329,7 +370,7 @@ export function BroadcastBuilder({
         <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(45,31,58,0.08)]">
           <p className="product-eyebrow">Recent campaign runs</p>
           <div className="mt-4 space-y-3">
-            {campaignRuns.map((campaign) => (
+            {runs.map((campaign) => (
               <div key={campaign.id} className="rounded-md border border-black/8 bg-white p-3 text-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -338,6 +379,8 @@ export function BroadcastBuilder({
                   </div>
                   <Badge tone={campaign.status === "SENT" ? "secondary" : campaign.status === "FAILED" ? "error" : "tertiary"}>{campaign.status}</Badge>
                 </div>
+                {campaign.scheduledFor ? <p className="mt-3 text-xs text-[var(--text-muted)]">Scheduled {new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(campaign.scheduledFor))}</p> : null}
+                {campaign.status === "SCHEDULED" ? <button type="button" onClick={() => cancelCampaign(campaign.id)} className="mt-3 text-xs font-bold text-[#a3342b] underline underline-offset-2">Cancel scheduled send</button> : null}
                 <div className="mt-3 grid grid-cols-4 gap-2 text-xs">
                   <MiniMetric label="Sent" value={campaign.sentCount} />
                   <MiniMetric label="Read" value={campaign.readCount} />
@@ -346,7 +389,7 @@ export function BroadcastBuilder({
                 </div>
               </div>
             ))}
-            {!campaignRuns.length ? <p className="rounded-md border border-black/8 bg-[#faf8fb] p-4 text-sm text-[var(--text-muted)]">No campaign runs yet. Send one internal test first.</p> : null}
+            {!runs.length ? <p className="rounded-md border border-black/8 bg-[#faf8fb] p-4 text-sm text-[var(--text-muted)]">No campaign runs yet. Send one internal test first.</p> : null}
           </div>
         </Card>
       </div>

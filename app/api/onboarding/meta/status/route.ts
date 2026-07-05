@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-server";
 import { updateOnboardingProfile, updateOrganizationStatus } from "@/lib/repositories/onboarding-repository";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
-import { validateWhatsAppIntegration } from "@/lib/services/whatsapp-service";
+import { listMetaMessageTemplates, validateWhatsAppIntegration } from "@/lib/services/whatsapp-service";
 
 export async function POST() {
   const user = await getCurrentUser();
@@ -16,8 +16,12 @@ export async function POST() {
     return NextResponse.json({ error: "Onboarding record not found" }, { status: 404 });
   }
 
-  const validation = await validateWhatsAppIntegration(property.slug);
+  const [validation, templateSync] = await Promise.all([
+    validateWhatsAppIntegration(property.slug),
+    listMetaMessageTemplates(property.slug)
+  ]);
   const live = !validation.error && validation.phone?.accountStatus?.toUpperCase() === "CONNECTED";
+  const approvedTemplates = templateSync.templates.filter((template) => template.status === "APPROVED");
   const updated = await updateOnboardingProfile(
     organization.id,
     {
@@ -28,11 +32,12 @@ export async function POST() {
       tokenStatus: live ? "ACTIVE" : organization.onboarding.tokenStatus,
       displayPhoneNumber: validation.phone?.displayPhoneNumber || organization.onboarding.displayPhoneNumber,
       qualityRating: validation.phone?.qualityRating || organization.onboarding.qualityRating,
+      templateStatus: approvedTemplates.length ? "APPROVED" : templateSync.error ? organization.onboarding.templateStatus : "PENDING",
       currentStep: live ? 6 : organization.onboarding.currentStep,
       progressPercent: live ? 100 : organization.onboarding.progressPercent,
       completedAt: live ? organization.onboarding.completedAt || new Date() : organization.onboarding.completedAt,
       lastStatusCheckAt: new Date(),
-      lastError: validation.error ? validation.error.slice(0, 500) : null
+      lastError: validation.error ? validation.error.slice(0, 500) : templateSync.error ? templateSync.error.slice(0, 500) : null
     },
     { actorEmail: user.username, action: "STATUS_REFRESHED", detail: live ? "WhatsApp connection is healthy" : "Connection still requires attention" }
   );
@@ -40,5 +45,9 @@ export async function POST() {
     await updateOrganizationStatus(organization.id, "ACTIVE");
   }
 
-  return NextResponse.json({ organization: updated, healthError: validation.error || null });
+  return NextResponse.json({
+    organization: updated,
+    healthError: validation.error || null,
+    templateSync: { approved: approvedTemplates.length, total: templateSync.templates.length, error: templateSync.error || null }
+  });
 }

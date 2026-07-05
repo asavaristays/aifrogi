@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
 import { inviteTeamMember, listTeamMembers, updateTeamMember } from "@/lib/repositories/team-repository";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
+import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export async function GET() {
   const access = await getCurrentClientAccess();
@@ -14,6 +16,12 @@ export async function POST(request: Request) {
   const access = await getCurrentClientAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
+  const [subscription, allowance] = await Promise.all([
+    getOrganizationSubscriptionAccess(access.organization.id),
+    checkOrganizationEntitlement(access.organization.id, "teamUsers", 1)
+  ]);
+  if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: subscription.message }, { status: 402 });
+  if (!allowance.allowed) return NextResponse.json({ error: allowance.error }, { status: 402 });
   const payload = await request.json().catch(() => null) as { email?: string; name?: string; role?: string } | null;
   try {
     const invitation = await inviteTeamMember({ organizationId: access.organization.id, email: payload?.email || "", name: payload?.name || "", role: payload?.role || "AGENT", invitedBy: access.user.username });
@@ -48,4 +56,3 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update this team member." }, { status: 400 });
   }
 }
-

@@ -8,6 +8,7 @@ import {
 } from "@/lib/automation-engine";
 import { getDb } from "@/lib/db";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 async function loadCurrentProperty() {
   const db = getDb();
@@ -29,10 +30,14 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const property = await loadCurrentProperty();
-  if (!property) return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
-
   const payload = await request.json().catch(() => ({}));
+  const access = await resolveClientWorkspaceAccess({
+    propertySlug: typeof payload.propertySlug === "string" ? payload.propertySlug : null,
+    requireManage: true,
+    requireActiveSubscription: true
+  });
+  if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
+  const property = { id: access.propertyId, name: access.property.name, slug: access.propertySlug };
   const action = typeof payload.action === "string" ? payload.action : "run_due";
 
   if (action === "enqueue_demo") {

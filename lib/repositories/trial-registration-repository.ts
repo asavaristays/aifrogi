@@ -20,6 +20,7 @@ export async function registerTrialOrganization(input: {
   industry: string;
   country: string;
   timezone: string;
+  source?: string;
 }) {
   const db = getDb();
   if (!db) throw new Error("Registration is temporarily unavailable.");
@@ -85,7 +86,7 @@ export async function registerTrialOrganization(input: {
           create: { name: input.companyName, slug, timezone: input.timezone }
         },
         activities: {
-          create: { actorEmail: email, action: "TRIAL_REGISTERED", detail: "Trial workspace reserved; email verification required" }
+          create: { actorEmail: email, action: "TRIAL_REGISTERED", detail: `Trial workspace reserved; source=${input.source || "direct"}; email verification required` }
         }
       },
       select: { id: true }

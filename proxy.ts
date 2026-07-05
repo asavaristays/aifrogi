@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isRegisteredSessionActive } from "@/lib/session-registry";
 
 const SESSION_COOKIE_NAME = "leados_session";
 const AUTH_SESSION_SECRET = process.env.AUTH_SESSION_SECRET || "change-this-in-production";
@@ -19,6 +20,7 @@ const protectedPrefixes = [
   "/whatsapp-bot",
   "/setup",
   "/settings",
+  "/billing",
   "/support",
   "/onboarding",
   "/admin",
@@ -49,6 +51,7 @@ const publicApiPrefixes = [
   "/api/auth/session",
   "/api/auth/hotelradar-sso",
   "/api/auth/invitation",
+  "/api/automation/run",
   "/api/integrations/whatsapp/webhook",
   "/api/public/whatsapp-bot",
   "/api/health/live",
@@ -124,7 +127,7 @@ async function verifySessionToken(token?: string | null): Promise<SessionUser | 
   }
 
   if (session.authSource === "local") {
-    return session;
+    return await isRegisteredSessionActive(session.sessionId) ? session : null;
   }
 
   const cached = revocationCache.get(session.sessionId);
@@ -204,7 +207,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  const clientManagementPrefixes = ["/campaigns", "/workflows", "/analytics", "/setup", "/settings", "/onboarding"];
+  const clientManagementPrefixes = ["/campaigns", "/workflows", "/analytics", "/setup", "/settings", "/billing", "/onboarding"];
   const limitedWorkspaceRole = session.workspaceRole === "AGENT" || session.workspaceRole === "VIEWER";
   if (session.role !== "admin" && limitedWorkspaceRole && clientManagementPrefixes.some((prefix) => pathname.startsWith(prefix))) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -232,6 +235,7 @@ export const config = {
     "/onboarding/:path*",
     "/admin/:path*",
     "/settings/:path*",
+    "/billing/:path*",
     "/support/:path*",
     "/mobile-agent/:path*",
     "/review/:path*",

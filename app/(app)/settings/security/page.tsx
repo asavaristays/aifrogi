@@ -1,5 +1,6 @@
 import { TopBar } from "@/components/layout/top-bar";
 import { Card } from "@/components/ui/card";
+import { SessionManager } from "@/components/settings/session-manager";
 
 export default function SettingsSecurityPage() {
   return (
@@ -39,10 +40,11 @@ export default function SettingsSecurityPage() {
           <Card className="p-6">
             <h3 className="text-lg font-extrabold">Audit Readiness</h3>
             <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">
-              V1 is structured for audit logs; next step is a full visible audit trail page.
+              Platform actions and customer-approved support access are recorded for operator accountability.
             </p>
           </Card>
         </div>
+        <Card className="p-6"><h2 className="text-xl font-extrabold">Active sessions</h2><p className="mt-2 mb-5 text-sm leading-6 text-[var(--text-muted)]">Review signed-in devices and revoke access that you no longer recognize.</p><SessionManager /></Card>
       </div>
     </>
   );

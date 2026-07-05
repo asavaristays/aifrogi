@@ -5,6 +5,8 @@ import { getMemberRoleByEmail } from "@/lib/repositories/onboarding-repository";
 import { verifyTeamMemberCredential } from "@/lib/repositories/team-repository";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { createLoginOtpChallenge, shouldRequireLoginOtp, verifyLoginOtpChallenge } from "@/lib/login-otp";
+import { randomUUID } from "node:crypto";
+import { recordUserSession } from "@/lib/session-registry";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const CENTRAL_AUTH_URL =
@@ -139,13 +141,24 @@ export async function POST(request: Request) {
     }
   }
 
+  const sessionId = credential.sessionId || randomUUID().replaceAll("-", "");
+  const expiresAt = new Date(Date.now() + 8 * 60 * 60 * 1000);
   const token = await createSessionToken({
     username: credential.username,
     label: role === "admin" ? credential.label || labelForRole(role) : labelForRole(role),
     role,
     workspaceRole,
-    sessionId: credential.sessionId,
+    sessionId,
     authSource: credential.authSource
+  });
+  await recordUserSession({
+    sessionId,
+    email: credential.username,
+    role: workspaceRole || role,
+    authSource: credential.authSource,
+    expiresAt,
+    userAgent: request.headers.get("user-agent"),
+    ipAddress: ip
   });
   const redirectUrl = safeDestination(payload?.returnTo, role);
   const response = NextResponse.json(

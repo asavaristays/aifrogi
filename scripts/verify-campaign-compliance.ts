@@ -51,10 +51,32 @@ async function main() {
     assert(campaign?.recipients[0]?.consentStatus === "CONFIRMED", "Recipient consent was not recorded.");
     assert(campaign.testMode, "Campaign test mode was not stored.");
 
+    const scheduled = await repository.createCampaignRun({
+      propertyId,
+      name: "Synthetic scheduled run",
+      templateName: "goa_ai_audit_image_v2",
+      languageCode: "en_US",
+      messageType: "TEMPLATE",
+      estimatedCostPaisa: 109,
+      requestedCount: 1,
+      templateStatus: "APPROVED",
+      consentSource: "internal_test",
+      consentProof: "Internal test number owned by QA operator.",
+      consentConfirmedBy: "campaign-qa@aifrogi.local",
+      testMode: true,
+      createdBy: "campaign-qa@aifrogi.local",
+      recipients: ["+918800000001"],
+      scheduledFor: new Date(Date.now() + 60_000),
+      initialStatus: "SCHEDULED"
+    });
+    assert(scheduled?.status === "SCHEDULED" && Boolean(scheduled.scheduledFor), "Scheduled campaign state was not stored.");
+    const canceled = await repository.cancelScheduledCampaign({ campaignId: scheduled!.id, propertyId, actorEmail: "campaign-qa@aifrogi.local" });
+    assert(canceled?.status === "CANCELED", "Scheduled campaign could not be canceled safely.");
+
     await repository.recordCampaignRecipientResult({ campaignId: campaign.id, phone: "+918800000000", ok: true, externalMessageId: `wamid.${runId}` });
     await repository.finalizeCampaignRun({ campaignId: campaign.id, sentCount: 1, failedCount: 0 });
     const summary = await repository.getCampaignSummary(propertyId);
-    assert(summary.total === 1 && summary.sent === 1 && summary.estimatedCostPaisa > 0, "Campaign summary did not include the synthetic run.");
+    assert(summary.total === 2 && summary.sent === 1 && summary.estimatedCostPaisa > 0, "Campaign summary did not include the synthetic runs.");
     console.log("Campaign compliance verification passed.");
   } finally {
     if (propertyId) await db.property.deleteMany({ where: { id: propertyId } });

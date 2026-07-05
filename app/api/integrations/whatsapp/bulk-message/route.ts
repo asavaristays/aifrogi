@@ -10,8 +10,12 @@ import {
 import {
   createCampaignRun,
   finalizeCampaignRun,
-  recordCampaignRecipientResult
+  recordCampaignRecipientResult,
+  suppressCampaignRecipient
 } from "@/lib/repositories/campaign-repository";
+import { AUTOMATION_ACTION_TYPE, enqueueAutomationJob } from "@/lib/automation-engine";
+import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
+import { getDb } from "@/lib/db";
 
 const MAX_BULK_RECIPIENTS = 20;
 
@@ -69,15 +73,34 @@ export async function POST(request: Request) {
   const consentSource = typeof payload?.consentSource === "string" ? payload.consentSource.trim() : "";
   const consentProof = typeof payload?.consentProof === "string" ? payload.consentProof.trim() : "";
   const testMode = Boolean(payload?.testMode);
+  const scheduledFor = typeof payload?.scheduledFor === "string" && payload.scheduledFor
+    ? new Date(payload.scheduledFor)
+    : null;
+  const scheduleRequested = Boolean(scheduledFor && !Number.isNaN(scheduledFor.getTime()) && scheduledFor.getTime() > Date.now() + 60_000);
   const workspace = await resolveClientWorkspaceAccess({
     propertySlug: typeof payload?.propertySlug === "string" ? payload.propertySlug : null,
-    requireManage: true
+    requireManage: true,
+    requireActiveSubscription: true
   });
   const operatorId = typeof payload?.operatorId === "string" ? payload.operatorId.trim() : "lead-os-bulk-operator";
   const isTemplateMode = mode === "template";
 
   if (!workspace.ok) {
     return NextResponse.json({ error: workspace.error }, { status: workspace.status });
+  }
+
+  const [campaignAllowance, messageAllowance] = await Promise.all([
+    checkOrganizationEntitlement(workspace.organization.id, "campaigns", 1),
+    checkOrganizationEntitlement(workspace.organization.id, "messages", recipients.length)
+  ]);
+  if (!campaignAllowance.allowed || !messageAllowance.allowed) {
+    return NextResponse.json({ error: campaignAllowance.error || messageAllowance.error }, { status: 402 });
+  }
+  if (!testMode) {
+    const localHour = Number(new Intl.DateTimeFormat("en", { hour: "numeric", hourCycle: "h23", timeZone: workspace.organization.timezone || "Asia/Kolkata" }).format(new Date()));
+    if (!scheduleRequested && (localHour < 9 || localHour >= 20)) {
+      return NextResponse.json({ error: "Campaign quiet hours are active. Schedule the campaign between 09:00 and 20:00 in the workspace time zone." }, { status: 400 });
+    }
   }
 
   if (!isTemplateMode && !message) {
@@ -104,7 +127,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const consentValidation = isTemplateMode
+  const consentRequired = isTemplateMode || recipients.length > 1;
+  const consentValidation = consentRequired
     ? validateConsent({ confirmed: consentConfirmed, source: consentSource, proof: consentProof }, recipients.length)
     : { error: null };
   if (consentValidation.error) {
@@ -127,18 +151,52 @@ export async function POST(request: Request) {
     estimatedCostPaisa,
     requestedCount: recipients.length,
     templateStatus: template?.status || "UNKNOWN",
-    consentSource: isTemplateMode ? consentSource : undefined,
-    consentProof: isTemplateMode ? consentProof : undefined,
-    consentConfirmedBy: isTemplateMode ? workspace.user.username : undefined,
-    audienceSnapshot: isTemplateMode ? buildAudienceSnapshot({ requestedCount: recipients.length, recipients, source: consentSource, templateName, testMode }) : undefined,
+    consentSource: consentRequired ? consentSource : undefined,
+    consentProof: consentRequired ? consentProof : undefined,
+    consentConfirmedBy: consentRequired ? workspace.user.username : undefined,
+    audienceSnapshot: isTemplateMode ? buildAudienceSnapshot({ requestedCount: recipients.length, recipients, source: consentSource, templateName, testMode, bodyVariables, headerImageUrl }) : undefined,
     testMode,
     createdBy: workspace.user.username,
-    recipients
+    recipients,
+    scheduledFor: scheduleRequested ? scheduledFor : null,
+    initialStatus: scheduleRequested ? "SCHEDULED" : "SENDING"
   });
+
+  if (campaign && scheduleRequested && scheduledFor) {
+    await enqueueAutomationJob({
+      propertyId: workspace.propertyId,
+      workflowId: "scheduled_whatsapp_campaign",
+      triggerType: "campaign_schedule",
+      triggerRef: campaign.id,
+      actionType: AUTOMATION_ACTION_TYPE.WHATSAPP_TEMPLATE_CAMPAIGN,
+      idempotencyKey: `campaign:${campaign.id}`,
+      scheduledFor,
+      payload: { campaignId: campaign.id },
+      createdBy: workspace.user.username
+    });
+    return NextResponse.json({
+      summary: { requested: recipients.length, sent: 0, failed: 0, mode: "template", templateName, testMode, scheduled: true },
+      campaignId: campaign.id,
+      scheduledFor: scheduledFor.toISOString(),
+      results: []
+    });
+  }
 
   const results = [];
 
   for (const to of recipients) {
+    const db = getDb();
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [optedOutLead, recentSend] = db ? await Promise.all([
+      db.lead.findFirst({ where: { propertyId: workspace.propertyId, phone: to, tags: { some: { value: { in: ["STOP", "OPTED_OUT", "DO_NOT_CONTACT"], mode: "insensitive" } } } }, select: { id: true } }),
+      db.campaignRecipient.findFirst({ where: { phone: to, campaign: { propertyId: workspace.propertyId }, sentAt: { gte: oneDayAgo }, campaignId: { not: campaign?.id || "" } }, select: { id: true } })
+    ]) : [null, null];
+    if (!testMode && (optedOutLead || recentSend)) {
+      const error = optedOutLead ? "Recipient opted out." : "24-hour frequency cap applied.";
+      results.push({ to, ok: false, status: 409, error, deliveryStatus: "SUPPRESSED", externalMessageId: null, mode: isTemplateMode ? "template" : "text" });
+      if (campaign) await suppressCampaignRecipient({ campaignId: campaign.id, phone: to, reason: error });
+      continue;
+    }
     const result = isTemplateMode
       ? await sendWhatsAppTemplateMessage({
           to,

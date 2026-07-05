@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Icon } from "@/components/icons";
 
 const loginUrl = "https://app.aifrogi.com/login";
-const registerUrl = "https://app.aifrogi.com/register";
+const registerUrl = "https://app.aifrogi.com/register?source=site-header";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -38,7 +38,7 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start free trial</a>
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start 30-day trial</a>
           </div>
 
           <div className="flex items-center gap-2 md:hidden">

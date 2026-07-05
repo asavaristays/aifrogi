@@ -1,4 +1,5 @@
 import { createHmac, randomUUID } from "crypto";
+import { isRegisteredSessionActive } from "@/lib/session-registry";
 
 export type AppUserRole = "admin" | "hotel_owner";
 
@@ -183,7 +184,7 @@ export async function verifySessionToken(token?: string | null): Promise<Session
     return null;
   }
   if (decoded.authSource === "local") {
-    return decoded;
+    return decoded.sessionId && await isRegisteredSessionActive(decoded.sessionId) ? decoded : null;
   }
   if (await isSessionRevoked(decoded.sessionId)) {
     return null;
