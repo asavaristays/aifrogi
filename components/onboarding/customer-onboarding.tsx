@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -356,10 +357,14 @@ export function CustomerOnboarding({
     <div className="min-h-screen bg-[#f4f8f6] text-[#14241f]">
       <header className="border-b border-black/5 bg-white px-5 py-4 sm:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <div>
-            <p className="text-lg font-black">AiFrogi <span className="text-[#c725ba]">WhatsApp</span></p>
-            <p className="mt-1 text-xs text-[#6d7487]">Business messaging setup</p>
-          </div>
+          <Image
+            src="/brand/aifrogi-logo.png"
+            alt="AiFrogi"
+            width={800}
+            height={300}
+            priority
+            className="h-auto w-[158px]"
+          />
           <div className="text-right">
             <p className="text-xs font-bold text-[#6d7487]">Signed in as</p>
             <p className="mt-1 text-sm font-semibold">{accountEmail}</p>
