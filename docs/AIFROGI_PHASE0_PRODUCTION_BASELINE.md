@@ -107,7 +107,14 @@ Database rollback after future migrations:
 4. Point a staging application at the restored database and verify critical reads.
 5. Restore production only with explicit incident approval.
 
-The current rollback validation confirms that both source and database backup artifacts are readable. A destructive production database restore was intentionally not performed.
+Rollback was tested without touching the production database:
+
+- The database dump was restored into an isolated temporary PostgreSQL database using `--no-owner --no-acl`.
+- The restored database contained 48 application tables, and integrity queries against organizations and leads completed successfully.
+- The temporary restore database was removed after validation.
+- The source archive was extracted into a temporary directory; `package-lock.json`, `prisma/schema.prisma`, and the deployed login client matched the live source byte-for-byte.
+
+The protected backup remains under `/root/aifrogi-phase0-20260829` with recorded checksums. A destructive production database restore was intentionally not performed.
 
 ## Phase 1 go/no-go
 
