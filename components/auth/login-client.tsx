@@ -28,7 +28,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, returnTo, otpChallengeId, otpCode })
+        body: JSON.stringify({ username, password, returnTo, accountType: accessType, otpChallengeId, otpCode })
       });
       const result = (await response.json()) as {
         error?: string;

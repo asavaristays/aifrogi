@@ -80,6 +80,7 @@ export async function POST(request: Request) {
     username?: string;
     password?: string;
     returnTo?: string;
+    accountType?: "client" | "admin";
     otpChallengeId?: string;
     otpCode?: string;
   } | null;
@@ -101,6 +102,18 @@ export async function POST(request: Request) {
   }
 
   const role = roleForEmail(credential.username);
+  if (payload?.accountType === "admin" && role !== "admin") {
+    return NextResponse.json(
+      { ok: false, error: "This is a client workspace account. Select Client login." },
+      { status: 403, headers: { "Cache-Control": "no-store" } }
+    );
+  }
+  if (payload?.accountType === "client" && role === "admin") {
+    return NextResponse.json(
+      { ok: false, error: "This is an AiFrogi platform administrator account. Select Admin login." },
+      { status: 403, headers: { "Cache-Control": "no-store" } }
+    );
+  }
   const workspaceRole = role === "admin" ? undefined : credential.workspaceRole || await getMemberRoleByEmail(credential.username) || "AGENT";
   const otpRequired = shouldRequireLoginOtp({ appRole: role, workspaceRole });
   if (otpRequired) {

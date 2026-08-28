@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createRevocationProof, getSessionCookieName, readVerifiedSessionToken } from "@/lib/auth";
 import { revokeUserSession } from "@/lib/session-registry";
+import { WORKSPACE_COOKIE_NAME } from "@/lib/workspace";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const HOTELRADAR_AUTH_BASE_URL =
@@ -45,6 +46,15 @@ export async function POST(request: Request) {
   const response = NextResponse.json({ ok: true });
   response.cookies.set({
     name: getSessionCookieName(),
+    value: "",
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    secure: COOKIE_SECURE,
+    expires: new Date(0),
+  });
+  response.cookies.set({
+    name: WORKSPACE_COOKIE_NAME,
     value: "",
     httpOnly: true,
     sameSite: "lax",

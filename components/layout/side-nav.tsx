@@ -102,7 +102,7 @@ export function SideNav({
           {workspaces.length ? <WorkspaceSwitcher workspaces={workspaces} currentSlug={currentWorkspaceSlug} /> : null}
         </div>
 
-        <nav className="flex-1 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <nav className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navGroups.map((group) => <section
             key={group.label}
             className="mb-5"
@@ -150,10 +150,10 @@ export function SideNav({
           })}</div></section>)}
         </nav>
 
-        <div className={cn("mt-2 border-t px-1.5 pt-4", isLight ? "border-black/6" : "border-white/8")}>
+        <div className={cn("mt-2 shrink-0 border-t px-1.5 pt-3", isLight ? "border-black/6" : "border-white/8")}>
           <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className={isLight ? "text-black/45" : "text-white/45"}>Access</span><strong className={isLight ? "text-[#8d1884]" : "text-white/80"}>{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
           {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className={`h-2 w-2 rounded-full ${workspaces[0].status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d9902f]"}`} /><span className={isLight ? "text-black/55" : "text-white/58"}>{workspaces[0].status === "CONNECTED" ? "WhatsApp connected" : "Setup needs attention"}</span></div> : null}
-          <LogoutButton variant="sidebar" className={cn("w-full rounded-md px-2.5 py-2 text-xs font-medium tracking-normal", isLight ? "border border-transparent !bg-white text-black/55 hover:!bg-black/5 hover:text-black" : "")} />
+          <LogoutButton variant="sidebar" className={cn("w-full rounded-md px-2.5 py-2 text-xs font-bold tracking-normal", isLight ? "border border-[#eadfed] !bg-[#fff7fe] text-[#8d1884] hover:!bg-[#f8eaf7] hover:text-[#6f1268]" : "")} />
         </div>
       </aside>
     </>
