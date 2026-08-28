@@ -65,6 +65,7 @@ const publicApiPrefixes = [
   "/api/flowcart/webhook/aifrogi",
   "/api/flowcart/webhook/razorpay",
   "/api/public/whatsapp-bot",
+  "/api/public/website-bot",
   "/api/health/live",
   "/api/health/ready",
 ];
