@@ -58,6 +58,7 @@ export const ModelName = {
   Organization: 'Organization',
   UserSession: 'UserSession',
   WhatsAppBotConfiguration: 'WhatsAppBotConfiguration',
+  BotProfile: 'BotProfile',
   OrganizationMember: 'OrganizationMember',
   OnboardingProfile: 'OnboardingProfile',
   OnboardingCredential: 'OnboardingCredential',
@@ -251,6 +252,24 @@ export const WhatsAppBotConfigurationScalarFieldEnum = {
 } as const
 
 export type WhatsAppBotConfigurationScalarFieldEnum = (typeof WhatsAppBotConfigurationScalarFieldEnum)[keyof typeof WhatsAppBotConfigurationScalarFieldEnum]
+
+
+export const BotProfileScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  category: 'category',
+  operatingMode: 'operatingMode',
+  channels: 'channels',
+  capabilities: 'capabilities',
+  humanHandoffEnabled: 'humanHandoffEnabled',
+  actionApprovalNeeded: 'actionApprovalNeeded',
+  status: 'status',
+  configuredBy: 'configuredBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BotProfileScalarFieldEnum = (typeof BotProfileScalarFieldEnum)[keyof typeof BotProfileScalarFieldEnum]
 
 
 export const OrganizationMemberScalarFieldEnum = {

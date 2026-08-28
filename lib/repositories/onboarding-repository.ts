@@ -5,6 +5,7 @@ const organizationInclude = {
   onboarding: true,
   subscription: { include: { plan: true } },
   botConfiguration: true,
+  botProfile: true,
   documents: {
     select: {
       id: true,
@@ -215,6 +216,38 @@ export async function getOrganizationById(id: string) {
     where: { id },
     include: organizationInclude
   });
+}
+
+export async function saveOrganizationBotProfile(input: {
+  organizationId: string;
+  actorEmail: string;
+  profile: {
+    category: "BUSINESS_AI" | "PINGBOOK" | "FLOWCART" | "STAY" | "CUSTOM";
+    operatingMode: "ANSWER_ONLY" | "LEAD_CAPTURE" | "APPROVED_ACTIONS" | "HUMAN_APPROVAL";
+    channels: Array<"WEBSITE" | "WHATSAPP">;
+    capabilities: string[];
+    humanHandoffEnabled: boolean;
+    actionApprovalNeeded: boolean;
+  };
+}) {
+  const db = getDb();
+  if (!db) return null;
+  await db.$transaction([
+    db.botProfile.upsert({
+      where: { organizationId: input.organizationId },
+      update: { ...input.profile, status: "CONFIGURED", configuredBy: input.actorEmail },
+      create: { organizationId: input.organizationId, ...input.profile, status: "CONFIGURED", configuredBy: input.actorEmail }
+    }),
+    db.onboardingActivity.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        action: "BOT_PROFILE_CONFIGURED",
+        detail: `${input.profile.category}: ${input.profile.channels.join(" + ")} · ${input.profile.operatingMode}`
+      }
+    })
+  ]);
+  return getOrganizationById(input.organizationId);
 }
 
 export async function saveOnboardingDocument(input: {

@@ -14,6 +14,7 @@ import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent
 import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-access";
 import { AppointmentJourneyAdminControl } from "@/components/admin/appointment-journey-admin-control";
 import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-service";
+import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -74,6 +75,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           initialPlan={organization.plan}
           initialConfiguration={organization.botConfiguration}
         />
+        <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} />
         <div className="space-y-6">
           <Section title="Company details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="GST / registration" value={onboarding?.registrationNumber || organization.gstNumber} /><Detail label="Address" value={organization.businessAddress} /></Section>
           <Section title="WhatsApp health"><Detail label="Phone" value={onboarding?.displayPhoneNumber || onboarding?.phoneNumber} /><Detail label="Phone verification" value={onboarding?.phoneVerificationStatus} /><Detail label="Connection" value={onboarding?.facebookStatus} /><Detail label="API status" value={onboarding?.metaStatus} /><Detail label="Webhook" value={onboarding?.webhookStatus} /><Detail label="Credential" value={onboarding?.tokenStatus} /><Detail label="Quality rating" value={onboarding?.qualityRating} /></Section>

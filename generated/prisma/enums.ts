@@ -118,3 +118,24 @@ export const NeutralMessageDirection = {
 } as const
 
 export type NeutralMessageDirection = (typeof NeutralMessageDirection)[keyof typeof NeutralMessageDirection]
+
+
+export const BotCategory = {
+  BUSINESS_AI: 'BUSINESS_AI',
+  PINGBOOK: 'PINGBOOK',
+  FLOWCART: 'FLOWCART',
+  STAY: 'STAY',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type BotCategory = (typeof BotCategory)[keyof typeof BotCategory]
+
+
+export const BotOperatingMode = {
+  ANSWER_ONLY: 'ANSWER_ONLY',
+  LEAD_CAPTURE: 'LEAD_CAPTURE',
+  APPROVED_ACTIONS: 'APPROVED_ACTIONS',
+  HUMAN_APPROVAL: 'HUMAN_APPROVAL'
+} as const
+
+export type BotOperatingMode = (typeof BotOperatingMode)[keyof typeof BotOperatingMode]

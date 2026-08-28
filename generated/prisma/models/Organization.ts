@@ -275,6 +275,7 @@ export type OrganizationWhereInput = {
   onboarding?: Prisma.XOR<Prisma.OnboardingProfileNullableScalarRelationFilter, Prisma.OnboardingProfileWhereInput> | null
   onboardingCredential?: Prisma.XOR<Prisma.OnboardingCredentialNullableScalarRelationFilter, Prisma.OnboardingCredentialWhereInput> | null
   botConfiguration?: Prisma.XOR<Prisma.WhatsAppBotConfigurationNullableScalarRelationFilter, Prisma.WhatsAppBotConfigurationWhereInput> | null
+  botProfile?: Prisma.XOR<Prisma.BotProfileNullableScalarRelationFilter, Prisma.BotProfileWhereInput> | null
   documents?: Prisma.OnboardingDocumentListRelationFilter
   activities?: Prisma.OnboardingActivityListRelationFilter
   supportTickets?: Prisma.SupportTicketListRelationFilter
@@ -308,6 +309,7 @@ export type OrganizationOrderByWithRelationInput = {
   onboarding?: Prisma.OnboardingProfileOrderByWithRelationInput
   onboardingCredential?: Prisma.OnboardingCredentialOrderByWithRelationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationOrderByWithRelationInput
+  botProfile?: Prisma.BotProfileOrderByWithRelationInput
   documents?: Prisma.OnboardingDocumentOrderByRelationAggregateInput
   activities?: Prisma.OnboardingActivityOrderByRelationAggregateInput
   supportTickets?: Prisma.SupportTicketOrderByRelationAggregateInput
@@ -344,6 +346,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   onboarding?: Prisma.XOR<Prisma.OnboardingProfileNullableScalarRelationFilter, Prisma.OnboardingProfileWhereInput> | null
   onboardingCredential?: Prisma.XOR<Prisma.OnboardingCredentialNullableScalarRelationFilter, Prisma.OnboardingCredentialWhereInput> | null
   botConfiguration?: Prisma.XOR<Prisma.WhatsAppBotConfigurationNullableScalarRelationFilter, Prisma.WhatsAppBotConfigurationWhereInput> | null
+  botProfile?: Prisma.XOR<Prisma.BotProfileNullableScalarRelationFilter, Prisma.BotProfileWhereInput> | null
   documents?: Prisma.OnboardingDocumentListRelationFilter
   activities?: Prisma.OnboardingActivityListRelationFilter
   supportTickets?: Prisma.SupportTicketListRelationFilter
@@ -421,6 +424,7 @@ export type OrganizationCreateInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -454,6 +458,7 @@ export type OrganizationUncheckedCreateInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -487,6 +492,7 @@ export type OrganizationUpdateInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -520,6 +526,7 @@ export type OrganizationUncheckedUpdateInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -701,6 +708,20 @@ export type OrganizationUpdateOneRequiredWithoutBotConfigurationNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutBotConfigurationInput, Prisma.OrganizationUpdateWithoutBotConfigurationInput>, Prisma.OrganizationUncheckedUpdateWithoutBotConfigurationInput>
 }
 
+export type OrganizationCreateNestedOneWithoutBotProfileInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutBotProfileInput, Prisma.OrganizationUncheckedCreateWithoutBotProfileInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutBotProfileInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutBotProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutBotProfileInput, Prisma.OrganizationUncheckedCreateWithoutBotProfileInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutBotProfileInput
+  upsert?: Prisma.OrganizationUpsertWithoutBotProfileInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutBotProfileInput, Prisma.OrganizationUpdateWithoutBotProfileInput>, Prisma.OrganizationUncheckedUpdateWithoutBotProfileInput>
+}
+
 export type OrganizationCreateNestedOneWithoutMembersInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutMembersInput, Prisma.OrganizationUncheckedCreateWithoutMembersInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutMembersInput
@@ -880,6 +901,7 @@ export type OrganizationCreateWithoutPropertiesInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -912,6 +934,7 @@ export type OrganizationUncheckedCreateWithoutPropertiesInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -960,6 +983,7 @@ export type OrganizationUpdateWithoutPropertiesInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -992,6 +1016,7 @@ export type OrganizationUncheckedUpdateWithoutPropertiesInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1025,6 +1050,7 @@ export type OrganizationCreateWithoutUserSessionsInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -1057,6 +1083,7 @@ export type OrganizationUncheckedCreateWithoutUserSessionsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1105,6 +1132,7 @@ export type OrganizationUpdateWithoutUserSessionsInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -1137,6 +1165,7 @@ export type OrganizationUncheckedUpdateWithoutUserSessionsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1168,6 +1197,7 @@ export type OrganizationCreateWithoutBotConfigurationInput = {
   members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -1200,6 +1230,7 @@ export type OrganizationUncheckedCreateWithoutBotConfigurationInput = {
   members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1248,6 +1279,7 @@ export type OrganizationUpdateWithoutBotConfigurationInput = {
   members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -1280,6 +1312,155 @@ export type OrganizationUncheckedUpdateWithoutBotConfigurationInput = {
   members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutBotProfileInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  status?: string
+  plan?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutBotProfileInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  status?: string
+  plan?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutBotProfileInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutBotProfileInput, Prisma.OrganizationUncheckedCreateWithoutBotProfileInput>
+}
+
+export type OrganizationUpsertWithoutBotProfileInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutBotProfileInput, Prisma.OrganizationUncheckedUpdateWithoutBotProfileInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutBotProfileInput, Prisma.OrganizationUncheckedCreateWithoutBotProfileInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutBotProfileInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutBotProfileInput, Prisma.OrganizationUncheckedUpdateWithoutBotProfileInput>
+}
+
+export type OrganizationUpdateWithoutBotProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutBotProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1312,6 +1493,7 @@ export type OrganizationCreateWithoutMembersInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -1344,6 +1526,7 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1392,6 +1575,7 @@ export type OrganizationUpdateWithoutMembersInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -1424,6 +1608,7 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1456,6 +1641,7 @@ export type OrganizationCreateWithoutOnboardingInput = {
   members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -1488,6 +1674,7 @@ export type OrganizationUncheckedCreateWithoutOnboardingInput = {
   members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1536,6 +1723,7 @@ export type OrganizationUpdateWithoutOnboardingInput = {
   members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -1568,6 +1756,7 @@ export type OrganizationUncheckedUpdateWithoutOnboardingInput = {
   members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1600,6 +1789,7 @@ export type OrganizationCreateWithoutOnboardingCredentialInput = {
   members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -1632,6 +1822,7 @@ export type OrganizationUncheckedCreateWithoutOnboardingCredentialInput = {
   members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1680,6 +1871,7 @@ export type OrganizationUpdateWithoutOnboardingCredentialInput = {
   members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -1712,6 +1904,7 @@ export type OrganizationUncheckedUpdateWithoutOnboardingCredentialInput = {
   members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1745,6 +1938,7 @@ export type OrganizationCreateWithoutDocumentsInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
@@ -1777,6 +1971,7 @@ export type OrganizationUncheckedCreateWithoutDocumentsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
@@ -1825,6 +2020,7 @@ export type OrganizationUpdateWithoutDocumentsInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
@@ -1857,6 +2053,7 @@ export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
@@ -1889,6 +2086,7 @@ export type OrganizationCreateWithoutActivitiesInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
@@ -1921,6 +2119,7 @@ export type OrganizationUncheckedCreateWithoutActivitiesInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
@@ -1969,6 +2168,7 @@ export type OrganizationUpdateWithoutActivitiesInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
@@ -2001,6 +2201,7 @@ export type OrganizationUncheckedUpdateWithoutActivitiesInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
@@ -2033,6 +2234,7 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -2065,6 +2267,7 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2113,6 +2316,7 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -2145,6 +2349,7 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2177,6 +2382,7 @@ export type OrganizationCreateWithoutInvoicesInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -2209,6 +2415,7 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2257,6 +2464,7 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -2289,6 +2497,7 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2321,6 +2530,7 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -2353,6 +2563,7 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2401,6 +2612,7 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -2433,6 +2645,7 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2465,6 +2678,7 @@ export type OrganizationCreateWithoutIncidentsInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -2497,6 +2711,7 @@ export type OrganizationUncheckedCreateWithoutIncidentsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2545,6 +2760,7 @@ export type OrganizationUpdateWithoutIncidentsInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -2577,6 +2793,7 @@ export type OrganizationUncheckedUpdateWithoutIncidentsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2609,6 +2826,7 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -2641,6 +2859,7 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2689,6 +2908,7 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -2721,6 +2941,7 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2753,6 +2974,7 @@ export type OrganizationCreateWithoutSupportTicketsInput = {
   onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
@@ -2785,6 +3007,7 @@ export type OrganizationUncheckedCreateWithoutSupportTicketsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
@@ -2833,6 +3056,7 @@ export type OrganizationUpdateWithoutSupportTicketsInput = {
   onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
@@ -2865,6 +3089,7 @@ export type OrganizationUncheckedUpdateWithoutSupportTicketsInput = {
   onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
@@ -3009,6 +3234,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   onboarding?: boolean | Prisma.Organization$onboardingArgs<ExtArgs>
   onboardingCredential?: boolean | Prisma.Organization$onboardingCredentialArgs<ExtArgs>
   botConfiguration?: boolean | Prisma.Organization$botConfigurationArgs<ExtArgs>
+  botProfile?: boolean | Prisma.Organization$botProfileArgs<ExtArgs>
   documents?: boolean | Prisma.Organization$documentsArgs<ExtArgs>
   activities?: boolean | Prisma.Organization$activitiesArgs<ExtArgs>
   supportTickets?: boolean | Prisma.Organization$supportTicketsArgs<ExtArgs>
@@ -3085,6 +3311,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   onboarding?: boolean | Prisma.Organization$onboardingArgs<ExtArgs>
   onboardingCredential?: boolean | Prisma.Organization$onboardingCredentialArgs<ExtArgs>
   botConfiguration?: boolean | Prisma.Organization$botConfigurationArgs<ExtArgs>
+  botProfile?: boolean | Prisma.Organization$botProfileArgs<ExtArgs>
   documents?: boolean | Prisma.Organization$documentsArgs<ExtArgs>
   activities?: boolean | Prisma.Organization$activitiesArgs<ExtArgs>
   supportTickets?: boolean | Prisma.Organization$supportTicketsArgs<ExtArgs>
@@ -3107,6 +3334,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     onboarding: Prisma.$OnboardingProfilePayload<ExtArgs> | null
     onboardingCredential: Prisma.$OnboardingCredentialPayload<ExtArgs> | null
     botConfiguration: Prisma.$WhatsAppBotConfigurationPayload<ExtArgs> | null
+    botProfile: Prisma.$BotProfilePayload<ExtArgs> | null
     documents: Prisma.$OnboardingDocumentPayload<ExtArgs>[]
     activities: Prisma.$OnboardingActivityPayload<ExtArgs>[]
     supportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
@@ -3533,6 +3761,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   onboarding<T extends Prisma.Organization$onboardingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$onboardingArgs<ExtArgs>>): Prisma.Prisma__OnboardingProfileClient<runtime.Types.Result.GetResult<Prisma.$OnboardingProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   onboardingCredential<T extends Prisma.Organization$onboardingCredentialArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$onboardingCredentialArgs<ExtArgs>>): Prisma.Prisma__OnboardingCredentialClient<runtime.Types.Result.GetResult<Prisma.$OnboardingCredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   botConfiguration<T extends Prisma.Organization$botConfigurationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$botConfigurationArgs<ExtArgs>>): Prisma.Prisma__WhatsAppBotConfigurationClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppBotConfigurationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  botProfile<T extends Prisma.Organization$botProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$botProfileArgs<ExtArgs>>): Prisma.Prisma__BotProfileClient<runtime.Types.Result.GetResult<Prisma.$BotProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   documents<T extends Prisma.Organization$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.Organization$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   supportTickets<T extends Prisma.Organization$supportTicketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$supportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4082,6 +4311,25 @@ export type Organization$botConfigurationArgs<ExtArgs extends runtime.Types.Exte
    */
   include?: Prisma.WhatsAppBotConfigurationInclude<ExtArgs> | null
   where?: Prisma.WhatsAppBotConfigurationWhereInput
+}
+
+/**
+ * Organization.botProfile
+ */
+export type Organization$botProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BotProfile
+   */
+  select?: Prisma.BotProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BotProfile
+   */
+  omit?: Prisma.BotProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BotProfileInclude<ExtArgs> | null
+  where?: Prisma.BotProfileWhereInput
 }
 
 /**

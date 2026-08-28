@@ -192,6 +192,40 @@ export type BoolWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBoolFilter<$PrismaModel>
 }
 
+export type EnumBotCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotCategory | Prisma.EnumBotCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotCategoryFilter<$PrismaModel> | $Enums.BotCategory
+}
+
+export type EnumBotOperatingModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotOperatingMode | Prisma.EnumBotOperatingModeFieldRefInput<$PrismaModel>
+  in?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotOperatingModeFilter<$PrismaModel> | $Enums.BotOperatingMode
+}
+
+export type EnumBotCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotCategory | Prisma.EnumBotCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotCategoryWithAggregatesFilter<$PrismaModel> | $Enums.BotCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBotCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBotCategoryFilter<$PrismaModel>
+}
+
+export type EnumBotOperatingModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotOperatingMode | Prisma.EnumBotOperatingModeFieldRefInput<$PrismaModel>
+  in?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotOperatingModeWithAggregatesFilter<$PrismaModel> | $Enums.BotOperatingMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBotOperatingModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBotOperatingModeFilter<$PrismaModel>
+}
+
 export type BoolNullableFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
@@ -693,6 +727,40 @@ export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedBoolFilter<$PrismaModel>
   _max?: Prisma.NestedBoolFilter<$PrismaModel>
+}
+
+export type NestedEnumBotCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotCategory | Prisma.EnumBotCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotCategoryFilter<$PrismaModel> | $Enums.BotCategory
+}
+
+export type NestedEnumBotOperatingModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotOperatingMode | Prisma.EnumBotOperatingModeFieldRefInput<$PrismaModel>
+  in?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotOperatingModeFilter<$PrismaModel> | $Enums.BotOperatingMode
+}
+
+export type NestedEnumBotCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotCategory | Prisma.EnumBotCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotCategory[] | Prisma.ListEnumBotCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotCategoryWithAggregatesFilter<$PrismaModel> | $Enums.BotCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBotCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBotCategoryFilter<$PrismaModel>
+}
+
+export type NestedEnumBotOperatingModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BotOperatingMode | Prisma.EnumBotOperatingModeFieldRefInput<$PrismaModel>
+  in?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BotOperatingMode[] | Prisma.ListEnumBotOperatingModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBotOperatingModeWithAggregatesFilter<$PrismaModel> | $Enums.BotOperatingMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBotOperatingModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBotOperatingModeFilter<$PrismaModel>
 }
 
 export type NestedBoolNullableFilter<$PrismaModel = never> = {

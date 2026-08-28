@@ -53,6 +53,11 @@ export type UserSession = Prisma.UserSessionModel
  */
 export type WhatsAppBotConfiguration = Prisma.WhatsAppBotConfigurationModel
 /**
+ * Model BotProfile
+ * 
+ */
+export type BotProfile = Prisma.BotProfileModel
+/**
  * Model OrganizationMember
  * 
  */

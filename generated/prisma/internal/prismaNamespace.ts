@@ -391,6 +391,7 @@ export const ModelName = {
   Organization: 'Organization',
   UserSession: 'UserSession',
   WhatsAppBotConfiguration: 'WhatsAppBotConfiguration',
+  BotProfile: 'BotProfile',
   OrganizationMember: 'OrganizationMember',
   OnboardingProfile: 'OnboardingProfile',
   OnboardingCredential: 'OnboardingCredential',
@@ -452,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -971,6 +972,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.WhatsAppBotConfigurationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.WhatsAppBotConfigurationCountAggregateOutputType> | number
+        }
+      }
+    }
+    BotProfile: {
+      payload: Prisma.$BotProfilePayload<ExtArgs>
+      fields: Prisma.BotProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BotProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BotProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.BotProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BotProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>
+        }
+        findMany: {
+          args: Prisma.BotProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>[]
+        }
+        create: {
+          args: Prisma.BotProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>
+        }
+        createMany: {
+          args: Prisma.BotProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BotProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.BotProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>
+        }
+        update: {
+          args: Prisma.BotProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.BotProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BotProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BotProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.BotProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BotProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.BotProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBotProfile>
+        }
+        groupBy: {
+          args: Prisma.BotProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BotProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BotProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BotProfileCountAggregateOutputType> | number
         }
       }
     }
@@ -4548,6 +4623,24 @@ export const WhatsAppBotConfigurationScalarFieldEnum = {
 export type WhatsAppBotConfigurationScalarFieldEnum = (typeof WhatsAppBotConfigurationScalarFieldEnum)[keyof typeof WhatsAppBotConfigurationScalarFieldEnum]
 
 
+export const BotProfileScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  category: 'category',
+  operatingMode: 'operatingMode',
+  channels: 'channels',
+  capabilities: 'capabilities',
+  humanHandoffEnabled: 'humanHandoffEnabled',
+  actionApprovalNeeded: 'actionApprovalNeeded',
+  status: 'status',
+  configuredBy: 'configuredBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BotProfileScalarFieldEnum = (typeof BotProfileScalarFieldEnum)[keyof typeof BotProfileScalarFieldEnum]
+
+
 export const OrganizationMemberScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -5557,6 +5650,48 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'BotCategory'
+ */
+export type EnumBotCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BotCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'BotCategory[]'
+ */
+export type ListEnumBotCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BotCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BotOperatingMode'
+ */
+export type EnumBotOperatingModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BotOperatingMode'>
+    
+
+
+/**
+ * Reference to a field of type 'BotOperatingMode[]'
+ */
+export type ListEnumBotOperatingModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BotOperatingMode[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChannelKind[]'
+ */
+export type ListEnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ChannelKind'
+ */
+export type EnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind'>
+    
+
+
+/**
  * Reference to a field of type 'LeadStage'
  */
 export type EnumLeadStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeadStage'>
@@ -5595,20 +5730,6 @@ export type EnumMessageSenderFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'MessageSender[]'
  */
 export type ListEnumMessageSenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageSender[]'>
-    
-
-
-/**
- * Reference to a field of type 'ChannelKind'
- */
-export type EnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind'>
-    
-
-
-/**
- * Reference to a field of type 'ChannelKind[]'
- */
-export type ListEnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind[]'>
     
 
 
@@ -5825,6 +5946,7 @@ export type GlobalOmitConfig = {
   organization?: Prisma.OrganizationOmit
   userSession?: Prisma.UserSessionOmit
   whatsAppBotConfiguration?: Prisma.WhatsAppBotConfigurationOmit
+  botProfile?: Prisma.BotProfileOmit
   organizationMember?: Prisma.OrganizationMemberOmit
   onboardingProfile?: Prisma.OnboardingProfileOmit
   onboardingCredential?: Prisma.OnboardingCredentialOmit

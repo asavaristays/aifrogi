@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
+import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
 
 type DocumentRecord = {
   id: string;
@@ -64,6 +65,7 @@ export type CustomerOnboardingOrganization = {
   createdAt: string | Date;
   updatedAt: string | Date;
   onboarding: OnboardingRecord | null;
+  botProfile: { category: string; operatingMode: string; channels: string[]; capabilities: string[]; humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; status?: string } | null;
   documents: DocumentRecord[];
   activities: ActivityRecord[];
   properties: Array<{ id: string; name: string; slug: string }>;
@@ -424,6 +426,7 @@ export function CustomerOnboarding({
             onOpenWorkspace={() => router.push("/dashboard")}
           />
           <OnboardingReadiness organization={organization} />
+          {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} /> : null}
           <TechProviderGuide />
 
           <section className="overflow-hidden rounded-lg border border-black/5 bg-white shadow-sm">

@@ -4,12 +4,14 @@ import {
   getOrganizationById,
   reviewOrganizationKyc,
   updateOrganizationFlowStatus,
+  saveOrganizationBotProfile,
   updateOrganizationStatus
 } from "@/lib/repositories/onboarding-repository";
 import { saveOrganizationWhatsAppBotConfiguration } from "@/lib/repositories/bot-configuration-repository";
 import { normalizeWhatsAppBotConfiguration, type WhatsAppBotConfigurationInput } from "@/lib/whatsapp-bot-config";
 import { updateOrganizationPlan } from "@/lib/billing-super-admin";
 import { setAppointmentJourneyEnabled } from "@/lib/appointment-journey-service";
+import { parseBotProfile } from "@/lib/bot-profile";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -33,6 +35,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     firstMessageStatus?: string;
     configuration?: WhatsAppBotConfigurationInput;
     propertyId?: string;
+    profile?: unknown;
   } | null;
   const action = payload?.action?.trim().toUpperCase();
   if (action === "APPROVE_KYC" || action === "REJECT_KYC") {
@@ -92,6 +95,13 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       configuration,
       updatedBy: user.username
     });
+    return NextResponse.json({ organization: updated });
+  }
+
+  if (action === "SAVE_BOT_PROFILE") {
+    const parsed = parseBotProfile(payload?.profile);
+    if (!parsed.value) return NextResponse.json({ error: parsed.error }, { status: 400 });
+    const updated = await saveOrganizationBotProfile({ organizationId: id, actorEmail: user.username, profile: parsed.value });
     return NextResponse.json({ organization: updated });
   }
 

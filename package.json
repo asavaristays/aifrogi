@@ -19,6 +19,7 @@
     "verify:appointment": "tsx scripts/verify-appointment-journey.ts && tsx scripts/verify-appointment-templates.ts",
     "verify:appointment:integration": "tsx scripts/verify-appointment-journey-integration.ts",
     "seed:pingbook-demo": "tsx scripts/seed-pingbook-demo-clinic.ts",
+    "seed:webtechnosys-demo": "tsx scripts/seed-webtechnosys-ai-demo.ts",
     "verify:pingbook-demo": "tsx scripts/verify-pingbook-demo-clinic.ts",
     "verify:billing": "tsx scripts/verify-billing-super-admin.ts",
     "verify:meta-webhook": "tsx scripts/verify-meta-webhook-enforcement.ts",
