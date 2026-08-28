@@ -8,8 +8,8 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "WhatsApp Integrations for Shopify, Razorpay & CRM | AiFrogi",
-  description: "Connect WhatsApp with Shopify, WooCommerce, Razorpay, Stripe, HubSpot, Zoho, Google Sheets, calendars, and custom business systems.",
+  title: "AI Business Bot Integrations | AiFrogi",
+  description: "Connect AiFrogi with Shopify, WooCommerce, Razorpay, Stripe, HubSpot, Zoho, Google Sheets, calendars, WhatsApp, and your business systems.",
   path: "/integration"
 });
 

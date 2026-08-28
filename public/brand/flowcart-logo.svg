@@ -1,0 +1,17 @@
+<svg width="1200" height="1200" viewBox="0 0 1200 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="1200" rx="192" fill="#21362F"/>
+  <circle cx="310" cy="312" r="140" fill="#E8F6F0"/>
+  <path d="M255 316c0-46 37-83 83-83h55c46 0 83 37 83 83v31c0 46-37 83-83 83h-33l-54 50v-50h-51c-46 0-83-37-83-83v-31Z" fill="#1B936F"/>
+  <path d="M291 293c26 75 88 93 132 48" stroke="#E8F6F0" stroke-width="28" stroke-linecap="round"/>
+  <path d="M276 270c2 0 35-16 35-16l28 53-28 14c-16-18-28-35-35-51Z" fill="#E8F6F0"/>
+  <path d="M713 360H476l-50-115H316" stroke="#F4B85A" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M512 454h275l-54 214H560l-48-214Z" fill="#FDF8EE" stroke="#F4B85A" stroke-width="40" stroke-linejoin="round"/>
+  <path d="M565 520h184" stroke="#D77236" stroke-width="30" stroke-linecap="round"/>
+  <path d="M590 590h132" stroke="#1B936F" stroke-width="30" stroke-linecap="round"/>
+  <circle cx="586" cy="760" r="42" fill="#F4B85A"/>
+  <circle cx="732" cy="760" r="42" fill="#F4B85A"/>
+  <path d="M280 900c130-78 239-110 327-95 94 16 156 80 266 63" stroke="#E8F6F0" stroke-width="38" stroke-linecap="round"/>
+  <path d="M851 794l78 68-94 48" stroke="#E8F6F0" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="1012" fill="#FDF8EE" font-family="Inter, Arial, sans-serif" font-size="132" font-weight="800" text-anchor="middle">FlowCart</text>
+  <text x="600" y="1082" fill="#F4B85A" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="700" letter-spacing="8" text-anchor="middle">WHATSAPP COMMERCE</text>
+</svg>

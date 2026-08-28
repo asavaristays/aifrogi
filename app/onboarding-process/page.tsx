@@ -5,8 +5,8 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "WhatsApp Business API Onboarding | AiFrogi",
-  description: "See WhatsApp onboarding prerequisites, Meta business verification, number approval, expected timing, go-live checks, and guided support.",
+  title: "AI Business Bot Onboarding | AiFrogi",
+  description: "Learn how to set up AiFrogi, connect your business systems and supported channels such as WhatsApp, prepare knowledge, and launch your first intelligent workflow.",
   path: "/onboarding-process"
 });
 

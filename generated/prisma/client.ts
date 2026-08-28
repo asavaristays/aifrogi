@@ -191,3 +191,93 @@ export type LeadAssetShare = Prisma.LeadAssetShareModel
  * 
  */
 export type WhatsAppIntegration = Prisma.WhatsAppIntegrationModel
+/**
+ * Model AppointmentTenant
+ * 
+ */
+export type AppointmentTenant = Prisma.AppointmentTenantModel
+/**
+ * Model AppointmentService
+ * 
+ */
+export type AppointmentService = Prisma.AppointmentServiceModel
+/**
+ * Model AppointmentBooking
+ * 
+ */
+export type AppointmentBooking = Prisma.AppointmentBookingModel
+/**
+ * Model AppointmentSession
+ * 
+ */
+export type AppointmentSession = Prisma.AppointmentSessionModel
+/**
+ * Model AppointmentMessageLog
+ * 
+ */
+export type AppointmentMessageLog = Prisma.AppointmentMessageLogModel
+/**
+ * Model AppointmentPayment
+ * 
+ */
+export type AppointmentPayment = Prisma.AppointmentPaymentModel
+/**
+ * Model AppointmentJob
+ * 
+ */
+export type AppointmentJob = Prisma.AppointmentJobModel
+/**
+ * Model AppointmentSheetSyncState
+ * 
+ */
+export type AppointmentSheetSyncState = Prisma.AppointmentSheetSyncStateModel
+/**
+ * Model CommerceTenant
+ * 
+ */
+export type CommerceTenant = Prisma.CommerceTenantModel
+/**
+ * Model CommerceProduct
+ * 
+ */
+export type CommerceProduct = Prisma.CommerceProductModel
+/**
+ * Model CommerceProductVariant
+ * 
+ */
+export type CommerceProductVariant = Prisma.CommerceProductVariantModel
+/**
+ * Model CommerceAddon
+ * 
+ */
+export type CommerceAddon = Prisma.CommerceAddonModel
+/**
+ * Model CommerceCustomer
+ * 
+ */
+export type CommerceCustomer = Prisma.CommerceCustomerModel
+/**
+ * Model CommerceOrder
+ * 
+ */
+export type CommerceOrder = Prisma.CommerceOrderModel
+/**
+ * Model CommerceOrderItem
+ * 
+ */
+export type CommerceOrderItem = Prisma.CommerceOrderItemModel
+/**
+ * Model CommercePayment
+ * 
+ */
+export type CommercePayment = Prisma.CommercePaymentModel
+/**
+ * Model CommerceFlowSession
+ * 
+ */
+export type CommerceFlowSession = Prisma.CommerceFlowSessionModel
+/**
+ * Model CommerceConversation
+ * 
+ */
+export type CommerceConversation = Prisma.CommerceConversationModel

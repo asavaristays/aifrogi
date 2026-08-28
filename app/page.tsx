@@ -6,19 +6,19 @@ import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-st
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { WhatsAppProductsShell } from "@/components/marketing/whatsapp-products-shell";
 import { marketingMetadata } from "@/lib/seo";
 
-const loginUrl = "https://app.aifrogi.com/login";
 const registerUrl = "https://app.aifrogi.com/register?source=homepage";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "AiFrogi | WhatsApp Automation for Business",
-  description: "Run WhatsApp broadcasts, AI chatbots, reminders, payments, retargeting, and human handover from one secure business workspace with verified security controls.",
+  title: "Intelligent AI Bot for Business | AiFrogi",
+  description: "Give your business an intelligent AI bot that answers customers, drives follow-ups, automates workflows, and keeps your team in control. WhatsApp is one supported channel.",
   path: "/"
 });
 
 metadata.other = {
-  "aifrogi-homepage-release": "2026-07-04-claim-hygiene"
+  "aifrogi-homepage-release": "2026-07-07-flowcart"
 };
 
 export const dynamic = "force-dynamic";
@@ -26,8 +26,8 @@ export const revalidate = 0;
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[#2c243b]" data-aifrogi-homepage-release="2026-07-04-claim-hygiene">
-      <span hidden>AiFrogi homepage canary 2026-07-04 claim hygiene</span>
+    <main className="overflow-hidden bg-white text-[#2c243b]" data-aifrogi-homepage-release="2026-07-07-flowcart">
+      <span hidden>AiFrogi homepage canary 2026-07-07 flowcart</span>
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-[#2c243b] px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
@@ -35,8 +35,8 @@ export default function HomePage() {
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[#d92bcb]/20 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl text-center">
           <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#ff8af1]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Meta access verified for webtechnosys <span className="text-[#ff8af1] transition-transform group-hover:translate-x-0.5">→</span></a>
-          <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Turn WhatsApp chats into bookings, payments, and repeat customers.</h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">Campaigns, AI answers, reminders, payment links, forms, reviews, and human handover in one controlled workspace.</p>
+          <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Give your business an intelligent AI bot that turns conversations into action.</h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">AI answers, follow-ups, workflows, payments, forms, reviews, and human handover in one controlled workspace. WhatsApp is one supported channel.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">Start 30-day trial <Icon name="arrow-right" /></a></div>
 
           <IntegrationLogoStrip />
@@ -45,37 +45,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#2c243b] px-5 py-20 text-white sm:px-8">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <div className="lg:sticky lg:top-24"><p className="text-xs font-semibold text-[#ff8af1]">Knowledge with boundaries</p><h2 className="mt-3 text-3xl font-semibold sm:text-4xl">AI answers from approved business truth.</h2><p className="mt-4 text-base leading-7 text-white/65">Connect a public website, review its topic coverage, define workspace instructions, protect sensitive topics, and preview answers before automation goes live.</p><a href={loginUrl} className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-md bg-[#d92bcb] px-4 text-sm font-semibold text-white">Open Knowledge workspace <Icon name="arrow-right" /></a></div>
-          <div className="grid gap-3 sm:grid-cols-2"><DarkFeature title="Approved sources" copy="Public pages and approved documents become the only business reference." icon="file-text" /><DarkFeature title="Answer constitution" copy="Global safety and customer-specific behavior stay visible and controlled." icon="sparkles" /><DarkFeature title="Knowledge gaps" copy="Unanswered questions reveal exactly what information the business should add." icon="help-circle" /><DarkFeature title="Human handover" copy="Complaints, billing, legal, sensitive, and low-confidence requests reach a person." icon="message-circle" /></div>
-        </div>
-      </section>
+      <WhatsAppProductsShell />
 
       <OnboardingJourney />
-
-      <section className="border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8 sm:py-24">
-        <a href="/case-studies/asavari-stays" className="group mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="product-eyebrow">Customer story · Nupur Purohit</p>
-            <h2 className="mt-4 max-w-xl text-3xl font-semibold leading-tight tracking-[-.035em] sm:text-5xl">A visual story starts desire. WhatsApp carries it to booking.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays connects visual discovery, WhatsApp retargeting, and human follow-up without losing guest context.</p>
-            <span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#a21c98]">View the journey <Icon name="arrow-right" className="transition-transform group-hover:translate-x-1" /></span>
-          </div>
-          <div className="relative min-h-[360px] overflow-hidden rounded-xl bg-[#2c243b] p-7 text-white shadow-[0_28px_80px_rgba(44,36,59,.15)]">
-            <div className="absolute -right-14 -top-14 h-64 w-64 rounded-full bg-[#d92bcb]/25 blur-3xl" aria-hidden="true" />
-            <div className="relative flex items-center justify-between text-[10px] font-bold uppercase tracking-[.14em] text-white/45"><span>Asavari Stays</span><span>HotelRadar</span></div>
-            <div className="relative mt-16 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-3">
-              <CaseStudyStep icon="image" label="Visual story" />
-              <Icon name="arrow-right" className="mt-4 text-[#ff8af1]" />
-              <CaseStudyStep icon="refresh-cw" label="Retarget" />
-              <Icon name="arrow-right" className="mt-4 text-[#ff8af1]" />
-              <CaseStudyStep icon="message-circle" label="Booking chat" />
-            </div>
-            <p className="relative mt-16 max-w-md text-2xl font-semibold leading-tight">The guest returns to the experience they already wanted.</p>
-          </div>
-        </a>
-      </section>
 
       <section className="border-b border-black/8 bg-white px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-7xl">
@@ -139,7 +111,5 @@ export default function HomePage() {
   );
 }
 
-function DarkFeature({ title, copy, icon }: { title: string; copy: string; icon: "file-text" | "sparkles" | "help-circle" | "message-circle" }) { return <article className="rounded-md border border-white/10 bg-white/5 p-5"><span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/8 text-[#ff8af1]"><Icon name={icon} /></span><h3 className="mt-5 text-base font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-white/58">{copy}</p></article>; }
-function CaseStudyStep({ icon, label }: { icon: "image" | "refresh-cw" | "message-circle"; label: string }) { return <div><span className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-[#ff8af1]"><Icon name={icon} /></span><p className="mt-3 text-xs font-bold">{label}</p></div>; }
 function ProofLink({ title, copy, href, icon }: { title: string; copy: string; href: string; icon: "settings" | "file-text" | "bar-chart-3" | "grid" }) { return <a href={href} className="group border-t border-black/10 pt-5"><span className="grid h-10 w-10 place-items-center rounded-lg bg-[#fceafb] text-[#b923ae]"><Icon name={icon} /></span><h3 className="mt-5 flex items-center justify-between gap-3 text-lg font-bold">{title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></a>; }
 function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles" | "phone" | "link"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }

@@ -6,8 +6,8 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "About AiFrogi and webtechnosys",
-  description: "Meet the company behind AiFrogi, its Meta access verification, operating principles, location, and approach to customer onboarding and support.",
+  title: "About AiFrogi | Intelligent AI Business Bot",
+  description: "Meet the team behind AiFrogi, an intelligent AI business bot built to help businesses manage customer conversations, automate work, and keep people in control.",
   path: "/about"
 });
 

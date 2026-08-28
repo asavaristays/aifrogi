@@ -15,6 +15,10 @@
     "verify:registration": "tsx scripts/verify-trial-registration.ts",
     "verify:campaigns": "tsx scripts/verify-campaign-compliance.ts",
     "verify:automation": "tsx scripts/verify-automation-engine.ts",
+    "verify:appointment": "tsx scripts/verify-appointment-journey.ts && tsx scripts/verify-appointment-templates.ts",
+    "verify:appointment:integration": "tsx scripts/verify-appointment-journey-integration.ts",
+    "seed:pingbook-demo": "tsx scripts/seed-pingbook-demo-clinic.ts",
+    "verify:pingbook-demo": "tsx scripts/verify-pingbook-demo-clinic.ts",
     "verify:billing": "tsx scripts/verify-billing-super-admin.ts",
     "verify:meta-webhook": "tsx scripts/verify-meta-webhook-enforcement.ts",
     "verify:security-boundaries": "tsx scripts/verify-security-boundaries.ts",
@@ -22,12 +26,13 @@
     "verify:client-secrets": "tsx scripts/verify-client-bundle-secrets.ts",
     "verify:flow": "tsx scripts/verify-product-flow.ts",
     "verify:launch": "tsx scripts/verify-commercial-launch.ts",
-    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:billing && npm run verify:flow && npm run verify:launch"
+    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch"
   },
   "dependencies": {
     "@prisma/adapter-pg": "latest",
     "@prisma/client": "latest",
     "imapflow": "^1.3.1",
+    "lucide-react": "^1.23.0",
     "mailparser": "^3.9.8",
     "mammoth": "^1.11.0",
     "next": "^16.2.10",

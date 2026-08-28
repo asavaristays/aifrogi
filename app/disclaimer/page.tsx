@@ -3,8 +3,8 @@ import { LegalPage, LegalSection } from "@/components/legal/legal-page";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "WhatsApp Platform Disclaimer | AiFrogi",
-  description: "Understand AiFrogi, webtechnosys, Meta, customer, AI, approval, delivery, policy, and usage-charge responsibilities.",
+  title: "AI Business Bot Platform Disclaimer | AiFrogi",
+  description: "Understand AiFrogi, webtechnosys, AI assistance, customer responsibilities, supported channels including WhatsApp, approvals, delivery, policy, and usage-charge boundaries.",
   path: "/disclaimer"
 });
 

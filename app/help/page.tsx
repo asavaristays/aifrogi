@@ -6,8 +6,8 @@ import { helpArticles } from "@/lib/help-center";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "WhatsApp Business Help Center | AiFrogi",
-  description: "Clear guides for WhatsApp onboarding, messaging, campaigns, AI knowledge, account access, security, and support.",
+  title: "AI Business Bot Help Center | AiFrogi",
+  description: "Practical guides for setting up your AI business bot, automating customer workflows, managing knowledge, supported channels including WhatsApp, security, and support.",
   path: "/help"
 });
 

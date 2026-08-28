@@ -5,8 +5,8 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "AiFrogi Service Status and Support",
-  description: "Check current AiFrogi service reachability and understand support channels, priority handling, and third-party platform dependencies.",
+  title: "AI Business Bot Service Status | AiFrogi",
+  description: "Check AiFrogi service reachability, support channels, priority handling, and third-party integration dependencies for your AI business automation.",
   path: "/status"
 });
 

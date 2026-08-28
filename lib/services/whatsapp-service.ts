@@ -27,6 +27,7 @@ import {
   upsertWhatsAppIntegrationForProperty
 } from "@/lib/repositories/whatsapp-repository";
 import type { WhatsAppIntegration, WhatsAppIntegrationInput } from "@/types";
+import { appointmentActionMessage, processAppointmentInboundEvent } from "@/lib/appointment-journey-service";
 
 const emptyIntegration: WhatsAppIntegration = {
   id: "",
@@ -1539,6 +1540,8 @@ export async function processIncomingMetaWebhook(input: {
   let autoReplyFailures = 0;
   let duplicates = 0;
   let ignored = 0;
+  let appointmentEvents = 0;
+  let appointmentReplyFailures = 0;
 
   for (const entry of entries) {
     for (const change of entry.changes ?? []) {
@@ -1620,6 +1623,64 @@ export async function processIncomingMetaWebhook(input: {
 
         if (!captured.error && captured.lead) {
           imported += 1;
+
+          const interactiveReply = message.interactive?.button_reply || message.interactive?.list_reply;
+          const eventType = message.interactive?.list_reply
+            ? "list_reply"
+            : message.interactive?.button_reply || message.button
+              ? "button_reply"
+              : "text";
+          const appointment = await processAppointmentInboundEvent({
+            tenant_id: propertySlug,
+            customer_phone: from,
+            event_type: eventType,
+            payload: {
+              text: body,
+              ...(interactiveReply?.id ? { reply_id: interactiveReply.id } : {}),
+              ...(interactiveReply?.title ? { reply_title: interactiveReply.title } : {})
+            },
+            message_id: message.id?.trim() || `meta:${phoneNumberId}:${from}:${timestampValue}`,
+            timestamp: Math.max(1, Math.floor(timestampValue / 1000))
+          });
+
+          if (!appointment.error && appointment.result && "actions" in appointment.result) {
+            const appointmentActions = appointment.result.actions;
+            if (!Array.isArray(appointmentActions)) continue;
+            appointmentEvents += 1;
+            for (const action of appointmentActions) {
+              const replyText = appointmentActionMessage(action);
+              if (!replyText) continue;
+              const reply = await sendWhatsAppTestMessage({
+                to: `+${from.replace(/^\+/, "")}`,
+                message: replyText,
+                propertySlug,
+                leadId: captured.lead.id,
+                operatorId: "appointment-journey",
+                sender: "AI"
+              });
+              if (reply.error) appointmentReplyFailures += 1;
+              else autoRepliesSent += 1;
+            }
+            continue;
+          }
+
+          const appointmentRuntimeFailure = appointment.status === 502
+            || appointment.error?.startsWith("That appointment slot was just booked");
+          if (appointment.error && appointmentRuntimeFailure) {
+            const reply = await sendWhatsAppTestMessage({
+              to: `+${from.replace(/^\+/, "")}`,
+              message: appointment.status === 502
+                ? "Appointment booking is temporarily unavailable while we reconnect the calendar. Please try again shortly."
+                : appointment.error,
+              propertySlug,
+              leadId: captured.lead.id,
+              operatorId: "appointment-journey",
+              sender: "AI"
+            });
+            if (reply.error) appointmentReplyFailures += 1;
+            else autoRepliesSent += 1;
+            continue;
+          }
 
           const botConfiguration = await getWhatsAppBotConfigurationForProperty(propertySlug);
           const inquiry = classifyWhatsAppAgencyInquiry(body, botConfiguration);
@@ -1747,7 +1808,9 @@ export async function processIncomingMetaWebhook(input: {
       autoReplyFailures,
       duplicates,
       ignored,
-      message: `Imported ${imported} Meta WhatsApp message${imported === 1 ? "" : "s"}, sent ${autoRepliesSent} automatic repl${autoRepliesSent === 1 ? "y" : "ies"}, and updated ${statusesUpdated} status${statusesUpdated === 1 ? "" : "es"}`
+      appointmentEvents,
+      appointmentReplyFailures,
+      message: `Imported ${imported} Meta WhatsApp message${imported === 1 ? "" : "s"}, routed ${appointmentEvents} appointment event${appointmentEvents === 1 ? "" : "s"}, sent ${autoRepliesSent} automatic repl${autoRepliesSent === 1 ? "y" : "ies"}, and updated ${statusesUpdated} status${statusesUpdated === 1 ? "" : "es"}`
     },
     status: 200
   };

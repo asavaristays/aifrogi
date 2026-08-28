@@ -33,6 +33,12 @@ function allowedLoginIdentities(primaryUsername: string) {
   ].filter(Boolean));
 }
 
+export async function isAllowedCredentialIdentity(username: string) {
+  const settings = await readCredentialSettings();
+  const normalizedUsername = username.trim().toLowerCase();
+  return Boolean(normalizedUsername && allowedLoginIdentities(settings.username).has(normalizedUsername));
+}
+
 function defaultCredentialSettings(): CredentialSettings {
   return {
     username: process.env.LEADOS_LOGIN_USERNAME ?? "",

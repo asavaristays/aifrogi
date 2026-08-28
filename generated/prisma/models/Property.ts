@@ -221,6 +221,8 @@ export type PropertyWhereInput = {
   automationJobs?: Prisma.AutomationJobListRelationFilter
   assets?: Prisma.AssetListRelationFilter
   whatsappIntegration?: Prisma.XOR<Prisma.WhatsAppIntegrationNullableScalarRelationFilter, Prisma.WhatsAppIntegrationWhereInput> | null
+  appointmentTenants?: Prisma.AppointmentTenantListRelationFilter
+  commerceTenants?: Prisma.CommerceTenantListRelationFilter
   knowledgeDocuments?: Prisma.KnowledgeDocumentListRelationFilter
   knowledgeEntries?: Prisma.KnowledgeEntryListRelationFilter
   knowledgeGaps?: Prisma.KnowledgeGapListRelationFilter
@@ -243,6 +245,8 @@ export type PropertyOrderByWithRelationInput = {
   automationJobs?: Prisma.AutomationJobOrderByRelationAggregateInput
   assets?: Prisma.AssetOrderByRelationAggregateInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationOrderByWithRelationInput
+  appointmentTenants?: Prisma.AppointmentTenantOrderByRelationAggregateInput
+  commerceTenants?: Prisma.CommerceTenantOrderByRelationAggregateInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentOrderByRelationAggregateInput
   knowledgeEntries?: Prisma.KnowledgeEntryOrderByRelationAggregateInput
   knowledgeGaps?: Prisma.KnowledgeGapOrderByRelationAggregateInput
@@ -268,6 +272,8 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   automationJobs?: Prisma.AutomationJobListRelationFilter
   assets?: Prisma.AssetListRelationFilter
   whatsappIntegration?: Prisma.XOR<Prisma.WhatsAppIntegrationNullableScalarRelationFilter, Prisma.WhatsAppIntegrationWhereInput> | null
+  appointmentTenants?: Prisma.AppointmentTenantListRelationFilter
+  commerceTenants?: Prisma.CommerceTenantListRelationFilter
   knowledgeDocuments?: Prisma.KnowledgeDocumentListRelationFilter
   knowledgeEntries?: Prisma.KnowledgeEntryListRelationFilter
   knowledgeGaps?: Prisma.KnowledgeGapListRelationFilter
@@ -319,6 +325,8 @@ export type PropertyCreateInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -340,6 +348,8 @@ export type PropertyUncheckedCreateInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -361,6 +371,8 @@ export type PropertyUpdateInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -382,6 +394,8 @@ export type PropertyUncheckedUpdateInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -653,6 +667,34 @@ export type PropertyUpdateOneRequiredWithoutWhatsappIntegrationNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutWhatsappIntegrationInput, Prisma.PropertyUpdateWithoutWhatsappIntegrationInput>, Prisma.PropertyUncheckedUpdateWithoutWhatsappIntegrationInput>
 }
 
+export type PropertyCreateNestedOneWithoutAppointmentTenantsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutAppointmentTenantsInput, Prisma.PropertyUncheckedCreateWithoutAppointmentTenantsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutAppointmentTenantsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutAppointmentTenantsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutAppointmentTenantsInput, Prisma.PropertyUncheckedCreateWithoutAppointmentTenantsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutAppointmentTenantsInput
+  upsert?: Prisma.PropertyUpsertWithoutAppointmentTenantsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutAppointmentTenantsInput, Prisma.PropertyUpdateWithoutAppointmentTenantsInput>, Prisma.PropertyUncheckedUpdateWithoutAppointmentTenantsInput>
+}
+
+export type PropertyCreateNestedOneWithoutCommerceTenantsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutCommerceTenantsInput, Prisma.PropertyUncheckedCreateWithoutCommerceTenantsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutCommerceTenantsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutCommerceTenantsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutCommerceTenantsInput, Prisma.PropertyUncheckedCreateWithoutCommerceTenantsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutCommerceTenantsInput
+  upsert?: Prisma.PropertyUpsertWithoutCommerceTenantsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutCommerceTenantsInput, Prisma.PropertyUpdateWithoutCommerceTenantsInput>, Prisma.PropertyUncheckedUpdateWithoutCommerceTenantsInput>
+}
+
 export type PropertyCreateWithoutKnowledgeDocumentsInput = {
   id?: string
   name: string
@@ -669,6 +711,8 @@ export type PropertyCreateWithoutKnowledgeDocumentsInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
 }
@@ -689,6 +733,8 @@ export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
 }
@@ -725,6 +771,8 @@ export type PropertyUpdateWithoutKnowledgeDocumentsInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
 }
@@ -745,6 +793,8 @@ export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
 }
@@ -765,6 +815,8 @@ export type PropertyCreateWithoutKnowledgeEntriesInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
 }
@@ -785,6 +837,8 @@ export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
 }
@@ -821,6 +875,8 @@ export type PropertyUpdateWithoutKnowledgeEntriesInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
 }
@@ -841,6 +897,8 @@ export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
 }
@@ -861,6 +919,8 @@ export type PropertyCreateWithoutKnowledgeGapsInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
 }
@@ -881,6 +941,8 @@ export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
 }
@@ -917,6 +979,8 @@ export type PropertyUpdateWithoutKnowledgeGapsInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
 }
@@ -937,6 +1001,8 @@ export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
 }
@@ -956,6 +1022,8 @@ export type PropertyCreateWithoutOrganizationInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -976,6 +1044,8 @@ export type PropertyUncheckedCreateWithoutOrganizationInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1037,6 +1107,8 @@ export type PropertyCreateWithoutLeadsInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -1057,6 +1129,8 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1093,6 +1167,8 @@ export type PropertyUpdateWithoutLeadsInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1113,6 +1189,8 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1133,6 +1211,8 @@ export type PropertyCreateWithoutMetricsInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -1153,6 +1233,8 @@ export type PropertyUncheckedCreateWithoutMetricsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1189,6 +1271,8 @@ export type PropertyUpdateWithoutMetricsInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1209,6 +1293,8 @@ export type PropertyUncheckedUpdateWithoutMetricsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1229,6 +1315,8 @@ export type PropertyCreateWithoutCampaignsInput = {
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -1249,6 +1337,8 @@ export type PropertyUncheckedCreateWithoutCampaignsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1285,6 +1375,8 @@ export type PropertyUpdateWithoutCampaignsInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1305,6 +1397,8 @@ export type PropertyUncheckedUpdateWithoutCampaignsInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1325,6 +1419,8 @@ export type PropertyCreateWithoutAutomationJobsInput = {
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -1345,6 +1441,8 @@ export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1381,6 +1479,8 @@ export type PropertyUpdateWithoutAutomationJobsInput = {
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1401,6 +1501,8 @@ export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1421,6 +1523,8 @@ export type PropertyCreateWithoutAssetsInput = {
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -1441,6 +1545,8 @@ export type PropertyUncheckedCreateWithoutAssetsInput = {
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1477,6 +1583,8 @@ export type PropertyUpdateWithoutAssetsInput = {
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1497,6 +1605,8 @@ export type PropertyUncheckedUpdateWithoutAssetsInput = {
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1517,6 +1627,8 @@ export type PropertyCreateWithoutWhatsappIntegrationInput = {
   campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
   automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
@@ -1537,6 +1649,8 @@ export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
   automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
   assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
@@ -1573,6 +1687,8 @@ export type PropertyUpdateWithoutWhatsappIntegrationInput = {
   campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1593,6 +1709,216 @@ export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutAppointmentTenantsInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutAppointmentTenantsInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutAppointmentTenantsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutAppointmentTenantsInput, Prisma.PropertyUncheckedCreateWithoutAppointmentTenantsInput>
+}
+
+export type PropertyUpsertWithoutAppointmentTenantsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutAppointmentTenantsInput, Prisma.PropertyUncheckedUpdateWithoutAppointmentTenantsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutAppointmentTenantsInput, Prisma.PropertyUncheckedCreateWithoutAppointmentTenantsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutAppointmentTenantsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutAppointmentTenantsInput, Prisma.PropertyUncheckedUpdateWithoutAppointmentTenantsInput>
+}
+
+export type PropertyUpdateWithoutAppointmentTenantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutAppointmentTenantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutCommerceTenantsInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutCommerceTenantsInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutCommerceTenantsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutCommerceTenantsInput, Prisma.PropertyUncheckedCreateWithoutCommerceTenantsInput>
+}
+
+export type PropertyUpsertWithoutCommerceTenantsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutCommerceTenantsInput, Prisma.PropertyUncheckedUpdateWithoutCommerceTenantsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutCommerceTenantsInput, Prisma.PropertyUncheckedCreateWithoutCommerceTenantsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutCommerceTenantsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutCommerceTenantsInput, Prisma.PropertyUncheckedUpdateWithoutCommerceTenantsInput>
+}
+
+export type PropertyUpdateWithoutCommerceTenantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutCommerceTenantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1624,6 +1950,8 @@ export type PropertyUpdateWithoutOrganizationInput = {
   automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
@@ -1644,6 +1972,8 @@ export type PropertyUncheckedUpdateWithoutOrganizationInput = {
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
   assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
   whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1671,6 +2001,8 @@ export type PropertyCountOutputType = {
   campaigns: number
   automationJobs: number
   assets: number
+  appointmentTenants: number
+  commerceTenants: number
   knowledgeDocuments: number
   knowledgeEntries: number
   knowledgeGaps: number
@@ -1682,6 +2014,8 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   campaigns?: boolean | PropertyCountOutputTypeCountCampaignsArgs
   automationJobs?: boolean | PropertyCountOutputTypeCountAutomationJobsArgs
   assets?: boolean | PropertyCountOutputTypeCountAssetsArgs
+  appointmentTenants?: boolean | PropertyCountOutputTypeCountAppointmentTenantsArgs
+  commerceTenants?: boolean | PropertyCountOutputTypeCountCommerceTenantsArgs
   knowledgeDocuments?: boolean | PropertyCountOutputTypeCountKnowledgeDocumentsArgs
   knowledgeEntries?: boolean | PropertyCountOutputTypeCountKnowledgeEntriesArgs
   knowledgeGaps?: boolean | PropertyCountOutputTypeCountKnowledgeGapsArgs
@@ -1735,6 +2069,20 @@ export type PropertyCountOutputTypeCountAssetsArgs<ExtArgs extends runtime.Types
 /**
  * PropertyCountOutputType without action
  */
+export type PropertyCountOutputTypeCountAppointmentTenantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AppointmentTenantWhereInput
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountCommerceTenantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommerceTenantWhereInput
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
 export type PropertyCountOutputTypeCountKnowledgeDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.KnowledgeDocumentWhereInput
 }
@@ -1771,6 +2119,8 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   automationJobs?: boolean | Prisma.Property$automationJobsArgs<ExtArgs>
   assets?: boolean | Prisma.Property$assetsArgs<ExtArgs>
   whatsappIntegration?: boolean | Prisma.Property$whatsappIntegrationArgs<ExtArgs>
+  appointmentTenants?: boolean | Prisma.Property$appointmentTenantsArgs<ExtArgs>
+  commerceTenants?: boolean | Prisma.Property$commerceTenantsArgs<ExtArgs>
   knowledgeDocuments?: boolean | Prisma.Property$knowledgeDocumentsArgs<ExtArgs>
   knowledgeEntries?: boolean | Prisma.Property$knowledgeEntriesArgs<ExtArgs>
   knowledgeGaps?: boolean | Prisma.Property$knowledgeGapsArgs<ExtArgs>
@@ -1824,6 +2174,8 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   automationJobs?: boolean | Prisma.Property$automationJobsArgs<ExtArgs>
   assets?: boolean | Prisma.Property$assetsArgs<ExtArgs>
   whatsappIntegration?: boolean | Prisma.Property$whatsappIntegrationArgs<ExtArgs>
+  appointmentTenants?: boolean | Prisma.Property$appointmentTenantsArgs<ExtArgs>
+  commerceTenants?: boolean | Prisma.Property$commerceTenantsArgs<ExtArgs>
   knowledgeDocuments?: boolean | Prisma.Property$knowledgeDocumentsArgs<ExtArgs>
   knowledgeEntries?: boolean | Prisma.Property$knowledgeEntriesArgs<ExtArgs>
   knowledgeGaps?: boolean | Prisma.Property$knowledgeGapsArgs<ExtArgs>
@@ -1846,6 +2198,8 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     automationJobs: Prisma.$AutomationJobPayload<ExtArgs>[]
     assets: Prisma.$AssetPayload<ExtArgs>[]
     whatsappIntegration: Prisma.$WhatsAppIntegrationPayload<ExtArgs> | null
+    appointmentTenants: Prisma.$AppointmentTenantPayload<ExtArgs>[]
+    commerceTenants: Prisma.$CommerceTenantPayload<ExtArgs>[]
     knowledgeDocuments: Prisma.$KnowledgeDocumentPayload<ExtArgs>[]
     knowledgeEntries: Prisma.$KnowledgeEntryPayload<ExtArgs>[]
     knowledgeGaps: Prisma.$KnowledgeGapPayload<ExtArgs>[]
@@ -2261,6 +2615,8 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   automationJobs<T extends Prisma.Property$automationJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$automationJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assets<T extends Prisma.Property$assetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$assetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappIntegration<T extends Prisma.Property$whatsappIntegrationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$whatsappIntegrationArgs<ExtArgs>>): Prisma.Prisma__WhatsAppIntegrationClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  appointmentTenants<T extends Prisma.Property$appointmentTenantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$appointmentTenantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentTenantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commerceTenants<T extends Prisma.Property$commerceTenantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$commerceTenantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommerceTenantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgeDocuments<T extends Prisma.Property$knowledgeDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgeEntries<T extends Prisma.Property$knowledgeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgeGaps<T extends Prisma.Property$knowledgeGapsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeGapsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2858,6 +3214,54 @@ export type Property$whatsappIntegrationArgs<ExtArgs extends runtime.Types.Exten
    */
   include?: Prisma.WhatsAppIntegrationInclude<ExtArgs> | null
   where?: Prisma.WhatsAppIntegrationWhereInput
+}
+
+/**
+ * Property.appointmentTenants
+ */
+export type Property$appointmentTenantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AppointmentTenant
+   */
+  select?: Prisma.AppointmentTenantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AppointmentTenant
+   */
+  omit?: Prisma.AppointmentTenantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AppointmentTenantInclude<ExtArgs> | null
+  where?: Prisma.AppointmentTenantWhereInput
+  orderBy?: Prisma.AppointmentTenantOrderByWithRelationInput | Prisma.AppointmentTenantOrderByWithRelationInput[]
+  cursor?: Prisma.AppointmentTenantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AppointmentTenantScalarFieldEnum | Prisma.AppointmentTenantScalarFieldEnum[]
+}
+
+/**
+ * Property.commerceTenants
+ */
+export type Property$commerceTenantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommerceTenant
+   */
+  select?: Prisma.CommerceTenantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommerceTenant
+   */
+  omit?: Prisma.CommerceTenantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommerceTenantInclude<ExtArgs> | null
+  where?: Prisma.CommerceTenantWhereInput
+  orderBy?: Prisma.CommerceTenantOrderByWithRelationInput | Prisma.CommerceTenantOrderByWithRelationInput[]
+  cursor?: Prisma.CommerceTenantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommerceTenantScalarFieldEnum | Prisma.CommerceTenantScalarFieldEnum[]
 }
 
 /**

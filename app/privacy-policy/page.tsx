@@ -4,7 +4,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
   title: "Privacy Policy | AiFrogi",
-  description: "How AiFrogi and webtechnosys collect, use, store, protect, and delete account, customer, and WhatsApp Business information.",
+  description: "How AiFrogi and webtechnosys collect, use, store, protect, and delete business account, customer, AI workflow, and supported-channel information.",
   path: "/privacy-policy"
 });
 

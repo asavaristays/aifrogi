@@ -80,7 +80,25 @@ export const ModelName = {
   SupportTicketMessage: 'SupportTicketMessage',
   Asset: 'Asset',
   LeadAssetShare: 'LeadAssetShare',
-  WhatsAppIntegration: 'WhatsAppIntegration'
+  WhatsAppIntegration: 'WhatsAppIntegration',
+  AppointmentTenant: 'AppointmentTenant',
+  AppointmentService: 'AppointmentService',
+  AppointmentBooking: 'AppointmentBooking',
+  AppointmentSession: 'AppointmentSession',
+  AppointmentMessageLog: 'AppointmentMessageLog',
+  AppointmentPayment: 'AppointmentPayment',
+  AppointmentJob: 'AppointmentJob',
+  AppointmentSheetSyncState: 'AppointmentSheetSyncState',
+  CommerceTenant: 'CommerceTenant',
+  CommerceProduct: 'CommerceProduct',
+  CommerceProductVariant: 'CommerceProductVariant',
+  CommerceAddon: 'CommerceAddon',
+  CommerceCustomer: 'CommerceCustomer',
+  CommerceOrder: 'CommerceOrder',
+  CommerceOrderItem: 'CommerceOrderItem',
+  CommercePayment: 'CommercePayment',
+  CommerceFlowSession: 'CommerceFlowSession',
+  CommerceConversation: 'CommerceConversation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -693,6 +711,345 @@ export const WhatsAppIntegrationScalarFieldEnum = {
 } as const
 
 export type WhatsAppIntegrationScalarFieldEnum = (typeof WhatsAppIntegrationScalarFieldEnum)[keyof typeof WhatsAppIntegrationScalarFieldEnum]
+
+
+export const AppointmentTenantScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  aifrogiTenantId: 'aifrogiTenantId',
+  name: 'name',
+  status: 'status',
+  timezone: 'timezone',
+  googleRefreshTokenEnc: 'googleRefreshTokenEnc',
+  calendarId: 'calendarId',
+  sheetId: 'sheetId',
+  razorpayEnabled: 'razorpayEnabled',
+  workingHours: 'workingHours',
+  reviewLink: 'reviewLink',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentTenantScalarFieldEnum = (typeof AppointmentTenantScalarFieldEnum)[keyof typeof AppointmentTenantScalarFieldEnum]
+
+
+export const AppointmentServiceScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  durationMin: 'durationMin',
+  priceInr: 'priceInr',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentServiceScalarFieldEnum = (typeof AppointmentServiceScalarFieldEnum)[keyof typeof AppointmentServiceScalarFieldEnum]
+
+
+export const AppointmentBookingScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  serviceId: 'serviceId',
+  customerPhone: 'customerPhone',
+  customerName: 'customerName',
+  slotStart: 'slotStart',
+  slotEnd: 'slotEnd',
+  activeSlotKey: 'activeSlotKey',
+  gcalEventId: 'gcalEventId',
+  status: 'status',
+  paymentStatus: 'paymentStatus',
+  paymentLinkId: 'paymentLinkId',
+  sourceMessageId: 'sourceMessageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentBookingScalarFieldEnum = (typeof AppointmentBookingScalarFieldEnum)[keyof typeof AppointmentBookingScalarFieldEnum]
+
+
+export const AppointmentSessionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerPhone: 'customerPhone',
+  status: 'status',
+  selectedServiceId: 'selectedServiceId',
+  customerName: 'customerName',
+  selectedSlotStartIso: 'selectedSlotStartIso',
+  data: 'data',
+  lastInboundMessageId: 'lastInboundMessageId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentSessionScalarFieldEnum = (typeof AppointmentSessionScalarFieldEnum)[keyof typeof AppointmentSessionScalarFieldEnum]
+
+
+export const AppointmentMessageLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  bookingId: 'bookingId',
+  direction: 'direction',
+  eventType: 'eventType',
+  template: 'template',
+  body: 'body',
+  inboundMessageId: 'inboundMessageId',
+  idempotencyKey: 'idempotencyKey',
+  metadata: 'metadata',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AppointmentMessageLogScalarFieldEnum = (typeof AppointmentMessageLogScalarFieldEnum)[keyof typeof AppointmentMessageLogScalarFieldEnum]
+
+
+export const AppointmentPaymentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  bookingId: 'bookingId',
+  provider: 'provider',
+  paymentLinkId: 'paymentLinkId',
+  externalPaymentId: 'externalPaymentId',
+  amountPaisa: 'amountPaisa',
+  status: 'status',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentPaymentScalarFieldEnum = (typeof AppointmentPaymentScalarFieldEnum)[keyof typeof AppointmentPaymentScalarFieldEnum]
+
+
+export const AppointmentJobScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  bookingId: 'bookingId',
+  jobType: 'jobType',
+  status: 'status',
+  idempotencyKey: 'idempotencyKey',
+  payload: 'payload',
+  scheduledFor: 'scheduledFor',
+  nextRunAt: 'nextRunAt',
+  attemptCount: 'attemptCount',
+  maxAttempts: 'maxAttempts',
+  lastError: 'lastError',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentJobScalarFieldEnum = (typeof AppointmentJobScalarFieldEnum)[keyof typeof AppointmentJobScalarFieldEnum]
+
+
+export const AppointmentSheetSyncStateScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  tabName: 'tabName',
+  cursor: 'cursor',
+  lastSyncedAt: 'lastSyncedAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentSheetSyncStateScalarFieldEnum = (typeof AppointmentSheetSyncStateScalarFieldEnum)[keyof typeof AppointmentSheetSyncStateScalarFieldEnum]
+
+
+export const CommerceTenantScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  aifrogiTenantId: 'aifrogiTenantId',
+  name: 'name',
+  brandName: 'brandName',
+  status: 'status',
+  timezone: 'timezone',
+  currency: 'currency',
+  storeProvider: 'storeProvider',
+  storeBaseUrl: 'storeBaseUrl',
+  googleSheetId: 'googleSheetId',
+  razorpayEnabled: 'razorpayEnabled',
+  whatsappFlowId: 'whatsappFlowId',
+  fulfillmentModes: 'fulfillmentModes',
+  settings: 'settings',
+  lastCatalogSyncAt: 'lastCatalogSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceTenantScalarFieldEnum = (typeof CommerceTenantScalarFieldEnum)[keyof typeof CommerceTenantScalarFieldEnum]
+
+
+export const CommerceProductScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  externalId: 'externalId',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  category: 'category',
+  imageUrl: 'imageUrl',
+  basePricePaisa: 'basePricePaisa',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceProductScalarFieldEnum = (typeof CommerceProductScalarFieldEnum)[keyof typeof CommerceProductScalarFieldEnum]
+
+
+export const CommerceProductVariantScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  externalId: 'externalId',
+  name: 'name',
+  sku: 'sku',
+  priceDeltaPaisa: 'priceDeltaPaisa',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceProductVariantScalarFieldEnum = (typeof CommerceProductVariantScalarFieldEnum)[keyof typeof CommerceProductVariantScalarFieldEnum]
+
+
+export const CommerceAddonScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  productId: 'productId',
+  name: 'name',
+  category: 'category',
+  pricePaisa: 'pricePaisa',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceAddonScalarFieldEnum = (typeof CommerceAddonScalarFieldEnum)[keyof typeof CommerceAddonScalarFieldEnum]
+
+
+export const CommerceCustomerScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  phone: 'phone',
+  name: 'name',
+  email: 'email',
+  lastAddress: 'lastAddress',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceCustomerScalarFieldEnum = (typeof CommerceCustomerScalarFieldEnum)[keyof typeof CommerceCustomerScalarFieldEnum]
+
+
+export const CommerceOrderScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  orderNumber: 'orderNumber',
+  status: 'status',
+  paymentStatus: 'paymentStatus',
+  fulfillmentStatus: 'fulfillmentStatus',
+  sourceChannel: 'sourceChannel',
+  externalOrderId: 'externalOrderId',
+  subtotalPaisa: 'subtotalPaisa',
+  deliveryFeePaisa: 'deliveryFeePaisa',
+  discountPaisa: 'discountPaisa',
+  totalPaisa: 'totalPaisa',
+  currency: 'currency',
+  deliveryDate: 'deliveryDate',
+  deliverySlot: 'deliverySlot',
+  deliveryAddress: 'deliveryAddress',
+  customization: 'customization',
+  notes: 'notes',
+  paymentLinkId: 'paymentLinkId',
+  paymentLinkUrl: 'paymentLinkUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceOrderScalarFieldEnum = (typeof CommerceOrderScalarFieldEnum)[keyof typeof CommerceOrderScalarFieldEnum]
+
+
+export const CommerceOrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  productId: 'productId',
+  variantId: 'variantId',
+  title: 'title',
+  variantTitle: 'variantTitle',
+  quantity: 'quantity',
+  unitPricePaisa: 'unitPricePaisa',
+  addonTotalPaisa: 'addonTotalPaisa',
+  totalPaisa: 'totalPaisa',
+  customization: 'customization',
+  createdAt: 'createdAt'
+} as const
+
+export type CommerceOrderItemScalarFieldEnum = (typeof CommerceOrderItemScalarFieldEnum)[keyof typeof CommerceOrderItemScalarFieldEnum]
+
+
+export const CommercePaymentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  orderId: 'orderId',
+  provider: 'provider',
+  paymentLinkId: 'paymentLinkId',
+  externalPaymentId: 'externalPaymentId',
+  amountPaisa: 'amountPaisa',
+  status: 'status',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommercePaymentScalarFieldEnum = (typeof CommercePaymentScalarFieldEnum)[keyof typeof CommercePaymentScalarFieldEnum]
+
+
+export const CommerceFlowSessionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  customerPhone: 'customerPhone',
+  status: 'status',
+  selectedProductId: 'selectedProductId',
+  selectedVariantId: 'selectedVariantId',
+  cartData: 'cartData',
+  lastInboundMessageId: 'lastInboundMessageId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceFlowSessionScalarFieldEnum = (typeof CommerceFlowSessionScalarFieldEnum)[keyof typeof CommerceFlowSessionScalarFieldEnum]
+
+
+export const CommerceConversationScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  direction: 'direction',
+  eventType: 'eventType',
+  template: 'template',
+  body: 'body',
+  inboundMessageId: 'inboundMessageId',
+  idempotencyKey: 'idempotencyKey',
+  metadata: 'metadata',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CommerceConversationScalarFieldEnum = (typeof CommerceConversationScalarFieldEnum)[keyof typeof CommerceConversationScalarFieldEnum]
 
 
 export const SortOrder = {

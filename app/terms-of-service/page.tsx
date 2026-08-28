@@ -4,7 +4,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
   title: "Terms of Service | AiFrogi",
-  description: "Terms governing AiFrogi accounts, WhatsApp Business messaging, customer data, acceptable use, service operation, and billing.",
+  description: "Terms governing AiFrogi AI business bot accounts, customer data, intelligent automation, supported channels including WhatsApp, acceptable use, service operation, and billing.",
   path: "/terms-of-service"
 });
 

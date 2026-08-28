@@ -6,8 +6,8 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
-  title: "WhatsApp Business Data Security | AiFrogi",
-  description: "Review AiFrogi security controls, customer-approved support access, privileged login OTP, signed Meta webhooks, workspace data boundaries, and Meta access verification.",
+  title: "AI Business Bot Security | AiFrogi",
+  description: "Review the security controls behind AiFrogi: role-based access, protected business data, approved AI knowledge, signed webhooks, customer-controlled support, and secure integrations.",
   path: "/security"
 });
 

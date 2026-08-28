@@ -3,8 +3,8 @@ import { LegalPage, LegalSection } from "@/components/legal/legal-page";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "Data Deletion Instructions | AiFrogi",
-  description: "How businesses and individuals can request deletion of eligible account, contact, message, attachment, and integration data from AiFrogi.",
+  title: "AI Business Bot Data Deletion | AiFrogi",
+  description: "How businesses and individuals can request deletion of eligible account, customer conversation, attachment, AI workflow, and integration data from AiFrogi.",
   path: "/data-deletion"
 });
 

@@ -70,6 +70,46 @@ export async function activateInvitation(token: string, password: string) {
   });
 }
 
+export async function createTeamPasswordReset(emailInput: string, token: string, expiresAt: Date) {
+  const db = getDb();
+  if (!db) return false;
+  const email = emailInput.trim().toLowerCase();
+  const member = await db.organizationMember.findFirst({
+    where: { email, status: "ACTIVE", passwordHash: { not: null } },
+    select: { id: true }
+  });
+  if (!member) return false;
+  await db.organizationMember.update({
+    where: { id: member.id },
+    data: { invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt }
+  });
+  return true;
+}
+
+export async function getTeamPasswordReset(token: string) {
+  const db = getDb();
+  if (!db || !token) return null;
+  const member = await db.organizationMember.findUnique({
+    where: { invitationTokenHash: tokenHash(token) },
+    select: { id: true, email: true, name: true, status: true, invitationExpiresAt: true, organization: { select: { name: true } } }
+  });
+  if (!member || member.status !== "ACTIVE" || !member.invitationExpiresAt || member.invitationExpiresAt < new Date()) return null;
+  return member;
+}
+
+export async function resetTeamMemberPassword(token: string, password: string) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const member = await getTeamPasswordReset(token);
+  if (!member) throw new Error("This password reset link is invalid or has expired.");
+  if (password.length < 10) throw new Error("Use at least 10 characters for your password.");
+  return db.organizationMember.update({
+    where: { id: member.id },
+    data: { passwordHash: hashCredentialPassword(password), invitationTokenHash: null, invitationExpiresAt: null },
+    select: { email: true, name: true }
+  });
+}
+
 export async function verifyTeamMemberCredential(email: string, password: string) {
   const db = getDb();
   if (!db || !email || !password) return null;

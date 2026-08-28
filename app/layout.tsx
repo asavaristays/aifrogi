@@ -5,8 +5,9 @@ import { siteUrl, socialImage } from "@/lib/seo";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
-  title: "AiFrogi | WhatsApp Automation for Business",
-  description: "Run WhatsApp broadcasts, AI chatbots, reminders, payments, retargeting, and human handover from one secure business workspace.",
+  title: "AiFrogi | Intelligent AI Bot for Business",
+  description: "AiFrogi is an intelligent AI business bot that helps teams answer customers, automate follow-ups, manage workflows, and turn conversations into next actions across supported channels.",
+  keywords: ["AI business bot", "intelligent business automation", "customer conversation AI", "AI workflow automation", "business chatbot", "WhatsApp automation"],
   applicationName: "AiFrogi",
   authors: [{ name: "webtechnosys", url: "https://webtechnosys.com" }],
   creator: "webtechnosys",
@@ -16,15 +17,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "AiFrogi",
-    title: "AiFrogi | WhatsApp Automation for Business",
-    description: "WhatsApp automation, AI assistance, campaigns, payments, and human handover in one business workspace.",
+    title: "AiFrogi | Intelligent AI Bot for Business",
+    description: "Turn customer conversations into the right next action with an intelligent AI bot, workflow automation, and human control.",
     url: "/",
-    images: [{ url: socialImage, width: 1265, height: 712, alt: "AiFrogi WhatsApp business workspace" }]
+    images: [{ url: socialImage, width: 1265, height: 712, alt: "AiFrogi AI business bot workspace" }]
   },
   twitter: {
     card: "summary_large_image",
-    title: "AiFrogi | WhatsApp Automation for Business",
-    description: "WhatsApp automation, AI assistance, campaigns, payments, and human handover in one business workspace.",
+    title: "AiFrogi | Intelligent AI Bot for Business",
+    description: "Turn customer conversations into the right next action with an intelligent AI bot, workflow automation, and human control.",
     images: [socialImage]
   },
   robots: {
@@ -74,8 +75,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         name: "AiFrogi",
         url: "https://aifrogi.com",
         applicationCategory: "BusinessApplication",
+        applicationSubCategory: "AI business automation",
         operatingSystem: "Web",
-        description: "WhatsApp business messaging, automation, AI assistance, campaigns, payments, and human handover in one workspace.",
+        description: "An intelligent AI business bot for customer conversations, workflow automation, follow-ups, knowledge-guided answers, and human-assisted operations across supported channels.",
+        featureList: ["AI-guided customer conversations", "Workflow automation", "Knowledge-guided answers", "Human handover", "WhatsApp integration"],
         provider: { "@id": "https://aifrogi.com/#organization" },
         offers: { "@type": "Offer", price: 0, priceCurrency: "INR", url: "https://aifrogi.com/pricing" }
       }

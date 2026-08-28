@@ -12,18 +12,21 @@ import { getTrialWindow } from "@/lib/onboarding-guidance";
 import { loadOrganizationProductFlow } from "@/lib/product-flow";
 import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-access";
+import { AppointmentJourneyAdminControl } from "@/components/admin/appointment-journey-admin-control";
+import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [organization, billing, plans, flow, user] = await Promise.all([
+  const [organization, billing, plans, flow, user, appointmentWorkspaces] = await Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id),
     ensureBillingPlans(),
     loadOrganizationProductFlow(id),
-    getCurrentUser()
+    getCurrentUser(),
+    getAppointmentJourneyAdminWorkspaces(id)
   ]);
   if (!organization) notFound();
   const onboarding = organization.onboarding;
@@ -59,6 +62,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           templateStatus={onboarding?.templateStatus}
           firstMessageStatus={onboarding?.firstMessageStatus}
         />
+        <AppointmentJourneyAdminControl organizationId={organization.id} workspaces={appointmentWorkspaces} />
         {billing ? <BillingControls
           organizationId={organization.id}
           plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}

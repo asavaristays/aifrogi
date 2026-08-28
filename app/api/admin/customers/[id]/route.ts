@@ -9,6 +9,7 @@ import {
 import { saveOrganizationWhatsAppBotConfiguration } from "@/lib/repositories/bot-configuration-repository";
 import { normalizeWhatsAppBotConfiguration, type WhatsAppBotConfigurationInput } from "@/lib/whatsapp-bot-config";
 import { updateOrganizationPlan } from "@/lib/billing-super-admin";
+import { setAppointmentJourneyEnabled } from "@/lib/appointment-journey-service";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -31,6 +32,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     templateStatus?: string;
     firstMessageStatus?: string;
     configuration?: WhatsAppBotConfigurationInput;
+    propertyId?: string;
   } | null;
   const action = payload?.action?.trim().toUpperCase();
   if (action === "APPROVE_KYC" || action === "REJECT_KYC") {
@@ -91,6 +93,19 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       updatedBy: user.username
     });
     return NextResponse.json({ organization: updated });
+  }
+
+  if (action === "ENABLE_APPOINTMENT_JOURNEY" || action === "DISABLE_APPOINTMENT_JOURNEY") {
+    const propertyId = payload?.propertyId?.trim() || "";
+    if (!propertyId) return NextResponse.json({ error: "Workspace is required." }, { status: 400 });
+    const result = await setAppointmentJourneyEnabled({
+      organizationId: id,
+      propertyId,
+      enabled: action === "ENABLE_APPOINTMENT_JOURNEY",
+      actorEmail: user.username
+    });
+    if (result.error) return NextResponse.json({ error: result.error }, { status: result.status });
+    return NextResponse.json({ ok: true });
   }
 
   return NextResponse.json({ error: "Unsupported customer action" }, { status: 400 });

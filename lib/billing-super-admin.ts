@@ -27,13 +27,23 @@ export const BILLING_PLAN_CATALOGUE = [
     limits: { contacts: 250, messages: 500, campaigns: 1, aiReplies: 100, teamUsers: 2 }
   },
   {
+    code: "PINGBOOK",
+    name: "PingBook Clinic",
+    description: "Clinic-first WhatsApp appointment automation with quarterly billing.",
+    billingInterval: "QUARTERLY",
+    amountPaisa: 375000,
+    trialDays: 0,
+    sortOrder: 2,
+    limits: { contacts: 1000, messages: 3000, campaigns: 0, aiReplies: 0, teamUsers: 3 }
+  },
+  {
     code: "STARTER",
     name: "Starter",
     description: "Core inbox, campaigns, onboarding and basic automation.",
     billingInterval: "QUARTERLY",
     amountPaisa: 495000,
     trialDays: 0,
-    sortOrder: 2,
+    sortOrder: 3,
     limits: { contacts: 2000, messages: 5000, campaigns: 5, aiReplies: 1000, teamUsers: 3 }
   },
   {
@@ -43,7 +53,7 @@ export const BILLING_PLAN_CATALOGUE = [
     billingInterval: "QUARTERLY",
     amountPaisa: 1065000,
     trialDays: 0,
-    sortOrder: 3,
+    sortOrder: 4,
     limits: { contacts: 10000, messages: 25000, campaigns: 25, aiReplies: 5000, teamUsers: 8 }
   },
   {
@@ -53,7 +63,7 @@ export const BILLING_PLAN_CATALOGUE = [
     billingInterval: "QUARTERLY",
     amountPaisa: 1650000,
     trialDays: 0,
-    sortOrder: 4,
+    sortOrder: 5,
     limits: { contacts: 25000, messages: 75000, campaigns: 75, aiReplies: 20000, teamUsers: 15 }
   },
   {
@@ -63,7 +73,7 @@ export const BILLING_PLAN_CATALOGUE = [
     billingInterval: "CUSTOM",
     amountPaisa: 0,
     trialDays: 0,
-    sortOrder: 5,
+    sortOrder: 6,
     limits: { contacts: 100000, messages: 500000, campaigns: 500, aiReplies: 100000, teamUsers: 100 }
   }
 ] as const;

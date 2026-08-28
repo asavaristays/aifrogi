@@ -6,8 +6,8 @@ import { helpArticles } from "@/lib/help-center";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
-  title: "WhatsApp Business Guides & Resources | AiFrogi",
-  description: "Practical guides for WhatsApp onboarding, messaging, compliant campaigns, AI knowledge, verified security controls, account access, and customer support.",
+  title: "AI Business Bot Guides & Resources | AiFrogi",
+  description: "Practical resources for AI business automation, customer conversations, knowledge-guided replies, workflow design, supported channels including WhatsApp, security, and support.",
   path: "/resources"
 });
 
@@ -76,22 +76,6 @@ export default function ResourcesPage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="border-b border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
-        <Link href="/case-studies/asavari-stays" className="group mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
-          <div>
-            <p className="product-eyebrow">Customer story · Nupur Purohit</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">From a beautiful stay to a booking conversation.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">See how Asavari Stays connects visual storytelling, WhatsApp retargeting, and human follow-up.</p>
-            <span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#a21c98]">View case study <Icon name="arrow-right" className="transition-transform group-hover:translate-x-1" /></span>
-          </div>
-          <div className="relative min-h-[320px] overflow-hidden rounded-xl bg-[#2c243b] p-7 text-white shadow-[0_24px_70px_rgba(44,36,59,.12)]">
-            <div className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-[#d92bcb]/25 blur-3xl" aria-hidden="true" />
-            <p className="relative text-xs font-bold uppercase tracking-[.14em] text-[#ff8af1]">Asavari Stays × HotelRadar</p>
-            <div className="relative mt-16 grid grid-cols-[1fr_auto_1fr] items-center gap-4"><div><span className="grid h-12 w-12 place-items-center rounded-full bg-white/10"><Icon name="image" /></span><p className="mt-4 text-lg font-semibold">Visual story</p><p className="mt-1 text-xs text-white/45">Creates desire</p></div><Icon name="arrow-right" className="text-[#ff8af1]" /><div><span className="grid h-12 w-12 place-items-center rounded-full bg-[#d92bcb]"><Icon name="message-circle" /></span><p className="mt-4 text-lg font-semibold">WhatsApp</p><p className="mt-1 text-xs text-white/45">Continues intent</p></div></div>
-          </div>
-        </Link>
       </section>
 
       <section id="guides" className="scroll-mt-20 px-5 py-20 sm:px-8">

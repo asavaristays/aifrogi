@@ -12,9 +12,27 @@
   100% { opacity: 0; transform: translateY(-.14em); filter: blur(2px); }
 }
 
+@keyframes appointment-timeline-loop {
+  0%, 18% { border-color: rgba(255, 138, 241, .42); background: rgba(217, 43, 203, .14); transform: translateX(0); }
+  28%, 100% { border-color: rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .035); transform: translateX(0); }
+}
+
+@keyframes appointment-pulse {
+  0%, 100% { opacity: .55; box-shadow: 0 0 0 0 rgba(255, 138, 241, .36); }
+  50% { opacity: 1; box-shadow: 0 0 0 8px rgba(255, 138, 241, 0); }
+}
+
 .hero-use-case {
   animation: hero-use-case-cycle 2.6s cubic-bezier(.4,0,.2,1) both;
   will-change: opacity, transform, filter;
+}
+
+.appointment-timeline-row {
+  animation: appointment-timeline-loop 4.2s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+.appointment-pulse-dot {
+  animation: appointment-pulse 1.8s ease-in-out infinite;
 }
 
 .feature-showcase-reveal {
@@ -24,6 +42,8 @@
 @media (prefers-reduced-motion: reduce) {
   .feature-showcase-reveal { animation: none; }
   .hero-use-case { animation: none; }
+  .appointment-timeline-row { animation: none; }
+  .appointment-pulse-dot { animation: none; }
 }
 
 :root {

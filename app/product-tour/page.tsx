@@ -4,8 +4,8 @@ import Link from "next/link";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
-  title: "WhatsApp Automation Product Tour | AiFrogi",
-  description: "See how AiFrogi brings WhatsApp conversations, campaigns, approved knowledge, automation, analytics, and human support into one workspace.",
+  title: "AI Business Bot Product Tour | AiFrogi",
+  description: "See how AiFrogi combines intelligent customer conversations, approved knowledge, workflow automation, analytics, human support, and channels such as WhatsApp in one workspace.",
   path: "/product-tour"
 });
 

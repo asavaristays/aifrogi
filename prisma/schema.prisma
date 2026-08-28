@@ -66,6 +66,8 @@ model Property {
   automationJobs AutomationJob[]
   assets      Asset[]
   whatsappIntegration WhatsAppIntegration?
+  appointmentTenants AppointmentTenant[]
+  commerceTenants CommerceTenant[]
   knowledgeDocuments KnowledgeDocument[]
   knowledgeEntries KnowledgeEntry[]
   knowledgeGaps KnowledgeGap[]
@@ -694,4 +696,401 @@ model WhatsAppIntegration {
   aiModeEnabled       Boolean  @default(true)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+}
+
+model AppointmentTenant {
+  id                    String                    @id @default(cuid())
+  propertyId            String                    @unique
+  property              Property                  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  aifrogiTenantId       String                    @unique
+  name                  String
+  status                String                    @default("PROVISIONED")
+  timezone              String                    @default("Asia/Kolkata")
+  googleRefreshTokenEnc String?                   @db.Text
+  calendarId            String?
+  sheetId               String?
+  razorpayEnabled       Boolean                   @default(false)
+  workingHours          Json?
+  reviewLink            String?
+  lastSyncedAt          DateTime?
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+  services              AppointmentService[]
+  bookings              AppointmentBooking[]
+  sessions              AppointmentSession[]
+  messageLogs           AppointmentMessageLog[]
+  payments              AppointmentPayment[]
+  jobs                  AppointmentJob[]
+  sheetSyncStates       AppointmentSheetSyncState[]
+
+  @@index([status])
+}
+
+model AppointmentService {
+  id           String                @id @default(cuid())
+  tenantId     String
+  tenant       AppointmentTenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name         String
+  durationMin  Int                   @default(30)
+  priceInr     Int                   @default(0)
+  active       Boolean               @default(true)
+  sortOrder    Int                   @default(0)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  bookings     AppointmentBooking[]
+
+  @@index([tenantId, active, sortOrder])
+}
+
+model AppointmentBooking {
+  id              String                 @id @default(cuid())
+  tenantId        String
+  tenant          AppointmentTenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  serviceId       String?
+  service         AppointmentService?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  customerPhone   String
+  customerName    String
+  slotStart       DateTime
+  slotEnd         DateTime
+  activeSlotKey   String?                @unique
+  gcalEventId     String?
+  status          String                 @default("HOLD")
+  paymentStatus   String                 @default("NOT_REQUIRED")
+  paymentLinkId   String?
+  sourceMessageId String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  payments        AppointmentPayment[]
+  messageLogs     AppointmentMessageLog[]
+  jobs            AppointmentJob[]
+
+  @@index([tenantId, customerPhone, createdAt])
+  @@index([tenantId, status, slotStart])
+  @@index([serviceId])
+}
+
+model AppointmentSession {
+  id                   String            @id @default(cuid())
+  tenantId             String
+  tenant               AppointmentTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerPhone        String
+  status               String            @default("IDLE")
+  selectedServiceId    String?
+  customerName         String?
+  selectedSlotStartIso String?
+  data                 Json?
+  lastInboundMessageId String?
+  expiresAt            DateTime
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@unique([tenantId, customerPhone])
+  @@index([tenantId, status, expiresAt])
+}
+
+model AppointmentMessageLog {
+  id               String              @id @default(cuid())
+  tenantId         String
+  tenant           AppointmentTenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingId        String?
+  booking          AppointmentBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  direction        String
+  eventType        String
+  template         String?
+  body             String?             @db.Text
+  inboundMessageId String?             @unique
+  idempotencyKey   String?             @unique
+  metadata         Json?
+  sentAt           DateTime            @default(now())
+  createdAt        DateTime            @default(now())
+
+  @@index([tenantId, sentAt])
+  @@index([bookingId])
+}
+
+model AppointmentPayment {
+  id                String              @id @default(cuid())
+  tenantId          String
+  tenant            AppointmentTenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingId         String
+  booking           AppointmentBooking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  provider          String              @default("RAZORPAY")
+  paymentLinkId     String?             @unique
+  externalPaymentId String?             @unique
+  amountPaisa       Int                 @default(0)
+  status            String              @default("PENDING")
+  rawPayload         Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([tenantId, status])
+  @@index([bookingId])
+}
+
+model AppointmentJob {
+  id               String              @id @default(cuid())
+  tenantId         String
+  tenant           AppointmentTenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingId        String?
+  booking          AppointmentBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  jobType          String
+  status           String              @default("QUEUED")
+  idempotencyKey   String              @unique
+  payload          Json?
+  scheduledFor     DateTime
+  nextRunAt        DateTime
+  attemptCount     Int                 @default(0)
+  maxAttempts      Int                 @default(3)
+  lastError        String?             @db.Text
+  completedAt      DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([tenantId, status, nextRunAt])
+  @@index([bookingId, jobType])
+}
+
+model AppointmentSheetSyncState {
+  id             String            @id @default(cuid())
+  tenantId       String
+  tenant         AppointmentTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tabName        String
+  cursor         String?
+  lastSyncedAt   DateTime?
+  lastError      String?           @db.Text
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@unique([tenantId, tabName])
+}
+
+model CommerceTenant {
+  id                 String                 @id @default(cuid())
+  propertyId         String                 @unique
+  property           Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  aifrogiTenantId    String                 @unique
+  name               String
+  brandName          String
+  status             String                 @default("PROVISIONED")
+  timezone           String                 @default("Asia/Kolkata")
+  currency           String                 @default("INR")
+  storeProvider      String                 @default("DEMO")
+  storeBaseUrl       String?
+  googleSheetId      String?
+  razorpayEnabled    Boolean                @default(false)
+  whatsappFlowId     String?
+  fulfillmentModes   String[]
+  settings           Json?
+  lastCatalogSyncAt  DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  products           CommerceProduct[]
+  addons             CommerceAddon[]
+  customers          CommerceCustomer[]
+  orders             CommerceOrder[]
+  sessions           CommerceFlowSession[]
+  conversations      CommerceConversation[]
+  payments           CommercePayment[]
+
+  @@index([status])
+  @@index([storeProvider])
+}
+
+model CommerceProduct {
+  id              String                 @id @default(cuid())
+  tenantId        String
+  tenant          CommerceTenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  externalId      String?
+  name            String
+  slug            String
+  description     String                 @db.Text
+  category        String
+  imageUrl        String?
+  basePricePaisa  Int                    @default(0)
+  active          Boolean                @default(true)
+  sortOrder       Int                    @default(0)
+  metadata        Json?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  variants        CommerceProductVariant[]
+  addons          CommerceAddon[]
+  orderItems      CommerceOrderItem[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, active, sortOrder])
+  @@index([tenantId, category])
+}
+
+model CommerceProductVariant {
+  id              String               @id @default(cuid())
+  productId       String
+  product         CommerceProduct      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  externalId      String?
+  name            String
+  sku             String?
+  priceDeltaPaisa Int                  @default(0)
+  active          Boolean              @default(true)
+  sortOrder       Int                  @default(0)
+  metadata        Json?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  orderItems      CommerceOrderItem[]
+
+  @@index([productId, active, sortOrder])
+}
+
+model CommerceAddon {
+  id              String            @id @default(cuid())
+  tenantId        String
+  tenant          CommerceTenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  productId       String?
+  product         CommerceProduct?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name            String
+  category        String            @default("general")
+  pricePaisa      Int               @default(0)
+  active          Boolean           @default(true)
+  sortOrder       Int               @default(0)
+  metadata        Json?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([tenantId, active, sortOrder])
+  @@index([productId])
+}
+
+model CommerceCustomer {
+  id              String                 @id @default(cuid())
+  tenantId        String
+  tenant          CommerceTenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  phone           String
+  name            String?
+  email           String?
+  lastAddress     Json?
+  tags            String[]
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  orders          CommerceOrder[]
+  sessions        CommerceFlowSession[]
+  conversations   CommerceConversation[]
+
+  @@unique([tenantId, phone])
+  @@index([tenantId, updatedAt])
+}
+
+model CommerceOrder {
+  id                String               @id @default(cuid())
+  tenantId          String
+  tenant            CommerceTenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String?
+  customer          CommerceCustomer?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  orderNumber       String               @unique
+  status            String               @default("DRAFT")
+  paymentStatus     String               @default("PENDING")
+  fulfillmentStatus String               @default("UNFULFILLED")
+  sourceChannel     String               @default("WHATSAPP")
+  externalOrderId   String?
+  subtotalPaisa     Int                  @default(0)
+  deliveryFeePaisa  Int                  @default(0)
+  discountPaisa     Int                  @default(0)
+  totalPaisa        Int                  @default(0)
+  currency          String               @default("INR")
+  deliveryDate      DateTime?
+  deliverySlot      String?
+  deliveryAddress   Json?
+  customization     Json?
+  notes             String?              @db.Text
+  paymentLinkId     String?
+  paymentLinkUrl    String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  items             CommerceOrderItem[]
+  payments          CommercePayment[]
+  conversations     CommerceConversation[]
+
+  @@index([tenantId, status, createdAt])
+  @@index([tenantId, paymentStatus, createdAt])
+  @@index([customerId])
+}
+
+model CommerceOrderItem {
+  id              String                  @id @default(cuid())
+  orderId         String
+  order           CommerceOrder           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String?
+  product         CommerceProduct?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId       String?
+  variant         CommerceProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  title           String
+  variantTitle    String?
+  quantity        Int                     @default(1)
+  unitPricePaisa  Int                     @default(0)
+  addonTotalPaisa Int                     @default(0)
+  totalPaisa      Int                     @default(0)
+  customization   Json?
+  createdAt       DateTime                @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model CommercePayment {
+  id                String          @id @default(cuid())
+  tenantId          String
+  tenant            CommerceTenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderId           String
+  order             CommerceOrder   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider          String          @default("RAZORPAY")
+  paymentLinkId     String?         @unique
+  externalPaymentId String?         @unique
+  amountPaisa       Int             @default(0)
+  status            String          @default("PENDING")
+  rawPayload        Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([tenantId, status])
+  @@index([orderId])
+}
+
+model CommerceFlowSession {
+  id                   String            @id @default(cuid())
+  tenantId             String
+  tenant               CommerceTenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId           String?
+  customer             CommerceCustomer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerPhone        String
+  status               String            @default("IDLE")
+  selectedProductId    String?
+  selectedVariantId    String?
+  cartData             Json?
+  lastInboundMessageId String?
+  expiresAt            DateTime
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@unique([tenantId, customerPhone])
+  @@index([tenantId, status, expiresAt])
+}
+
+model CommerceConversation {
+  id               String             @id @default(cuid())
+  tenantId         String
+  tenant           CommerceTenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId       String?
+  customer         CommerceCustomer?  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  orderId          String?
+  order            CommerceOrder?     @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  direction        String
+  eventType        String
+  template         String?
+  body             String?            @db.Text
+  inboundMessageId String?            @unique
+  idempotencyKey   String?            @unique
+  metadata         Json?
+  sentAt           DateTime           @default(now())
+  createdAt        DateTime           @default(now())
+
+  @@index([tenantId, sentAt])
+  @@index([orderId])
+  @@index([customerId])
 }

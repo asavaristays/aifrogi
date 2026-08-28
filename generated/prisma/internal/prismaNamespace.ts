@@ -413,7 +413,25 @@ export const ModelName = {
   SupportTicketMessage: 'SupportTicketMessage',
   Asset: 'Asset',
   LeadAssetShare: 'LeadAssetShare',
-  WhatsAppIntegration: 'WhatsAppIntegration'
+  WhatsAppIntegration: 'WhatsAppIntegration',
+  AppointmentTenant: 'AppointmentTenant',
+  AppointmentService: 'AppointmentService',
+  AppointmentBooking: 'AppointmentBooking',
+  AppointmentSession: 'AppointmentSession',
+  AppointmentMessageLog: 'AppointmentMessageLog',
+  AppointmentPayment: 'AppointmentPayment',
+  AppointmentJob: 'AppointmentJob',
+  AppointmentSheetSyncState: 'AppointmentSheetSyncState',
+  CommerceTenant: 'CommerceTenant',
+  CommerceProduct: 'CommerceProduct',
+  CommerceProductVariant: 'CommerceProductVariant',
+  CommerceAddon: 'CommerceAddon',
+  CommerceCustomer: 'CommerceCustomer',
+  CommerceOrder: 'CommerceOrder',
+  CommerceOrderItem: 'CommerceOrderItem',
+  CommercePayment: 'CommercePayment',
+  CommerceFlowSession: 'CommerceFlowSession',
+  CommerceConversation: 'CommerceConversation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -429,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2653,6 +2671,1338 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AppointmentTenant: {
+      payload: Prisma.$AppointmentTenantPayload<ExtArgs>
+      fields: Prisma.AppointmentTenantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentTenantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentTenantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentTenantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentTenantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentTenantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentTenantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentTenantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentTenantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentTenantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>
+        }
+        update: {
+          args: Prisma.AppointmentTenantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentTenantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentTenantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentTenantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentTenantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentTenantPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentTenantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentTenant>
+        }
+        groupBy: {
+          args: Prisma.AppointmentTenantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentTenantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentTenantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentTenantCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentService: {
+      payload: Prisma.$AppointmentServicePayload<ExtArgs>
+      fields: Prisma.AppointmentServiceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentServiceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentServiceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentServiceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentServiceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentServiceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentServiceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentServiceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentServiceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentServiceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>
+        }
+        update: {
+          args: Prisma.AppointmentServiceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentServiceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentServiceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentServiceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentServiceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentServicePayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentServiceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentService>
+        }
+        groupBy: {
+          args: Prisma.AppointmentServiceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentServiceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentServiceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentServiceCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentBooking: {
+      payload: Prisma.$AppointmentBookingPayload<ExtArgs>
+      fields: Prisma.AppointmentBookingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentBookingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentBookingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentBookingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentBookingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentBookingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentBookingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentBookingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentBookingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentBookingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>
+        }
+        update: {
+          args: Prisma.AppointmentBookingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentBookingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentBookingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentBookingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentBookingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentBookingPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentBookingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentBooking>
+        }
+        groupBy: {
+          args: Prisma.AppointmentBookingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentBookingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentBookingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentBookingCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentSession: {
+      payload: Prisma.$AppointmentSessionPayload<ExtArgs>
+      fields: Prisma.AppointmentSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>
+        }
+        update: {
+          args: Prisma.AppointmentSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentSession>
+        }
+        groupBy: {
+          args: Prisma.AppointmentSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentMessageLog: {
+      payload: Prisma.$AppointmentMessageLogPayload<ExtArgs>
+      fields: Prisma.AppointmentMessageLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentMessageLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentMessageLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentMessageLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentMessageLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentMessageLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentMessageLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentMessageLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentMessageLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentMessageLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>
+        }
+        update: {
+          args: Prisma.AppointmentMessageLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentMessageLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentMessageLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentMessageLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentMessageLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentMessageLogPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentMessageLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentMessageLog>
+        }
+        groupBy: {
+          args: Prisma.AppointmentMessageLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentMessageLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentMessageLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentMessageLogCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentPayment: {
+      payload: Prisma.$AppointmentPaymentPayload<ExtArgs>
+      fields: Prisma.AppointmentPaymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentPaymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentPaymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentPaymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentPaymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentPaymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentPaymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentPaymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentPaymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentPaymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>
+        }
+        update: {
+          args: Prisma.AppointmentPaymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentPaymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentPaymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentPaymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentPaymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentPaymentPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentPaymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentPayment>
+        }
+        groupBy: {
+          args: Prisma.AppointmentPaymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentPaymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentPaymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentPaymentCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentJob: {
+      payload: Prisma.$AppointmentJobPayload<ExtArgs>
+      fields: Prisma.AppointmentJobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentJobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentJobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentJobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentJobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentJobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentJobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentJobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentJobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentJobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>
+        }
+        update: {
+          args: Prisma.AppointmentJobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentJobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentJobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentJobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentJobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentJobPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentJobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentJob>
+        }
+        groupBy: {
+          args: Prisma.AppointmentJobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentJobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentJobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentJobCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentSheetSyncState: {
+      payload: Prisma.$AppointmentSheetSyncStatePayload<ExtArgs>
+      fields: Prisma.AppointmentSheetSyncStateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentSheetSyncStateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentSheetSyncStateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentSheetSyncStateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentSheetSyncStateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentSheetSyncStateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentSheetSyncStateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentSheetSyncStateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentSheetSyncStateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentSheetSyncStateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>
+        }
+        update: {
+          args: Prisma.AppointmentSheetSyncStateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentSheetSyncStateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentSheetSyncStateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentSheetSyncStateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentSheetSyncStateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentSheetSyncStatePayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentSheetSyncStateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentSheetSyncState>
+        }
+        groupBy: {
+          args: Prisma.AppointmentSheetSyncStateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentSheetSyncStateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentSheetSyncStateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentSheetSyncStateCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceTenant: {
+      payload: Prisma.$CommerceTenantPayload<ExtArgs>
+      fields: Prisma.CommerceTenantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceTenantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceTenantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceTenantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceTenantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceTenantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceTenantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceTenantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceTenantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceTenantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>
+        }
+        update: {
+          args: Prisma.CommerceTenantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceTenantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceTenantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceTenantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceTenantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceTenantPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceTenantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceTenant>
+        }
+        groupBy: {
+          args: Prisma.CommerceTenantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceTenantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceTenantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceTenantCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceProduct: {
+      payload: Prisma.$CommerceProductPayload<ExtArgs>
+      fields: Prisma.CommerceProductFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceProductFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceProductFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceProductFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceProductFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceProductFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceProductCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceProductCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceProductCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceProductDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>
+        }
+        update: {
+          args: Prisma.CommerceProductUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceProductDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceProductUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceProductUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceProductUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceProductAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceProduct>
+        }
+        groupBy: {
+          args: Prisma.CommerceProductGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceProductGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceProductCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceProductCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceProductVariant: {
+      payload: Prisma.$CommerceProductVariantPayload<ExtArgs>
+      fields: Prisma.CommerceProductVariantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceProductVariantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceProductVariantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceProductVariantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceProductVariantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceProductVariantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceProductVariantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceProductVariantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceProductVariantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceProductVariantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>
+        }
+        update: {
+          args: Prisma.CommerceProductVariantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceProductVariantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceProductVariantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceProductVariantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceProductVariantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceProductVariantPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceProductVariantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceProductVariant>
+        }
+        groupBy: {
+          args: Prisma.CommerceProductVariantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceProductVariantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceProductVariantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceProductVariantCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceAddon: {
+      payload: Prisma.$CommerceAddonPayload<ExtArgs>
+      fields: Prisma.CommerceAddonFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceAddonFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceAddonFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceAddonFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceAddonFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceAddonFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceAddonCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceAddonCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceAddonCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceAddonDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>
+        }
+        update: {
+          args: Prisma.CommerceAddonUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceAddonDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceAddonUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceAddonUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceAddonUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceAddonPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceAddonAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceAddon>
+        }
+        groupBy: {
+          args: Prisma.CommerceAddonGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceAddonGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceAddonCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceAddonCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceCustomer: {
+      payload: Prisma.$CommerceCustomerPayload<ExtArgs>
+      fields: Prisma.CommerceCustomerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceCustomerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceCustomerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceCustomerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceCustomerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceCustomerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceCustomerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceCustomerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceCustomerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceCustomerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>
+        }
+        update: {
+          args: Prisma.CommerceCustomerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceCustomerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceCustomerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceCustomerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceCustomerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceCustomerPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceCustomerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceCustomer>
+        }
+        groupBy: {
+          args: Prisma.CommerceCustomerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceCustomerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceCustomerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceCustomerCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceOrder: {
+      payload: Prisma.$CommerceOrderPayload<ExtArgs>
+      fields: Prisma.CommerceOrderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceOrderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceOrderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceOrderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceOrderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceOrderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceOrderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceOrderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceOrderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceOrderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>
+        }
+        update: {
+          args: Prisma.CommerceOrderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceOrderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceOrderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceOrderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceOrderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceOrderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceOrder>
+        }
+        groupBy: {
+          args: Prisma.CommerceOrderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceOrderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceOrderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceOrderCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceOrderItem: {
+      payload: Prisma.$CommerceOrderItemPayload<ExtArgs>
+      fields: Prisma.CommerceOrderItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceOrderItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceOrderItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceOrderItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceOrderItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceOrderItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceOrderItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceOrderItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceOrderItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceOrderItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>
+        }
+        update: {
+          args: Prisma.CommerceOrderItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceOrderItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceOrderItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceOrderItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceOrderItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceOrderItemPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceOrderItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceOrderItem>
+        }
+        groupBy: {
+          args: Prisma.CommerceOrderItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceOrderItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceOrderItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceOrderItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommercePayment: {
+      payload: Prisma.$CommercePaymentPayload<ExtArgs>
+      fields: Prisma.CommercePaymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommercePaymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommercePaymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>
+        }
+        findFirst: {
+          args: Prisma.CommercePaymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommercePaymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>
+        }
+        findMany: {
+          args: Prisma.CommercePaymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>[]
+        }
+        create: {
+          args: Prisma.CommercePaymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>
+        }
+        createMany: {
+          args: Prisma.CommercePaymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommercePaymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>[]
+        }
+        delete: {
+          args: Prisma.CommercePaymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>
+        }
+        update: {
+          args: Prisma.CommercePaymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommercePaymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommercePaymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommercePaymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommercePaymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommercePaymentPayload>
+        }
+        aggregate: {
+          args: Prisma.CommercePaymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommercePayment>
+        }
+        groupBy: {
+          args: Prisma.CommercePaymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommercePaymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommercePaymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommercePaymentCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceFlowSession: {
+      payload: Prisma.$CommerceFlowSessionPayload<ExtArgs>
+      fields: Prisma.CommerceFlowSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceFlowSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceFlowSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceFlowSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceFlowSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceFlowSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceFlowSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceFlowSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceFlowSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceFlowSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>
+        }
+        update: {
+          args: Prisma.CommerceFlowSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceFlowSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceFlowSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceFlowSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceFlowSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceFlowSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceFlowSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceFlowSession>
+        }
+        groupBy: {
+          args: Prisma.CommerceFlowSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceFlowSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceFlowSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceFlowSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    CommerceConversation: {
+      payload: Prisma.$CommerceConversationPayload<ExtArgs>
+      fields: Prisma.CommerceConversationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CommerceConversationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CommerceConversationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>
+        }
+        findFirst: {
+          args: Prisma.CommerceConversationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CommerceConversationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>
+        }
+        findMany: {
+          args: Prisma.CommerceConversationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>[]
+        }
+        create: {
+          args: Prisma.CommerceConversationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>
+        }
+        createMany: {
+          args: Prisma.CommerceConversationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CommerceConversationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>[]
+        }
+        delete: {
+          args: Prisma.CommerceConversationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>
+        }
+        update: {
+          args: Prisma.CommerceConversationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>
+        }
+        deleteMany: {
+          args: Prisma.CommerceConversationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CommerceConversationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CommerceConversationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>[]
+        }
+        upsert: {
+          args: Prisma.CommerceConversationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CommerceConversationPayload>
+        }
+        aggregate: {
+          args: Prisma.CommerceConversationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCommerceConversation>
+        }
+        groupBy: {
+          args: Prisma.CommerceConversationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceConversationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CommerceConversationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CommerceConversationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3288,6 +4638,345 @@ export const WhatsAppIntegrationScalarFieldEnum = {
 export type WhatsAppIntegrationScalarFieldEnum = (typeof WhatsAppIntegrationScalarFieldEnum)[keyof typeof WhatsAppIntegrationScalarFieldEnum]
 
 
+export const AppointmentTenantScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  aifrogiTenantId: 'aifrogiTenantId',
+  name: 'name',
+  status: 'status',
+  timezone: 'timezone',
+  googleRefreshTokenEnc: 'googleRefreshTokenEnc',
+  calendarId: 'calendarId',
+  sheetId: 'sheetId',
+  razorpayEnabled: 'razorpayEnabled',
+  workingHours: 'workingHours',
+  reviewLink: 'reviewLink',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentTenantScalarFieldEnum = (typeof AppointmentTenantScalarFieldEnum)[keyof typeof AppointmentTenantScalarFieldEnum]
+
+
+export const AppointmentServiceScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  durationMin: 'durationMin',
+  priceInr: 'priceInr',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentServiceScalarFieldEnum = (typeof AppointmentServiceScalarFieldEnum)[keyof typeof AppointmentServiceScalarFieldEnum]
+
+
+export const AppointmentBookingScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  serviceId: 'serviceId',
+  customerPhone: 'customerPhone',
+  customerName: 'customerName',
+  slotStart: 'slotStart',
+  slotEnd: 'slotEnd',
+  activeSlotKey: 'activeSlotKey',
+  gcalEventId: 'gcalEventId',
+  status: 'status',
+  paymentStatus: 'paymentStatus',
+  paymentLinkId: 'paymentLinkId',
+  sourceMessageId: 'sourceMessageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentBookingScalarFieldEnum = (typeof AppointmentBookingScalarFieldEnum)[keyof typeof AppointmentBookingScalarFieldEnum]
+
+
+export const AppointmentSessionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerPhone: 'customerPhone',
+  status: 'status',
+  selectedServiceId: 'selectedServiceId',
+  customerName: 'customerName',
+  selectedSlotStartIso: 'selectedSlotStartIso',
+  data: 'data',
+  lastInboundMessageId: 'lastInboundMessageId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentSessionScalarFieldEnum = (typeof AppointmentSessionScalarFieldEnum)[keyof typeof AppointmentSessionScalarFieldEnum]
+
+
+export const AppointmentMessageLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  bookingId: 'bookingId',
+  direction: 'direction',
+  eventType: 'eventType',
+  template: 'template',
+  body: 'body',
+  inboundMessageId: 'inboundMessageId',
+  idempotencyKey: 'idempotencyKey',
+  metadata: 'metadata',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AppointmentMessageLogScalarFieldEnum = (typeof AppointmentMessageLogScalarFieldEnum)[keyof typeof AppointmentMessageLogScalarFieldEnum]
+
+
+export const AppointmentPaymentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  bookingId: 'bookingId',
+  provider: 'provider',
+  paymentLinkId: 'paymentLinkId',
+  externalPaymentId: 'externalPaymentId',
+  amountPaisa: 'amountPaisa',
+  status: 'status',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentPaymentScalarFieldEnum = (typeof AppointmentPaymentScalarFieldEnum)[keyof typeof AppointmentPaymentScalarFieldEnum]
+
+
+export const AppointmentJobScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  bookingId: 'bookingId',
+  jobType: 'jobType',
+  status: 'status',
+  idempotencyKey: 'idempotencyKey',
+  payload: 'payload',
+  scheduledFor: 'scheduledFor',
+  nextRunAt: 'nextRunAt',
+  attemptCount: 'attemptCount',
+  maxAttempts: 'maxAttempts',
+  lastError: 'lastError',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentJobScalarFieldEnum = (typeof AppointmentJobScalarFieldEnum)[keyof typeof AppointmentJobScalarFieldEnum]
+
+
+export const AppointmentSheetSyncStateScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  tabName: 'tabName',
+  cursor: 'cursor',
+  lastSyncedAt: 'lastSyncedAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AppointmentSheetSyncStateScalarFieldEnum = (typeof AppointmentSheetSyncStateScalarFieldEnum)[keyof typeof AppointmentSheetSyncStateScalarFieldEnum]
+
+
+export const CommerceTenantScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  aifrogiTenantId: 'aifrogiTenantId',
+  name: 'name',
+  brandName: 'brandName',
+  status: 'status',
+  timezone: 'timezone',
+  currency: 'currency',
+  storeProvider: 'storeProvider',
+  storeBaseUrl: 'storeBaseUrl',
+  googleSheetId: 'googleSheetId',
+  razorpayEnabled: 'razorpayEnabled',
+  whatsappFlowId: 'whatsappFlowId',
+  fulfillmentModes: 'fulfillmentModes',
+  settings: 'settings',
+  lastCatalogSyncAt: 'lastCatalogSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceTenantScalarFieldEnum = (typeof CommerceTenantScalarFieldEnum)[keyof typeof CommerceTenantScalarFieldEnum]
+
+
+export const CommerceProductScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  externalId: 'externalId',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  category: 'category',
+  imageUrl: 'imageUrl',
+  basePricePaisa: 'basePricePaisa',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceProductScalarFieldEnum = (typeof CommerceProductScalarFieldEnum)[keyof typeof CommerceProductScalarFieldEnum]
+
+
+export const CommerceProductVariantScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  externalId: 'externalId',
+  name: 'name',
+  sku: 'sku',
+  priceDeltaPaisa: 'priceDeltaPaisa',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceProductVariantScalarFieldEnum = (typeof CommerceProductVariantScalarFieldEnum)[keyof typeof CommerceProductVariantScalarFieldEnum]
+
+
+export const CommerceAddonScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  productId: 'productId',
+  name: 'name',
+  category: 'category',
+  pricePaisa: 'pricePaisa',
+  active: 'active',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceAddonScalarFieldEnum = (typeof CommerceAddonScalarFieldEnum)[keyof typeof CommerceAddonScalarFieldEnum]
+
+
+export const CommerceCustomerScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  phone: 'phone',
+  name: 'name',
+  email: 'email',
+  lastAddress: 'lastAddress',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceCustomerScalarFieldEnum = (typeof CommerceCustomerScalarFieldEnum)[keyof typeof CommerceCustomerScalarFieldEnum]
+
+
+export const CommerceOrderScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  orderNumber: 'orderNumber',
+  status: 'status',
+  paymentStatus: 'paymentStatus',
+  fulfillmentStatus: 'fulfillmentStatus',
+  sourceChannel: 'sourceChannel',
+  externalOrderId: 'externalOrderId',
+  subtotalPaisa: 'subtotalPaisa',
+  deliveryFeePaisa: 'deliveryFeePaisa',
+  discountPaisa: 'discountPaisa',
+  totalPaisa: 'totalPaisa',
+  currency: 'currency',
+  deliveryDate: 'deliveryDate',
+  deliverySlot: 'deliverySlot',
+  deliveryAddress: 'deliveryAddress',
+  customization: 'customization',
+  notes: 'notes',
+  paymentLinkId: 'paymentLinkId',
+  paymentLinkUrl: 'paymentLinkUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceOrderScalarFieldEnum = (typeof CommerceOrderScalarFieldEnum)[keyof typeof CommerceOrderScalarFieldEnum]
+
+
+export const CommerceOrderItemScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  productId: 'productId',
+  variantId: 'variantId',
+  title: 'title',
+  variantTitle: 'variantTitle',
+  quantity: 'quantity',
+  unitPricePaisa: 'unitPricePaisa',
+  addonTotalPaisa: 'addonTotalPaisa',
+  totalPaisa: 'totalPaisa',
+  customization: 'customization',
+  createdAt: 'createdAt'
+} as const
+
+export type CommerceOrderItemScalarFieldEnum = (typeof CommerceOrderItemScalarFieldEnum)[keyof typeof CommerceOrderItemScalarFieldEnum]
+
+
+export const CommercePaymentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  orderId: 'orderId',
+  provider: 'provider',
+  paymentLinkId: 'paymentLinkId',
+  externalPaymentId: 'externalPaymentId',
+  amountPaisa: 'amountPaisa',
+  status: 'status',
+  rawPayload: 'rawPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommercePaymentScalarFieldEnum = (typeof CommercePaymentScalarFieldEnum)[keyof typeof CommercePaymentScalarFieldEnum]
+
+
+export const CommerceFlowSessionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  customerPhone: 'customerPhone',
+  status: 'status',
+  selectedProductId: 'selectedProductId',
+  selectedVariantId: 'selectedVariantId',
+  cartData: 'cartData',
+  lastInboundMessageId: 'lastInboundMessageId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommerceFlowSessionScalarFieldEnum = (typeof CommerceFlowSessionScalarFieldEnum)[keyof typeof CommerceFlowSessionScalarFieldEnum]
+
+
+export const CommerceConversationScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  orderId: 'orderId',
+  direction: 'direction',
+  eventType: 'eventType',
+  template: 'template',
+  body: 'body',
+  inboundMessageId: 'inboundMessageId',
+  idempotencyKey: 'idempotencyKey',
+  metadata: 'metadata',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CommerceConversationScalarFieldEnum = (typeof CommerceConversationScalarFieldEnum)[keyof typeof CommerceConversationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3627,6 +5316,24 @@ export type GlobalOmitConfig = {
   asset?: Prisma.AssetOmit
   leadAssetShare?: Prisma.LeadAssetShareOmit
   whatsAppIntegration?: Prisma.WhatsAppIntegrationOmit
+  appointmentTenant?: Prisma.AppointmentTenantOmit
+  appointmentService?: Prisma.AppointmentServiceOmit
+  appointmentBooking?: Prisma.AppointmentBookingOmit
+  appointmentSession?: Prisma.AppointmentSessionOmit
+  appointmentMessageLog?: Prisma.AppointmentMessageLogOmit
+  appointmentPayment?: Prisma.AppointmentPaymentOmit
+  appointmentJob?: Prisma.AppointmentJobOmit
+  appointmentSheetSyncState?: Prisma.AppointmentSheetSyncStateOmit
+  commerceTenant?: Prisma.CommerceTenantOmit
+  commerceProduct?: Prisma.CommerceProductOmit
+  commerceProductVariant?: Prisma.CommerceProductVariantOmit
+  commerceAddon?: Prisma.CommerceAddonOmit
+  commerceCustomer?: Prisma.CommerceCustomerOmit
+  commerceOrder?: Prisma.CommerceOrderOmit
+  commerceOrderItem?: Prisma.CommerceOrderItemOmit
+  commercePayment?: Prisma.CommercePaymentOmit
+  commerceFlowSession?: Prisma.CommerceFlowSessionOmit
+  commerceConversation?: Prisma.CommerceConversationOmit
 }
 
 /* Types for Logging */

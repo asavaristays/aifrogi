@@ -1,19 +1,38 @@
 import { TopBar } from "@/components/layout/top-bar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { AppointmentJourneyIntegrationCard } from "@/components/settings/appointment-journey-integration-card";
 import { WhatsAppIntegrationCard } from "@/components/settings/whatsapp-integration-card";
+import { getAppointmentTenantForProperty } from "@/lib/appointment-journey-service";
 import { loadWhatsAppIntegration } from "@/lib/services/whatsapp-service";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function SettingsIntegrationsPage() {
+export default async function SettingsIntegrationsPage({
+  searchParams
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const propertySlug = await getCurrentWorkspaceSlug();
-  const integration = await loadWhatsAppIntegration(propertySlug);
+  const [integration, appointmentResult, params] = await Promise.all([
+    loadWhatsAppIntegration(propertySlug),
+    getAppointmentTenantForProperty(propertySlug),
+    (searchParams ?? Promise.resolve({})) as Promise<Record<string, string | string[] | undefined>>
+  ]);
   const webhookBaseUrl = process.env.PUBLIC_BASE_URL || "https://leados.hotelradar.in";
   const webhookUrl = webhookBaseUrl.replace(/\/$/, "") + "/api/integrations/whatsapp/webhook";
   const connected = integration.status === "CONNECTED";
+  const googleStatus = Array.isArray(params.appointment_google) ? params.appointment_google[0] : params.appointment_google;
+  const googleDetail = Array.isArray(params.appointment_google_detail) ? params.appointment_google_detail[0] : params.appointment_google_detail;
+  const appointmentMessage = googleStatus === "connected"
+    ? "Google Calendar and the Appointment Journey Sheet are connected for this client."
+    : googleStatus === "action_required"
+      ? `Google connected, but resource setup needs attention: ${googleDetail || "review API scopes and enabled services."}`
+      : googleStatus === "failed"
+        ? `Google connection failed: ${googleDetail || "try reconnecting."}`
+        : null;
 
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#f1fbf5_0%,#ffffff_50%,#eef8f5_100%)]">
@@ -37,6 +56,15 @@ export default async function SettingsIntegrationsPage() {
           webhookUrl={webhookUrl}
           twilioReady={false}
         />
+
+        {appointmentResult.tenant ? (
+          <AppointmentJourneyIntegrationCard tenant={appointmentResult.tenant} message={appointmentMessage} />
+        ) : (
+          <Card className="p-6">
+            <h3 className="text-xl font-extrabold">Appointment Journey</h3>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-muted)]">{appointmentResult.error || "Appointment Journey could not load."}</p>
+          </Card>
+        )}
 
         <Card className="p-6 shadow-[0_18px_50px_rgba(15,61,53,0.07)]">
           <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#c725ba]">Webhook</p>

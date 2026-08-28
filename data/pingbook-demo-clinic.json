@@ -1,0 +1,102 @@
+{
+  "demoId": "pingbook-demo-clinic-v1",
+  "product": "AiFrogi PingBook",
+  "status": "internal_demo_ready",
+  "positioning": {
+    "primaryBuyer": "clinic",
+    "tone": "formal and friendly",
+    "launchPromise": "Go live in 2-3 working days after Meta, Google, Razorpay, and required business access are ready.",
+    "successProof": "A patient can ask on WhatsApp, select a service and slot, pay the booking fee, receive confirmation, cancel within policy, and see the booking reflected in dashboard, Calendar, and Sheet."
+  },
+  "clinic": {
+    "name": "Aarogya Smile Clinic",
+    "city": "Panaji, Goa",
+    "phoneLabel": "Clinic WhatsApp",
+    "timezone": "Asia/Kolkata",
+    "reviewLink": "https://g.page/r/demo-clinic-review",
+    "businessHours": {
+      "mondayToSaturday": "10:00-13:00, 16:00-20:00",
+      "sunday": "Closed"
+    }
+  },
+  "staff": [
+    {
+      "name": "Dr. Meera Shah",
+      "role": "Dentist",
+      "calendar": "dr-meera-aarogya-demo",
+      "services": ["Dental consultation", "Dental cleaning", "Follow-up visit"]
+    },
+    {
+      "name": "Clinic Front Desk",
+      "role": "Operations",
+      "calendar": "front-desk-aarogya-demo",
+      "services": ["New patient intake", "Payment follow-up", "Cancellation support"]
+    }
+  ],
+  "services": [
+    {
+      "name": "Dental consultation",
+      "durationMinutes": 30,
+      "bookingFee": 300,
+      "requiresPaymentBeforeConfirmation": true
+    },
+    {
+      "name": "Dental cleaning",
+      "durationMinutes": 45,
+      "bookingFee": 500,
+      "requiresPaymentBeforeConfirmation": true
+    },
+    {
+      "name": "Follow-up visit",
+      "durationMinutes": 20,
+      "bookingFee": 0,
+      "requiresPaymentBeforeConfirmation": false
+    }
+  ],
+  "commercialTerms": {
+    "oneTimeSetupFee": 4500,
+    "monthlyPlatformFee": 1250,
+    "billingCycle": "quarterly",
+    "quarterlyPlatformFee": 3750,
+    "trialRefundWindowDays": 15,
+    "refundProcessingTime": "5-7 working days",
+    "metaMessageFees": "Charged separately as used by category and country."
+  },
+  "clinicPolicy": {
+    "patientCancellationCutoffHours": 2,
+    "refundRule": "If there is a valid issue after payment, the clinic can process a refund according to its policy.",
+    "slotHoldMinutes": 10,
+    "noShowHandling": "Mark no-show in dashboard and keep the patient conversation for follow-up."
+  },
+  "integrations": {
+    "meta": ["WhatsApp Cloud API", "appointment templates", "webhook verification"],
+    "google": ["Calendar availability", "Calendar event creation", "Sheet booking log"],
+    "razorpay": ["Booking-fee payment link", "Payment confirmation webhook"]
+  },
+  "demoScenario": {
+    "patientName": "Aisha Rao",
+    "service": "Dental cleaning",
+    "preferredTime": "Tomorrow evening",
+    "selectedSlot": "18:30",
+    "bookingFee": 500,
+    "expectedFlow": [
+      "Patient asks for an appointment on WhatsApp.",
+      "PingBook asks for the service and offers available slots.",
+      "Patient selects 18:30.",
+      "PingBook holds the slot for 10 minutes.",
+      "PingBook sends a Razorpay payment link for Rs. 500.",
+      "Payment is captured and the booking is confirmed.",
+      "Google Calendar receives the appointment event.",
+      "Google Sheet receives the booking row.",
+      "Reminder is sent before the appointment.",
+      "Patient can cancel up to 2 hours before the appointment.",
+      "After completion, PingBook sends a feedback or review request."
+    ]
+  },
+  "messageToneExamples": {
+    "confirmation": "Hello Aisha, your dental cleaning appointment with Aarogya Smile Clinic is confirmed for tomorrow at 6:30 PM. Please reply CANCEL at least 2 hours before the appointment if you need to cancel.",
+    "paymentRequest": "Hello Aisha, please complete the Rs. 500 booking fee to confirm your dental cleaning appointment for tomorrow at 6:30 PM. Your slot is held for 10 minutes.",
+    "cancellation": "Hello Aisha, your appointment has been cancelled. If a refund is applicable, the clinic team will process it as per policy.",
+    "review": "Hello Aisha, thank you for visiting Aarogya Smile Clinic. We would appreciate your feedback here: https://g.page/r/demo-clinic-review"
+  }
+}
