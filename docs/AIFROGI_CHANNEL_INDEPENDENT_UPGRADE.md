@@ -202,6 +202,19 @@ All flags default to false. Production activation requires an explicit workspace
 - Eight focused tests cover adapter normalization, tenant-safe routing, outbound compatibility, policy enforcement, replay idempotency, disabled fallback, and contained shadow-write failure.
 - Prisma generation, typecheck, lint, production build, and browser-bundle secret verification pass. Lint retains only pre-existing warnings.
 
+## Internal shadow pilot
+
+The `hotelradar` internal workspace is the sole production shadow-write allowlist entry. Neutral reads, the website channel, and agent operations remain disabled.
+
+Pilot evidence:
+
+- A bearer-authenticated synthetic inbound event completed through the unchanged legacy capture path.
+- It created one neutral WhatsApp connection, one conversation, and one inbound message.
+- The conversation links to its legacy lead and the neutral message links to its legacy lead message.
+- Replaying the identical event returned HTTP 200 while all legacy and neutral counts remained exactly one.
+- Production readiness remained healthy after the original event and replay.
+- The synthetic record is labeled `Phase 1 Shadow Pilot` with message `AiFrogi Phase 1 neutral channel verification` for audit visibility.
+
 ## Immediate implementation boundary
 
 This change implements Phase 1 only. It does not add `AgentRun`, tools, outcomes, a website connector, neutral frontend reads, or a frontend redesign. Existing WhatsApp and campaign behavior remains authoritative. Neutral writes require `AIFROGI_CHANNEL_CORE_ENABLED=true`, `AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED=true`, and membership in `AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS`; disabling either flag or removing the workspace from the allowlist is the immediate fallback.
