@@ -17,7 +17,7 @@ export async function shadowWhatsAppInbound(
   input: WhatsAppShadowInput,
   options: { enabled?: boolean; write?: ShadowWriter } = {}
 ) {
-  const enabled = options.enabled ?? (featureFlags.channelCore && featureFlags.channelShadowWrite);
+  const enabled = options.enabled ?? featureFlags.channelShadowWriteForWorkspace(input.propertySlug);
   if (!enabled) return { attempted: false, mirrored: false } as const;
 
   try {

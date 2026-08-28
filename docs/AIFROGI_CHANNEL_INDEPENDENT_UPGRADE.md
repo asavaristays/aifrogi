@@ -111,6 +111,7 @@ All changes are additive. Production data is never reset, renamed, or destructiv
 
 - `AIFROGI_CHANNEL_CORE_ENABLED`: enables neutral routing services.
 - `AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED`: writes neutral records while legacy remains authoritative.
+- `AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS`: comma-separated workspace allowlist required for shadow writes.
 - `AIFROGI_CHANNEL_NEUTRAL_READ_ENABLED`: reads the neutral conversation model.
 - `AIFROGI_WEBSITE_CHANNEL_ENABLED`: enables website connector endpoints.
 - `AIFROGI_AGENT_OPERATIONS_ENABLED`: enables Phase 2 orchestration and traces.
@@ -203,4 +204,4 @@ All flags default to false. Production activation requires an explicit workspace
 
 ## Immediate implementation boundary
 
-This change implements Phase 1 only. It does not add `AgentRun`, tools, outcomes, a website connector, neutral frontend reads, or a frontend redesign. Existing WhatsApp and campaign behavior remains authoritative. Neutral writes require both `AIFROGI_CHANNEL_CORE_ENABLED=true` and `AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED=true`; disabling either flag is the immediate fallback.
+This change implements Phase 1 only. It does not add `AgentRun`, tools, outcomes, a website connector, neutral frontend reads, or a frontend redesign. Existing WhatsApp and campaign behavior remains authoritative. Neutral writes require `AIFROGI_CHANNEL_CORE_ENABLED=true`, `AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED=true`, and membership in `AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS`; disabling either flag or removing the workspace from the allowlist is the immediate fallback.

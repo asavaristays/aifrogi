@@ -5,6 +5,7 @@ import { ChannelRegistry } from "../../lib/channels/registry";
 import { ChannelRouter } from "../../lib/channels/router";
 import { WhatsAppChannelAdapter, type WhatsAppCompatibilityPort } from "../../lib/channels/whatsapp-adapter";
 import { shadowWhatsAppInbound } from "../../lib/services/channel-shadow-service";
+import { featureFlags } from "../../lib/feature-flags";
 
 function compatibilityPort() {
   const calls: Array<{ type: "text" | "template"; input: SendMessageInput | SendStructuredMessageInput }> = [];
@@ -159,4 +160,26 @@ test("duplicate inbound provider messages retain the same idempotency key", asyn
   const replay = await adapter.receiveInboundEvent(event);
   assert.equal(first[0].message.idempotencyKey, replay[0].message.idempotencyKey);
   assert.equal(first[0].message.occurredAt.toISOString(), replay[0].message.occurredAt.toISOString());
+});
+
+test("shadow activation requires both flags and an explicit workspace allowlist", () => {
+  const previous = {
+    core: process.env.AIFROGI_CHANNEL_CORE_ENABLED,
+    shadow: process.env.AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED,
+    workspaces: process.env.AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS
+  };
+  try {
+    process.env.AIFROGI_CHANNEL_CORE_ENABLED = "true";
+    process.env.AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED = "true";
+    process.env.AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS = "pilot-clinic, wellness-centre";
+    assert.equal(featureFlags.channelShadowWriteForWorkspace("pilot-clinic"), true);
+    assert.equal(featureFlags.channelShadowWriteForWorkspace("another-client"), false);
+  } finally {
+    if (previous.core === undefined) delete process.env.AIFROGI_CHANNEL_CORE_ENABLED;
+    else process.env.AIFROGI_CHANNEL_CORE_ENABLED = previous.core;
+    if (previous.shadow === undefined) delete process.env.AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED;
+    else process.env.AIFROGI_CHANNEL_SHADOW_WRITE_ENABLED = previous.shadow;
+    if (previous.workspaces === undefined) delete process.env.AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS;
+    else process.env.AIFROGI_CHANNEL_SHADOW_WORKSPACE_SLUGS = previous.workspaces;
+  }
 });
