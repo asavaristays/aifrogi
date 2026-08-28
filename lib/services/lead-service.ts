@@ -13,6 +13,7 @@ import {
   updateLeadById
 } from "@/lib/repositories/lead-repository";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
+import { shadowWhatsAppInbound } from "@/lib/services/channel-shadow-service";
 import type { Lead, LeadInput } from "@/types";
 
 function buildInitials(name: string) {
@@ -236,16 +237,27 @@ export async function captureIncomingWhatsAppMessage(input: {
       return { error: "Could not create or load lead", lead: null as Lead | null, status: 503, created: false, duplicate: false };
     }
 
+    const occurredAt = input.sentAt ?? new Date();
     const guestMessage = await appendMessageToLead(lead.id, {
       sender: "GUEST",
       body: input.body,
-      sentAt: input.sentAt ?? new Date(),
+      sentAt: occurredAt,
       externalMessageId: input.externalMessageId
     });
 
     if (!guestMessage) {
       return { error: "Database unavailable", lead: null as Lead | null, status: 503, created: false, duplicate: false };
     }
+
+    await shadowWhatsAppInbound({
+      propertySlug,
+      legacyLeadId: lead.id,
+      participantExternalKey: normalizedPhone,
+      displayName: input.profileName?.trim() || undefined,
+      body: input.body,
+      externalMessageId: input.externalMessageId,
+      occurredAt
+    });
 
     const aiReply = String(input.aiReply || "").trim();
     if (!aiReply) {
@@ -255,7 +267,7 @@ export async function captureIncomingWhatsAppMessage(input: {
     const aiMessage = await appendMessageToLead(lead.id, {
       sender: "AI",
       body: aiReply,
-      sentAt: input.sentAt ?? new Date()
+      sentAt: occurredAt
     });
 
     if (!aiMessage) {

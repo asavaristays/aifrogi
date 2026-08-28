@@ -64,3 +64,57 @@ export const AssetCategory = {
 } as const
 
 export type AssetCategory = (typeof AssetCategory)[keyof typeof AssetCategory]
+
+
+export const ChannelKind = {
+  WHATSAPP: 'WHATSAPP',
+  WEBSITE: 'WEBSITE',
+  EMAIL: 'EMAIL',
+  INSTAGRAM: 'INSTAGRAM',
+  API: 'API',
+  VOICE: 'VOICE'
+} as const
+
+export type ChannelKind = (typeof ChannelKind)[keyof typeof ChannelKind]
+
+
+export const ChannelConnectionStatus = {
+  DRAFT: 'DRAFT',
+  CONNECTING: 'CONNECTING',
+  CONNECTED: 'CONNECTED',
+  DEGRADED: 'DEGRADED',
+  DISABLED: 'DISABLED',
+  ERROR: 'ERROR'
+} as const
+
+export type ChannelConnectionStatus = (typeof ChannelConnectionStatus)[keyof typeof ChannelConnectionStatus]
+
+
+export const ParticipantKind = {
+  CUSTOMER: 'CUSTOMER',
+  HUMAN: 'HUMAN',
+  BOT: 'BOT',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type ParticipantKind = (typeof ParticipantKind)[keyof typeof ParticipantKind]
+
+
+export const ConversationStatus = {
+  OPEN: 'OPEN',
+  BOT_ACTIVE: 'BOT_ACTIVE',
+  HUMAN_OWNED: 'HUMAN_OWNED',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type ConversationStatus = (typeof ConversationStatus)[keyof typeof ConversationStatus]
+
+
+export const NeutralMessageDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type NeutralMessageDirection = (typeof NeutralMessageDirection)[keyof typeof NeutralMessageDirection]

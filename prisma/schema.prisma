@@ -49,6 +49,45 @@ enum AssetCategory {
   OTHER
 }
 
+enum ChannelKind {
+  WHATSAPP
+  WEBSITE
+  EMAIL
+  INSTAGRAM
+  API
+  VOICE
+}
+
+enum ChannelConnectionStatus {
+  DRAFT
+  CONNECTING
+  CONNECTED
+  DEGRADED
+  DISABLED
+  ERROR
+}
+
+enum ParticipantKind {
+  CUSTOMER
+  HUMAN
+  BOT
+  SYSTEM
+}
+
+enum ConversationStatus {
+  OPEN
+  BOT_ACTIVE
+  HUMAN_OWNED
+  RESOLVED
+  CLOSED
+}
+
+enum NeutralMessageDirection {
+  INBOUND
+  OUTBOUND
+  SYSTEM
+}
+
 model Property {
   id          String      @id @default(cuid())
   organizationId String?
@@ -71,6 +110,10 @@ model Property {
   knowledgeDocuments KnowledgeDocument[]
   knowledgeEntries KnowledgeEntry[]
   knowledgeGaps KnowledgeGap[]
+  channelConnections ChannelConnection[]
+  participants Participant[]
+  conversations Conversation[]
+  neutralMessages Message[]
 
   @@index([organizationId])
 }
@@ -336,6 +379,7 @@ model Lead {
   tags            LeadTag[]
   messages        LeadMessage[]
   assetShares     LeadAssetShare[]
+  conversations   Conversation[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -363,8 +407,119 @@ model LeadMessage {
   statusUpdatedAt   DateTime?
   sentAt            DateTime
   createdAt         DateTime      @default(now())
+  neutralMessage    Message?
 
   @@index([leadId, sentAt])
+}
+
+model ChannelConnection {
+  id                   String                  @id @default(cuid())
+  propertyId           String
+  property             Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  kind                 ChannelKind
+  externalId           String?
+  displayName          String?
+  status               ChannelConnectionStatus @default(DRAFT)
+  enabled              Boolean                 @default(false)
+  configuration        Json?
+  credentialsReference String?
+  lastHealthyAt        DateTime?
+  lastErrorAt          DateTime?
+  lastErrorCode        String?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  conversations        Conversation[]
+
+  @@unique([propertyId, kind, externalId])
+  @@index([propertyId, kind, enabled])
+  @@index([status, lastHealthyAt])
+}
+
+model Participant {
+  id            String                   @id @default(cuid())
+  propertyId    String
+  property      Property                 @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  kind          ParticipantKind          @default(CUSTOMER)
+  externalKey   String
+  displayName   String?
+  phone         String?
+  email         String?
+  metadata      Json?
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  conversations ConversationParticipant[]
+  sentMessages   Message[]
+
+  @@unique([propertyId, kind, externalKey])
+  @@index([propertyId, phone])
+  @@index([propertyId, email])
+}
+
+model Conversation {
+  id                     String                  @id @default(cuid())
+  propertyId             String
+  property               Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  channelConnectionId    String?
+  channelConnection      ChannelConnection?      @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
+  legacyLeadId           String?
+  legacyLead             Lead?                   @relation(fields: [legacyLeadId], references: [id], onDelete: SetNull)
+  externalConversationId String?
+  status                 ConversationStatus      @default(OPEN)
+  botPaused              Boolean                 @default(false)
+  humanOwnerEmail        String?
+  lastMessageAt          DateTime                 @default(now())
+  metadata               Json?
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  participants           ConversationParticipant[]
+  messages               Message[]
+
+  @@unique([channelConnectionId, externalConversationId])
+  @@index([propertyId, status, lastMessageAt])
+  @@index([legacyLeadId])
+  @@index([humanOwnerEmail, status])
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  participantId  String
+  participant    Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  role           String       @default("CUSTOMER")
+  joinedAt       DateTime     @default(now())
+  leftAt         DateTime?
+
+  @@unique([conversationId, participantId])
+  @@index([participantId, joinedAt])
+}
+
+model Message {
+  id                    String                  @id @default(cuid())
+  propertyId            String
+  property              Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  conversationId        String
+  conversation          Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  legacyLeadMessageId   String?                 @unique
+  legacyLeadMessage     LeadMessage?            @relation(fields: [legacyLeadMessageId], references: [id], onDelete: SetNull)
+  externalMessageId     String?
+  idempotencyKey        String
+  direction             NeutralMessageDirection
+  senderParticipantId   String?
+  senderParticipant     Participant?            @relation(fields: [senderParticipantId], references: [id], onDelete: SetNull)
+  body                  String                  @db.Text
+  contentType           String                  @default("text")
+  deliveryStatus        String?
+  occurredAt            DateTime
+  metadata              Json?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+
+  @@unique([propertyId, idempotencyKey])
+  @@unique([conversationId, externalMessageId])
+  @@index([propertyId, occurredAt])
+  @@index([conversationId, occurredAt])
+  @@index([senderParticipantId])
 }
 
 model MetricDaily {

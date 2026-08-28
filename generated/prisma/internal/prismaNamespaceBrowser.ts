@@ -66,6 +66,11 @@ export const ModelName = {
   Lead: 'Lead',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
+  ChannelConnection: 'ChannelConnection',
+  Participant: 'Participant',
+  Conversation: 'Conversation',
+  ConversationParticipant: 'ConversationParticipant',
+  Message: 'Message',
   MetricDaily: 'MetricDaily',
   Campaign: 'Campaign',
   CampaignRecipient: 'CampaignRecipient',
@@ -399,6 +404,93 @@ export const LeadMessageScalarFieldEnum = {
 } as const
 
 export type LeadMessageScalarFieldEnum = (typeof LeadMessageScalarFieldEnum)[keyof typeof LeadMessageScalarFieldEnum]
+
+
+export const ChannelConnectionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  kind: 'kind',
+  externalId: 'externalId',
+  displayName: 'displayName',
+  status: 'status',
+  enabled: 'enabled',
+  configuration: 'configuration',
+  credentialsReference: 'credentialsReference',
+  lastHealthyAt: 'lastHealthyAt',
+  lastErrorAt: 'lastErrorAt',
+  lastErrorCode: 'lastErrorCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChannelConnectionScalarFieldEnum = (typeof ChannelConnectionScalarFieldEnum)[keyof typeof ChannelConnectionScalarFieldEnum]
+
+
+export const ParticipantScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  kind: 'kind',
+  externalKey: 'externalKey',
+  displayName: 'displayName',
+  phone: 'phone',
+  email: 'email',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ParticipantScalarFieldEnum = (typeof ParticipantScalarFieldEnum)[keyof typeof ParticipantScalarFieldEnum]
+
+
+export const ConversationScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  channelConnectionId: 'channelConnectionId',
+  legacyLeadId: 'legacyLeadId',
+  externalConversationId: 'externalConversationId',
+  status: 'status',
+  botPaused: 'botPaused',
+  humanOwnerEmail: 'humanOwnerEmail',
+  lastMessageAt: 'lastMessageAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ConversationParticipantScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  participantId: 'participantId',
+  role: 'role',
+  joinedAt: 'joinedAt',
+  leftAt: 'leftAt'
+} as const
+
+export type ConversationParticipantScalarFieldEnum = (typeof ConversationParticipantScalarFieldEnum)[keyof typeof ConversationParticipantScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  conversationId: 'conversationId',
+  legacyLeadMessageId: 'legacyLeadMessageId',
+  externalMessageId: 'externalMessageId',
+  idempotencyKey: 'idempotencyKey',
+  direction: 'direction',
+  senderParticipantId: 'senderParticipantId',
+  body: 'body',
+  contentType: 'contentType',
+  deliveryStatus: 'deliveryStatus',
+  occurredAt: 'occurredAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const MetricDailyScalarFieldEnum = {
@@ -1060,19 +1152,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

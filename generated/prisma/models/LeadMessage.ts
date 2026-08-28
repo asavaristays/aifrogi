@@ -215,6 +215,7 @@ export type LeadMessageWhereInput = {
   sentAt?: Prisma.DateTimeFilter<"LeadMessage"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"LeadMessage"> | Date | string
   lead?: Prisma.XOR<Prisma.LeadScalarRelationFilter, Prisma.LeadWhereInput>
+  neutralMessage?: Prisma.XOR<Prisma.MessageNullableScalarRelationFilter, Prisma.MessageWhereInput> | null
 }
 
 export type LeadMessageOrderByWithRelationInput = {
@@ -228,6 +229,7 @@ export type LeadMessageOrderByWithRelationInput = {
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   lead?: Prisma.LeadOrderByWithRelationInput
+  neutralMessage?: Prisma.MessageOrderByWithRelationInput
 }
 
 export type LeadMessageWhereUniqueInput = Prisma.AtLeast<{
@@ -244,6 +246,7 @@ export type LeadMessageWhereUniqueInput = Prisma.AtLeast<{
   sentAt?: Prisma.DateTimeFilter<"LeadMessage"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"LeadMessage"> | Date | string
   lead?: Prisma.XOR<Prisma.LeadScalarRelationFilter, Prisma.LeadWhereInput>
+  neutralMessage?: Prisma.XOR<Prisma.MessageNullableScalarRelationFilter, Prisma.MessageWhereInput> | null
 }, "id" | "externalMessageId">
 
 export type LeadMessageOrderByWithAggregationInput = {
@@ -286,6 +289,7 @@ export type LeadMessageCreateInput = {
   sentAt: Date | string
   createdAt?: Date | string
   lead: Prisma.LeadCreateNestedOneWithoutMessagesInput
+  neutralMessage?: Prisma.MessageCreateNestedOneWithoutLegacyLeadMessageInput
 }
 
 export type LeadMessageUncheckedCreateInput = {
@@ -298,6 +302,7 @@ export type LeadMessageUncheckedCreateInput = {
   statusUpdatedAt?: Date | string | null
   sentAt: Date | string
   createdAt?: Date | string
+  neutralMessage?: Prisma.MessageUncheckedCreateNestedOneWithoutLegacyLeadMessageInput
 }
 
 export type LeadMessageUpdateInput = {
@@ -310,6 +315,7 @@ export type LeadMessageUpdateInput = {
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lead?: Prisma.LeadUpdateOneRequiredWithoutMessagesNestedInput
+  neutralMessage?: Prisma.MessageUpdateOneWithoutLegacyLeadMessageNestedInput
 }
 
 export type LeadMessageUncheckedUpdateInput = {
@@ -322,6 +328,7 @@ export type LeadMessageUncheckedUpdateInput = {
   statusUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  neutralMessage?: Prisma.MessageUncheckedUpdateOneWithoutLegacyLeadMessageNestedInput
 }
 
 export type LeadMessageCreateManyInput = {
@@ -405,6 +412,11 @@ export type LeadMessageMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type LeadMessageNullableScalarRelationFilter = {
+  is?: Prisma.LeadMessageWhereInput | null
+  isNot?: Prisma.LeadMessageWhereInput | null
+}
+
 export type LeadMessageCreateNestedManyWithoutLeadInput = {
   create?: Prisma.XOR<Prisma.LeadMessageCreateWithoutLeadInput, Prisma.LeadMessageUncheckedCreateWithoutLeadInput> | Prisma.LeadMessageCreateWithoutLeadInput[] | Prisma.LeadMessageUncheckedCreateWithoutLeadInput[]
   connectOrCreate?: Prisma.LeadMessageCreateOrConnectWithoutLeadInput | Prisma.LeadMessageCreateOrConnectWithoutLeadInput[]
@@ -451,6 +463,22 @@ export type EnumMessageSenderFieldUpdateOperationsInput = {
   set?: $Enums.MessageSender
 }
 
+export type LeadMessageCreateNestedOneWithoutNeutralMessageInput = {
+  create?: Prisma.XOR<Prisma.LeadMessageCreateWithoutNeutralMessageInput, Prisma.LeadMessageUncheckedCreateWithoutNeutralMessageInput>
+  connectOrCreate?: Prisma.LeadMessageCreateOrConnectWithoutNeutralMessageInput
+  connect?: Prisma.LeadMessageWhereUniqueInput
+}
+
+export type LeadMessageUpdateOneWithoutNeutralMessageNestedInput = {
+  create?: Prisma.XOR<Prisma.LeadMessageCreateWithoutNeutralMessageInput, Prisma.LeadMessageUncheckedCreateWithoutNeutralMessageInput>
+  connectOrCreate?: Prisma.LeadMessageCreateOrConnectWithoutNeutralMessageInput
+  upsert?: Prisma.LeadMessageUpsertWithoutNeutralMessageInput
+  disconnect?: Prisma.LeadMessageWhereInput | boolean
+  delete?: Prisma.LeadMessageWhereInput | boolean
+  connect?: Prisma.LeadMessageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LeadMessageUpdateToOneWithWhereWithoutNeutralMessageInput, Prisma.LeadMessageUpdateWithoutNeutralMessageInput>, Prisma.LeadMessageUncheckedUpdateWithoutNeutralMessageInput>
+}
+
 export type LeadMessageCreateWithoutLeadInput = {
   id?: string
   sender: $Enums.MessageSender
@@ -460,6 +488,7 @@ export type LeadMessageCreateWithoutLeadInput = {
   statusUpdatedAt?: Date | string | null
   sentAt: Date | string
   createdAt?: Date | string
+  neutralMessage?: Prisma.MessageCreateNestedOneWithoutLegacyLeadMessageInput
 }
 
 export type LeadMessageUncheckedCreateWithoutLeadInput = {
@@ -471,6 +500,7 @@ export type LeadMessageUncheckedCreateWithoutLeadInput = {
   statusUpdatedAt?: Date | string | null
   sentAt: Date | string
   createdAt?: Date | string
+  neutralMessage?: Prisma.MessageUncheckedCreateNestedOneWithoutLegacyLeadMessageInput
 }
 
 export type LeadMessageCreateOrConnectWithoutLeadInput = {
@@ -514,6 +544,70 @@ export type LeadMessageScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"LeadMessage"> | Date | string
 }
 
+export type LeadMessageCreateWithoutNeutralMessageInput = {
+  id?: string
+  sender: $Enums.MessageSender
+  body: string
+  externalMessageId?: string | null
+  deliveryStatus?: string | null
+  statusUpdatedAt?: Date | string | null
+  sentAt: Date | string
+  createdAt?: Date | string
+  lead: Prisma.LeadCreateNestedOneWithoutMessagesInput
+}
+
+export type LeadMessageUncheckedCreateWithoutNeutralMessageInput = {
+  id?: string
+  leadId: string
+  sender: $Enums.MessageSender
+  body: string
+  externalMessageId?: string | null
+  deliveryStatus?: string | null
+  statusUpdatedAt?: Date | string | null
+  sentAt: Date | string
+  createdAt?: Date | string
+}
+
+export type LeadMessageCreateOrConnectWithoutNeutralMessageInput = {
+  where: Prisma.LeadMessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.LeadMessageCreateWithoutNeutralMessageInput, Prisma.LeadMessageUncheckedCreateWithoutNeutralMessageInput>
+}
+
+export type LeadMessageUpsertWithoutNeutralMessageInput = {
+  update: Prisma.XOR<Prisma.LeadMessageUpdateWithoutNeutralMessageInput, Prisma.LeadMessageUncheckedUpdateWithoutNeutralMessageInput>
+  create: Prisma.XOR<Prisma.LeadMessageCreateWithoutNeutralMessageInput, Prisma.LeadMessageUncheckedCreateWithoutNeutralMessageInput>
+  where?: Prisma.LeadMessageWhereInput
+}
+
+export type LeadMessageUpdateToOneWithWhereWithoutNeutralMessageInput = {
+  where?: Prisma.LeadMessageWhereInput
+  data: Prisma.XOR<Prisma.LeadMessageUpdateWithoutNeutralMessageInput, Prisma.LeadMessageUncheckedUpdateWithoutNeutralMessageInput>
+}
+
+export type LeadMessageUpdateWithoutNeutralMessageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sender?: Prisma.EnumMessageSenderFieldUpdateOperationsInput | $Enums.MessageSender
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statusUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lead?: Prisma.LeadUpdateOneRequiredWithoutMessagesNestedInput
+}
+
+export type LeadMessageUncheckedUpdateWithoutNeutralMessageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  leadId?: Prisma.StringFieldUpdateOperationsInput | string
+  sender?: Prisma.EnumMessageSenderFieldUpdateOperationsInput | $Enums.MessageSender
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statusUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type LeadMessageCreateManyLeadInput = {
   id?: string
   sender: $Enums.MessageSender
@@ -534,6 +628,7 @@ export type LeadMessageUpdateWithoutLeadInput = {
   statusUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  neutralMessage?: Prisma.MessageUpdateOneWithoutLegacyLeadMessageNestedInput
 }
 
 export type LeadMessageUncheckedUpdateWithoutLeadInput = {
@@ -545,6 +640,7 @@ export type LeadMessageUncheckedUpdateWithoutLeadInput = {
   statusUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  neutralMessage?: Prisma.MessageUncheckedUpdateOneWithoutLegacyLeadMessageNestedInput
 }
 
 export type LeadMessageUncheckedUpdateManyWithoutLeadInput = {
@@ -571,6 +667,7 @@ export type LeadMessageSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   sentAt?: boolean
   createdAt?: boolean
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
+  neutralMessage?: boolean | Prisma.LeadMessage$neutralMessageArgs<ExtArgs>
 }, ExtArgs["result"]["leadMessage"]>
 
 export type LeadMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -614,6 +711,7 @@ export type LeadMessageSelectScalar = {
 export type LeadMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "leadId" | "sender" | "body" | "externalMessageId" | "deliveryStatus" | "statusUpdatedAt" | "sentAt" | "createdAt", ExtArgs["result"]["leadMessage"]>
 export type LeadMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
+  neutralMessage?: boolean | Prisma.LeadMessage$neutralMessageArgs<ExtArgs>
 }
 export type LeadMessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -626,6 +724,7 @@ export type $LeadMessagePayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "LeadMessage"
   objects: {
     lead: Prisma.$LeadPayload<ExtArgs>
+    neutralMessage: Prisma.$MessagePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1032,6 +1131,7 @@ readonly fields: LeadMessageFieldRefs;
 export interface Prisma__LeadMessageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   lead<T extends Prisma.LeadDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeadDefaultArgs<ExtArgs>>): Prisma.Prisma__LeadClient<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  neutralMessage<T extends Prisma.LeadMessage$neutralMessageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeadMessage$neutralMessageArgs<ExtArgs>>): Prisma.Prisma__MessageClient<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1468,6 +1568,25 @@ export type LeadMessageDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many LeadMessages to delete.
    */
   limit?: number
+}
+
+/**
+ * LeadMessage.neutralMessage
+ */
+export type LeadMessage$neutralMessageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
 }
 
 /**

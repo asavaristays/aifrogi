@@ -117,6 +117,31 @@ export type LeadTag = Prisma.LeadTagModel
  */
 export type LeadMessage = Prisma.LeadMessageModel
 /**
+ * Model ChannelConnection
+ * 
+ */
+export type ChannelConnection = Prisma.ChannelConnectionModel
+/**
+ * Model Participant
+ * 
+ */
+export type Participant = Prisma.ParticipantModel
+/**
+ * Model Conversation
+ * 
+ */
+export type Conversation = Prisma.ConversationModel
+/**
+ * Model ConversationParticipant
+ * 
+ */
+export type ConversationParticipant = Prisma.ConversationParticipantModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
  * Model MetricDaily
  * 
  */
