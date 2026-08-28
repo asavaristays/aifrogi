@@ -53,6 +53,8 @@ const publicApiPrefixes = [
   "/api/auth/invitation",
   "/api/auth/password-reset",
   "/api/automation/run",
+  // Machine ingress authenticates with its dedicated bearer token in the route.
+  "/api/integrations/whatsapp/inbound",
   "/api/integrations/whatsapp/webhook",
   "/api/appointment-journey/google/oauth/callback",
   "/api/appointment-journey/webhook/aifrogi",

@@ -1,4 +1,4 @@
-import type { SendMessageInput, SendStructuredMessageInput } from "@/lib/channels/contracts";
+import type { SendStructuredMessageInput } from "@/lib/channels/contracts";
 import type { WhatsAppCompatibilityPort } from "@/lib/channels/whatsapp-adapter";
 import { sendWhatsAppTemplateMessage } from "@/lib/services/whatsapp-service";
 
