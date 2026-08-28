@@ -13,6 +13,10 @@ It should be treated as a living document. When a new major feature, route, inte
 
 AiFrogi helps businesses run WhatsApp conversations, broadcasts, reminders, payments, forms, reviews, retargeting, and human-assisted AI workflows through the official WhatsApp Business Platform, with guided onboarding and controlled customer-data access.
 
+AiFrogi's long-term product vision is to give every business a **sovereign business bot**: a bot that develops business-specific intelligence from approved first-party knowledge and consented interactions while preserving the business's ownership, history, portability, and control of its data. External AI models are governed processors, not the owner or permanent source of that intelligence.
+
+The complete product and architecture principle is defined in [AiFrogi Sovereign Business Bot Vision](./AIFROGI_SOVEREIGN_BOT_VISION.md).
+
 The product promise is not “AI will do everything.” The stronger and more honest promise is:
 
 > AiFrogi turns WhatsApp customer conversations into the right next action, while keeping people, consent, billing, and data boundaries clear.
@@ -22,6 +26,7 @@ The product promise is not “AI will do everything.” The stronger and more ho
 These rules protect the brand and prevent confusion.
 
 - Public product name is `AiFrogi`.
+- Every AiFrogi bot must follow the sovereign-business-bot vision: business-owned intelligence, preserved data, tenant isolation, portability, and governed model use.
 - Company/operator is `webtechnosys`.
 - Old technical names like `LeadOS` or `lead-os-ai` are internal compatibility names only.
 - Marketing site is [https://aifrogi.com](https://aifrogi.com).

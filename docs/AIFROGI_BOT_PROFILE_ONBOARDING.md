@@ -2,6 +2,8 @@
 
 AiFrogi models one intelligent business bot with independently configurable purpose, channels, capabilities, and authority.
 
+Every profile represents a sovereign business bot. Its approved knowledge, business context, permissions, conversation history, and verified outcomes belong to and remain isolated for that business. OpenAI or another model provider may process the minimum approved context, but the provider is not the bot's source of truth or the owner of its intelligence.
+
 ## Configuration dimensions
 
 - Category: Regular AI Business Bot, PingBook, FlowCart, Stay, or Custom.
