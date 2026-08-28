@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export function LoginClient({ returnTo }: { returnTo?: string }) {
+  const [accessType, setAccessType] = useState<"client" | "admin">("client");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -14,6 +15,9 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
   const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const otpStep = Boolean(otpChallengeId);
+  const accessCopy = accessType === "admin"
+    ? "Use your approved AiFrogi administrator email and password."
+    : "Use the email and password assigned to your client workspace.";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -79,12 +83,35 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
         <div className="mx-auto w-full max-w-md">
           <p className="text-sm font-semibold text-[#c725ba]">Welcome back</p>
           <h2 className="mt-2 text-3xl font-semibold">Sign in to AiFrogi</h2>
-          <p className="mt-3 text-sm leading-6 text-[#70697d]">{otpStep ? "Enter the email code to finish secure sign-in." : "Use the email and password assigned to your workspace."}</p>
+          <p className="mt-3 text-sm leading-6 text-[#70697d]">{otpStep ? "Enter the email code to finish secure sign-in." : accessCopy}</p>
 
-          <form className="mt-9 space-y-5" onSubmit={submit}>
+          {!otpStep ? (
+            <div className="mt-7 grid grid-cols-2 gap-3" role="group" aria-label="Choose account type">
+              <button
+                type="button"
+                onClick={() => setAccessType("client")}
+                className={`rounded-md border p-4 text-left transition ${accessType === "client" ? "border-[#d92bcb] bg-[#fff5fe] ring-1 ring-[#d92bcb]" : "border-[#eadfed] bg-white hover:border-[#d92bcb]/50"}`}
+                aria-pressed={accessType === "client"}
+              >
+                <span className="block text-sm font-bold">Client login</span>
+                <span className="mt-1 block text-xs leading-5 text-[#70697d]">Open your business workspace.</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAccessType("admin")}
+                className={`rounded-md border p-4 text-left transition ${accessType === "admin" ? "border-[#d92bcb] bg-[#fff5fe] ring-1 ring-[#d92bcb]" : "border-[#eadfed] bg-white hover:border-[#d92bcb]/50"}`}
+                aria-pressed={accessType === "admin"}
+              >
+                <span className="block text-sm font-bold">Admin login</span>
+                <span className="mt-1 block text-xs leading-5 text-[#70697d]">Open the AiFrogi control center.</span>
+              </button>
+            </div>
+          ) : null}
+
+          <form className="mt-7 space-y-5" onSubmit={submit}>
             <label className="block">
-              <span className="mb-2 block text-sm font-semibold">Email</span>
-              <input className="product-input min-h-12" type="email" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} required autoFocus disabled={otpStep || submitting} />
+              <span className="mb-2 block text-sm font-semibold">{accessType === "admin" ? "Admin email" : "Client email"}</span>
+              <input className="product-input min-h-12" type="email" autoComplete="username" placeholder={accessType === "admin" ? "admin@aifrogi.com" : "you@yourbusiness.com"} value={username} onChange={(event) => setUsername(event.target.value)} required autoFocus disabled={otpStep || submitting} />
             </label>
             <label className="block">
               <span className="mb-2 block text-sm font-semibold">Password</span>
@@ -119,11 +146,10 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
             ) : null}
           </form>
           <p className="mt-7 text-sm text-[#70697d]">New to AiFrogi? <Link href="/register" className="font-semibold text-[#a21c98]">Start a 30-day trial</Link></p>
-          <p className="mt-5 text-xs leading-5 text-[#817789]">
-            Need access or forgot your password?{" "}
-            <Link href="/forgot-password" className="font-semibold text-[#a21c98]">Reset your password</Link>.
-            {" "}Never share OTPs or Meta credentials.
-          </p>
+          <div className="mt-5 flex items-center justify-between gap-4 text-sm">
+            <Link href="/forgot-password" className="font-semibold text-[#a21c98]">Forgot password?</Link>
+            <span className="text-xs text-[#817789]">Never share OTPs or credentials.</span>
+          </div>
           <a href="https://aifrogi.com" className="mt-6 inline-flex text-sm font-semibold text-[#a21c98]">Back to aifrogi.com</a>
         </div>
       </section>
