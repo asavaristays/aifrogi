@@ -171,7 +171,7 @@ export async function updateOrganizationDetails(
 
 export async function updateOnboardingProfile(
   organizationId: string,
-  input: Record<string, string | number | boolean | Date | null | undefined>,
+  input: Record<string, string | string[] | number | boolean | Date | null | undefined>,
   activity: { actorEmail: string; action: string; detail?: string }
 ) {
   const db = getDb();

@@ -9,6 +9,7 @@ test("every commercial bot category has a complete intelligence blueprint", () =
     assert.ok(blueprint.requiredInputs.length >= 5, `${category} required inputs`);
     assert.ok(blueprint.internalKnowledge.length >= 5, `${category} internal knowledge`);
     assert.ok(blueprint.externalKnowledge.length >= 1, `${category} external knowledge`);
+    assert.ok(blueprint.negotiationRules.length >= 3, `${category} negotiation rules`);
     assert.ok(blueprint.safetyRules.length >= 3, `${category} safety rules`);
     assert.ok(blueprint.verifiedOutcomes.length >= 1, `${category} outcomes`);
     assert.ok(blueprint.evaluations.length >= 5, `${category} evaluations`);
@@ -35,4 +36,6 @@ test("HotelGPT blueprint protects price, availability, policy, and booking verif
   assert.equal(hotel.productName, "HotelGPT");
   for (const protectedFact of ["price", "availability", "policy"]) assert.match(rules, new RegExp(protectedFact, "i"));
   assert.match(rules, /read-back/i);
+  assert.match(rules, /connector/i);
+  assert.match(hotel.negotiationRules.join(" "), /floor rate/i);
 });

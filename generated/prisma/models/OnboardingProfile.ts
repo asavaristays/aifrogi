@@ -45,6 +45,9 @@ export type OnboardingProfileMinAggregateOutputType = {
   legalName: string | null
   registrationNumber: string | null
   facebookPage: string | null
+  googleMapsUrl: string | null
+  googleBusinessProfileUrl: string | null
+  instagramUrl: string | null
   businessCategory: string | null
   logoUrl: string | null
   kycStatus: string | null
@@ -85,6 +88,9 @@ export type OnboardingProfileMaxAggregateOutputType = {
   legalName: string | null
   registrationNumber: string | null
   facebookPage: string | null
+  googleMapsUrl: string | null
+  googleBusinessProfileUrl: string | null
+  instagramUrl: string | null
   businessCategory: string | null
   logoUrl: string | null
   kycStatus: string | null
@@ -125,6 +131,10 @@ export type OnboardingProfileCountAggregateOutputType = {
   legalName: number
   registrationNumber: number
   facebookPage: number
+  googleMapsUrl: number
+  googleBusinessProfileUrl: number
+  instagramUrl: number
+  photoUrls: number
   businessCategory: number
   logoUrl: number
   kycStatus: number
@@ -177,6 +187,9 @@ export type OnboardingProfileMinAggregateInputType = {
   legalName?: true
   registrationNumber?: true
   facebookPage?: true
+  googleMapsUrl?: true
+  googleBusinessProfileUrl?: true
+  instagramUrl?: true
   businessCategory?: true
   logoUrl?: true
   kycStatus?: true
@@ -217,6 +230,9 @@ export type OnboardingProfileMaxAggregateInputType = {
   legalName?: true
   registrationNumber?: true
   facebookPage?: true
+  googleMapsUrl?: true
+  googleBusinessProfileUrl?: true
+  instagramUrl?: true
   businessCategory?: true
   logoUrl?: true
   kycStatus?: true
@@ -257,6 +273,10 @@ export type OnboardingProfileCountAggregateInputType = {
   legalName?: true
   registrationNumber?: true
   facebookPage?: true
+  googleMapsUrl?: true
+  googleBusinessProfileUrl?: true
+  instagramUrl?: true
+  photoUrls?: true
   businessCategory?: true
   logoUrl?: true
   kycStatus?: true
@@ -384,6 +404,10 @@ export type OnboardingProfileGroupByOutputType = {
   legalName: string | null
   registrationNumber: string | null
   facebookPage: string | null
+  googleMapsUrl: string | null
+  googleBusinessProfileUrl: string | null
+  instagramUrl: string | null
+  photoUrls: string[]
   businessCategory: string | null
   logoUrl: string | null
   kycStatus: string
@@ -447,6 +471,10 @@ export type OnboardingProfileWhereInput = {
   legalName?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   registrationNumber?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   facebookPage?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  googleMapsUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  googleBusinessProfileUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  instagramUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  photoUrls?: Prisma.StringNullableListFilter<"OnboardingProfile">
   businessCategory?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   kycStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
@@ -488,6 +516,10 @@ export type OnboardingProfileOrderByWithRelationInput = {
   legalName?: Prisma.SortOrderInput | Prisma.SortOrder
   registrationNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   facebookPage?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleMapsUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleBusinessProfileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  instagramUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  photoUrls?: Prisma.SortOrder
   businessCategory?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   kycStatus?: Prisma.SortOrder
@@ -532,6 +564,10 @@ export type OnboardingProfileWhereUniqueInput = Prisma.AtLeast<{
   legalName?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   registrationNumber?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   facebookPage?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  googleMapsUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  googleBusinessProfileUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  instagramUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
+  photoUrls?: Prisma.StringNullableListFilter<"OnboardingProfile">
   businessCategory?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"OnboardingProfile"> | string | null
   kycStatus?: Prisma.StringFilter<"OnboardingProfile"> | string
@@ -573,6 +609,10 @@ export type OnboardingProfileOrderByWithAggregationInput = {
   legalName?: Prisma.SortOrderInput | Prisma.SortOrder
   registrationNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   facebookPage?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleMapsUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleBusinessProfileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  instagramUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  photoUrls?: Prisma.SortOrder
   businessCategory?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   kycStatus?: Prisma.SortOrder
@@ -621,6 +661,10 @@ export type OnboardingProfileScalarWhereWithAggregatesInput = {
   legalName?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
   registrationNumber?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
   facebookPage?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
+  googleMapsUrl?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
+  googleBusinessProfileUrl?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
+  instagramUrl?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
+  photoUrls?: Prisma.StringNullableListFilter<"OnboardingProfile">
   businessCategory?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"OnboardingProfile"> | string | null
   kycStatus?: Prisma.StringWithAggregatesFilter<"OnboardingProfile"> | string
@@ -660,6 +704,10 @@ export type OnboardingProfileCreateInput = {
   legalName?: string | null
   registrationNumber?: string | null
   facebookPage?: string | null
+  googleMapsUrl?: string | null
+  googleBusinessProfileUrl?: string | null
+  instagramUrl?: string | null
+  photoUrls?: Prisma.OnboardingProfileCreatephotoUrlsInput | string[]
   businessCategory?: string | null
   logoUrl?: string | null
   kycStatus?: string
@@ -701,6 +749,10 @@ export type OnboardingProfileUncheckedCreateInput = {
   legalName?: string | null
   registrationNumber?: string | null
   facebookPage?: string | null
+  googleMapsUrl?: string | null
+  googleBusinessProfileUrl?: string | null
+  instagramUrl?: string | null
+  photoUrls?: Prisma.OnboardingProfileCreatephotoUrlsInput | string[]
   businessCategory?: string | null
   logoUrl?: string | null
   kycStatus?: string
@@ -740,6 +792,10 @@ export type OnboardingProfileUpdateInput = {
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookPage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleMapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleBusinessProfileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instagramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrls?: Prisma.OnboardingProfileUpdatephotoUrlsInput | string[]
   businessCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kycStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -781,6 +837,10 @@ export type OnboardingProfileUncheckedUpdateInput = {
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookPage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleMapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleBusinessProfileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instagramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrls?: Prisma.OnboardingProfileUpdatephotoUrlsInput | string[]
   businessCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kycStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -821,6 +881,10 @@ export type OnboardingProfileCreateManyInput = {
   legalName?: string | null
   registrationNumber?: string | null
   facebookPage?: string | null
+  googleMapsUrl?: string | null
+  googleBusinessProfileUrl?: string | null
+  instagramUrl?: string | null
+  photoUrls?: Prisma.OnboardingProfileCreatephotoUrlsInput | string[]
   businessCategory?: string | null
   logoUrl?: string | null
   kycStatus?: string
@@ -860,6 +924,10 @@ export type OnboardingProfileUpdateManyMutationInput = {
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookPage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleMapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleBusinessProfileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instagramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrls?: Prisma.OnboardingProfileUpdatephotoUrlsInput | string[]
   businessCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kycStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -900,6 +968,10 @@ export type OnboardingProfileUncheckedUpdateManyInput = {
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookPage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleMapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleBusinessProfileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instagramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrls?: Prisma.OnboardingProfileUpdatephotoUrlsInput | string[]
   businessCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kycStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -945,6 +1017,10 @@ export type OnboardingProfileCountOrderByAggregateInput = {
   legalName?: Prisma.SortOrder
   registrationNumber?: Prisma.SortOrder
   facebookPage?: Prisma.SortOrder
+  googleMapsUrl?: Prisma.SortOrder
+  googleBusinessProfileUrl?: Prisma.SortOrder
+  instagramUrl?: Prisma.SortOrder
+  photoUrls?: Prisma.SortOrder
   businessCategory?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   kycStatus?: Prisma.SortOrder
@@ -990,6 +1066,9 @@ export type OnboardingProfileMaxOrderByAggregateInput = {
   legalName?: Prisma.SortOrder
   registrationNumber?: Prisma.SortOrder
   facebookPage?: Prisma.SortOrder
+  googleMapsUrl?: Prisma.SortOrder
+  googleBusinessProfileUrl?: Prisma.SortOrder
+  instagramUrl?: Prisma.SortOrder
   businessCategory?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   kycStatus?: Prisma.SortOrder
@@ -1030,6 +1109,9 @@ export type OnboardingProfileMinOrderByAggregateInput = {
   legalName?: Prisma.SortOrder
   registrationNumber?: Prisma.SortOrder
   facebookPage?: Prisma.SortOrder
+  googleMapsUrl?: Prisma.SortOrder
+  googleBusinessProfileUrl?: Prisma.SortOrder
+  instagramUrl?: Prisma.SortOrder
   businessCategory?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   kycStatus?: Prisma.SortOrder
@@ -1098,6 +1180,15 @@ export type OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingProfileUpdateToOneWithWhereWithoutOrganizationInput, Prisma.OnboardingProfileUpdateWithoutOrganizationInput>, Prisma.OnboardingProfileUncheckedUpdateWithoutOrganizationInput>
 }
 
+export type OnboardingProfileCreatephotoUrlsInput = {
+  set: string[]
+}
+
+export type OnboardingProfileUpdatephotoUrlsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type NullableBoolFieldUpdateOperationsInput = {
   set?: boolean | null
 }
@@ -1110,6 +1201,10 @@ export type OnboardingProfileCreateWithoutOrganizationInput = {
   legalName?: string | null
   registrationNumber?: string | null
   facebookPage?: string | null
+  googleMapsUrl?: string | null
+  googleBusinessProfileUrl?: string | null
+  instagramUrl?: string | null
+  photoUrls?: Prisma.OnboardingProfileCreatephotoUrlsInput | string[]
   businessCategory?: string | null
   logoUrl?: string | null
   kycStatus?: string
@@ -1149,6 +1244,10 @@ export type OnboardingProfileUncheckedCreateWithoutOrganizationInput = {
   legalName?: string | null
   registrationNumber?: string | null
   facebookPage?: string | null
+  googleMapsUrl?: string | null
+  googleBusinessProfileUrl?: string | null
+  instagramUrl?: string | null
+  photoUrls?: Prisma.OnboardingProfileCreatephotoUrlsInput | string[]
   businessCategory?: string | null
   logoUrl?: string | null
   kycStatus?: string
@@ -1204,6 +1303,10 @@ export type OnboardingProfileUpdateWithoutOrganizationInput = {
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookPage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleMapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleBusinessProfileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instagramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrls?: Prisma.OnboardingProfileUpdatephotoUrlsInput | string[]
   businessCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kycStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1243,6 +1346,10 @@ export type OnboardingProfileUncheckedUpdateWithoutOrganizationInput = {
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   registrationNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookPage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleMapsUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleBusinessProfileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  instagramUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrls?: Prisma.OnboardingProfileUpdatephotoUrlsInput | string[]
   businessCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kycStatus?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1285,6 +1392,10 @@ export type OnboardingProfileSelect<ExtArgs extends runtime.Types.Extensions.Int
   legalName?: boolean
   registrationNumber?: boolean
   facebookPage?: boolean
+  googleMapsUrl?: boolean
+  googleBusinessProfileUrl?: boolean
+  instagramUrl?: boolean
+  photoUrls?: boolean
   businessCategory?: boolean
   logoUrl?: boolean
   kycStatus?: boolean
@@ -1326,6 +1437,10 @@ export type OnboardingProfileSelectCreateManyAndReturn<ExtArgs extends runtime.T
   legalName?: boolean
   registrationNumber?: boolean
   facebookPage?: boolean
+  googleMapsUrl?: boolean
+  googleBusinessProfileUrl?: boolean
+  instagramUrl?: boolean
+  photoUrls?: boolean
   businessCategory?: boolean
   logoUrl?: boolean
   kycStatus?: boolean
@@ -1367,6 +1482,10 @@ export type OnboardingProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   legalName?: boolean
   registrationNumber?: boolean
   facebookPage?: boolean
+  googleMapsUrl?: boolean
+  googleBusinessProfileUrl?: boolean
+  instagramUrl?: boolean
+  photoUrls?: boolean
   businessCategory?: boolean
   logoUrl?: boolean
   kycStatus?: boolean
@@ -1408,6 +1527,10 @@ export type OnboardingProfileSelectScalar = {
   legalName?: boolean
   registrationNumber?: boolean
   facebookPage?: boolean
+  googleMapsUrl?: boolean
+  googleBusinessProfileUrl?: boolean
+  instagramUrl?: boolean
+  photoUrls?: boolean
   businessCategory?: boolean
   logoUrl?: boolean
   kycStatus?: boolean
@@ -1439,7 +1562,7 @@ export type OnboardingProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OnboardingProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "currentStep" | "progressPercent" | "lifecycleStatus" | "legalName" | "registrationNumber" | "facebookPage" | "businessCategory" | "logoUrl" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewedBy" | "kycRejectionReason" | "phoneCountryCode" | "phoneNumber" | "whatsappActiveOnNumber" | "numberConnectionPath" | "phoneVerificationStatus" | "facebookStatus" | "metaStatus" | "metaBusinessId" | "wabaId" | "phoneNumberId" | "displayPhoneNumber" | "qualityRating" | "webhookStatus" | "tokenStatus" | "metaBillingStatus" | "templateStatus" | "firstMessageStatus" | "lastStatusCheckAt" | "lastError" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingProfile"]>
+export type OnboardingProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "currentStep" | "progressPercent" | "lifecycleStatus" | "legalName" | "registrationNumber" | "facebookPage" | "googleMapsUrl" | "googleBusinessProfileUrl" | "instagramUrl" | "photoUrls" | "businessCategory" | "logoUrl" | "kycStatus" | "kycSubmittedAt" | "kycReviewedAt" | "kycReviewedBy" | "kycRejectionReason" | "phoneCountryCode" | "phoneNumber" | "whatsappActiveOnNumber" | "numberConnectionPath" | "phoneVerificationStatus" | "facebookStatus" | "metaStatus" | "metaBusinessId" | "wabaId" | "phoneNumberId" | "displayPhoneNumber" | "qualityRating" | "webhookStatus" | "tokenStatus" | "metaBillingStatus" | "templateStatus" | "firstMessageStatus" | "lastStatusCheckAt" | "lastError" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["onboardingProfile"]>
 export type OnboardingProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -1464,6 +1587,10 @@ export type $OnboardingProfilePayload<ExtArgs extends runtime.Types.Extensions.I
     legalName: string | null
     registrationNumber: string | null
     facebookPage: string | null
+    googleMapsUrl: string | null
+    googleBusinessProfileUrl: string | null
+    instagramUrl: string | null
+    photoUrls: string[]
     businessCategory: string | null
     logoUrl: string | null
     kycStatus: string
@@ -1925,6 +2052,10 @@ export interface OnboardingProfileFieldRefs {
   readonly legalName: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly registrationNumber: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly facebookPage: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly googleMapsUrl: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly googleBusinessProfileUrl: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly instagramUrl: Prisma.FieldRef<"OnboardingProfile", 'String'>
+  readonly photoUrls: Prisma.FieldRef<"OnboardingProfile", 'String[]'>
   readonly businessCategory: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly logoUrl: Prisma.FieldRef<"OnboardingProfile", 'String'>
   readonly kycStatus: Prisma.FieldRef<"OnboardingProfile", 'String'>

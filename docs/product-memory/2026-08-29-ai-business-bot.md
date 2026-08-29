@@ -191,6 +191,12 @@ The secure website handoff must include:
 - Rate limiting and tenant binding.
 - Automated privacy and cross-tenant tests.
 
+## Rich business presence and connector policy
+
+Onboarding captures approved photos, logo, Google Maps location, Google Business Profile, social presence, and relevant category media. HotelGPT live room availability depends on a separately verified PMS, channel-manager, or booking-engine connector. Without that connector, HotelGPT must capture an enquiry or escalate instead of claiming live inventory.
+
+Negotiation is governed by approved category rules, floors, ceilings, alternatives, expiry, and escalation. Every offer must preserve the rule, original value, offered value, authority, and outcome evidence.
+
 ## Next engineering sequence
 
 1. Add the secure website visitor-session data model and migration.

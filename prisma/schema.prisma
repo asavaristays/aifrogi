@@ -320,6 +320,10 @@ model OnboardingProfile {
   legalName               String?
   registrationNumber      String?
   facebookPage            String?
+  googleMapsUrl           String?
+  googleBusinessProfileUrl String?
+  instagramUrl            String?
+  photoUrls               String[]     @default([])
   businessCategory        String?
   logoUrl                 String?
   kycStatus               String       @default("NOT_SUBMITTED")

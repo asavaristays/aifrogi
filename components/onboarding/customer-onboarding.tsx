@@ -31,6 +31,10 @@ type OnboardingRecord = {
   legalName: string | null;
   registrationNumber: string | null;
   facebookPage: string | null;
+  googleMapsUrl: string | null;
+  googleBusinessProfileUrl: string | null;
+  instagramUrl: string | null;
+  photoUrls: string[];
   businessCategory: string | null;
   logoUrl: string | null;
   kycStatus: string;
@@ -88,6 +92,10 @@ type BusinessForm = {
   legalName: string;
   registrationNumber: string;
   facebookPage: string;
+  googleMapsUrl: string;
+  googleBusinessProfileUrl: string;
+  instagramUrl: string;
+  photoUrls: string;
   businessCategory: string;
   logoUrl: string;
 };
@@ -175,6 +183,10 @@ export function CustomerOnboarding({
     legalName: initialOrganization?.onboarding?.legalName || "",
     registrationNumber: initialOrganization?.onboarding?.registrationNumber || "",
     facebookPage: initialOrganization?.onboarding?.facebookPage || "",
+    googleMapsUrl: initialOrganization?.onboarding?.googleMapsUrl || "",
+    googleBusinessProfileUrl: initialOrganization?.onboarding?.googleBusinessProfileUrl || "",
+    instagramUrl: initialOrganization?.onboarding?.instagramUrl || "",
+    photoUrls: initialOrganization?.onboarding?.photoUrls?.join("\n") || "",
     businessCategory: initialOrganization?.onboarding?.businessCategory || "Hotel and accommodation",
     logoUrl: initialOrganization?.onboarding?.logoUrl || ""
   });
@@ -665,7 +677,11 @@ function BusinessStep({ value, onChange, documents, onDocumentsChanged }: { valu
         <Field label="GST or registration number" value={value.registrationNumber} onChange={(registrationNumber) => onChange({ ...value, registrationNumber })} />
         <Field label="Business category" required value={value.businessCategory} onChange={(businessCategory) => onChange({ ...value, businessCategory })} />
         <Field label="Facebook page" value={value.facebookPage} onChange={(facebookPage) => onChange({ ...value, facebookPage })} optional />
-        <div className="md:col-span-2"><Field label="Logo URL" value={value.logoUrl} onChange={(logoUrl) => onChange({ ...value, logoUrl })} optional /></div>
+        <Field label="Google Maps location" value={value.googleMapsUrl} onChange={(googleMapsUrl) => onChange({ ...value, googleMapsUrl })} placeholder="https://maps.google.com/..." optional />
+        <Field label="Google Business Profile" value={value.googleBusinessProfileUrl} onChange={(googleBusinessProfileUrl) => onChange({ ...value, googleBusinessProfileUrl })} placeholder="https://g.page/..." optional />
+        <Field label="Instagram" value={value.instagramUrl} onChange={(instagramUrl) => onChange({ ...value, instagramUrl })} optional />
+        <Field label="Logo URL" value={value.logoUrl} onChange={(logoUrl) => onChange({ ...value, logoUrl })} optional />
+        <label className="md:col-span-2"><FieldLabel label="Approved photo URLs" optional /><textarea className="mt-2 min-h-28 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#c725ba]" value={value.photoUrls} onChange={(event) => onChange({ ...value, photoUrls: event.target.value })} placeholder="One approved photo URL per line" /><span className="mt-2 block text-xs text-[#6d7487]">Add property, product, room, team, experience, menu, or project photos relevant to the selected bot category.</span></label>
       </div>
       <div>
         <h2 className="text-base font-black">Verification documents</h2>

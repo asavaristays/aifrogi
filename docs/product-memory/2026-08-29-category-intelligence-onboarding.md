@@ -46,6 +46,8 @@ HotelGPT is the flagship revenue category. PingBook remains the cleanest first p
 13. Verify the first business outcome.
 14. Approve production go-live.
 
+Every onboarding also captures the business logo, approved photos, Google Maps location, Google Business Profile when available, social presence, address, contact routes, and usage rights for supplied media.
+
 ## Client responsibilities
 
 - Confirm business identity and ownership.
@@ -87,7 +89,8 @@ External sources may enrich the answer only when approved. Each external source 
 
 Required internal intelligence:
 
-- Property identity and positioning
+- Property identity, Google Maps location, Google Business Profile, logo, and positioning
+- Approved property, room, dining, experience, event, and team photos
 - Rooms, occupancy, amenities, inclusions, and exclusions
 - Rates, packages, and approved offer rules
 - Availability and direct-booking benefits
@@ -106,6 +109,10 @@ Tools and systems:
 
 - PMS, booking engine, channel manager, CRM, payment provider, guest-service, restaurant, and spa systems
 
+Live availability is a connector capability, not a language-model capability. HotelGPT may describe availability as live only after a PMS, channel-manager, or booking-engine connector passes authentication, sandbox mapping, duplicate and timeout tests, live-read verification, and monitoring. Until then it must capture an enquiry or hand off to reservations.
+
+PMS/channel-manager API access is tracked as an external dependency: `Requested → Provider review → Credentials pending → Sandbox → Connected → Verified → Monitored`. Credentials use protected secret storage and never enter documentation.
+
 Critical rules:
 
 - Hotel-approved truth overrides OTA content.
@@ -113,6 +120,14 @@ Critical rules:
 - Never confirm a booking until it is created idempotently and read back from the system of record.
 
 Verified outcomes include availability presented, direct-booking opportunity, booking confirmed, deposit received, reservations handoff, and upsell accepted.
+
+## Governed negotiation layer
+
+Negotiation is a policy-controlled tool layer, not free-form persuasion. SuperAdmin defines the allowed range, preferred alternatives, approval threshold, expiry, escalation owner, and prohibited claims.
+
+Every negotiation records the customer request, original value, offered value or value-add, approved rule, bot authority or human approval, expiry, customer response, and final verified outcome.
+
+HotelGPT may use approved rate fences, packages, upgrades, inclusions, and value-adds. It must never undercut a floor rate, invent a discount, override inventory, or grant an exception outside its authority. Group, wedding, long-stay, corporate, and exceptional requests escalate to the hotel team.
 
 ## PingBook
 

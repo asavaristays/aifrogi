@@ -9,6 +9,7 @@ export type BotBlueprint = {
   externalKnowledge: string[];
   integrations: string[];
   approvedActions: string[];
+  negotiationRules: string[];
   safetyRules: string[];
   verifiedOutcomes: string[];
   evaluations: string[];
@@ -19,11 +20,12 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     productName: "BusinessGPT",
     categoryLabel: "General AI Business Bot",
     promise: "Answer service questions, qualify demand, and move customers to an approved human or business action.",
-    requiredInputs: ["Business purpose and ideal customers", "Services, locations, and delivery process", "Commercial boundaries and pricing guidance", "Qualification questions", "Handoff team and operating hours"],
+    requiredInputs: ["Business purpose and ideal customers", "Services, locations, and delivery process", "Google location, logo, and approved photos", "Commercial boundaries and pricing guidance", "Qualification questions", "Handoff team and operating hours"],
     internalKnowledge: ["Products and services", "Policies and processes", "Pricing guidance", "Case studies", "Qualification rules", "Team and escalation contacts"],
     externalKnowledge: ["Official business website", "Approved partner sources", "Official maps and location data", "Selected government or industry sources"],
     integrations: ["Website", "CRM", "Calendar", "Email", "WhatsApp when selected"],
     approvedActions: ["Capture lead", "Qualify requirement", "Create callback", "Book consultation", "Share approved material", "Escalate to specialist"],
+    negotiationRules: ["Use only approved commercial ranges", "Record the original and offered value", "Escalate requests outside authority"],
     safetyRules: ["Never invent a commercial commitment", "Escalate unsupported questions", "Require approval before material business actions"],
     verifiedOutcomes: ["Qualified", "Appointment confirmed", "Quote requested", "Won", "Resolved"],
     evaluations: ["Approved-answer accuracy", "Unknown-answer escalation", "Pricing boundary compliance", "Tenant isolation", "Human handoff"]
@@ -32,12 +34,13 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     productName: "HotelGPT",
     categoryLabel: "Hospitality Revenue and Guest Bot",
     promise: "Convert hotel enquiries into direct-booking opportunities and assist guests before, during, and after the stay.",
-    requiredInputs: ["Property identity and positioning", "Room types, occupancy, and amenities", "Rates, inclusions, and offer rules", "Check-in, cancellation, child, visitor, and pet policies", "Dining, experiences, events, transport, and escalation contacts"],
+    requiredInputs: ["Property identity, Google location, and positioning", "Logo and approved property, room, dining, and experience photos", "Room types, occupancy, and amenities", "Rates, inclusions, and offer rules", "Check-in, cancellation, child, visitor, and pet policies", "Dining, experiences, events, transport, and escalation contacts", "PMS, channel manager, or booking-engine provider and API-access owner"],
     internalKnowledge: ["Rooms and rate rules", "Availability and packages", "Property facilities", "Stay policies", "Food and beverage", "Weddings and groups", "Direct-booking benefits", "Guest service procedures"],
     externalKnowledge: ["Official hotel website", "Approved OTA listing content", "Google Business Profile", "Official destination and transport sources", "Approved weather and travel advisories"],
     integrations: ["PMS", "Booking engine", "Channel manager", "CRM", "Payment provider", "Restaurant or spa system"],
     approvedActions: ["Read availability", "Present approved room options", "Create booking enquiry", "Generate booking link", "Request deposit", "Record special request", "Escalate to reservations"],
-    safetyRules: ["Hotel truth overrides OTA content", "Never confirm a booking without system read-back", "Never invent availability, price, policy, or amenity"],
+    negotiationRules: ["Use approved rate fences, packages, upgrades, and value-adds", "Never undercut configured floor rates", "Record original rate, proposed value, rule, expiry, and guest response", "Escalate group, long-stay, exception, and outside-authority requests"],
+    safetyRules: ["Hotel truth overrides OTA content", "Never describe availability as live until a PMS, channel-manager, or booking-engine connector is verified", "Without a verified availability connector, capture an enquiry or hand off to reservations", "Never confirm a booking without system read-back", "Never invent availability, price, policy, or amenity"],
     verifiedOutcomes: ["Enquiry qualified", "Availability presented", "Direct-booking link opened", "Booking confirmed", "Deposit received", "Upsell accepted"],
     evaluations: ["Room and policy accuracy", "Rate and availability accuracy", "Booking idempotency", "Booking read-back verification", "Guest escalation"]
   },
@@ -50,6 +53,7 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     externalKnowledge: ["Official maps", "Client-approved professional guidance", "Selected government requirements"],
     integrations: ["Google Calendar or appointment system", "CRM", "Payment provider", "Reminder service"],
     approvedActions: ["Read availability", "Offer valid slots", "Create appointment idempotently", "Reschedule", "Cancel under policy", "Escalate unsuitable requests"],
+    negotiationRules: ["Use only approved deposit, package, and concession rules", "Do not alter clinical service or eligibility rules", "Escalate price exceptions"],
     safetyRules: ["Do not provide unapproved medical guidance", "Never claim confirmation before read-back", "Escalate eligibility and emergency concerns"],
     verifiedOutcomes: ["Qualified", "Appointment confirmed", "Deposit received", "Rescheduled", "Escalated"],
     evaluations: ["Availability accuracy", "Slot collision protection", "Appointment idempotency", "Read-back verification", "Safety escalation"]
@@ -63,6 +67,7 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     externalKnowledge: ["Official maps", "Approved delivery information", "Government food-safety sources", "Client-approved local event sources"],
     integrations: ["POS", "Reservation platform", "Kitchen or ordering system", "Delivery system", "Payment provider"],
     approvedActions: ["Read table availability", "Reserve table", "Create order", "Request deposit", "Create catering enquiry", "Escalate allergen questions"],
+    negotiationRules: ["Use only approved offers, packages, and event rules", "Never alter allergen or food-safety facts", "Escalate group and exceptional discount requests"],
     safetyRules: ["Escalate incomplete allergen information", "Never invent item availability", "Verify reservations and orders from the system of record"],
     verifiedOutcomes: ["Table reserved", "Order created", "Deposit received", "Catering lead qualified", "Event booking created"],
     evaluations: ["Menu and price accuracy", "Allergen safety", "Reservation collision protection", "Order verification", "Human escalation"]
@@ -76,6 +81,7 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     externalKnowledge: ["Official regulatory records", "Approved maps and neighbourhood data", "Government infrastructure sources", "Approved mortgage information"],
     integrations: ["CRM", "Property inventory", "Lead routing", "Calendar", "Document repository", "Booking system"],
     approvedActions: ["Qualify buyer", "Present matching properties", "Share approved brochure", "Book site visit", "Assign sales agent", "Record booking interest"],
+    negotiationRules: ["Use only developer-approved price bands and payment plans", "Never promise appreciation or unofficial inventory", "Escalate price, legal, and booking exceptions"],
     safetyRules: ["Never invent appreciation or investment returns", "Do not provide legal conclusions", "Regulatory claims require approved official sources"],
     verifiedOutcomes: ["Buyer qualified", "Property match presented", "Site visit confirmed", "Sales agent assigned", "Booking interest created"],
     evaluations: ["Inventory and price accuracy", "Regulatory-claim safety", "Suitability matching", "Site-visit verification", "Lead routing"]
@@ -89,6 +95,7 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     externalKnowledge: ["Approved marketplace content", "Official delivery service data", "Selected tax or regulatory sources"],
     integrations: ["Catalog", "Inventory", "Order management", "Payment provider", "Delivery provider", "CRM"],
     approvedActions: ["Search products", "Create cart", "Create order", "Generate payment link", "Check order status", "Escalate refund or exception"],
+    negotiationRules: ["Apply only configured coupons, bundles, and quantity rules", "Never exceed discount or refund authority", "Record the applied rule and resulting value"],
     safetyRules: ["Never sell unavailable inventory", "Verify price and order after creation", "Require approval for refunds and exceptional discounts"],
     verifiedOutcomes: ["Product qualified", "Cart created", "Order created", "Payment received", "Order resolved"],
     evaluations: ["Catalog accuracy", "Inventory accuracy", "Order idempotency", "Payment verification", "Return-policy compliance"]
@@ -102,6 +109,7 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     externalKnowledge: ["Explicitly approved external sources only"],
     integrations: ["Defined during solution design"],
     approvedActions: ["Defined and approved before implementation"],
+    negotiationRules: ["Define floor and ceiling before activation", "Define permitted alternatives, value-adds, and expiry", "Define approval owner and escalation path"],
     safetyRules: ["No action without an authority definition", "No external source without approval", "No outcome without verification evidence"],
     verifiedOutcomes: ["Defined per implementation"],
     evaluations: ["Approved factual answers", "Authority enforcement", "Tool safety", "Outcome verification", "Rollback"]
