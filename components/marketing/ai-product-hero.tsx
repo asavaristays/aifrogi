@@ -41,9 +41,7 @@ export function AIProductHero({
   }
 
   return (
-    <section className="relative overflow-hidden bg-[var(--ink-950)] px-5 py-14 text-white sm:px-8 sm:py-20">
-      <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_74%)]" aria-hidden="true" />
-      <div className="absolute right-[12%] top-[16%] h-96 w-96 rounded-full bg-[var(--gold-600)]/20 blur-[110px]" aria-hidden="true" />
+    <section className="relative overflow-hidden bg-black px-5 py-14 text-white sm:px-8 sm:py-20">
       <div className="relative mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1.06fr_.94fr] lg:gap-4">
         <div className="relative z-10">
           <p className="product-eyebrow text-[var(--gold-300)]">{category} · Sovereign Business Bot</p>
@@ -79,7 +77,7 @@ export function AIProductHero({
 
         <div className="relative mx-auto w-full max-w-[500px]" aria-label={`${name} product story`}>
           <div className="hero-bot-float relative aspect-[1122/1402]">
-            <Image src="/brand/aifrogi-sovereign-bot.png" alt={`AiFrogi mascot demonstrating ${name}`} fill priority sizes="(max-width: 1024px) 430px, 500px" className="object-contain" />
+            <Image src="/brand/aifrogi-sovereign-bot.png" alt={`AiFrogi mascot demonstrating ${name}`} fill priority sizes="(max-width: 1024px) 430px, 500px" className="object-contain [mask-image:radial-gradient(ellipse_76%_72%_at_50%_48%,black_54%,transparent_100%)]" />
             <span className="hero-bot-eye hero-bot-eye-left" aria-hidden="true" />
             <span className="hero-bot-eye hero-bot-eye-right" aria-hidden="true" />
             <span className="hero-bot-blink hero-bot-blink-left" aria-hidden="true" />
