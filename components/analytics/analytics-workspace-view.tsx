@@ -12,7 +12,9 @@ export type AnalyticsWorkspaceMetrics = {
   failed: number;
 };
 
-export function AnalyticsWorkspaceView({ metrics }: { metrics: AnalyticsWorkspaceMetrics }) {
+type OperationsReport = { open: number; overdue: number; completed: number; verifiedOutcomes: number; valuePaisa: number; byOutcome: Array<{ outcomeType: string | null; _count: { _all: number } }> };
+
+export function AnalyticsWorkspaceView({ metrics, operations }: { metrics: AnalyticsWorkspaceMetrics; operations?: OperationsReport | null }) {
   const answered = Math.max(metrics.contacts - metrics.unanswered, 0);
   const answerRate = metrics.contacts ? Math.round((answered / metrics.contacts) * 100) : 0;
   const replyScore = metrics.unanswered ? Math.max(18, Math.round((answered / Math.max(metrics.contacts, 1)) * 100)) : 100;
@@ -26,7 +28,7 @@ export function AnalyticsWorkspaceView({ metrics }: { metrics: AnalyticsWorkspac
 
   return (
     <div className="min-h-screen bg-[#f6f7f6]">
-      <TopBar title="Analytics" subtitle="WhatsApp response and delivery performance from live message records" />
+      <TopBar title="Reports" subtitle="Cross-channel conversations, operational actions, verified outcomes, and measurable business value" />
       <div className="mx-auto max-w-[1480px] space-y-6 px-5 py-7 sm:px-7 lg:px-9">
         <Card className="overflow-hidden border border-black/6 shadow-[0_16px_38px_-32px_rgba(17,39,32,0.5)]">
           <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -79,6 +81,14 @@ export function AnalyticsWorkspaceView({ metrics }: { metrics: AnalyticsWorkspac
             </p>
           </Card>
         </section>
+
+        {operations ? <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <MiniMetric label="Open actions" value={String(operations.open)} />
+          <MiniMetric label="Overdue" value={String(operations.overdue)} />
+          <MiniMetric label="Completed actions" value={String(operations.completed)} />
+          <MiniMetric label="Verified outcomes" value={String(operations.verifiedOutcomes)} />
+          <MiniMetric label="Recorded value" value={new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(operations.valuePaisa / 100)} />
+        </section> : null}
       </div>
     </div>
   );

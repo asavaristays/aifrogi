@@ -14,16 +14,16 @@ export default async function WhatsAppBotPage() {
     loadLeads(propertySlug),
     loadWhatsAppIntegration(propertySlug)
   ]);
-  const whatsappLeads = leads.filter((lead): lead is Lead => {
-    return Boolean(lead?.id && lead?.source && lead?.stage && lead.source.toLowerCase().includes("whatsapp"));
+  const conversations = leads.filter((lead): lead is Lead => {
+    return Boolean(lead?.id && lead?.source && lead?.stage);
   });
-  const unreadCount = whatsappLeads.filter((lead) => lead.stage !== "Booked").length;
+  const unreadCount = conversations.filter((lead) => lead.stage !== "Booked").length;
 
   return (
     <div className="product-surface min-h-screen">
-      <TopBar title="Inbox" subtitle="WhatsApp conversations, AI suggestions, templates, and operator replies" notificationCount={unreadCount} tone="light" />
+      <TopBar title="AI Operations Inbox" subtitle="Website and WhatsApp conversations, human control, actions, intelligence, and verified outcomes" notificationCount={unreadCount} tone="light" />
       <div className="px-5 py-6 sm:px-7 lg:px-8">
-        <WhatsAppBotClient integration={integration} leads={whatsappLeads} />
+        <WhatsAppBotClient integration={integration} leads={conversations} />
       </div>
     </div>
   );

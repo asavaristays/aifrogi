@@ -405,6 +405,7 @@ export const ModelName = {
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
   Message: 'Message',
+  AiOperation: 'AiOperation',
   MetricDaily: 'MetricDaily',
   Campaign: 'Campaign',
   CampaignRecipient: 'CampaignRecipient',
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2008,6 +2009,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MessageCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    AiOperation: {
+      payload: Prisma.$AiOperationPayload<ExtArgs>
+      fields: Prisma.AiOperationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiOperationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiOperationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>
+        }
+        findFirst: {
+          args: Prisma.AiOperationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiOperationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>
+        }
+        findMany: {
+          args: Prisma.AiOperationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>[]
+        }
+        create: {
+          args: Prisma.AiOperationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>
+        }
+        createMany: {
+          args: Prisma.AiOperationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiOperationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>[]
+        }
+        delete: {
+          args: Prisma.AiOperationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>
+        }
+        update: {
+          args: Prisma.AiOperationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AiOperationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiOperationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiOperationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AiOperationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiOperationPayload>
+        }
+        aggregate: {
+          args: Prisma.AiOperationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiOperation>
+        }
+        groupBy: {
+          args: Prisma.AiOperationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiOperationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiOperationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiOperationCountAggregateOutputType> | number
         }
       }
     }
@@ -4881,6 +4956,28 @@ export const MessageScalarFieldEnum = {
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
+export const AiOperationScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  kind: 'kind',
+  status: 'status',
+  title: 'title',
+  notes: 'notes',
+  assignedTo: 'assignedTo',
+  dueAt: 'dueAt',
+  outcomeType: 'outcomeType',
+  outcomeValuePaisa: 'outcomeValuePaisa',
+  outcomeEvidence: 'outcomeEvidence',
+  completedAt: 'completedAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiOperationScalarFieldEnum = (typeof AiOperationScalarFieldEnum)[keyof typeof AiOperationScalarFieldEnum]
+
+
 export const MetricDailyScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
@@ -5960,6 +6057,7 @@ export type GlobalOmitConfig = {
   conversation?: Prisma.ConversationOmit
   conversationParticipant?: Prisma.ConversationParticipantOmit
   message?: Prisma.MessageOmit
+  aiOperation?: Prisma.AiOperationOmit
   metricDaily?: Prisma.MetricDailyOmit
   campaign?: Prisma.CampaignOmit
   campaignRecipient?: Prisma.CampaignRecipientOmit

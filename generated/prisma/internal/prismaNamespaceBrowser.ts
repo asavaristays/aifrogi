@@ -72,6 +72,7 @@ export const ModelName = {
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
   Message: 'Message',
+  AiOperation: 'AiOperation',
   MetricDaily: 'MetricDaily',
   Campaign: 'Campaign',
   CampaignRecipient: 'CampaignRecipient',
@@ -510,6 +511,28 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const AiOperationScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  kind: 'kind',
+  status: 'status',
+  title: 'title',
+  notes: 'notes',
+  assignedTo: 'assignedTo',
+  dueAt: 'dueAt',
+  outcomeType: 'outcomeType',
+  outcomeValuePaisa: 'outcomeValuePaisa',
+  outcomeEvidence: 'outcomeEvidence',
+  completedAt: 'completedAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AiOperationScalarFieldEnum = (typeof AiOperationScalarFieldEnum)[keyof typeof AiOperationScalarFieldEnum]
 
 
 export const MetricDailyScalarFieldEnum = {

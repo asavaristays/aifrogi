@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Asset, Lead, LeadInput, WhatsAppIntegration } from "@/types";
+import { LeadOperationsPanel } from "@/components/ai-operations/lead-operations-panel";
 
 type QuickActionKind = "photos" | "payment" | "quote" | null;
 type TimelineMessage = Lead["transcript"][number];
@@ -1226,6 +1227,8 @@ export function WhatsAppBotClient({
                 ))}
               </div>
             </div>
+
+            <LeadOperationsPanel leadId={activeLead.id} />
 
             <div className="space-y-2">
               <Button

@@ -129,6 +129,7 @@ model Property {
   participants        Participant[]
   conversations       Conversation[]
   neutralMessages     Message[]
+  aiOperations        AiOperation[]
 
   @@index([organizationId])
 }
@@ -412,6 +413,7 @@ model Lead {
   messages       LeadMessage[]
   assetShares    LeadAssetShare[]
   conversations  Conversation[]
+  aiOperations   AiOperation[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -552,6 +554,31 @@ model Message {
   @@index([propertyId, occurredAt])
   @@index([conversationId, occurredAt])
   @@index([senderParticipantId])
+}
+
+model AiOperation {
+  id                String    @id @default(cuid())
+  propertyId        String
+  property          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId            String
+  lead              Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  kind              String    @default("FOLLOW_UP")
+  status            String    @default("OPEN")
+  title             String
+  notes             String?   @db.Text
+  assignedTo        String?
+  dueAt             DateTime?
+  outcomeType       String?
+  outcomeValuePaisa Int?
+  outcomeEvidence   String?   @db.Text
+  completedAt       DateTime?
+  createdBy         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([propertyId, status, dueAt])
+  @@index([leadId, createdAt])
+  @@index([propertyId, outcomeType, completedAt])
 }
 
 model MetricDaily {

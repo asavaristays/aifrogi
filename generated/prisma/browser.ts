@@ -123,6 +123,11 @@ export type ConversationParticipant = Prisma.ConversationParticipantModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model AiOperation
+ * 
+ */
+export type AiOperation = Prisma.AiOperationModel
+/**
  * Model MetricDaily
  * 
  */

@@ -174,7 +174,7 @@ export function KnowledgeWorkspace({
   return <div className="product-surface min-h-screen">
     <header className="border-b border-[var(--border)] bg-white px-5 py-4 sm:px-8">
       <div className="mx-auto flex max-w-[1500px] flex-col gap-3 pl-12 lg:pl-0 sm:flex-row sm:items-end sm:justify-between">
-        <div><p className="product-eyebrow">Business intelligence</p><h1 className="mt-1 text-2xl font-semibold">Knowledge</h1><p className="mt-1 text-sm text-[var(--text-muted)]">Control what AI can answer, where information comes from, and when a human takes over.</p></div>
+        <div><p className="product-eyebrow">Sovereign business bot</p><h1 className="mt-1 text-2xl font-semibold">Business Intelligence</h1><p className="mt-1 text-sm text-[var(--text-muted)]">Own, approve and improve the business truth your AI may use. Models process approved context; they do not own this intelligence.</p></div>
         <div className="flex items-center gap-2"><span className={`status-pill ${ready ? "status-success" : summary.settings.status === "ERROR" ? "status-error" : "status-warning"}`}>{ready ? "Ready" : summary.settings.status.toLowerCase()}</span>{canManage ? <button onClick={syncWebsite} disabled={syncing} className="inline-flex min-h-9 items-center gap-2 rounded-md bg-[var(--primary-strong)] px-3 text-xs font-semibold text-white disabled:opacity-55"><Icon name="refresh-cw" className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} />{syncing ? "Syncing" : "Sync website"}</button> : null}</div>
       </div>
     </header>
