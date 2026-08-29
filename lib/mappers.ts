@@ -5,7 +5,8 @@ import type {
   LeadMessage,
   LeadStage,
   LeadTag,
-  MessageSender
+  MessageSender,
+  WebsiteVisitorSession
 } from "../generated/prisma/client";
 
 function mapStage(stage: LeadStage) {
@@ -55,6 +56,7 @@ export function mapLeadRecord(
     };
     tags: LeadTag[];
     messages: LeadMessage[];
+    websiteSession?: WebsiteVisitorSession | null;
   }
 ): Lead {
   const now = Date.now();
@@ -88,6 +90,14 @@ export function mapLeadRecord(
     updatedAtLabel,
     updatedAtIso: lead.updatedAt.toISOString(),
     tags: lead.tags.map((tag: LeadTag) => tag.value),
+    websiteSession: lead.websiteSession ? {
+      status: lead.websiteSession.status,
+      contactName: lead.websiteSession.contactName,
+      contactValue: lead.websiteSession.contactValue,
+      consentedAt: lead.websiteSession.consentedAt?.toISOString() || null,
+      lastDeliveredAt: lead.websiteSession.lastDeliveredAt?.toISOString() || null,
+      lastReadAt: lead.websiteSession.lastReadAt?.toISOString() || null
+    } : null,
     transcript: lead.messages
       .sort((a: LeadMessage, b: LeadMessage) => a.sentAt.getTime() - b.sentAt.getTime())
       .map((message: LeadMessage) => ({

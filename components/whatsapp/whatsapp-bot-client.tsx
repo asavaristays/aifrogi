@@ -1216,18 +1216,25 @@ export function WhatsAppBotClient({
                     ? "Reply now while the WhatsApp service window is open."
                     : activeState.label === "Human needed"
                       ? "Review the AI context and continue manually."
-                      : "No urgent reply is pending. Add notes or prepare the next follow-up."}
+                      : activeIsWebsite && activeLead.websiteSession?.status === "HUMAN_REQUESTED"
+                        ? `Contact ${activeLead.websiteSession.contactName || "the visitor"} using the consented details, or reply here so it appears in the website widget.`
+                        : "No urgent reply is pending. Add notes or prepare the next follow-up."}
               </p>
             </section>
 
             <section className="space-y-3">
               {[
                 { label: "Name", value: activeLead.name },
-                { label: "Phone", value: activeLead.phone },
+                { label: activeIsWebsite ? "Consented contact" : "Phone", value: activeIsWebsite ? activeLead.websiteSession?.contactValue || "Not provided" : activeLead.phone },
                 { label: "Source", value: activeSource },
                 { label: "Intent", value: activeLead.intent || "Needs discovery" },
                 { label: "Website / business", value: activeLead.stay || "Business details pending" },
-                { label: "Last inbound", value: latestInbound?.time ?? "No customer reply yet" }
+                { label: "Last inbound", value: latestInbound?.time ?? "No customer reply yet" },
+                ...(activeIsWebsite ? [
+                  { label: "Handoff state", value: activeLead.websiteSession?.status?.replaceAll("_", " ") || "AI READY" },
+                  { label: "Consent", value: activeLead.websiteSession?.consentedAt ? "Recorded" : "Not provided" },
+                  { label: "Visitor read", value: activeLead.websiteSession?.lastReadAt ? "Confirmed" : activeLead.websiteSession?.lastDeliveredAt ? "Delivered" : "Waiting" }
+                ] : [])
               ].map((item) => (
                 <div key={item.label} className="flex items-start justify-between gap-4 border-b border-[var(--border)] pb-2 last:border-b-0">
                   <p className="text-sm text-[var(--text-muted)]">{item.label}</p>

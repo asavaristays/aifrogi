@@ -18,6 +18,7 @@ export async function getLeadsForProperty(propertySlug: string) {
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"
@@ -42,6 +43,7 @@ export async function getLeadById(id: string) {
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"
@@ -70,6 +72,7 @@ export async function getLeadByPhoneForProperty(propertyId: string, phone: strin
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"
@@ -95,6 +98,7 @@ export async function getLeadByExternalMessageId(externalMessageId: string) {
             }
           },
           tags: true,
+          websiteSession: true,
           messages: {
             orderBy: {
               sentAt: "asc"
@@ -157,6 +161,7 @@ export async function createLeadForProperty(
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"
@@ -220,6 +225,7 @@ export async function updateLeadById(
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"
@@ -285,6 +291,7 @@ export async function appendMessageToLead(
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"
@@ -331,6 +338,7 @@ export async function updateLeadMessageStatusByExternalId(
         }
       },
       tags: true,
+      websiteSession: true,
       messages: {
         orderBy: {
           sentAt: "asc"

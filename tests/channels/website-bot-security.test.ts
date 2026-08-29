@@ -33,3 +33,9 @@ test("website reply retrieval requires a signed tenant-bound visitor session", (
   assert.match(source, /capabilityHash: hashWebsiteVisitorValue/);
   assert.match(source, /revokedAt: null/);
 });
+
+test("partner responses expose governed source labels, freshness, and response SLA", () => {
+  assert.match(source, /sources: result\?\.sources\.slice\(0, 3\)/);
+  assert.match(source, /knowledgeAsOf:/);
+  assert.match(source, /responseSlaMinutes: profile\.responseSlaMinutes/);
+});

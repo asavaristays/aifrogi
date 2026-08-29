@@ -22,6 +22,8 @@ export type KnowledgeBase = {
 type KnowledgeAnswer = {
   answer: string;
   sourceUrls: string[];
+  sources: Array<{ title: string; url: string; crawledAt: string }>;
+  knowledgeAsOf: string;
   usedOpenAi: boolean;
 };
 
@@ -309,7 +311,7 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
     .map((page) => ({ page, score: scorePage(page, question) }))
     .sort((left, right) => right.score - left.score);
   if (!rankedPages.length || rankedPages[0].score === 0) {
-    return { context: "", sourceUrls: [] as string[] };
+    return { context: "", sourceUrls: [] as string[], sources: [] as Array<{ title: string; url: string; crawledAt: string }> };
   }
   const pages = rankedPages
     .filter((item) => item.score > 0)
@@ -318,6 +320,7 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
 
   let context = "";
   const sourceUrls: string[] = [];
+  const sources: Array<{ title: string; url: string; crawledAt: string }> = [];
 
   for (const page of pages) {
     const next = [
@@ -330,9 +333,10 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
     if (context.length + next.length > MAX_CONTEXT_CHARS) break;
     context += `${context ? "\n\n---\n\n" : ""}${next}`;
     sourceUrls.push(page.url);
+    sources.push({ title: page.title.replace(/\s*[|–—-]\s*Webtechnosys.*$/i, "").trim().slice(0, 80) || page.bucket, url: page.url, crawledAt: page.crawledAt });
   }
 
-  return { context, sourceUrls };
+  return { context, sourceUrls, sources };
 }
 
 function extractOpenAiText(payload: Record<string, unknown>) {
@@ -370,7 +374,7 @@ export async function buildWebsiteKnowledgeAnswer({
   if (!settings.approvedForAi) return null;
 
   const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
-  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, question) : { context: "", sourceUrls: [] as string[] };
+  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, question) : { context: "", sourceUrls: [] as string[], sources: [] as Array<{ title: string; url: string; crawledAt: string }> };
   const governedContext = await getApprovedKnowledgeContext(propertySlug, question);
   const context = [websiteResult.context, governedContext].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
@@ -418,6 +422,8 @@ export async function buildWebsiteKnowledgeAnswer({
   return {
     answer,
     sourceUrls: websiteResult.sourceUrls,
+    sources: websiteResult.sources,
+    knowledgeAsOf: knowledgeBase?.crawledAt || new Date().toISOString(),
     usedOpenAi: true
   };
 }

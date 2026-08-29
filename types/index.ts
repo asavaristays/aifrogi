@@ -37,6 +37,14 @@ export type Lead = {
   updatedAtLabel: string;
   updatedAtIso: string;
   tags: string[];
+  websiteSession?: {
+    status: string;
+    contactName: string | null;
+    contactValue: string | null;
+    consentedAt: string | null;
+    lastDeliveredAt: string | null;
+    lastReadAt: string | null;
+  } | null;
   transcript: Array<{
     id: string;
     from: "guest" | "agent" | "ai";
