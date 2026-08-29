@@ -32,6 +32,25 @@
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
+@keyframes bot-phone-scroll-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bot-phone-typing {
+  0%, 70%, 100% { opacity: .28; transform: translateY(0); }
+  35% { opacity: 1; transform: translateY(-2px); }
+}
+
+@keyframes bot-phone-live {
+  0%, 100% { opacity: .45; box-shadow: 0 0 0 0 rgba(226,198,109,.35); }
+  50% { opacity: 1; box-shadow: 0 0 0 5px rgba(226,198,109,0); }
+}
+
+.bot-phone-scroll { animation: bot-phone-scroll-in .75s cubic-bezier(.2,.8,.2,1) both; }
+.bot-typing-dot { animation: bot-phone-typing 1.15s ease-in-out infinite; }
+.bot-phone-live-dot { animation: bot-phone-live 2.2s ease-in-out infinite; }
+
 .hero-bot-float {
   animation: sovereign-bot-float 6.5s ease-in-out infinite;
   transform-origin: 50% 58%;
@@ -109,6 +128,9 @@
   .hero-bot-name,
   .hero-bot-eye,
   .hero-bot-blink { animation: none; }
+  .bot-phone-scroll,
+  .bot-typing-dot,
+  .bot-phone-live-dot { animation: none; }
 }
 
 :root {

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
+import { AnimatedBotPhone } from "@/components/marketing/animated-bot-phone";
 
 export type ProductStoryStage = { label: string; detail: string };
 
@@ -75,7 +76,11 @@ export function AIProductHero({
           )}
         </div>
 
-        <div className="relative mx-auto w-full max-w-[500px]" aria-label={`${name} product story`}>
+        {name === "PingBook" ? (
+          <div className="relative mx-auto w-full max-w-[760px] lg:-mr-12" aria-label={`${name} product story`}>
+            <AnimatedBotPhone botName={name} />
+          </div>
+        ) : <div className="relative mx-auto w-full max-w-[500px]" aria-label={`${name} product story`}>
           <div className="hero-bot-float relative aspect-[1122/1402]">
             <Image src="/brand/aifrogi-sovereign-bot.png" alt={`AiFrogi mascot demonstrating ${name}`} fill priority sizes="(max-width: 1024px) 430px, 500px" className="object-contain [mask-image:radial-gradient(ellipse_76%_72%_at_50%_48%,black_54%,transparent_100%)]" />
             <span className="hero-bot-eye hero-bot-eye-left" aria-hidden="true" />
@@ -89,7 +94,7 @@ export function AIProductHero({
               </div>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </section>
   );
