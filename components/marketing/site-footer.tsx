@@ -26,6 +26,7 @@ export function SiteFooter() {
           <Link className="block hover:text-white" href="/privacy-policy">Privacy policy</Link>
           <Link className="block hover:text-white" href="/terms-of-service">Terms of service</Link>
           <Link className="block hover:text-white" href="/security">Data security</Link>
+          <Link className="block hover:text-white" href="/security-compliance">Security Compliance</Link>
           <Link className="block hover:text-white" href="/data-deletion">Data deletion</Link>
         </nav>
 

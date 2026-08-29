@@ -41,39 +41,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-black/8 bg-[#fbfaf7] px-5 py-14 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl"><p className="product-eyebrow">Security and compliance transparency</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Trust claims limited to controls we can prove.</h2><p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">AiFrogi publishes active safeguards, customer responsibilities, and certification status in plain language. We do not claim SOC 2 or ISO certification until an independent programme is completed.</p></div>
-            <Link href="/security#compliance-status" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-[#101010] px-5 text-sm font-bold text-white">Review compliance status <Icon name="arrow-right" /></Link>
-          </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {[
-              ["Workspace isolation", "Active"],
-              ["Encrypted credentials", "Active"],
-              ["Signed connector webhooks", "Active"],
-              ["Controlled support access", "Active"],
-              ["SOC 2 / ISO", "Not yet claimed"]
-            ].map(([control, status]) => <div key={control} className="rounded-lg border border-black/8 bg-white p-4"><p className="text-xs font-bold">{control}</p><p className={`mt-2 text-[10px] font-bold uppercase tracking-[.1em] ${status === "Active" ? "text-[#178665]" : "text-[#9a6719]"}`}>{status}</p></div>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-black/8 bg-white px-5 py-16 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <p className="product-eyebrow">Verified trust signals</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, service status, and security boundaries.</h2>
-          </div>
-          <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <ProofLink title="AI governance" copy="Approved knowledge, defined authority, auditability, and human control." href="/security" icon="settings" />
-            <ProofLink title="Company details" copy="AiFrogi is operated by webtechnosys from Goa, India." href="/about" icon="file-text" />
-            <ProofLink title="Service status" copy="Public status page for platform availability and incidents." href="/status" icon="bar-chart-3" />
-            <ProofLink title="Verified controls" copy="Support access, OTP, signed webhooks, and boundary tests." href="/security" icon="grid" />
-          </div>
-        </div>
-      </section>
-
       <section id="security" className="relative overflow-hidden bg-[var(--ink-950)] px-5 py-20 text-white sm:px-8 sm:py-24">
         <div className="absolute -right-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-[var(--gold-600)]/18 blur-[100px]" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20">
@@ -121,5 +88,4 @@ export default function HomePage() {
   );
 }
 
-function ProofLink({ title, copy, href, icon }: { title: string; copy: string; href: string; icon: "settings" | "file-text" | "bar-chart-3" | "grid" }) { return <a href={href} className="group border-t border-black/10 pt-5"><span className="grid h-10 w-10 place-items-center rounded-lg bg-[#f8f0d8] text-[#6d5310]"><Icon name={icon} /></span><h3 className="mt-5 flex items-center justify-between gap-3 text-lg font-bold">{title}<Icon name="arrow-right" className="text-[#8a6a16] transition-transform group-hover:translate-x-1" /></h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></a>; }
 function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles" | "phone" | "link"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#e2c66d]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }

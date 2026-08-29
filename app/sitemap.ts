@@ -15,6 +15,7 @@ const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], nu
   ["/resources", "weekly", 0.7],
   ["/help", "weekly", 0.7],
   ["/security", "monthly", 0.6],
+  ["/security-compliance", "monthly", 0.7],
   ["/status", "weekly", 0.6],
   ["/product-tour", "monthly", 0.6],
   ["/privacy-policy", "yearly", 0.3],
