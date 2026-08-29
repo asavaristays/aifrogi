@@ -27,6 +27,7 @@ export type OnboardingGuidanceOrganization = {
   website?: string | null;
   onboarding?: OnboardingGuidanceRecord | null;
   documents?: Array<unknown>;
+  botProfile?: { channels?: string[] | null; status?: string | null } | null;
 };
 
 export type OnboardingGuidance = {
@@ -99,6 +100,7 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
   const lifecycle = onboarding?.lifecycleStatus || "";
   const kyc = onboarding?.kycStatus || "NOT_SUBMITTED";
   const meta = onboarding?.metaStatus || "NOT_STARTED";
+  const usesWhatsApp = organization.botProfile?.channels?.includes("WHATSAPP") ?? false;
 
   if (organization.status === "PENDING_EMAIL" || lifecycle === "EMAIL_VERIFICATION") {
     return {
@@ -162,6 +164,31 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
       tone: "waiting",
       eta: "Same business day",
       supportNote: "Super Admin KYC review is pending."
+    };
+  }
+
+  if (!usesWhatsApp) {
+    if (organization.botProfile?.status !== "CONFIGURED") {
+      return {
+        title: "Design your AI Business Bot",
+        description: "Choose the bot's business job, website channel, approved capabilities, and human authority before adding intelligence.",
+        action: "Configure AI Bot",
+        owner: "You",
+        step: 2,
+        tone: "urgent",
+        eta: "3 minutes",
+        supportNote: "Website AI Bot setup does not require a WhatsApp number or Meta account."
+      };
+    }
+    return {
+      title: "Build approved business intelligence",
+      description: "Your Website AI Bot profile is ready. Add and approve business sources, test safe answers, and then publish the widget.",
+      action: "Open intelligence",
+      owner: "You",
+      step: 6,
+      tone: "ready",
+      eta: "Ready now",
+      supportNote: "The next proof is a grounded answer and consented lead captured from your website."
     };
   }
 

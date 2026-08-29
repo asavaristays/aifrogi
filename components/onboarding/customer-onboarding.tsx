@@ -110,7 +110,7 @@ declare global {
   }
 }
 
-const steps = [
+const allSteps = [
   { title: "Organization", helper: "Your company and owner profile" },
   { title: "Business details", helper: "Information used for verification" },
   { title: "WhatsApp number", helper: "Choose the number to connect" },
@@ -151,6 +151,14 @@ export function CustomerOnboarding({
   const metaSessionRef = useRef<MetaSession | null>(null);
   const metaSubmittingRef = useRef(false);
   const metaConfigured = Boolean(metaAppId && metaConfigId);
+  const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
+  const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
+  const websiteReady = Boolean(usesWebsite && organization?.botProfile?.status === "CONFIGURED" && organization?.onboarding?.kycStatus === "APPROVED");
+  const visibleSteps = useMemo(() => usesWhatsApp ? allSteps.map((step, index) => ({ ...step, number: index + 1 })) : [
+    { ...allSteps[0], number: 1 },
+    { ...allSteps[1], number: 2 },
+    { title: "Go live", helper: "Review intelligence and open your AI workspace", number: 6 }
+  ], [usesWhatsApp]);
 
   const [organizationForm, setOrganizationForm] = useState({
     name: initialOrganization?.name || "",
@@ -176,8 +184,15 @@ export function CustomerOnboarding({
     whatsappActiveOnNumber: initialOrganization?.onboarding?.whatsappActiveOnNumber ?? false
   });
 
-  const progress = organization?.onboarding?.progressPercent || (organization ? 20 : 5);
-  const live = organization?.onboarding?.metaStatus === "LIVE";
+  const whatsappProgress = organization?.onboarding?.progressPercent || (organization ? 20 : 5);
+  const websiteProgress = [
+    Boolean(organization),
+    Boolean(organization?.ownerMobile && organization?.businessAddress && organization?.website),
+    organization?.onboarding?.kycStatus === "APPROVED",
+    organization?.botProfile?.status === "CONFIGURED"
+  ].filter(Boolean).length * 25;
+  const progress = usesWhatsApp ? whatsappProgress : websiteProgress;
+  const live = usesWhatsApp ? organization?.onboarding?.metaStatus === "LIVE" : websiteReady;
   const rejected = organization?.onboarding?.metaStatus === "REJECTED";
   const pending = ["CONNECTING", "CONFIGURING", "REVIEW"].includes(organization?.onboarding?.metaStatus || "");
   const guidance = getOnboardingGuidance(organization);
@@ -194,6 +209,10 @@ export function CustomerOnboarding({
       live
     ];
   }, [organization, live]);
+
+  useEffect(() => {
+    if (!usesWhatsApp && activeStep >= 3 && activeStep <= 5) setActiveStep(6);
+  }, [activeStep, usesWhatsApp]);
 
   const completeMetaConnection = useCallback(async () => {
     const code = metaCodeRef.current;
@@ -220,7 +239,7 @@ export function CustomerOnboarding({
   }, [router]);
 
   useEffect(() => {
-    if (!metaConfigured || window.FB) {
+    if (!usesWhatsApp || !metaConfigured || window.FB) {
       setMetaSdkReady(Boolean(window.FB));
       return;
     }
@@ -237,7 +256,7 @@ export function CustomerOnboarding({
     script.crossOrigin = "anonymous";
     script.src = "https://connect.facebook.net/en_US/sdk.js";
     document.body.appendChild(script);
-  }, [graphVersion, metaAppId, metaConfigured]);
+  }, [graphVersion, metaAppId, metaConfigured, usesWhatsApp]);
 
   useEffect(() => {
     function receiveMetaSession(event: MessageEvent) {
@@ -298,7 +317,7 @@ export function CustomerOnboarding({
 
   async function continueBusiness() {
     const updated = await request("PATCH", { step: 2, ...businessForm });
-    if (updated) setActiveStep(3);
+    if (updated) setActiveStep(updated.botProfile?.channels?.includes("WHATSAPP") ? 3 : 6);
   }
 
   async function continuePhone() {
@@ -381,7 +400,7 @@ export function CustomerOnboarding({
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#e4ece8]">
             <div className="h-full rounded-full bg-[#25d366] transition-all" style={{ width: `${progress}%` }} />
           </div>
-          <p className="mt-3 text-sm font-semibold text-[#4d5a55] lg:hidden">Step {activeStep} of {steps.length}: {steps[activeStep - 1].title}</p>
+          <p className="mt-3 text-sm font-semibold text-[#4d5a55] lg:hidden">Step {Math.max(1, visibleSteps.findIndex((step) => step.number === activeStep) + 1)} of {visibleSteps.length}: {visibleSteps.find((step) => step.number === activeStep)?.title || "Setup"}</p>
           {trial.enabled ? (
             <div className="mt-5 rounded-md border border-[#f2d2ef] bg-[#fdf4fc] p-4">
               <div className="flex items-center justify-between gap-3">
@@ -395,10 +414,10 @@ export function CustomerOnboarding({
             </div>
           ) : null}
           <nav className="mt-6 hidden space-y-1 lg:block" aria-label="Onboarding steps">
-            {steps.map((step, index) => {
-              const stepNumber = index + 1;
+            {visibleSteps.map((step, index) => {
+              const stepNumber = step.number;
               const active = activeStep === stepNumber;
-              const complete = completedSteps[index];
+              const complete = completedSteps[stepNumber - 1];
               return (
                 <button
                   key={step.title}
@@ -407,7 +426,7 @@ export function CustomerOnboarding({
                   className={`flex w-full items-center gap-3 rounded-md px-3 py-3 text-left ${active ? "bg-[#e8f8ee]" : "hover:bg-[#f5f8f6]"}`}
                 >
                   <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${complete ? "bg-[#25d366] text-[#063f3a]" : active ? "bg-[#c725ba] text-white" : "bg-[#edf2ef] text-[#6d7487]"}`}>
-                    {complete ? "✓" : stepNumber}
+                    {complete ? "✓" : index + 1}
                   </span>
                   <span className="min-w-0">
                     <strong className="block truncate text-sm">{step.title}</strong>
@@ -431,16 +450,16 @@ export function CustomerOnboarding({
             onOpenWorkspace={() => router.push("/dashboard")}
           />
           <OnboardingReadiness organization={organization} />
-          {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} /> : null}
-          <TechProviderGuide />
+          {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
+          {usesWhatsApp ? <TechProviderGuide /> : null}
 
           <section className="overflow-hidden rounded-lg border border-black/5 bg-white shadow-sm">
             <div className="border-b border-black/5 px-6 py-6 sm:px-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Step {activeStep} of {steps.length}</p>
-                  <h1 className="mt-2 text-2xl font-black sm:text-3xl">{steps[activeStep - 1].title}</h1>
-                  <p className="mt-2 text-sm text-[#6d7487]">{steps[activeStep - 1].helper}</p>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Step {Math.max(1, visibleSteps.findIndex((step) => step.number === activeStep) + 1)} of {visibleSteps.length}</p>
+                  <h1 className="mt-2 text-2xl font-black sm:text-3xl">{visibleSteps.find((step) => step.number === activeStep)?.title || "Setup"}</h1>
+                  <p className="mt-2 text-sm text-[#6d7487]">{visibleSteps.find((step) => step.number === activeStep)?.helper || "Complete your business bot setup"}</p>
                 </div>
                 <Badge tone={live ? "secondary" : rejected ? "error" : "neutral"}>{live ? "Live" : rejected ? "Action required" : organization?.plan || "Trial"}</Badge>
               </div>
@@ -456,8 +475,8 @@ export function CustomerOnboarding({
                   onDocumentsChanged={(documents) => setOrganization((current) => current ? { ...current, documents } : current)}
                 />
               ) : null}
-              {activeStep === 3 ? <PhoneStep value={phoneForm} onChange={setPhoneForm} /> : null}
-              {activeStep === 4 ? (
+              {activeStep === 3 && usesWhatsApp ? <PhoneStep value={phoneForm} onChange={setPhoneForm} /> : null}
+              {activeStep === 4 && usesWhatsApp ? (
                 <ConnectStep
                   configured={metaConfigured}
                   ready={metaSdkReady}
@@ -466,16 +485,16 @@ export function CustomerOnboarding({
                   onConnect={beginMetaConnection}
                 />
               ) : null}
-              {activeStep === 5 ? (
+              {activeStep === 5 && usesWhatsApp ? (
                 <StatusStep onboarding={organization?.onboarding || null} pending={pending} rejected={rejected} live={live} onRefresh={refreshStatus} saving={saving} />
               ) : null}
-              {activeStep === 6 ? <LiveStep organization={organization} onOpen={() => router.push("/dashboard")} /> : null}
+              {activeStep === 6 ? <LiveStep organization={organization} onOpen={() => router.push(usesWebsite ? "/knowledge" : "/dashboard")} /> : null}
 
               {error ? <p className="mt-6 rounded-md border border-[#f5b9b2] bg-[#fff3f1] px-4 py-3 text-sm font-semibold text-[#a3342b]">{error}</p> : null}
               {notice ? <p className="mt-6 rounded-md border border-[#b9e9ca] bg-[#effbf3] px-4 py-3 text-sm font-semibold text-[#493b62]">{notice}</p> : null}
             </div>
 
-            {activeStep <= 3 ? (
+            {activeStep <= 3 && (activeStep < 3 || usesWhatsApp) ? (
               <div className="flex items-center justify-between gap-3 border-t border-black/5 px-6 py-5 sm:px-8">
                 <Button tone="surface" disabled={activeStep === 1 || saving} onClick={() => setActiveStep((current) => Math.max(1, current - 1))}>Back</Button>
                 <Button disabled={saving} onClick={activeStep === 1 ? continueOrganization : activeStep === 2 ? continueBusiness : continuePhone}>
@@ -492,14 +511,23 @@ export function CustomerOnboarding({
 
 function OnboardingReadiness({ organization }: { organization: CustomerOnboardingOrganization | null }) {
   const onboarding = organization?.onboarding;
-  const items = [
+  const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
+  const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
+  const commonItems = [
     { label: "Business owner details", owner: "You", ready: Boolean(organization?.ownerName && organization?.ownerMobile), helper: "Company name, owner, mobile, address, and website" },
-    { label: "Business proof", owner: "You", ready: onboarding?.kycStatus === "APPROVED", helper: onboarding?.kycStatus === "SUBMITTED" ? "Submitted; AiFrogi review is in progress" : "Registration or GST document and legal business details" },
+    { label: "Business proof", owner: "You", ready: onboarding?.kycStatus === "APPROVED", helper: onboarding?.kycStatus === "SUBMITTED" ? "Submitted; AiFrogi review is in progress" : "Registration or GST document and legal business details" }
+  ];
+  const websiteItems = usesWebsite ? [
+    { label: "Bot purpose and authority", owner: "You", ready: organization?.botProfile?.status === "CONFIGURED", helper: "Business job, approved capabilities, human handoff, and action approval" },
+    { label: "Approved intelligence", owner: "You", ready: organization?.botProfile?.status === "CONFIGURED", helper: "Website sources, business facts, documents, and safe-answer instructions" }
+  ] : [];
+  const whatsappItems = usesWhatsApp ? [
     { label: "WhatsApp phone", owner: "You", ready: Boolean(onboarding?.phoneNumber), helper: "Access to the SIM for OTP or voice verification" },
     { label: "Secure Meta connection", owner: "AiFrogi", ready: onboarding?.facebookStatus === "CONNECTED", helper: "You approve the business and number; no passwords are shared" },
     { label: "Platform review", owner: "Meta", ready: onboarding?.metaStatus === "LIVE", helper: onboarding?.metaStatus === "REJECTED" ? onboarding.lastError || "A correction is required" : "Timing is controlled by Meta; AiFrogi monitors the result" },
     { label: "First messaging test", owner: "AiFrogi", ready: onboarding?.metaStatus === "LIVE" && (onboarding?.webhookStatus === "CONNECTED" || onboarding?.webhookStatus === "CONFIGURED"), helper: "Inbound, outbound, delivery receipt, and human handoff" }
-  ];
+  ] : [];
+  const items = [...commonItems, ...websiteItems, ...whatsappItems];
   const ready = items.filter((item) => item.ready).length;
   return (
     <section className="rounded-lg border border-black/6 bg-white p-5 shadow-sm">
@@ -766,12 +794,13 @@ function StatusStep({ onboarding, pending, rejected, live, onRefresh, saving }: 
 }
 
 function LiveStep({ organization, onOpen }: { organization: CustomerOnboardingOrganization | null; onOpen: () => void }) {
+  const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
   return (
     <div className="mx-auto max-w-xl py-8 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#25d366] text-3xl font-black text-[#063f3a]">✓</div>
-      <h2 className="mt-6 text-3xl font-black">Your WhatsApp workspace is live</h2>
-      <p className="mt-3 text-sm leading-6 text-[#6d7487]">{organization?.onboarding?.displayPhoneNumber || organization?.name} is ready for inbound and outbound messaging.</p>
-      <Button className="mt-7 px-5 py-3" onClick={onOpen}>Go to inbox</Button>
+      <h2 className="mt-6 text-3xl font-black">{usesWhatsApp ? "Your WhatsApp workspace is live" : "Your AI Business Bot foundation is ready"}</h2>
+      <p className="mt-3 text-sm leading-6 text-[#6d7487]">{usesWhatsApp ? `${organization?.onboarding?.displayPhoneNumber || organization?.name} is ready for inbound and outbound messaging.` : "Open Business Intelligence to approve sources, test grounded answers, and prepare the website widget."}</p>
+      <Button className="mt-7 px-5 py-3" onClick={onOpen}>{usesWhatsApp ? "Go to inbox" : "Open intelligence"}</Button>
     </div>
   );
 }

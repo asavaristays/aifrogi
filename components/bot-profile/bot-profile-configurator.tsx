@@ -15,6 +15,12 @@ const labels: Record<string, string> = {
 
 const defaults: BotProfileInput = { category: "BUSINESS_AI", operatingMode: "LEAD_CAPTURE", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"], humanHandoffEnabled: true, actionApprovalNeeded: true };
 
+const setupPaths = [
+  { key: "website", title: "AI Website Bot", helper: "Use approved business intelligence on your website and capture consented enquiries.", channels: ["WEBSITE"] as BotProfileInput["channels"] },
+  { key: "whatsapp", title: "WhatsApp Bot", helper: "Run customer conversations through a securely connected WhatsApp Business number.", channels: ["WHATSAPP"] as BotProfileInput["channels"] },
+  { key: "both", title: "Website + WhatsApp", helper: "One business bot and intelligence layer operating across both customer channels.", channels: ["WEBSITE", "WHATSAPP"] as BotProfileInput["channels"] }
+] as const;
+
 function normalized(initial?: StoredProfile | null): BotProfileInput {
   return {
     ...defaults,
@@ -27,7 +33,7 @@ function normalized(initial?: StoredProfile | null): BotProfileInput {
   };
 }
 
-export function BotProfileConfigurator({ initialProfile, organizationId, compact = false }: { initialProfile?: StoredProfile | null; organizationId?: string; compact?: boolean }) {
+export function BotProfileConfigurator({ initialProfile, organizationId, compact = false, onSaved }: { initialProfile?: StoredProfile | null; organizationId?: string; compact?: boolean; onSaved?: (organization: unknown) => void }) {
   const router = useRouter();
   const [profile, setProfile] = useState(() => normalized(initialProfile));
   const [saving, setSaving] = useState(false);
@@ -51,16 +57,25 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
     const payload = await response.json().catch(() => null);
     setSaving(false);
     setMessage(response.ok ? "Bot profile saved" : payload?.error || "Bot profile could not be saved");
-    if (response.ok) router.refresh();
+    if (response.ok) {
+      onSaved?.(payload.organization);
+      router.refresh();
+    }
   }
 
   return <section className={`rounded-lg border border-black/6 bg-white shadow-sm ${compact ? "p-5" : "p-6 sm:p-8"}`}>
-    <div><p className="product-eyebrow">Bot design</p><h2 className="mt-2 text-xl font-black">Category, channels and authority</h2><p className="mt-2 text-sm leading-6 text-[#6d7487]">The category defines the business job. Website and WhatsApp are channels for the same intelligent bot.</p></div>
+    <div><p className="product-eyebrow">Bot design</p><h2 className="mt-2 text-xl font-black">Choose how customers will use your bot</h2><p className="mt-2 text-sm leading-6 text-[#6d7487]">Select the customer journey first. AiFrogi will show only the setup, intelligence, and connection inputs required for those channels.</p></div>
+    <div className="mt-6 grid gap-3 lg:grid-cols-3">
+      {setupPaths.map((path) => {
+        const selected = path.channels.length === profile.channels.length && path.channels.every((channel) => profile.channels.includes(channel));
+        return <button key={path.key} type="button" onClick={() => setProfile((current) => ({ ...current, channels: [...path.channels] }))} className={`rounded-lg border p-4 text-left transition ${selected ? "border-[#c725ba] bg-[#fff4fd] ring-1 ring-[#c725ba]" : "border-black/8 bg-[#fbfcfb] hover:border-[#d9a4d4]"}`}><span className="block text-sm font-black">{path.title}</span><span className="mt-2 block text-xs leading-5 text-[#6d7487]">{path.helper}</span></button>;
+      })}
+    </div>
     <div className="mt-6 grid gap-5 lg:grid-cols-2">
       <label className="block"><span className="field-label">Bot category</span><select className="product-input mt-2" value={profile.category} onChange={(event) => setCategory(event.target.value as BotProfileInput["category"])}>{BOT_CATEGORIES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
       <label className="block"><span className="field-label">Operating mode</span><select className="product-input mt-2" value={profile.operatingMode} onChange={(event) => setProfile((current) => ({ ...current, operatingMode: event.target.value as BotProfileInput["operatingMode"] }))}>{BOT_OPERATING_MODES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
     </div>
-    <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} onChange={() => toggleChannel(item)} />)}</div></div>
+    <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#6d7487]">{profile.channels.includes("WHATSAPP") ? "WhatsApp setup will request a business number and secure Meta authorization." : "Website-only setup does not require a WhatsApp number or Meta account."}</p></div>
     <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={labels[item]} checked={profile.capabilities.includes(item)} onChange={() => toggleCapability(item)} />)}</div></div>
     <div className="mt-5 grid gap-2 sm:grid-cols-2"><Check label="Human takeover available" checked={profile.humanHandoffEnabled} onChange={() => setProfile((current) => ({ ...current, humanHandoffEnabled: !current.humanHandoffEnabled }))} /><Check label="Approval before business actions" checked={profile.actionApprovalNeeded} onChange={() => setProfile((current) => ({ ...current, actionApprovalNeeded: !current.actionApprovalNeeded }))} /></div>
     {message ? <p className={`mt-4 text-sm font-semibold ${message.includes("saved") ? "text-[#16794a]" : "text-[#a3342b]"}`}>{message}</p> : null}
