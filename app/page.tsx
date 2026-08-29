@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
@@ -63,17 +62,6 @@ export default function HomePage() {
             <div className="border-t border-white/14 pt-5"><span className="font-mono text-xs text-[var(--gold-300)]">03</span><h3 className="mt-3 text-xl font-semibold">Sovereign by design</h3><p className="mt-2 text-sm leading-6 text-white/48">Approved knowledge, controlled access and accountable human authority.</p></div>
           </div>
         </div>
-      </section>
-
-      <section className="relative w-full overflow-hidden bg-black" aria-label="AiFrogi AI Business Assistant capabilities">
-        <Image
-          src="/media/aifrogi-main-footer-final-v3.jpg"
-          alt="AiFrogi AI Business Assistant connecting approved knowledge, customer journeys, lead qualification, business actions, human handover, security controls and connected systems."
-          width={1600}
-          height={600}
-          sizes="100vw"
-          className="h-auto w-full object-cover"
-        />
       </section>
 
       <SiteFooter />
