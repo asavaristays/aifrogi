@@ -6,7 +6,6 @@ import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-st
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
-import { WhatsAppProductsShell } from "@/components/marketing/whatsapp-products-shell";
 import { SovereignHero } from "@/components/marketing/sovereign-hero";
 import { marketingMetadata } from "@/lib/seo";
 
@@ -42,8 +41,6 @@ export default function HomePage() {
           <FeatureShowcase />
         </div>
       </section>
-
-      <WhatsAppProductsShell />
 
       <OnboardingJourney />
 
