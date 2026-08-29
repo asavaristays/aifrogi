@@ -261,7 +261,11 @@ export function WhatsAppBotClient({
     )[0]?.id ?? validLeads[0]?.id ?? "";
   }, [validLeads]);
   const activeLead = useMemo(() => validLeads.find((lead) => lead.id === activeId) ?? validLeads[0], [activeId, validLeads]);
-  const activeFreeTextAllowed = useMemo(() => hasOpenCustomerServiceWindow(activeLead), [activeLead]);
+  const activeIsWebsite = useMemo(() => Boolean(activeLead && getLeadSourceLabel(activeLead) === "Website"), [activeLead]);
+  const activeFreeTextAllowed = useMemo(
+    () => activeIsWebsite || hasOpenCustomerServiceWindow(activeLead),
+    [activeIsWebsite, activeLead]
+  );
   const composeFreeTextAllowed = useMemo(() => {
     const digits = normalizePhoneDigits(composePhone);
     const matchingLead = validLeads.find((lead) => normalizePhoneDigits(lead.phone) === digits);
@@ -325,12 +329,14 @@ export function WhatsAppBotClient({
       {
         id: `${activeLead.id}-starter`,
         from: "ai" as const,
-        text: "AiFrogi is connected and ready. Send the first WhatsApp reply to begin this conversation thread.",
+        text: activeIsWebsite
+          ? "This website conversation is ready for human follow-up and verified business actions."
+          : "AiFrogi is connected and ready. Send the first WhatsApp reply to begin this conversation thread.",
         time: "Just now",
         sentAtIso: new Date().toISOString()
       }
     ];
-  }, [activeLead, optimisticMessage]);
+  }, [activeIsWebsite, activeLead, optimisticMessage]);
 
   useEffect(() => {
     if (!optimisticMessage || !activeLead) return;
@@ -465,9 +471,9 @@ export function WhatsAppBotClient({
   if (!activeLead) {
     return (
       <Card className="p-8">
-        <h2 className="text-xl font-semibold">No WhatsApp leads yet</h2>
+        <h2 className="text-xl font-semibold">No conversations yet</h2>
         <p className="mt-2 text-sm text-[var(--text-muted)]">
-          New messages sent to {integration.displayPhoneNumber || "your connected WhatsApp number"} will appear here automatically.
+          Website bot and WhatsApp conversations will appear here automatically.
         </p>
       </Card>
     );
@@ -480,6 +486,25 @@ export function WhatsAppBotClient({
     message: string;
     attachment?: File | null;
   }) {
+    if (activeIsWebsite) {
+      if (attachment) {
+        return { ok: false as const, error: "Attachments are not yet available for website conversations." };
+      }
+
+      const response = await fetch(`/api/leads/${activeLead.id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sender: "AGENT", body: message })
+      });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        return { ok: false as const, error: payload.error ?? "Could not record website reply" };
+      }
+
+      return { ok: true as const, result: "Reply recorded in the website conversation" };
+    }
+
       const response = await fetch("/api/integrations/whatsapp/operator-message", {
       method: "POST",
       body: (() => {
@@ -802,7 +827,7 @@ export function WhatsAppBotClient({
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-[var(--text)]">Inbox desk</p>
-                <p className="mt-1 text-xs text-[var(--text-muted)]">{validLeads.length} WhatsApp conversations</p>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">{validLeads.length} cross-channel conversations</p>
               </div>
               <span className={`h-2.5 w-2.5 rounded-full ${integration.status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d98a2b]"}`} />
             </div>
@@ -1049,7 +1074,7 @@ export function WhatsAppBotClient({
             })}
             {activeLead.transcript.length === 0 ? (
               <div className="rounded-lg border border-dashed border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--text-muted)]">
-                No replies yet. Send the first WhatsApp reply to begin this conversation thread.
+                No replies yet. Send the first channel-safe reply to begin this conversation thread.
               </div>
             ) : null}
           </div>
@@ -1087,6 +1112,7 @@ export function WhatsAppBotClient({
                 tone="ghost"
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
+                disabled={activeIsWebsite}
                 className="h-9 w-9 rounded-md px-0 text-base"
                 aria-label="Attach file"
               >
@@ -1128,6 +1154,11 @@ export function WhatsAppBotClient({
             {!activeFreeTextAllowed ? (
               <p className="mt-2 text-xs font-semibold text-[#b45309]">
                 The 24-hour reply window is closed. Use New Message and select an approved template.
+              </p>
+            ) : null}
+            {activeIsWebsite ? (
+              <p className="mt-2 text-xs font-semibold text-[#1559b7]">
+                Website channel selected. This reply is stored in AiFrogi and will never be sent through WhatsApp.
               </p>
             ) : null}
             {selectedAttachment ? (
