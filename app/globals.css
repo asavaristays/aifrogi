@@ -321,6 +321,7 @@ select {
 [class~="bg-[#faf8fb]"],
 [class~="bg-[#f8f6f9]"] { background-color: var(--surface-soft); }
 [class~="text-[#ff8af1]"] { color: var(--gold-300); }
+[class~="bg-[#ff8af1]"] { background-color: var(--gold-300); }
 [class~="text-[#d92bcb]"],
 [class~="text-[#c725ba]"],
 [class~="text-[#b923ae]"],
@@ -336,7 +337,8 @@ select {
 [class~="text-[#6d7487]"] { color: var(--text-muted); }
 [class~="border-[#d92bcb]"],
 [class~="border-[#c725ba]"],
-[class~="border-[#b923ae]"] { border-color: var(--gold-600); }
+[class~="border-[#b923ae]"],
+[class~="border-[#ff8af1]"] { border-color: var(--gold-600); }
 [class~="border-[#eadfed]"],
 [class~="border-[#f2d9f0]"],
 [class~="border-[#e5dce8]"] { border-color: var(--border); }
@@ -349,6 +351,8 @@ select {
 [class~="bg-[#d92bcb]/20"],
 [class~="bg-[#d92bcb]/15"] { background-color: rgba(138, 106, 22, 0.18); }
 [class~="border-[#ff8af1]/45"] { border-color: rgba(226, 198, 109, 0.45); }
+[class~="shadow-[0_0_8px_#ff8af1]"] { box-shadow: 0 0 8px var(--gold-300); }
+[class~="shadow-[0_18px_45px_rgba(217,43,203,.22)]"] { box-shadow: 0 18px 45px rgba(138, 106, 22, 0.2); }
 
 @keyframes leados-pulse {
   0%, 100% { opacity: 0.45; transform: scaleX(0.72); }
