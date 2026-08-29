@@ -58,11 +58,11 @@ export default async function WorkflowsPage() {
                 ["2", "Understand", "Intent rules classify audit, trial, service, or human request."],
                 ["3", "Answer", "OpenAI uses only relevant pages from the crawled website knowledge."],
                 ["4", "Escalate", "Unknown, sensitive, or human-requested conversations reach the team."]
-              ].map(([number, title, helper]) => <div key={number} className="bg-[#fbfcfb] p-4"><span className="text-xs font-bold text-[#b923ae]">{number}</span><strong className="mt-5 block text-sm">{title}</strong><p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{helper}</p></div>)}
+              ].map(([number, title, helper]) => <div key={number} className="bg-[#fbfcfb] p-4"><span className="text-xs font-bold text-[#6d5310]">{number}</span><strong className="mt-5 block text-sm">{title}</strong><p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{helper}</p></div>)}
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-3"><InfoBlock label="Knowledge pages" value={String(knowledgeBase?.pages.length || 0)} /><InfoBlock label="Knowledge buckets" value={String(new Set(knowledgeBase?.pages.map((page) => page.bucket) || []).size)} /><InfoBlock label="Last crawl" value={knowledgeBase?.crawledAt ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(knowledgeBase.crawledAt)) : "Not available"} /></div>
           </Card>
-          <Card className="border border-black/6 bg-[#2c243b] p-6 text-white shadow-sm"><p className="text-xs font-bold uppercase tracking-[0.08em] text-[#ff8af1]">Answer constitution</p><h2 className="mt-2 text-2xl font-semibold">AI has explicit boundaries.</h2><div className="mt-5 max-h-80 space-y-3 overflow-auto pr-2">{BOT_ANSWER_CONSTITUTION.split("\n").map((rule, index) => <div key={rule} className="flex gap-3 border-t border-white/8 pt-3"><span className="text-xs font-bold text-[#ff8af1]">{String(index + 1).padStart(2, "0")}</span><p className="text-xs leading-5 text-white/68">{rule}</p></div>)}</div></Card>
+          <Card className="border border-black/6 bg-[#101010] p-6 text-white shadow-sm"><p className="text-xs font-bold uppercase tracking-[0.08em] text-[#e2c66d]">Answer constitution</p><h2 className="mt-2 text-2xl font-semibold">AI has explicit boundaries.</h2><div className="mt-5 max-h-80 space-y-3 overflow-auto pr-2">{BOT_ANSWER_CONSTITUTION.split("\n").map((rule, index) => <div key={rule} className="flex gap-3 border-t border-white/8 pt-3"><span className="text-xs font-bold text-[#e2c66d]">{String(index + 1).padStart(2, "0")}</span><p className="text-xs leading-5 text-white/68">{rule}</p></div>)}</div></Card>
         </section>
         <section className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
           <Card className="border border-black/6 bg-white p-6 shadow-sm">
@@ -108,7 +108,7 @@ export default async function WorkflowsPage() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge tone={job.status === "SUCCEEDED" ? "secondary" : job.status === "DEAD" ? "tertiary" : "primary"}>{job.status}</Badge>
-                      <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#c725ba]">{job.actionType}</span>
+                      <span className="text-xs font-bold uppercase tracking-[0.08em] text-[#8a6a16]">{job.actionType}</span>
                     </div>
                     <p className="mt-2 text-sm font-black text-[#111827]">{job.workflowId}</p>
                     <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{job.lastError || `Trigger: ${job.triggerType}`}</p>
@@ -160,7 +160,7 @@ export default async function WorkflowsPage() {
           </Card>
 
           <Card className="border border-black/5 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
-            <p className="text-sm font-black text-[#c725ba]">Client demo script</p>
+            <p className="text-sm font-black text-[#8a6a16]">Client demo script</p>
             <h3 className="mt-2 text-2xl font-black">The story to show</h3>
             <div className="mt-5 space-y-3">
               {[
@@ -171,7 +171,7 @@ export default async function WorkflowsPage() {
                 "Owner sees the day’s priorities in one calm digest."
               ].map((item, index) => (
                 <div key={item} className="flex gap-3 rounded-lg border border-black/5 bg-[#f8fafc] p-3">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#dcfce7] text-xs font-black text-[#c725ba]">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#dcfce7] text-xs font-black text-[#8a6a16]">
                     {index + 1}
                   </span>
                   <p className="text-sm font-semibold leading-5 text-[#23312d]">{item}</p>
@@ -211,7 +211,7 @@ function WorkflowCard({ workflow }: { workflow: AutomationWorkflow }) {
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">{workflow.promise}</p>
         </div>
         <div className="rounded-lg border border-black/5 bg-[#f0fdf4] px-4 py-3 text-right">
-          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#c725ba]">Live signal</p>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#8a6a16]">Live signal</p>
           <p className="mt-1 text-2xl font-black text-[#111827]">{workflow.activeCount}</p>
         </div>
       </div>
@@ -223,7 +223,7 @@ function WorkflowCard({ workflow }: { workflow: AutomationWorkflow }) {
       </div>
 
       <div className="mt-5 rounded-lg border border-[#d9eadf] bg-[#f7fbf8] p-4">
-        <p className="text-xs font-black uppercase tracking-[0.14em] text-[#c725ba]">Next action</p>
+        <p className="text-xs font-black uppercase tracking-[0.14em] text-[#8a6a16]">Next action</p>
         <p className="mt-2 text-sm font-semibold leading-6 text-[#23312d]">{workflow.nextAction}</p>
       </div>
 
@@ -296,7 +296,7 @@ function InfoBlock({ label, value }: { label: string; value: string }) {
 
 function QueueStat({ label, value, tone }: { label: string; value: string; tone: "pink" | "blue" | "amber" | "red" }) {
   const toneClass = {
-    pink: "bg-[#fff0fb] text-[#c725ba] border-[#ffd3f6]",
+    pink: "bg-[#f8f0d8] text-[#8a6a16] border-[#f8f0d8]",
     blue: "bg-[#eff6ff] text-[#1d4ed8] border-[#bfdbfe]",
     amber: "bg-[#fffbeb] text-[#b45309] border-[#fde68a]",
     red: "bg-[#fef2f2] text-[#b91c1c] border-[#fecaca]"

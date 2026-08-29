@@ -157,7 +157,7 @@ export default function PreviewInboxPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fbf9fc] p-5">
+    <main className="min-h-screen bg-[#f8f0d8] p-5">
       <WhatsAppBotClient integration={integration} leads={leads} />
     </main>
   );

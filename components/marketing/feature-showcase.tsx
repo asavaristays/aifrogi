@@ -116,23 +116,23 @@ export function FeatureShowcase() {
 
   return (
     <div id="product" className="relative mx-auto mt-16 max-w-6xl scroll-mt-24 translate-y-px text-left shadow-[0_45px_100px_rgba(0,0,0,.45)]">
-      <div className="overflow-hidden rounded-t-2xl border border-white/15 bg-[#17131d] p-2 pb-0 sm:p-3 sm:pb-0">
+      <div className="overflow-hidden rounded-t-2xl border border-white/15 bg-[#2b2b2b] p-2 pb-0 sm:p-3 sm:pb-0">
         <div className="flex items-center gap-2 border-b border-white/8 px-3 py-2.5">
           <i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/><i className="h-2.5 w-2.5 rounded-full bg-white/15"/>
           <span className="ml-2 text-[11px] text-white/30">app.aifrogi.com — {active.screen}</span>
-          <span className="ml-auto hidden items-center gap-2 text-[10px] font-semibold text-white/35 sm:flex"><i className="h-1.5 w-1.5 rounded-full bg-[#ff8af1] shadow-[0_0_8px_#ff8af1]"/>Sample UI · hover or tap</span>
+          <span className="ml-auto hidden items-center gap-2 text-[10px] font-semibold text-white/35 sm:flex"><i className="h-1.5 w-1.5 rounded-full bg-[#e2c66d] shadow-[0_0_8px_#e2c66d]"/>Sample UI · hover or tap</span>
         </div>
 
         <div className="grid min-h-[390px] grid-cols-[54px_1fr] sm:grid-cols-[54px_220px_1fr]">
           <aside className="flex flex-col items-center gap-5 border-r border-white/8 py-5 text-white/24">
-            <Icon name="grid" className="text-[#ff8af1]"/><Icon name="message-circle"/><Icon name="megaphone"/><Icon name="bar-chart-3"/><Icon name="settings"/>
+            <Icon name="grid" className="text-[#e2c66d]"/><Icon name="message-circle"/><Icon name="megaphone"/><Icon name="bar-chart-3"/><Icon name="settings"/>
           </aside>
 
           <aside className="hidden border-r border-white/8 p-4 sm:flex sm:flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-[.12em] text-[#ff8af1]">{active.label}</span>
+            <span className="text-[10px] font-bold uppercase tracking-[.12em] text-[#e2c66d]">{active.label}</span>
             <p className="mt-4 text-[11px] leading-5 text-white/42">{active.description}</p>
-            <div className="mt-auto rounded-xl border border-[#d92bcb]/20 bg-[#d92bcb]/8 p-4">
-              <span className="block text-[10px] font-bold uppercase tracking-[.12em] text-[#ff8af1]">Use case</span>
+            <div className="mt-auto rounded-xl border border-[#8a6a16]/20 bg-[#8a6a16]/8 p-4">
+              <span className="block text-[10px] font-bold uppercase tracking-[.12em] text-[#e2c66d]">Use case</span>
               <strong className="mt-2 block text-base leading-5 text-white">{active.screen}</strong>
               <p className="mt-3 text-[11px] leading-5 text-white/45">Every reply, status, and next action stays visible to the team.</p>
             </div>
@@ -141,25 +141,25 @@ export function FeatureShowcase() {
           <section className="flex min-w-0 flex-col">
             <div className="flex items-center justify-between gap-4 border-b border-white/8 px-4 py-4 sm:px-5">
               <div><span className="text-[10px] uppercase tracking-[.1em] text-white/28">Automation workspace</span><h2 className="mt-1 text-sm font-semibold tracking-normal text-white sm:text-base">{active.title}</h2></div>
-              <span className="shrink-0 rounded-full border border-[#d92bcb]/35 bg-[#d92bcb]/10 px-3 py-1 text-[10px] font-semibold text-[#ff8af1]">Live</span>
+              <span className="shrink-0 rounded-full border border-[#8a6a16]/35 bg-[#8a6a16]/10 px-3 py-1 text-[10px] font-semibold text-[#e2c66d]">Live</span>
             </div>
 
             <div key={active.id} className="feature-showcase-reveal flex flex-1 flex-col gap-4 p-4 sm:p-5">
               <div className="grid gap-2 sm:grid-cols-3">
-                {active.steps.map((step, index) => <div key={step} className="relative rounded-lg border border-white/8 bg-white/[.035] p-3"><span className="text-[9px] font-bold text-[#ff8af1]">0{index + 1}</span><strong className="mt-2 block text-[11px] font-semibold text-white/78">{step}</strong>{index < active.steps.length - 1 ? <span className="absolute -right-2.5 top-1/2 z-10 hidden h-px w-5 bg-[#d92bcb]/45 sm:block"/> : null}</div>)}
+                {active.steps.map((step, index) => <div key={step} className="relative rounded-lg border border-white/8 bg-white/[.035] p-3"><span className="text-[9px] font-bold text-[#e2c66d]">0{index + 1}</span><strong className="mt-2 block text-[11px] font-semibold text-white/78">{step}</strong>{index < active.steps.length - 1 ? <span className="absolute -right-2.5 top-1/2 z-10 hidden h-px w-5 bg-[#8a6a16]/45 sm:block"/> : null}</div>)}
               </div>
 
               <div className="grid flex-1 gap-3 lg:grid-cols-[1.25fr_.75fr]">
-                <div className="rounded-xl border border-white/8 bg-[#201a28] p-4">
-                  <div className="flex items-center justify-between"><span className="text-[10px] font-semibold text-white/38">Sample performance view</span><span className="text-[10px] text-[#ff8af1]">Illustrative data</span></div>
+                <div className="rounded-xl border border-white/8 bg-[#1c1c1c] p-4">
+                  <div className="flex items-center justify-between"><span className="text-[10px] font-semibold text-white/38">Sample performance view</span><span className="text-[10px] text-[#e2c66d]">Illustrative data</span></div>
                   <div className="mt-5 flex h-24 items-end gap-2">
-                    {[36,54,43,68,57,82,72,91,78,96].map((height,index)=><i key={index} style={{height:`${height}%`}} className="flex-1 rounded-t-sm bg-gradient-to-t from-[#d92bcb]/20 to-[#e95bdd]/80 transition-all duration-500"/>)}
+                    {[36,54,43,68,57,82,72,91,78,96].map((height,index)=><i key={index} style={{height:`${height}%`}} className="flex-1 rounded-t-sm bg-gradient-to-t from-[#8a6a16]/20 to-[#b28728]/80 transition-all duration-500"/>)}
                   </div>
-                  <div className="mt-3 flex items-end justify-between border-t border-white/8 pt-3"><div><strong className="text-xl text-white sm:text-2xl">{active.metric}</strong><span className="ml-2 text-[10px] text-white/32">{active.metricLabel}</span></div><span className="text-[10px] font-semibold text-[#ff8af1]">{active.accent}</span></div>
+                  <div className="mt-3 flex items-end justify-between border-t border-white/8 pt-3"><div><strong className="text-xl text-white sm:text-2xl">{active.metric}</strong><span className="ml-2 text-[10px] text-white/32">{active.metricLabel}</span></div><span className="text-[10px] font-semibold text-[#e2c66d]">{active.accent}</span></div>
                 </div>
 
                 <div className="space-y-2">
-                  {active.activity.map(([label,value],index)=><div key={label} className="rounded-lg border border-white/8 bg-white/[.035] p-3"><div className="flex items-center gap-2"><i className={`h-1.5 w-1.5 rounded-full ${index===0?"bg-[#ff8af1] shadow-[0_0_8px_#ff8af1]":"bg-white/20"}`}/><span className="text-[9px] text-white/32">{index===0?"Live now":"Connected"}</span></div><strong className="mt-2 block text-[10px] text-white/72">{label}</strong><span className="mt-0.5 block text-[9px] text-white/32">{value}</span></div>)}
+                  {active.activity.map(([label,value],index)=><div key={label} className="rounded-lg border border-white/8 bg-white/[.035] p-3"><div className="flex items-center gap-2"><i className={`h-1.5 w-1.5 rounded-full ${index===0?"bg-[#e2c66d] shadow-[0_0_8px_#e2c66d]":"bg-white/20"}`}/><span className="text-[9px] text-white/32">{index===0?"Live now":"Connected"}</span></div><strong className="mt-2 block text-[10px] text-white/72">{label}</strong><span className="mt-0.5 block text-[9px] text-white/32">{value}</span></div>)}
                 </div>
               </div>
             </div>
@@ -167,11 +167,11 @@ export function FeatureShowcase() {
         </div>
       </div>
 
-      <div role="tablist" aria-label="AiFrogi platform capabilities" className="overflow-x-auto border-x border-b border-white/10 bg-[#251f2d] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div role="tablist" aria-label="AiFrogi platform capabilities" className="overflow-x-auto border-x border-b border-white/10 bg-[#101010] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="grid min-w-max grid-flow-col auto-cols-[145px] sm:auto-cols-[155px] lg:min-w-0 lg:grid-cols-8">
           {features.map((feature) => {
             const selected = feature.id === active.id;
-            return <button key={feature.id} type="button" role="tab" aria-selected={selected} onMouseEnter={() => setActiveId(feature.id)} onFocus={() => setActiveId(feature.id)} onClick={() => setActiveId(feature.id)} className={`group relative flex min-h-[78px] items-center gap-2.5 border-r border-white/6 px-3 text-left transition-all duration-200 ${selected?"bg-white/[.075] text-white":"text-white/38 hover:bg-white/[.035] hover:text-white/72"}`}><span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg border transition ${selected?"border-[#d92bcb]/45 bg-[#d92bcb]/15 text-[#ff8af1]":"border-white/8 bg-white/[.025] text-white/35"}`}><Icon name={feature.icon}/></span><span className="text-[11px] font-semibold leading-4">{feature.label}</span><i className={`absolute inset-x-0 top-0 h-0.5 origin-left bg-[#e33bd4] transition-transform duration-300 ${selected?"scale-x-100":"scale-x-0"}`}/></button>;
+            return <button key={feature.id} type="button" role="tab" aria-selected={selected} onMouseEnter={() => setActiveId(feature.id)} onFocus={() => setActiveId(feature.id)} onClick={() => setActiveId(feature.id)} className={`group relative flex min-h-[78px] items-center gap-2.5 border-r border-white/6 px-3 text-left transition-all duration-200 ${selected?"bg-white/[.075] text-white":"text-white/38 hover:bg-white/[.035] hover:text-white/72"}`}><span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg border transition ${selected?"border-[#8a6a16]/45 bg-[#8a6a16]/15 text-[#e2c66d]":"border-white/8 bg-white/[.025] text-white/35"}`}><Icon name={feature.icon}/></span><span className="text-[11px] font-semibold leading-4">{feature.label}</span><i className={`absolute inset-x-0 top-0 h-0.5 origin-left bg-[#b28728] transition-transform duration-300 ${selected?"scale-x-100":"scale-x-0"}`}/></button>;
           })}
         </div>
       </div>

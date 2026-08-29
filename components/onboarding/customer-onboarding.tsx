@@ -406,7 +406,7 @@ export function CustomerOnboarding({
       <main className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-8">
         <aside className="h-fit rounded-lg border border-black/5 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Setup progress</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Setup progress</p>
             <strong>{progress}%</strong>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--surface-muted)]">
@@ -416,13 +416,13 @@ export function CustomerOnboarding({
           {trial.enabled ? (
             <div className="mt-5 rounded-md border border-[var(--gold-300)] bg-[var(--primary-soft)] p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-black text-[#493b62]">30-day trial</p>
+                <p className="text-xs font-black text-[#404040]">30-day trial</p>
                 <span className="text-xs font-black text-[var(--gold-700)]">{trial.label}</span>
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
                 <div className="h-full rounded-full bg-[var(--gold-600)]" style={{ width: `${trial.percentElapsed}%` }} />
               </div>
-              <p className="mt-3 text-xs leading-5 text-[#746d7c]">Use this window to finish activation, test messaging, and prove the first workflow.</p>
+              <p className="mt-3 text-xs leading-5 text-[#68645c]">Use this window to finish activation, test messaging, and prove the first workflow.</p>
             </div>
           ) : null}
           <nav className="mt-6 hidden space-y-1 lg:block" aria-label="Onboarding steps">
@@ -442,13 +442,13 @@ export function CustomerOnboarding({
                   </span>
                   <span className="min-w-0">
                     <strong className="block truncate text-sm">{step.title}</strong>
-                    <small className="mt-0.5 block truncate text-xs text-[#6d7487]">{step.helper}</small>
+                    <small className="mt-0.5 block truncate text-xs text-[#68645c]">{step.helper}</small>
                   </span>
                 </button>
               );
             })}
           </nav>
-          <div className="mt-6 hidden border-t border-black/5 pt-5 text-xs leading-5 text-[#6d7487] lg:block">
+          <div className="mt-6 hidden border-t border-black/5 pt-5 text-xs leading-5 text-[#68645c] lg:block">
             Your progress is saved after every step. Technical credentials are never shown or stored in your browser.
           </div>
         </aside>
@@ -469,9 +469,9 @@ export function CustomerOnboarding({
             <div className="border-b border-black/5 px-6 py-6 sm:px-8">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Step {Math.max(1, visibleSteps.findIndex((step) => step.number === activeStep) + 1)} of {visibleSteps.length}</p>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Step {Math.max(1, visibleSteps.findIndex((step) => step.number === activeStep) + 1)} of {visibleSteps.length}</p>
                   <h1 className="mt-2 text-2xl font-black sm:text-3xl">{visibleSteps.find((step) => step.number === activeStep)?.title || "Setup"}</h1>
-                  <p className="mt-2 text-sm text-[#6d7487]">{visibleSteps.find((step) => step.number === activeStep)?.helper || "Complete your business bot setup"}</p>
+                  <p className="mt-2 text-sm text-[#68645c]">{visibleSteps.find((step) => step.number === activeStep)?.helper || "Complete your business bot setup"}</p>
                 </div>
                 <Badge tone={live ? "secondary" : rejected ? "error" : "neutral"}>{live ? "Live" : rejected ? "Action required" : organization?.plan || "Trial"}</Badge>
               </div>
@@ -503,7 +503,7 @@ export function CustomerOnboarding({
               {activeStep === 6 ? <LiveStep organization={organization} onOpen={() => router.push(usesWebsite ? "/knowledge" : "/dashboard")} /> : null}
 
               {error ? <p className="mt-6 rounded-md border border-[#f5b9b2] bg-[#fff3f1] px-4 py-3 text-sm font-semibold text-[#a3342b]">{error}</p> : null}
-              {notice ? <p className="mt-6 rounded-md border border-[#b9e9ca] bg-[#effbf3] px-4 py-3 text-sm font-semibold text-[#493b62]">{notice}</p> : null}
+              {notice ? <p className="mt-6 rounded-md border border-[#b9e9ca] bg-[#effbf3] px-4 py-3 text-sm font-semibold text-[#404040]">{notice}</p> : null}
             </div>
 
             {activeStep <= 3 && (activeStep < 3 || usesWhatsApp) ? (
@@ -548,7 +548,7 @@ function OnboardingReadiness({ organization }: { organization: CustomerOnboardin
         <span className={`status-pill ${ready === items.length ? "status-success" : "status-info"}`}>{ready}/{items.length} ready</span>
       </div>
       <div className="mt-5 grid gap-px overflow-hidden rounded-md border border-black/7 bg-black/7 md:grid-cols-2">
-        {items.map((item) => <div key={item.label} className="flex gap-3 bg-[#fbfcfb] p-4"><span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${item.ready ? "bg-[#dff2ea] text-[#b923ae]" : "bg-[#eef1f0] text-[#78827e]"}`}>{item.ready ? "✓" : "·"}</span><span className="min-w-0"><span className="flex flex-wrap items-center gap-2"><strong className="text-sm">{item.label}</strong><small className="status-pill status-info !min-h-5 !px-2 !py-0 text-[9px]">{item.owner}</small></span><small className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{item.helper}</small></span></div>)}
+        {items.map((item) => <div key={item.label} className="flex gap-3 bg-[#fbfcfb] p-4"><span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${item.ready ? "bg-[#dff2ea] text-[#6d5310]" : "bg-[#eef1f0] text-[#78827e]"}`}>{item.ready ? "✓" : "·"}</span><span className="min-w-0"><span className="flex flex-wrap items-center gap-2"><strong className="text-sm">{item.label}</strong><small className="status-pill status-info !min-h-5 !px-2 !py-0 text-[9px]">{item.owner}</small></span><small className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{item.helper}</small></span></div>)}
       </div>
     </section>
   );
@@ -569,8 +569,8 @@ function TodayActionCard({
 }) {
   const toneClass = {
     ready: "border-[#bce8d6] bg-[#effaf5]",
-    waiting: "border-[#ead7f3] bg-[#fbf6fe]",
-    urgent: "border-[#f0c2e9] bg-[#fff4fd]",
+    waiting: "border-[#ded8cb] bg-[#f8f0d8]",
+    urgent: "border-[#ded8cb] bg-[#f8f0d8]",
     info: "border-[#d8e2f3] bg-[#f7faff]"
   }[guidance.tone];
   const ownerClass = guidance.owner === "You" ? "status-warning" : guidance.owner === "Meta" ? "status-info" : "status-success";
@@ -584,8 +584,8 @@ function TodayActionCard({
             <span className={`status-pill ${ownerClass}`}>{guidance.owner}</span>
             <span className="status-pill status-info">{guidance.eta}</span>
           </div>
-          <h2 className="mt-3 text-2xl font-semibold text-[#251f2d]">{guidance.title}</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#746d7c]">{guidance.description}</p>
+          <h2 className="mt-3 text-2xl font-semibold text-[#101010]">{guidance.title}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#68645c]">{guidance.description}</p>
         </div>
         <div className="shrink-0">
           <Button onClick={live ? onOpenWorkspace : onGo}>{guidance.action}</Button>
@@ -593,16 +593,16 @@ function TodayActionCard({
       </div>
       <div className="mt-5 grid gap-3 md:grid-cols-[1fr_220px]">
         <div className="rounded-md border border-white/70 bg-white/75 p-4">
-          <p className="text-xs font-semibold text-[#746d7c]">Why this matters</p>
+          <p className="text-xs font-semibold text-[#68645c]">Why this matters</p>
           <p className="mt-1 text-sm font-semibold text-[#3a3145]">{guidance.supportNote}</p>
         </div>
         <div className="rounded-md border border-white/70 bg-white/75 p-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-[#746d7c]">Activation</p>
+            <p className="text-xs font-semibold text-[#68645c]">Activation</p>
             <strong className="text-sm">{progress}%</strong>
           </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#efe9f1]">
-            <div className="h-full rounded-full bg-[#b91eac]" style={{ width: `${progress}%` }} />
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#ded8cb]">
+            <div className="h-full rounded-full bg-[#6d5310]" style={{ width: `${progress}%` }} />
           </div>
         </div>
       </div>
@@ -630,9 +630,9 @@ function TechProviderGuide() {
     <section className="rounded-lg border border-black/5 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Verified Meta access flow</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Verified Meta access flow</p>
           <h2 className="mt-2 text-xl font-black">WhatsApp setup without exposing Meta complexity</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#6d7487]">
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[#68645c]">
             Customers complete a guided onboarding journey. Behind the scenes, the platform connects their WhatsApp Business account, stores the approved API access, and keeps the inbox, campaigns, webhooks, and support status in one place.
           </p>
         </div>
@@ -642,7 +642,7 @@ function TechProviderGuide() {
         {points.map((point) => (
           <div key={point.title} className="rounded-md border border-black/8 bg-[#f8faf9] p-4">
             <p className="text-sm font-black">{point.title}</p>
-            <p className="mt-2 text-xs leading-5 text-[#6d7487]">{point.helper}</p>
+            <p className="mt-2 text-xs leading-5 text-[#68645c]">{point.helper}</p>
           </div>
         ))}
       </div>
@@ -663,7 +663,7 @@ function OrganizationStep({ value, onChange }: { value: OrganizationForm; onChan
       <Field label="Mobile" required value={value.ownerMobile} onChange={(ownerMobile) => onChange({ ...value, ownerMobile })} inputMode="tel" />
       <label className="md:col-span-2">
         <FieldLabel label="Business address" />
-        <textarea className="mt-2 min-h-24 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#c725ba]" value={value.businessAddress} onChange={(event) => onChange({ ...value, businessAddress: event.target.value })} />
+        <textarea className="mt-2 min-h-24 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={value.businessAddress} onChange={(event) => onChange({ ...value, businessAddress: event.target.value })} />
       </label>
     </div>
   );
@@ -681,11 +681,11 @@ function BusinessStep({ value, onChange, documents, onDocumentsChanged }: { valu
         <Field label="Google Business Profile" value={value.googleBusinessProfileUrl} onChange={(googleBusinessProfileUrl) => onChange({ ...value, googleBusinessProfileUrl })} placeholder="https://g.page/..." optional />
         <Field label="Instagram" value={value.instagramUrl} onChange={(instagramUrl) => onChange({ ...value, instagramUrl })} optional />
         <Field label="Logo URL" value={value.logoUrl} onChange={(logoUrl) => onChange({ ...value, logoUrl })} optional />
-        <label className="md:col-span-2"><FieldLabel label="Approved photo URLs" optional /><textarea className="mt-2 min-h-28 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#c725ba]" value={value.photoUrls} onChange={(event) => onChange({ ...value, photoUrls: event.target.value })} placeholder="One approved photo URL per line" /><span className="mt-2 block text-xs text-[#6d7487]">Add property, product, room, team, experience, menu, or project photos relevant to the selected bot category.</span></label>
+        <label className="md:col-span-2"><FieldLabel label="Approved photo URLs" optional /><textarea className="mt-2 min-h-28 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={value.photoUrls} onChange={(event) => onChange({ ...value, photoUrls: event.target.value })} placeholder="One approved photo URL per line" /><span className="mt-2 block text-xs text-[#68645c]">Add property, product, room, team, experience, menu, or project photos relevant to the selected bot category.</span></label>
       </div>
       <div>
         <h2 className="text-base font-black">Verification documents</h2>
-        <p className="mt-1 text-sm text-[#6d7487]">PDF, JPG, or PNG up to 5 MB. Files remain private.</p>
+        <p className="mt-1 text-sm text-[#68645c]">PDF, JPG, or PNG up to 5 MB. Files remain private.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {documentOptions.map((option) => (
             <DocumentUpload key={option.type} option={option} documents={documents} onDocumentsChanged={onDocumentsChanged} />
@@ -722,9 +722,9 @@ function DocumentUpload({ option, documents, onDocumentsChanged }: { option: { t
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-black">{option.label}</p>
-          <p className="mt-1 text-xs text-[#6d7487]">{option.optional ? "Optional" : "Recommended for review"}</p>
+          <p className="mt-1 text-xs text-[#68645c]">{option.optional ? "Optional" : "Recommended for review"}</p>
         </div>
-        <span className={`text-xs font-black ${document ? "text-[#c725ba]" : "text-[#9aa39f]"}`}>{document ? "Uploaded" : "Waiting"}</span>
+        <span className={`text-xs font-black ${document ? "text-[#8a6a16]" : "text-[#9aa39f]"}`}>{document ? "Uploaded" : "Waiting"}</span>
       </div>
       {document ? <p className="mt-3 truncate text-xs text-[#4d5a55]">{document.fileName}</p> : null}
       <label className="mt-3 inline-flex cursor-pointer items-center rounded-md border border-black/10 bg-white px-3 py-2 text-xs font-black">
@@ -760,9 +760,9 @@ function PhoneStep({ value, onChange }: { value: PhoneForm; onChange: (value: Ph
 function ConnectStep({ configured, ready, kycApproved, connecting, onConnect }: { configured: boolean; ready: boolean; kycApproved: boolean; connecting: boolean; onConnect: () => void }) {
   return (
     <div className="mx-auto max-w-xl py-5 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e8f8ee] text-2xl font-black text-[#c725ba]">W</div>
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e8f8ee] text-2xl font-black text-[#8a6a16]">W</div>
       <h2 className="mt-5 text-2xl font-black">Connect your WhatsApp number</h2>
-      <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-[#6d7487]">A secure window will ask you to confirm your business and phone number. AiFrogi completes the technical setup automatically.</p>
+      <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-[#68645c]">A secure window will ask you to confirm your business and phone number. AiFrogi completes the technical setup automatically.</p>
       <Button className="mt-7 px-5 py-3 text-xs" disabled={!configured || !ready || !kycApproved || connecting} onClick={onConnect}>
         {connecting ? "Connecting" : "Connect WhatsApp"}
       </Button>
@@ -770,7 +770,7 @@ function ConnectStep({ configured, ready, kycApproved, connecting, onConnect }: 
       {configured && !kycApproved ? <p className="mt-4 text-xs font-semibold text-[#a45f16]">Business verification is under review. We will enable this button after approval.</p> : null}
       <div className="mt-8 grid gap-3 text-left sm:grid-cols-2">
         {["Business selected", "Number verified", "Messaging activated", "Webhook connected"].map((item) => (
-          <div key={item} className="flex items-center gap-2 rounded-md border border-black/6 bg-[#f8faf9] px-3 py-3 text-sm font-semibold"><span className="text-[#c725ba]">✓</span>{item}</div>
+          <div key={item} className="flex items-center gap-2 rounded-md border border-black/6 bg-[#f8faf9] px-3 py-3 text-sm font-semibold"><span className="text-[#8a6a16]">✓</span>{item}</div>
         ))}
       </div>
     </div>
@@ -794,7 +794,7 @@ function StatusStep({ onboarding, pending, rejected, live, onRefresh, saving }: 
         <p className="mt-2 text-sm leading-6 text-[#5c6763]">{helper}</p>
       </div>
       <div className="mt-5 divide-y divide-black/6 rounded-lg border border-black/6">
-        {checks.map(([label, complete]) => <div key={label} className="flex items-center justify-between px-4 py-4 text-sm font-semibold"><span>{label}</span><span className={complete ? "text-[#c725ba]" : "text-[#a45f16]"}>{complete ? "Complete" : "Waiting"}</span></div>)}
+        {checks.map(([label, complete]) => <div key={label} className="flex items-center justify-between px-4 py-4 text-sm font-semibold"><span>{label}</span><span className={complete ? "text-[#8a6a16]" : "text-[#a45f16]"}>{complete ? "Complete" : "Waiting"}</span></div>)}
       </div>
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded-md border border-black/6 bg-[#f8faf9] p-4"><p className="product-eyebrow">You</p><p className="mt-2 text-sm font-semibold">Keep business details accurate and the phone SIM accessible.</p></div>
@@ -815,18 +815,18 @@ function LiveStep({ organization, onOpen }: { organization: CustomerOnboardingOr
     <div className="mx-auto max-w-xl py-8 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#25d366] text-3xl font-black text-[#063f3a]">✓</div>
       <h2 className="mt-6 text-3xl font-black">{usesWhatsApp ? "Your WhatsApp workspace is live" : "Your AI Business Bot foundation is ready"}</h2>
-      <p className="mt-3 text-sm leading-6 text-[#6d7487]">{usesWhatsApp ? `${organization?.onboarding?.displayPhoneNumber || organization?.name} is ready for inbound and outbound messaging.` : "Open Business Intelligence to approve sources, test grounded answers, and prepare the website widget."}</p>
+      <p className="mt-3 text-sm leading-6 text-[#68645c]">{usesWhatsApp ? `${organization?.onboarding?.displayPhoneNumber || organization?.name} is ready for inbound and outbound messaging.` : "Open Business Intelligence to approve sources, test grounded answers, and prepare the website widget."}</p>
       <Button className="mt-7 px-5 py-3" onClick={onOpen}>{usesWhatsApp ? "Go to inbox" : "Open intelligence"}</Button>
     </div>
   );
 }
 
 function Choice({ selected, title, helper, onClick }: { selected: boolean; title: string; helper: string; onClick: () => void }) {
-  return <button type="button" onClick={onClick} className={`rounded-md border p-4 text-left ${selected ? "border-[#c725ba] bg-[#effbf3]" : "border-black/10 bg-white"}`}><strong className="block text-sm">{title}</strong><span className="mt-1 block text-xs leading-5 text-[#6d7487]">{helper}</span></button>;
+  return <button type="button" onClick={onClick} className={`rounded-md border p-4 text-left ${selected ? "border-[#8a6a16] bg-[#effbf3]" : "border-black/10 bg-white"}`}><strong className="block text-sm">{title}</strong><span className="mt-1 block text-xs leading-5 text-[#68645c]">{helper}</span></button>;
 }
 
 function Field({ label, value, onChange, placeholder, required, optional, inputMode }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; required?: boolean; optional?: boolean; inputMode?: "tel" | "url" | "email" | "text" }) {
-  return <label className="block"><FieldLabel label={label} required={required} optional={optional} /><input className="mt-2 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#c725ba]" value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} required={required} inputMode={inputMode} /></label>;
+  return <label className="block"><FieldLabel label={label} required={required} optional={optional} /><input className="mt-2 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} required={required} inputMode={inputMode} /></label>;
 }
 
 function FieldLabel({ label, required, optional }: { label: string; required?: boolean; optional?: boolean }) {

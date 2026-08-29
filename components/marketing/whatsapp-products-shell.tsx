@@ -22,9 +22,9 @@ const products = [
     href: "/solutions/pingbook",
     setupHref: "https://app.aifrogi.com/register?source=pingbook-product-shell",
     logo: "/brand/pingbook-logo-aifrogi-tight.png",
-    accent: "#b923ae",
-    surface: "#fbf8fc",
-    iconSurface: "#fceafb",
+    accent: "#6d5310",
+    surface: "#fbfaf7",
+    iconSurface: "#f8f0d8",
     summary: "Turn appointment enquiries into confirmed bookings, reminders, calendar updates, payment flow, and reviews.",
     bestFor: "Clinics, dentists, diagnostics, wellness teams, salons, consultants and appointment-led services.",
     workflow: ["Service", "Slot", "Confirm", "Reminder", "Review"],
@@ -39,20 +39,20 @@ export function WhatsAppProductsShell({ eyebrow = "WhatsApp API products" }: { e
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="product-eyebrow">{eyebrow}</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.035em] text-[#2c243b] sm:text-5xl">
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.035em] text-[#101010] sm:text-5xl">
               Two focused WhatsApp workflows, built like serious products.
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--text-muted)]">
               AiFrogi packages the same Meta WhatsApp API, payment, automation, and integration skill into productized workflows for different buying moments.
             </p>
           </div>
-          <a href="/solutions" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold text-[#2c243b] transition hover:bg-[#f8faf9]">
+          <a href="/solutions" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold text-[#101010] transition hover:bg-[#f8faf9]">
             View all solutions
             <Icon name="arrow-right" />
           </a>
         </div>
 
-        <div className="mt-10 grid overflow-hidden rounded-lg border border-black/8 bg-[#f7faf8] shadow-[0_24px_80px_rgba(44,36,59,.09)] lg:grid-cols-2">
+        <div className="mt-10 grid overflow-hidden rounded-lg border border-black/8 bg-[#f7faf8] shadow-[0_24px_80px_rgba(16,16,16,.09)] lg:grid-cols-2">
           {products.map((product, index) => (
             <article
               key={product.name}
@@ -61,7 +61,7 @@ export function WhatsAppProductsShell({ eyebrow = "WhatsApp API products" }: { e
             >
               <div className="flex items-start gap-4">
                 <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-black/8 bg-white p-2">
-                  <Image src={product.logo} alt={`${product.name} logo`} width={160} height={160} className="h-12 w-12 object-contain" />
+                  <Image src={product.logo} alt={`${product.name} logo`} width={160} height={160} className={`h-12 w-12 object-contain ${product.name === "PingBook" ? "grayscale contrast-125" : ""}`} />
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-black uppercase tracking-[.12em]" style={{ color: product.accent }}>{product.label}</p>
@@ -97,7 +97,7 @@ export function WhatsAppProductsShell({ eyebrow = "WhatsApp API products" }: { e
                   Explore {product.name}
                   <Icon name="arrow-right" />
                 </a>
-                <a href={product.setupHref} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold text-[#2c243b] transition hover:bg-[#f8faf9]">
+                <a href={product.setupHref} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold text-[#101010] transition hover:bg-[#f8faf9]">
                   Start setup
                   <Icon name="settings" />
                 </a>

@@ -20,10 +20,10 @@ export default async function ContactsPage() {
         <Card className="overflow-hidden border border-black/5 p-0 shadow-[0_20px_60px_rgba(15,61,53,0.08)]">
           <div className="flex flex-col gap-3 border-b border-black/5 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#c725ba]">WhatsApp audience</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">WhatsApp audience</p>
               <h2 className="mt-2 text-2xl font-black">{contacts.length} contacts</h2>
             </div>
-            <Link href="/whatsapp-bot" className="rounded-2xl bg-[#c725ba] px-4 py-3 text-sm font-black text-white">
+            <Link href="/whatsapp-bot" className="rounded-2xl bg-[#8a6a16] px-4 py-3 text-sm font-black text-white">
               Start conversation
             </Link>
           </div>
@@ -45,7 +45,7 @@ export default async function ContactsPage() {
                     <tr key={contact.id} className="bg-white transition hover:bg-[#f8fcfa]">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#dcfce7] text-sm font-black text-[#c725ba]">{contact.initials}</span>
+                          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#dcfce7] text-sm font-black text-[#8a6a16]">{contact.initials}</span>
                           <div>
                             <p className="text-sm font-black">{contact.name}</p>
                             <p className="mt-1 text-xs text-[var(--text-muted)]">{contact.intent || "WhatsApp contact"}</p>

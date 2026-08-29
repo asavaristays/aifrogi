@@ -134,15 +134,15 @@ const faqs = [
 
 export default function PingBookPage() {
   return (
-    <main className="bg-white text-[#2c243b]">
+    <main className="bg-white text-[#101010]">
       <SiteHeader />
 
-      <section className="relative overflow-hidden bg-[#2c243b] px-5 py-14 text-white sm:px-8 sm:py-20">
+      <section className="relative overflow-hidden bg-[#101010] px-5 py-14 text-white sm:px-8 sm:py-20">
         <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
 	        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
 	          <div>
-	            <Image src="/brand/pingbook-logo-aifrogi-tight.png" alt="PingBook logo" width={240} height={240} priority className="h-auto w-20 rounded-lg bg-white p-2 shadow-[0_18px_44px_rgba(13,9,20,.18)]" />
-	            <p className="mt-4 text-xs font-bold text-[#ff8af1]">AiFrogi&apos;s PingBook</p>
+	            <Image src="/brand/pingbook-logo-aifrogi-tight.png" alt="PingBook logo" width={240} height={240} priority className="h-auto w-20 rounded-lg bg-white p-2 grayscale contrast-125 shadow-[0_18px_44px_rgba(16,16,16,.18)]" />
+	            <p className="mt-4 text-xs font-bold text-[#e2c66d]">AiFrogi&apos;s PingBook</p>
 	            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.04] tracking-[-.045em] sm:text-6xl">
               Book clinic appointments from WhatsApp.
             </h1>
@@ -150,7 +150,7 @@ export default function PingBookPage() {
               PingBook helps clinics reply faster, confirm slots, collect booking fees, reduce no-shows, handle patient cancellations, and request reviews without losing WhatsApp context.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(217,43,203,.25)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">
+              <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(138,106,22,.25)] transition hover:-translate-y-0.5 hover:bg-[#b28728]">
                 Start PingBook setup
                 <Icon name="arrow-right" />
               </a>
@@ -169,7 +169,7 @@ export default function PingBookPage() {
 	        </div>
 	      </section>
 
-      <section className="border-b border-black/8 bg-[#fbf8fc] px-5 py-16 sm:px-8 sm:py-20">
+      <section className="border-b border-black/8 bg-[#fbfaf7] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="product-eyebrow">Who it helps</p>
@@ -199,11 +199,11 @@ export default function PingBookPage() {
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {roleFlow.map((role) => (
-                <article key={role.title} className="rounded-lg border border-black/8 bg-white p-5 shadow-[0_18px_60px_rgba(44,36,59,.08)]">
-                  <span className="grid h-11 w-11 place-items-center rounded-md bg-[#fceafb] text-[#b923ae]">
+                <article key={role.title} className="rounded-lg border border-black/8 bg-white p-5 shadow-[0_18px_60px_rgba(16,16,16,.08)]">
+                  <span className="grid h-11 w-11 place-items-center rounded-md bg-[#f8f0d8] text-[#6d5310]">
                     <Icon name={role.icon} />
                   </span>
-                  <p className="mt-5 text-xs font-bold text-[#b923ae]">{role.owner}</p>
+                  <p className="mt-5 text-xs font-bold text-[#6d5310]">{role.owner}</p>
                   <h3 className="mt-2 text-lg font-bold">{role.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{role.copy}</p>
                 </article>
@@ -211,14 +211,14 @@ export default function PingBookPage() {
             </div>
           </div>
 
-          <div className="mt-12 rounded-lg border border-black/8 bg-[#201a28] p-5 text-white sm:p-7">
+          <div className="mt-12 rounded-lg border border-black/8 bg-[#1c1c1c] p-5 text-white sm:p-7">
             <div className="grid gap-4 md:grid-cols-6">
               {journey.map(([number, title, system], index) => (
                 <div key={title} className="relative rounded-lg border border-white/10 bg-white/[.045] p-4">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-[#ff8af1] text-xs font-black text-[#201a28]">{number}</span>
+                  <span className="grid h-9 w-9 place-items-center rounded-full bg-[#e2c66d] text-xs font-black text-[#1c1c1c]">{number}</span>
                   <h3 className="mt-5 text-sm font-bold leading-5">{title}</h3>
                   <p className="mt-2 text-xs font-semibold text-white/42">{system}</p>
-                  {index < journey.length - 1 ? <span className="absolute -right-3 top-1/2 hidden h-px w-6 bg-[#ff8af1]/60 md:block" /> : null}
+                  {index < journey.length - 1 ? <span className="absolute -right-3 top-1/2 hidden h-px w-6 bg-[#e2c66d]/60 md:block" /> : null}
                 </div>
               ))}
             </div>
@@ -237,7 +237,7 @@ export default function PingBookPage() {
               <p className="mt-5 text-base leading-7 text-[var(--text-muted)]">
                 Start with setup, keep PingBook on a predictable quarterly subscription, and cancel within 15 days if it is not the right fit.
               </p>
-              <a href={registerUrl} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_18px_42px_rgba(217,43,203,.22)] transition hover:-translate-y-0.5 hover:bg-[#c725ba]">
+              <a href={registerUrl} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
                 Start with Rs. 4,500 setup
                 <Icon name="arrow-right" />
               </a>
@@ -246,17 +246,17 @@ export default function PingBookPage() {
             <div>
               <div className="grid gap-4 md:grid-cols-3">
                 {pricingCards.map((card) => (
-                  <article key={card.title} className="rounded-lg border border-black/8 bg-[#fbf8fc] p-5 shadow-[0_18px_50px_rgba(44,36,59,.06)]">
-                    <p className="text-xs font-black uppercase text-[#b923ae]">{card.title}</p>
-                    <h3 className="mt-3 text-2xl font-black tracking-[-.03em] text-[#2c243b]">{card.price}</h3>
+                  <article key={card.title} className="rounded-lg border border-black/8 bg-[#fbfaf7] p-5 shadow-[0_18px_50px_rgba(16,16,16,.06)]">
+                    <p className="text-xs font-black uppercase text-[#6d5310]">{card.title}</p>
+                    <h3 className="mt-3 text-2xl font-black tracking-[-.03em] text-[#101010]">{card.price}</h3>
                     <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{card.copy}</p>
                   </article>
                 ))}
               </div>
 
-              <div className="mt-4 rounded-lg border border-[#d92bcb]/18 bg-[#fceafb] p-5">
-                <p className="text-xs font-black uppercase text-[#9a1d91]">Clinic launch terms</p>
-                <p className="mt-2 text-sm leading-6 text-[#4a2946]">
+              <div className="mt-4 rounded-lg border border-[#8a6a16]/18 bg-[#f8f0d8] p-5">
+                <p className="text-xs font-black uppercase text-[#6d5310]">Clinic launch terms</p>
+                <p className="mt-2 text-sm leading-6 text-[#6d5310]">
                   Pay quarterly to start. Cancel within 15 days and eligible refunds are processed in 5-7 working days. Most clinics can go live in 2-3 working days after Meta, Google, Razorpay, and access readiness.
                 </p>
               </div>
@@ -267,7 +267,7 @@ export default function PingBookPage() {
         </div>
       </section>
 
-      <section className="border-t border-black/8 bg-[#fbf8fc] px-5 py-16 sm:px-8 sm:py-20">
+      <section className="border-t border-black/8 bg-[#fbfaf7] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
             <div>
@@ -278,17 +278,17 @@ export default function PingBookPage() {
               <p className="mt-5 text-base leading-7 text-[var(--text-muted)]">
                 PingBook is for clinics that need appointment booking to move faster, look more professional, and stay visible from enquiry to review.
               </p>
-              <a href={registerUrl} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_18px_42px_rgba(217,43,203,.22)] transition hover:-translate-y-0.5 hover:bg-[#c725ba]">
+              <a href={registerUrl} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
                 Ask for PingBook pricing
                 <Icon name="arrow-right" />
               </a>
             </div>
             <div className="grid gap-3">
               {faqs.map((faq, index) => (
-                <details key={faq.question} name="pingbook-faq" className="group rounded-lg border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(44,36,59,.06)]" open={index === 0}>
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-bold text-[#2c243b]">
+                <details key={faq.question} name="pingbook-faq" className="group rounded-lg border border-black/8 bg-white p-5 shadow-[0_18px_50px_rgba(16,16,16,.06)]" open={index === 0}>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-bold text-[#101010]">
                     <span>{faq.question}</span>
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#fceafb] text-[#b923ae] transition group-open:rotate-45">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#f8f0d8] text-[#6d5310] transition group-open:rotate-45">
                       <Icon name="x" className="h-3.5 w-3.5" />
                     </span>
                   </summary>
@@ -308,7 +308,7 @@ export default function PingBookPage() {
 function RealtimePrototype() {
   return (
     <div className="relative">
-      <div className="overflow-hidden rounded-xl border border-white/12 bg-[#f8f7fb] text-[#2c243b] shadow-[0_34px_90px_rgba(13,9,20,.28)]">
+      <div className="overflow-hidden rounded-xl border border-white/12 bg-[#f8f7fb] text-[#101010] shadow-[0_34px_90px_rgba(16,16,16,.28)]">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/8 bg-white px-5 py-4">
           <div>
             <p className="flex items-center gap-2 text-xs font-black uppercase text-[#178665]">
@@ -317,12 +317,12 @@ function RealtimePrototype() {
             </p>
             <h2 className="mt-1 text-lg font-black">Customer to confirmed appointment</h2>
           </div>
-          <p className="rounded-md bg-[#fceafb] px-3 py-2 text-xs font-black text-[#9a1d91]">PB-1042</p>
+          <p className="rounded-md bg-[#f8f0d8] px-3 py-2 text-xs font-black text-[#6d5310]">PB-1042</p>
         </div>
 
         <div className="grid gap-0 lg:grid-cols-[.92fr_1.08fr]">
-          <div className="border-b border-black/8 bg-[#efeaf1] p-4 lg:border-b-0 lg:border-r">
-            <div className="rounded-xl bg-[#fdfcff] p-4 shadow-[0_18px_50px_rgba(44,36,59,.12)]">
+          <div className="border-b border-black/8 bg-[#ded8cb] p-4 lg:border-b-0 lg:border-r">
+            <div className="rounded-xl bg-[#f8f0d8] p-4 shadow-[0_18px_50px_rgba(16,16,16,.12)]">
               <div className="flex items-center justify-between border-b border-black/8 pb-3">
                 <div className="flex items-center gap-3">
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-[#178665] text-xs font-black text-white">WA</span>
@@ -357,7 +357,7 @@ function RealtimePrototype() {
             </div>
 
             <div className="mt-4 border-t border-black/8 pt-4">
-              <p className="text-xs font-black uppercase text-[#9a1d91]">System timeline</p>
+              <p className="text-xs font-black uppercase text-[#6d5310]">System timeline</p>
               <div className="mt-3 space-y-3">
                 {prototypeEvents.map(([time, title, copy, icon]) => (
                   <TimelineItem key={title} time={time} title={title} copy={copy} icon={icon} />
@@ -367,7 +367,7 @@ function RealtimePrototype() {
           </div>
         </div>
 
-        <div className="border-t border-black/8 bg-[#2c243b] p-4 text-white">
+        <div className="border-t border-black/8 bg-[#101010] p-4 text-white">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {syncStates.map(([title, status, copy]) => (
               <SyncState key={title} title={title} status={status} copy={copy} />
@@ -382,7 +382,7 @@ function RealtimePrototype() {
 function ChatBubble({ align, copy }: { align: "left" | "right"; copy: string }) {
   const isRight = align === "right";
   return (
-    <p className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${isRight ? "ml-auto rounded-tr-sm bg-[#f7d7f4]" : "rounded-tl-sm bg-[#eef7f2]"}`}>
+    <p className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${isRight ? "ml-auto rounded-tr-sm bg-[#f8f0d8]" : "rounded-tl-sm bg-[#eef7f2]"}`}>
       {copy}
     </p>
   );
@@ -399,8 +399,8 @@ function SlotPill({ label, state }: { label: string; state: "open" | "held" }) {
 
 function StatusTile({ title, value, icon, tone }: { title: string; value: string; icon: "grid" | "bell" | "link" | "sparkles"; tone: "green" | "pink" }) {
   return (
-    <div className="rounded-lg border border-black/8 bg-[#fbf8fc] p-3">
-      <span className={`grid h-8 w-8 place-items-center rounded-md ${tone === "green" ? "bg-[#e9f7f1] text-[#178665]" : "bg-[#fceafb] text-[#b923ae]"}`}>
+    <div className="rounded-lg border border-black/8 bg-[#fbfaf7] p-3">
+      <span className={`grid h-8 w-8 place-items-center rounded-md ${tone === "green" ? "bg-[#e9f7f1] text-[#178665]" : "bg-[#f8f0d8] text-[#6d5310]"}`}>
         <Icon name={icon} />
       </span>
       <p className="mt-3 text-[10px] font-black uppercase text-[var(--text-muted)]">{title}</p>
@@ -413,7 +413,7 @@ function TimelineItem({ time, title, copy, icon }: { time: string; title: string
   return (
     <div className="grid grid-cols-[58px_32px_1fr] items-start gap-3">
       <p className="pt-1 text-[10px] font-black uppercase text-[var(--text-muted)]">{time}</p>
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-[#fceafb] text-[#b923ae]">
+      <span className="grid h-8 w-8 place-items-center rounded-full bg-[#f8f0d8] text-[#6d5310]">
         <Icon name={icon} className="h-3.5 w-3.5" />
       </span>
       <div>
@@ -427,7 +427,7 @@ function TimelineItem({ time, title, copy, icon }: { time: string; title: string
 function SyncState({ title, status, copy }: { title: string; status: string; copy: string }) {
   return (
     <div className="rounded-md border border-white/10 bg-white/[.055] p-3">
-      <p className="text-[10px] font-black uppercase text-[#ff8af1]">{title}</p>
+      <p className="text-[10px] font-black uppercase text-[#e2c66d]">{title}</p>
       <h3 className="mt-2 text-sm font-black">{status}</h3>
       <p className="mt-1 text-xs leading-5 text-white/52">{copy}</p>
     </div>
@@ -436,7 +436,7 @@ function SyncState({ title, status, copy }: { title: string; status: string; cop
 
 function Audience({ title, copy }: { title: string; copy: string }) {
   return (
-    <article className="rounded-lg border border-black/8 bg-white p-5 shadow-[0_18px_60px_rgba(44,36,59,.08)]">
+    <article className="rounded-lg border border-black/8 bg-white p-5 shadow-[0_18px_60px_rgba(16,16,16,.08)]">
       <h3 className="text-lg font-bold">{title}</h3>
       <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p>
     </article>

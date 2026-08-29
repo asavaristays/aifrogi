@@ -15,7 +15,7 @@ export function LegalPage({
   return (
     <main className="min-h-screen bg-[linear-gradient(145deg,#eefaf3_0%,#ffffff_48%,#edf7f5_100%)] px-4 py-10 text-[#14241f] sm:px-6 lg:px-8">
       <article className="mx-auto max-w-4xl overflow-hidden rounded-[32px] border border-black/5 bg-white shadow-[0_30px_90px_rgba(15,61,53,0.12)]">
-        <header className="bg-[linear-gradient(135deg,#2c243b,#493b62_54%,#c725ba)] px-6 py-10 text-white sm:px-10 sm:py-14">
+        <header className="bg-[linear-gradient(135deg,#101010,#404040_54%,#8a6a16)] px-6 py-10 text-white sm:px-10 sm:py-14">
           <Link href="/" className="text-sm font-black tracking-tight">AiFrogi</Link>
           <p className="mt-8 text-[11px] font-black uppercase tracking-[0.24em] text-[#86efac]">{eyebrow}</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{title}</h1>
@@ -42,7 +42,7 @@ export function LegalPage({
 export function LegalSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="text-xl font-black tracking-tight text-[#493b62]">{title}</h2>
+      <h2 className="text-xl font-black tracking-tight text-[#404040]">{title}</h2>
       <div className="mt-3 space-y-3 text-sm leading-7 text-[#52615b]">{children}</div>
     </section>
   );

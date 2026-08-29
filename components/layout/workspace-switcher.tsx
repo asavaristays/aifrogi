@@ -42,7 +42,7 @@ export function WorkspaceSwitcher({
         value={currentSlug}
         disabled={switching}
         onChange={(event) => selectWorkspace(event.target.value)}
-        className="mt-1.5 w-full rounded-md border border-[var(--border)] bg-[#faf9fb] px-3 py-2.5 text-xs font-semibold text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:bg-white"
+        className="mt-1.5 w-full rounded-md border border-[var(--border)] bg-[#f8f0d8] px-3 py-2.5 text-xs font-semibold text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:bg-white"
       >
         {workspaces.map((workspace) => (
           <option key={workspace.id} value={workspace.slug}>

@@ -41,11 +41,11 @@ export function AppointmentJourneyAdminControl({
   return (
     <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
       <div className="flex items-start gap-3">
-        <CalendarCheck className="mt-0.5 size-5 text-[#b923ae]" aria-hidden="true" />
+        <CalendarCheck className="mt-0.5 size-5 text-[#6d5310]" aria-hidden="true" />
         <div>
           <p className="product-eyebrow">Product access</p>
           <h2 className="mt-2 text-lg font-black">Appointment Journey</h2>
-          <p className="mt-2 text-sm leading-6 text-[#6d7487]">Enable the product after the workspace WhatsApp API is connected. The client can then connect Google from Settings.</p>
+          <p className="mt-2 text-sm leading-6 text-[#68645c]">Enable the product after the workspace WhatsApp API is connected. The client can then connect Google from Settings.</p>
         </div>
       </div>
 
@@ -63,12 +63,12 @@ export function AppointmentJourneyAdminControl({
                     {workspace.googleReady ? "Google ready" : enabled ? "Awaiting Google" : "Disabled"}
                   </Badge>
                 </div>
-                <p className="mt-1 text-xs text-[#6d7487]">{workspace.propertySlug}{workspace.whatsappNumber ? ` · ${workspace.whatsappNumber}` : ""}</p>
+                <p className="mt-1 text-xs text-[#68645c]">{workspace.propertySlug}{workspace.whatsappNumber ? ` · ${workspace.whatsappNumber}` : ""}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 {enabled && !workspace.googleReady && workspace.tenantId ? (
                   <a
-                    className="inline-flex min-h-10 items-center justify-center rounded-lg border border-black/8 bg-white px-4 py-2.5 text-sm font-bold text-[#5a2456] hover:bg-[#faf6fa]"
+                    className="inline-flex min-h-10 items-center justify-center rounded-lg border border-black/8 bg-white px-4 py-2.5 text-sm font-bold text-[#2b2b2b] hover:bg-[#fbfaf7]"
                     href={`/api/appointment-journey/google/oauth/start?tenantId=${encodeURIComponent(workspace.tenantId)}&returnTo=${encodeURIComponent(organizationId ? `/admin/customers/${organizationId}` : "/admin/appointments")}`}
                   >
                     Connect Google
@@ -87,7 +87,7 @@ export function AppointmentJourneyAdminControl({
             </div>
           );
         })}
-        {!workspaces.length ? <p className="py-4 text-sm text-[#6d7487]">No client workspace is available.</p> : null}
+        {!workspaces.length ? <p className="py-4 text-sm text-[#68645c]">No client workspace is available.</p> : null}
       </div>
       {error ? <p className="mt-3 text-sm font-semibold text-[#a3342b]">{error}</p> : null}
     </section>

@@ -220,7 +220,7 @@ export function BroadcastBuilder({
 
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
-      <Card className="border border-black/6 p-6 shadow-[0_16px_44px_rgba(45,31,58,0.08)]">
+      <Card className="border border-black/6 p-6 shadow-[0_16px_44px_rgba(16,16,16,0.08)]">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="product-eyebrow">Guided campaign wizard</p>
@@ -256,7 +256,7 @@ export function BroadcastBuilder({
           </label>
 
           {selectedTemplate ? (
-            <div className="md:col-span-2 rounded-md border border-black/8 bg-[#faf8fb] p-4">
+            <div className="md:col-span-2 rounded-md border border-black/8 bg-[#fbfaf7] p-4">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge tone={selectedTemplate.status === "APPROVED" ? "secondary" : "tertiary"}>{selectedTemplate.status}</Badge>
                 <Badge tone="neutral">{selectedTemplate.category}</Badge>
@@ -264,7 +264,7 @@ export function BroadcastBuilder({
                 <Badge tone="neutral">{selectedTemplate.headerType} header</Badge>
               </div>
               <p className="mt-3 text-sm font-semibold">{selectedTemplate.purpose}</p>
-              <div className="mt-3 whitespace-pre-wrap rounded-md border border-black/6 bg-white p-4 text-sm leading-6 text-[#493b62]">{selectedTemplate.bodyPreview}</div>
+              <div className="mt-3 whitespace-pre-wrap rounded-md border border-black/6 bg-white p-4 text-sm leading-6 text-[#404040]">{selectedTemplate.bodyPreview}</div>
               {selectedTemplate.buttonLabels.length ? (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {selectedTemplate.buttonLabels.map((label) => <span key={label} className="status-pill status-info">{label}</span>)}
@@ -308,8 +308,8 @@ export function BroadcastBuilder({
               {consentSources.map((source) => <option key={source.value} value={source.value}>{source.label}</option>)}
             </select>
           </label>
-          <label className="flex items-center gap-3 rounded-md border border-black/8 bg-[#faf8fb] p-4 text-sm font-semibold">
-            <input type="checkbox" className="size-4 accent-[#c725ba]" checked={testMode} onChange={(event) => setTestMode(event.target.checked)} />
+          <label className="flex items-center gap-3 rounded-md border border-black/8 bg-[#fbfaf7] p-4 text-sm font-semibold">
+            <input type="checkbox" className="size-4 accent-[#8a6a16]" checked={testMode} onChange={(event) => setTestMode(event.target.checked)} />
             Mark this as a controlled test send
           </label>
           <label className="block md:col-span-2">
@@ -335,7 +335,7 @@ export function BroadcastBuilder({
       </Card>
 
       <div className="space-y-5">
-        <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(45,31,58,0.08)]">
+        <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(16,16,16,0.08)]">
           <p className="product-eyebrow">Campaign guardrails</p>
           <div className="mt-4 space-y-3">
             <SummaryRow label="Recipients" value={String(recipientCount)} />
@@ -349,13 +349,13 @@ export function BroadcastBuilder({
         </Card>
 
         {result ? (
-          <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(45,31,58,0.08)]">
+          <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(16,16,16,0.08)]">
             <p className="product-eyebrow">Last send</p>
             <h3 className="mt-2 text-xl font-semibold">{result.summary.sent}/{result.summary.requested} accepted</h3>
             <p className="mt-1 text-xs text-[var(--text-muted)]">Campaign ID: {result.campaignId || "Not stored"}</p>
             <div className="mt-4 max-h-64 space-y-2 overflow-auto pr-1">
               {result.results.map((item) => (
-                <div key={item.to} className="rounded-md border border-black/8 bg-[#faf8fb] p-3 text-xs">
+                <div key={item.to} className="rounded-md border border-black/8 bg-[#fbfaf7] p-3 text-xs">
                   <div className="flex items-center justify-between gap-3">
                     <strong>{item.to}</strong>
                     <span className={item.ok ? "font-bold text-[#178665]" : "font-bold text-[#a3342b]"}>{item.ok ? "Accepted" : "Failed"}</span>
@@ -367,7 +367,7 @@ export function BroadcastBuilder({
           </Card>
         ) : null}
 
-        <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(45,31,58,0.08)]">
+        <Card className="border border-black/6 p-5 shadow-[0_16px_44px_rgba(16,16,16,0.08)]">
           <p className="product-eyebrow">Recent campaign runs</p>
           <div className="mt-4 space-y-3">
             {runs.map((campaign) => (
@@ -389,7 +389,7 @@ export function BroadcastBuilder({
                 </div>
               </div>
             ))}
-            {!runs.length ? <p className="rounded-md border border-black/8 bg-[#faf8fb] p-4 text-sm text-[var(--text-muted)]">No campaign runs yet. Send one internal test first.</p> : null}
+            {!runs.length ? <p className="rounded-md border border-black/8 bg-[#fbfaf7] p-4 text-sm text-[var(--text-muted)]">No campaign runs yet. Send one internal test first.</p> : null}
           </div>
         </Card>
       </div>
@@ -399,8 +399,8 @@ export function BroadcastBuilder({
 
 function WizardStep({ index, title, ready }: { index: string; title: string; ready: boolean }) {
   return (
-    <div className={`rounded-md border p-3 ${ready ? "border-[#cdeee3] bg-[#effaf5]" : "border-black/8 bg-[#faf8fb]"}`}>
-      <span className={`inline-flex size-6 items-center justify-center rounded-full text-xs font-bold ${ready ? "bg-[#178665] text-white" : "bg-[#f0edf4] text-[#746d7c]"}`}>{ready ? "✓" : index}</span>
+    <div className={`rounded-md border p-3 ${ready ? "border-[#cdeee3] bg-[#effaf5]" : "border-black/8 bg-[#fbfaf7]"}`}>
+      <span className={`inline-flex size-6 items-center justify-center rounded-full text-xs font-bold ${ready ? "bg-[#178665] text-white" : "bg-[#f8f0d8] text-[#68645c]"}`}>{ready ? "✓" : index}</span>
       <strong className="ml-2 text-sm">{title}</strong>
     </div>
   );
@@ -408,8 +408,8 @@ function WizardStep({ index, title, ready }: { index: string; title: string; rea
 
 function CheckRow({ checked, onChange, title }: { checked: boolean; onChange: (value: boolean) => void; title: string }) {
   return (
-    <label className="flex items-start gap-3 rounded-md border border-black/8 bg-[#faf8fb] p-4 text-sm leading-6">
-      <input type="checkbox" className="mt-1 size-4 accent-[#c725ba]" checked={checked} onChange={(event) => onChange(event.target.checked)} />
+    <label className="flex items-start gap-3 rounded-md border border-black/8 bg-[#fbfaf7] p-4 text-sm leading-6">
+      <input type="checkbox" className="mt-1 size-4 accent-[#8a6a16]" checked={checked} onChange={(event) => onChange(event.target.checked)} />
       <span>{title}</span>
     </label>
   );
@@ -417,7 +417,7 @@ function CheckRow({ checked, onChange, title }: { checked: boolean; onChange: (v
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-md border border-black/8 bg-[#faf8fb] px-3 py-3 text-sm">
+    <div className="flex items-center justify-between gap-4 rounded-md border border-black/8 bg-[#fbfaf7] px-3 py-3 text-sm">
       <span className="font-semibold text-[var(--text-muted)]">{label}</span>
       <strong className="text-right">{value}</strong>
     </div>
@@ -426,7 +426,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 
 function MiniMetric({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-md bg-[#faf8fb] p-2">
+    <div className="rounded-md bg-[#fbfaf7] p-2">
       <span className="block text-[10px] font-semibold text-[var(--text-muted)]">{label}</span>
       <strong className="mt-1 block">{value}</strong>
     </div>

@@ -20,11 +20,11 @@ const facts = [
 
 export default function AboutPage() {
   return (
-    <main className="bg-white text-[#2c243b]">
+    <main className="bg-white text-[#101010]">
       <SiteHeader />
-      <section className="relative overflow-hidden bg-[#2c243b] px-5 py-16 text-white sm:px-8 sm:py-24">
-        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-[#d92bcb]/16 blur-[100px]" aria-hidden="true" />
-        <div className="relative mx-auto max-w-7xl"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">About AiFrogi</p><h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-.04em] sm:text-6xl">WhatsApp operations should feel clear, not complicated.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">AiFrogi is a business messaging platform built and operated by webtechnosys from Morjim, Goa.</p></div>
+      <section className="relative overflow-hidden bg-[#101010] px-5 py-16 text-white sm:px-8 sm:py-24">
+        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-[#8a6a16]/16 blur-[100px]" aria-hidden="true" />
+        <div className="relative mx-auto max-w-7xl"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">About AiFrogi</p><h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-.04em] sm:text-6xl">WhatsApp operations should feel clear, not complicated.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">AiFrogi is a business messaging platform built and operated by webtechnosys from Morjim, Goa.</p></div>
       </section>
 
       <section className="px-5 py-20 sm:px-8 sm:py-24">
@@ -34,7 +34,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
+      <section className="border-y border-black/8 bg-[#fbfaf7] px-5 py-20 sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.7fr_1.3fr]"><div><p className="product-eyebrow">How we work</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">Clear ownership at every step.</h2></div><div>{[
           ["Guided onboarding", "We explain prerequisites, monitor Meta-dependent steps, and keep the next customer action visible."],
           ["Controlled automation", "Approved knowledge, consent, role-based access, and human handover define what automation can do."],
@@ -42,8 +42,8 @@ export default function AboutPage() {
         ].map(([title, copy]) => <article key={title} className="grid gap-3 border-t border-black/10 py-6 sm:grid-cols-[180px_1fr]"><h3 className="font-bold">{title}</h3><p className="text-sm leading-6 text-[var(--text-muted)]">{copy}</p></article>)}</div></div>
       </section>
 
-      <section className="px-5 py-16 sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 bg-[#2c243b] px-6 py-9 text-white sm:px-9 lg:flex-row lg:items-center lg:justify-between"><div><h2 className="text-2xl font-semibold">Verify before you connect.</h2><p className="mt-2 text-sm text-white/55">Review our Meta verification evidence, security controls, and platform responsibilities.</p></div><div className="flex flex-wrap gap-4"><Link href="/security#meta-verification" className="inline-flex min-h-11 items-center gap-2 font-bold text-[#ff8af1]">Verification evidence <Icon name="arrow-right" /></Link><Link href="/status" className="inline-flex min-h-11 items-center gap-2 font-bold">Service status <Icon name="arrow-right" /></Link></div></div></section>
-      <section className="border-t border-black/8 px-5 py-16 sm:px-8"><div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[.8fr_1.2fr]"><div><p className="product-eyebrow">Support commitment</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">A named response target for every priority.</h2></div><div><p className="text-sm leading-7 text-[var(--text-muted)]">Urgent live-messaging outages target an initial response within 1 business hour; high-priority blockers within 4 business hours; ordinary requests within 1 business day. Provider-dependent recovery times remain clearly identified.</p><Link href="/help/support-response-standards" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#a21c98]">Read support standards <Icon name="arrow-right" /></Link></div></div></section>
+      <section className="px-5 py-16 sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 bg-[#101010] px-6 py-9 text-white sm:px-9 lg:flex-row lg:items-center lg:justify-between"><div><h2 className="text-2xl font-semibold">Verify before you connect.</h2><p className="mt-2 text-sm text-white/55">Review our Meta verification evidence, security controls, and platform responsibilities.</p></div><div className="flex flex-wrap gap-4"><Link href="/security#meta-verification" className="inline-flex min-h-11 items-center gap-2 font-bold text-[#e2c66d]">Verification evidence <Icon name="arrow-right" /></Link><Link href="/status" className="inline-flex min-h-11 items-center gap-2 font-bold">Service status <Icon name="arrow-right" /></Link></div></div></section>
+      <section className="border-t border-black/8 px-5 py-16 sm:px-8"><div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[.8fr_1.2fr]"><div><p className="product-eyebrow">Support commitment</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">A named response target for every priority.</h2></div><div><p className="text-sm leading-7 text-[var(--text-muted)]">Urgent live-messaging outages target an initial response within 1 business hour; high-priority blockers within 4 business hours; ordinary requests within 1 business day. Provider-dependent recovery times remain clearly identified.</p><Link href="/help/support-response-standards" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#6d5310]">Read support standards <Icon name="arrow-right" /></Link></div></div></section>
       <SiteFooter />
     </main>
   );

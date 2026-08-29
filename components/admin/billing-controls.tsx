@@ -66,7 +66,7 @@ export function BillingControls({
       <div>
         <p className="product-eyebrow">Billing operations</p>
         <h2 className="mt-2 text-lg font-semibold">Manual control before Razorpay</h2>
-        <p className="mt-1 text-sm leading-6 text-[#6d7487]">Every action below writes to the platform audit trail.</p>
+        <p className="mt-1 text-sm leading-6 text-[#68645c]">Every action below writes to the platform audit trail.</p>
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
@@ -109,7 +109,7 @@ export function BillingControls({
         </div>
       </div>
 
-      {notice ? <p className="mt-4 text-sm font-semibold text-[#b923ae]">{notice}</p> : null}
+      {notice ? <p className="mt-4 text-sm font-semibold text-[#6d5310]">{notice}</p> : null}
       {error ? <p className="mt-4 text-sm font-semibold text-[#b23a32]">{error}</p> : null}
     </section>
   );

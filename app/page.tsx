@@ -34,7 +34,7 @@ export default function HomePage() {
         <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[var(--gold-600)]/18 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl text-center">
-          <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#ff8af1]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Meta access verified for webtechnosys <span className="text-[#ff8af1] transition-transform group-hover:translate-x-0.5">→</span></a>
+          <a href="/security#meta-verification" className="group mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#e2c66d]/45 hover:bg-white/8 hover:text-white"><span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>Meta access verified for webtechnosys <span className="text-[#e2c66d] transition-transform group-hover:translate-x-0.5">→</span></a>
           <h1 className="mx-auto mt-7 max-w-5xl text-4xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-7xl">Give your business an intelligent AI bot that turns conversations into action.</h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/62 sm:text-xl">AI answers, follow-ups, workflows, payments, forms, reviews, and human handover in one controlled workspace. WhatsApp is one supported channel.</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3"><a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-md bg-[var(--gold-600)] px-6 text-sm font-bold text-white shadow-[0_12px_34px_rgba(138,106,22,.24)] transition hover:-translate-y-0.5 hover:bg-[var(--gold-500)] hover:text-[var(--ink-900)]">Start 30-day trial <Icon name="arrow-right" /></a></div>
@@ -49,11 +49,11 @@ export default function HomePage() {
 
       <OnboardingJourney />
 
-      <section className="border-b border-black/8 bg-[#fbf8fc] px-5 py-14 sm:px-8">
+      <section className="border-b border-black/8 bg-[#fbfaf7] px-5 py-14 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl"><p className="product-eyebrow">Security and compliance transparency</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Trust claims limited to controls we can prove.</h2><p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">AiFrogi publishes active safeguards, customer responsibilities, and certification status in plain language. We do not claim SOC 2 or ISO certification until an independent programme is completed.</p></div>
-            <Link href="/security#compliance-status" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-[#2c243b] px-5 text-sm font-bold text-white">Review compliance status <Icon name="arrow-right" /></Link>
+            <Link href="/security#compliance-status" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-[#101010] px-5 text-sm font-bold text-white">Review compliance status <Icon name="arrow-right" /></Link>
           </div>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {[
@@ -86,7 +86,7 @@ export default function HomePage() {
         <div className="absolute -right-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-[var(--gold-600)]/18 blur-[100px]" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Trust by design</p>
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Trust by design</p>
             <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.04em] sm:text-5xl">Security controls customers can understand and verify.</h2>
             <p className="mt-5 max-w-xl text-base leading-7 text-white/62">AiFrogi protects WhatsApp workspaces with customer-approved support access, privileged login OTP, signed Meta webhooks, encrypted credentials, and repeatable boundary tests for covered routes.</p>
             <div className="mt-7 grid max-w-xl gap-3 sm:grid-cols-3">
@@ -101,7 +101,7 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <a href="/security" className="group mt-8 inline-flex min-h-14 items-center gap-3 rounded-lg bg-[#d92bcb] px-6 text-sm font-bold text-white shadow-[0_0_38px_rgba(217,43,203,.3)] transition hover:-translate-y-0.5 hover:bg-[#e33bd4]">
+            <a href="/security" className="group mt-8 inline-flex min-h-14 items-center gap-3 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white shadow-[0_0_38px_rgba(138,106,22,.3)] transition hover:-translate-y-0.5 hover:bg-[#b28728]">
               Review Data Security
               <Icon name="arrow-right" className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </a>
@@ -129,5 +129,5 @@ export default function HomePage() {
   );
 }
 
-function ProofLink({ title, copy, href, icon }: { title: string; copy: string; href: string; icon: "settings" | "file-text" | "bar-chart-3" | "grid" }) { return <a href={href} className="group border-t border-black/10 pt-5"><span className="grid h-10 w-10 place-items-center rounded-lg bg-[#fceafb] text-[#b923ae]"><Icon name={icon} /></span><h3 className="mt-5 flex items-center justify-between gap-3 text-lg font-bold">{title}<Icon name="arrow-right" className="text-[#d92bcb] transition-transform group-hover:translate-x-1" /></h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></a>; }
-function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles" | "phone" | "link"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#ff8af1]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }
+function ProofLink({ title, copy, href, icon }: { title: string; copy: string; href: string; icon: "settings" | "file-text" | "bar-chart-3" | "grid" }) { return <a href={href} className="group border-t border-black/10 pt-5"><span className="grid h-10 w-10 place-items-center rounded-lg bg-[#f8f0d8] text-[#6d5310]"><Icon name={icon} /></span><h3 className="mt-5 flex items-center justify-between gap-3 text-lg font-bold">{title}<Icon name="arrow-right" className="text-[#8a6a16] transition-transform group-hover:translate-x-1" /></h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></a>; }
+function SecurityControl({ icon, title, copy }: { icon: "settings" | "grid" | "sparkles" | "phone" | "link"; title: string; copy: string }) { return <div className="grid gap-4 border-b border-white/12 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:items-start"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/8 text-[#e2c66d]"><Icon name={icon} className="h-5 w-5" /></span><div><h3 className="text-base font-bold">{title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-white/55">{copy}</p></div></div>; }

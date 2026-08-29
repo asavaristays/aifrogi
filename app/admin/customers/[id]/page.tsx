@@ -47,9 +47,9 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
-      <Link href="/admin/customers" className="text-sm font-black text-[#c725ba]">Back to customers</Link>
+      <Link href="/admin/customers" className="text-sm font-black text-[#8a6a16]">Back to customers</Link>
       <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Customer review</p><h1 className="mt-2 text-3xl font-black">{organization.name}</h1><p className="mt-2 text-sm text-[#6d7487]">{organization.ownerName} · {organization.ownerEmail}</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Customer review</p><h1 className="mt-2 text-3xl font-black">{organization.name}</h1><p className="mt-2 text-sm text-[#68645c]">{organization.ownerName} · {organization.ownerEmail}</p></div>
         <Badge tone={onboarding?.metaStatus === "LIVE" ? "secondary" : onboarding?.metaStatus === "REJECTED" ? "error" : "tertiary"}>{(onboarding?.metaStatus || "NOT STARTED").replaceAll("_", " ")}</Badge>
       </div>
 
@@ -89,27 +89,27 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
             <UsageDetail label="Team users" value={billing.usage.teamUsers} limit={billing.limits.teamUsers} />
           </Section> : null}
           <Section title="Business documents">
-            <p className="mb-3 text-xs leading-5 text-[#6d7487]">{canReadDocuments ? "Customer granted document access. Opening a document is logged." : "Document metadata is visible for operations. File contents are locked until the customer grants document access."}</p>
-            {organization.documents.map((document) => canReadDocuments ? <a key={document.id} href={`/api/onboarding/documents/${document.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-between border-b border-black/5 py-3 text-sm font-semibold"><span>{document.type.replaceAll("_", " ")}</span><span className="text-[#c725ba]">Open</span></a> : <div key={document.id} className="flex items-center justify-between border-b border-black/5 py-3 text-sm"><span><strong className="block">{document.type.replaceAll("_", " ")}</strong><small className="text-[#6d7487]">{document.fileName} · {(document.sizeBytes / 1024).toFixed(1)} KB</small></span><span className="status-pill status-success">Locked</span></div>)}
-            {!organization.documents.length ? <p className="text-sm text-[#6d7487]">No documents uploaded.</p> : null}
+            <p className="mb-3 text-xs leading-5 text-[#68645c]">{canReadDocuments ? "Customer granted document access. Opening a document is logged." : "Document metadata is visible for operations. File contents are locked until the customer grants document access."}</p>
+            {organization.documents.map((document) => canReadDocuments ? <a key={document.id} href={`/api/onboarding/documents/${document.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-between border-b border-black/5 py-3 text-sm font-semibold"><span>{document.type.replaceAll("_", " ")}</span><span className="text-[#8a6a16]">Open</span></a> : <div key={document.id} className="flex items-center justify-between border-b border-black/5 py-3 text-sm"><span><strong className="block">{document.type.replaceAll("_", " ")}</strong><small className="text-[#68645c]">{document.fileName} · {(document.sizeBytes / 1024).toFixed(1)} KB</small></span><span className="status-pill status-success">Locked</span></div>)}
+            {!organization.documents.length ? <p className="text-sm text-[#68645c]">No documents uploaded.</p> : null}
           </Section>
         </div>
         <Section title="Activity timeline">
           <div className="space-y-4">
-            {organization.activities.map((activity) => <div key={activity.id} className="border-l-2 border-[#25d366] pl-4"><p className="text-sm font-black">{activity.action.replaceAll("_", " ")}</p><p className="mt-1 text-xs leading-5 text-[#6d7487]">{activity.detail || activity.actorEmail || "System update"}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(activity.createdAt)}</p></div>)}
-            {!organization.activities.length ? <p className="text-sm text-[#6d7487]">No activity yet.</p> : null}
+            {organization.activities.map((activity) => <div key={activity.id} className="border-l-2 border-[#25d366] pl-4"><p className="text-sm font-black">{activity.action.replaceAll("_", " ")}</p><p className="mt-1 text-xs leading-5 text-[#68645c]">{activity.detail || activity.actorEmail || "System update"}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(activity.createdAt)}</p></div>)}
+            {!organization.activities.length ? <p className="text-sm text-[#68645c]">No activity yet.</p> : null}
           </div>
         </Section>
         {billing ? <Section title="Invoices">
           <div className="space-y-3">
-            {billing.organization.invoices.map((invoice) => <div key={invoice.id} className="rounded-md border border-black/6 bg-[#fbfcfb] p-4"><div className="flex items-start justify-between gap-3"><div><strong className="text-sm">{invoice.invoiceNumber}</strong><p className="mt-1 text-xs text-[#6d7487]">{invoice.status.replaceAll("_", " ")}</p></div><strong>{formatMoney(invoice.totalPaisa)}</strong></div><p className="mt-2 text-xs text-[#6d7487]">Platform {formatMoney(invoice.platformFeePaisa)} · Meta {formatMoney(invoice.metaChargesPaisa)} · AI {formatMoney(invoice.aiOveragePaisa)} · Tax {formatMoney(invoice.taxPaisa)}</p></div>)}
-            {!billing.organization.invoices.length ? <p className="text-sm text-[#6d7487]">No invoices issued.</p> : null}
+            {billing.organization.invoices.map((invoice) => <div key={invoice.id} className="rounded-md border border-black/6 bg-[#fbfcfb] p-4"><div className="flex items-start justify-between gap-3"><div><strong className="text-sm">{invoice.invoiceNumber}</strong><p className="mt-1 text-xs text-[#68645c]">{invoice.status.replaceAll("_", " ")}</p></div><strong>{formatMoney(invoice.totalPaisa)}</strong></div><p className="mt-2 text-xs text-[#68645c]">Platform {formatMoney(invoice.platformFeePaisa)} · Meta {formatMoney(invoice.metaChargesPaisa)} · AI {formatMoney(invoice.aiOveragePaisa)} · Tax {formatMoney(invoice.taxPaisa)}</p></div>)}
+            {!billing.organization.invoices.length ? <p className="text-sm text-[#68645c]">No invoices issued.</p> : null}
           </div>
         </Section> : null}
         {billing ? <Section title="Platform audit trail">
           <div className="space-y-4">
-            {billing.organization.auditLogs.map((log) => <div key={log.id} className="border-l-2 border-[#b923ae] pl-4"><p className="text-sm font-black">{log.summary}</p><p className="mt-1 text-xs text-[#6d7487]">{log.actorEmail} · {log.action.replaceAll("_", " ")}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(log.createdAt)}</p></div>)}
-            {!billing.organization.auditLogs.length ? <p className="text-sm text-[#6d7487]">No billing actions recorded.</p> : null}
+            {billing.organization.auditLogs.map((log) => <div key={log.id} className="border-l-2 border-[#6d5310] pl-4"><p className="text-sm font-black">{log.summary}</p><p className="mt-1 text-xs text-[#68645c]">{log.actorEmail} · {log.action.replaceAll("_", " ")}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(log.createdAt)}</p></div>)}
+            {!billing.organization.auditLogs.length ? <p className="text-sm text-[#68645c]">No billing actions recorded.</p> : null}
           </div>
         </Section> : null}
         <CustomerReviewActions organizationId={organization.id} kycStatus={onboarding?.kycStatus || "NOT_SUBMITTED"} organizationStatus={organization.status} />
@@ -123,9 +123,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function Detail({ label, value }: { label: string; value?: string | null }) {
-  return <div className="flex items-start justify-between gap-5 border-b border-black/5 py-3 text-sm"><span className="text-[#6d7487]">{label}</span><strong className="max-w-[65%] text-right">{value || "Not provided"}</strong></div>;
+  return <div className="flex items-start justify-between gap-5 border-b border-black/5 py-3 text-sm"><span className="text-[#68645c]">{label}</span><strong className="max-w-[65%] text-right">{value || "Not provided"}</strong></div>;
 }
 
 function UsageDetail({ label, value, limit }: { label: string; value: number; limit: number }) {
-  return <div className="border-b border-black/5 py-3"><div className="flex items-center justify-between gap-4 text-sm"><span className="text-[#6d7487]">{label}</span><strong>{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</strong></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/7"><div className="h-full rounded-full bg-[#b923ae]" style={{ width: `${Math.min(usagePercent(value, limit), 100)}%` }} /></div></div>;
+  return <div className="border-b border-black/5 py-3"><div className="flex items-center justify-between gap-4 text-sm"><span className="text-[#68645c]">{label}</span><strong>{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</strong></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/7"><div className="h-full rounded-full bg-[#6d5310]" style={{ width: `${Math.min(usagePercent(value, limit), 100)}%` }} /></div></div>;
 }

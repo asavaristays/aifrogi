@@ -109,7 +109,7 @@ function SignalCard({
 }) {
   const colors = {
     red: { surface: "from-[#fff4ef] to-white", text: "text-[#a5482d]", bar: "bg-[#f06f45]" },
-    green: { surface: "from-[#edf8f1] to-white", text: "text-[#b923ae]", bar: "bg-[#27aa78]" },
+    green: { surface: "from-[#edf8f1] to-white", text: "text-[#6d5310]", bar: "bg-[#27aa78]" },
     blue: { surface: "from-[#eff7ff] to-white", text: "text-[#1b62a5]", bar: "bg-[#3d8be3]" }
   }[tone];
 

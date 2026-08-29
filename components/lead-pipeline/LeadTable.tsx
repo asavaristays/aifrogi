@@ -15,7 +15,7 @@ type LeadTableProps = {
 };
 
 const statusStyles: Record<LeadStatus, string> = {
-  New: 'bg-[#d9fbe6] text-[#c725ba] ring-[#25d366]/20',
+  New: 'bg-[#d9fbe6] text-[#8a6a16] ring-[#25d366]/20',
   'Follow-up': 'bg-[#fef3c7] text-[#b45309] ring-[#f59e0b]/20',
   Confirmed: 'bg-[#dcfce7] text-[#15803d] ring-[#22c55e]/20',
   Pending: 'bg-[#e5e7eb] text-[#475569] ring-[#94a3b8]/20'
@@ -23,7 +23,7 @@ const statusStyles: Record<LeadStatus, string> = {
 
 const actionStyles: Record<LeadAction, string> = {
   Call: 'border-[#d8dee8] bg-[#edf1f5] text-[#657188] hover:bg-[#e5eaf0]',
-  Convert: 'border-[#25d366]/20 bg-[#d9fbe6] text-[#c725ba] hover:bg-[#c7f7d8]',
+  Convert: 'border-[#25d366]/20 bg-[#d9fbe6] text-[#8a6a16] hover:bg-[#c7f7d8]',
   Delete: 'border-[#f4d8dd] bg-[#fdf0f2] text-[#e89aa5] hover:bg-[#fbe6ea]'
 };
 
@@ -66,7 +66,7 @@ export function LeadTable({ mode, leads, activeLeadId, totalLeads, conversionRat
               {copy.helper}
             </p>
           </div>
-          <div className="rounded-full border border-[#25D366]/15 bg-[#d9fbe6] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#c725ba]">
+          <div className="rounded-full border border-[#25D366]/15 bg-[#d9fbe6] px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">
             {copy.liveLabel} {leads.length}
           </div>
         </div>

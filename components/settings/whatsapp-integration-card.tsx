@@ -272,7 +272,7 @@ export function WhatsAppIntegrationCard({
 
         <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_auto]">
           <input
-            className="min-h-11 rounded-lg border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#c725ba]"
+            className="min-h-11 rounded-lg border border-black/10 bg-white px-3 text-sm outline-none focus:border-[#8a6a16]"
             value={kbQuestion}
             onChange={(event) => setKbQuestion(event.target.value)}
             placeholder="Ask a test question"

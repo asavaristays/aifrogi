@@ -33,12 +33,12 @@ export function IntegrationPricing() {
         </div>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
-          {options.map((option) => <article key={option.name} className={`border-t-2 pt-6 ${option.featured ? "border-[#d92bcb]" : "border-black/12"}`}><div className="flex items-start justify-between gap-3"><h3 className="text-lg font-bold">{option.name}</h3>{option.featured ? <span className="rounded-full bg-[#fde9fb] px-3 py-1 text-[10px] font-bold uppercase tracking-[.08em] text-[#a21c98]">Best value</span> : null}</div><p className="mt-6 text-3xl font-semibold tracking-[-.04em]">{option.price}</p><p className="mt-1 text-xs font-semibold text-[var(--text-muted)]">{option.billing}</p><p className="mt-5 text-sm leading-6 text-[var(--text-muted)]">{option.copy}</p></article>)}
+          {options.map((option) => <article key={option.name} className={`border-t-2 pt-6 ${option.featured ? "border-[#8a6a16]" : "border-black/12"}`}><div className="flex items-start justify-between gap-3"><h3 className="text-lg font-bold">{option.name}</h3>{option.featured ? <span className="rounded-full bg-[#f8f0d8] px-3 py-1 text-[10px] font-bold uppercase tracking-[.08em] text-[#6d5310]">Best value</span> : null}</div><p className="mt-6 text-3xl font-semibold tracking-[-.04em]">{option.price}</p><p className="mt-1 text-xs font-semibold text-[var(--text-muted)]">{option.billing}</p><p className="mt-5 text-sm leading-6 text-[var(--text-muted)]">{option.copy}</p></article>)}
         </div>
 
         <div className="mt-10 flex flex-col gap-5 border-t border-black/10 pt-6 text-sm md:flex-row md:items-center md:justify-between">
-          <div className="grid gap-2 text-[var(--text-muted)] sm:grid-cols-2 sm:gap-8"><p><strong className="text-[#2c243b]">Optional maintenance:</strong> from ₹1,500/month.</p><p><strong className="text-[#2c243b]">UAE projects:</strong> quoted and invoiced in AED.</p></div>
-          <a href="mailto:info@aifrogi.com?subject=Integration%20cost%20estimate" className="inline-flex min-h-11 shrink-0 items-center gap-2 font-bold text-[#a21c98]">Request cost estimate <Icon name="arrow-right" /></a>
+          <div className="grid gap-2 text-[var(--text-muted)] sm:grid-cols-2 sm:gap-8"><p><strong className="text-[#101010]">Optional maintenance:</strong> from ₹1,500/month.</p><p><strong className="text-[#101010]">UAE projects:</strong> quoted and invoiced in AED.</p></div>
+          <a href="mailto:info@aifrogi.com?subject=Integration%20cost%20estimate" className="inline-flex min-h-11 shrink-0 items-center gap-2 font-bold text-[#6d5310]">Request cost estimate <Icon name="arrow-right" /></a>
         </div>
       </div>
     </section>

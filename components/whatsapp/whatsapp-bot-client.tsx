@@ -447,7 +447,7 @@ export function WhatsAppBotClient({
       { key: "not_replied" as const, label: "Not replied", helper: "Customer spoke last", tone: "bg-[#f06f45]", matches: matches.not_replied },
       { key: "ai_replied" as const, label: "AI replied", helper: "Review automation", tone: "bg-[#3d8be3]", matches: matches.ai_replied },
       { key: "human_needed" as const, label: "Human needed", helper: "Manual attention", tone: "bg-[#8d4d10]", matches: matches.human_needed },
-      { key: "campaign_replies" as const, label: "Campaign replies", helper: "Broadcast response", tone: "bg-[#7857d9]", matches: matches.campaign_replies },
+      { key: "campaign_replies" as const, label: "Campaign replies", helper: "Broadcast response", tone: "bg-[#8a6a16]", matches: matches.campaign_replies },
       { key: "trial_leads" as const, label: "Trial leads", helper: "30-day trial", tone: "bg-[#27aa78]", matches: matches.trial_leads },
       { key: "audit_leads" as const, label: "Audit leads", helper: "AI audit interest", tone: "bg-[#1b62a5]", matches: matches.audit_leads },
       { key: "resolved" as const, label: "Resolved", helper: "Closed work", tone: "bg-[#6b7280]", matches: matches.resolved },
@@ -876,8 +876,8 @@ export function WhatsAppBotClient({
                   type="button"
                   className={`flex w-full items-center gap-3 rounded-md border px-2.5 py-2 text-left transition ${
                     activeQueue === item.key
-                      ? "border-[#f2d9f0] bg-[var(--primary-soft)] text-[var(--text)] shadow-[inset_3px_0_0_var(--primary)]"
-                      : "border-transparent text-[#5f5866] hover:bg-[var(--surface-soft)] hover:text-[var(--text)]"
+                      ? "border-[#ded8cb] bg-[var(--primary-soft)] text-[var(--text)] shadow-[inset_3px_0_0_var(--primary)]"
+                      : "border-transparent text-[#68645c] hover:bg-[var(--surface-soft)] hover:text-[var(--text)]"
                   }`}
                   onClick={() => setActiveQueue(item.key)}
                 >
@@ -893,7 +893,7 @@ export function WhatsAppBotClient({
           </div>
         </aside>
 
-        <aside id="inbox-conversations" className="min-w-0 scroll-mt-12 border-b border-[var(--border)] bg-[#faf9fb] lg:border-b-0 lg:border-r">
+        <aside id="inbox-conversations" className="min-w-0 scroll-mt-12 border-b border-[var(--border)] bg-[#f8f0d8] lg:border-b-0 lg:border-r">
           <div className="border-b border-[var(--border)] bg-white p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -924,14 +924,14 @@ export function WhatsAppBotClient({
                   }}
                   className={`relative flex w-full gap-3 rounded-md border px-3 py-3 text-left transition ${
                     activeLead.id === lead.id
-                      ? "border-[#f2d9f0] bg-white shadow-[var(--shadow-card)]"
+                      ? "border-[#ded8cb] bg-white shadow-[var(--shadow-card)]"
                       : "border-transparent hover:bg-white hover:shadow-sm"
                   }`}
                 >
                   <span className={`absolute bottom-3 left-0 top-3 w-1 rounded-full ${state.rail}`} />
                   <span
                     className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${
-                      ["bg-[#b923ae]", "bg-[#1b62a5]", "bg-[#d4842f]", "bg-[#7857d9]", "bg-[#6b7280]"][index % 5]
+                      ["bg-[#6d5310]", "bg-[#1b62a5]", "bg-[#d4842f]", "bg-[#8a6a16]", "bg-[#6b7280]"][index % 5]
                     }`}
                   >
                     {lead.initials}
@@ -961,7 +961,7 @@ export function WhatsAppBotClient({
           </div>
         </aside>
 
-        <main id="inbox-reply" className="flex min-h-[760px] min-w-0 scroll-mt-12 flex-col bg-[#fbfafc]">
+        <main id="inbox-reply" className="flex min-h-[760px] min-w-0 scroll-mt-12 flex-col bg-[#f8f0d8]">
           <div className="border-b border-[var(--border)] bg-white px-5 py-4">
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div className="flex min-w-0 items-center gap-3">
@@ -1028,7 +1028,7 @@ export function WhatsAppBotClient({
             </div>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-auto bg-[#fbfafc] p-5">
+          <div className="flex-1 space-y-3 overflow-auto bg-[#f8f0d8] p-5">
             {timeline.map((message) => {
               const outgoing = message.from !== "guest";
               const delivery = outgoing ? getDeliveryMeta(message.status) : null;
@@ -1039,7 +1039,7 @@ export function WhatsAppBotClient({
                   <div
                     className={`inline-flex w-fit max-w-[min(78%,28rem)] flex-col gap-2 rounded-lg px-4 py-3 text-sm shadow-sm ring-1 ${
                       outgoing
-                        ? "rounded-tr-sm bg-[var(--primary-soft)] ring-[#f2d9f0]"
+                        ? "rounded-tr-sm bg-[var(--primary-soft)] ring-[#ded8cb]"
                         : "rounded-tl-sm bg-white ring-[var(--border)]"
                     }`}
                   >

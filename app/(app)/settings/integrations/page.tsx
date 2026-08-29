@@ -41,7 +41,7 @@ export default async function SettingsIntegrationsPage({
         <Card className="p-6 shadow-[0_18px_50px_rgba(15,61,53,0.07)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#c725ba]">Connection</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">Connection</p>
               <h2 className="mt-2 text-2xl font-black">Meta Cloud API</h2>
               <p className="mt-2 text-sm text-[var(--text-muted)]">Credentials are scoped to this WhatsApp Business number.</p>
             </div>
@@ -67,9 +67,9 @@ export default async function SettingsIntegrationsPage({
         )}
 
         <Card className="p-6 shadow-[0_18px_50px_rgba(15,61,53,0.07)]">
-          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#c725ba]">Webhook</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">Webhook</p>
           <h2 className="mt-2 text-xl font-black">Meta callback URL</h2>
-          <code className="mt-4 block overflow-x-auto rounded-2xl bg-[#2c243b] px-4 py-4 text-xs font-semibold text-[#b7f7d0]">{webhookUrl}</code>
+          <code className="mt-4 block overflow-x-auto rounded-2xl bg-[#101010] px-4 py-4 text-xs font-semibold text-[#b7f7d0]">{webhookUrl}</code>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             <Checklist label="Subscribe to messages" />
             <Checklist label="Use a permanent system-user token" />
@@ -82,5 +82,5 @@ export default async function SettingsIntegrationsPage({
 }
 
 function Checklist({ label }: { label: string }) {
-  return <div className="rounded-2xl border border-black/5 bg-[#f2faf6] px-4 py-3 text-sm font-bold text-[#493b62]">✓ {label}</div>;
+  return <div className="rounded-2xl border border-black/5 bg-[#f2faf6] px-4 py-3 text-sm font-bold text-[#404040]">✓ {label}</div>;
 }

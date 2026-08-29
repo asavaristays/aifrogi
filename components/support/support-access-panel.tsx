@@ -101,10 +101,10 @@ export function SupportAccessPanel({ initialGrants, initialEvents, canManage }: 
           </div>
           <div>
             <label><span className="field-label">Duration</span><select className="product-input mt-2" value={durationMinutes} onChange={(event) => setDurationMinutes(Number(event.target.value))}>{durations.map((duration) => <option key={duration.value} value={duration.value}>{duration.label}</option>)}</select></label>
-            <button type="button" disabled={saving} onClick={() => submit("GRANT")} className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#d92bcb] px-4 text-sm font-bold text-white disabled:opacity-60">Grant access</button>
+            <button type="button" disabled={saving} onClick={() => submit("GRANT")} className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#8a6a16] px-4 text-sm font-bold text-white disabled:opacity-60">Grant access</button>
           </div>
         </div>
-      ) : <p className="mt-5 rounded-md bg-[#fbf8fc] px-4 py-3 text-sm text-[var(--text-muted)]">Only workspace owners and admins can grant support access.</p>}
+      ) : <p className="mt-5 rounded-md bg-[#fbfaf7] px-4 py-3 text-sm text-[var(--text-muted)]">Only workspace owners and admins can grant support access.</p>}
 
       {error ? <p className="mt-4 rounded-md bg-[#fff2f0] px-4 py-3 text-sm font-semibold text-[#a8322d]">{error}</p> : null}
       {notice ? <p className="mt-4 rounded-md bg-[#edf9f3] px-4 py-3 text-sm font-semibold text-[#146b58]">{notice}</p> : null}
@@ -114,7 +114,7 @@ export function SupportAccessPanel({ initialGrants, initialEvents, canManage }: 
           <h3 className="text-sm font-bold">Active grants</h3>
           <div className="mt-3 space-y-3">
             {activeGrants.length ? activeGrants.map((grant) => (
-              <div key={grant.id} className="rounded-lg border border-[#f0d8ed] bg-[#fff7fe] p-4">
+              <div key={grant.id} className="rounded-lg border border-[#ded8cb] bg-[#f8f0d8] p-4">
                 <p className="text-sm font-bold">{grant.scopes.join(", ")}</p>
                 <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">Expires {formatDate(grant.expiresAt)} · granted by {grant.grantedBy}</p>
                 <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{grant.reason}</p>
@@ -127,7 +127,7 @@ export function SupportAccessPanel({ initialGrants, initialEvents, canManage }: 
           <h3 className="text-sm font-bold">Access audit</h3>
           <div className="mt-3 max-h-72 space-y-3 overflow-auto pr-2">
             {events.length ? events.map((event) => (
-              <div key={event.id} className="border-l-2 border-[#d92bcb] pl-3">
+              <div key={event.id} className="border-l-2 border-[#8a6a16] pl-3">
                 <p className="text-sm font-semibold">{event.summary}</p>
                 <p className="mt-1 text-xs text-[var(--text-muted)]">{event.actorEmail} · {event.action.replaceAll("_", " ")} · {formatDate(event.createdAt)}</p>
               </div>

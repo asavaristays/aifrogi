@@ -77,7 +77,7 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
                   <strong className="block text-sm">{resource.title}</strong>
                   <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{resource.helper}</span>
                 </span>
-                <span className="text-lg text-[#b923ae] transition-transform group-hover:translate-x-1">→</span>
+                <span className="text-lg text-[#6d5310] transition-transform group-hover:translate-x-1">→</span>
               </a>
             ))}
           </div>

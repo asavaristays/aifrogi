@@ -23,7 +23,7 @@ export function AdminLogoutButton() {
       aria-label="Logout from AiFrogi admin panel"
       disabled={loggingOut}
       onClick={logout}
-      className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full border border-[#ff8af1]/45 bg-[#d92bcb] px-4 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(217,43,203,0.28)] transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
+      className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full border border-[#e2c66d]/45 bg-[#8a6a16] px-4 text-sm font-extrabold text-white shadow-[0_12px_28px_rgba(138,106,22,0.28)] transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
     >
       {loggingOut ? "Logging out..." : "Logout"}
     </button>

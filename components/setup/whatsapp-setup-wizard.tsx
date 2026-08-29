@@ -125,7 +125,7 @@ export function WhatsAppSetupWizard({
   return (
     <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
       <Card className="h-fit overflow-hidden border border-black/5 p-0 shadow-[0_18px_55px_rgba(15,61,53,0.08)]">
-        <div className="bg-[linear-gradient(135deg,#2c243b,#c725ba)] p-6 text-white">
+        <div className="bg-[linear-gradient(135deg,#101010,#8a6a16)] p-6 text-white">
           <Badge tone={connected ? "secondary" : "tertiary"}>{connected ? "Connected" : "Setup required"}</Badge>
           <h2 className="mt-4 text-2xl font-black">{workspaceName}</h2>
           <p className="mt-2 text-sm leading-6 text-white/68">Connect this client to the official WhatsApp Cloud API.</p>
@@ -138,12 +138,12 @@ export function WhatsAppSetupWizard({
               onClick={() => setActiveStep(index)}
               className={
                 "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left transition " +
-                (activeStep === index ? "bg-[#e8f8ee] text-[#493b62]" : "text-[var(--text-muted)] hover:bg-black/3")
+                (activeStep === index ? "bg-[#e8f8ee] text-[#404040]" : "text-[var(--text-muted)] hover:bg-black/3")
               }
             >
               <span className={
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black " +
-                (completed[index] || (index === 4 && connected) ? "bg-[#25d366] text-[#063f3a]" : activeStep === index ? "bg-[#c725ba] text-white" : "bg-black/5")
+                (completed[index] || (index === 4 && connected) ? "bg-[#25d366] text-[#063f3a]" : activeStep === index ? "bg-[#8a6a16] text-white" : "bg-black/5")
               }>
                 {completed[index] || (index === 4 && connected) ? "✓" : index + 1}
               </span>
@@ -159,7 +159,7 @@ export function WhatsAppSetupWizard({
       <Card className="border border-black/5 p-6 shadow-[0_20px_60px_rgba(15,61,53,0.08)] sm:p-8">
         <div className="flex flex-col gap-3 border-b border-black/5 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#c725ba]">Step {activeStep + 1} of {steps.length}</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">Step {activeStep + 1} of {steps.length}</p>
             <h2 className="mt-2 text-2xl font-black">{steps[activeStep].title}</h2>
             <p className="mt-2 text-sm text-[var(--text-muted)]">{steps[activeStep].helper}</p>
           </div>
@@ -185,13 +185,13 @@ export function WhatsAppSetupWizard({
                 <input
                   type="password"
                   autoComplete="new-password"
-                  className="mt-2 w-full rounded-2xl border border-black/8 bg-[#f7faf8] px-4 py-3.5 outline-none focus:border-[#c725ba]"
+                  className="mt-2 w-full rounded-2xl border border-black/8 bg-[#f7faf8] px-4 py-3.5 outline-none focus:border-[#8a6a16]"
                   value={form.accessToken}
                   onChange={(event) => update("accessToken", event.target.value)}
                   placeholder={connected ? "Leave blank to keep the encrypted token already saved" : "Paste permanent Meta token"}
                 />
               </label>
-              <div className="rounded-3xl border border-black/5 bg-[#2c243b] p-5 text-sm leading-6 text-white/74">
+              <div className="rounded-3xl border border-black/5 bg-[#101010] p-5 text-sm leading-6 text-white/74">
                 AiFrogi encrypts both tokens before database storage. Required permissions are WhatsApp Business messaging and management for the connected business account.
               </div>
             </div>
@@ -199,7 +199,7 @@ export function WhatsAppSetupWizard({
 
           {activeStep === 2 ? (
             <div className="space-y-5">
-              <div className="rounded-3xl border border-black/5 bg-[#2c243b] p-5 text-white">
+              <div className="rounded-3xl border border-black/5 bg-[#101010] p-5 text-white">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7ff0ae]">Callback URL</p>
                 <code className="mt-3 block break-all text-sm font-semibold">{webhookUrl}</code>
                 <Button className="mt-4" onClick={copyWebhook}>{copied ? "Copied" : "Copy URL"}</Button>
@@ -216,7 +216,7 @@ export function WhatsAppSetupWizard({
               <CheckRow checked={consentConfirmed} onChange={setConsentConfirmed} title="Only message opted-in contacts" helper="Template broadcasts must follow Meta policy and the contact's consent." />
               <label className="block">
                 <span className="text-xs font-black uppercase tracking-[0.17em] text-[var(--text-muted)]">Workspace notes</span>
-                <textarea className="mt-2 min-h-28 w-full rounded-2xl border border-black/8 bg-[#f7faf8] px-4 py-3.5 outline-none focus:border-[#c725ba]" value={form.notes} onChange={(event) => update("notes", event.target.value)} />
+                <textarea className="mt-2 min-h-28 w-full rounded-2xl border border-black/8 bg-[#f7faf8] px-4 py-3.5 outline-none focus:border-[#8a6a16]" value={form.notes} onChange={(event) => update("notes", event.target.value)} />
               </label>
             </div>
           ) : null}
@@ -232,7 +232,7 @@ export function WhatsAppSetupWizard({
                 <Review label="Webhook" value={webhookSaved && messagesSubscribed ? "Configured" : "Incomplete"} />
                 <Review label="Current status" value={integration.status} />
               </div>
-              <div className="rounded-3xl border border-[#25d366]/20 bg-[#eaf9ef] p-5 text-sm leading-6 text-[#493b62]">
+              <div className="rounded-3xl border border-[#25d366]/20 bg-[#eaf9ef] p-5 text-sm leading-6 text-[#404040]">
                 Saving will update this workspace only. The access token is never returned to the browser after storage.
               </div>
             </div>
@@ -240,7 +240,7 @@ export function WhatsAppSetupWizard({
         </div>
 
         {error ? <p className="mb-4 rounded-2xl bg-[#fee2e2] px-4 py-3 text-sm font-bold text-[#b91c1c]">{error}</p> : null}
-        {success ? <p className="mb-4 rounded-2xl bg-[#dcfce7] px-4 py-3 text-sm font-bold text-[#493b62]">{success}</p> : null}
+        {success ? <p className="mb-4 rounded-2xl bg-[#dcfce7] px-4 py-3 text-sm font-bold text-[#404040]">{success}</p> : null}
 
         <div className="flex items-center justify-between gap-3 border-t border-black/5 pt-5">
           <Button tone="surface" disabled={activeStep === 0 || saving} onClick={() => setActiveStep((current) => Math.max(0, current - 1))}>Back</Button>
@@ -259,7 +259,7 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
   return (
     <label className="block">
       <span className="text-xs font-black uppercase tracking-[0.17em] text-[var(--text-muted)]">{label}</span>
-      <input className="mt-2 w-full rounded-2xl border border-black/8 bg-[#f7faf8] px-4 py-3.5 outline-none focus:border-[#c725ba]" value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} />
+      <input className="mt-2 w-full rounded-2xl border border-black/8 bg-[#f7faf8] px-4 py-3.5 outline-none focus:border-[#8a6a16]" value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} />
     </label>
   );
 }
@@ -267,7 +267,7 @@ function Field({ label, value, onChange, placeholder }: { label: string; value: 
 function CheckRow({ checked, onChange, title, helper, locked = false }: { checked: boolean; onChange: (value: boolean) => void; title: string; helper: string; locked?: boolean }) {
   return (
     <label className="flex cursor-pointer items-start gap-4 rounded-3xl border border-black/5 bg-[#f7faf8] p-5">
-      <input type="checkbox" className="mt-1 h-5 w-5 accent-[#c725ba]" checked={checked} disabled={locked} onChange={(event) => onChange(event.target.checked)} />
+      <input type="checkbox" className="mt-1 h-5 w-5 accent-[#8a6a16]" checked={checked} disabled={locked} onChange={(event) => onChange(event.target.checked)} />
       <span><strong className="block text-sm">{title}</strong><small className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{helper}</small></span>
     </label>
   );

@@ -86,7 +86,7 @@ export function ChatDetail({
             <h3 className="text-2xl font-black tracking-tight text-black">{copy.title}</h3>
             <p className="mt-1 text-sm text-slate-500">{copy.helper}</p>
           </div>
-            <span className={cn('rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-[0.24em]', lead.status === 'Confirmed' ? 'bg-[#dcfce7] text-[#15803d]' : lead.status === 'Follow-up' ? 'bg-[#fef3c7] text-[#b45309]' : lead.status === 'Pending' ? 'bg-[#e5e7eb] text-[#475569]' : 'bg-[#ecfdf3] text-[#c725ba]')}>
+            <span className={cn('rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-[0.24em]', lead.status === 'Confirmed' ? 'bg-[#dcfce7] text-[#15803d]' : lead.status === 'Follow-up' ? 'bg-[#fef3c7] text-[#b45309]' : lead.status === 'Pending' ? 'bg-[#e5e7eb] text-[#475569]' : 'bg-[#ecfdf3] text-[#8a6a16]')}>
               {lead.status}
             </span>
         </div>
@@ -159,7 +159,7 @@ export function ChatDetail({
             />
             <span
               className={cn(
-                'inline-flex h-9 min-w-[70px] cursor-pointer items-center justify-center rounded-full border border-[#d8dee8] bg-[#d9fbe6] px-3 py-1 text-[8px] font-black uppercase tracking-[0.28em] text-[#c725ba] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition hover:-translate-y-0.5 hover:bg-[#c7f7d8] focus:outline-none focus:ring-2 focus:ring-[#25D366]/20',
+                'inline-flex h-9 min-w-[70px] cursor-pointer items-center justify-center rounded-full border border-[#d8dee8] bg-[#d9fbe6] px-3 py-1 text-[8px] font-black uppercase tracking-[0.28em] text-[#8a6a16] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition hover:-translate-y-0.5 hover:bg-[#c7f7d8] focus:outline-none focus:ring-2 focus:ring-[#25D366]/20',
                 (!draftMessage.trim() || isSendingMessage) && 'pointer-events-none opacity-45'
               )}
               role="button"
@@ -182,7 +182,7 @@ export function ChatDetail({
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Guest actions</p>
           <div className="mt-4 flex flex-wrap gap-1.5">
             <span
-              className="inline-flex h-7 min-w-[86px] cursor-pointer items-center justify-center rounded-full border border-[#d8dee8] bg-[#d9fbe6] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.28em] text-[#c725ba] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition hover:-translate-y-0.5 hover:bg-[#c7f7d8] focus:outline-none focus:ring-2 focus:ring-[#25D366]/20"
+              className="inline-flex h-7 min-w-[86px] cursor-pointer items-center justify-center rounded-full border border-[#d8dee8] bg-[#d9fbe6] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.28em] text-[#8a6a16] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition hover:-translate-y-0.5 hover:bg-[#c7f7d8] focus:outline-none focus:ring-2 focus:ring-[#25D366]/20"
               role="button"
               tabIndex={0}
               onClick={onJoinChat}
@@ -196,7 +196,7 @@ export function ChatDetail({
               Join Chat
             </span>
             <span
-              className="inline-flex h-7 min-w-[86px] cursor-pointer items-center justify-center rounded-full border border-[#d8dee8] bg-[#d9fbe6] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.28em] text-[#c725ba] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition hover:-translate-y-0.5 hover:bg-[#c7f7d8] focus:outline-none focus:ring-2 focus:ring-[#25D366]/20"
+              className="inline-flex h-7 min-w-[86px] cursor-pointer items-center justify-center rounded-full border border-[#d8dee8] bg-[#d9fbe6] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.28em] text-[#8a6a16] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] transition hover:-translate-y-0.5 hover:bg-[#c7f7d8] focus:outline-none focus:ring-2 focus:ring-[#25D366]/20"
               role="button"
               tabIndex={0}
               onClick={onCallGuest}

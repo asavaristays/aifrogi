@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
       </LegalSection>
 
       <LegalSection title="6. Contact us">
-        <p>For privacy questions or requests, email <a className="font-black text-[#c725ba]" href="mailto:info@aifrogi.com">info@aifrogi.com</a>.</p>
+        <p>For privacy questions or requests, email <a className="font-black text-[#8a6a16]" href="mailto:info@aifrogi.com">info@aifrogi.com</a>.</p>
       </LegalSection>
     </LegalPage>
   );

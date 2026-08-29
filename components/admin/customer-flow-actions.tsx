@@ -75,7 +75,7 @@ export function CustomerFlowActions({
       <div>
         <p className="product-eyebrow">Super Admin proof</p>
         <h2 className="mt-2 text-lg font-black">External flow status</h2>
-        <p className="mt-2 text-sm leading-6 text-[#6d7487]">Use this to keep the customer dashboard honest when Meta, billing, or first-message testing happens outside the app.</p>
+        <p className="mt-2 text-sm leading-6 text-[#68645c]">Use this to keep the customer dashboard honest when Meta, billing, or first-message testing happens outside the app.</p>
       </div>
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
         <SelectField label="Meta billing" value={billing} onChange={setBilling} options={metaBillingOptions} />
@@ -83,7 +83,7 @@ export function CustomerFlowActions({
         <SelectField label="First message" value={firstMessage} onChange={setFirstMessage} options={firstMessageOptions} />
       </div>
       <textarea
-        className="mt-4 min-h-20 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#c725ba]"
+        className="mt-4 min-h-20 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]"
         value={note}
         onChange={(event) => setNote(event.target.value)}
         placeholder="Optional internal note, e.g. Template approved and test sent to client number"
@@ -110,9 +110,9 @@ function SelectField({
 }) {
   return (
     <label className="block">
-      <span className="text-xs font-black uppercase tracking-[0.14em] text-[#6d7487]">{label}</span>
+      <span className="text-xs font-black uppercase tracking-[0.14em] text-[#68645c]">{label}</span>
       <select
-        className="mt-2 min-h-11 w-full rounded-md border border-black/10 bg-white px-3 text-sm font-semibold outline-none focus:border-[#c725ba]"
+        className="mt-2 min-h-11 w-full rounded-md border border-black/10 bg-white px-3 text-sm font-semibold outline-none focus:border-[#8a6a16]"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >

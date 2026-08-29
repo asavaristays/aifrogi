@@ -20,9 +20,9 @@ export default async function AdminCustomersPage() {
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Super Admin</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Super Admin</p>
           <h1 className="mt-2 text-3xl font-black">Customer onboarding</h1>
-          <p className="mt-2 text-sm text-[#6d7487]">Monitor verification, WhatsApp activation, and account health.</p>
+          <p className="mt-2 text-sm text-[#68645c]">Monitor verification, WhatsApp activation, and account health.</p>
         </div>
         <Badge tone="secondary">{organizations.length} companies</Badge>
       </div>
@@ -39,7 +39,7 @@ export default async function AdminCustomersPage() {
       <section className="mt-6 overflow-hidden rounded-lg border border-black/6 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
-            <thead className="bg-[#f7faf8] text-xs uppercase tracking-[0.12em] text-[#6d7487]">
+            <thead className="bg-[#f7faf8] text-xs uppercase tracking-[0.12em] text-[#68645c]">
               <tr><th className="px-5 py-4">Company</th><th className="px-5 py-4">Phone</th><th className="px-5 py-4">Business KYC</th><th className="px-5 py-4">WhatsApp</th><th className="px-5 py-4">Next action</th><th className="px-5 py-4">Trial</th><th className="px-5 py-4 text-right">Action</th></tr>
             </thead>
             <tbody className="divide-y divide-black/5">
@@ -48,20 +48,20 @@ export default async function AdminCustomersPage() {
                 const trial = getTrialWindow(organization);
                 return (
                   <tr key={organization.id}>
-                    <td className="px-5 py-4"><strong className="block">{organization.name}</strong><span className="mt-1 block text-xs text-[#6d7487]">{organization.ownerEmail}</span></td>
+                    <td className="px-5 py-4"><strong className="block">{organization.name}</strong><span className="mt-1 block text-xs text-[#68645c]">{organization.ownerEmail}</span></td>
                     <td className="px-5 py-4">{organization.onboarding?.displayPhoneNumber || organization.onboarding?.phoneNumber || "Not added"}</td>
                     <td className="px-5 py-4"><Status value={organization.onboarding?.kycStatus || "NOT_SUBMITTED"} /></td>
                     <td className="px-5 py-4"><Status value={organization.onboarding?.metaStatus || "NOT_STARTED"} /></td>
                     <td className="px-5 py-4">
                       <strong className="block">{guidance.action}</strong>
-                      <span className="mt-1 flex items-center gap-2 text-xs text-[#6d7487]"><OwnerBadge owner={guidance.owner} /> {guidance.eta}</span>
+                      <span className="mt-1 flex items-center gap-2 text-xs text-[#68645c]"><OwnerBadge owner={guidance.owner} /> {guidance.eta}</span>
                     </td>
                     <td className="px-5 py-4">{subscriptionStates.get(organization.id)?.paused ? <Badge tone="error">PAUSED</Badge> : trial.enabled ? trial.label : organization.plan}</td>
-                    <td className="px-5 py-4 text-right"><Link className="font-black text-[#c725ba]" href={`/admin/customers/${organization.id}`}>Review</Link></td>
+                    <td className="px-5 py-4 text-right"><Link className="font-black text-[#8a6a16]" href={`/admin/customers/${organization.id}`}>Review</Link></td>
                   </tr>
                 );
               })}
-              {!organizations.length ? <tr><td className="px-5 py-10 text-center text-[#6d7487]" colSpan={7}>No customer organizations yet.</td></tr> : null}
+              {!organizations.length ? <tr><td className="px-5 py-10 text-center text-[#68645c]" colSpan={7}>No customer organizations yet.</td></tr> : null}
             </tbody>
           </table>
         </div>
@@ -71,7 +71,7 @@ export default async function AdminCustomersPage() {
 }
 
 function Metric({ label, value }: { label: string; value: number }) {
-  return <div className="rounded-lg border border-black/6 bg-white p-5 shadow-sm"><p className="text-xs font-black uppercase tracking-[0.14em] text-[#6d7487]">{label}</p><p className="mt-3 text-3xl font-black">{value}</p></div>;
+  return <div className="rounded-lg border border-black/6 bg-white p-5 shadow-sm"><p className="text-xs font-black uppercase tracking-[0.14em] text-[#68645c]">{label}</p><p className="mt-3 text-3xl font-black">{value}</p></div>;
 }
 
 function Status({ value }: { value: string }) {

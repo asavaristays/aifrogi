@@ -72,14 +72,14 @@ export default async function AdminPingBookDemoPage() {
   if (!db || !organization || !property || !tenant) {
     return (
       <main className="mx-auto max-w-5xl px-4 py-7 sm:px-8">
-        <Link href="/admin/appointments" className="text-sm font-black text-[#c725ba]">Back to appointments</Link>
+        <Link href="/admin/appointments" className="text-sm font-black text-[#8a6a16]">Back to appointments</Link>
         <section className="mt-6 rounded-lg border border-black/7 bg-white p-8 shadow-sm">
           <p className="product-eyebrow">PingBook Demo</p>
           <h1 className="mt-2 text-3xl font-semibold">Demo workspace is not ready</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
             The internal clinic demo was not found in the database. Run the PingBook demo seed on the VPS, then refresh this page.
           </p>
-          <code className="mt-5 block rounded-md bg-[#f5f1f6] p-4 text-sm text-[#2c243b]">npm run seed:pingbook-demo</code>
+          <code className="mt-5 block rounded-md bg-[#f8f0d8] p-4 text-sm text-[#101010]">npm run seed:pingbook-demo</code>
         </section>
       </main>
     );
@@ -96,13 +96,13 @@ export default async function AdminPingBookDemoPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href={`/admin/customers/${organization.id}`} className="inline-flex min-h-10 items-center rounded-md bg-[#2c243b] px-4 text-sm font-black text-white hover:bg-[#3a304d]">
+          <Link href={`/admin/customers/${organization.id}`} className="inline-flex min-h-10 items-center rounded-md bg-[#101010] px-4 text-sm font-black text-white hover:bg-[#2b2b2b]">
             Open customer
           </Link>
-          <Link href="/solutions/pingbook" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#2c243b] hover:bg-[#f8faf9]">
+          <Link href="/solutions/pingbook" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#101010] hover:bg-[#f8faf9]">
             Public page
           </Link>
-          <Link href="/admin/appointments" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#2c243b] hover:bg-[#f8faf9]">
+          <Link href="/admin/appointments" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#101010] hover:bg-[#f8faf9]">
             Appointments
           </Link>
         </div>
@@ -125,7 +125,7 @@ export default async function AdminPingBookDemoPage() {
             <Badge tone="primary">{tenant.status.replaceAll("_", " ")}</Badge>
           </div>
           <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="border-b border-black/6 bg-[#f5f1f6] p-5 lg:border-b-0 lg:border-r">
+            <div className="border-b border-black/6 bg-[#f8f0d8] p-5 lg:border-b-0 lg:border-r">
               <div className="rounded-lg bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between gap-3 border-b border-black/6 pb-4">
                   <div>
@@ -136,9 +136,9 @@ export default async function AdminPingBookDemoPage() {
                 </div>
                 <div className="mt-5 space-y-3 text-sm leading-6">
                   <p className="max-w-[88%] rounded-2xl rounded-tl-sm bg-[#eef7f2] px-4 py-3">Can I book dental cleaning tomorrow evening?</p>
-                  <p className="ml-auto max-w-[88%] rounded-2xl rounded-tr-sm bg-[#f7d7f4] px-4 py-3">Yes. 5:30 PM, 6:30 PM, or 7:15 PM is available.</p>
+                  <p className="ml-auto max-w-[88%] rounded-2xl rounded-tr-sm bg-[#f8f0d8] px-4 py-3">Yes. 5:30 PM, 6:30 PM, or 7:15 PM is available.</p>
                   <p className="max-w-[88%] rounded-2xl rounded-tl-sm bg-[#eef7f2] px-4 py-3">6:30 works. Please confirm.</p>
-                  <p className="ml-auto max-w-[88%] rounded-2xl rounded-tr-sm bg-[#f7d7f4] px-4 py-3">Slot held for {slotHoldMinutes} minutes. Pay {formatInr(booking?.service?.priceInr || 500)} to confirm.</p>
+                  <p className="ml-auto max-w-[88%] rounded-2xl rounded-tr-sm bg-[#f8f0d8] px-4 py-3">Slot held for {slotHoldMinutes} minutes. Pay {formatInr(booking?.service?.priceInr || 500)} to confirm.</p>
                 </div>
               </div>
             </div>
@@ -153,8 +153,8 @@ export default async function AdminPingBookDemoPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-black/7 bg-[#2c243b] p-6 text-white shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#ff8af1]">Sales script</p>
+        <div className="rounded-lg border border-black/7 bg-[#101010] p-6 text-white shadow-sm">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#e2c66d]">Sales script</p>
           <h2 className="mt-2 text-2xl font-semibold">Problem PingBook solves</h2>
           <div className="mt-5 space-y-3">
             {[
@@ -165,8 +165,8 @@ export default async function AdminPingBookDemoPage() {
               <p key={item} className="rounded-md border border-white/8 bg-white/5 p-4 text-sm leading-6 text-white/72">{item}</p>
             ))}
           </div>
-          <div className="mt-6 rounded-md bg-white p-4 text-[#2c243b]">
-            <p className="text-xs font-black uppercase text-[#b923ae]">Quote</p>
+          <div className="mt-6 rounded-md bg-white p-4 text-[#101010]">
+            <p className="text-xs font-black uppercase text-[#6d5310]">Quote</p>
             <p className="mt-2 text-sm font-bold leading-6">
               One-time setup Rs. 4,500. PingBook Rs. 1,250 per month, billed quarterly. Meta message fees separate as used.
             </p>
@@ -229,7 +229,7 @@ export default async function AdminPingBookDemoPage() {
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {checks.map((item) => (
-            <div key={item.label} className="flex items-center justify-between gap-3 rounded-md border border-black/7 bg-[#fbf8fc] p-4">
+            <div key={item.label} className="flex items-center justify-between gap-3 rounded-md border border-black/7 bg-[#fbfaf7] p-4">
               <span className="text-sm font-bold">{item.label}</span>
               <span className={`rounded-full px-2.5 py-1 text-xs font-black ${item.ok ? "bg-[#e9f7f1] text-[#178665]" : "bg-[#fff2f0] text-[#b23a32]"}`}>
                 {item.ok ? "Ready" : "Check"}
@@ -259,7 +259,7 @@ function TimelineItem({ time, title, body }: { time: string; title: string; body
   return (
     <div className="grid grid-cols-[64px_1fr] gap-4">
       <p className="pt-1 text-xs font-black uppercase text-[var(--text-muted)]">{time}</p>
-      <div className="rounded-md border border-black/7 bg-[#fbf8fc] p-4">
+      <div className="rounded-md border border-black/7 bg-[#fbfaf7] p-4">
         <p className="text-sm font-black">{title}</p>
         <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{body}</p>
       </div>
@@ -269,7 +269,7 @@ function TimelineItem({ time, title, body }: { time: string; title: string; body
 
 function Detail({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-black/7 bg-[#fbf8fc] p-4">
+    <div className="rounded-md border border-black/7 bg-[#fbfaf7] p-4">
       <p className="text-xs font-black uppercase text-[var(--text-muted)]">{label}</p>
       <p className="mt-2 text-sm font-bold">{value}</p>
     </div>

@@ -52,17 +52,17 @@ const plans = [
 
 export default function PricingPage() {
   return (
-    <main className="bg-white text-[#2c243b]">
+    <main className="bg-white text-[#101010]">
       <SiteHeader />
-      <section className="bg-[#2c243b] px-5 py-16 text-white sm:px-8 sm:py-24">
+      <section className="bg-[#101010] px-5 py-16 text-white sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Clear pricing</p>
+          <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Clear pricing</p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-6xl">Platform fee and Meta usage stay separate.</h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Start with a 30-day trial. Choose a paid plan to continue after the trial; Meta template-message charges remain visible and separate.</p>
         </div>
       </section>
 
-      <section id="plans" className="bg-[#fbf8fc] px-5 py-16 sm:px-8 sm:py-20">
+      <section id="plans" className="bg-[#fbfaf7] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="product-eyebrow">Choose your workspace</p>
@@ -75,9 +75,9 @@ export default function PricingPage() {
           </div>
 
           <div className="mt-12 grid gap-6 border-y border-black/10 py-8 text-sm leading-6 md:grid-cols-3">
-            <p><strong className="block text-[#2c243b]">Meta charges</strong><span className="text-[var(--text-muted)]">Based on message category and the customer&apos;s country.</span></p>
-            <p><strong className="block text-[#2c243b]">Always included</strong><span className="text-[var(--text-muted)]">Official API connection, secure access, and human handover.</span></p>
-            <p><strong className="block text-[#2c243b]">Quoted separately</strong><span className="text-[var(--text-muted)]">Taxes, custom integrations, and unusually high AI usage.</span></p>
+            <p><strong className="block text-[#101010]">Meta charges</strong><span className="text-[var(--text-muted)]">Based on message category and the customer&apos;s country.</span></p>
+            <p><strong className="block text-[#101010]">Always included</strong><span className="text-[var(--text-muted)]">Official API connection, secure access, and human handover.</span></p>
+            <p><strong className="block text-[#101010]">Quoted separately</strong><span className="text-[var(--text-muted)]">Taxes, custom integrations, and unusually high AI usage.</span></p>
           </div>
         </div>
       </section>
@@ -92,18 +92,18 @@ export default function PricingPage() {
 
 function PricingPlan({ name, price, billing, bestFor, cta, features, featured }: (typeof plans)[number]) {
   return (
-    <article className={`flex h-full flex-col rounded-xl border bg-white p-6 ${featured ? "border-[#d92bcb] shadow-[0_18px_50px_rgba(217,43,203,.12)]" : "border-black/8"}`}>
+    <article className={`flex h-full flex-col rounded-xl border bg-white p-6 ${featured ? "border-[#8a6a16] shadow-[0_18px_50px_rgba(138,106,22,.12)]" : "border-black/8"}`}>
       <div className="flex min-h-7 items-start justify-between gap-3">
         <h3 className="text-xl font-bold">{name}</h3>
-        {featured ? <span className="rounded-full bg-[#fde9fb] px-3 py-1 text-[11px] font-bold text-[#a21c98]">Recommended</span> : null}
+        {featured ? <span className="rounded-full bg-[#f8f0d8] px-3 py-1 text-[11px] font-bold text-[#6d5310]">Recommended</span> : null}
       </div>
       <p className="mt-4 min-h-18 text-sm leading-6 text-[var(--text-muted)]">{bestFor}</p>
       <p className="mt-5 text-3xl font-semibold tracking-[-0.04em]">{price}<small className="ml-1 text-sm font-medium text-[var(--text-muted)]">/ month</small></p>
       <p className="mt-1 text-xs text-[var(--text-muted)]">{billing}</p>
       <ul className="mt-6 flex-1 space-y-3 border-t border-black/8 pt-6 text-sm">
-        {features.map((feature) => <li key={feature} className="flex gap-2.5"><span className="font-bold text-[#d92bcb]" aria-hidden="true">✓</span><span>{feature}</span></li>)}
+        {features.map((feature) => <li key={feature} className="flex gap-2.5"><span className="font-bold text-[#8a6a16]" aria-hidden="true">✓</span><span>{feature}</span></li>)}
       </ul>
-      <a href={registerUrl} className={`mt-7 inline-flex min-h-11 items-center justify-center rounded-lg px-4 text-sm font-bold transition ${featured ? "bg-[#d92bcb] text-white hover:bg-[#c824bc]" : "border border-black/12 text-[#2c243b] hover:border-[#d92bcb] hover:text-[#a21c98]"}`}>{cta}</a>
+      <a href={registerUrl} className={`mt-7 inline-flex min-h-11 items-center justify-center rounded-lg px-4 text-sm font-bold transition ${featured ? "bg-[#8a6a16] text-white hover:bg-[#8a6a16]" : "border border-black/12 text-[#101010] hover:border-[#8a6a16] hover:text-[#6d5310]"}`}>{cta}</a>
     </article>
   );
 }

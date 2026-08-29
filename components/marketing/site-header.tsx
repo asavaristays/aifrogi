@@ -101,7 +101,7 @@ export function SiteHeader() {
                         key={child.href}
                         href={child.href}
                         onClick={() => setMenuOpen(false)}
-                        className="flex min-h-10 items-center rounded-lg px-3 text-xs font-bold text-[#ff8af1] transition hover:bg-white/8 hover:text-white"
+                        className="flex min-h-10 items-center rounded-lg px-3 text-xs font-bold text-[#e2c66d] transition hover:bg-white/8 hover:text-white"
                       >
                         {child.label}
                       </Link>

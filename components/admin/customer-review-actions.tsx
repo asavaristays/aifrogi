@@ -31,8 +31,8 @@ export function CustomerReviewActions({ organizationId, kycStatus, organizationS
   return (
     <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
       <h2 className="text-lg font-black">Review actions</h2>
-      <p className="mt-2 text-sm text-[#6d7487]">Approve verified details or explain exactly what the customer must update.</p>
-      <textarea className="mt-4 min-h-24 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#c725ba]" value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Reason required when rejecting" />
+      <p className="mt-2 text-sm text-[#68645c]">Approve verified details or explain exactly what the customer must update.</p>
+      <textarea className="mt-4 min-h-24 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Reason required when rejecting" />
       {error ? <p className="mt-3 text-sm font-semibold text-[#a3342b]">{error}</p> : null}
       <div className="mt-4 flex flex-wrap gap-2">
         <Button disabled={saving || kycStatus === "APPROVED"} onClick={() => run("APPROVE_KYC")}>Approve KYC</Button>

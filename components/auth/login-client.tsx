@@ -129,7 +129,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
                   onChange={(event) => setOtpCode(event.target.value.replace(/[^\d]/g, "").slice(0, 6))}
                   required
                 />
-                <span className="mt-2 block text-xs leading-5 text-[#817789]">
+                <span className="mt-2 block text-xs leading-5 text-[#68645c]">
                   Code expires in 10 minutes{otpExpiresAt ? ` (${new Date(otpExpiresAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })})` : ""}.
                 </span>
               </label>
@@ -148,7 +148,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
           <p className="mt-7 text-sm text-[var(--text-muted)]">New to AiFrogi? <Link href="/register" className="font-semibold text-[var(--gold-700)]">Start a 30-day trial</Link></p>
           <div className="mt-5 flex items-center justify-between gap-4 text-sm">
             <Link href="/forgot-password" className="font-semibold text-[var(--gold-700)]">Forgot password?</Link>
-            <span className="text-xs text-[#817789]">Never share OTPs or credentials.</span>
+            <span className="text-xs text-[#68645c]">Never share OTPs or credentials.</span>
           </div>
           <a href="https://aifrogi.com" className="mt-6 inline-flex text-sm font-semibold text-[var(--gold-700)]">Back to aifrogi.com</a>
         </div>

@@ -52,7 +52,7 @@ export function OnboardingJourney() {
   const active = stages[activeIndex];
 
   return (
-    <section className="border-b border-[#eee6f0] bg-[#fbf8fc] px-5 py-14 sm:px-8 sm:py-20">
+    <section className="border-b border-[#f8f0d8] bg-[#fbfaf7] px-5 py-14 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <p className="product-eyebrow">Meta access guided setup</p>
@@ -60,7 +60,7 @@ export function OnboardingJourney() {
           <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">One glance: what you need, what Meta approves, and what happens after approval.</p>
         </div>
 
-        <div className="mt-9 overflow-hidden rounded-2xl border border-[#e6dbe9] bg-[#2c243b] text-white shadow-[0_24px_70px_rgba(44,36,59,.12)]">
+        <div className="mt-9 overflow-hidden rounded-2xl border border-[#ded8cb] bg-[#101010] text-white shadow-[0_24px_70px_rgba(16,16,16,.12)]">
           <div className="grid gap-px bg-white/8 lg:grid-cols-3">
             <CriticalStrip label="You bring" copy={<><strong>OTP/voice SIM</strong> + matching business proof</>} />
             <CriticalStrip label="Meta approves" copy={<>Business / number / display name</>} />
@@ -82,24 +82,24 @@ export function OnboardingJourney() {
                     onClick={() => setActiveIndex(index)}
                     className={`group relative overflow-hidden rounded-xl border p-4 text-left transition duration-300 ${
                       selected
-                        ? "border-[#ff8af1] bg-white text-[#2c243b] shadow-[0_18px_45px_rgba(217,43,203,.22)]"
+                        ? "border-[#e2c66d] bg-white text-[#101010] shadow-[0_18px_45px_rgba(138,106,22,.22)]"
                         : "border-white/10 bg-white/5 text-white hover:border-white/25 hover:bg-white/8"
                     }`}
                   >
-                    <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-[.12em] ${selected ? "bg-[#fde9fb] text-[#b923ae]" : "bg-white/8 text-white/45"}`}>
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-[.12em] ${selected ? "bg-[#f8f0d8] text-[#6d5310]" : "bg-white/8 text-white/45"}`}>
                       {stage.badge}
                     </span>
                     <div className="mt-5 flex items-center gap-3">
-                      <span className={`grid h-12 w-12 place-items-center rounded-full ${selected ? "bg-[#d92bcb] text-white" : "bg-[#342a42] text-[#ff8af1]"}`}>
+                      <span className={`grid h-12 w-12 place-items-center rounded-full ${selected ? "bg-[#8a6a16] text-white" : "bg-[#2b2b2b] text-[#e2c66d]"}`}>
                         <Icon name={stage.icon} className="h-5 w-5" />
                       </span>
                       <div>
                         <h3 className="text-lg font-black">{stage.title}</h3>
-                        <p className={`mt-1 text-xs font-bold ${selected ? "text-[#b923ae]" : "text-white/48"}`}>{stage.time}</p>
+                        <p className={`mt-1 text-xs font-bold ${selected ? "text-[#6d5310]" : "text-white/48"}`}>{stage.time}</p>
                       </div>
                     </div>
-                    <p className={`mt-5 text-sm font-semibold leading-6 ${selected ? "text-[#4f4658]" : "text-white/62"}`}>{stage.headline}</p>
-                    {index < stages.length - 1 ? <span className={`absolute right-4 top-1/2 hidden -translate-y-1/2 text-xl lg:block ${selected ? "text-[#d92bcb]" : "text-white/22"}`}>→</span> : null}
+                    <p className={`mt-5 text-sm font-semibold leading-6 ${selected ? "text-[#68645c]" : "text-white/62"}`}>{stage.headline}</p>
+                    {index < stages.length - 1 ? <span className={`absolute right-4 top-1/2 hidden -translate-y-1/2 text-xl lg:block ${selected ? "text-[#8a6a16]" : "text-white/22"}`}>→</span> : null}
                   </button>
                 );
               })}
@@ -107,7 +107,7 @@ export function OnboardingJourney() {
           </div>
         </div>
 
-        <div key={active.title} className="feature-showcase-reveal mt-5 rounded-2xl border border-[#eadfed] bg-white p-4 shadow-[0_16px_45px_rgba(44,36,59,.06)] sm:p-6">
+        <div key={active.title} className="feature-showcase-reveal mt-5 rounded-2xl border border-[#ded8cb] bg-white p-4 shadow-[0_16px_45px_rgba(16,16,16,.06)] sm:p-6">
           <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr_1fr]">
             <InfoBlock label="Client action" copy={active.customer} />
             <InfoBlock label="We handle" copy={active.aifrogi} highlighted />
@@ -121,8 +121,8 @@ export function OnboardingJourney() {
 
 function CriticalStrip({ label, copy }: { label: string; copy: ReactNode }) {
   return (
-    <div className="bg-[#2c243b] p-4">
-      <p className="text-[10px] font-black uppercase tracking-[.15em] text-[#ff8af1]">{label}</p>
+    <div className="bg-[#101010] p-4">
+      <p className="text-[10px] font-black uppercase tracking-[.15em] text-[#e2c66d]">{label}</p>
       <p className="mt-2 text-sm leading-6 text-white/82">{copy}</p>
     </div>
   );
@@ -130,9 +130,9 @@ function CriticalStrip({ label, copy }: { label: string; copy: ReactNode }) {
 
 function InfoBlock({ label, copy, highlighted = false }: { label: string; copy: ReactNode; highlighted?: boolean }) {
   return (
-    <div className={`rounded-xl border p-4 ${highlighted ? "border-[#d92bcb]/35 bg-[#fff7fe]" : "border-[#eadfed] bg-[#fbf8fc]"}`}>
-      <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#c725ba]">{label}</p>
-      <p className="mt-3 text-sm font-medium leading-6 text-[#5f5668]">{copy}</p>
+    <div className={`rounded-xl border p-4 ${highlighted ? "border-[#8a6a16]/35 bg-[#f8f0d8]" : "border-[#ded8cb] bg-[#fbfaf7]"}`}>
+      <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#8a6a16]">{label}</p>
+      <p className="mt-3 text-sm font-medium leading-6 text-[#68645c]">{copy}</p>
     </div>
   );
 }

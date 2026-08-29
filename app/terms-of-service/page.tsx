@@ -44,7 +44,7 @@ export default function TermsOfServicePage() {
       </LegalSection>
 
       <LegalSection title="8. Liability and contact">
-        <p>To the extent permitted by law, webtechnosys is not liable for indirect or consequential loss, lost profits, or failures caused by third-party services. Questions about these terms may be sent to <a className="font-black text-[#c725ba]" href="mailto:info@aifrogi.com">info@aifrogi.com</a>.</p>
+        <p>To the extent permitted by law, webtechnosys is not liable for indirect or consequential loss, lost profits, or failures caused by third-party services. Questions about these terms may be sent to <a className="font-black text-[#8a6a16]" href="mailto:info@aifrogi.com">info@aifrogi.com</a>.</p>
       </LegalSection>
     </LegalPage>
   );

@@ -16,7 +16,7 @@ export function IntegrationLogoStrip() {
     <section aria-labelledby="homepage-integrations-title" className="mt-12 border-y border-white/10 py-7 text-left text-white">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-xs shrink-0">
-            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#ff8af1]">Connected operations</p>
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#e2c66d]">Connected operations</p>
             <h2 id="homepage-integrations-title" className="mt-2 text-lg font-semibold tracking-[-.02em]">Works with the tools that run your business.</h2>
           </div>
 
@@ -34,7 +34,7 @@ export function IntegrationLogoStrip() {
             </div>
           </div>
 
-          <Link href="/integration" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-bold text-[#ff8af1] transition hover:text-white">
+          <Link href="/integration" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-bold text-[#e2c66d] transition hover:text-white">
             Explore integrations <Icon name="arrow-right" />
           </Link>
       </div>

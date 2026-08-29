@@ -120,7 +120,7 @@ export function IntegrationCatalog() {
   const active = integrations.find((integration) => integration.id === activeId) ?? integrations[0];
 
   return (
-    <section id="catalog" className="bg-[#fbf8fc] px-5 py-20 sm:px-8">
+    <section id="catalog" className="bg-[#fbfaf7] px-5 py-20 sm:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <p className="product-eyebrow">Integration directory</p>
@@ -138,7 +138,7 @@ export function IntegrationCatalog() {
                   type="button"
                   aria-pressed={selected}
                   onClick={() => setActiveId(integration.id)}
-                  className={`group min-h-28 rounded-xl border bg-white p-4 text-left transition ${selected ? "border-[#d92bcb] shadow-[0_12px_34px_rgba(217,43,203,.1)]" : "border-black/8 hover:border-[#d92bcb]/45"}`}
+                  className={`group min-h-28 rounded-xl border bg-white p-4 text-left transition ${selected ? "border-[#8a6a16] shadow-[0_12px_34px_rgba(138,106,22,.1)]" : "border-black/8 hover:border-[#8a6a16]/45"}`}
                 >
                   <IntegrationLogo src={integration.src} name={integration.name} />
                   <strong className="mt-3 block text-sm">{integration.name}</strong>
@@ -148,11 +148,11 @@ export function IntegrationCatalog() {
             })}
           </div>
 
-          <article key={active.id} className="feature-showcase-reveal rounded-xl bg-[#251f2d] p-6 text-white sm:p-8">
+          <article key={active.id} className="feature-showcase-reveal rounded-xl bg-[#101010] p-6 text-white sm:p-8">
             <div className="flex items-start justify-between gap-4">
               <div className="group flex items-center gap-3">
                 <span className="grid h-14 w-14 place-items-center rounded-xl bg-white p-2.5"><IntegrationLogo src={active.src} name={active.name} size="lg" /></span>
-                <div><p className="text-xs font-bold uppercase tracking-[.12em] text-[#ff8af1]">{active.category}</p><h3 className="mt-1 text-xl font-bold">{active.name}</h3></div>
+                <div><p className="text-xs font-bold uppercase tracking-[.12em] text-[#e2c66d]">{active.category}</p><h3 className="mt-1 text-xl font-bold">{active.name}</h3></div>
               </div>
               <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${active.status === "Ready" ? "bg-[#dff7ed] text-[#116d51]" : "bg-white/8 text-white/58"}`}>{active.status}</span>
             </div>
@@ -165,7 +165,7 @@ export function IntegrationCatalog() {
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-2" aria-label={`${active.name} integration flow`}>
-              {active.flow.map((step, index) => <span key={step} className="contents"><span className="rounded-full border border-white/12 bg-white/5 px-3 py-2 text-xs font-semibold text-white/66">{step}</span>{index < active.flow.length - 1 ? <Icon name="arrow-right" className="text-[#ff8af1]" /> : null}</span>)}
+              {active.flow.map((step, index) => <span key={step} className="contents"><span className="rounded-full border border-white/12 bg-white/5 px-3 py-2 text-xs font-semibold text-white/66">{step}</span>{index < active.flow.length - 1 ? <Icon name="arrow-right" className="text-[#e2c66d]" /> : null}</span>)}
             </div>
 
             <p className="mt-8 border-t border-white/12 pt-5 text-xs leading-5 text-white/48"><strong className="text-white/78">Trust control:</strong> {active.trust}</p>

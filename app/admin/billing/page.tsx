@@ -81,7 +81,7 @@ export default async function AdminBillingPage() {
                     <td className="px-5 py-4">
                       {latestInvoice ? <><InvoiceStatus value={latestInvoice.status} /><span className="mt-2 block text-xs text-[var(--text-muted)]">{formatMoney(latestInvoice.totalPaisa)}</span></> : <span className="text-xs text-[var(--text-muted)]">No invoice</span>}
                     </td>
-                    <td className="px-5 py-4 text-right"><Link className="font-bold text-[#b923ae]" href={`/admin/customers/${organization.id}`}>Manage</Link></td>
+                    <td className="px-5 py-4 text-right"><Link className="font-bold text-[#6d5310]" href={`/admin/customers/${organization.id}`}>Manage</Link></td>
                   </tr>
                 );
               })}
@@ -119,8 +119,8 @@ export default async function AdminBillingPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-black/7 bg-[#2c243b] p-6 text-white shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#ff8af1]">Payment architecture</p>
+        <div className="rounded-lg border border-black/7 bg-[#101010] p-6 text-white shadow-sm">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#e2c66d]">Payment architecture</p>
           <h2 className="mt-2 text-2xl font-semibold">Gateway-ready, provider-neutral.</h2>
           <p className="mt-3 text-sm leading-6 text-white/65">
             Subscription and invoice truth now belongs to AiFrogi. Manual payments work today; Razorpay can later reconcile the same records through authenticated webhooks.
@@ -172,7 +172,7 @@ export default async function AdminBillingPage() {
 
 function Metric({ label, value, helper, tone }: { label: string; value: string; helper: string; tone: "pink" | "red" | "amber" | "blue" | "purple" }) {
   const classes = {
-    pink: "border-[#ffd3f6] bg-[#fff0fb] text-[#b923ae]",
+    pink: "border-[#f8f0d8] bg-[#f8f0d8] text-[#6d5310]",
     red: "border-[#fecaca] bg-[#fef2f2] text-[#b91c1c]",
     amber: "border-[#fde68a] bg-[#fffbeb] text-[#b45309]",
     blue: "border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]",
@@ -193,7 +193,7 @@ function InvoiceStatus({ value }: { value: string }) {
 
 function Usage({ value, limit }: { value: number; limit: number }) {
   const percent = usagePercent(value, limit);
-  const color = percent >= 100 ? "bg-[#b91c1c]" : percent >= 80 ? "bg-[#d97706]" : "bg-[#b923ae]";
+  const color = percent >= 100 ? "bg-[#b91c1c]" : percent >= 80 ? "bg-[#d97706]" : "bg-[#6d5310]";
   return <div className="w-32"><div className="flex justify-between text-xs"><strong>{value.toLocaleString("en-IN")}</strong><span className="text-[var(--text-muted)]">{percent}%</span></div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/7"><div className={`h-full rounded-full ${color}`} style={{ width: `${Math.min(percent, 100)}%` }} /></div><span className="mt-1 block text-[11px] text-[var(--text-muted)]">of {limit.toLocaleString("en-IN")}</span></div>;
 }
 
@@ -207,7 +207,7 @@ function Timeline({ title, eyebrow, empty, children }: { title: string; eyebrow:
 }
 
 function TimelineItem({ title, helper, status, date }: { title: string; helper: string; status: string; date: Date }) {
-  return <div className="border-l-2 border-[#b923ae] pl-4"><div className="flex flex-wrap items-start justify-between gap-2"><strong className="text-sm">{title}</strong><Badge tone="neutral">{status.replaceAll("_", " ")}</Badge></div><p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{helper}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{formatDate(date)}</p></div>;
+  return <div className="border-l-2 border-[#6d5310] pl-4"><div className="flex flex-wrap items-start justify-between gap-2"><strong className="text-sm">{title}</strong><Badge tone="neutral">{status.replaceAll("_", " ")}</Badge></div><p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{helper}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{formatDate(date)}</p></div>;
 }
 
 function formatDate(value: Date) {

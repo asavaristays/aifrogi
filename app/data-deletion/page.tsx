@@ -17,7 +17,7 @@ export default function DataDeletionPage() {
     >
       <LegalSection title="How to submit a request">
         <ol className="list-decimal space-y-2 pl-5">
-          <li>Email <a className="font-black text-[#c725ba]" href="mailto:info@aifrogi.com?subject=AiFrogi%20Data%20Deletion%20Request">info@aifrogi.com</a> with the subject “AiFrogi Data Deletion Request”.</li>
+          <li>Email <a className="font-black text-[#8a6a16]" href="mailto:info@aifrogi.com?subject=AiFrogi%20Data%20Deletion%20Request">info@aifrogi.com</a> with the subject “AiFrogi Data Deletion Request”.</li>
           <li>Include your name, business or hotel name, WhatsApp number or account email, and a short description of the data you want deleted.</li>
           <li>We may request limited information to verify your identity or authority over the relevant account.</li>
         </ol>

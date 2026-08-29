@@ -59,13 +59,13 @@ export function InboxOperationsVisual() {
   const active = useCases[activeIndex];
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#17131d] text-white shadow-[0_30px_90px_rgba(0,0,0,.35)]">
+    <div className="overflow-hidden rounded-2xl border border-white/12 bg-[#2b2b2b] text-white shadow-[0_30px_90px_rgba(0,0,0,.35)]">
       <div className="flex items-center gap-2 border-b border-white/8 px-4 py-3">
         <i className="h-2.5 w-2.5 rounded-full bg-white/16" />
         <i className="h-2.5 w-2.5 rounded-full bg-white/16" />
         <i className="h-2.5 w-2.5 rounded-full bg-white/16" />
         <span className="ml-2 text-[11px] text-white/35">app.aifrogi.com — Inbox</span>
-        <span className="ml-auto rounded-full bg-[#d92bcb]/15 px-3 py-1 text-[10px] font-bold text-[#ff8af1]">Live operations</span>
+        <span className="ml-auto rounded-full bg-[#8a6a16]/15 px-3 py-1 text-[10px] font-bold text-[#e2c66d]">Live operations</span>
       </div>
 
       <div className="grid md:min-h-[420px] md:grid-cols-[250px_1fr]">
@@ -79,10 +79,10 @@ export function InboxOperationsVisual() {
                 onMouseEnter={() => setActiveIndex(index)}
                 onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
-                className={`w-[184px] shrink-0 snap-start rounded-xl p-3 text-left transition md:w-full ${index === activeIndex ? "bg-[#d92bcb]/18 shadow-[inset_0_0_0_1px_rgba(255,138,241,.25)]" : "bg-white/[.045] hover:bg-white/[.075]"}`}
+                className={`w-[184px] shrink-0 snap-start rounded-xl p-3 text-left transition md:w-full ${index === activeIndex ? "bg-[#8a6a16]/18 shadow-[inset_0_0_0_1px_rgba(226,198,109,.25)]" : "bg-white/[.045] hover:bg-white/[.075]"}`}
               >
                 <div className="flex items-center gap-3">
-                  <span className={`grid h-8 w-8 place-items-center rounded-full text-[10px] font-black text-white ${index === activeIndex ? "bg-[#d92bcb]" : "bg-[#5a3561]"}`}>{item.conversation.slice(0, 2).toUpperCase()}</span>
+                  <span className={`grid h-8 w-8 place-items-center rounded-full text-[10px] font-black text-white ${index === activeIndex ? "bg-[#8a6a16]" : "bg-[#2b2b2b]"}`}>{item.conversation.slice(0, 2).toUpperCase()}</span>
                   <div>
                     <strong className="block text-xs">{item.conversation}</strong>
                     <span className="text-[10px] text-white/38">{item.message}</span>
@@ -96,10 +96,10 @@ export function InboxOperationsVisual() {
         <section className="p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#ff8af1]">One inbox, many outcomes</p>
+              <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#e2c66d]">One inbox, many outcomes</p>
               <h3 className="mt-2 text-xl font-semibold sm:text-2xl">Every reply becomes the right next action.</h3>
             </div>
-            <Icon name="message-circle" className="h-6 w-6 text-[#ff8af1]" />
+            <Icon name="message-circle" className="h-6 w-6 text-[#e2c66d]" />
           </div>
 
           <div className="mt-6 grid gap-2 sm:mt-8 sm:grid-cols-2">
@@ -110,7 +110,7 @@ export function InboxOperationsVisual() {
                 onMouseEnter={() => setActiveIndex(index)}
                 onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
-                className={`border-t pt-4 text-left transition ${index === activeIndex ? "border-[#ff8af1] text-white" : "border-white/10 text-white/70 hover:border-white/25 hover:text-white"}`}
+                className={`border-t pt-4 text-left transition ${index === activeIndex ? "border-[#e2c66d] text-white" : "border-white/10 text-white/70 hover:border-white/25 hover:text-white"}`}
               >
                 <strong className="text-sm">{item.title}</strong>
                 <p className="mt-2 text-xs leading-5 text-white/48">{item.short}</p>
@@ -118,8 +118,8 @@ export function InboxOperationsVisual() {
             ))}
           </div>
 
-          <div key={active.title} className="feature-showcase-reveal mt-6 border-l-2 border-[#ff8af1] pl-4 sm:mt-8">
-            <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#ff8af1]">Use case detail</p>
+          <div key={active.title} className="feature-showcase-reveal mt-6 border-l-2 border-[#e2c66d] pl-4 sm:mt-8">
+            <p className="text-[10px] font-black uppercase tracking-[.14em] text-[#e2c66d]">Use case detail</p>
             <h4 className="mt-2 text-xl font-semibold">{active.title}</h4>
             <p className="mt-3 text-sm leading-6 text-white/58">{active.detail}</p>
             <p className="mt-4 text-sm font-semibold text-white">{active.outcome}</p>

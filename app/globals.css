@@ -179,7 +179,7 @@ select {
   border-color: rgba(17, 24, 39, 0.06);
   background: #ffffff;
   backdrop-filter: none;
-  box-shadow: 0 18px 48px -32px rgba(26, 21, 53, 0.18);
+  box-shadow: 0 18px 48px -32px rgba(16,16,16, 0.18);
 }
 
 .manual-leads-route .text-white {
@@ -223,11 +223,11 @@ select {
 
 .manual-leads-route button.bg-\[var\(--primary-soft\)\] {
   background: var(--primary-soft);
-  color: #99208f;
+  color: #6d5310;
 }
 
 .manual-leads-route button.bg-\[var\(--primary-soft\)\]:hover {
-  background: #f8d7f5;
+  background: #f8f0d8;
 }
 
 .app-shell-card {
@@ -292,7 +292,7 @@ select {
 .status-success { background: #e4f4ed; color: #126452; }
 .status-warning { background: #fff1dd; color: #8d4d10; }
 .status-error { background: #fff0ee; color: #a3322c; }
-.status-info { background: #f0ecf5; color: #493b62; }
+.status-info { background: #f0ecf5; color: #404040; }
 
 .soft-card {
   border: 1px solid var(--border);
@@ -305,62 +305,62 @@ select {
  * These selectors retire legacy magenta utilities while older screens move to
  * semantic tokens. New components must use the variables above directly.
  */
-[class~="bg-[#2c243b]"] { background-color: var(--ink-900); }
-[class~="bg-[#251f2d]"],
+[class~="bg-[#101010]"] { background-color: var(--ink-900); }
+[class~="bg-[#101010]"],
 [class~="bg-[#211a2d]"] { background-color: var(--ink-950); }
-[class~="bg-[#d92bcb]"],
-[class~="bg-[#c725ba]"],
-[class~="bg-[#b923ae]"],
-[class~="bg-[#e33bd4]"] { background-color: var(--gold-600); }
-[class~="bg-[#fceafb]"],
-[class~="bg-[#fff5fe]"],
-[class~="bg-[#fff7fe]"],
-[class~="bg-[#fde9fb]"],
-[class~="bg-[#fbf1fa]"] { background-color: var(--primary-soft); }
-[class~="bg-[#fbf8fc]"],
-[class~="bg-[#faf8fb]"],
-[class~="bg-[#f8f6f9]"] { background-color: var(--surface-soft); }
-[class~="text-[#ff8af1]"] { color: var(--gold-300); }
-[class~="bg-[#ff8af1]"] { background-color: var(--gold-300); }
-[class~="text-[#d92bcb]"],
-[class~="text-[#c725ba]"],
-[class~="text-[#b923ae]"],
-[class~="text-[#a21c98]"],
-[class~="text-[#9a1d91]"],
-[class~="text-[#8d1884]"] { color: var(--gold-700); }
-[class~="text-[#2c243b]"],
-[class~="text-[#251f2d]"],
-[class~="text-[#201a28]"] { color: var(--ink-900); }
-[class~="text-[#70697d]"],
-[class~="text-[#746d7c]"],
-[class~="text-[#817789]"],
-[class~="text-[#6d7487]"] { color: var(--text-muted); }
-[class~="border-[#d92bcb]"],
-[class~="border-[#c725ba]"],
-[class~="border-[#b923ae]"],
-[class~="border-[#ff8af1]"] { border-color: var(--gold-600); }
-[class~="border-[#eadfed]"],
-[class~="border-[#f2d9f0]"],
-[class~="border-[#e5dce8]"] { border-color: var(--border); }
-[class~="ring-[#d92bcb]"] { --tw-ring-color: var(--gold-600); }
-[class~="hover:bg-[#bb20af]"]:hover,
-[class~="hover:bg-[#b923ae]"]:hover,
-[class~="hover:bg-[#c725ba]"]:hover { background-color: var(--gold-500); color: var(--ink-900); }
-[class~="hover:text-[#a21c98]"]:hover,
-[class~="hover:text-[#8d1884]"]:hover { color: var(--gold-700); }
-[class~="bg-[#d92bcb]/20"],
-[class~="bg-[#d92bcb]/15"] { background-color: rgba(138, 106, 22, 0.18); }
-[class~="border-[#ff8af1]/45"] { border-color: rgba(226, 198, 109, 0.45); }
-[class~="shadow-[0_0_8px_#ff8af1]"] { box-shadow: 0 0 8px var(--gold-300); }
-[class~="shadow-[0_18px_45px_rgba(217,43,203,.22)]"] { box-shadow: 0 18px 45px rgba(138, 106, 22, 0.2); }
+[class~="bg-[#8a6a16]"],
+[class~="bg-[#8a6a16]"],
+[class~="bg-[#6d5310]"],
+[class~="bg-[#b28728]"] { background-color: var(--gold-600); }
+[class~="bg-[#f8f0d8]"],
+[class~="bg-[#f8f0d8]"],
+[class~="bg-[#f8f0d8]"],
+[class~="bg-[#f8f0d8]"],
+[class~="bg-[#f8f0d8]"] { background-color: var(--primary-soft); }
+[class~="bg-[#fbfaf7]"],
+[class~="bg-[#fbfaf7]"],
+[class~="bg-[#fbfaf7]"] { background-color: var(--surface-soft); }
+[class~="text-[#e2c66d]"] { color: var(--gold-300); }
+[class~="bg-[#e2c66d]"] { background-color: var(--gold-300); }
+[class~="text-[#8a6a16]"],
+[class~="text-[#8a6a16]"],
+[class~="text-[#6d5310]"],
+[class~="text-[#6d5310]"],
+[class~="text-[#6d5310]"],
+[class~="text-[#6d5310]"] { color: var(--gold-700); }
+[class~="text-[#101010]"],
+[class~="text-[#101010]"],
+[class~="text-[#1c1c1c]"] { color: var(--ink-900); }
+[class~="text-[#68645c]"],
+[class~="text-[#68645c]"],
+[class~="text-[#68645c]"],
+[class~="text-[#68645c]"] { color: var(--text-muted); }
+[class~="border-[#8a6a16]"],
+[class~="border-[#8a6a16]"],
+[class~="border-[#6d5310]"],
+[class~="border-[#e2c66d]"] { border-color: var(--gold-600); }
+[class~="border-[#ded8cb]"],
+[class~="border-[#ded8cb]"],
+[class~="border-[#ded8cb]"] { border-color: var(--border); }
+[class~="ring-[#8a6a16]"] { --tw-ring-color: var(--gold-600); }
+[class~="hover:bg-[#b28728]"]:hover,
+[class~="hover:bg-[#6d5310]"]:hover,
+[class~="hover:bg-[#8a6a16]"]:hover { background-color: var(--gold-500); color: var(--ink-900); }
+[class~="hover:text-[#6d5310]"]:hover,
+[class~="hover:text-[#6d5310]"]:hover { color: var(--gold-700); }
+[class~="bg-[#8a6a16]/20"],
+[class~="bg-[#8a6a16]/15"] { background-color: rgba(138, 106, 22, 0.18); }
+[class~="border-[#e2c66d]/45"] { border-color: rgba(226, 198, 109, 0.45); }
+[class~="shadow-[0_0_8px_#e2c66d]"] { box-shadow: 0 0 8px var(--gold-300); }
+[class~="shadow-[0_18px_45px_rgba(138,106,22,.22)]"] { box-shadow: 0 18px 45px rgba(138, 106, 22, 0.2); }
 
 /* Approved palette exception: Graphite lettering on Dark Antique Gold actions. */
 button[class~="bg-[var(--primary-strong)]"],
 a[class~="bg-[var(--primary-strong)]"],
 button[class~="bg-[var(--gold-600)]"],
 a[class~="bg-[var(--gold-600)]"],
-button[class~="bg-[#d92bcb]"],
-a[class~="bg-[#d92bcb]"] { color: var(--ink-600); }
+button[class~="bg-[#8a6a16]"],
+a[class~="bg-[#8a6a16]"] { color: var(--ink-600); }
 
 @keyframes leados-pulse {
   0%, 100% { opacity: 0.45; transform: scaleX(0.72); }

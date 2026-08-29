@@ -39,7 +39,7 @@ export function LiveStatus() {
       </div>
       <div className="flex items-center justify-between gap-5 border-t border-black/10 py-6">
         <div><h2 className="font-bold">WhatsApp Business Platform</h2><p className="mt-1 text-sm text-[var(--text-muted)]">Operated independently by Meta.</p></div>
-        <a href="https://metastatus.com/" target="_blank" rel="noreferrer" className="shrink-0 text-sm font-bold text-[#a21c98]">Meta status ↗</a>
+        <a href="https://metastatus.com/" target="_blank" rel="noreferrer" className="shrink-0 text-sm font-bold text-[#6d5310]">Meta status ↗</a>
       </div>
     </div>
   );
