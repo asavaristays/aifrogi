@@ -28,7 +28,17 @@ export function AnimatedBotPhone({ botName = "PingBook" }: { botName?: string })
             <strong className="block font-semibold text-[#c3f4e3]">✓ Appointment confirmed</strong>
             Friday · 4:30 PM · Ref PB-2048
           </div>
-          <p className="mt-auto border-t border-white/10 pt-2 text-[clamp(7px,.55vw,9px)] leading-[1.35] text-white/48">Verified against the connected calendar. The clinic team can take over at any time.</p>
+
+          <div className="mt-1 border-t border-white/10 pt-2">
+            <p className="mb-2 text-[clamp(8px,.58vw,10px)] font-semibold uppercase tracking-[.12em] text-[var(--gold-300)]">Next steps handled</p>
+            <div className="grid gap-1.5">
+              <OutcomeRow icon="✓" title="Confirmation delivered" detail="Customer and clinic informed" />
+              <OutcomeRow icon="◷" title="Reminder scheduled" detail="24 hours before the visit" />
+              <OutcomeRow icon="↗" title="Human handover ready" detail="Clinic team can join anytime" />
+            </div>
+          </div>
+
+          <p className="mt-auto border-t border-white/10 pt-2 text-[clamp(7px,.55vw,9px)] leading-[1.35] text-white/48">Every action is recorded against approved business rules and the connected calendar.</p>
         </div>
 
         <div className="mt-2 flex items-center justify-between rounded-full border border-white/8 bg-white/[.055] px-3 py-1.5 text-[clamp(7px,.52vw,9px)] text-white/32">
@@ -45,4 +55,13 @@ function Message({ children, side = "assistant" }: { children: React.ReactNode; 
 
 function TimeSlot({ children, selected = false }: { children: React.ReactNode; selected?: boolean }) {
   return <span className={`rounded-md border px-1 py-1.5 text-center text-[clamp(7px,.56vw,10px)] font-semibold ${selected ? "border-[var(--gold-300)] bg-[var(--gold-600)] text-white" : "border-white/12 bg-white/[.04] text-white/65"}`}>{children}</span>;
+}
+
+function OutcomeRow({ icon, title, detail }: { icon: string; title: string; detail: string }) {
+  return (
+    <div className="grid grid-cols-[1.6rem_1fr] items-center gap-2 rounded-lg border border-white/8 bg-white/[.035] px-2 py-1.5">
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-[var(--gold-600)]/22 text-[clamp(8px,.62vw,10px)] text-[var(--gold-100)]">{icon}</span>
+      <span className="min-w-0 text-[clamp(8px,.62vw,10px)] leading-[1.25] text-white/88"><strong className="block font-semibold text-white">{title}</strong><small className="text-[clamp(7px,.52vw,9px)] text-white/45">{detail}</small></span>
+    </div>
+  );
 }
