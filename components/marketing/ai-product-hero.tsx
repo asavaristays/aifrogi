@@ -44,11 +44,11 @@ export function AIProductHero({
   if (name === "PingBook") {
     return (
       <section className="relative overflow-hidden bg-black text-white">
-        <div className="px-5 pb-7 pt-12 sm:px-8 lg:hidden">
+        <div className="px-5 pb-8 pt-9 sm:px-8 sm:pt-12 lg:hidden">
           <p className="product-eyebrow text-[var(--gold-300)]">{category} · Sovereign Business Bot</p>
-          <h1 className="mt-4 text-5xl font-semibold leading-[.98] tracking-[-.05em] sm:text-6xl">{name}</h1>
-          <h2 className="mt-5 text-2xl font-medium leading-tight text-white/90">{headline}</h2>
-          <p className="mt-5 text-base leading-7 text-white/60">{copy}</p>
+          <h1 className="mt-3 text-5xl font-semibold leading-[.98] tracking-[-.05em] sm:text-6xl">{name}</h1>
+          <h2 className="mt-4 max-w-xl text-[1.65rem] font-medium leading-[1.12] text-white/92">{headline}</h2>
+          <p className="mt-4 max-w-xl text-base leading-7 text-white/62">{copy}</p>
           <button type="button" onClick={() => setFormOpen(true)} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-md bg-[var(--gold-600)] px-6 text-sm font-bold text-white">Build my {name} <Icon name="arrow-right" /></button>
         </div>
 

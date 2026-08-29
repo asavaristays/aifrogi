@@ -2,10 +2,10 @@ import Image from "next/image";
 
 export function AnimatedBotPhone({ botName = "PingBook" }: { botName?: string }) {
   return (
-    <div className="relative aspect-[2/1] w-full overflow-hidden bg-black" aria-label={`${botName} verified appointment conversation`}>
-      <Image src="/media/ai-bot-phone-stage-v2.png" alt="Black and antique-gold phone frame for an AiFrogi business bot" fill priority sizes="100vw" className="object-contain" />
+    <div className="relative aspect-[9/14] w-full overflow-hidden bg-black sm:aspect-[2/1]" aria-label={`${botName} verified appointment conversation`}>
+      <Image src="/media/ai-bot-phone-stage-v2.png" alt="Black and antique-gold phone frame for an AiFrogi business bot" fill priority sizes="100vw" className="object-cover object-[64%_center] sm:object-contain sm:object-center" />
 
-      <div className="absolute left-[53.35%] top-[6.8%] flex h-[86.4%] w-[21.25%] flex-col overflow-hidden rounded-[7.5%] bg-black px-[1.15%] pb-[1.2%] pt-[1.35%] shadow-[inset_0_0_0_1px_rgba(226,198,109,.1)]">
+      <div className="absolute left-[16.8%] top-[6.8%] flex h-[86.4%] w-[66.2%] flex-col overflow-hidden rounded-[7.5%] bg-black px-[3.6%] pb-[3.7%] pt-[4.2%] shadow-[inset_0_0_0_1px_rgba(226,198,109,.1)] sm:left-[53.35%] sm:w-[21.25%] sm:px-[1.15%] sm:pb-[1.2%] sm:pt-[1.35%]">
         <header className="flex items-center gap-2 border-b border-white/10 pb-2">
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--gold-600)] text-[clamp(10px,.78vw,13px)] font-semibold text-white">PB</span>
           <span className="min-w-0">

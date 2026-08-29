@@ -32,6 +32,7 @@ const navItems = [
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [botsOpen, setBotsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--gold-600)]/20 bg-[var(--ink-950)]/95 px-4 text-white backdrop-blur-xl sm:px-8">
@@ -89,35 +90,32 @@ export function SiteHeader() {
         </div>
 
         {menuOpen ? (
-          <div id="mobile-navigation" className="border-t border-white/10 pb-4 md:hidden">
-            <nav aria-label="Mobile navigation" className="grid grid-cols-2 gap-1 py-3">
+          <div id="mobile-navigation" className="-mx-4 border-t border-white/10 bg-[var(--ink-950)] px-4 pb-5 shadow-[0_20px_45px_rgba(0,0,0,.45)] sm:-mx-8 sm:px-8 md:hidden">
+            <nav aria-label="Mobile navigation" className="grid grid-cols-1 py-3">
               {navItems.map((item) => (
                 item.children ? (
-                  <div key={item.href} className="grid gap-1">
-                    <Link
-                      href={item.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-white/76 transition hover:bg-white/8 hover:text-white"
-                    >
-                      {item.label}
-                    </Link>
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        onClick={() => setMenuOpen(false)}
-                        className="flex min-h-10 items-center rounded-lg px-3 text-xs font-bold text-[#e2c66d] transition hover:bg-white/8 hover:text-white"
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
+                  <div key={item.href} className="border-b border-white/8">
+                    <div className="flex min-h-14 items-center justify-between">
+                      <Link href={item.href} onClick={() => setMenuOpen(false)} className="flex flex-1 items-center px-2 text-base font-semibold text-white">{item.label}</Link>
+                      <button type="button" onClick={() => setBotsOpen((open) => !open)} aria-expanded={botsOpen} className="grid h-11 w-11 place-items-center rounded-lg border border-white/10 bg-white/5 text-[var(--gold-300)]" aria-label={botsOpen ? "Collapse AI Bot menu" : "Expand AI Bot menu"}>
+                        <Icon name="arrow-right" className={`h-4 w-4 rotate-90 transition-transform ${botsOpen ? "rotate-[270deg]" : ""}`} />
+                      </button>
+                    </div>
+                    {botsOpen ? <div className="grid gap-1 border-t border-white/8 py-2 pl-3">
+                      {item.children.map((child) => (
+                        <Link key={child.href} href={child.href} onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-[var(--gold-100)] transition hover:bg-white/8 hover:text-white">
+                          <span className="block">{child.label}</span>
+                          <small className="mt-0.5 block text-xs font-normal leading-5 text-white/45">{child.copy}</small>
+                        </Link>
+                      ))}
+                    </div> : null}
                   </div>
                 ) : (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setMenuOpen(false)}
-                    className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-white/76 transition hover:bg-white/8 hover:text-white"
+                    className="flex min-h-14 items-center border-b border-white/8 px-2 text-base font-semibold text-white/82 transition hover:bg-white/8 hover:text-white"
                   >
                     {item.label}
                   </Link>
