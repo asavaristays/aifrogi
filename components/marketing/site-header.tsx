@@ -11,15 +11,20 @@ const registerUrl = "https://app.aifrogi.com/register?source=site-header";
 const navItems = [
   { label: "Home", href: "/" },
   {
-    label: "Solutions",
+    label: "AI Bot",
     href: "/solutions",
     children: [
-      { label: "Solutions overview", href: "/solutions", copy: "WhatsApp automation suite" },
-      { label: "FlowCart", href: "/solutions/flowcart", copy: "Catalog, order, pay, update" },
-      { label: "PingBook", href: "/solutions/pingbook", copy: "Book, confirm, remind, grow" }
+      { label: "All AI Bots", href: "/solutions", copy: "Choose intelligence by business outcome" },
+      { label: "HotelGPT", href: "/solutions/hotelgpt", copy: "Hospitality and guest intelligence" },
+      { label: "PingBook", href: "/solutions/pingbook", copy: "Appointments and confirmations" },
+      { label: "DineGPT", href: "/solutions/dinegpt", copy: "Dining and reservation intelligence" },
+      { label: "PropertyGPT", href: "/solutions/propertygpt", copy: "Discovery, qualification and visits" },
+      { label: "BusinessGPT", href: "/solutions/businessgpt", copy: "Services, leads and support" },
+      { label: "FlowCart", href: "/solutions/flowcart", copy: "Commerce, orders and payments" },
+      { label: "Custom Business Bot", href: "/solutions/custom-business-bot", copy: "A governed workflow built for you" }
     ]
   },
-  { label: "Onboarding", href: "/onboarding-process" },
+  { label: "WhatsApp API", href: "/whatsapp-api" },
   { label: "Integration", href: "/integration" },
   { label: "Resources", href: "/resources" },
   { label: "Pricing", href: "/pricing" }
@@ -44,7 +49,7 @@ export function SiteHeader() {
                     {item.label}
                     <Icon name="arrow-right" className="h-3 w-3 rotate-90 transition-transform group-hover:translate-y-0.5" />
                   </Link>
-                  <div className="invisible absolute left-1/2 top-full w-64 -translate-x-1/2 translate-y-2 rounded-lg border border-[var(--gold-600)]/25 bg-[var(--ink-900)] p-2 opacity-0 shadow-[0_24px_70px_rgba(0,0,0,.34)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <div className="invisible absolute left-1/2 top-full grid w-[560px] -translate-x-1/2 translate-y-2 grid-cols-2 rounded-lg border border-[var(--gold-600)]/25 bg-[var(--ink-900)] p-2 opacity-0 shadow-[0_24px_70px_rgba(0,0,0,.34)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     {item.children.map((child) => (
                       <Link key={child.href} href={child.href} className="block rounded-md px-3 py-3 transition hover:bg-white/8 hover:text-white">
                         <span className="block text-sm font-bold text-white">{child.label}</span>
@@ -96,7 +101,7 @@ export function SiteHeader() {
                     >
                       {item.label}
                     </Link>
-                    {item.children.slice(1).map((child) => (
+                    {item.children.map((child) => (
                       <Link
                         key={child.href}
                         href={child.href}

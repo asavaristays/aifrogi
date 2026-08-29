@@ -7,13 +7,13 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_.8fr_.8fr_1.25fr]">
         <div>
           <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} className="h-auto w-[165px] grayscale contrast-125" />
-          <p className="mt-3 max-w-xs text-sm leading-6 text-white/55">WhatsApp automation, customer conversations, and human operations in one workspace.</p>
+          <p className="mt-3 max-w-xs text-sm leading-6 text-white/55">Sovereign business intelligence, customer conversations, and human operations in one workspace.</p>
         </div>
 
         <nav aria-label="Footer product menu" className="space-y-3 text-sm font-normal text-white/62">
           <p className="text-[10px] font-normal uppercase tracking-[.16em] text-[#e2c66d]">Menu</p>
-          <Link className="block hover:text-white" href="/solutions">Solutions</Link>
-          <Link className="block hover:text-white" href="/onboarding-process">Onboarding</Link>
+          <Link className="block hover:text-white" href="/solutions">AI Bot</Link>
+          <Link className="block hover:text-white" href="/whatsapp-api">WhatsApp API</Link>
           <Link className="block hover:text-white" href="/integration">Integration</Link>
           <Link className="block hover:text-white" href="/resources">Resources</Link>
           <Link className="block hover:text-white" href="/pricing">Pricing</Link>

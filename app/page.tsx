@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { FeatureShowcase } from "@/components/marketing/feature-showcase";
 import { IntegrationLogoStrip } from "@/components/marketing/integration-logo-strip";
-import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SovereignHero } from "@/components/marketing/sovereign-hero";
@@ -42,8 +41,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <OnboardingJourney />
-
       <section className="border-b border-black/8 bg-[#fbfaf7] px-5 py-14 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -54,7 +51,7 @@ export default function HomePage() {
             {[
               ["Workspace isolation", "Active"],
               ["Encrypted credentials", "Active"],
-              ["Signed Meta webhooks", "Active"],
+              ["Signed connector webhooks", "Active"],
               ["Controlled support access", "Active"],
               ["SOC 2 / ISO", "Not yet claimed"]
             ].map(([control, status]) => <div key={control} className="rounded-lg border border-black/8 bg-white p-4"><p className="text-xs font-bold">{control}</p><p className={`mt-2 text-[10px] font-bold uppercase tracking-[.1em] ${status === "Active" ? "text-[#178665]" : "text-[#9a6719]"}`}>{status}</p></div>)}
@@ -66,10 +63,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="product-eyebrow">Verified trust signals</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, the Meta status, and the security boundaries.</h2>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Verify the operator, service status, and security boundaries.</h2>
           </div>
           <div className="mt-9 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <ProofLink title="Meta access verification" copy="webtechnosys access evidence and platform responsibility notes." href="/security#meta-verification" icon="settings" />
+            <ProofLink title="AI governance" copy="Approved knowledge, defined authority, auditability, and human control." href="/security" icon="settings" />
             <ProofLink title="Company details" copy="AiFrogi is operated by webtechnosys from Goa, India." href="/about" icon="file-text" />
             <ProofLink title="Service status" copy="Public status page for platform availability and incidents." href="/status" icon="bar-chart-3" />
             <ProofLink title="Verified controls" copy="Support access, OTP, signed webhooks, and boundary tests." href="/security" icon="grid" />
@@ -83,10 +80,10 @@ export default function HomePage() {
           <div>
             <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Trust by design</p>
             <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[1.08] tracking-[-.04em] sm:text-5xl">Security controls customers can understand and verify.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/62">AiFrogi protects WhatsApp workspaces with customer-approved support access, privileged login OTP, signed Meta webhooks, encrypted credentials, and repeatable boundary tests for covered routes.</p>
+            <p className="mt-5 max-w-xl text-base leading-7 text-white/62">AiFrogi protects business workspaces with customer-approved support access, privileged login OTP, signed connector webhooks, encrypted credentials, and repeatable boundary tests for covered routes.</p>
             <div className="mt-7 grid max-w-xl gap-3 sm:grid-cols-3">
               {[
-                ["Meta webhook", "Signed traffic only"],
+                ["Connector webhook", "Signed traffic only"],
                 ["Admin login", "Password + email OTP"],
                 ["Boundary tests", "Verified refusal paths"]
               ].map(([label, value]) => (
@@ -112,7 +109,7 @@ export default function HomePage() {
           <div className="border-y border-white/12">
             <SecurityControl icon="settings" title="Customer-approved support access" copy="Super admin cannot freely read private customer content. Owners/admins grant time-bound support access by scope." />
             <SecurityControl icon="phone" title="Privileged login OTP" copy="Platform admin and workspace owner/admin sign-in requires password plus email OTP before a session is created." />
-            <SecurityControl icon="link" title="Signed Meta webhooks" copy="Meta webhook traffic is verified with the app secret. Unsigned or forged webhook requests are rejected." />
+            <SecurityControl icon="link" title="Signed connector webhooks" copy="Supported connector traffic is verified before processing. Unsigned or forged webhook requests are rejected." />
             <SecurityControl icon="grid" title="Verified workspace boundaries" copy="Temporary fixture tests confirm covered routes reject cross-workspace slugs and role-bypassing mutation attempts." />
             <SecurityControl icon="sparkles" title="AI stays controlled" copy="Approved knowledge, role-based access, confidence fallback, and human handover keep automation bounded." />
           </div>

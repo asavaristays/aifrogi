@@ -10,7 +10,7 @@ const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], nu
   ["/solutions/pingbook", "monthly", 0.9],
   ["/solutions/flowcart", "monthly", 0.9],
   ["/pricing", "weekly", 0.9],
-  ["/onboarding-process", "monthly", 0.8],
+  ["/whatsapp-api", "monthly", 0.9],
   ["/integration", "monthly", 0.8],
   ["/resources", "weekly", 0.7],
   ["/help", "weekly", 0.7],
