@@ -6,6 +6,12 @@ Reference implementation: **Webtechnosys AI Business Bot**
 Production application: `https://app.aifrogi.com`  
 Reference website: `https://webtechnosys.com`
 
+## Approved visual system
+
+AiFrogi uses the **Sovereign Black & Antique Gold** visual system across public, authentication, client, Super Admin, onboarding, intelligence, inbox, reporting, and partner-widget experiences. The permanent palette, semantic rules, accessibility requirements, component guidance, and release checklist are defined in [`../AIFROGI_SOVEREIGN_BLACK_GOLD_DESIGN_SYSTEM.md`](../AIFROGI_SOVEREIGN_BLACK_GOLD_DESIGN_SYSTEM.md).
+
+Gold represents controlled brand action and selection. It must never replace green, amber, red, or blue operational states.
+
 ## Why this document exists
 
 This is the durable product and engineering memory for the AiFrogi AI Business Bot. Read it before changing the bot, onboarding, intelligence, inbox, actions, outcomes, reports, website widget, or channel integrations.

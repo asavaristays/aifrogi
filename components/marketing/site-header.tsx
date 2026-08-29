@@ -29,11 +29,11 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/10 bg-[#251f2d]/95 px-4 text-white backdrop-blur-xl sm:px-8">
+    <header className="sticky top-0 z-30 border-b border-[var(--gold-600)]/20 bg-[var(--ink-950)]/95 px-4 text-white backdrop-blur-xl sm:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="flex min-h-[68px] items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center" aria-label="AiFrogi home" onClick={() => setMenuOpen(false)}>
-            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[122px] sm:w-[158px]" />
+            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[122px] grayscale contrast-125 sm:w-[158px]" />
           </Link>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 md:flex">
@@ -44,7 +44,7 @@ export function SiteHeader() {
                     {item.label}
                     <Icon name="arrow-right" className="h-3 w-3 rotate-90 transition-transform group-hover:translate-y-0.5" />
                   </Link>
-                  <div className="invisible absolute left-1/2 top-full w-64 -translate-x-1/2 translate-y-2 rounded-lg border border-white/10 bg-[#251f2d] p-2 opacity-0 shadow-[0_24px_70px_rgba(20,14,28,.28)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <div className="invisible absolute left-1/2 top-full w-64 -translate-x-1/2 translate-y-2 rounded-lg border border-[var(--gold-600)]/25 bg-[var(--ink-900)] p-2 opacity-0 shadow-[0_24px_70px_rgba(0,0,0,.34)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     {item.children.map((child) => (
                       <Link key={child.href} href={child.href} className="block rounded-md px-3 py-3 transition hover:bg-white/8 hover:text-white">
                         <span className="block text-sm font-bold text-white">{child.label}</span>
@@ -63,11 +63,11 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-4 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,43,203,.22)] transition hover:bg-[#e33bd4]">Start 30-day trial</a>
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-900)]">Start 30-day trial</a>
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-lg bg-[#d92bcb] px-3 text-xs font-bold text-white shadow-[0_0_24px_rgba(217,43,203,.2)]">
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-3 text-xs font-bold text-white shadow-sm">
               Start trial
             </a>
             <button

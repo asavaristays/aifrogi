@@ -66,13 +66,13 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
   }
 
   return (
-    <main className="grid min-h-screen bg-white text-[#2c243b] lg:grid-cols-[0.92fr_1.08fr]">
-      <section className="flex items-center bg-[#2c243b] px-7 py-12 text-white sm:px-12 lg:px-16">
+    <main className="grid min-h-screen bg-[var(--warm-50)] text-[var(--ink-900)] lg:grid-cols-[0.92fr_1.08fr]">
+      <section className="flex items-center bg-[var(--ink-950)] px-7 py-12 text-white sm:px-12 lg:px-16">
         <div className="mx-auto w-full max-w-xl">
-          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[210px]" />
-          <p className="mt-16 text-sm font-semibold text-[#ff8af1]">AI messaging platform for business</p>
-          <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">One calm place for customer conversations.</h1>
-          <p className="mt-5 max-w-lg text-base leading-7 text-white/68">Manage WhatsApp messages, campaigns, automation, and human handoffs without exposing technical complexity to your team.</p>
+          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[210px] grayscale contrast-125" />
+          <p className="mt-16 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--gold-300)]">Sovereign business intelligence</p>
+          <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">Your business intelligence. Under your control.</h1>
+          <p className="mt-5 max-w-lg text-base leading-7 text-white/68">Operate customer conversations, approved knowledge, automation, and human handoffs from one accountable workspace.</p>
           <div className="mt-12 grid gap-5 border-t border-white/12 pt-7 text-sm text-white/72 sm:grid-cols-3">
             <span>Secure access</span><span>Client workspaces</span><span>Human control</span>
           </div>
@@ -81,29 +81,29 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
 
       <section className="flex items-center px-6 py-12 sm:px-12 lg:px-20">
         <div className="mx-auto w-full max-w-md">
-          <p className="text-sm font-semibold text-[#c725ba]">Welcome back</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--gold-700)]">Welcome back</p>
           <h2 className="mt-2 text-3xl font-semibold">Sign in to AiFrogi</h2>
-          <p className="mt-3 text-sm leading-6 text-[#70697d]">{otpStep ? "Enter the email code to finish secure sign-in." : accessCopy}</p>
+          <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{otpStep ? "Enter the email code to finish secure sign-in." : accessCopy}</p>
 
           {!otpStep ? (
             <div className="mt-7 grid grid-cols-2 gap-3" role="group" aria-label="Choose account type">
               <button
                 type="button"
                 onClick={() => setAccessType("client")}
-                className={`rounded-md border p-4 text-left transition ${accessType === "client" ? "border-[#d92bcb] bg-[#fff5fe] ring-1 ring-[#d92bcb]" : "border-[#eadfed] bg-white hover:border-[#d92bcb]/50"}`}
+                className={`rounded-md border p-4 text-left transition ${accessType === "client" ? "border-[var(--gold-600)] bg-[var(--primary-soft)] ring-1 ring-[var(--gold-600)]" : "border-[var(--border)] bg-white hover:border-[var(--gold-500)]"}`}
                 aria-pressed={accessType === "client"}
               >
                 <span className="block text-sm font-bold">Client login</span>
-                <span className="mt-1 block text-xs leading-5 text-[#70697d]">Open your business workspace.</span>
+                <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">Open your business workspace.</span>
               </button>
               <button
                 type="button"
                 onClick={() => setAccessType("admin")}
-                className={`rounded-md border p-4 text-left transition ${accessType === "admin" ? "border-[#d92bcb] bg-[#fff5fe] ring-1 ring-[#d92bcb]" : "border-[#eadfed] bg-white hover:border-[#d92bcb]/50"}`}
+                className={`rounded-md border p-4 text-left transition ${accessType === "admin" ? "border-[var(--gold-600)] bg-[var(--primary-soft)] ring-1 ring-[var(--gold-600)]" : "border-[var(--border)] bg-white hover:border-[var(--gold-500)]"}`}
                 aria-pressed={accessType === "admin"}
               >
                 <span className="block text-sm font-bold">Admin login</span>
-                <span className="mt-1 block text-xs leading-5 text-[#70697d]">Open the AiFrogi control center.</span>
+                <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">Open the AiFrogi control center.</span>
               </button>
             </div>
           ) : null}
@@ -134,23 +134,23 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
                 </span>
               </label>
             ) : null}
-            {notice ? <p className="rounded-md border border-[#d92bcb]/20 bg-[#fff5fe] px-4 py-3 text-sm text-[#73346f]">{notice}</p> : null}
+            {notice ? <p className="rounded-md border border-[var(--gold-600)]/25 bg-[var(--primary-soft)] px-4 py-3 text-sm text-[var(--gold-700)]">{notice}</p> : null}
             {error ? <p role="alert" className="rounded-md border border-[#b23a32]/20 bg-[#fff0ee] px-4 py-3 text-sm text-[#9b2f28]">{error}</p> : null}
-            <button type="submit" disabled={submitting} className="flex min-h-12 w-full items-center justify-center rounded-md bg-[#d92bcb] px-5 text-sm font-bold text-white hover:bg-[#bb20af] disabled:cursor-wait disabled:opacity-60">
+            <button type="submit" disabled={submitting} className="flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--gold-600)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[var(--gold-500)] hover:text-[var(--ink-900)] disabled:cursor-wait disabled:opacity-60">
               {submitting ? "Signing in..." : otpStep ? "Verify and sign in" : "Sign in"}
             </button>
             {otpStep ? (
-              <button type="button" onClick={resetOtpStep} disabled={submitting} className="w-full text-sm font-semibold text-[#a21c98] disabled:opacity-60">
+              <button type="button" onClick={resetOtpStep} disabled={submitting} className="w-full text-sm font-semibold text-[var(--gold-700)] disabled:opacity-60">
                 Use a different email or resend code
               </button>
             ) : null}
           </form>
-          <p className="mt-7 text-sm text-[#70697d]">New to AiFrogi? <Link href="/register" className="font-semibold text-[#a21c98]">Start a 30-day trial</Link></p>
+          <p className="mt-7 text-sm text-[var(--text-muted)]">New to AiFrogi? <Link href="/register" className="font-semibold text-[var(--gold-700)]">Start a 30-day trial</Link></p>
           <div className="mt-5 flex items-center justify-between gap-4 text-sm">
-            <Link href="/forgot-password" className="font-semibold text-[#a21c98]">Forgot password?</Link>
+            <Link href="/forgot-password" className="font-semibold text-[var(--gold-700)]">Forgot password?</Link>
             <span className="text-xs text-[#817789]">Never share OTPs or credentials.</span>
           </div>
-          <a href="https://aifrogi.com" className="mt-6 inline-flex text-sm font-semibold text-[#a21c98]">Back to aifrogi.com</a>
+          <a href="https://aifrogi.com" className="mt-6 inline-flex text-sm font-semibold text-[var(--gold-700)]">Back to aifrogi.com</a>
         </div>
       </section>
     </main>

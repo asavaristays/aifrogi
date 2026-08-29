@@ -11,29 +11,6 @@ import { LogoutButton } from "@/components/layout/logout-button";
 import { WorkspaceSwitcher, type WorkspaceOption } from "@/components/layout/workspace-switcher";
 import type { ClientAccessRole } from "@/lib/client-access";
 
-const toneStyles = {
-  primary: {
-    active: "border-[#35c88f]/25 bg-[#143d36] text-white shadow-sm",
-    inactive: "text-white/76 hover:bg-white/7 hover:text-white"
-  },
-  secondary: {
-    active: "border-[#7db7ff]/25 bg-[#16334a] text-white shadow-sm",
-    inactive: "text-white/76 hover:bg-white/7 hover:text-white"
-  },
-  tertiary: {
-    active: "border-[#f2b75d]/25 bg-[#3a321d] text-white shadow-sm",
-    inactive: "text-white/76 hover:bg-white/7 hover:text-white"
-  },
-  neutral: {
-    active: "border-white/10 bg-white/10 text-white shadow-sm",
-    inactive: "text-[var(--sidebar-muted)] hover:bg-white/7 hover:text-white"
-  },
-  error: {
-    active: "border-[#f26b7a]/25 bg-[#44252a] text-white shadow-sm",
-    inactive: "text-white/76 hover:bg-white/7 hover:text-white"
-  }
-} as const;
-
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
   { label: "Grow", helper: "Campaigns and intelligence", hrefs: ["/campaigns", "/workflows", "/knowledge", "/analytics"] },
@@ -69,8 +46,8 @@ export function SideNav({
           "fixed top-4 z-50 rounded-md p-2 shadow-sm transition-[left,transform] duration-150 ease-out active:scale-95 lg:hidden",
           sidebarOpen ? "left-[202px]" : "left-4",
           isLight
-            ? "border border-[#eadfed] bg-white text-[#2c243b] shadow-[0_10px_24px_rgba(55,35,73,0.1)]"
-            : "bg-[var(--primary)] text-white"
+            ? "border border-[var(--gold-300)] bg-[var(--ink-900)] text-white shadow-[0_10px_24px_rgba(16,16,16,0.18)]"
+            : "bg-[var(--primary-strong)] text-white"
         )}
         aria-label="Toggle navigation"
       >
@@ -89,15 +66,13 @@ export function SideNav({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 flex w-[236px] flex-col px-3.5 py-4 transition-transform duration-150 ease-out will-change-transform",
-          isLight
-            ? "border-r border-[var(--border)] bg-white text-[var(--text)]"
-            : "bg-[#2c243b] text-white",
+          "border-r border-black bg-[var(--ink-900)] text-white",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        <div className={cn("mb-4 px-2 pb-4 pt-1", isLight ? "border-b border-black/6" : "border-b border-white/8")}>
+        <div className="mb-4 border-b border-white/10 px-2 pb-4 pt-1">
           <div className="flex min-h-11 items-center">
-            <Image src={isLight ? "/brand/aifrogi-logo.png" : "/brand/aifrogi-logo-transparent.png"} alt="AiFrogi" width={800} height={300} priority className="h-auto w-[158px]" />
+            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[158px] grayscale contrast-125" />
           </div>
           {workspaces.length ? <WorkspaceSwitcher workspaces={workspaces} currentSlug={currentWorkspaceSlug} /> : null}
         </div>
@@ -108,12 +83,11 @@ export function SideNav({
             className="mb-5"
           >
             <div className="mb-1.5 flex items-baseline justify-between gap-2 px-2.5">
-              <p className={cn("text-[11px] font-semibold", isLight ? "text-black/48" : "text-white/54")}>{group.label}</p>
-              <p className={cn("truncate text-[10px]", isLight ? "text-black/28" : "text-white/30")}>{group.helper}</p>
+              <p className="text-[11px] font-semibold text-[var(--gold-300)]">{group.label}</p>
+              <p className="truncate text-[10px] text-white/35">{group.helper}</p>
             </div>
             <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href)).map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const tone = toneStyles[item.tone ?? "neutral"];
             return (
               <Link
                 key={item.href}
@@ -121,25 +95,17 @@ export function SideNav({
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
                   "relative flex min-h-10 items-center gap-3 rounded-md border px-2.5 py-2 text-[13px] font-medium tracking-normal transition-all",
-                  isLight
-                    ? active
-                      ? "border-[#f2d9f0] bg-[var(--primary-soft)] text-[#8d1884]"
-                      : "border-transparent text-[#5f5866] hover:bg-[#f8f6f9] hover:text-[var(--text)]"
-                    : active
-                      ? tone.active
-                      : cn("border-transparent", tone.inactive)
+                  active
+                    ? "border-[var(--gold-600)]/55 bg-[var(--gold-600)]/22 text-[var(--gold-100)]"
+                    : "border-transparent text-white/68 hover:bg-white/7 hover:text-white"
                 )}
               >
                 <span
                   className={cn(
                     "flex h-6 w-6 items-center justify-center rounded-md transition-all",
-                    isLight
-                      ? active
-                        ? "bg-white text-[var(--primary-strong)]"
-                        : "bg-transparent text-[#756d7e]"
-                      : active
-                        ? "bg-white/14 text-white shadow-[0_10px_18px_rgba(0,0,0,0.12)]"
-                        : "bg-white/6 text-white/80"
+                    active
+                      ? "bg-[var(--gold-300)] text-[var(--ink-900)] shadow-[0_10px_18px_rgba(0,0,0,0.2)]"
+                      : "bg-white/6 text-white/72"
                   )}
                 >
                   <Icon name={item.icon as never} className="h-4 w-4" />
@@ -150,10 +116,10 @@ export function SideNav({
           })}</div></section>)}
         </nav>
 
-        <div className={cn("mt-2 shrink-0 border-t px-1.5 pt-3", isLight ? "border-black/6" : "border-white/8")}>
-          <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className={isLight ? "text-black/45" : "text-white/45"}>Access</span><strong className={isLight ? "text-[#8d1884]" : "text-white/80"}>{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
-          {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className={`h-2 w-2 rounded-full ${workspaces[0].status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d9902f]"}`} /><span className={isLight ? "text-black/55" : "text-white/58"}>{workspaces[0].status === "CONNECTED" ? "WhatsApp connected" : "Setup needs attention"}</span></div> : null}
-          <LogoutButton variant="sidebar" className={cn("w-full rounded-md px-2.5 py-2 text-xs font-bold tracking-normal", isLight ? "border border-[#eadfed] !bg-[#fff7fe] text-[#8d1884] hover:!bg-[#f8eaf7] hover:text-[#6f1268]" : "")} />
+        <div className="mt-2 shrink-0 border-t border-white/10 px-1.5 pt-3">
+          <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className="text-white/45">Access</span><strong className="text-[var(--gold-300)]">{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
+          {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className={`h-2 w-2 rounded-full ${workspaces[0].status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d9902f]"}`} /><span className="text-white/58">{workspaces[0].status === "CONNECTED" ? "WhatsApp connected" : "Setup needs attention"}</span></div> : null}
+          <LogoutButton variant="sidebar" className="w-full rounded-md border border-white/12 !bg-white/5 px-2.5 py-2 text-xs font-bold tracking-normal text-white/78 hover:!bg-white/10 hover:text-white" />
         </div>
       </aside>
     </>

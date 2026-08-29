@@ -385,19 +385,19 @@ export function CustomerOnboarding({
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f8f6] text-[#14241f]">
-      <header className="border-b border-black/5 bg-white px-5 py-4 sm:px-8">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--text)]">
+      <header className="border-b border-black bg-[var(--ink-950)] px-5 py-4 text-white sm:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <Image
-            src="/brand/aifrogi-logo.png"
+            src="/brand/aifrogi-logo-transparent.png"
             alt="AiFrogi"
             width={800}
             height={300}
             priority
-            className="h-auto w-[158px]"
+            className="h-auto w-[158px] grayscale contrast-125"
           />
           <div className="text-right">
-            <p className="text-xs font-bold text-[#6d7487]">Signed in as</p>
+            <p className="text-xs font-bold text-white/55">Signed in as</p>
             <p className="mt-1 text-sm font-semibold">{accountEmail}</p>
           </div>
         </div>
@@ -409,18 +409,18 @@ export function CustomerOnboarding({
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#c725ba]">Setup progress</p>
             <strong>{progress}%</strong>
           </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#e4ece8]">
-            <div className="h-full rounded-full bg-[#25d366] transition-all" style={{ width: `${progress}%` }} />
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--surface-muted)]">
+            <div className="h-full rounded-full bg-[var(--gold-600)] transition-all" style={{ width: `${progress}%` }} />
           </div>
           <p className="mt-3 text-sm font-semibold text-[#4d5a55] lg:hidden">Step {Math.max(1, visibleSteps.findIndex((step) => step.number === activeStep) + 1)} of {visibleSteps.length}: {visibleSteps.find((step) => step.number === activeStep)?.title || "Setup"}</p>
           {trial.enabled ? (
-            <div className="mt-5 rounded-md border border-[#f2d2ef] bg-[#fdf4fc] p-4">
+            <div className="mt-5 rounded-md border border-[var(--gold-300)] bg-[var(--primary-soft)] p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-black text-[#493b62]">30-day trial</p>
-                <span className="text-xs font-black text-[#b91eac]">{trial.label}</span>
+                <span className="text-xs font-black text-[var(--gold-700)]">{trial.label}</span>
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
-                <div className="h-full rounded-full bg-[#df35d2]" style={{ width: `${trial.percentElapsed}%` }} />
+                <div className="h-full rounded-full bg-[var(--gold-600)]" style={{ width: `${trial.percentElapsed}%` }} />
               </div>
               <p className="mt-3 text-xs leading-5 text-[#746d7c]">Use this window to finish activation, test messaging, and prove the first workflow.</p>
             </div>
@@ -435,9 +435,9 @@ export function CustomerOnboarding({
                   key={step.title}
                   type="button"
                   onClick={() => organization && stepNumber <= Math.max(organization.onboarding?.currentStep || 1, activeStep) ? setActiveStep(stepNumber) : undefined}
-                  className={`flex w-full items-center gap-3 rounded-md px-3 py-3 text-left ${active ? "bg-[#e8f8ee]" : "hover:bg-[#f5f8f6]"}`}
+                  className={`flex w-full items-center gap-3 rounded-md px-3 py-3 text-left ${active ? "bg-[var(--primary-soft)]" : "hover:bg-[var(--surface-soft)]"}`}
                 >
-                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${complete ? "bg-[#25d366] text-[#063f3a]" : active ? "bg-[#c725ba] text-white" : "bg-[#edf2ef] text-[#6d7487]"}`}>
+                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${complete ? "bg-[var(--success-soft)] text-[var(--success)]" : active ? "bg-[var(--gold-600)] text-white" : "bg-[var(--surface-muted)] text-[var(--text-muted)]"}`}>
                     {complete ? "✓" : index + 1}
                   </span>
                   <span className="min-w-0">
