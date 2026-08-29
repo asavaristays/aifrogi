@@ -67,7 +67,7 @@ export default function HomePage() {
 
       <section className="relative w-full overflow-hidden bg-black" aria-label="AiFrogi AI Business Assistant capabilities">
         <Image
-          src="/media/aifrogi-main-footer-v2.jpg"
+          src="/media/aifrogi-main-footer-final-v3.jpg"
           alt="AiFrogi AI Business Assistant connecting approved knowledge, customer journeys, lead qualification, business actions, human handover, security controls and connected systems."
           width={1600}
           height={600}
