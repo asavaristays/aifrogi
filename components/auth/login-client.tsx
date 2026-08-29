@@ -69,7 +69,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
     <main className="grid min-h-screen bg-[var(--warm-50)] text-[var(--ink-900)] lg:grid-cols-[0.92fr_1.08fr]">
       <section className="flex items-center bg-[var(--ink-950)] px-7 py-12 text-white sm:px-12 lg:px-16">
         <div className="mx-auto w-full max-w-xl">
-          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[210px] grayscale contrast-125" />
+          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[240px] grayscale contrast-125" />
           <p className="mt-16 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--gold-300)]">Sovereign business intelligence</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">Your business intelligence. Under your control.</h1>
           <p className="mt-5 max-w-lg text-base leading-7 text-white/68">Operate customer conversations, approved knowledge, automation, and human handoffs from one accountable workspace.</p>
@@ -136,7 +136,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
             ) : null}
             {notice ? <p className="rounded-md border border-[var(--gold-600)]/25 bg-[var(--primary-soft)] px-4 py-3 text-sm text-[var(--gold-700)]">{notice}</p> : null}
             {error ? <p role="alert" className="rounded-md border border-[#b23a32]/20 bg-[#fff0ee] px-4 py-3 text-sm text-[#9b2f28]">{error}</p> : null}
-            <button type="submit" disabled={submitting} className="flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--gold-600)] px-5 text-sm font-bold text-white shadow-sm hover:bg-[var(--gold-500)] hover:text-[var(--ink-900)] disabled:cursor-wait disabled:opacity-60">
+            <button type="submit" disabled={submitting} className="flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--gold-600)] px-5 text-sm font-bold text-[var(--ink-600)] shadow-sm hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)] disabled:cursor-wait disabled:opacity-60">
               {submitting ? "Signing in..." : otpStep ? "Verify and sign in" : "Sign in"}
             </button>
             {otpStep ? (

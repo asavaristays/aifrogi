@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 }
   },
   icons: {
-    icon: "/brand/aifrogi-favicon.jpg",
-    shortcut: "/brand/aifrogi-favicon.jpg",
-    apple: "/brand/aifrogi-favicon.jpg"
+    icon: [{ url: "/brand/aifrogi-favicon-512.png", type: "image/png", sizes: "512x512" }],
+    shortcut: "/brand/aifrogi-favicon-512.png",
+    apple: [{ url: "/brand/aifrogi-favicon-512.png", type: "image/png", sizes: "512x512" }]
   }
 };
 

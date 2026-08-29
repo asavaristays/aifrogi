@@ -16,7 +16,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const tones = {
-    primary: "bg-[var(--primary-strong)] text-white shadow-sm hover:bg-[var(--primary)] hover:text-[var(--ink-900)]",
+    primary: "bg-[var(--primary-strong)] text-[var(--ink-600)] shadow-sm hover:bg-[var(--primary)] hover:text-[var(--ink-600)]",
     secondary: "bg-[var(--secondary)] text-white hover:brightness-95",
     ghost: "bg-transparent text-[var(--text)] hover:bg-[var(--primary-soft)]",
     surface: "bg-white text-[var(--text)] border border-[var(--border)] hover:border-[var(--gold-300)] hover:bg-[var(--surface-soft)]",

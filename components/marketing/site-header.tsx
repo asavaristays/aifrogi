@@ -33,7 +33,7 @@ export function SiteHeader() {
       <div className="mx-auto max-w-7xl">
         <div className="flex min-h-[68px] items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center" aria-label="AiFrogi home" onClick={() => setMenuOpen(false)}>
-            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[122px] grayscale contrast-125 sm:w-[158px]" />
+            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125 sm:w-[190px]" />
           </Link>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 md:flex">
@@ -63,11 +63,11 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-white shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-900)]">Start 30-day trial</a>
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 30-day trial</a>
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-3 text-xs font-bold text-white shadow-sm">
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-3 text-xs font-bold text-[var(--ink-600)] shadow-sm">
               Start trial
             </a>
             <button

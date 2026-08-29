@@ -101,7 +101,7 @@ Every state uses text or an icon in addition to colour. Gold never means success
 
 ### Buttons
 
-- Primary: Dark Antique Gold background with white text; hover uses Antique Gold with ink text where contrast requires it.
+- Primary: Dark Antique Gold background with bold Graphite text, approved as a deliberate brand exception. This pairing is not WCAG AA for normal text and must be revisited before formal accessibility certification.
 - Secondary: black background with white text.
 - Surface: white with quiet border and ink text.
 - Ghost: transparent with a warm neutral hover.
@@ -162,4 +162,3 @@ Every state uses text or an icon in addition to colour. Gold never means success
 - Desktop and mobile layouts pass visual review.
 - Existing end-to-end behaviour and automated tests remain green.
 - Deployment has a tagged, recoverable release and verified rollback path.
-
