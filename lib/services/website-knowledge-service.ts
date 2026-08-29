@@ -298,12 +298,23 @@ export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
 }
 
 function scorePage(page: KnowledgePage, question: string) {
-  const terms = question
+  const normalizedQuestion = question.toLowerCase();
+  const terms = normalizedQuestion
     .toLowerCase()
     .split(/[^a-z0-9]+/)
     .filter((term) => term.length > 2);
-  const haystack = `${page.bucket} ${page.title} ${page.text}`.toLowerCase();
-  return terms.reduce((score, term) => score + (haystack.includes(term) ? 1 : 0), 0);
+  const title = page.title.toLowerCase();
+  const bucket = page.bucket.toLowerCase();
+  const text = page.text.toLowerCase();
+  const pathname = new URL(page.url).pathname.toLowerCase();
+  let score = terms.reduce((total, term) => total + (title.includes(term) ? 4 : 0) + (bucket.includes(term) ? 3 : 0) + (text.includes(term) ? 1 : 0), 0);
+  const asksAutomation = /\b(ai|automation|bot|assistant|workflow)\b/.test(normalizedQuestion);
+  const asksHospitality = /\b(hotel|hospitality|resort|booking|guest)\b/.test(normalizedQuestion);
+  if (asksAutomation && /(ai-automation|ai-solutions|what-we-build|custom-software)/.test(pathname)) score += 10;
+  if (asksHospitality && /(hotel|hospitality|channel-manager|booking)/.test(`${pathname} ${title} ${bucket}`)) score += 8;
+  if (!/\b(film|video|content)\b/.test(normalizedQuestion) && /(film|video|content creator)/.test(`${pathname} ${title}`)) score -= 12;
+  if (!/\b(train|training|course|bootcamp|learn)\b/.test(normalizedQuestion) && /(training|course|bootcamp)/.test(`${pathname} ${title}`)) score -= 12;
+  return score;
 }
 
 function buildContext(knowledgeBase: KnowledgeBase, question: string) {
