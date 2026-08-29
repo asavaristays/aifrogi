@@ -17,13 +17,7 @@ export function SovereignHero({ registerUrl }: { registerUrl: string }) {
   return (
     <div className="relative mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1.12fr_.88fr] lg:gap-5">
       <div className="relative z-10 text-center lg:text-left">
-        <a href="/security#meta-verification" className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:border-[#e2c66d]/45 hover:bg-white/8 hover:text-white">
-          <span className="grid h-4 w-4 place-items-center rounded-full bg-[#178665] text-[10px] font-bold text-white">✓</span>
-          Meta access verified for webtechnosys
-          <span className="text-[#e2c66d] transition-transform group-hover:translate-x-0.5">→</span>
-        </a>
-
-        <h1 className="mt-7 font-semibold leading-[1.04] tracking-[-0.045em]">
+        <h1 className="font-semibold leading-[1.04] tracking-[-0.045em]">
           <span className="block text-3xl sm:text-4xl lg:text-5xl">Give your business…</span>
           <span className="mt-3 block text-4xl sm:mt-4 sm:text-5xl lg:text-[3.7rem]">Intelligent AI Bot that turns conversations into action.</span>
         </h1>
@@ -44,6 +38,8 @@ export function SovereignHero({ registerUrl }: { registerUrl: string }) {
         <div className="absolute inset-[12%] rounded-full bg-[var(--gold-600)]/18 blur-[70px]" aria-hidden="true" />
         <div className="hero-bot-float relative aspect-[1122/1402]">
           <Image src="/brand/aifrogi-sovereign-bot.png" alt="Black and antique-gold AiFrogi business bot" fill priority sizes="(max-width: 1024px) 430px, 510px" className="object-contain" />
+          <span className="hero-bot-eye hero-bot-eye-left" aria-hidden="true" />
+          <span className="hero-bot-eye hero-bot-eye-right" aria-hidden="true" />
           <span className="hero-bot-blink hero-bot-blink-left" aria-hidden="true" />
           <span className="hero-bot-blink hero-bot-blink-right" aria-hidden="true" />
         </div>
