@@ -69,8 +69,8 @@ export default function HomePage() {
         <Image
           src="/media/aifrogi-ai-business-assistant.png"
           alt="AiFrogi AI Business Assistant connecting approved knowledge, customer journeys, lead qualification, business actions, human handover, security controls and connected systems."
-          width={1672}
-          height={941}
+          width={1600}
+          height={800}
           sizes="100vw"
           className="h-auto w-full object-cover"
         />
