@@ -38,7 +38,7 @@ export function SovereignHero({ registerUrl }: { registerUrl: string }) {
       <div className="relative mx-auto w-full max-w-[430px] lg:max-w-[510px]" aria-label="AiFrogi sovereign business bot visual">
         <div className="absolute inset-[12%] rounded-full bg-[var(--gold-600)]/18 blur-[70px]" aria-hidden="true" />
         <div className="hero-bot-float relative aspect-[1122/1402]">
-          <Image src="/brand/aifrogi-sovereign-bot.png" alt="Black and antique-gold AiFrogi business bot" fill priority sizes="(max-width: 1024px) 430px, 510px" className="object-contain" />
+          <Image src="/brand/aifrogi-sovereign-bot.png" alt="Black and antique-gold AiFrogi business bot" fill priority sizes="(max-width: 1024px) 430px, 510px" className="object-contain [mask-image:radial-gradient(ellipse_76%_72%_at_50%_48%,black_54%,transparent_100%)]" />
           <span className="hero-bot-eye hero-bot-eye-left" aria-hidden="true" />
           <span className="hero-bot-eye hero-bot-eye-right" aria-hidden="true" />
           <span className="hero-bot-blink hero-bot-blink-left" aria-hidden="true" />

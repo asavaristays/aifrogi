@@ -30,7 +30,7 @@ export default function HomePage() {
       <span hidden>AiFrogi homepage canary 2026-07-07 flowcart</span>
       <SiteHeader />
 
-      <section className="relative overflow-hidden bg-[var(--ink-950)] px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
+      <section className="relative overflow-hidden bg-black px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
         <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[var(--gold-600)]/18 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl">
