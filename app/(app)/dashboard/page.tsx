@@ -7,6 +7,8 @@ import { loadWhatsAppIntegration } from "@/lib/services/whatsapp-service";
 import { buildWhatsAppMetrics, filterWhatsAppLeads } from "@/lib/whatsapp-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeWorkspaceSummary } from "@/lib/services/website-knowledge-service";
+import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
+import { evaluateBotReadiness } from "@/lib/bot-readiness";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -14,11 +16,12 @@ export const revalidate = 0;
 export default async function DashboardPage() {
   const [propertySlug, user] = await Promise.all([getCurrentWorkspaceSlug(), getCurrentUser()]);
   const organization = user && user.role !== "admin" ? await getOrganizationForMember(user.username) : null;
-  const [allLeads, integration, tickets, knowledge] = await Promise.all([
+  const [allLeads, integration, tickets, knowledge, governance] = await Promise.all([
     loadLeads(propertySlug),
     loadWhatsAppIntegration(propertySlug),
     organization ? listSupportTickets({ organizationId: organization.id }) : Promise.resolve([]),
-    getKnowledgeWorkspaceSummary(propertySlug)
+    getKnowledgeWorkspaceSummary(propertySlug),
+    getKnowledgeGovernanceSummary(propertySlug)
   ]);
   const leads = filterWhatsAppLeads(allLeads);
   const metrics = buildWhatsAppMetrics(leads);
@@ -32,6 +35,7 @@ export default async function DashboardPage() {
   const failedEngagement = countStatus("failed_engagement_limit");
   const failedRecipient = countStatus("failed_recipient_unavailable");
   const openTickets = tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status));
+  const botReadiness = evaluateBotReadiness({ profile: organization?.botProfile, businessVerified: organization?.onboarding?.kycStatus === "APPROVED", approvedKnowledgeCount: governance.entries.filter((item) => item.status === "APPROVED").length + governance.documents.filter((item) => item.status === "APPROVED").length, websitePageCount: knowledge.pages.length, whatsappConnected: connected });
 
   const attention: DashboardAttention[] = [];
   if (metrics.unanswered) attention.push({ title: `${metrics.unanswered} conversation${metrics.unanswered === 1 ? "" : "s"} waiting`, reason: "The customer's latest message has not received a reply.", action: "Reply now", href: "/whatsapp-bot", tone: "urgent", owner: "You" });
@@ -41,6 +45,7 @@ export default async function DashboardPage() {
   if (failedRecipient) attention.push({ title: "A recipient could not receive WhatsApp", reason: "Validate the unavailable number before another attempt.", action: "Review contacts", href: "/contacts", tone: "waiting", owner: "You" });
   if (!connected) attention.push({ title: "WhatsApp setup is incomplete", reason: "Messaging remains unavailable until the secure connection is complete.", action: "Resume setup", href: "/onboarding", tone: "urgent", owner: "You" });
   if (!knowledge.pages.length) attention.push({ title: "Knowledge is not ready", reason: "Sync the approved business website before enabling grounded AI answers.", action: "Set up knowledge", href: "/knowledge", tone: "waiting", owner: "You" });
+  if (!botReadiness.ready) attention.push({ title: `Bot readiness is ${botReadiness.percent}%`, reason: `${botReadiness.total - botReadiness.completed} governed onboarding gate${botReadiness.total - botReadiness.completed === 1 ? " remains" : "s remain"} before this bot is fully operational.`, action: "Review bot setup", href: "/onboarding", tone: "waiting", owner: "You" });
   if (!attention.length) attention.push({ title: "Messaging is operating normally", reason: "No reply, billing, template, or connection blockers are visible.", action: "Open inbox", href: "/whatsapp-bot", tone: "ready", owner: "AiFrogi" });
 
   const workspace = organization?.properties.find((property) => property.slug === propertySlug) || organization?.properties[0];
@@ -59,6 +64,9 @@ export default async function DashboardPage() {
     metaStatus={metaStatus}
     accessRole={membership?.role || "AGENT"}
     knowledgeReady={knowledge.pages.length > 0 && knowledge.settings.status === "READY" && knowledge.settings.approvedForAi}
+    botName={organization?.botProfile?.personaName || "Business Assistant"}
+    botCategory={organization?.botProfile?.category || "BUSINESS_AI"}
+    botReadiness={botReadiness}
     attention={attention}
     readiness={[
       { label: "Business", value: organization?.onboarding?.kycStatus === "APPROVED" || !organization ? "Verified" : "In review", ok: organization?.onboarding?.kycStatus === "APPROVED" || !organization },

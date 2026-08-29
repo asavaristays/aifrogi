@@ -228,6 +228,12 @@ export async function saveOrganizationBotProfile(input: {
     capabilities: string[];
     humanHandoffEnabled: boolean;
     actionApprovalNeeded: boolean;
+    personaName: string;
+    businessObjective: string;
+    tone: string;
+    languages: string[];
+    prohibitedClaims: string[];
+    escalationTriggers: string[];
   };
 }) {
   const db = getDb();
@@ -246,6 +252,20 @@ export async function saveOrganizationBotProfile(input: {
         detail: `${input.profile.category}: ${input.profile.channels.join(" + ")} · ${input.profile.operatingMode}`
       }
     })
+  ]);
+  return getOrganizationById(input.organizationId);
+}
+
+export async function saveClientBotPersona(input: {
+  organizationId: string;
+  actorEmail: string;
+  persona: Pick<NonNullable<Parameters<typeof saveOrganizationBotProfile>[0]["profile"]>, "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers">;
+}) {
+  const db = getDb();
+  if (!db) return null;
+  await db.$transaction([
+    db.botProfile.update({ where: { organizationId: input.organizationId }, data: { ...input.persona, configuredBy: input.actorEmail } }),
+    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "BOT_PERSONA_UPDATED", detail: `${input.persona.personaName}: ${input.persona.businessObjective.slice(0, 180)}` } })
   ]);
   return getOrganizationById(input.organizationId);
 }

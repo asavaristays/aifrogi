@@ -31,6 +31,9 @@ export type BotProfileMinAggregateOutputType = {
   operatingMode: $Enums.BotOperatingMode | null
   humanHandoffEnabled: boolean | null
   actionApprovalNeeded: boolean | null
+  personaName: string | null
+  businessObjective: string | null
+  tone: string | null
   status: string | null
   configuredBy: string | null
   createdAt: Date | null
@@ -44,6 +47,9 @@ export type BotProfileMaxAggregateOutputType = {
   operatingMode: $Enums.BotOperatingMode | null
   humanHandoffEnabled: boolean | null
   actionApprovalNeeded: boolean | null
+  personaName: string | null
+  businessObjective: string | null
+  tone: string | null
   status: string | null
   configuredBy: string | null
   createdAt: Date | null
@@ -59,6 +65,12 @@ export type BotProfileCountAggregateOutputType = {
   capabilities: number
   humanHandoffEnabled: number
   actionApprovalNeeded: number
+  personaName: number
+  businessObjective: number
+  tone: number
+  languages: number
+  prohibitedClaims: number
+  escalationTriggers: number
   status: number
   configuredBy: number
   createdAt: number
@@ -74,6 +86,9 @@ export type BotProfileMinAggregateInputType = {
   operatingMode?: true
   humanHandoffEnabled?: true
   actionApprovalNeeded?: true
+  personaName?: true
+  businessObjective?: true
+  tone?: true
   status?: true
   configuredBy?: true
   createdAt?: true
@@ -87,6 +102,9 @@ export type BotProfileMaxAggregateInputType = {
   operatingMode?: true
   humanHandoffEnabled?: true
   actionApprovalNeeded?: true
+  personaName?: true
+  businessObjective?: true
+  tone?: true
   status?: true
   configuredBy?: true
   createdAt?: true
@@ -102,6 +120,12 @@ export type BotProfileCountAggregateInputType = {
   capabilities?: true
   humanHandoffEnabled?: true
   actionApprovalNeeded?: true
+  personaName?: true
+  businessObjective?: true
+  tone?: true
+  languages?: true
+  prohibitedClaims?: true
+  escalationTriggers?: true
   status?: true
   configuredBy?: true
   createdAt?: true
@@ -190,6 +214,12 @@ export type BotProfileGroupByOutputType = {
   capabilities: string[]
   humanHandoffEnabled: boolean
   actionApprovalNeeded: boolean
+  personaName: string | null
+  businessObjective: string | null
+  tone: string
+  languages: string[]
+  prohibitedClaims: string[]
+  escalationTriggers: string[]
   status: string
   configuredBy: string | null
   createdAt: Date
@@ -226,6 +256,12 @@ export type BotProfileWhereInput = {
   capabilities?: Prisma.StringNullableListFilter<"BotProfile">
   humanHandoffEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
   actionApprovalNeeded?: Prisma.BoolFilter<"BotProfile"> | boolean
+  personaName?: Prisma.StringNullableFilter<"BotProfile"> | string | null
+  businessObjective?: Prisma.StringNullableFilter<"BotProfile"> | string | null
+  tone?: Prisma.StringFilter<"BotProfile"> | string
+  languages?: Prisma.StringNullableListFilter<"BotProfile">
+  prohibitedClaims?: Prisma.StringNullableListFilter<"BotProfile">
+  escalationTriggers?: Prisma.StringNullableListFilter<"BotProfile">
   status?: Prisma.StringFilter<"BotProfile"> | string
   configuredBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
@@ -242,6 +278,12 @@ export type BotProfileOrderByWithRelationInput = {
   capabilities?: Prisma.SortOrder
   humanHandoffEnabled?: Prisma.SortOrder
   actionApprovalNeeded?: Prisma.SortOrder
+  personaName?: Prisma.SortOrderInput | Prisma.SortOrder
+  businessObjective?: Prisma.SortOrderInput | Prisma.SortOrder
+  tone?: Prisma.SortOrder
+  languages?: Prisma.SortOrder
+  prohibitedClaims?: Prisma.SortOrder
+  escalationTriggers?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -261,6 +303,12 @@ export type BotProfileWhereUniqueInput = Prisma.AtLeast<{
   capabilities?: Prisma.StringNullableListFilter<"BotProfile">
   humanHandoffEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
   actionApprovalNeeded?: Prisma.BoolFilter<"BotProfile"> | boolean
+  personaName?: Prisma.StringNullableFilter<"BotProfile"> | string | null
+  businessObjective?: Prisma.StringNullableFilter<"BotProfile"> | string | null
+  tone?: Prisma.StringFilter<"BotProfile"> | string
+  languages?: Prisma.StringNullableListFilter<"BotProfile">
+  prohibitedClaims?: Prisma.StringNullableListFilter<"BotProfile">
+  escalationTriggers?: Prisma.StringNullableListFilter<"BotProfile">
   status?: Prisma.StringFilter<"BotProfile"> | string
   configuredBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
@@ -277,6 +325,12 @@ export type BotProfileOrderByWithAggregationInput = {
   capabilities?: Prisma.SortOrder
   humanHandoffEnabled?: Prisma.SortOrder
   actionApprovalNeeded?: Prisma.SortOrder
+  personaName?: Prisma.SortOrderInput | Prisma.SortOrder
+  businessObjective?: Prisma.SortOrderInput | Prisma.SortOrder
+  tone?: Prisma.SortOrder
+  languages?: Prisma.SortOrder
+  prohibitedClaims?: Prisma.SortOrder
+  escalationTriggers?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -298,6 +352,12 @@ export type BotProfileScalarWhereWithAggregatesInput = {
   capabilities?: Prisma.StringNullableListFilter<"BotProfile">
   humanHandoffEnabled?: Prisma.BoolWithAggregatesFilter<"BotProfile"> | boolean
   actionApprovalNeeded?: Prisma.BoolWithAggregatesFilter<"BotProfile"> | boolean
+  personaName?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
+  businessObjective?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
+  tone?: Prisma.StringWithAggregatesFilter<"BotProfile"> | string
+  languages?: Prisma.StringNullableListFilter<"BotProfile">
+  prohibitedClaims?: Prisma.StringNullableListFilter<"BotProfile">
+  escalationTriggers?: Prisma.StringNullableListFilter<"BotProfile">
   status?: Prisma.StringWithAggregatesFilter<"BotProfile"> | string
   configuredBy?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BotProfile"> | Date | string
@@ -312,6 +372,12 @@ export type BotProfileCreateInput = {
   capabilities?: Prisma.BotProfileCreatecapabilitiesInput | string[]
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: string | null
+  businessObjective?: string | null
+  tone?: string
+  languages?: Prisma.BotProfileCreatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -328,6 +394,12 @@ export type BotProfileUncheckedCreateInput = {
   capabilities?: Prisma.BotProfileCreatecapabilitiesInput | string[]
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: string | null
+  businessObjective?: string | null
+  tone?: string
+  languages?: Prisma.BotProfileCreatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -342,6 +414,12 @@ export type BotProfileUpdateInput = {
   capabilities?: Prisma.BotProfileUpdatecapabilitiesInput | string[]
   humanHandoffEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actionApprovalNeeded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessObjective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +436,12 @@ export type BotProfileUncheckedUpdateInput = {
   capabilities?: Prisma.BotProfileUpdatecapabilitiesInput | string[]
   humanHandoffEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actionApprovalNeeded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessObjective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,6 +457,12 @@ export type BotProfileCreateManyInput = {
   capabilities?: Prisma.BotProfileCreatecapabilitiesInput | string[]
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: string | null
+  businessObjective?: string | null
+  tone?: string
+  languages?: Prisma.BotProfileCreatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -387,6 +477,12 @@ export type BotProfileUpdateManyMutationInput = {
   capabilities?: Prisma.BotProfileUpdatecapabilitiesInput | string[]
   humanHandoffEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actionApprovalNeeded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessObjective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -402,6 +498,12 @@ export type BotProfileUncheckedUpdateManyInput = {
   capabilities?: Prisma.BotProfileUpdatecapabilitiesInput | string[]
   humanHandoffEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actionApprovalNeeded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessObjective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -430,6 +532,12 @@ export type BotProfileCountOrderByAggregateInput = {
   capabilities?: Prisma.SortOrder
   humanHandoffEnabled?: Prisma.SortOrder
   actionApprovalNeeded?: Prisma.SortOrder
+  personaName?: Prisma.SortOrder
+  businessObjective?: Prisma.SortOrder
+  tone?: Prisma.SortOrder
+  languages?: Prisma.SortOrder
+  prohibitedClaims?: Prisma.SortOrder
+  escalationTriggers?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -443,6 +551,9 @@ export type BotProfileMaxOrderByAggregateInput = {
   operatingMode?: Prisma.SortOrder
   humanHandoffEnabled?: Prisma.SortOrder
   actionApprovalNeeded?: Prisma.SortOrder
+  personaName?: Prisma.SortOrder
+  businessObjective?: Prisma.SortOrder
+  tone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -456,6 +567,9 @@ export type BotProfileMinOrderByAggregateInput = {
   operatingMode?: Prisma.SortOrder
   humanHandoffEnabled?: Prisma.SortOrder
   actionApprovalNeeded?: Prisma.SortOrder
+  personaName?: Prisma.SortOrder
+  businessObjective?: Prisma.SortOrder
+  tone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -502,6 +616,18 @@ export type BotProfileCreatecapabilitiesInput = {
   set: string[]
 }
 
+export type BotProfileCreatelanguagesInput = {
+  set: string[]
+}
+
+export type BotProfileCreateprohibitedClaimsInput = {
+  set: string[]
+}
+
+export type BotProfileCreateescalationTriggersInput = {
+  set: string[]
+}
+
 export type EnumBotCategoryFieldUpdateOperationsInput = {
   set?: $Enums.BotCategory
 }
@@ -520,6 +646,21 @@ export type BotProfileUpdatecapabilitiesInput = {
   push?: string | string[]
 }
 
+export type BotProfileUpdatelanguagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type BotProfileUpdateprohibitedClaimsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type BotProfileUpdateescalationTriggersInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type BotProfileCreateWithoutOrganizationInput = {
   id?: string
   category?: $Enums.BotCategory
@@ -528,6 +669,12 @@ export type BotProfileCreateWithoutOrganizationInput = {
   capabilities?: Prisma.BotProfileCreatecapabilitiesInput | string[]
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: string | null
+  businessObjective?: string | null
+  tone?: string
+  languages?: Prisma.BotProfileCreatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -542,6 +689,12 @@ export type BotProfileUncheckedCreateWithoutOrganizationInput = {
   capabilities?: Prisma.BotProfileCreatecapabilitiesInput | string[]
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: string | null
+  businessObjective?: string | null
+  tone?: string
+  languages?: Prisma.BotProfileCreatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -572,6 +725,12 @@ export type BotProfileUpdateWithoutOrganizationInput = {
   capabilities?: Prisma.BotProfileUpdatecapabilitiesInput | string[]
   humanHandoffEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actionApprovalNeeded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessObjective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -586,6 +745,12 @@ export type BotProfileUncheckedUpdateWithoutOrganizationInput = {
   capabilities?: Prisma.BotProfileUpdatecapabilitiesInput | string[]
   humanHandoffEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   actionApprovalNeeded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  personaName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessObjective?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
+  prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
+  escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -603,6 +768,12 @@ export type BotProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   capabilities?: boolean
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: boolean
+  businessObjective?: boolean
+  tone?: boolean
+  languages?: boolean
+  prohibitedClaims?: boolean
+  escalationTriggers?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
@@ -619,6 +790,12 @@ export type BotProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   capabilities?: boolean
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: boolean
+  businessObjective?: boolean
+  tone?: boolean
+  languages?: boolean
+  prohibitedClaims?: boolean
+  escalationTriggers?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
@@ -635,6 +812,12 @@ export type BotProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   capabilities?: boolean
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: boolean
+  businessObjective?: boolean
+  tone?: boolean
+  languages?: boolean
+  prohibitedClaims?: boolean
+  escalationTriggers?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
@@ -651,13 +834,19 @@ export type BotProfileSelectScalar = {
   capabilities?: boolean
   humanHandoffEnabled?: boolean
   actionApprovalNeeded?: boolean
+  personaName?: boolean
+  businessObjective?: boolean
+  tone?: boolean
+  languages?: boolean
+  prohibitedClaims?: boolean
+  escalationTriggers?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "status" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
+export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "status" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
 export type BotProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -682,6 +871,12 @@ export type $BotProfilePayload<ExtArgs extends runtime.Types.Extensions.Internal
     capabilities: string[]
     humanHandoffEnabled: boolean
     actionApprovalNeeded: boolean
+    personaName: string | null
+    businessObjective: string | null
+    tone: string
+    languages: string[]
+    prohibitedClaims: string[]
+    escalationTriggers: string[]
     status: string
     configuredBy: string | null
     createdAt: Date
@@ -1118,6 +1313,12 @@ export interface BotProfileFieldRefs {
   readonly capabilities: Prisma.FieldRef<"BotProfile", 'String[]'>
   readonly humanHandoffEnabled: Prisma.FieldRef<"BotProfile", 'Boolean'>
   readonly actionApprovalNeeded: Prisma.FieldRef<"BotProfile", 'Boolean'>
+  readonly personaName: Prisma.FieldRef<"BotProfile", 'String'>
+  readonly businessObjective: Prisma.FieldRef<"BotProfile", 'String'>
+  readonly tone: Prisma.FieldRef<"BotProfile", 'String'>
+  readonly languages: Prisma.FieldRef<"BotProfile", 'String[]'>
+  readonly prohibitedClaims: Prisma.FieldRef<"BotProfile", 'String[]'>
+  readonly escalationTriggers: Prisma.FieldRef<"BotProfile", 'String[]'>
   readonly status: Prisma.FieldRef<"BotProfile", 'String'>
   readonly configuredBy: Prisma.FieldRef<"BotProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"BotProfile", 'DateTime'>

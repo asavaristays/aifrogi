@@ -37,6 +37,17 @@ export default async function DashboardPreviewPage({ searchParams }: { searchPar
     metaStatus={connected ? "LIVE" : "NOT_STARTED"}
     accessRole="OWNER"
     knowledgeReady={connected}
+    botName="HotelGPT Assistant"
+    botCategory="STAY"
+    botReadiness={{ ready: healthy, percent: healthy ? 100 : 71, completed: healthy ? 7 : 5, total: 7, checks: [
+      { key: "blueprint", label: "Bot blueprint", complete: true, detail: "HotelGPT configured", href: "/onboarding" },
+      { key: "persona", label: "Governed persona", complete: true, detail: "HotelGPT Assistant", href: "/onboarding" },
+      { key: "business", label: "Business verification", complete: true, detail: "Business details approved", href: "/onboarding" },
+      { key: "knowledge", label: "Approved intelligence", complete: true, detail: "24 approved source items", href: "/knowledge" },
+      { key: "safety", label: "Safety and escalation", complete: true, detail: "Boundaries configured", href: "/onboarding" },
+      { key: "channels", label: "Customer channels", complete: healthy, detail: healthy ? "Channels operating" : "Connector review required", href: "/setup" },
+      { key: "authority", label: "Action authority", complete: healthy, detail: healthy ? "Approval boundary active" : "Approval boundary required", href: "/onboarding" }
+    ]}}
     attention={attention}
     readiness={[
       { label: "Business", value: "Verified", ok: true },

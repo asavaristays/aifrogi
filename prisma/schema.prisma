@@ -282,6 +282,12 @@ model BotProfile {
   capabilities         String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS"])
   humanHandoffEnabled  Boolean          @default(true)
   actionApprovalNeeded Boolean          @default(true)
+  personaName          String?
+  businessObjective    String?          @db.Text
+  tone                  String           @default("Professional, clear and helpful")
+  languages             String[]         @default(["English"])
+  prohibitedClaims      String[]         @default([])
+  escalationTriggers    String[]         @default([])
   status               String           @default("DRAFT")
   configuredBy         String?
   createdAt            DateTime         @default(now())

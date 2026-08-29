@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import type { Lead } from "@/types";
+import type { BotReadinessCheck } from "@/lib/bot-readiness";
 
 export type DashboardAttention = {
   title: string;
@@ -24,6 +25,9 @@ export type ClientDashboardViewProps = {
   metaStatus: string;
   accessRole: string;
   knowledgeReady: boolean;
+  botName: string;
+  botCategory: string;
+  botReadiness: { checks: BotReadinessCheck[]; completed: number; total: number; percent: number; ready: boolean };
   attention: DashboardAttention[];
   readiness: DashboardReadiness[];
   recent: Lead[];
@@ -166,6 +170,10 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
           </div>
 
           <aside className="space-y-5 xl:sticky xl:top-[88px]">
+            <section className="soft-card overflow-hidden rounded-lg">
+              <div className="border-b border-[var(--border)] px-5 py-4"><div className="flex items-start justify-between gap-3"><div><p className="text-[11px] font-medium text-[var(--text-muted)]">AI Business Bot</p><h3 className="mt-0.5 text-base font-semibold">{props.botName}</h3><p className="mt-1 text-[10px] font-bold uppercase tracking-[.1em] text-[var(--primary-strong)]">{props.botCategory.replaceAll("_", " ")}</p></div><span className={`status-pill ${props.botReadiness.ready ? "status-success" : "status-warning"}`}>{props.botReadiness.percent}%</span></div><div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#f0edf2]"><div className="h-full rounded-full bg-[var(--primary)]" style={{ width: `${props.botReadiness.percent}%` }} /></div></div>
+              <div className="divide-y divide-[var(--border)] px-5">{props.botReadiness.checks.map((check) => <Link key={check.key} href={check.href} className="flex items-start justify-between gap-3 py-3"><span><strong className="block text-xs">{check.label}</strong><small className="mt-1 block text-[10px] leading-4 text-[var(--text-muted)]">{check.detail}</small></span><span className={check.complete ? "text-[var(--success)]" : "text-[#d98a2b]"}>{check.complete ? "✓" : "○"}</span></Link>)}</div>
+            </section>
             <section className="soft-card overflow-hidden rounded-lg">
               <div className="border-b border-[var(--border)] px-5 py-4">
                 <div className="flex items-start justify-between gap-3">

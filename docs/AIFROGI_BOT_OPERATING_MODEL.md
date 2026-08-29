@@ -149,3 +149,18 @@ Before adding category-specific code, engineering must determine whether the req
 4. Customer-owned governed knowledge or configuration
 
 Only the fourth layer should normally vary per customer. A new customer must not require a fork of AiFrogi. A new category must not bypass the common security, knowledge, conversation, tool-authority, audit, or outcome contracts.
+
+## Execution baseline implemented
+
+The following operating-model controls are implemented in the application baseline:
+
+- Bot persona, business objective, tone, languages, prohibited claims, and escalation triggers persist per organization.
+- SuperAdmin controls category, channels, capabilities, operating mode, human handoff, and business-action approval.
+- Client Admin can maintain the governed persona but cannot expand the bot's category or authority.
+- The response runtime loads the workspace persona server-side and binds it into OpenAI instructions together with global safety rules and approved knowledge.
+- Bot readiness is computed from real blueprint, persona, business review, approved intelligence, safety, channel, and authority evidence.
+- Client Admin sees the readiness score, incomplete gates, and corrective links in the daily operations dashboard.
+- Existing bots receive conservative persona defaults during migration; Webtechnosys retains the approved “Webtechnosys team” customer-facing identity.
+- New bot profiles cannot be saved without a persona name, business objective, and enabled language.
+
+Readiness does not itself activate an external business action. Appointment, availability, order, payment, CRM, PMS, channel-manager, and similar actions still require their own connector, permission, idempotency, read-back verification, outcome evidence, and rollback controls.

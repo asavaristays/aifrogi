@@ -10,7 +10,22 @@ export type BotProfileInput = {
   capabilities: Array<typeof BOT_CAPABILITIES[number]>;
   humanHandoffEnabled: boolean;
   actionApprovalNeeded: boolean;
+  personaName: string;
+  businessObjective: string;
+  tone: string;
+  languages: string[];
+  prohibitedClaims: string[];
+  escalationTriggers: string[];
 };
+
+function text(value: unknown, max = 500) {
+  return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
+function list(value: unknown, fallback: string[] = []) {
+  const values = Array.isArray(value) ? value : typeof value === "string" ? value.split(/\r?\n|,/) : fallback;
+  return [...new Set(values.map((item) => text(item, 160)).filter(Boolean))].slice(0, 30);
+}
 
 export function parseBotProfile(value: unknown): { value?: BotProfileInput; error?: string } {
   if (!value || typeof value !== "object") return { error: "Bot profile is required" };
@@ -25,5 +40,12 @@ export function parseBotProfile(value: unknown): { value?: BotProfileInput; erro
   if (!capabilities.length || capabilities.some((item) => !BOT_CAPABILITIES.includes(item as BotProfileInput["capabilities"][number]))) return { error: "Select at least one supported capability" };
   if (category === "PINGBOOK" && !capabilities.includes("BOOK_APPOINTMENTS")) return { error: "PingBook requires appointment booking capability" };
   if (category === "FLOWCART" && !capabilities.includes("CREATE_ORDERS")) return { error: "FlowCart requires order creation capability" };
-  return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false } };
+  const personaName = text(input.personaName, 80);
+  const businessObjective = text(input.businessObjective, 1000);
+  const tone = text(input.tone, 160) || "Professional, clear and helpful";
+  const languages = list(input.languages, ["English"]);
+  if (!personaName) return { error: "Give this bot a customer-facing persona name" };
+  if (!businessObjective) return { error: "Describe the bot's business objective" };
+  if (!languages.length) return { error: "Select at least one supported language" };
+  return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false, personaName, businessObjective, tone, languages, prohibitedClaims: list(input.prohibitedClaims), escalationTriggers: list(input.escalationTriggers) } };
 }

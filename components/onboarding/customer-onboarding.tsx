@@ -70,7 +70,7 @@ export type CustomerOnboardingOrganization = {
   createdAt: string | Date;
   updatedAt: string | Date;
   onboarding: OnboardingRecord | null;
-  botProfile: { category: string; operatingMode: string; channels: string[]; capabilities: string[]; humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; status?: string } | null;
+  botProfile: { category: string; operatingMode: string; channels: string[]; capabilities: string[]; humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; personaName?: string | null; businessObjective?: string | null; tone?: string | null; languages?: string[]; prohibitedClaims?: string[]; escalationTriggers?: string[]; status?: string } | null;
   documents: DocumentRecord[];
   activities: ActivityRecord[];
   properties: Array<{ id: string; name: string; slug: string }>;
@@ -161,7 +161,7 @@ export function CustomerOnboarding({
   const metaConfigured = Boolean(metaAppId && metaConfigId);
   const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
   const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
-  const websiteReady = Boolean(usesWebsite && organization?.botProfile?.status === "CONFIGURED" && organization?.onboarding?.kycStatus === "APPROVED");
+  const websiteReady = Boolean(usesWebsite && organization?.botProfile?.status === "CONFIGURED" && organization.botProfile.personaName && organization.botProfile.businessObjective && organization.botProfile.escalationTriggers?.length && organization?.onboarding?.kycStatus === "APPROVED");
   const visibleSteps = useMemo(() => usesWhatsApp ? allSteps.map((step, index) => ({ ...step, number: index + 1 })) : [
     { ...allSteps[0], number: 1 },
     { ...allSteps[1], number: 2 },

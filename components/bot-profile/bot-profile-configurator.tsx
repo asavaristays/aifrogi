@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { BOT_CAPABILITIES, BOT_CATEGORIES, BOT_CHANNELS, BOT_OPERATING_MODES, type BotProfileInput } from "@/lib/bot-profile";
 import { getBotBlueprint } from "@/lib/bot-blueprints";
 
-type StoredProfile = { category?: string; operatingMode?: string; channels?: string[]; capabilities?: string[]; humanHandoffEnabled?: boolean; actionApprovalNeeded?: boolean; status?: string };
+type StoredProfile = { category?: string; operatingMode?: string; channels?: string[]; capabilities?: string[]; humanHandoffEnabled?: boolean; actionApprovalNeeded?: boolean; personaName?: string | null; businessObjective?: string | null; tone?: string | null; languages?: string[]; prohibitedClaims?: string[]; escalationTriggers?: string[]; status?: string };
 
 const labels: Record<string, string> = {
   BUSINESS_AI: "BusinessGPT", PINGBOOK: "PingBook Appointment Bot", FLOWCART: "FlowCart Commerce Bot", STAY: "HotelGPT", RESTAURANT: "DineGPT", REAL_ESTATE: "PropertyGPT", CUSTOM: "Custom Business Bot",
@@ -14,7 +14,7 @@ const labels: Record<string, string> = {
   WEBSITE: "Website Bot", WHATSAPP: "WhatsApp Bot", ANSWER_QUESTIONS: "Answer service questions", CAPTURE_LEADS: "Capture leads", QUALIFY_LEADS: "Qualify requirements", BOOK_APPOINTMENTS: "Book appointments", CREATE_ORDERS: "Create orders"
 };
 
-const defaults: BotProfileInput = { category: "BUSINESS_AI", operatingMode: "LEAD_CAPTURE", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"], humanHandoffEnabled: true, actionApprovalNeeded: true };
+const defaults: BotProfileInput = { category: "BUSINESS_AI", operatingMode: "LEAD_CAPTURE", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"], humanHandoffEnabled: true, actionApprovalNeeded: true, personaName: "Business Assistant", businessObjective: "Answer approved business questions, qualify genuine enquiries, and arrange human follow-up when required.", tone: "Professional, clear and helpful", languages: ["English"], prohibitedClaims: ["Do not invent prices, availability, guarantees, certifications, or commercial commitments"], escalationTriggers: ["Complaint", "Billing dispute", "Legal question", "Sensitive personal data", "Low-confidence commercial answer"] };
 
 const setupPaths = [
   { key: "website", title: "AI Website Bot", helper: "Use approved business intelligence on your website and capture consented enquiries.", channels: ["WEBSITE"] as BotProfileInput["channels"] },
@@ -30,7 +30,13 @@ function normalized(initial?: StoredProfile | null): BotProfileInput {
     category: BOT_CATEGORIES.includes(initial?.category as never) ? initial?.category as BotProfileInput["category"] : defaults.category,
     operatingMode: BOT_OPERATING_MODES.includes(initial?.operatingMode as never) ? initial?.operatingMode as BotProfileInput["operatingMode"] : defaults.operatingMode,
     channels: initial?.channels?.filter((item): item is BotProfileInput["channels"][number] => BOT_CHANNELS.includes(item as never)) || defaults.channels,
-    capabilities: initial?.capabilities?.filter((item): item is BotProfileInput["capabilities"][number] => BOT_CAPABILITIES.includes(item as never)) || defaults.capabilities
+    capabilities: initial?.capabilities?.filter((item): item is BotProfileInput["capabilities"][number] => BOT_CAPABILITIES.includes(item as never)) || defaults.capabilities,
+    personaName: initial?.personaName?.trim() || defaults.personaName,
+    businessObjective: initial?.businessObjective?.trim() || defaults.businessObjective,
+    tone: initial?.tone?.trim() || defaults.tone,
+    languages: initial?.languages?.length ? initial.languages : defaults.languages,
+    prohibitedClaims: initial?.prohibitedClaims?.length ? initial.prohibitedClaims : defaults.prohibitedClaims,
+    escalationTriggers: initial?.escalationTriggers?.length ? initial.escalationTriggers : defaults.escalationTriggers
   };
 }
 
@@ -81,9 +87,15 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
     <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} disabled={!superAdminMode} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#6d7487]">{profile.channels.includes("WHATSAPP") ? "WhatsApp setup will request a business number and secure Meta authorization." : "Website-only setup does not require a WhatsApp number or Meta account."}</p></div>
     <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={labels[item]} checked={profile.capabilities.includes(item)} disabled={!superAdminMode} onChange={() => toggleCapability(item)} />)}</div></div>
     <div className="mt-5 grid gap-2 sm:grid-cols-2"><Check label="Human takeover available" checked={profile.humanHandoffEnabled} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, humanHandoffEnabled: !current.humanHandoffEnabled }))} /><Check label="Approval before business actions" checked={profile.actionApprovalNeeded} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, actionApprovalNeeded: !current.actionApprovalNeeded }))} /></div>
+    <div className="mt-7 rounded-lg border border-[#dfe5e2] bg-[#fbfcfb] p-5">
+      <p className="product-eyebrow">Governed persona</p><h3 className="mt-2 text-lg font-black">Customer-facing identity and behavior</h3><p className="mt-2 text-xs leading-5 text-[#6d7487]">Client Admin may maintain these fields after onboarding. Category, capabilities, channels, and authority remain controlled by AiFrogi SuperAdmin.</p>
+      <div className="mt-5 grid gap-4 lg:grid-cols-2"><Field label="Persona name"><input className="product-input mt-2" value={profile.personaName} onChange={(event) => setProfile((current) => ({ ...current, personaName: event.target.value }))} /></Field><Field label="Tone and response style"><input className="product-input mt-2" value={profile.tone} onChange={(event) => setProfile((current) => ({ ...current, tone: event.target.value }))} /></Field></div>
+      <Field label="Business objective"><textarea className="product-input mt-2 min-h-24" value={profile.businessObjective} onChange={(event) => setProfile((current) => ({ ...current, businessObjective: event.target.value }))} /></Field>
+      <div className="mt-4 grid gap-4 lg:grid-cols-3"><TextList label="Languages" values={profile.languages} onChange={(languages) => setProfile((current) => ({ ...current, languages }))} /><TextList label="Prohibited claims" values={profile.prohibitedClaims} onChange={(prohibitedClaims) => setProfile((current) => ({ ...current, prohibitedClaims }))} /><TextList label="Human escalation triggers" values={profile.escalationTriggers} onChange={(escalationTriggers) => setProfile((current) => ({ ...current, escalationTriggers }))} /></div>
+    </div>
     <div className="mt-7 rounded-lg border border-[#ead7f3] bg-[#fbf7fd] p-5"><p className="product-eyebrow">{blueprint.productName} intelligence blueprint</p><h3 className="mt-2 text-lg font-black">{blueprint.promise}</h3><div className="mt-5 grid gap-5 lg:grid-cols-2"><BlueprintList title="Information required" items={blueprint.requiredInputs} /><BlueprintList title="Internal business knowledge" items={blueprint.internalKnowledge} /><BlueprintList title="Approved external knowledge" items={blueprint.externalKnowledge} /><BlueprintList title="Systems and integrations" items={blueprint.integrations} /><BlueprintList title="Approved actions" items={blueprint.approvedActions} /><BlueprintList title="Negotiation authority" items={blueprint.negotiationRules} /><BlueprintList title="Safety rules" items={blueprint.safetyRules} /><BlueprintList title="Verified outcomes" items={blueprint.verifiedOutcomes} /><BlueprintList title="Go-live evaluations" items={blueprint.evaluations} /></div></div>
     {message ? <p className={`mt-4 text-sm font-semibold ${message.includes("saved") ? "text-[#16794a]" : "text-[#a3342b]"}`}>{message}</p> : null}
-    <div className="mt-5 flex items-center justify-between gap-4">{!superAdminMode ? <p className="text-xs font-semibold text-[#6d7487]">Bot design is controlled by AiFrogi SuperAdmin. Your business remains the owner and approver of the intelligence.</p> : <span />} {superAdminMode ? <Button disabled={saving || !profile.channels.length || !profile.capabilities.length} onClick={save}>{saving ? "Saving..." : "Save bot blueprint"}</Button> : null}</div>
+    <div className="mt-5 flex items-center justify-between gap-4">{!superAdminMode ? <p className="text-xs font-semibold text-[#6d7487]">Core bot authority is controlled by AiFrogi SuperAdmin. Your business owns and maintains this persona and approved intelligence.</p> : <span />} <Button disabled={saving || !profile.channels.length || !profile.capabilities.length || !profile.personaName.trim() || !profile.businessObjective.trim()} onClick={save}>{saving ? "Saving..." : superAdminMode ? "Save bot blueprint" : "Save bot persona"}</Button></div>
   </section>;
 }
 
@@ -94,3 +106,6 @@ function Check({ label, checked, onChange, disabled = false }: { label: string; 
 function BlueprintList({ title, items }: { title: string; items: string[] }) {
   return <div><p className="field-label">{title}</p><ul className="mt-2 space-y-2">{items.map((item) => <li key={item} className="flex gap-2 text-xs leading-5 text-[#5f5866]"><span className="text-[#b923ae]">✓</span><span>{item}</span></li>)}</ul></div>;
 }
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) { return <label className="mt-4 block"><span className="field-label">{label}</span>{children}</label>; }
+function TextList({ label, values, onChange }: { label: string; values: string[]; onChange: (values: string[]) => void }) { return <label className="block"><span className="field-label">{label}</span><textarea className="product-input mt-2 min-h-28" value={values.join("\n")} onChange={(event) => onChange(event.target.value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean))} /><small className="mt-1 block text-[11px] text-[#6d7487]">One item per line</small></label>; }
