@@ -91,3 +91,61 @@ The Client Admin workspace must bring together:
 ## Product completion rule
 
 A bot is onboarded only when its business identity, category/persona, approved intelligence, channel connection, safety and authority rules, human handoff, test conversations, and owner access are verified. A connected API key alone does not constitute a completed AI Business Bot.
+
+## Multi-category platform decision
+
+AiFrogi will implement multiple categories of AI Business Bot on one secure sovereign platform. Categories are configuration and intelligence blueprints on the common runtime, not separate applications or duplicated client-specific codebases.
+
+The intended product family is:
+
+- **BusinessGPT:** general services, business questions, lead capture, qualification, and human follow-up
+- **HotelGPT:** hospitality knowledge, stay enquiries, availability, negotiation boundaries, and booking handoff
+- **PingBook:** services, staff, calendars, appointment booking, and verified `AppointmentConfirmed` outcomes
+- **DineGPT:** menus, dietary information, restaurant reservations, offers, and order or human handoff
+- **PropertyGPT:** property inventory, buyer qualification, regulatory information, site visits, and sales routing
+- **FlowCart:** catalog, inventory, orders, delivery, returns, and commerce workflows
+- **Custom Business Bot:** a controlled blueprint for requirements that do not fit an approved standard category
+
+Every category shares:
+
+- Tenant-isolated organizations and workspaces
+- Users, roles, sessions, and permissions
+- Governed intelligence and trusted-source approval
+- Common channel contracts and adapters
+- Website and WhatsApp conversations
+- Unified inbox and human takeover
+- OpenAI processing boundaries
+- Audit records and support-access controls
+- Consent, privacy, retention, and deletion controls
+- Connector health, analytics, and verified outcomes
+
+Each category defines its own:
+
+- Onboarding inputs and business terminology
+- Persona, response style, and supported languages
+- Required internal and external knowledge
+- Permitted capabilities and business actions
+- Negotiation authority and commercial limits
+- Safety rules and escalation triggers
+- Required connectors and systems of record
+- Go-live evaluations and measurable outcomes
+
+## Category delivery sequence
+
+AiFrogi must not attempt to complete every category simultaneously. The platform should first prove two reusable operating patterns:
+
+1. **Webtechnosys BusinessGPT** proves grounded business answers, qualification, consented lead capture, knowledge improvement, and human follow-up.
+2. **PingBook** proves a transactional bot that uses authority-controlled tools and read-back verification to record `AppointmentConfirmed`.
+
+After these knowledge-based and action-based patterns are stable, HotelGPT becomes the principal commercial vertical. HotelGPT begins with governed knowledge and enquiry capture. It may claim live room availability only after a verified PMS, channel-manager, or booking-engine connector reads the current system of record. DineGPT, PropertyGPT, FlowCart, and Custom blueprints follow through the same shared runtime.
+
+## Multi-category engineering guardrail
+
+Before adding category-specific code, engineering must determine whether the requirement belongs in:
+
+1. The shared sovereign runtime
+2. A reusable capability or connector
+3. A category blueprint
+4. Customer-owned governed knowledge or configuration
+
+Only the fourth layer should normally vary per customer. A new customer must not require a fork of AiFrogi. A new category must not bypass the common security, knowledge, conversation, tool-authority, audit, or outcome contracts.
