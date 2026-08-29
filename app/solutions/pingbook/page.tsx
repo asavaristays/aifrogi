@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { AIProductHero } from "@/components/marketing/ai-product-hero";
 import { marketingMetadata } from "@/lib/seo";
-import { PingBookPricingCalculator } from "./pricing-calculator";
 
 const registerUrl = "https://app.aifrogi.com/register?source=pingbook";
 
@@ -58,24 +58,6 @@ const syncStates = [
   ["Dashboard", "Status updated", "Confirmed appointment"],
   ["WhatsApp", "Thread active", "Customer has receipt"]
 ] as const;
-
-const pricingCards = [
-  {
-    title: "One-time setup",
-    price: "Rs. 4,500",
-    copy: "Meta, Razorpay, and Google onboarding with one clinic booking test."
-  },
-  {
-    title: "PingBook platform",
-    price: "Rs. 1,250 / mo",
-    copy: "Paid quarterly at Rs. 3,750 with a 15-day cancellation and refund window."
-  },
-  {
-    title: "Meta message fee",
-    price: "As used",
-    copy: "Billed by delivered WhatsApp message category and customer country."
-  }
-];
 
 const faqs = [
   {
@@ -201,44 +183,10 @@ export default function PingBookPage() {
         </div>
       </section>
 
-      <section id="pricing" className="border-t border-black/8 bg-white px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:items-start">
-            <div>
-              <p className="product-eyebrow">Pricing</p>
-              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-.035em] sm:text-5xl">
-                Simple pricing for clinic appointment automation.
-              </h2>
-              <p className="mt-5 text-base leading-7 text-[var(--text-muted)]">
-                Start with setup, keep PingBook on a predictable quarterly subscription, and cancel within 15 days if it is not the right fit.
-              </p>
-              <a href={registerUrl} className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
-                Start with Rs. 4,500 setup
-                <Icon name="arrow-right" />
-              </a>
-            </div>
-
-            <div>
-              <div className="grid gap-4 md:grid-cols-3">
-                {pricingCards.map((card) => (
-                  <article key={card.title} className="rounded-lg border border-black/8 bg-[#fbfaf7] p-5 shadow-[0_18px_50px_rgba(16,16,16,.06)]">
-                    <p className="text-xs font-black uppercase text-[#6d5310]">{card.title}</p>
-                    <h3 className="mt-3 text-2xl font-black tracking-[-.03em] text-[#101010]">{card.price}</h3>
-                    <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{card.copy}</p>
-                  </article>
-                ))}
-              </div>
-
-              <div className="mt-4 rounded-lg border border-[#8a6a16]/18 bg-[#f8f0d8] p-5">
-                <p className="text-xs font-black uppercase text-[#6d5310]">Clinic launch terms</p>
-                <p className="mt-2 text-sm leading-6 text-[#6d5310]">
-                  Pay quarterly to start. Cancel within 15 days and eligible refunds are processed in 5-7 working days. Most clinics can go live in 2-3 working days after Meta, Google, Razorpay, and access readiness.
-                </p>
-              </div>
-
-              <PingBookPricingCalculator />
-            </div>
-          </div>
+      <section className="border-t border-black/8 bg-white px-5 py-10 sm:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div><p className="product-eyebrow">Pricing and Meta usage</p><p className="mt-2 text-lg font-semibold">Pricing estimates now live with WhatsApp API costs and onboarding.</p></div>
+          <Link href="/whatsapp-api#pingbook-pricing" className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--gold-700)]">View PingBook pricing <Icon name="arrow-right" /></Link>
         </div>
       </section>
 
