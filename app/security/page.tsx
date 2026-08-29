@@ -41,6 +41,17 @@ const verifiedControls = [
   ["Boundary tests", "Fixture-based checks prove covered routes refuse cross-workspace and role-bypass attempts before release."]
 ];
 
+const complianceStatus = [
+  ["Tenant and workspace isolation", "Active", "Server-side workspace and role checks protect covered customer routes."],
+  ["Encryption and secret handling", "Active", "Protected integration credentials are encrypted or referenced from server-side secret storage."],
+  ["Webhook authenticity", "Active", "Meta webhook signatures are enforced in production."],
+  ["Customer-controlled support", "Active", "Private support access is scoped, time-bound, revocable, and audited."],
+  ["Privacy and deletion controls", "Published", "Privacy, data-deletion, terms, and security-contact routes are public."],
+  ["SOC 2 certification", "Not certified", "A future external assurance objective; AiFrogi does not currently claim SOC 2 certification."],
+  ["ISO 27001 certification", "Not certified", "A future information-security programme objective; no certification is currently claimed."],
+  ["PCI DSS", "Provider responsibility", "Payment credentials remain with approved payment providers; AiFrogi does not claim to be a card-data processor."]
+];
+
 export default function SecurityPage() {
   return (
     <main className="min-h-screen bg-white text-[#2c243b]">
@@ -101,6 +112,15 @@ export default function SecurityPage() {
                 <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="compliance-status" className="scroll-mt-20 px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl"><p className="product-eyebrow">Compliance status register</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">What is active, and what is not yet claimed.</h2><p className="mt-5 text-sm leading-7 text-[var(--text-muted)]">This register distinguishes implemented platform controls from formal third-party certification. It should be updated whenever a material control or assurance status changes.</p></div>
+          <div className="mt-10 overflow-hidden rounded-xl border border-black/8">
+            {complianceStatus.map(([control, status, evidence]) => <div key={control} className="grid gap-3 border-b border-black/8 bg-white p-5 last:border-b-0 md:grid-cols-[1fr_170px_1.6fr] md:items-start"><strong className="text-sm">{control}</strong><span className={`w-fit rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[.1em] ${status === "Active" || status === "Published" ? "bg-[#eaf9ef] text-[#178665]" : "bg-[#fff5df] text-[#9a6719]"}`}>{status}</span><p className="text-xs leading-5 text-[var(--text-muted)]">{evidence}</p></div>)}
           </div>
         </div>
       </section>

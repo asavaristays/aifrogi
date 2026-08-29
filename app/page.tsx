@@ -49,6 +49,24 @@ export default function HomePage() {
 
       <OnboardingJourney />
 
+      <section className="border-b border-black/8 bg-[#fbf8fc] px-5 py-14 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl"><p className="product-eyebrow">Security and compliance transparency</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Trust claims limited to controls we can prove.</h2><p className="mt-4 text-sm leading-7 text-[var(--text-muted)]">AiFrogi publishes active safeguards, customer responsibilities, and certification status in plain language. We do not claim SOC 2 or ISO certification until an independent programme is completed.</p></div>
+            <Link href="/security#compliance-status" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-lg bg-[#2c243b] px-5 text-sm font-bold text-white">Review compliance status <Icon name="arrow-right" /></Link>
+          </div>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              ["Workspace isolation", "Active"],
+              ["Encrypted credentials", "Active"],
+              ["Signed Meta webhooks", "Active"],
+              ["Controlled support access", "Active"],
+              ["SOC 2 / ISO", "Not yet claimed"]
+            ].map(([control, status]) => <div key={control} className="rounded-lg border border-black/8 bg-white p-4"><p className="text-xs font-bold">{control}</p><p className={`mt-2 text-[10px] font-bold uppercase tracking-[.1em] ${status === "Active" ? "text-[#178665]" : "text-[#9a6719]"}`}>{status}</p></div>)}
+          </div>
+        </div>
+      </section>
+
       <section className="border-b border-black/8 bg-white px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
