@@ -125,6 +125,8 @@ export const BotCategory = {
   PINGBOOK: 'PINGBOOK',
   FLOWCART: 'FLOWCART',
   STAY: 'STAY',
+  RESTAURANT: 'RESTAURANT',
+  REAL_ESTATE: 'REAL_ESTATE',
   CUSTOM: 'CUSTOM'
 } as const
 

@@ -37,10 +37,12 @@ The bot category describes its business job. Website and WhatsApp are channels u
 
 Supported bot categories:
 
-- Regular AI Business Bot
+- BusinessGPT
 - PingBook appointment bot
 - FlowCart commerce bot
-- Stay/hospitality bot
+- HotelGPT hospitality and revenue bot
+- DineGPT restaurant bot
+- PropertyGPT real-estate bot
 - Custom business bot
 
 Supported operating modes:

@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { BOT_CAPABILITIES, BOT_CATEGORIES, BOT_CHANNELS, BOT_OPERATING_MODES, type BotProfileInput } from "@/lib/bot-profile";
+import { getBotBlueprint } from "@/lib/bot-blueprints";
 
 type StoredProfile = { category?: string; operatingMode?: string; channels?: string[]; capabilities?: string[]; humanHandoffEnabled?: boolean; actionApprovalNeeded?: boolean; status?: string };
 
 const labels: Record<string, string> = {
-  BUSINESS_AI: "Regular AI Business Bot", PINGBOOK: "PingBook Appointment Bot", FLOWCART: "FlowCart Commerce Bot", STAY: "Stay / Hospitality Bot", CUSTOM: "Custom Business Bot",
+  BUSINESS_AI: "BusinessGPT", PINGBOOK: "PingBook Appointment Bot", FLOWCART: "FlowCart Commerce Bot", STAY: "HotelGPT", RESTAURANT: "DineGPT", REAL_ESTATE: "PropertyGPT", CUSTOM: "Custom Business Bot",
   ANSWER_ONLY: "Answer questions only", LEAD_CAPTURE: "Capture and qualify leads", APPROVED_ACTIONS: "Perform approved actions", HUMAN_APPROVAL: "Human approval required",
   WEBSITE: "Website Bot", WHATSAPP: "WhatsApp Bot", ANSWER_QUESTIONS: "Answer service questions", CAPTURE_LEADS: "Capture leads", QUALIFY_LEADS: "Qualify requirements", BOOK_APPOINTMENTS: "Book appointments", CREATE_ORDERS: "Create orders"
 };
@@ -38,6 +39,8 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
   const [profile, setProfile] = useState(() => normalized(initialProfile));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const superAdminMode = Boolean(organizationId);
+  const blueprint = getBotBlueprint(profile.category);
 
   function setCategory(category: BotProfileInput["category"]) {
     const required = category === "PINGBOOK" ? "BOOK_APPOINTMENTS" : category === "FLOWCART" ? "CREATE_ORDERS" : null;
@@ -68,21 +71,26 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
     <div className="mt-6 grid gap-3 lg:grid-cols-3">
       {setupPaths.map((path) => {
         const selected = path.channels.length === profile.channels.length && path.channels.every((channel) => profile.channels.includes(channel));
-        return <button key={path.key} type="button" onClick={() => setProfile((current) => ({ ...current, channels: [...path.channels] }))} className={`rounded-lg border p-4 text-left transition ${selected ? "border-[#c725ba] bg-[#fff4fd] ring-1 ring-[#c725ba]" : "border-black/8 bg-[#fbfcfb] hover:border-[#d9a4d4]"}`}><span className="block text-sm font-black">{path.title}</span><span className="mt-2 block text-xs leading-5 text-[#6d7487]">{path.helper}</span></button>;
+        return <button key={path.key} type="button" disabled={!superAdminMode} onClick={() => setProfile((current) => ({ ...current, channels: [...path.channels] }))} className={`rounded-lg border p-4 text-left transition disabled:cursor-default ${selected ? "border-[#c725ba] bg-[#fff4fd] ring-1 ring-[#c725ba]" : "border-black/8 bg-[#fbfcfb] hover:border-[#d9a4d4]"}`}><span className="block text-sm font-black">{path.title}</span><span className="mt-2 block text-xs leading-5 text-[#6d7487]">{path.helper}</span></button>;
       })}
     </div>
     <div className="mt-6 grid gap-5 lg:grid-cols-2">
-      <label className="block"><span className="field-label">Bot category</span><select className="product-input mt-2" value={profile.category} onChange={(event) => setCategory(event.target.value as BotProfileInput["category"])}>{BOT_CATEGORIES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
-      <label className="block"><span className="field-label">Operating mode</span><select className="product-input mt-2" value={profile.operatingMode} onChange={(event) => setProfile((current) => ({ ...current, operatingMode: event.target.value as BotProfileInput["operatingMode"] }))}>{BOT_OPERATING_MODES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
+      <label className="block"><span className="field-label">Bot category</span><select disabled={!superAdminMode} className="product-input mt-2 disabled:cursor-default disabled:opacity-75" value={profile.category} onChange={(event) => setCategory(event.target.value as BotProfileInput["category"])}>{BOT_CATEGORIES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
+      <label className="block"><span className="field-label">Operating mode</span><select disabled={!superAdminMode} className="product-input mt-2 disabled:cursor-default disabled:opacity-75" value={profile.operatingMode} onChange={(event) => setProfile((current) => ({ ...current, operatingMode: event.target.value as BotProfileInput["operatingMode"] }))}>{BOT_OPERATING_MODES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
     </div>
-    <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#6d7487]">{profile.channels.includes("WHATSAPP") ? "WhatsApp setup will request a business number and secure Meta authorization." : "Website-only setup does not require a WhatsApp number or Meta account."}</p></div>
-    <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={labels[item]} checked={profile.capabilities.includes(item)} onChange={() => toggleCapability(item)} />)}</div></div>
-    <div className="mt-5 grid gap-2 sm:grid-cols-2"><Check label="Human takeover available" checked={profile.humanHandoffEnabled} onChange={() => setProfile((current) => ({ ...current, humanHandoffEnabled: !current.humanHandoffEnabled }))} /><Check label="Approval before business actions" checked={profile.actionApprovalNeeded} onChange={() => setProfile((current) => ({ ...current, actionApprovalNeeded: !current.actionApprovalNeeded }))} /></div>
+    <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} disabled={!superAdminMode} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#6d7487]">{profile.channels.includes("WHATSAPP") ? "WhatsApp setup will request a business number and secure Meta authorization." : "Website-only setup does not require a WhatsApp number or Meta account."}</p></div>
+    <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={labels[item]} checked={profile.capabilities.includes(item)} disabled={!superAdminMode} onChange={() => toggleCapability(item)} />)}</div></div>
+    <div className="mt-5 grid gap-2 sm:grid-cols-2"><Check label="Human takeover available" checked={profile.humanHandoffEnabled} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, humanHandoffEnabled: !current.humanHandoffEnabled }))} /><Check label="Approval before business actions" checked={profile.actionApprovalNeeded} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, actionApprovalNeeded: !current.actionApprovalNeeded }))} /></div>
+    <div className="mt-7 rounded-lg border border-[#ead7f3] bg-[#fbf7fd] p-5"><p className="product-eyebrow">{blueprint.productName} intelligence blueprint</p><h3 className="mt-2 text-lg font-black">{blueprint.promise}</h3><div className="mt-5 grid gap-5 lg:grid-cols-2"><BlueprintList title="Information required" items={blueprint.requiredInputs} /><BlueprintList title="Internal business knowledge" items={blueprint.internalKnowledge} /><BlueprintList title="Approved external knowledge" items={blueprint.externalKnowledge} /><BlueprintList title="Systems and integrations" items={blueprint.integrations} /><BlueprintList title="Approved actions" items={blueprint.approvedActions} /><BlueprintList title="Safety rules" items={blueprint.safetyRules} /><BlueprintList title="Verified outcomes" items={blueprint.verifiedOutcomes} /><BlueprintList title="Go-live evaluations" items={blueprint.evaluations} /></div></div>
     {message ? <p className={`mt-4 text-sm font-semibold ${message.includes("saved") ? "text-[#16794a]" : "text-[#a3342b]"}`}>{message}</p> : null}
-    <div className="mt-5 flex justify-end"><Button disabled={saving || !profile.channels.length || !profile.capabilities.length} onClick={save}>{saving ? "Saving..." : "Save bot profile"}</Button></div>
+    <div className="mt-5 flex items-center justify-between gap-4">{!superAdminMode ? <p className="text-xs font-semibold text-[#6d7487]">Bot design is controlled by AiFrogi SuperAdmin. Your business remains the owner and approver of the intelligence.</p> : <span />} {superAdminMode ? <Button disabled={saving || !profile.channels.length || !profile.capabilities.length} onClick={save}>{saving ? "Saving..." : "Save bot blueprint"}</Button> : null}</div>
   </section>;
 }
 
-function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
-  return <label className="flex items-center gap-3 rounded-md border border-black/7 bg-[#fbfcfb] px-3 py-3 text-sm font-semibold"><input type="checkbox" checked={checked} onChange={onChange} className="size-4 accent-[#c725ba]" />{label}</label>;
+function Check({ label, checked, onChange, disabled = false }: { label: string; checked: boolean; onChange: () => void; disabled?: boolean }) {
+  return <label className="flex items-center gap-3 rounded-md border border-black/7 bg-[#fbfcfb] px-3 py-3 text-sm font-semibold"><input type="checkbox" checked={checked} disabled={disabled} onChange={onChange} className="size-4 accent-[#c725ba] disabled:cursor-default" />{label}</label>;
+}
+
+function BlueprintList({ title, items }: { title: string; items: string[] }) {
+  return <div><p className="field-label">{title}</p><ul className="mt-2 space-y-2">{items.map((item) => <li key={item} className="flex gap-2 text-xs leading-5 text-[#5f5866]"><span className="text-[#b923ae]">✓</span><span>{item}</span></li>)}</ul></div>;
 }

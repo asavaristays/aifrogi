@@ -93,6 +93,8 @@ enum BotCategory {
   PINGBOOK
   FLOWCART
   STAY
+  RESTAURANT
+  REAL_ESTATE
   CUSTOM
 }
 
