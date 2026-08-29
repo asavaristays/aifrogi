@@ -23,5 +23,6 @@ test("current partner automation and hotel solution paths are seeded for refresh
 
 test("citations exclude weak matches relative to the best approved source", () => {
   assert.match(source, /relevanceFloor/);
+  assert.match(source, /score \* 0\.8/);
   assert.match(source, /item\.score >= relevanceFloor/);
 });

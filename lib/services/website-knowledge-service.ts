@@ -331,7 +331,7 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
   if (!rankedPages.length || rankedPages[0].score === 0) {
     return { context: "", sourceUrls: [] as string[], sources: [] as Array<{ title: string; url: string; crawledAt: string }> };
   }
-  const relevanceFloor = Math.max(3, Math.ceil(rankedPages[0].score * 0.45));
+  const relevanceFloor = Math.max(3, Math.ceil(rankedPages[0].score * 0.8));
   const pages = rankedPages
     .filter((item) => item.score >= relevanceFloor)
     .slice(0, 8)
