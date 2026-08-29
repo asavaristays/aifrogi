@@ -157,7 +157,7 @@ Current interaction requirements:
 
 Active website release at the time of this record:
 
-`/var/www/webtechnosys.com/releases/20260829-aifrogi-widget-states`
+`/var/www/webtechnosys.com/releases/20260829-aifrogi-e2e-secure`
 
 ## Privacy and consent
 
@@ -190,7 +190,7 @@ Implemented:
 - Rate limiting and tenant binding.
 - Automated token tamper and cross-tenant rejection tests.
 
-Still pending for a later hardening release: a dedicated website-session ledger for operator-visible device/session revocation before conversation closure. The current capability expires after 24 hours and loses transcript access immediately when the conversation is closed.
+The durable website-session ledger stores only hashed capabilities, binds each visitor to one tenant and lead, records consent and delivery/read timestamps, expires access after 24 hours, and revokes access immediately on closure.
 
 ## Rich business presence and connector policy
 
@@ -198,12 +198,9 @@ Onboarding captures approved photos, logo, Google Maps location, Google Business
 
 Negotiation is governed by approved category rules, floors, ceilings, alternatives, expiry, and escalation. Every offer must preserve the rule, original value, offered value, authority, and outcome evidence.
 
-## Next engineering sequence
+## Frozen niche completion
 
-1. Run realistic Webtechnosys end-to-end testing of AI, handoff, reply, and closure.
-2. Improve intelligence citations, source refresh, version history, conflict handling, and answer evaluation.
-3. Implement PingBook as the first verified tool-using vertical.
-4. Roll out to three design partners representing different operating conditions.
+The Webtechnosys AI Business Bot end-to-end register is complete at production release `911ba98`. The numbered remaining count is `0`. Do not expand this register with another category or module.
 
 ## PingBook milestone after website handoff
 
