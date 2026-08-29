@@ -33,6 +33,13 @@ const MAX_PAGE_CHARS = 4500;
 const MAX_CONTEXT_CHARS = 11000;
 const SEEDED_PATHS = [
   "/",
+  "/ai-solutions/",
+  "/ai-automation/",
+  "/ai-automation-company-india/",
+  "/ai-software-development-gurugram/",
+  "/custom-software-development-india/",
+  "/ai-products/",
+  "/channel-manager/",
   "/what-we-build/",
   "/goa-focus/",
   "/revenue-desk/",

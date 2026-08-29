@@ -14,3 +14,9 @@ test("partner knowledge ranking boosts automation and hospitality intent", () =>
 test("unrequested filmmaking and training pages are demoted", () => {
   assert.match(source, /score -= 12/g);
 });
+
+test("current partner automation and hotel solution paths are seeded for refresh", () => {
+  assert.match(source, /"\/ai-automation\/"/);
+  assert.match(source, /"\/ai-solutions\/"/);
+  assert.match(source, /"\/channel-manager\/"/);
+});
