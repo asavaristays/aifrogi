@@ -20,3 +20,8 @@ test("current partner automation and hotel solution paths are seeded for refresh
   assert.match(source, /"\/ai-solutions\/"/);
   assert.match(source, /"\/channel-manager\/"/);
 });
+
+test("citations exclude weak matches relative to the best approved source", () => {
+  assert.match(source, /relevanceFloor/);
+  assert.match(source, /item\.score >= relevanceFloor/);
+});
