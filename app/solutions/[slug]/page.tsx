@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/icons";
+import { AIProductHero } from "@/components/marketing/ai-product-hero";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { botProducts, getBotProduct } from "@/lib/bot-products";
@@ -29,26 +29,7 @@ export default async function BotProductPage({ params }: { params: Promise<{ slu
   return (
     <main className="bg-white text-[var(--ink-900)]">
       <SiteHeader />
-      <section className="relative overflow-hidden bg-[var(--ink-950)] px-5 py-16 text-white sm:px-8 sm:py-24">
-        <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px)] [background-size:72px_72px]" aria-hidden="true" />
-        <div className="absolute right-[8%] top-[10%] h-80 w-80 rounded-full bg-[var(--gold-600)]/20 blur-[100px]" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1.12fr_.88fr]">
-          <div>
-            <p className="product-eyebrow text-[var(--gold-300)]">{product.category} · Sovereign Business Bot</p>
-            <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.02] tracking-[-.045em] sm:text-7xl">{product.name}</h1>
-            <h2 className="mt-5 max-w-4xl text-2xl font-medium leading-tight text-white/88 sm:text-4xl">{product.headline}</h2>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/62">{product.description}</p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-md bg-[var(--gold-600)] px-6 text-sm font-bold text-[var(--ink-600)] transition hover:bg-[var(--gold-500)]">Start {product.name} onboarding <Icon name="arrow-right" /></a>
-              <a href="#intelligence" className="inline-flex min-h-12 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-6 text-sm font-semibold text-white transition hover:bg-white/10">View intelligence design</a>
-            </div>
-          </div>
-          <div className="hero-bot-float relative mx-auto aspect-[1122/1402] w-full max-w-[430px]" aria-hidden="true">
-            <div className="absolute inset-[15%] rounded-full bg-[var(--gold-600)]/20 blur-[70px]" />
-            <Image src="/brand/aifrogi-sovereign-bot.png" alt="" fill priority sizes="(max-width: 1024px) 430px, 500px" className="object-contain" />
-          </div>
-        </div>
-      </section>
+      <AIProductHero name={product.name} category={product.category} headline={product.headline} copy={product.description} stages={product.capabilities.slice(0, 4).map((detail, index) => ({ label: ["Customer intent", "Trusted intelligence", "Approved action", "Verified outcome"][index], detail }))} />
 
       <section className="border-b border-black/8 bg-[var(--warm-25)] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@/components/icons";
 
 const products = [
@@ -46,10 +47,10 @@ export function WhatsAppProductsShell({ eyebrow = "WhatsApp API products" }: { e
               AiFrogi packages the same Meta WhatsApp API, payment, automation, and integration skill into productized workflows for different buying moments.
             </p>
           </div>
-          <a href="/solutions" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold text-[#101010] transition hover:bg-[#f8faf9]">
+          <Link href="/solutions" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-4 text-sm font-bold text-[#101010] transition hover:bg-[#f8faf9]">
             View all solutions
             <Icon name="arrow-right" />
-          </a>
+          </Link>
         </div>
 
         <div className="mt-10 grid overflow-hidden rounded-lg border border-black/8 bg-[#f7faf8] shadow-[0_24px_80px_rgba(16,16,16,.09)] lg:grid-cols-2">

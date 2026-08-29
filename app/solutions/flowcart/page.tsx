@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { AIProductHero } from "@/components/marketing/ai-product-hero";
 import { EMILY_CAFE_ORDERS, EMILY_CAFE_PRODUCTS, formatInrFromPaisa } from "@/lib/flowcart-demo";
 import { marketingMetadata } from "@/lib/seo";
 import { FlowCartPricingCalculator } from "./pricing-calculator";
@@ -104,42 +104,12 @@ export default function FlowCartPage() {
     <main className="bg-white text-[#21362f]">
       <SiteHeader />
 
-      <section className="relative overflow-hidden bg-[#21362f] px-5 py-14 text-white sm:px-8 sm:py-20">
-        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
-          <div>
-            <div className="inline-flex items-center gap-3 rounded-lg border border-white/12 bg-white/8 p-2 pr-4">
-              <Image src="/brand/flowcart-logo.svg" alt="FlowCart logo" width={96} height={96} priority className="h-12 w-12 rounded-md bg-white object-contain p-1" />
-              <div>
-                <p className="text-xs font-black uppercase text-[#f4b85a]">AiFrogi FlowCart</p>
-                <p className="text-xs font-semibold text-white/58">Emily Cafe live example</p>
-              </div>
-            </div>
-            <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.04] sm:text-6xl">
-              Turn WhatsApp enquiries into paid ecommerce orders.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/66">
-              FlowCart helps cafes, bakeries, gift stores, and ecommerce teams collect custom orders, send Razorpay payment links, sync with shopping systems, and update customers automatically.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#f4b85a] px-6 text-sm font-bold text-[#21362f] shadow-[0_0_34px_rgba(244,184,90,.24)] transition hover:-translate-y-0.5 hover:bg-[#ffd078]">
-                Start FlowCart setup
-                <Icon name="arrow-right" />
-              </a>
-              <a href="#workflow" className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10">
-                View workflow
-                <Icon name="grid" />
-              </a>
-              <a href="/api/flowcart/current" className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10">
-                API demo
-                <Icon name="link" />
-              </a>
-            </div>
-          </div>
-
-          <RealtimeCommercePrototype />
-        </div>
-      </section>
+      <AIProductHero name="FlowCart" category="Commerce" headline="Turn product conversations into confirmed, paid orders." copy="FlowCart understands product intent, collects order requirements, connects approved payment and store systems, and keeps the team informed through every customer channel." stages={[
+        { label: "Customer intent", detail: "Customer describes the product, options and delivery need." },
+        { label: "Trusted intelligence", detail: "FlowCart checks the business-owned catalogue and order rules." },
+        { label: "Approved action", detail: "A valid order and payment step are prepared for confirmation." },
+        { label: "Verified outcome", detail: "Payment and fulfilment status return to the operating inbox." }
+      ]} />
 
       <section className="border-b border-black/8 bg-[#f8f4ed] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import { AIProductHero } from "@/components/marketing/ai-product-hero";
 import { marketingMetadata } from "@/lib/seo";
 import { PingBookPricingCalculator } from "./pricing-calculator";
 
@@ -137,37 +137,12 @@ export default function PingBookPage() {
     <main className="bg-white text-[#101010]">
       <SiteHeader />
 
-      <section className="relative overflow-hidden bg-[#101010] px-5 py-14 text-white sm:px-8 sm:py-20">
-        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
-	        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
-	          <div>
-	            <Image src="/brand/pingbook-logo-aifrogi-tight.png" alt="PingBook logo" width={240} height={240} priority className="h-auto w-20 rounded-lg bg-white p-2 grayscale contrast-125 shadow-[0_18px_44px_rgba(16,16,16,.18)]" />
-	            <p className="mt-4 text-xs font-bold text-[#e2c66d]">AiFrogi&apos;s PingBook</p>
-	            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.04] tracking-[-.045em] sm:text-6xl">
-              Book clinic appointments from WhatsApp.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/64">
-              PingBook helps clinics reply faster, confirm slots, collect booking fees, reduce no-shows, handle patient cancellations, and request reviews without losing WhatsApp context.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white shadow-[0_0_34px_rgba(138,106,22,.25)] transition hover:-translate-y-0.5 hover:bg-[#b28728]">
-                Start PingBook setup
-                <Icon name="arrow-right" />
-              </a>
-              <a href="#pricing" className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10">
-                View pricing
-                <Icon name="bar-chart-3" />
-              </a>
-              <a href="#workflow" className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10">
-                View workflow
-                <Icon name="grid" />
-              </a>
-            </div>
-          </div>
-
-	          <RealtimePrototype />
-	        </div>
-	      </section>
+      <AIProductHero name="PingBook" category="Appointments" headline="Turn appointment conversations into verified confirmations." copy="PingBook understands the required service, presents valid availability, applies approved booking rules and records the confirmed outcome for the team." stages={[
+        { label: "Customer intent", detail: "Customer shares the service and preferred date or time." },
+        { label: "Trusted intelligence", detail: "PingBook checks services, availability and booking rules." },
+        { label: "Approved action", detail: "A valid slot is held and presented for confirmation." },
+        { label: "Verified outcome", detail: "The appointment is created, read back and recorded." }
+      ]} />
 
       <section className="border-b border-black/8 bg-[#fbfaf7] px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">

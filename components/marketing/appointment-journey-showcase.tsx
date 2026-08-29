@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@/components/icons";
 
 const highlights = [
@@ -30,10 +31,10 @@ export function AppointmentJourneyShowcase() {
             ))}
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="/solutions/pingbook" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold !text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
+            <Link href="/solutions/pingbook" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold !text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
               Explore PingBook
               <Icon name="arrow-right" />
-            </a>
+            </Link>
             <a href="https://app.aifrogi.com/register?source=pingbook-home" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-5 text-sm font-bold text-[#2b2b2b] transition hover:bg-[#fbfaf7]">
               Start setup
               <Icon name="settings" />
@@ -41,9 +42,9 @@ export function AppointmentJourneyShowcase() {
           </div>
         </div>
 
-        <a href="/solutions/pingbook" className="group flex min-h-[260px] items-center justify-center">
+        <Link href="/solutions/pingbook" className="group flex min-h-[260px] items-center justify-center">
           <Image src="/brand/pingbook-logo-aifrogi-tight.png" alt="PingBook" width={1200} height={1200} className="h-[500px] w-[500px] max-w-full object-contain grayscale contrast-125 transition-transform duration-300 group-hover:scale-[1.02]" />
-        </a>
+        </Link>
       </div>
     </section>
   );
