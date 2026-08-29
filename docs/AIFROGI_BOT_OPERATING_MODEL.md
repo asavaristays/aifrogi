@@ -164,3 +164,18 @@ The following operating-model controls are implemented in the application baseli
 - New bot profiles cannot be saved without a persona name, business objective, and enabled language.
 
 Readiness does not itself activate an external business action. Appointment, availability, order, payment, CRM, PMS, channel-manager, and similar actions still require their own connector, permission, idempotency, read-back verification, outcome evidence, and rollback controls.
+
+## Version-one human response SLA
+
+The initial commercial release uses only SuperAdmin and AI Bot Admin for human-response ownership. A generic AI Bot User or Operator role is deferred until design-partner evidence proves that assignment delegation is needed.
+
+AI Bot Admin can configure:
+
+- Human response SLA from 5 minutes to 24 hours
+- Reminder threshold from 10% to 90% of the SLA
+- Whether an approved safe holding-message fallback is eligible after expiry
+- The customer-facing fallback wording
+
+The Bot Operations dashboard calculates the live response report from the latest customer message across workspace conversations. It shows waiting, reminder, overdue, oldest-waiting, and fallback-eligible conversations. Resolved conversations disappear when the team replies.
+
+Version-one fallback is intentionally **reporting-only**. Enabling the policy marks overdue conversations as approved fallback candidates; it does not send a customer message automatically. Automated delivery requires a later channel-specific implementation with one-send idempotency, active-window/template rules, delivery evidence, cancellation when a human replies, and a permanent escalation audit record.

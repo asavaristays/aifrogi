@@ -9,6 +9,7 @@ import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeWorkspaceSummary } from "@/lib/services/website-knowledge-service";
 import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
 import { evaluateBotReadiness } from "@/lib/bot-readiness";
+import { buildHumanResponseReport } from "@/lib/human-response-sla";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -36,9 +37,11 @@ export default async function DashboardPage() {
   const failedRecipient = countStatus("failed_recipient_unavailable");
   const openTickets = tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status));
   const botReadiness = evaluateBotReadiness({ profile: organization?.botProfile, businessVerified: organization?.onboarding?.kycStatus === "APPROVED", approvedKnowledgeCount: governance.entries.filter((item) => item.status === "APPROVED").length + governance.documents.filter((item) => item.status === "APPROVED").length, websitePageCount: knowledge.pages.length, whatsappConnected: connected });
+  const humanResponse = buildHumanResponseReport({ leads: allLeads, slaMinutes: organization?.botProfile?.responseSlaMinutes, reminderPercent: organization?.botProfile?.reminderPercent, fallbackEnabled: organization?.botProfile?.fallbackEnabled });
 
   const attention: DashboardAttention[] = [];
   if (metrics.unanswered) attention.push({ title: `${metrics.unanswered} conversation${metrics.unanswered === 1 ? "" : "s"} waiting`, reason: "The customer's latest message has not received a reply.", action: "Reply now", href: "/whatsapp-bot", tone: "urgent", owner: "You" });
+  if (humanResponse.overdue) attention.unshift({ title: `${humanResponse.overdue} human response SLA ${humanResponse.overdue === 1 ? "breach" : "breaches"}`, reason: `Oldest customer has waited ${humanResponse.oldestWaitingMinutes} minutes. ${humanResponse.fallbackEligible ? `${humanResponse.fallbackEligible} approved fallback candidate${humanResponse.fallbackEligible === 1 ? "" : "s"}.` : "Fallback sending remains disabled."}`, action: "Open response report", href: "/dashboard#human-response", tone: "urgent", owner: "You" });
   if (failedPayment) attention.push({ title: "Meta billing blocked delivery", reason: `${failedPayment} message${failedPayment === 1 ? "" : "s"} failed because billing needs attention.`, action: "Check billing", href: "/setup", tone: "urgent", owner: "You" });
   if (failedTemplate) attention.push({ title: "Use an approved template", reason: `${failedTemplate} outbound attempt${failedTemplate === 1 ? "" : "s"} occurred outside the active reply window.`, action: "Open campaigns", href: "/campaigns", tone: "waiting", owner: "AiFrogi" });
   if (failedEngagement) attention.push({ title: "Campaign delivery was limited", reason: "Reduce frequency and use recent, opted-in contacts before retrying.", action: "Review audience", href: "/campaigns", tone: "waiting", owner: "Meta" });
@@ -67,6 +70,7 @@ export default async function DashboardPage() {
     botName={organization?.botProfile?.personaName || "Business Assistant"}
     botCategory={organization?.botProfile?.category || "BUSINESS_AI"}
     botReadiness={botReadiness}
+    humanResponse={humanResponse}
     attention={attention}
     readiness={[
       { label: "Business", value: organization?.onboarding?.kycStatus === "APPROVED" || !organization ? "Verified" : "In review", ok: organization?.onboarding?.kycStatus === "APPROVED" || !organization },

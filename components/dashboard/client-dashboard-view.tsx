@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import type { Lead } from "@/types";
 import type { BotReadinessCheck } from "@/lib/bot-readiness";
+import type { HumanResponseItem } from "@/lib/human-response-sla";
 
 export type DashboardAttention = {
   title: string;
@@ -28,6 +29,7 @@ export type ClientDashboardViewProps = {
   botName: string;
   botCategory: string;
   botReadiness: { checks: BotReadinessCheck[]; completed: number; total: number; percent: number; ready: boolean };
+  humanResponse: { slaMinutes: number; reminderPercent: number; waiting: number; reminder: number; overdue: number; fallbackEligible: number; oldestWaitingMinutes: number; items: HumanResponseItem[] };
   attention: DashboardAttention[];
   readiness: DashboardReadiness[];
   recent: Lead[];
@@ -138,6 +140,12 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
 
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0 space-y-5">
+            <section id="human-response" className="soft-card overflow-hidden rounded-lg">
+              <SectionHeader eyebrow="Human response SLA" title="Team response report" status={props.humanResponse.overdue ? `${props.humanResponse.overdue} overdue` : `${props.humanResponse.waiting} waiting`} warning={props.humanResponse.overdue > 0} />
+              <div className="grid grid-cols-2 border-b border-[var(--border)] sm:grid-cols-4">{[["SLA", `${props.humanResponse.slaMinutes}m`], ["Reminder", String(props.humanResponse.reminder)], ["Overdue", String(props.humanResponse.overdue)], ["Fallback candidates", String(props.humanResponse.fallbackEligible)]].map(([label, value]) => <div key={label} className="border-r border-[var(--border)] p-4 last:border-r-0"><small className="block text-[10px] text-[var(--text-muted)]">{label}</small><strong className="mt-1 block text-lg">{value}</strong></div>)}</div>
+              <div className="divide-y divide-[var(--border)]">{props.humanResponse.items.slice(0, 5).map((item) => <Link key={item.leadId} href="/whatsapp-bot" className="grid gap-2 px-5 py-4 sm:grid-cols-[1fr_110px_100px] sm:items-center"><span><strong className="block text-sm">{item.name}</strong><small className="mt-1 block truncate text-[11px] text-[var(--text-muted)]">{item.latestMessage}</small></span><span className={`status-pill ${item.state === "OVERDUE" ? "status-error" : item.state === "REMINDER" ? "status-warning" : "status-info"}`}>{item.state.toLowerCase()}</span><strong className="text-xs sm:text-right">{item.waitingMinutes}m waiting</strong></Link>)}{!props.humanResponse.items.length ? <div className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">No customer is waiting for a team response.</div> : null}</div>
+              <div className="border-t border-[var(--border)] bg-[var(--surface-soft)] px-5 py-3 text-[11px] leading-5 text-[var(--text-muted)]">Fallback candidates are reported only. No customer message is sent automatically in this release.</div>
+            </section>
             <section className="soft-card overflow-hidden rounded-lg">
               <SectionHeader
                 eyebrow="Priority"

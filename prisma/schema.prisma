@@ -288,6 +288,10 @@ model BotProfile {
   languages             String[]         @default(["English"])
   prohibitedClaims      String[]         @default([])
   escalationTriggers    String[]         @default([])
+  responseSlaMinutes    Int              @default(60)
+  reminderPercent       Int              @default(50)
+  fallbackEnabled       Boolean          @default(false)
+  safeFallbackMessage   String?          @db.Text
   status               String           @default("DRAFT")
   configuredBy         String?
   createdAt            DateTime         @default(now())

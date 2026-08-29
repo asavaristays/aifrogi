@@ -70,7 +70,7 @@ export type CustomerOnboardingOrganization = {
   createdAt: string | Date;
   updatedAt: string | Date;
   onboarding: OnboardingRecord | null;
-  botProfile: { category: string; operatingMode: string; channels: string[]; capabilities: string[]; humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; personaName?: string | null; businessObjective?: string | null; tone?: string | null; languages?: string[]; prohibitedClaims?: string[]; escalationTriggers?: string[]; status?: string } | null;
+  botProfile: { category: string; operatingMode: string; channels: string[]; capabilities: string[]; humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; personaName?: string | null; businessObjective?: string | null; tone?: string | null; languages?: string[]; prohibitedClaims?: string[]; escalationTriggers?: string[]; responseSlaMinutes?: number; reminderPercent?: number; fallbackEnabled?: boolean; safeFallbackMessage?: string | null; status?: string } | null;
   documents: DocumentRecord[];
   activities: ActivityRecord[];
   properties: Array<{ id: string; name: string; slug: string }>;

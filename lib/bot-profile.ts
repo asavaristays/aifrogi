@@ -16,6 +16,10 @@ export type BotProfileInput = {
   languages: string[];
   prohibitedClaims: string[];
   escalationTriggers: string[];
+  responseSlaMinutes: number;
+  reminderPercent: number;
+  fallbackEnabled: boolean;
+  safeFallbackMessage: string;
 };
 
 function text(value: unknown, max = 500) {
@@ -44,8 +48,12 @@ export function parseBotProfile(value: unknown): { value?: BotProfileInput; erro
   const businessObjective = text(input.businessObjective, 1000);
   const tone = text(input.tone, 160) || "Professional, clear and helpful";
   const languages = list(input.languages, ["English"]);
+  const responseSlaMinutes = Math.min(24 * 60, Math.max(5, Math.round(Number(input.responseSlaMinutes) || 60)));
+  const reminderPercent = Math.min(90, Math.max(10, Math.round(Number(input.reminderPercent) || 50)));
+  const safeFallbackMessage = text(input.safeFallbackMessage, 600);
   if (!personaName) return { error: "Give this bot a customer-facing persona name" };
   if (!businessObjective) return { error: "Describe the bot's business objective" };
   if (!languages.length) return { error: "Select at least one supported language" };
-  return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false, personaName, businessObjective, tone, languages, prohibitedClaims: list(input.prohibitedClaims), escalationTriggers: list(input.escalationTriggers) } };
+  if (input.fallbackEnabled === true && safeFallbackMessage.length < 20) return { error: "Add approved safe fallback wording before enabling fallback" };
+  return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false, personaName, businessObjective, tone, languages, prohibitedClaims: list(input.prohibitedClaims), escalationTriggers: list(input.escalationTriggers), responseSlaMinutes, reminderPercent, fallbackEnabled: input.fallbackEnabled === true, safeFallbackMessage } };
 }

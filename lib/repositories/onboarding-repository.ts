@@ -234,6 +234,10 @@ export async function saveOrganizationBotProfile(input: {
     languages: string[];
     prohibitedClaims: string[];
     escalationTriggers: string[];
+    responseSlaMinutes: number;
+    reminderPercent: number;
+    fallbackEnabled: boolean;
+    safeFallbackMessage: string;
   };
 }) {
   const db = getDb();
@@ -259,7 +263,7 @@ export async function saveOrganizationBotProfile(input: {
 export async function saveClientBotPersona(input: {
   organizationId: string;
   actorEmail: string;
-  persona: Pick<NonNullable<Parameters<typeof saveOrganizationBotProfile>[0]["profile"]>, "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers">;
+  persona: Pick<NonNullable<Parameters<typeof saveOrganizationBotProfile>[0]["profile"]>, "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "responseSlaMinutes" | "reminderPercent" | "fallbackEnabled" | "safeFallbackMessage">;
 }) {
   const db = getDb();
   if (!db) return null;

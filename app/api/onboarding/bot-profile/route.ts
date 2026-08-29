@@ -12,7 +12,7 @@ export async function PATCH(request: Request) {
   const payload = await request.json().catch(() => null);
   const parsed = parseBotProfile({ ...organization.botProfile, ...(payload && typeof payload === "object" ? payload : {}), category: organization.botProfile.category, operatingMode: organization.botProfile.operatingMode, channels: organization.botProfile.channels, capabilities: organization.botProfile.capabilities, humanHandoffEnabled: organization.botProfile.humanHandoffEnabled, actionApprovalNeeded: organization.botProfile.actionApprovalNeeded });
   if (!parsed.value) return NextResponse.json({ error: parsed.error }, { status: 400 });
-  const { personaName, businessObjective, tone, languages, prohibitedClaims, escalationTriggers } = parsed.value;
-  const updated = await saveClientBotPersona({ organizationId: organization.id, actorEmail: user.username, persona: { personaName, businessObjective, tone, languages, prohibitedClaims, escalationTriggers } });
+  const { personaName, businessObjective, tone, languages, prohibitedClaims, escalationTriggers, responseSlaMinutes, reminderPercent, fallbackEnabled, safeFallbackMessage } = parsed.value;
+  const updated = await saveClientBotPersona({ organizationId: organization.id, actorEmail: user.username, persona: { personaName, businessObjective, tone, languages, prohibitedClaims, escalationTriggers, responseSlaMinutes, reminderPercent, fallbackEnabled, safeFallbackMessage } });
   return NextResponse.json({ organization: updated });
 }

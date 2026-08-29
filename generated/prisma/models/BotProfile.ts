@@ -20,8 +20,20 @@ export type BotProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$BotP
 
 export type AggregateBotProfile = {
   _count: BotProfileCountAggregateOutputType | null
+  _avg: BotProfileAvgAggregateOutputType | null
+  _sum: BotProfileSumAggregateOutputType | null
   _min: BotProfileMinAggregateOutputType | null
   _max: BotProfileMaxAggregateOutputType | null
+}
+
+export type BotProfileAvgAggregateOutputType = {
+  responseSlaMinutes: number | null
+  reminderPercent: number | null
+}
+
+export type BotProfileSumAggregateOutputType = {
+  responseSlaMinutes: number | null
+  reminderPercent: number | null
 }
 
 export type BotProfileMinAggregateOutputType = {
@@ -34,6 +46,10 @@ export type BotProfileMinAggregateOutputType = {
   personaName: string | null
   businessObjective: string | null
   tone: string | null
+  responseSlaMinutes: number | null
+  reminderPercent: number | null
+  fallbackEnabled: boolean | null
+  safeFallbackMessage: string | null
   status: string | null
   configuredBy: string | null
   createdAt: Date | null
@@ -50,6 +66,10 @@ export type BotProfileMaxAggregateOutputType = {
   personaName: string | null
   businessObjective: string | null
   tone: string | null
+  responseSlaMinutes: number | null
+  reminderPercent: number | null
+  fallbackEnabled: boolean | null
+  safeFallbackMessage: string | null
   status: string | null
   configuredBy: string | null
   createdAt: Date | null
@@ -71,6 +91,10 @@ export type BotProfileCountAggregateOutputType = {
   languages: number
   prohibitedClaims: number
   escalationTriggers: number
+  responseSlaMinutes: number
+  reminderPercent: number
+  fallbackEnabled: number
+  safeFallbackMessage: number
   status: number
   configuredBy: number
   createdAt: number
@@ -78,6 +102,16 @@ export type BotProfileCountAggregateOutputType = {
   _all: number
 }
 
+
+export type BotProfileAvgAggregateInputType = {
+  responseSlaMinutes?: true
+  reminderPercent?: true
+}
+
+export type BotProfileSumAggregateInputType = {
+  responseSlaMinutes?: true
+  reminderPercent?: true
+}
 
 export type BotProfileMinAggregateInputType = {
   id?: true
@@ -89,6 +123,10 @@ export type BotProfileMinAggregateInputType = {
   personaName?: true
   businessObjective?: true
   tone?: true
+  responseSlaMinutes?: true
+  reminderPercent?: true
+  fallbackEnabled?: true
+  safeFallbackMessage?: true
   status?: true
   configuredBy?: true
   createdAt?: true
@@ -105,6 +143,10 @@ export type BotProfileMaxAggregateInputType = {
   personaName?: true
   businessObjective?: true
   tone?: true
+  responseSlaMinutes?: true
+  reminderPercent?: true
+  fallbackEnabled?: true
+  safeFallbackMessage?: true
   status?: true
   configuredBy?: true
   createdAt?: true
@@ -126,6 +168,10 @@ export type BotProfileCountAggregateInputType = {
   languages?: true
   prohibitedClaims?: true
   escalationTriggers?: true
+  responseSlaMinutes?: true
+  reminderPercent?: true
+  fallbackEnabled?: true
+  safeFallbackMessage?: true
   status?: true
   configuredBy?: true
   createdAt?: true
@@ -140,25 +186,25 @@ export type BotProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   where?: Prisma.BotProfileWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-   * 
+   *
    * Determine the order of BotProfiles to fetch.
    */
   orderBy?: Prisma.BotProfileOrderByWithRelationInput | Prisma.BotProfileOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-   * 
+   *
    * Sets the start position
    */
   cursor?: Prisma.BotProfileWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-   * 
+   *
    * Take `±n` BotProfiles from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-   * 
+   *
    * Skip the first `n` BotProfiles.
    */
   skip?: number
@@ -168,6 +214,18 @@ export type BotProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Count returned BotProfiles
   **/
   _count?: true | BotProfileCountAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to average
+  **/
+  _avg?: BotProfileAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: BotProfileSumAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
@@ -201,6 +259,8 @@ export type BotProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: BotProfileCountAggregateInputType | true
+  _avg?: BotProfileAvgAggregateInputType
+  _sum?: BotProfileSumAggregateInputType
   _min?: BotProfileMinAggregateInputType
   _max?: BotProfileMaxAggregateInputType
 }
@@ -220,11 +280,17 @@ export type BotProfileGroupByOutputType = {
   languages: string[]
   prohibitedClaims: string[]
   escalationTriggers: string[]
+  responseSlaMinutes: number
+  reminderPercent: number
+  fallbackEnabled: boolean
+  safeFallbackMessage: string | null
   status: string
   configuredBy: string | null
   createdAt: Date
   updatedAt: Date
   _count: BotProfileCountAggregateOutputType | null
+  _avg: BotProfileAvgAggregateOutputType | null
+  _sum: BotProfileSumAggregateOutputType | null
   _min: BotProfileMinAggregateOutputType | null
   _max: BotProfileMaxAggregateOutputType | null
 }
@@ -262,6 +328,10 @@ export type BotProfileWhereInput = {
   languages?: Prisma.StringNullableListFilter<"BotProfile">
   prohibitedClaims?: Prisma.StringNullableListFilter<"BotProfile">
   escalationTriggers?: Prisma.StringNullableListFilter<"BotProfile">
+  responseSlaMinutes?: Prisma.IntFilter<"BotProfile"> | number
+  reminderPercent?: Prisma.IntFilter<"BotProfile"> | number
+  fallbackEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
+  safeFallbackMessage?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   status?: Prisma.StringFilter<"BotProfile"> | string
   configuredBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
@@ -284,6 +354,10 @@ export type BotProfileOrderByWithRelationInput = {
   languages?: Prisma.SortOrder
   prohibitedClaims?: Prisma.SortOrder
   escalationTriggers?: Prisma.SortOrder
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
+  fallbackEnabled?: Prisma.SortOrder
+  safeFallbackMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -309,6 +383,10 @@ export type BotProfileWhereUniqueInput = Prisma.AtLeast<{
   languages?: Prisma.StringNullableListFilter<"BotProfile">
   prohibitedClaims?: Prisma.StringNullableListFilter<"BotProfile">
   escalationTriggers?: Prisma.StringNullableListFilter<"BotProfile">
+  responseSlaMinutes?: Prisma.IntFilter<"BotProfile"> | number
+  reminderPercent?: Prisma.IntFilter<"BotProfile"> | number
+  fallbackEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
+  safeFallbackMessage?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   status?: Prisma.StringFilter<"BotProfile"> | string
   configuredBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
@@ -331,13 +409,19 @@ export type BotProfileOrderByWithAggregationInput = {
   languages?: Prisma.SortOrder
   prohibitedClaims?: Prisma.SortOrder
   escalationTriggers?: Prisma.SortOrder
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
+  fallbackEnabled?: Prisma.SortOrder
+  safeFallbackMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BotProfileCountOrderByAggregateInput
+  _avg?: Prisma.BotProfileAvgOrderByAggregateInput
   _max?: Prisma.BotProfileMaxOrderByAggregateInput
   _min?: Prisma.BotProfileMinOrderByAggregateInput
+  _sum?: Prisma.BotProfileSumOrderByAggregateInput
 }
 
 export type BotProfileScalarWhereWithAggregatesInput = {
@@ -358,6 +442,10 @@ export type BotProfileScalarWhereWithAggregatesInput = {
   languages?: Prisma.StringNullableListFilter<"BotProfile">
   prohibitedClaims?: Prisma.StringNullableListFilter<"BotProfile">
   escalationTriggers?: Prisma.StringNullableListFilter<"BotProfile">
+  responseSlaMinutes?: Prisma.IntWithAggregatesFilter<"BotProfile"> | number
+  reminderPercent?: Prisma.IntWithAggregatesFilter<"BotProfile"> | number
+  fallbackEnabled?: Prisma.BoolWithAggregatesFilter<"BotProfile"> | boolean
+  safeFallbackMessage?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"BotProfile"> | string
   configuredBy?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BotProfile"> | Date | string
@@ -378,6 +466,10 @@ export type BotProfileCreateInput = {
   languages?: Prisma.BotProfileCreatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
+  responseSlaMinutes?: number
+  reminderPercent?: number
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: string | null
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -400,6 +492,10 @@ export type BotProfileUncheckedCreateInput = {
   languages?: Prisma.BotProfileCreatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
+  responseSlaMinutes?: number
+  reminderPercent?: number
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: string | null
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -420,6 +516,10 @@ export type BotProfileUpdateInput = {
   languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
+  responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -442,6 +542,10 @@ export type BotProfileUncheckedUpdateInput = {
   languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
+  responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -463,6 +567,10 @@ export type BotProfileCreateManyInput = {
   languages?: Prisma.BotProfileCreatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
+  responseSlaMinutes?: number
+  reminderPercent?: number
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: string | null
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -483,6 +591,10 @@ export type BotProfileUpdateManyMutationInput = {
   languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
+  responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -504,6 +616,10 @@ export type BotProfileUncheckedUpdateManyInput = {
   languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
+  responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -538,10 +654,19 @@ export type BotProfileCountOrderByAggregateInput = {
   languages?: Prisma.SortOrder
   prohibitedClaims?: Prisma.SortOrder
   escalationTriggers?: Prisma.SortOrder
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
+  fallbackEnabled?: Prisma.SortOrder
+  safeFallbackMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BotProfileAvgOrderByAggregateInput = {
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
 }
 
 export type BotProfileMaxOrderByAggregateInput = {
@@ -554,6 +679,10 @@ export type BotProfileMaxOrderByAggregateInput = {
   personaName?: Prisma.SortOrder
   businessObjective?: Prisma.SortOrder
   tone?: Prisma.SortOrder
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
+  fallbackEnabled?: Prisma.SortOrder
+  safeFallbackMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -570,10 +699,19 @@ export type BotProfileMinOrderByAggregateInput = {
   personaName?: Prisma.SortOrder
   businessObjective?: Prisma.SortOrder
   tone?: Prisma.SortOrder
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
+  fallbackEnabled?: Prisma.SortOrder
+  safeFallbackMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BotProfileSumOrderByAggregateInput = {
+  responseSlaMinutes?: Prisma.SortOrder
+  reminderPercent?: Prisma.SortOrder
 }
 
 export type BotProfileCreateNestedOneWithoutOrganizationInput = {
@@ -675,6 +813,10 @@ export type BotProfileCreateWithoutOrganizationInput = {
   languages?: Prisma.BotProfileCreatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
+  responseSlaMinutes?: number
+  reminderPercent?: number
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: string | null
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -695,6 +837,10 @@ export type BotProfileUncheckedCreateWithoutOrganizationInput = {
   languages?: Prisma.BotProfileCreatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileCreateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileCreateescalationTriggersInput | string[]
+  responseSlaMinutes?: number
+  reminderPercent?: number
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: string | null
   status?: string
   configuredBy?: string | null
   createdAt?: Date | string
@@ -731,6 +877,10 @@ export type BotProfileUpdateWithoutOrganizationInput = {
   languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
+  responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -751,6 +901,10 @@ export type BotProfileUncheckedUpdateWithoutOrganizationInput = {
   languages?: Prisma.BotProfileUpdatelanguagesInput | string[]
   prohibitedClaims?: Prisma.BotProfileUpdateprohibitedClaimsInput | string[]
   escalationTriggers?: Prisma.BotProfileUpdateescalationTriggersInput | string[]
+  responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
+  fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -774,6 +928,10 @@ export type BotProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   languages?: boolean
   prohibitedClaims?: boolean
   escalationTriggers?: boolean
+  responseSlaMinutes?: boolean
+  reminderPercent?: boolean
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
@@ -796,6 +954,10 @@ export type BotProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   languages?: boolean
   prohibitedClaims?: boolean
   escalationTriggers?: boolean
+  responseSlaMinutes?: boolean
+  reminderPercent?: boolean
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
@@ -818,6 +980,10 @@ export type BotProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   languages?: boolean
   prohibitedClaims?: boolean
   escalationTriggers?: boolean
+  responseSlaMinutes?: boolean
+  reminderPercent?: boolean
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
@@ -840,13 +1006,17 @@ export type BotProfileSelectScalar = {
   languages?: boolean
   prohibitedClaims?: boolean
   escalationTriggers?: boolean
+  responseSlaMinutes?: boolean
+  reminderPercent?: boolean
+  fallbackEnabled?: boolean
+  safeFallbackMessage?: boolean
   status?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "status" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
+export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "responseSlaMinutes" | "reminderPercent" | "fallbackEnabled" | "safeFallbackMessage" | "status" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
 export type BotProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -877,6 +1047,10 @@ export type $BotProfilePayload<ExtArgs extends runtime.Types.Extensions.Internal
     languages: string[]
     prohibitedClaims: string[]
     escalationTriggers: string[]
+    responseSlaMinutes: number
+    reminderPercent: number
+    fallbackEnabled: boolean
+    safeFallbackMessage: string | null
     status: string
     configuredBy: string | null
     createdAt: Date
@@ -1319,6 +1493,10 @@ export interface BotProfileFieldRefs {
   readonly languages: Prisma.FieldRef<"BotProfile", 'String[]'>
   readonly prohibitedClaims: Prisma.FieldRef<"BotProfile", 'String[]'>
   readonly escalationTriggers: Prisma.FieldRef<"BotProfile", 'String[]'>
+  readonly responseSlaMinutes: Prisma.FieldRef<"BotProfile", 'Int'>
+  readonly reminderPercent: Prisma.FieldRef<"BotProfile", 'Int'>
+  readonly fallbackEnabled: Prisma.FieldRef<"BotProfile", 'Boolean'>
+  readonly safeFallbackMessage: Prisma.FieldRef<"BotProfile", 'String'>
   readonly status: Prisma.FieldRef<"BotProfile", 'String'>
   readonly configuredBy: Prisma.FieldRef<"BotProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"BotProfile", 'DateTime'>
