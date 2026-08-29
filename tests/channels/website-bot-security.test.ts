@@ -17,6 +17,13 @@ test("contact details are persisted only with explicit consent", () => {
 
 test("website bot limits request size and request rate", () => {
   assert.match(source, /slice\(0, 1200\)/);
-  assert.match(source, /current\.count > 12/);
+  assert.match(source, /rateLimited\(request\)/);
+  assert.match(source, /current\.count > limit/);
   assert.match(source, /status: 429/);
+});
+
+test("website reply retrieval requires a signed tenant-bound visitor session", () => {
+  assert.match(source, /verifyWebsiteVisitorToken\(bearerToken\(request\), slug\)/);
+  assert.match(source, /property: \{ slug \}/);
+  assert.match(source, /sender: "AGENT"/);
 });

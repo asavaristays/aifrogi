@@ -173,23 +173,25 @@ Rules:
 - Do not expose one tenant's conversations, actions, intelligence, or reports to another tenant.
 - Do not create a public conversation-read endpoint based only on a guessable session identifier.
 
-## Current limitations
+## Current website handoff status
 
-The website widget does not yet receive human replies from the AiFrogi inbox in real time.
+The website widget receives AI Bot Admin replies through a signed, tenant-bound visitor session. It polls the Webtechnosys first-party proxy, renders each human reply once, and exposes the operational states AI responding, Human requested, Human joined, and Conversation closed.
 
-The next implementation must use a server-issued random visitor capability stored only as a secure hash. A session ID alone, or a deterministic signature automatically issued for any caller-provided session ID, is not sufficient authorization to retrieve private conversation content.
+The signed capability is issued only after the tenant-scoped conversation is created, expires after 24 hours, and authorizes reads for that single tenant and lead. A raw browser session ID never authorizes transcript access.
 
-The secure website handoff must include:
+Implemented:
 
-- Server-created high-entropy visitor capability.
-- Hashed capability storage.
-- Capability rotation and expiry.
+- Signed visitor capability with expiry.
 - Authenticated operator-to-widget reply retrieval.
-- Delivery and read state.
-- Unread notification when the widget is minimized.
-- `Human joined` and `Conversation closed` transitions.
+- `Human requested`, `Human joined`, and `Conversation closed` states.
 - Rate limiting and tenant binding.
-- Automated privacy and cross-tenant tests.
+- Automated token tamper and cross-tenant rejection tests.
+
+Still pending:
+
+- Persisted delivery and read receipts.
+- Unread notification when the widget is minimized.
+- Server-side capability revocation before expiry.
 
 ## Rich business presence and connector policy
 
@@ -199,14 +201,11 @@ Negotiation is governed by approved category rules, floors, ceilings, alternativ
 
 ## Next engineering sequence
 
-1. Add the secure website visitor-session data model and migration.
-2. Bind new website conversations to server-issued visitor capabilities.
-3. Connect operator replies from AI Operations to the correct active widget.
-4. Activate human joined, delivery/read, unread, expiry, and closed states.
-5. Run realistic Webtechnosys end-to-end testing.
-6. Improve intelligence citations, source refresh, version history, conflict handling, and answer evaluation.
-7. Implement PingBook as the first verified tool-using vertical.
-8. Roll out to three design partners representing different operating conditions.
+1. Run realistic Webtechnosys end-to-end testing of AI, handoff, reply, and closure.
+2. Add persisted delivery/read receipts, unread launcher notification, and capability revocation.
+3. Improve intelligence citations, source refresh, version history, conflict handling, and answer evaluation.
+4. Implement PingBook as the first verified tool-using vertical.
+5. Roll out to three design partners representing different operating conditions.
 
 ## PingBook milestone after website handoff
 

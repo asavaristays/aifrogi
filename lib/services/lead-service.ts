@@ -296,10 +296,12 @@ export async function captureIncomingAiBotMessage(input: {
 }) {
   const propertySlug = input.propertySlug?.trim() || DEFAULT_PROPERTY_SLUG;
   const messageBody = (input.message ?? input.guestMessage ?? "").trim();
+  // A website conversation must keep one stable tenant-scoped lead even when
+  // the visitor later supplies a phone number or email address.
   const phoneSeed =
+    input.conversationId?.trim() ||
     input.phone?.trim() ||
     input.mobile?.trim() ||
-    input.conversationId?.trim() ||
     "";
 
   try {
