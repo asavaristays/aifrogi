@@ -186,25 +186,25 @@ export type BotProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   where?: Prisma.BotProfileWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-   *
+   * 
    * Determine the order of BotProfiles to fetch.
    */
   orderBy?: Prisma.BotProfileOrderByWithRelationInput | Prisma.BotProfileOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-   *
+   * 
    * Sets the start position
    */
   cursor?: Prisma.BotProfileWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-   *
+   * 
    * Take `±n` BotProfiles from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-   *
+   * 
    * Skip the first `n` BotProfiles.
    */
   skip?: number
@@ -216,13 +216,13 @@ export type BotProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   _count?: true | BotProfileCountAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   *
+   * 
    * Select which fields to average
   **/
   _avg?: BotProfileAvgAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   *
+   * 
    * Select which fields to sum
   **/
   _sum?: BotProfileSumAggregateInputType

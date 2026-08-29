@@ -318,6 +318,7 @@ export type LeadWhereInput = {
   assetShares?: Prisma.LeadAssetShareListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
   aiOperations?: Prisma.AiOperationListRelationFilter
+  websiteSession?: Prisma.XOR<Prisma.WebsiteVisitorSessionNullableScalarRelationFilter, Prisma.WebsiteVisitorSessionWhereInput> | null
 }
 
 export type LeadOrderByWithRelationInput = {
@@ -344,6 +345,7 @@ export type LeadOrderByWithRelationInput = {
   assetShares?: Prisma.LeadAssetShareOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
   aiOperations?: Prisma.AiOperationOrderByRelationAggregateInput
+  websiteSession?: Prisma.WebsiteVisitorSessionOrderByWithRelationInput
 }
 
 export type LeadWhereUniqueInput = Prisma.AtLeast<{
@@ -374,6 +376,7 @@ export type LeadWhereUniqueInput = Prisma.AtLeast<{
   assetShares?: Prisma.LeadAssetShareListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
   aiOperations?: Prisma.AiOperationListRelationFilter
+  websiteSession?: Prisma.XOR<Prisma.WebsiteVisitorSessionNullableScalarRelationFilter, Prisma.WebsiteVisitorSessionWhereInput> | null
 }, "id" | "propertyId_phone">
 
 export type LeadOrderByWithAggregationInput = {
@@ -447,6 +450,7 @@ export type LeadCreateInput = {
   assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateInput = {
@@ -472,6 +476,7 @@ export type LeadUncheckedCreateInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUpdateInput = {
@@ -497,6 +502,7 @@ export type LeadUpdateInput = {
   assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateInput = {
@@ -522,6 +528,7 @@ export type LeadUncheckedUpdateInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadCreateManyInput = {
@@ -726,6 +733,20 @@ export type EnumLeadLanguageFieldUpdateOperationsInput = {
   set?: $Enums.LeadLanguage
 }
 
+export type LeadCreateNestedOneWithoutWebsiteSessionInput = {
+  create?: Prisma.XOR<Prisma.LeadCreateWithoutWebsiteSessionInput, Prisma.LeadUncheckedCreateWithoutWebsiteSessionInput>
+  connectOrCreate?: Prisma.LeadCreateOrConnectWithoutWebsiteSessionInput
+  connect?: Prisma.LeadWhereUniqueInput
+}
+
+export type LeadUpdateOneRequiredWithoutWebsiteSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.LeadCreateWithoutWebsiteSessionInput, Prisma.LeadUncheckedCreateWithoutWebsiteSessionInput>
+  connectOrCreate?: Prisma.LeadCreateOrConnectWithoutWebsiteSessionInput
+  upsert?: Prisma.LeadUpsertWithoutWebsiteSessionInput
+  connect?: Prisma.LeadWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LeadUpdateToOneWithWhereWithoutWebsiteSessionInput, Prisma.LeadUpdateWithoutWebsiteSessionInput>, Prisma.LeadUncheckedUpdateWithoutWebsiteSessionInput>
+}
+
 export type LeadCreateNestedOneWithoutTagsInput = {
   create?: Prisma.XOR<Prisma.LeadCreateWithoutTagsInput, Prisma.LeadUncheckedCreateWithoutTagsInput>
   connectOrCreate?: Prisma.LeadCreateOrConnectWithoutTagsInput
@@ -820,6 +841,7 @@ export type LeadCreateWithoutPropertyInput = {
   assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateWithoutPropertyInput = {
@@ -844,6 +866,7 @@ export type LeadUncheckedCreateWithoutPropertyInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadCreateOrConnectWithoutPropertyInput = {
@@ -895,6 +918,122 @@ export type LeadScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Lead"> | Date | string
 }
 
+export type LeadCreateWithoutWebsiteSessionInput = {
+  id?: string
+  name: string
+  initials: string
+  score: number
+  source: string
+  stage: $Enums.LeadStage
+  language?: $Enums.LeadLanguage
+  intent: string
+  stayLabel: string
+  partyLabel: string
+  budgetLabel: string
+  phone: string
+  lastActivityAt?: Date | string
+  isHighPriority?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  property: Prisma.PropertyCreateNestedOneWithoutLeadsInput
+  tags?: Prisma.LeadTagCreateNestedManyWithoutLeadInput
+  messages?: Prisma.LeadMessageCreateNestedManyWithoutLeadInput
+  assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
+  aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+}
+
+export type LeadUncheckedCreateWithoutWebsiteSessionInput = {
+  id?: string
+  propertyId: string
+  name: string
+  initials: string
+  score: number
+  source: string
+  stage: $Enums.LeadStage
+  language?: $Enums.LeadLanguage
+  intent: string
+  stayLabel: string
+  partyLabel: string
+  budgetLabel: string
+  phone: string
+  lastActivityAt?: Date | string
+  isHighPriority?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.LeadTagUncheckedCreateNestedManyWithoutLeadInput
+  messages?: Prisma.LeadMessageUncheckedCreateNestedManyWithoutLeadInput
+  assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
+  aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+}
+
+export type LeadCreateOrConnectWithoutWebsiteSessionInput = {
+  where: Prisma.LeadWhereUniqueInput
+  create: Prisma.XOR<Prisma.LeadCreateWithoutWebsiteSessionInput, Prisma.LeadUncheckedCreateWithoutWebsiteSessionInput>
+}
+
+export type LeadUpsertWithoutWebsiteSessionInput = {
+  update: Prisma.XOR<Prisma.LeadUpdateWithoutWebsiteSessionInput, Prisma.LeadUncheckedUpdateWithoutWebsiteSessionInput>
+  create: Prisma.XOR<Prisma.LeadCreateWithoutWebsiteSessionInput, Prisma.LeadUncheckedCreateWithoutWebsiteSessionInput>
+  where?: Prisma.LeadWhereInput
+}
+
+export type LeadUpdateToOneWithWhereWithoutWebsiteSessionInput = {
+  where?: Prisma.LeadWhereInput
+  data: Prisma.XOR<Prisma.LeadUpdateWithoutWebsiteSessionInput, Prisma.LeadUncheckedUpdateWithoutWebsiteSessionInput>
+}
+
+export type LeadUpdateWithoutWebsiteSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  initials?: Prisma.StringFieldUpdateOperationsInput | string
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  stage?: Prisma.EnumLeadStageFieldUpdateOperationsInput | $Enums.LeadStage
+  language?: Prisma.EnumLeadLanguageFieldUpdateOperationsInput | $Enums.LeadLanguage
+  intent?: Prisma.StringFieldUpdateOperationsInput | string
+  stayLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  partyLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  budgetLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  lastActivityAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isHighPriority?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneRequiredWithoutLeadsNestedInput
+  tags?: Prisma.LeadTagUpdateManyWithoutLeadNestedInput
+  messages?: Prisma.LeadMessageUpdateManyWithoutLeadNestedInput
+  assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
+  aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+}
+
+export type LeadUncheckedUpdateWithoutWebsiteSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  initials?: Prisma.StringFieldUpdateOperationsInput | string
+  score?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  stage?: Prisma.EnumLeadStageFieldUpdateOperationsInput | $Enums.LeadStage
+  language?: Prisma.EnumLeadLanguageFieldUpdateOperationsInput | $Enums.LeadLanguage
+  intent?: Prisma.StringFieldUpdateOperationsInput | string
+  stayLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  partyLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  budgetLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  lastActivityAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isHighPriority?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.LeadTagUncheckedUpdateManyWithoutLeadNestedInput
+  messages?: Prisma.LeadMessageUncheckedUpdateManyWithoutLeadNestedInput
+  assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
+  aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+}
+
 export type LeadCreateWithoutTagsInput = {
   id?: string
   name: string
@@ -917,6 +1056,7 @@ export type LeadCreateWithoutTagsInput = {
   assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateWithoutTagsInput = {
@@ -941,6 +1081,7 @@ export type LeadUncheckedCreateWithoutTagsInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadCreateOrConnectWithoutTagsInput = {
@@ -981,6 +1122,7 @@ export type LeadUpdateWithoutTagsInput = {
   assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateWithoutTagsInput = {
@@ -1005,6 +1147,7 @@ export type LeadUncheckedUpdateWithoutTagsInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadCreateWithoutMessagesInput = {
@@ -1029,6 +1172,7 @@ export type LeadCreateWithoutMessagesInput = {
   assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateWithoutMessagesInput = {
@@ -1053,6 +1197,7 @@ export type LeadUncheckedCreateWithoutMessagesInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadCreateOrConnectWithoutMessagesInput = {
@@ -1093,6 +1238,7 @@ export type LeadUpdateWithoutMessagesInput = {
   assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateWithoutMessagesInput = {
@@ -1117,6 +1263,7 @@ export type LeadUncheckedUpdateWithoutMessagesInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadCreateWithoutConversationsInput = {
@@ -1141,6 +1288,7 @@ export type LeadCreateWithoutConversationsInput = {
   messages?: Prisma.LeadMessageCreateNestedManyWithoutLeadInput
   assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateWithoutConversationsInput = {
@@ -1165,6 +1313,7 @@ export type LeadUncheckedCreateWithoutConversationsInput = {
   messages?: Prisma.LeadMessageUncheckedCreateNestedManyWithoutLeadInput
   assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadCreateOrConnectWithoutConversationsInput = {
@@ -1205,6 +1354,7 @@ export type LeadUpdateWithoutConversationsInput = {
   messages?: Prisma.LeadMessageUpdateManyWithoutLeadNestedInput
   assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateWithoutConversationsInput = {
@@ -1229,6 +1379,7 @@ export type LeadUncheckedUpdateWithoutConversationsInput = {
   messages?: Prisma.LeadMessageUncheckedUpdateManyWithoutLeadNestedInput
   assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadCreateWithoutAiOperationsInput = {
@@ -1253,6 +1404,7 @@ export type LeadCreateWithoutAiOperationsInput = {
   messages?: Prisma.LeadMessageCreateNestedManyWithoutLeadInput
   assetShares?: Prisma.LeadAssetShareCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateWithoutAiOperationsInput = {
@@ -1277,6 +1429,7 @@ export type LeadUncheckedCreateWithoutAiOperationsInput = {
   messages?: Prisma.LeadMessageUncheckedCreateNestedManyWithoutLeadInput
   assetShares?: Prisma.LeadAssetShareUncheckedCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadCreateOrConnectWithoutAiOperationsInput = {
@@ -1317,6 +1470,7 @@ export type LeadUpdateWithoutAiOperationsInput = {
   messages?: Prisma.LeadMessageUpdateManyWithoutLeadNestedInput
   assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateWithoutAiOperationsInput = {
@@ -1341,6 +1495,7 @@ export type LeadUncheckedUpdateWithoutAiOperationsInput = {
   messages?: Prisma.LeadMessageUncheckedUpdateManyWithoutLeadNestedInput
   assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadCreateWithoutAssetSharesInput = {
@@ -1365,6 +1520,7 @@ export type LeadCreateWithoutAssetSharesInput = {
   messages?: Prisma.LeadMessageCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionCreateNestedOneWithoutLeadInput
 }
 
 export type LeadUncheckedCreateWithoutAssetSharesInput = {
@@ -1389,6 +1545,7 @@ export type LeadUncheckedCreateWithoutAssetSharesInput = {
   messages?: Prisma.LeadMessageUncheckedCreateNestedManyWithoutLeadInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutLegacyLeadInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutLeadInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedOneWithoutLeadInput
 }
 
 export type LeadCreateOrConnectWithoutAssetSharesInput = {
@@ -1429,6 +1586,7 @@ export type LeadUpdateWithoutAssetSharesInput = {
   messages?: Prisma.LeadMessageUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateWithoutAssetSharesInput = {
@@ -1453,6 +1611,7 @@ export type LeadUncheckedUpdateWithoutAssetSharesInput = {
   messages?: Prisma.LeadMessageUncheckedUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadCreateManyPropertyInput = {
@@ -1496,6 +1655,7 @@ export type LeadUpdateWithoutPropertyInput = {
   assetShares?: Prisma.LeadAssetShareUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateWithoutPropertyInput = {
@@ -1520,6 +1680,7 @@ export type LeadUncheckedUpdateWithoutPropertyInput = {
   assetShares?: Prisma.LeadAssetShareUncheckedUpdateManyWithoutLeadNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutLegacyLeadNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutLeadNestedInput
+  websiteSession?: Prisma.WebsiteVisitorSessionUncheckedUpdateOneWithoutLeadNestedInput
 }
 
 export type LeadUncheckedUpdateManyWithoutPropertyInput = {
@@ -1632,6 +1793,7 @@ export type LeadSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   assetShares?: boolean | Prisma.Lead$assetSharesArgs<ExtArgs>
   conversations?: boolean | Prisma.Lead$conversationsArgs<ExtArgs>
   aiOperations?: boolean | Prisma.Lead$aiOperationsArgs<ExtArgs>
+  websiteSession?: boolean | Prisma.Lead$websiteSessionArgs<ExtArgs>
   _count?: boolean | Prisma.LeadCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["lead"]>
 
@@ -1705,6 +1867,7 @@ export type LeadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   assetShares?: boolean | Prisma.Lead$assetSharesArgs<ExtArgs>
   conversations?: boolean | Prisma.Lead$conversationsArgs<ExtArgs>
   aiOperations?: boolean | Prisma.Lead$aiOperationsArgs<ExtArgs>
+  websiteSession?: boolean | Prisma.Lead$websiteSessionArgs<ExtArgs>
   _count?: boolean | Prisma.LeadCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LeadIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1723,6 +1886,7 @@ export type $LeadPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     assetShares: Prisma.$LeadAssetSharePayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
     aiOperations: Prisma.$AiOperationPayload<ExtArgs>[]
+    websiteSession: Prisma.$WebsiteVisitorSessionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2142,6 +2306,7 @@ export interface Prisma__LeadClient<T, Null = never, ExtArgs extends runtime.Typ
   assetShares<T extends Prisma.Lead$assetSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lead$assetSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadAssetSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.Lead$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lead$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aiOperations<T extends Prisma.Lead$aiOperationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lead$aiOperationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiOperationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  websiteSession<T extends Prisma.Lead$websiteSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Lead$websiteSessionArgs<ExtArgs>>): Prisma.Prisma__WebsiteVisitorSessionClient<runtime.Types.Result.GetResult<Prisma.$WebsiteVisitorSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2706,6 +2871,25 @@ export type Lead$aiOperationsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.AiOperationScalarFieldEnum | Prisma.AiOperationScalarFieldEnum[]
+}
+
+/**
+ * Lead.websiteSession
+ */
+export type Lead$websiteSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WebsiteVisitorSession
+   */
+  select?: Prisma.WebsiteVisitorSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WebsiteVisitorSession
+   */
+  omit?: Prisma.WebsiteVisitorSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WebsiteVisitorSessionInclude<ExtArgs> | null
+  where?: Prisma.WebsiteVisitorSessionWhereInput
 }
 
 /**

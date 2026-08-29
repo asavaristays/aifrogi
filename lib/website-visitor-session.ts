@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
 const TOKEN_TTL_SECONDS = 24 * 60 * 60;
 
@@ -24,6 +24,10 @@ export function issueWebsiteVisitorToken(input: Omit<WebsiteVisitorToken, "exp">
   const payload: WebsiteVisitorToken = { ...input, exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS };
   const encoded = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
   return `${encoded}.${sign(encoded)}`;
+}
+
+export function hashWebsiteVisitorValue(value: string) {
+  return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
 export function verifyWebsiteVisitorToken(token: string, expectedSlug: string): WebsiteVisitorToken | null {

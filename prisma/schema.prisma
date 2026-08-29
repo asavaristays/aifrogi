@@ -132,6 +132,7 @@ model Property {
   conversations       Conversation[]
   neutralMessages     Message[]
   aiOperations        AiOperation[]
+  websiteSessions     WebsiteVisitorSession[]
 
   @@index([organizationId])
 }
@@ -430,12 +431,38 @@ model Lead {
   assetShares    LeadAssetShare[]
   conversations  Conversation[]
   aiOperations   AiOperation[]
+  websiteSession WebsiteVisitorSession?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
   @@unique([propertyId, phone])
   @@index([propertyId, stage])
   @@index([propertyId, score])
+}
+
+model WebsiteVisitorSession {
+  id                 String    @id @default(cuid())
+  propertyId         String
+  property           Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId             String    @unique
+  lead               Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sessionIdHash      String
+  capabilityHash     String    @unique
+  status             String    @default("AI_READY")
+  contactName        String?
+  contactValue       String?
+  consentText        String?   @db.Text
+  consentedAt        DateTime?
+  expiresAt          DateTime
+  lastDeliveredAt    DateTime?
+  lastReadAt         DateTime?
+  revokedAt          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([propertyId, sessionIdHash])
+  @@index([propertyId, status, updatedAt])
+  @@index([expiresAt, revokedAt])
 }
 
 model LeadTag {

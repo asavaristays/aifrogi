@@ -19,6 +19,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     if (!lead.tags.some((tag) => ["resolved", "closed"].includes(tag.toLowerCase()))) {
       await db.leadTag.create({ data: { leadId: id, value: "Resolved" } });
     }
+    await db.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null }, data: { status: "CLOSED", revokedAt: new Date() } });
     return NextResponse.json({ closed: true });
   }
   const sender = typeof payload?.sender === "string" ? payload.sender : "AGENT";

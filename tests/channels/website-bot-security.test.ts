@@ -13,6 +13,8 @@ test("public website bot requires an enabled configured website profile", () => 
 test("contact details are persisted only with explicit consent", () => {
   assert.match(source, /payload\?\.consent && payload\.contact/);
   assert.match(source, /payload\?\.consent && payload\.name/);
+  assert.match(source, /consentText:/);
+  assert.match(source, /consentedAt:/);
 });
 
 test("website bot limits request size and request rate", () => {
@@ -28,4 +30,6 @@ test("website reply retrieval requires a signed tenant-bound visitor session", (
   assert.match(source, /sender: "AGENT"/);
   assert.match(source, /deliveryStatus: "READ"/);
   assert.match(source, /conversationState: "CLOSED"/);
+  assert.match(source, /capabilityHash: hashWebsiteVisitorValue/);
+  assert.match(source, /revokedAt: null/);
 });

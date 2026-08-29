@@ -398,6 +398,7 @@ export const ModelName = {
   OnboardingDocument: 'OnboardingDocument',
   OnboardingActivity: 'OnboardingActivity',
   Lead: 'Lead',
+  WebsiteVisitorSession: 'WebsiteVisitorSession',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
   ChannelConnection: 'ChannelConnection',
@@ -454,7 +455,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1491,6 +1492,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LeadCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LeadCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebsiteVisitorSession: {
+      payload: Prisma.$WebsiteVisitorSessionPayload<ExtArgs>
+      fields: Prisma.WebsiteVisitorSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebsiteVisitorSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebsiteVisitorSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.WebsiteVisitorSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebsiteVisitorSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>
+        }
+        findMany: {
+          args: Prisma.WebsiteVisitorSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>[]
+        }
+        create: {
+          args: Prisma.WebsiteVisitorSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>
+        }
+        createMany: {
+          args: Prisma.WebsiteVisitorSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebsiteVisitorSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.WebsiteVisitorSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>
+        }
+        update: {
+          args: Prisma.WebsiteVisitorSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebsiteVisitorSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebsiteVisitorSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebsiteVisitorSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebsiteVisitorSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebsiteVisitorSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.WebsiteVisitorSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebsiteVisitorSession>
+        }
+        groupBy: {
+          args: Prisma.WebsiteVisitorSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteVisitorSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebsiteVisitorSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebsiteVisitorSessionCountAggregateOutputType> | number
         }
       }
     }
@@ -4858,6 +4933,28 @@ export const LeadScalarFieldEnum = {
 export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
 
 
+export const WebsiteVisitorSessionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  sessionIdHash: 'sessionIdHash',
+  capabilityHash: 'capabilityHash',
+  status: 'status',
+  contactName: 'contactName',
+  contactValue: 'contactValue',
+  consentText: 'consentText',
+  consentedAt: 'consentedAt',
+  expiresAt: 'expiresAt',
+  lastDeliveredAt: 'lastDeliveredAt',
+  lastReadAt: 'lastReadAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteVisitorSessionScalarFieldEnum = (typeof WebsiteVisitorSessionScalarFieldEnum)[keyof typeof WebsiteVisitorSessionScalarFieldEnum]
+
+
 export const LeadTagScalarFieldEnum = {
   id: 'id',
   leadId: 'leadId',
@@ -6064,6 +6161,7 @@ export type GlobalOmitConfig = {
   onboardingDocument?: Prisma.OnboardingDocumentOmit
   onboardingActivity?: Prisma.OnboardingActivityOmit
   lead?: Prisma.LeadOmit
+  websiteVisitorSession?: Prisma.WebsiteVisitorSessionOmit
   leadTag?: Prisma.LeadTagOmit
   leadMessage?: Prisma.LeadMessageOmit
   channelConnection?: Prisma.ChannelConnectionOmit

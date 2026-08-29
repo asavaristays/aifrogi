@@ -88,6 +88,11 @@ export type OnboardingActivity = Prisma.OnboardingActivityModel
  */
 export type Lead = Prisma.LeadModel
 /**
+ * Model WebsiteVisitorSession
+ * 
+ */
+export type WebsiteVisitorSession = Prisma.WebsiteVisitorSessionModel
+/**
  * Model LeadTag
  * 
  */

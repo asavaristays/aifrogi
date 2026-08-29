@@ -65,6 +65,7 @@ export const ModelName = {
   OnboardingDocument: 'OnboardingDocument',
   OnboardingActivity: 'OnboardingActivity',
   Lead: 'Lead',
+  WebsiteVisitorSession: 'WebsiteVisitorSession',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
   ChannelConnection: 'ChannelConnection',
@@ -413,6 +414,28 @@ export const LeadScalarFieldEnum = {
 } as const
 
 export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+
+
+export const WebsiteVisitorSessionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  sessionIdHash: 'sessionIdHash',
+  capabilityHash: 'capabilityHash',
+  status: 'status',
+  contactName: 'contactName',
+  contactValue: 'contactValue',
+  consentText: 'consentText',
+  consentedAt: 'consentedAt',
+  expiresAt: 'expiresAt',
+  lastDeliveredAt: 'lastDeliveredAt',
+  lastReadAt: 'lastReadAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebsiteVisitorSessionScalarFieldEnum = (typeof WebsiteVisitorSessionScalarFieldEnum)[keyof typeof WebsiteVisitorSessionScalarFieldEnum]
 
 
 export const LeadTagScalarFieldEnum = {

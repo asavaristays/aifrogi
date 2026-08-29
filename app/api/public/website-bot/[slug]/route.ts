@@ -3,7 +3,8 @@ import { getDb } from "@/lib/db";
 import { buildWebsiteKnowledgeAnswer } from "@/lib/services/website-knowledge-service";
 import { captureIncomingAiBotMessage } from "@/lib/services/lead-service";
 import type { WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
-import { issueWebsiteVisitorToken, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
+import { hashWebsiteVisitorValue, issueWebsiteVisitorToken, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
+import { guardWebsiteVisitorMessage } from "@/lib/website-message-safety";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -46,21 +47,40 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
   const priorToken = payload?.visitorToken ? verifyWebsiteVisitorToken(payload.visitorToken, slug) : null;
   if (payload?.visitorToken && (!priorToken || priorToken.sessionId !== sessionId)) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
+  if (payload?.visitorToken) {
+    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true } });
+    if (!activeSession) return NextResponse.json({ error: "Visitor session is invalid, closed, or expired." }, { status: 401, headers: responseHeaders });
+  }
 
-  const result = await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration }).catch(() => null);
-  const answer = result?.answer || "I do not have enough approved Webtechnosys information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.";
+  const safety = guardWebsiteVisitorMessage(message);
+  const result = safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration }).catch(() => null);
+  const answer = safety.answer || result?.answer || "I do not have enough approved Webtechnosys information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.";
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,
     phone: payload?.consent && payload.contact ? String(payload.contact).slice(0, 120) : undefined,
     profileName: payload?.consent && payload.name ? String(payload.name).slice(0, 100) : "Website visitor",
-    message, aiReply: answer, propertySlug: slug
+    message: safety.storageText, aiReply: answer, propertySlug: slug
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
   const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested);
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
+  const consented = Boolean(payload?.consent && payload.contact);
+  await db.websiteVisitorSession.upsert({
+    where: { leadId: captured.lead.id },
+    create: {
+      propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
+      status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
+      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: "Webtechnosys may store these details and contact me about this enquiry.", consentedAt: new Date() } : {})
+    },
+    update: {
+      capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined,
+      expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
+      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: "Webtechnosys may store these details and contact me about this enquiry.", consentedAt: new Date() } : {})
+    }
+  });
 
-  return NextResponse.json({ answer, grounded: Boolean(result), handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result), sources: result?.sourceUrls.slice(0, 3) || [], handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
@@ -70,6 +90,8 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   if (!token) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Conversation is temporarily unavailable." }, { status: 503, headers: responseHeaders });
+  const session = await db.websiteVisitorSession.findFirst({ where: { property: { slug }, leadId: token.leadId, sessionIdHash: hashWebsiteVisitorValue(token.sessionId), capabilityHash: hashWebsiteVisitorValue(bearerToken(request)), expiresAt: { gt: new Date() } }, select: { id: true, status: true, revokedAt: true } });
+  if (!session || session.revokedAt) return NextResponse.json({ messages: [], conversationState: "CLOSED" }, { status: 410, headers: responseHeaders });
   const afterValue = new URL(request.url).searchParams.get("after") || "";
   const afterDate = afterValue ? new Date(afterValue) : null;
   if (afterDate && Number.isNaN(afterDate.getTime())) return NextResponse.json({ error: "Invalid reply cursor." }, { status: 400, headers: responseHeaders });
@@ -90,7 +112,10 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const closed = ["BOOKED", "WON", "LOST"].includes(lead.stage) || lead.tags.some((tag) => ["resolved", "closed"].includes(tag.value.toLowerCase()));
   if (closed) return NextResponse.json({ messages: [], conversationState: "CLOSED" }, { headers: responseHeaders });
   const messageIds = lead.messages.map((message) => message.id);
-  if (messageIds.length) await db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, deliveryStatus: null }, data: { deliveryStatus: "DELIVERED", statusUpdatedAt: new Date() } });
+  if (messageIds.length) await Promise.all([
+    db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, deliveryStatus: null }, data: { deliveryStatus: "DELIVERED", statusUpdatedAt: new Date() } }),
+    db.websiteVisitorSession.update({ where: { id: session.id }, data: { status: "HUMAN_JOINED", lastDeliveredAt: new Date() } })
+  ]);
   const conversationState = lead.messages.length ? "HUMAN_JOINED" : token.humanRequested ? "HUMAN_REQUESTED" : "AI_READY";
   return NextResponse.json({ messages: lead.messages.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString() })), conversationState }, { headers: responseHeaders });
 }
@@ -105,8 +130,12 @@ export async function PATCH(request: Request, context: { params: Promise<{ slug:
   if (!messageIds.length) return NextResponse.json({ error: "Message IDs are required." }, { status: 400, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Conversation is temporarily unavailable." }, { status: 503, headers: responseHeaders });
-  const lead = await db.lead.findFirst({ where: { id: token.leadId, property: { slug }, tags: { none: { value: { in: ["Resolved", "Closed"] } } } }, select: { id: true } });
-  if (!lead) return NextResponse.json({ error: "Conversation is closed or unavailable." }, { status: 410, headers: responseHeaders });
-  const result = await db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, sender: "AGENT" }, data: { deliveryStatus: "READ", statusUpdatedAt: new Date() } });
+  const session = await db.websiteVisitorSession.findFirst({ where: { property: { slug }, leadId: token.leadId, capabilityHash: hashWebsiteVisitorValue(bearerToken(request)), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true } });
+  if (!session) return NextResponse.json({ error: "Conversation is closed or unavailable." }, { status: 410, headers: responseHeaders });
+  const result = await db.$transaction(async (transaction) => {
+    const updated = await transaction.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, sender: "AGENT" }, data: { deliveryStatus: "READ", statusUpdatedAt: new Date() } });
+    await transaction.websiteVisitorSession.update({ where: { id: session.id }, data: { lastReadAt: new Date() } });
+    return updated;
+  });
   return NextResponse.json({ read: result.count }, { headers: responseHeaders });
 }

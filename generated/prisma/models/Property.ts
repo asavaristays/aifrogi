@@ -231,6 +231,7 @@ export type PropertyWhereInput = {
   conversations?: Prisma.ConversationListRelationFilter
   neutralMessages?: Prisma.MessageListRelationFilter
   aiOperations?: Prisma.AiOperationListRelationFilter
+  websiteSessions?: Prisma.WebsiteVisitorSessionListRelationFilter
 }
 
 export type PropertyOrderByWithRelationInput = {
@@ -260,6 +261,7 @@ export type PropertyOrderByWithRelationInput = {
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
   neutralMessages?: Prisma.MessageOrderByRelationAggregateInput
   aiOperations?: Prisma.AiOperationOrderByRelationAggregateInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionOrderByRelationAggregateInput
 }
 
 export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -292,6 +294,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   conversations?: Prisma.ConversationListRelationFilter
   neutralMessages?: Prisma.MessageListRelationFilter
   aiOperations?: Prisma.AiOperationListRelationFilter
+  websiteSessions?: Prisma.WebsiteVisitorSessionListRelationFilter
 }, "id" | "slug">
 
 export type PropertyOrderByWithAggregationInput = {
@@ -350,6 +353,7 @@ export type PropertyCreateInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateInput = {
@@ -378,6 +382,7 @@ export type PropertyUncheckedCreateInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
@@ -406,6 +411,7 @@ export type PropertyUpdateInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
@@ -434,6 +440,7 @@ export type PropertyUncheckedUpdateInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
@@ -632,6 +639,20 @@ export type PropertyUpdateOneRequiredWithoutLeadsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutLeadsInput, Prisma.PropertyUpdateWithoutLeadsInput>, Prisma.PropertyUncheckedUpdateWithoutLeadsInput>
 }
 
+export type PropertyCreateNestedOneWithoutWebsiteSessionsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutWebsiteSessionsInput, Prisma.PropertyUncheckedCreateWithoutWebsiteSessionsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutWebsiteSessionsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutWebsiteSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutWebsiteSessionsInput, Prisma.PropertyUncheckedCreateWithoutWebsiteSessionsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutWebsiteSessionsInput
+  upsert?: Prisma.PropertyUpsertWithoutWebsiteSessionsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutWebsiteSessionsInput, Prisma.PropertyUpdateWithoutWebsiteSessionsInput>, Prisma.PropertyUncheckedUpdateWithoutWebsiteSessionsInput>
+}
+
 export type PropertyCreateNestedOneWithoutChannelConnectionsInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutChannelConnectionsInput, Prisma.PropertyUncheckedCreateWithoutChannelConnectionsInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutChannelConnectionsInput
@@ -825,6 +846,7 @@ export type PropertyCreateWithoutKnowledgeDocumentsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
@@ -852,6 +874,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutKnowledgeDocumentsInput = {
@@ -895,6 +918,7 @@ export type PropertyUpdateWithoutKnowledgeDocumentsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
@@ -922,6 +946,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutKnowledgeEntriesInput = {
@@ -949,6 +974,7 @@ export type PropertyCreateWithoutKnowledgeEntriesInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
@@ -976,6 +1002,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutKnowledgeEntriesInput = {
@@ -1019,6 +1046,7 @@ export type PropertyUpdateWithoutKnowledgeEntriesInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
@@ -1046,6 +1074,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutKnowledgeGapsInput = {
@@ -1073,6 +1102,7 @@ export type PropertyCreateWithoutKnowledgeGapsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
@@ -1100,6 +1130,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutKnowledgeGapsInput = {
@@ -1143,6 +1174,7 @@ export type PropertyUpdateWithoutKnowledgeGapsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
@@ -1170,6 +1202,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutOrganizationInput = {
@@ -1197,6 +1230,7 @@ export type PropertyCreateWithoutOrganizationInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutOrganizationInput = {
@@ -1224,6 +1258,7 @@ export type PropertyUncheckedCreateWithoutOrganizationInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutOrganizationInput = {
@@ -1292,6 +1327,7 @@ export type PropertyCreateWithoutLeadsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutLeadsInput = {
@@ -1319,6 +1355,7 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutLeadsInput = {
@@ -1362,6 +1399,7 @@ export type PropertyUpdateWithoutLeadsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutLeadsInput = {
@@ -1374,6 +1412,135 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutWebsiteSessionsInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutWebsiteSessionsInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutWebsiteSessionsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutWebsiteSessionsInput, Prisma.PropertyUncheckedCreateWithoutWebsiteSessionsInput>
+}
+
+export type PropertyUpsertWithoutWebsiteSessionsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutWebsiteSessionsInput, Prisma.PropertyUncheckedUpdateWithoutWebsiteSessionsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutWebsiteSessionsInput, Prisma.PropertyUncheckedCreateWithoutWebsiteSessionsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutWebsiteSessionsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutWebsiteSessionsInput, Prisma.PropertyUncheckedUpdateWithoutWebsiteSessionsInput>
+}
+
+export type PropertyUpdateWithoutWebsiteSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutWebsiteSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
   metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
   automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1416,6 +1583,7 @@ export type PropertyCreateWithoutChannelConnectionsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutChannelConnectionsInput = {
@@ -1443,6 +1611,7 @@ export type PropertyUncheckedCreateWithoutChannelConnectionsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutChannelConnectionsInput = {
@@ -1486,6 +1655,7 @@ export type PropertyUpdateWithoutChannelConnectionsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutChannelConnectionsInput = {
@@ -1513,6 +1683,7 @@ export type PropertyUncheckedUpdateWithoutChannelConnectionsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutParticipantsInput = {
@@ -1540,6 +1711,7 @@ export type PropertyCreateWithoutParticipantsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutParticipantsInput = {
@@ -1567,6 +1739,7 @@ export type PropertyUncheckedCreateWithoutParticipantsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutParticipantsInput = {
@@ -1610,6 +1783,7 @@ export type PropertyUpdateWithoutParticipantsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutParticipantsInput = {
@@ -1637,6 +1811,7 @@ export type PropertyUncheckedUpdateWithoutParticipantsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutConversationsInput = {
@@ -1664,6 +1839,7 @@ export type PropertyCreateWithoutConversationsInput = {
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutConversationsInput = {
@@ -1691,6 +1867,7 @@ export type PropertyUncheckedCreateWithoutConversationsInput = {
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutConversationsInput = {
@@ -1734,6 +1911,7 @@ export type PropertyUpdateWithoutConversationsInput = {
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutConversationsInput = {
@@ -1761,6 +1939,7 @@ export type PropertyUncheckedUpdateWithoutConversationsInput = {
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutNeutralMessagesInput = {
@@ -1788,6 +1967,7 @@ export type PropertyCreateWithoutNeutralMessagesInput = {
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutNeutralMessagesInput = {
@@ -1815,6 +1995,7 @@ export type PropertyUncheckedCreateWithoutNeutralMessagesInput = {
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutNeutralMessagesInput = {
@@ -1858,6 +2039,7 @@ export type PropertyUpdateWithoutNeutralMessagesInput = {
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutNeutralMessagesInput = {
@@ -1885,6 +2067,7 @@ export type PropertyUncheckedUpdateWithoutNeutralMessagesInput = {
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAiOperationsInput = {
@@ -1912,6 +2095,7 @@ export type PropertyCreateWithoutAiOperationsInput = {
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAiOperationsInput = {
@@ -1939,6 +2123,7 @@ export type PropertyUncheckedCreateWithoutAiOperationsInput = {
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAiOperationsInput = {
@@ -1982,6 +2167,7 @@ export type PropertyUpdateWithoutAiOperationsInput = {
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAiOperationsInput = {
@@ -2009,6 +2195,7 @@ export type PropertyUncheckedUpdateWithoutAiOperationsInput = {
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutMetricsInput = {
@@ -2036,6 +2223,7 @@ export type PropertyCreateWithoutMetricsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutMetricsInput = {
@@ -2063,6 +2251,7 @@ export type PropertyUncheckedCreateWithoutMetricsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutMetricsInput = {
@@ -2106,6 +2295,7 @@ export type PropertyUpdateWithoutMetricsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutMetricsInput = {
@@ -2133,6 +2323,7 @@ export type PropertyUncheckedUpdateWithoutMetricsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCampaignsInput = {
@@ -2160,6 +2351,7 @@ export type PropertyCreateWithoutCampaignsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutCampaignsInput = {
@@ -2187,6 +2379,7 @@ export type PropertyUncheckedCreateWithoutCampaignsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCampaignsInput = {
@@ -2230,6 +2423,7 @@ export type PropertyUpdateWithoutCampaignsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCampaignsInput = {
@@ -2257,6 +2451,7 @@ export type PropertyUncheckedUpdateWithoutCampaignsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAutomationJobsInput = {
@@ -2284,6 +2479,7 @@ export type PropertyCreateWithoutAutomationJobsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
@@ -2311,6 +2507,7 @@ export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAutomationJobsInput = {
@@ -2354,6 +2551,7 @@ export type PropertyUpdateWithoutAutomationJobsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
@@ -2381,6 +2579,7 @@ export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAssetsInput = {
@@ -2408,6 +2607,7 @@ export type PropertyCreateWithoutAssetsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAssetsInput = {
@@ -2435,6 +2635,7 @@ export type PropertyUncheckedCreateWithoutAssetsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAssetsInput = {
@@ -2478,6 +2679,7 @@ export type PropertyUpdateWithoutAssetsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAssetsInput = {
@@ -2505,6 +2707,7 @@ export type PropertyUncheckedUpdateWithoutAssetsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutWhatsappIntegrationInput = {
@@ -2532,6 +2735,7 @@ export type PropertyCreateWithoutWhatsappIntegrationInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
@@ -2559,6 +2763,7 @@ export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutWhatsappIntegrationInput = {
@@ -2602,6 +2807,7 @@ export type PropertyUpdateWithoutWhatsappIntegrationInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
@@ -2629,6 +2835,7 @@ export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAppointmentTenantsInput = {
@@ -2656,6 +2863,7 @@ export type PropertyCreateWithoutAppointmentTenantsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAppointmentTenantsInput = {
@@ -2683,6 +2891,7 @@ export type PropertyUncheckedCreateWithoutAppointmentTenantsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAppointmentTenantsInput = {
@@ -2726,6 +2935,7 @@ export type PropertyUpdateWithoutAppointmentTenantsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAppointmentTenantsInput = {
@@ -2753,6 +2963,7 @@ export type PropertyUncheckedUpdateWithoutAppointmentTenantsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCommerceTenantsInput = {
@@ -2780,6 +2991,7 @@ export type PropertyCreateWithoutCommerceTenantsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutCommerceTenantsInput = {
@@ -2807,6 +3019,7 @@ export type PropertyUncheckedCreateWithoutCommerceTenantsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCommerceTenantsInput = {
@@ -2850,6 +3063,7 @@ export type PropertyUpdateWithoutCommerceTenantsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCommerceTenantsInput = {
@@ -2877,6 +3091,7 @@ export type PropertyUncheckedUpdateWithoutCommerceTenantsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyOrganizationInput = {
@@ -2915,6 +3130,7 @@ export type PropertyUpdateWithoutOrganizationInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutOrganizationInput = {
@@ -2942,6 +3158,7 @@ export type PropertyUncheckedUpdateWithoutOrganizationInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutOrganizationInput = {
@@ -2976,6 +3193,7 @@ export type PropertyCountOutputType = {
   conversations: number
   neutralMessages: number
   aiOperations: number
+  websiteSessions: number
 }
 
 export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2994,6 +3212,7 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   conversations?: boolean | PropertyCountOutputTypeCountConversationsArgs
   neutralMessages?: boolean | PropertyCountOutputTypeCountNeutralMessagesArgs
   aiOperations?: boolean | PropertyCountOutputTypeCountAiOperationsArgs
+  websiteSessions?: boolean | PropertyCountOutputTypeCountWebsiteSessionsArgs
 }
 
 /**
@@ -3111,6 +3330,13 @@ export type PropertyCountOutputTypeCountAiOperationsArgs<ExtArgs extends runtime
   where?: Prisma.AiOperationWhereInput
 }
 
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountWebsiteSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WebsiteVisitorSessionWhereInput
+}
+
 
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3139,6 +3365,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   conversations?: boolean | Prisma.Property$conversationsArgs<ExtArgs>
   neutralMessages?: boolean | Prisma.Property$neutralMessagesArgs<ExtArgs>
   aiOperations?: boolean | Prisma.Property$aiOperationsArgs<ExtArgs>
+  websiteSessions?: boolean | Prisma.Property$websiteSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
@@ -3199,6 +3426,7 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   conversations?: boolean | Prisma.Property$conversationsArgs<ExtArgs>
   neutralMessages?: boolean | Prisma.Property$neutralMessagesArgs<ExtArgs>
   aiOperations?: boolean | Prisma.Property$aiOperationsArgs<ExtArgs>
+  websiteSessions?: boolean | Prisma.Property$websiteSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3228,6 +3456,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
     neutralMessages: Prisma.$MessagePayload<ExtArgs>[]
     aiOperations: Prisma.$AiOperationPayload<ExtArgs>[]
+    websiteSessions: Prisma.$WebsiteVisitorSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3650,6 +3879,7 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   conversations<T extends Prisma.Property$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   neutralMessages<T extends Prisma.Property$neutralMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$neutralMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aiOperations<T extends Prisma.Property$aiOperationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$aiOperationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiOperationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  websiteSessions<T extends Prisma.Property$websiteSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$websiteSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteVisitorSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4484,6 +4714,30 @@ export type Property$aiOperationsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.AiOperationScalarFieldEnum | Prisma.AiOperationScalarFieldEnum[]
+}
+
+/**
+ * Property.websiteSessions
+ */
+export type Property$websiteSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WebsiteVisitorSession
+   */
+  select?: Prisma.WebsiteVisitorSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WebsiteVisitorSession
+   */
+  omit?: Prisma.WebsiteVisitorSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WebsiteVisitorSessionInclude<ExtArgs> | null
+  where?: Prisma.WebsiteVisitorSessionWhereInput
+  orderBy?: Prisma.WebsiteVisitorSessionOrderByWithRelationInput | Prisma.WebsiteVisitorSessionOrderByWithRelationInput[]
+  cursor?: Prisma.WebsiteVisitorSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WebsiteVisitorSessionScalarFieldEnum | Prisma.WebsiteVisitorSessionScalarFieldEnum[]
 }
 
 /**
