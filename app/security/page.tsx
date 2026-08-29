@@ -52,6 +52,30 @@ const complianceStatus = [
   ["PCI DSS", "Provider responsibility", "Payment credentials remain with approved payment providers; AiFrogi does not claim to be a card-data processor."]
 ];
 
+const evidenceRegister = [
+  ["Production readiness", "Automated", "Health endpoint checks the database, session secret, public URL, Meta webhook signing, and legacy inbound-token configuration.", "Each release"],
+  ["Security boundaries", "Automated", "Fixture-based tests exercise unauthenticated access, cross-workspace access, and role-bypassing mutations on covered routes.", "Before release"],
+  ["Client-side secret exposure", "Automated", "Production client bundles are checked for protected credential patterns.", "Before release"],
+  ["Backup and restoration", "Runbook ready", "Documented database backup, protected release snapshot, restoration, and rollback procedures.", "Operational review due"],
+  ["Independent penetration test", "Planned", "External application and infrastructure assessment has not yet been completed.", "Before wider enterprise rollout"],
+  ["Incident-response exercise", "Planned", "The response runbook exists; a formally recorded tabletop exercise remains pending.", "Before wider enterprise rollout"]
+];
+
+const sovereignControls = [
+  ["Owned intelligence", "Approved business knowledge is stored and governed inside the customer workspace."],
+  ["Channel independence", "Website and WhatsApp are connectors; the business intelligence is not owned by either channel."],
+  ["Scoped model access", "Only information needed to answer the current request should be sent to an AI provider."],
+  ["Human authority", "Business actions remain within configured permissions, approvals, and human-handoff rules."],
+  ["Portable records", "Customer knowledge, conversations, and outcomes are maintained as business records rather than model memory."],
+  ["Auditable operation", "Support grants, delivery activity, knowledge use, and covered administrative actions leave evidence."]
+];
+
+const subprocessors = [
+  ["OpenAI", "AI response processing", "Approved knowledge excerpts and the conversation context required for a response."],
+  ["Meta / WhatsApp", "Business messaging channel", "WhatsApp participant, message, template, and delivery information."],
+  ["Infrastructure providers", "Application, database, network, backup, and email delivery", "Service data required to operate AiFrogi; the current provider register is available during customer review."]
+];
+
 export default function SecurityPage() {
   return (
     <main className="min-h-screen bg-white text-[#2c243b]">
@@ -123,6 +147,44 @@ export default function SecurityPage() {
             {complianceStatus.map(([control, status, evidence]) => <div key={control} className="grid gap-3 border-b border-black/8 bg-white p-5 last:border-b-0 md:grid-cols-[1fr_170px_1.6fr] md:items-start"><strong className="text-sm">{control}</strong><span className={`w-fit rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[.1em] ${status === "Active" || status === "Published" ? "bg-[#eaf9ef] text-[#178665]" : "bg-[#fff5df] text-[#9a6719]"}`}>{status}</span><p className="text-xs leading-5 text-[var(--text-muted)]">{evidence}</p></div>)}
           </div>
         </div>
+      </section>
+
+      <section id="evidence" className="scroll-mt-20 border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-6 lg:grid-cols-[1fr_.7fr] lg:items-end">
+            <div><p className="product-eyebrow">Assurance evidence</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Trust backed by a visible evidence register.</h2><p className="mt-5 max-w-3xl text-sm leading-7 text-[var(--text-muted)]">The register separates automated checks, documented operating procedures, and independent work that is still pending. Detailed evidence remains access-controlled because it can contain sensitive system information.</p></div>
+            <p className="text-xs leading-5 text-[var(--text-muted)] lg:text-right"><strong className="text-[#2c243b]">Register reviewed:</strong> 29 August 2026<br />Material changes are reflected on this page.</p>
+          </div>
+          <div className="mt-10 overflow-hidden rounded-xl border border-black/8 bg-white">
+            {evidenceRegister.map(([control, status, evidence, cadence]) => <div key={control} className="grid gap-3 border-b border-black/8 p-5 last:border-b-0 md:grid-cols-[1fr_150px_1.7fr_170px]"><strong className="text-sm">{control}</strong><span className={`w-fit rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[.1em] ${status === "Planned" ? "bg-[#fff5df] text-[#9a6719]" : "bg-[#eaf9ef] text-[#178665]"}`}>{status}</span><p className="text-xs leading-5 text-[var(--text-muted)]">{evidence}</p><p className="text-xs font-semibold leading-5 text-[#2c243b]">{cadence}</p></div>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="sovereign-controls" className="scroll-mt-20 px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <p className="product-eyebrow">Sovereign Business Bot controls</p>
+          <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-.03em] sm:text-4xl">The business owns its intelligence and preserves its operational data.</h2>
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{sovereignControls.map(([title, copy]) => <article key={title} className="rounded-xl border border-black/8 bg-white p-5"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#2c243b] text-sm font-bold text-white">✓</span><h3 className="mt-5 font-bold">{title}</h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></article>)}</div>
+        </div>
+      </section>
+
+      <section id="subprocessors" className="scroll-mt-20 border-y border-black/8 bg-[#fbf8fc] px-5 py-20 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl"><p className="product-eyebrow">Data-processing transparency</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Key service providers are identified by purpose.</h2><p className="mt-5 text-sm leading-7 text-[var(--text-muted)]">Actual processing depends on the customer’s enabled channels and features. Contractual terms, locations, retention, and the complete provider register should be confirmed during customer onboarding.</p></div>
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">{subprocessors.map(([provider, purpose, data]) => <article key={provider} className="rounded-xl border border-black/8 bg-white p-6"><h3 className="text-lg font-bold">{provider}</h3><p className="mt-2 text-xs font-bold uppercase tracking-[.1em] text-[#a21c98]">{purpose}</p><p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">{data}</p></article>)}</div>
+        </div>
+      </section>
+
+      <section id="customer-security-pack" className="scroll-mt-20 px-5 py-20 sm:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr]">
+          <div><p className="product-eyebrow">Customer assurance</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">A practical security pack for customer review.</h2><p className="mt-5 text-sm leading-7 text-[var(--text-muted)]">Customers and design partners can request the current assurance pack. Sensitive test output and infrastructure details are shared only after an appropriate confidentiality review.</p><a href="mailto:info@aifrogi.com?subject=AiFrogi%20security%20pack%20request" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#d92bcb] px-5 text-sm font-bold text-white">Request security pack <Icon name="arrow-right" /></a></div>
+          <div className="grid gap-x-8 sm:grid-cols-2">{["Security and architecture overview", "Data-flow and responsibility summary", "Privacy and deletion controls", "Subprocessor register", "Access and support-control summary", "Backup and incident-response summary", "Available test evidence", "Certification and remediation roadmap"].map((item) => <div key={item} className="flex gap-3 border-t border-black/10 py-4 text-sm font-semibold"><span className="text-[#178665]">✓</span>{item}</div>)}</div>
+        </div>
+      </section>
+
+      <section id="assurance-roadmap" className="scroll-mt-20 border-y border-black/8 bg-[#2c243b] px-5 py-16 text-white sm:px-8">
+        <div className="mx-auto max-w-7xl"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#ff8af1]">Assurance roadmap</p><h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Independent assurance follows operational maturity.</h2><div className="mt-10 grid gap-5 md:grid-cols-3">{[["Now", "Document controls, harden access, collect release evidence, and complete repeatable internal verification."], ["Next", "Commission an independent penetration test, remediate findings, and record an incident-response exercise."], ["Formal assurance", "Prepare for ISO/IEC 27001 certification and SOC 2 examination when the operating evidence and commercial need justify it."]].map(([title, copy]) => <article key={title} className="rounded-xl border border-white/12 bg-white/5 p-5"><h3 className="font-bold text-[#ff8af1]">{title}</h3><p className="mt-3 text-sm leading-6 text-white/62">{copy}</p></article>)}</div></div>
       </section>
 
       <section className="bg-[#2c243b] px-5 py-16 text-white sm:px-8">
