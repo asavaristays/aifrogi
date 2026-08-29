@@ -26,4 +26,6 @@ test("website reply retrieval requires a signed tenant-bound visitor session", (
   assert.match(source, /verifyWebsiteVisitorToken\(bearerToken\(request\), slug\)/);
   assert.match(source, /property: \{ slug \}/);
   assert.match(source, /sender: "AGENT"/);
+  assert.match(source, /deliveryStatus: "READ"/);
+  assert.match(source, /conversationState: "CLOSED"/);
 });

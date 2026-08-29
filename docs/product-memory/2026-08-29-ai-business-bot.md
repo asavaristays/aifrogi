@@ -184,14 +184,13 @@ Implemented:
 - Signed visitor capability with expiry.
 - Authenticated operator-to-widget reply retrieval.
 - `Human requested`, `Human joined`, and `Conversation closed` states.
+- Persisted `DELIVERED` and `READ` status for human website replies.
+- Unread reply badge while the widget is minimized.
+- AI Bot Admin close action; closure revokes transcript access for the visitor capability.
 - Rate limiting and tenant binding.
 - Automated token tamper and cross-tenant rejection tests.
 
-Still pending:
-
-- Persisted delivery and read receipts.
-- Unread notification when the widget is minimized.
-- Server-side capability revocation before expiry.
+Still pending for a later hardening release: a dedicated website-session ledger for operator-visible device/session revocation before conversation closure. The current capability expires after 24 hours and loses transcript access immediately when the conversation is closed.
 
 ## Rich business presence and connector policy
 
@@ -202,10 +201,9 @@ Negotiation is governed by approved category rules, floors, ceilings, alternativ
 ## Next engineering sequence
 
 1. Run realistic Webtechnosys end-to-end testing of AI, handoff, reply, and closure.
-2. Add persisted delivery/read receipts, unread launcher notification, and capability revocation.
-3. Improve intelligence citations, source refresh, version history, conflict handling, and answer evaluation.
-4. Implement PingBook as the first verified tool-using vertical.
-5. Roll out to three design partners representing different operating conditions.
+2. Improve intelligence citations, source refresh, version history, conflict handling, and answer evaluation.
+3. Implement PingBook as the first verified tool-using vertical.
+4. Roll out to three design partners representing different operating conditions.
 
 ## PingBook milestone after website handoff
 

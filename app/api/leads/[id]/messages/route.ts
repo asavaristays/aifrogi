@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { appendLeadMessage, loadLead } from "@/lib/services/lead-service";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { getDb } from "@/lib/db";
 
 const allowedSenders = new Set(["GUEST", "AGENT", "AI"]);
 
@@ -11,6 +12,15 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
   }
   const payload = await request.json().catch(() => null);
+  if (payload?.action === "CLOSE_WEBSITE_CONVERSATION") {
+    if (!lead.tags.includes("Website Bot")) return NextResponse.json({ error: "This is not a website conversation" }, { status: 400 });
+    const db = getDb();
+    if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
+    if (!lead.tags.some((tag) => ["resolved", "closed"].includes(tag.toLowerCase()))) {
+      await db.leadTag.create({ data: { leadId: id, value: "Resolved" } });
+    }
+    return NextResponse.json({ closed: true });
+  }
   const sender = typeof payload?.sender === "string" ? payload.sender : "AGENT";
   const body = typeof payload?.body === "string" ? payload.body.trim() : "";
 

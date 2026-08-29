@@ -88,6 +88,25 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   });
   if (!lead) return NextResponse.json({ error: "Conversation was not found." }, { status: 404, headers: responseHeaders });
   const closed = ["BOOKED", "WON", "LOST"].includes(lead.stage) || lead.tags.some((tag) => ["resolved", "closed"].includes(tag.value.toLowerCase()));
-  const conversationState = closed ? "CLOSED" : lead.messages.length ? "HUMAN_JOINED" : token.humanRequested ? "HUMAN_REQUESTED" : "AI_READY";
+  if (closed) return NextResponse.json({ messages: [], conversationState: "CLOSED" }, { headers: responseHeaders });
+  const messageIds = lead.messages.map((message) => message.id);
+  if (messageIds.length) await db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, deliveryStatus: null }, data: { deliveryStatus: "DELIVERED", statusUpdatedAt: new Date() } });
+  const conversationState = lead.messages.length ? "HUMAN_JOINED" : token.humanRequested ? "HUMAN_REQUESTED" : "AI_READY";
   return NextResponse.json({ messages: lead.messages.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString() })), conversationState }, { headers: responseHeaders });
+}
+
+export async function PATCH(request: Request, context: { params: Promise<{ slug: string }> }) {
+  if (rateLimited(request, 60)) return NextResponse.json({ error: "Please wait a moment." }, { status: 429, headers: responseHeaders });
+  const { slug } = await context.params;
+  const token = verifyWebsiteVisitorToken(bearerToken(request), slug);
+  if (!token) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
+  const payload = await request.json().catch(() => null) as { messageIds?: unknown } | null;
+  const messageIds = Array.isArray(payload?.messageIds) ? payload.messageIds.filter((id): id is string => typeof id === "string").slice(0, 50) : [];
+  if (!messageIds.length) return NextResponse.json({ error: "Message IDs are required." }, { status: 400, headers: responseHeaders });
+  const db = getDb();
+  if (!db) return NextResponse.json({ error: "Conversation is temporarily unavailable." }, { status: 503, headers: responseHeaders });
+  const lead = await db.lead.findFirst({ where: { id: token.leadId, property: { slug }, tags: { none: { value: { in: ["Resolved", "Closed"] } } } }, select: { id: true } });
+  if (!lead) return NextResponse.json({ error: "Conversation is closed or unavailable." }, { status: 410, headers: responseHeaders });
+  const result = await db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, sender: "AGENT" }, data: { deliveryStatus: "READ", statusUpdatedAt: new Date() } });
+  return NextResponse.json({ read: result.count }, { headers: responseHeaders });
 }

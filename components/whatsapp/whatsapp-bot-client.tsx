@@ -628,6 +628,21 @@ export function WhatsAppBotClient({
     router.refresh();
   }
 
+  async function closeWebsiteConversation() {
+    if (!activeIsWebsite || isSending) return;
+    setIsSending(true);
+    setSendResult(null);
+    const response = await fetch(`/api/leads/${activeLead.id}/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "CLOSE_WEBSITE_CONVERSATION" })
+    });
+    const result = await response.json();
+    setSendResult(response.ok ? "Website conversation closed; the visitor capability can no longer read messages." : result.error ?? "Could not close conversation");
+    setIsSending(false);
+    router.refresh();
+  }
+
   function openQuickAction(kind: Exclude<QuickActionKind, null>) {
     setQuickActionKind(kind);
     setShareNote(
@@ -1157,9 +1172,10 @@ export function WhatsAppBotClient({
               </p>
             ) : null}
             {activeIsWebsite ? (
-              <p className="mt-2 text-xs font-semibold text-[#1559b7]">
-                Website channel selected. This reply is stored in AiFrogi and will never be sent through WhatsApp.
-              </p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-semibold text-[#1559b7]">Website replies are delivered to this visitor session, never through WhatsApp.</p>
+                <Button tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? "Conversation closed" : "Close conversation"}</Button>
+              </div>
             ) : null}
             {selectedAttachment ? (
               <div className="mt-2 flex items-center gap-3 text-sm text-[#64748b]">
