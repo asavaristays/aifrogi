@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { helpArticles } from "@/lib/help-center";
+import { botProducts } from "@/lib/bot-products";
 import { siteUrl } from "@/lib/seo";
 
 const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], number]> = [
@@ -33,5 +34,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: 0.6
   }));
-  return [...staticPages, ...guides];
+  const productPages = botProducts.map((product) => ({
+    url: new URL(`/solutions/${product.slug}`, siteUrl).toString(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8
+  }));
+  return [...staticPages, ...productPages, ...guides];
 }
