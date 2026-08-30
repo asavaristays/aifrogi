@@ -161,6 +161,10 @@ export async function updateOrganizationDetails(
     businessAddress?: string;
     ownerName?: string;
     ownerMobile?: string;
+    publicPhone?: string | null;
+    publicEmail?: string | null;
+    publicAddress?: string | null;
+    publicBusinessHours?: string | null;
   }
 ) {
   const db = getDb();

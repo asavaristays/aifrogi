@@ -291,6 +291,10 @@ model Organization {
   ownerName            String
   ownerEmail           String
   ownerMobile          String?
+  publicPhone          String?
+  publicEmail          String?
+  publicAddress        String?
+  publicBusinessHours  String?
   status               String                    @default("DRAFT")
   plan                 String                    @default("TRIAL")
   createdAt            DateTime                  @default(now())

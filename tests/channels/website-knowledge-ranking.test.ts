@@ -43,6 +43,13 @@ test("website intent routing separates identity, off-topic, and business questio
   assert.equal(classifyWebsiteQuestion("Do you have upcoming AI training?"), "BUSINESS");
 });
 
+test("contact information remains distinct from a human callback request", () => {
+  assert.equal(classifyWebsiteQuestion("Please share contact details"), "CONTACT_INFO");
+  assert.equal(classifyWebsiteQuestion("What is your contact number?"), "CONTACT_INFO");
+  assert.equal(classifyWebsiteQuestion("Where are you based?"), "CONTACT_INFO");
+  assert.equal(classifyWebsiteQuestion("Please contact me"), "HUMAN_REQUEST");
+});
+
 test("context follow-up reuses the latest relevant question but skips weather", () => {
   const resolved = resolveWebsiteKnowledgeQuestion("You already have context", ["What is the weather today?", "Do you have upcoming training?"]);
   assert.equal(resolved.retrievalQuestion, "Do you have upcoming training?");

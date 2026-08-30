@@ -37,6 +37,10 @@ export type OrganizationMinAggregateOutputType = {
   ownerName: string | null
   ownerEmail: string | null
   ownerMobile: string | null
+  publicPhone: string | null
+  publicEmail: string | null
+  publicAddress: string | null
+  publicBusinessHours: string | null
   status: string | null
   plan: string | null
   createdAt: Date | null
@@ -56,6 +60,10 @@ export type OrganizationMaxAggregateOutputType = {
   ownerName: string | null
   ownerEmail: string | null
   ownerMobile: string | null
+  publicPhone: string | null
+  publicEmail: string | null
+  publicAddress: string | null
+  publicBusinessHours: string | null
   status: string | null
   plan: string | null
   createdAt: Date | null
@@ -75,6 +83,10 @@ export type OrganizationCountAggregateOutputType = {
   ownerName: number
   ownerEmail: number
   ownerMobile: number
+  publicPhone: number
+  publicEmail: number
+  publicAddress: number
+  publicBusinessHours: number
   status: number
   plan: number
   createdAt: number
@@ -96,6 +108,10 @@ export type OrganizationMinAggregateInputType = {
   ownerName?: true
   ownerEmail?: true
   ownerMobile?: true
+  publicPhone?: true
+  publicEmail?: true
+  publicAddress?: true
+  publicBusinessHours?: true
   status?: true
   plan?: true
   createdAt?: true
@@ -115,6 +131,10 @@ export type OrganizationMaxAggregateInputType = {
   ownerName?: true
   ownerEmail?: true
   ownerMobile?: true
+  publicPhone?: true
+  publicEmail?: true
+  publicAddress?: true
+  publicBusinessHours?: true
   status?: true
   plan?: true
   createdAt?: true
@@ -134,6 +154,10 @@ export type OrganizationCountAggregateInputType = {
   ownerName?: true
   ownerEmail?: true
   ownerMobile?: true
+  publicPhone?: true
+  publicEmail?: true
+  publicAddress?: true
+  publicBusinessHours?: true
   status?: true
   plan?: true
   createdAt?: true
@@ -226,6 +250,10 @@ export type OrganizationGroupByOutputType = {
   ownerName: string
   ownerEmail: string
   ownerMobile: string | null
+  publicPhone: string | null
+  publicEmail: string | null
+  publicAddress: string | null
+  publicBusinessHours: string | null
   status: string
   plan: string
   createdAt: Date
@@ -266,6 +294,10 @@ export type OrganizationWhereInput = {
   ownerName?: Prisma.StringFilter<"Organization"> | string
   ownerEmail?: Prisma.StringFilter<"Organization"> | string
   ownerMobile?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicPhone?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicEmail?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicAddress?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicBusinessHours?: Prisma.StringNullableFilter<"Organization"> | string | null
   status?: Prisma.StringFilter<"Organization"> | string
   plan?: Prisma.StringFilter<"Organization"> | string
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
@@ -300,6 +332,10 @@ export type OrganizationOrderByWithRelationInput = {
   ownerName?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   ownerMobile?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicBusinessHours?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -337,6 +373,10 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   ownerName?: Prisma.StringFilter<"Organization"> | string
   ownerEmail?: Prisma.StringFilter<"Organization"> | string
   ownerMobile?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicPhone?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicEmail?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicAddress?: Prisma.StringNullableFilter<"Organization"> | string | null
+  publicBusinessHours?: Prisma.StringNullableFilter<"Organization"> | string | null
   status?: Prisma.StringFilter<"Organization"> | string
   plan?: Prisma.StringFilter<"Organization"> | string
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
@@ -371,6 +411,10 @@ export type OrganizationOrderByWithAggregationInput = {
   ownerName?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   ownerMobile?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicBusinessHours?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -396,6 +440,10 @@ export type OrganizationScalarWhereWithAggregatesInput = {
   ownerName?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   ownerEmail?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   ownerMobile?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
+  publicPhone?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
+  publicEmail?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
+  publicAddress?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
+  publicBusinessHours?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   plan?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
@@ -415,6 +463,10 @@ export type OrganizationCreateInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -449,6 +501,10 @@ export type OrganizationUncheckedCreateInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -483,6 +539,10 @@ export type OrganizationUpdateInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -517,6 +577,10 @@ export type OrganizationUncheckedUpdateInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -551,6 +615,10 @@ export type OrganizationCreateManyInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -570,6 +638,10 @@ export type OrganizationUpdateManyMutationInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -589,6 +661,10 @@ export type OrganizationUncheckedUpdateManyInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -613,6 +689,10 @@ export type OrganizationCountOrderByAggregateInput = {
   ownerName?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   ownerMobile?: Prisma.SortOrder
+  publicPhone?: Prisma.SortOrder
+  publicEmail?: Prisma.SortOrder
+  publicAddress?: Prisma.SortOrder
+  publicBusinessHours?: Prisma.SortOrder
   status?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -632,6 +712,10 @@ export type OrganizationMaxOrderByAggregateInput = {
   ownerName?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   ownerMobile?: Prisma.SortOrder
+  publicPhone?: Prisma.SortOrder
+  publicEmail?: Prisma.SortOrder
+  publicAddress?: Prisma.SortOrder
+  publicBusinessHours?: Prisma.SortOrder
   status?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -651,6 +735,10 @@ export type OrganizationMinOrderByAggregateInput = {
   ownerName?: Prisma.SortOrder
   ownerEmail?: Prisma.SortOrder
   ownerMobile?: Prisma.SortOrder
+  publicPhone?: Prisma.SortOrder
+  publicEmail?: Prisma.SortOrder
+  publicAddress?: Prisma.SortOrder
+  publicBusinessHours?: Prisma.SortOrder
   status?: Prisma.SortOrder
   plan?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -893,6 +981,10 @@ export type OrganizationCreateWithoutPropertiesInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -926,6 +1018,10 @@ export type OrganizationUncheckedCreateWithoutPropertiesInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -975,6 +1071,10 @@ export type OrganizationUpdateWithoutPropertiesInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1008,6 +1108,10 @@ export type OrganizationUncheckedUpdateWithoutPropertiesInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1041,6 +1145,10 @@ export type OrganizationCreateWithoutUserSessionsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1074,6 +1182,10 @@ export type OrganizationUncheckedCreateWithoutUserSessionsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1123,6 +1235,10 @@ export type OrganizationUpdateWithoutUserSessionsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1156,6 +1272,10 @@ export type OrganizationUncheckedUpdateWithoutUserSessionsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1189,6 +1309,10 @@ export type OrganizationCreateWithoutBotConfigurationInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1222,6 +1346,10 @@ export type OrganizationUncheckedCreateWithoutBotConfigurationInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1271,6 +1399,10 @@ export type OrganizationUpdateWithoutBotConfigurationInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1304,6 +1436,10 @@ export type OrganizationUncheckedUpdateWithoutBotConfigurationInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1337,6 +1473,10 @@ export type OrganizationCreateWithoutBotProfileInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1370,6 +1510,10 @@ export type OrganizationUncheckedCreateWithoutBotProfileInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1419,6 +1563,10 @@ export type OrganizationUpdateWithoutBotProfileInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1452,6 +1600,10 @@ export type OrganizationUncheckedUpdateWithoutBotProfileInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1485,6 +1637,10 @@ export type OrganizationCreateWithoutMembersInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1518,6 +1674,10 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1567,6 +1727,10 @@ export type OrganizationUpdateWithoutMembersInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1600,6 +1764,10 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1633,6 +1801,10 @@ export type OrganizationCreateWithoutOnboardingInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1666,6 +1838,10 @@ export type OrganizationUncheckedCreateWithoutOnboardingInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1715,6 +1891,10 @@ export type OrganizationUpdateWithoutOnboardingInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1748,6 +1928,10 @@ export type OrganizationUncheckedUpdateWithoutOnboardingInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1781,6 +1965,10 @@ export type OrganizationCreateWithoutOnboardingCredentialInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1814,6 +2002,10 @@ export type OrganizationUncheckedCreateWithoutOnboardingCredentialInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1863,6 +2055,10 @@ export type OrganizationUpdateWithoutOnboardingCredentialInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1896,6 +2092,10 @@ export type OrganizationUncheckedUpdateWithoutOnboardingCredentialInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1929,6 +2129,10 @@ export type OrganizationCreateWithoutDocumentsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -1962,6 +2166,10 @@ export type OrganizationUncheckedCreateWithoutDocumentsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2011,6 +2219,10 @@ export type OrganizationUpdateWithoutDocumentsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2044,6 +2256,10 @@ export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2077,6 +2293,10 @@ export type OrganizationCreateWithoutActivitiesInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2110,6 +2330,10 @@ export type OrganizationUncheckedCreateWithoutActivitiesInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2159,6 +2383,10 @@ export type OrganizationUpdateWithoutActivitiesInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2192,6 +2420,10 @@ export type OrganizationUncheckedUpdateWithoutActivitiesInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2225,6 +2457,10 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2258,6 +2494,10 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2307,6 +2547,10 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2340,6 +2584,10 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2373,6 +2621,10 @@ export type OrganizationCreateWithoutInvoicesInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2406,6 +2658,10 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2455,6 +2711,10 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2488,6 +2748,10 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2521,6 +2785,10 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2554,6 +2822,10 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2603,6 +2875,10 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2636,6 +2912,10 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2669,6 +2949,10 @@ export type OrganizationCreateWithoutIncidentsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2702,6 +2986,10 @@ export type OrganizationUncheckedCreateWithoutIncidentsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2751,6 +3039,10 @@ export type OrganizationUpdateWithoutIncidentsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2784,6 +3076,10 @@ export type OrganizationUncheckedUpdateWithoutIncidentsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2817,6 +3113,10 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2850,6 +3150,10 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2899,6 +3203,10 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2932,6 +3240,10 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2965,6 +3277,10 @@ export type OrganizationCreateWithoutSupportTicketsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -2998,6 +3314,10 @@ export type OrganizationUncheckedCreateWithoutSupportTicketsInput = {
   ownerName: string
   ownerEmail: string
   ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
   status?: string
   plan?: string
   createdAt?: Date | string
@@ -3047,6 +3367,10 @@ export type OrganizationUpdateWithoutSupportTicketsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3080,6 +3404,10 @@ export type OrganizationUncheckedUpdateWithoutSupportTicketsInput = {
   ownerName?: Prisma.StringFieldUpdateOperationsInput | string
   ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
   ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   plan?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3225,6 +3553,10 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   ownerName?: boolean
   ownerEmail?: boolean
   ownerMobile?: boolean
+  publicPhone?: boolean
+  publicEmail?: boolean
+  publicAddress?: boolean
+  publicBusinessHours?: boolean
   status?: boolean
   plan?: boolean
   createdAt?: boolean
@@ -3260,6 +3592,10 @@ export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   ownerName?: boolean
   ownerEmail?: boolean
   ownerMobile?: boolean
+  publicPhone?: boolean
+  publicEmail?: boolean
+  publicAddress?: boolean
+  publicBusinessHours?: boolean
   status?: boolean
   plan?: boolean
   createdAt?: boolean
@@ -3279,6 +3615,10 @@ export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   ownerName?: boolean
   ownerEmail?: boolean
   ownerMobile?: boolean
+  publicPhone?: boolean
+  publicEmail?: boolean
+  publicAddress?: boolean
+  publicBusinessHours?: boolean
   status?: boolean
   plan?: boolean
   createdAt?: boolean
@@ -3298,13 +3638,17 @@ export type OrganizationSelectScalar = {
   ownerName?: boolean
   ownerEmail?: boolean
   ownerMobile?: boolean
+  publicPhone?: boolean
+  publicEmail?: boolean
+  publicAddress?: boolean
+  publicBusinessHours?: boolean
   status?: boolean
   plan?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "industry" | "website" | "country" | "timezone" | "gstNumber" | "businessAddress" | "ownerName" | "ownerEmail" | "ownerMobile" | "status" | "plan" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "industry" | "website" | "country" | "timezone" | "gstNumber" | "businessAddress" | "ownerName" | "ownerEmail" | "ownerMobile" | "publicPhone" | "publicEmail" | "publicAddress" | "publicBusinessHours" | "status" | "plan" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
 export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   properties?: boolean | Prisma.Organization$propertiesArgs<ExtArgs>
   members?: boolean | Prisma.Organization$membersArgs<ExtArgs>
@@ -3358,6 +3702,10 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     ownerName: string
     ownerEmail: string
     ownerMobile: string | null
+    publicPhone: string | null
+    publicEmail: string | null
+    publicAddress: string | null
+    publicBusinessHours: string | null
     status: string
     plan: string
     createdAt: Date
@@ -3812,6 +4160,10 @@ export interface OrganizationFieldRefs {
   readonly ownerName: Prisma.FieldRef<"Organization", 'String'>
   readonly ownerEmail: Prisma.FieldRef<"Organization", 'String'>
   readonly ownerMobile: Prisma.FieldRef<"Organization", 'String'>
+  readonly publicPhone: Prisma.FieldRef<"Organization", 'String'>
+  readonly publicEmail: Prisma.FieldRef<"Organization", 'String'>
+  readonly publicAddress: Prisma.FieldRef<"Organization", 'String'>
+  readonly publicBusinessHours: Prisma.FieldRef<"Organization", 'String'>
   readonly status: Prisma.FieldRef<"Organization", 'String'>
   readonly plan: Prisma.FieldRef<"Organization", 'String'>
   readonly createdAt: Prisma.FieldRef<"Organization", 'DateTime'>

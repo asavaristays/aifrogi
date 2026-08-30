@@ -9,6 +9,7 @@ import { sovereignConstitutionPrompt } from "@/lib/sovereign-intelligence/consti
 import { classifySovereignIntent, resolveSovereignQuestion, type SovereignDecision, type SovereignIntent } from "@/lib/sovereign-intelligence/decision";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
+import { getDb } from "@/lib/db";
 
 export type KnowledgePage = {
   url: string;
@@ -24,7 +25,7 @@ export type KnowledgeBase = {
   crawledAt: string;
 };
 
-export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE"; freshness: "CURRENT" | "STALE" };
+export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE" | "APPROVED_BUSINESS_PROFILE"; freshness: "CURRENT" | "STALE" };
 
 export type KnowledgeAnswer = {
   answer: string;
@@ -449,17 +450,41 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const apiKey = process.env.OPENAI_API_KEY?.trim();
 
-  const [settings, persona] = await Promise.all([readKnowledgeSettings(propertySlug), getBotPersonaForPropertySlug(propertySlug)]);
+  const db = getDb();
+  const [settings, persona, business] = await Promise.all([
+    readKnowledgeSettings(propertySlug),
+    getBotPersonaForPropertySlug(propertySlug),
+    db ? db.property.findUnique({ where: { slug: propertySlug }, select: { organization: { select: { name: true, website: true, publicPhone: true, publicEmail: true, publicAddress: true, publicBusinessHours: true, updatedAt: true } } } }) : null
+  ]);
   if (!settings.approvedForAi) return null;
 
   const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions);
-  const assistantName = persona?.personaName || "Webtechnosys AI";
+  const organization = business?.organization;
+  const businessName = organization?.name || "the business";
+  const assistantName = persona?.personaName || `${businessName} AI`;
   const direct = (answer: string): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision: resolved.decision, claimIds: [] });
-  if (resolved.intent === "GREETING") return direct(`Hello. I’m ${assistantName}. I can help with Webtechnosys services, AI automation, websites, hotel technology, training, and project enquiries. What would you like to explore?`);
-  if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for Webtechnosys. I answer from approved Webtechnosys knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
-  if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on Webtechnosys business enquiries, so I don’t provide general weather, news, sports, or unrelated information. I can help with AI automation, websites, software, hotel solutions, training, or starting a project.`);
-  if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct("I’ll keep this request for the Webtechnosys team because it needs human attention. Please use the human-contact option and share only the minimum contact details needed for follow-up—never a password, OTP, or payment-card detail.");
-  if (resolved.intent === "CONTEXT_FOLLOW_UP" && !resolved.priorQuestion) return direct("I retain this conversation for continuity and human handover, but I need the business topic stated clearly before using approved knowledge. Please restate the Webtechnosys service or project question you want me to answer.");
+  if (resolved.intent === "GREETING") return direct(`Hello. I’m ${assistantName}. I can answer approved questions about ${businessName} and help with the next step. What would you like to explore?`);
+  if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for ${businessName}. I answer from approved business knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
+  if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on ${businessName} business enquiries, so I don’t provide general weather, news, sports, or unrelated information. Please ask me about this business’s approved services, products, availability, or next steps.`);
+  if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share only the minimum contact details needed for follow-up—never a password, OTP, or payment-card detail.`);
+  if (resolved.intent === "CONTACT_INFO") {
+    if (organization) {
+      const details = [
+        organization.publicPhone ? `Phone: ${organization.publicPhone}` : null,
+        organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
+        organization.website ? `Website: ${organization.website}` : null,
+        organization.publicAddress ? `Address: ${organization.publicAddress}` : null,
+        organization.publicBusinessHours ? `Business hours: ${organization.publicBusinessHours}` : null
+      ].filter(Boolean);
+      if (details.length) return {
+        answer: `Here are the approved contact details for ${organization.name}:\n${details.join("\n")}`,
+        sourceUrls: organization.website ? [organization.website] : [],
+        sources: [{ title: `${organization.name} approved business profile`, url: organization.website || "", crawledAt: organization.updatedAt.toISOString(), authority: "APPROVED_BUSINESS_PROFILE", freshness: "CURRENT" }],
+        knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "STRUCTURED_BUSINESS_PROFILE", decision: resolved.decision, claimIds: []
+      };
+    }
+  }
+  if (resolved.intent === "CONTEXT_FOLLOW_UP" && !resolved.priorQuestion) return direct(`I retain this conversation for continuity and human handover, but I need the business topic stated clearly before using approved knowledge. Please restate the ${businessName} service or product question you want me to answer.`);
 
   const knowledgeBase = persona?.kbGateVersion ? null : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };

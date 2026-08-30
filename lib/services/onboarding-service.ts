@@ -80,7 +80,11 @@ export async function saveOnboardingStep(email: string, payload: Record<string, 
       gstNumber: clean(payload.gstNumber) || undefined,
       businessAddress: clean(payload.businessAddress) || undefined,
       ownerName: clean(payload.ownerName) || organization.ownerName,
-      ownerMobile: clean(payload.ownerMobile) || undefined
+      ownerMobile: clean(payload.ownerMobile) || undefined,
+      publicPhone: clean(payload.publicPhone) || null,
+      publicEmail: clean(payload.publicEmail) || null,
+      publicAddress: clean(payload.publicAddress) || null,
+      publicBusinessHours: clean(payload.publicBusinessHours) || null
     });
     return { error: null, organization: updated, status: 200 };
   }

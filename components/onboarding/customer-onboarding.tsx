@@ -66,6 +66,10 @@ export type CustomerOnboardingOrganization = {
   ownerName: string;
   ownerEmail: string;
   ownerMobile: string | null;
+  publicPhone: string | null;
+  publicEmail: string | null;
+  publicAddress: string | null;
+  publicBusinessHours: string | null;
   status: string;
   plan: string;
   createdAt: string | Date;
@@ -88,6 +92,10 @@ type OrganizationForm = {
   businessAddress: string;
   ownerName: string;
   ownerMobile: string;
+  publicPhone: string;
+  publicEmail: string;
+  publicAddress: string;
+  publicBusinessHours: string;
 };
 type BusinessForm = {
   legalName: string;
@@ -178,7 +186,11 @@ export function CustomerOnboarding({
     gstNumber: initialOrganization?.gstNumber || "",
     businessAddress: initialOrganization?.businessAddress || "",
     ownerName: initialOrganization?.ownerName || "",
-    ownerMobile: initialOrganization?.ownerMobile || ""
+    ownerMobile: initialOrganization?.ownerMobile || "",
+    publicPhone: initialOrganization?.publicPhone || "",
+    publicEmail: initialOrganization?.publicEmail || "",
+    publicAddress: initialOrganization?.publicAddress || "",
+    publicBusinessHours: initialOrganization?.publicBusinessHours || ""
   });
   const [businessForm, setBusinessForm] = useState({
     legalName: initialOrganization?.onboarding?.legalName || "",
@@ -666,6 +678,17 @@ function OrganizationStep({ value, onChange }: { value: OrganizationForm; onChan
       <label className="md:col-span-2">
         <FieldLabel label="Business address" />
         <textarea className="mt-2 min-h-24 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={value.businessAddress} onChange={(event) => onChange({ ...value, businessAddress: event.target.value })} />
+      </label>
+      <div className="md:col-span-2 border-t border-black/8 pt-5">
+        <h3 className="text-sm font-semibold">Approved public customer contact</h3>
+        <p className="mt-1 text-xs leading-5 text-[#68645c]">Only these fields may be disclosed by the AI Bot. Owner login details remain private.</p>
+      </div>
+      <Field label="Public phone" value={value.publicPhone} onChange={(publicPhone) => onChange({ ...value, publicPhone })} inputMode="tel" optional />
+      <Field label="Public email" value={value.publicEmail} onChange={(publicEmail) => onChange({ ...value, publicEmail })} inputMode="email" optional />
+      <Field label="Business hours" value={value.publicBusinessHours} onChange={(publicBusinessHours) => onChange({ ...value, publicBusinessHours })} placeholder="Monday–Saturday, 9:00 AM–6:00 PM" optional />
+      <label className="md:col-span-2">
+        <FieldLabel label="Public address" optional />
+        <textarea className="mt-2 min-h-20 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={value.publicAddress} onChange={(event) => onChange({ ...value, publicAddress: event.target.value })} />
       </label>
     </div>
   );

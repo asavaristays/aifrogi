@@ -41,7 +41,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const { slug } = await context.params;
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
-  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { botProfile: true } } } });
+  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { name: true, botProfile: true } } } });
   const profile = property?.organization?.botProfile;
   if (!property || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 
@@ -64,7 +64,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
   const result = safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration, priorQuestions }).catch(() => null);
-  const proposedAnswer = safety.answer || result?.answer || "I do not have enough approved Webtechnosys information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.";
+  const businessName = property.organization?.name || "the business";
+  const proposedAnswer = safety.answer || result?.answer || `I do not have enough approved ${businessName} information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.`;
   const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION);
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
@@ -107,12 +108,12 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     create: {
       propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
       status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", resolutionState: resolution.state, expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
-      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: "Webtechnosys may store these details and contact me about this enquiry.", consentedAt: new Date() } : {})
+      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     },
     update: {
       capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: resolution.state,
       expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
-      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: "Webtechnosys may store these details and contact me about this enquiry.", consentedAt: new Date() } : {})
+      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     }
   });
 
