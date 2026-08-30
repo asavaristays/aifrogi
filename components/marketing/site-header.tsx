@@ -25,6 +25,7 @@ const navItems = [
     ]
   },
   { label: "WhatsApp API", href: "/whatsapp-api" },
+  { label: "How to Install", href: "/install-ai-bot" },
   { label: "Pricing", href: "/pricing" }
 ];
 
