@@ -46,6 +46,13 @@ const journeys: Record<string, Journey> = {
     confirmation: "Reserve 8:00 PM.", outcome: "Table reservation verified", outcomeDetail: "4 guests · Saturday · Ref DG-3186",
     followUps: [["Dietary note saved", "Allergy flagged to team"], ["Restaurant notified", "Human review ready"]], proof: "Reservation checked against table capacity and approved dining information."
   },
+  eduGPT: {
+    initials: "EG", status: "Admissions assistant online", task: "Qualify an admission enquiry",
+    customer: "I’m looking for Class 11 science coaching starting next month.", assistant: "Which board, learning mode and subject combination do you prefer?", answer: "CBSE · Online · Physics, Chemistry and Maths.",
+    choiceLabel: "Approved programme options", choices: ["Weekday", "Weekend", "Hybrid"], selected: 1,
+    confirmation: "Request counselling for the weekend batch.", outcome: "Admission enquiry qualified", outcomeDetail: "Class 11 PCM · Weekend · Ref EG-5264",
+    followUps: [["Programme matched", "Approved course information"], ["Admissions notified", "Counselling handover ready"]], proof: "Matched only against approved programmes, eligibility, fee guidance and published batch information."
+  },
   PropertyGPT: {
     initials: "PG", status: "Property advisor online", task: "Match a buyer",
     customer: "I need a 2-bedroom home in North Goa under ₹1.2 crore.", assistant: "Is this for immediate use, investment or future possession?", answer: "Ready or near-ready for own use.",

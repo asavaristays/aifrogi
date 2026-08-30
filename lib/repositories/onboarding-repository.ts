@@ -224,7 +224,7 @@ export async function saveOrganizationBotProfile(input: {
   organizationId: string;
   actorEmail: string;
   profile: {
-    category: "BUSINESS_AI" | "PINGBOOK" | "FLOWCART" | "STAY" | "RESTAURANT" | "REAL_ESTATE" | "CUSTOM";
+    category: "BUSINESS_AI" | "PINGBOOK" | "FLOWCART" | "STAY" | "RESTAURANT" | "REAL_ESTATE" | "EDUCATION" | "CUSTOM";
     operatingMode: "ANSWER_ONLY" | "LEAD_CAPTURE" | "APPROVED_ACTIONS" | "HUMAN_APPROVAL";
     channels: Array<"WEBSITE" | "WHATSAPP">;
     capabilities: string[];

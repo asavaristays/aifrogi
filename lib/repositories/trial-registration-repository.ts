@@ -21,7 +21,7 @@ export async function registerTrialOrganization(input: {
   country: string;
   timezone: string;
   source?: string;
-  botCategory?: "BUSINESS_AI" | "STAY" | "PINGBOOK" | "RESTAURANT" | "REAL_ESTATE" | "FLOWCART" | "CUSTOM";
+  botCategory?: "BUSINESS_AI" | "STAY" | "PINGBOOK" | "RESTAURANT" | "REAL_ESTATE" | "EDUCATION" | "FLOWCART" | "CUSTOM";
 }) {
   const db = getDb();
   if (!db) throw new Error("Registration is temporarily unavailable.");

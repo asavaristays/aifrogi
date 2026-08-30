@@ -95,6 +95,7 @@ enum BotCategory {
   STAY
   RESTAURANT
   REAL_ESTATE
+  EDUCATION
   CUSTOM
 }
 

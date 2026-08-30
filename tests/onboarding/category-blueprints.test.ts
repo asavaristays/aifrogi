@@ -16,18 +16,30 @@ test("every commercial bot category has a complete intelligence blueprint", () =
   }
 });
 
-test("Restaurant and Real Estate profiles are accepted as governed categories", () => {
-  for (const category of ["RESTAURANT", "REAL_ESTATE"]) {
+test("Restaurant, Real Estate, and Education profiles are accepted as governed categories", () => {
+  for (const category of ["RESTAURANT", "REAL_ESTATE", "EDUCATION"]) {
     const parsed = parseBotProfile({
       category,
       operatingMode: "LEAD_CAPTURE",
       channels: ["WEBSITE"],
       capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS"],
       humanHandoffEnabled: true,
-      actionApprovalNeeded: true
+      actionApprovalNeeded: true,
+      personaName: `${category} Assistant`,
+      businessObjective: "Answer approved questions, qualify the enquiry, and hand it to the responsible team.",
+      languages: ["English"]
     });
     assert.equal(parsed.value?.category, category);
   }
+});
+
+test("eduGPT blueprint protects students and avoids admissions guarantees", () => {
+  const education = BOT_BLUEPRINTS.EDUCATION;
+  assert.equal(education.productName, "eduGPT");
+  assert.match(education.safetyRules.join(" "), /guardian/i);
+  assert.match(education.safetyRules.join(" "), /admission decision/i);
+  assert.match(education.negotiationRules.join(" "), /never guarantee/i);
+  assert.match(education.internalKnowledge.join(" "), /programme/i);
 });
 
 test("HotelGPT blueprint protects price, availability, policy, and booking verification", () => {

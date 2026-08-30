@@ -18,6 +18,7 @@ const navItems = [
       { label: "HotelGPT", href: "/solutions/hotelgpt", copy: "Hospitality and guest intelligence" },
       { label: "ClinicGPT", href: "/solutions/clinicgpt", copy: "Appointments and confirmations" },
       { label: "DineGPT", href: "/solutions/dinegpt", copy: "Dining and reservation intelligence" },
+      { label: "eduGPT", href: "/solutions/edugpt", copy: "Admissions and student enquiry intelligence" },
       { label: "PropertyGPT", href: "/solutions/propertygpt", copy: "Discovery, qualification and visits" },
       { label: "BusinessGPT", href: "/solutions/businessgpt", copy: "Services, leads and support" },
       { label: "FlowCart", href: "/solutions/flowcart", copy: "Commerce, orders and payments" },

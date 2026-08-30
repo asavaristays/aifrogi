@@ -80,6 +80,14 @@ The left hero narrative contains:
 - Verified outcome: reservation verified
 - Operational evidence: dietary note saved and restaurant notified
 
+### eduGPT
+
+- Intent: Class 11 science coaching starting next month
+- Qualification: board, learning mode, and subject combination
+- Approved options: published programme or batch choices
+- Verified outcome: admission enquiry qualified with reference
+- Operational evidence: programme matched and admissions team notified
+
 ### PropertyGPT
 
 - Intent: two-bedroom North Goa home within budget

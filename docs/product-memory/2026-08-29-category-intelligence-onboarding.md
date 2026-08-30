@@ -23,6 +23,7 @@ This protects the Sovereign Business Bot promise:
 | `PINGBOOK` | ClinicGPT | Verified appointment confirmation |
 | `RESTAURANT` | DineGPT | Verified reservation, order, catering, or event enquiry |
 | `REAL_ESTATE` | PropertyGPT | Qualified buyer and verified site visit |
+| `EDUCATION` | eduGPT | Qualified admission or counselling enquiry |
 | `BUSINESS_AI` | BusinessGPT | Qualified business lead and approved human or commercial action |
 | `FLOWCART` | FlowCart | Verified cart, order, and payment journey |
 | `CUSTOM` | Custom Business Bot | Explicitly designed and governed business workflow |

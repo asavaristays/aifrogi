@@ -9,7 +9,7 @@ import { getBotBlueprint } from "@/lib/bot-blueprints";
 type StoredProfile = { category?: string; operatingMode?: string; channels?: string[]; capabilities?: string[]; humanHandoffEnabled?: boolean; actionApprovalNeeded?: boolean; personaName?: string | null; businessObjective?: string | null; tone?: string | null; languages?: string[]; prohibitedClaims?: string[]; escalationTriggers?: string[]; responseSlaMinutes?: number; reminderPercent?: number; fallbackEnabled?: boolean; safeFallbackMessage?: string | null; status?: string };
 
 const labels: Record<string, string> = {
-  BUSINESS_AI: "BusinessGPT", PINGBOOK: "ClinicGPT Appointment Bot", FLOWCART: "FlowCart Commerce Bot", STAY: "HotelGPT", RESTAURANT: "DineGPT", REAL_ESTATE: "PropertyGPT", CUSTOM: "Custom Business Bot",
+  BUSINESS_AI: "BusinessGPT", PINGBOOK: "ClinicGPT Appointment Bot", FLOWCART: "FlowCart Commerce Bot", STAY: "HotelGPT", RESTAURANT: "DineGPT", REAL_ESTATE: "PropertyGPT", EDUCATION: "eduGPT Education Bot", CUSTOM: "Custom Business Bot",
   ANSWER_ONLY: "Answer questions only", LEAD_CAPTURE: "Capture and qualify leads", APPROVED_ACTIONS: "Perform approved actions", HUMAN_APPROVAL: "Human approval required",
   WEBSITE: "Website Bot", WHATSAPP: "WhatsApp Bot", ANSWER_QUESTIONS: "Answer service questions", CAPTURE_LEADS: "Capture leads", QUALIFY_LEADS: "Qualify requirements", BOOK_APPOINTMENTS: "Book appointments", CREATE_ORDERS: "Create orders"
 };

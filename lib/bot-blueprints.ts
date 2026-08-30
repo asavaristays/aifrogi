@@ -86,6 +86,20 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     verifiedOutcomes: ["Buyer qualified", "Property match presented", "Site visit confirmed", "Sales agent assigned", "Booking interest created"],
     evaluations: ["Inventory and price accuracy", "Regulatory-claim safety", "Suitability matching", "Site-visit verification", "Lead routing"]
   },
+  EDUCATION: {
+    productName: "eduGPT",
+    categoryLabel: "Education Admissions and Student Enquiry Bot",
+    promise: "Help students and guardians discover suitable programmes and convert informed interest into a qualified admissions or counselling enquiry.",
+    requiredInputs: ["Institution type, campuses, locations, and contacts", "Programmes, courses, classes, subjects, and learning modes", "Admission cycles, eligibility, required documents, and application process", "Approved fees, scholarships, payment, cancellation, and refund guidance", "Academic calendars, batch schedules, facilities, and counselling availability", "Student or guardian consent, safeguarding, and admissions-team escalation rules"],
+    internalKnowledge: ["Programme and course catalogue", "Eligibility and admission process", "Approved fees and scholarship rules", "Academic calendars and batch schedules", "Campuses, facilities, faculty, and accreditation claims", "Policies, prospectuses, FAQs, and counselling procedures"],
+    externalKnowledge: ["Official institution website", "Approved prospectuses and brochures", "Official board, university, regulator, or accreditation sources", "Approved maps and campus-location data"],
+    integrations: ["Admissions CRM or student information system", "Counselling calendar", "Application forms", "Learning management system", "Payment provider", "Email and WhatsApp connectors when selected"],
+    approvedActions: ["Answer approved programme questions", "Capture a student or guardian enquiry", "Qualify course and learning-mode interest", "Request counselling, a campus visit, or a demo class", "Share an approved application link or document checklist", "Escalate to the admissions team"],
+    negotiationRules: ["Use only published or explicitly approved fee and scholarship guidance", "Never guarantee a concession, scholarship, seat, or admission", "Escalate fee exceptions and special eligibility cases to an authorised admissions team member"],
+    safetyRules: ["Minimise data collected from children and require guardian involvement where applicable", "Never make an admission decision or promise an academic result", "Do not collect identity documents, marksheets, or payment details in chat unless an approved secure workflow is connected", "Escalate safeguarding, accessibility, grievance, and special-support concerns", "Use only approved official sources for accreditation, recognition, and eligibility claims"],
+    verifiedOutcomes: ["Admission enquiry qualified", "Counselling requested", "Campus visit requested", "Application link shared", "Admissions handover completed"],
+    evaluations: ["Programme and fee accuracy", "Eligibility caveat compliance", "Student and guardian data safety", "No-guarantee compliance", "Duplicate-enquiry protection", "Admissions handover"]
+  },
   FLOWCART: {
     productName: "FlowCart",
     categoryLabel: "Commerce Bot",

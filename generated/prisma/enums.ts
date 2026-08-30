@@ -127,6 +127,7 @@ export const BotCategory = {
   STAY: 'STAY',
   RESTAURANT: 'RESTAURANT',
   REAL_ESTATE: 'REAL_ESTATE',
+  EDUCATION: 'EDUCATION',
   CUSTOM: 'CUSTOM'
 } as const
 

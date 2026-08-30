@@ -34,6 +34,17 @@ export const botProducts: BotProduct[] = [
     knowledge: ["Menus and pricing", "Opening hours and locations", "Dietary and allergen statements", "Reservation policies", "Events and offers"]
   },
   {
+    slug: "edugpt",
+    name: "eduGPT",
+    category: "Education",
+    headline: "Turn education enquiries into informed admission journeys.",
+    description: "eduGPT helps students and guardians discover approved programmes, understand eligibility, fees and schedules, qualify their requirements, and request counselling or an admissions-team handover.",
+    outcome: "Better-informed applicants, qualified admission enquiries and faster counselling follow-up.",
+    audiences: ["Schools", "Colleges and universities", "Coaching and training institutes"],
+    capabilities: ["Programme discovery", "Admission enquiry qualification", "Eligibility and fee guidance", "Counselling requests", "Admissions-team handover"],
+    knowledge: ["Courses, classes and programmes", "Eligibility and admission process", "Approved fees and scholarship guidance", "Campuses, schedules and learning modes", "Policies, prospectuses and student FAQs"]
+  },
+  {
     slug: "propertygpt",
     name: "PropertyGPT",
     category: "Real estate",

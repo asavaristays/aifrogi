@@ -58,7 +58,7 @@ Supported now: official website pages, PDF, DOCX, TXT, Markdown, CSV, JSON, and 
 
 Persona is not cosmetic. It is a governed combination of:
 
-- Product/category: BusinessGPT, HotelGPT, ClinicGPT, DineGPT, PropertyGPT, FlowCart, or Custom
+- Product/category: BusinessGPT, HotelGPT, ClinicGPT, DineGPT, eduGPT, PropertyGPT, FlowCart, or Custom
 - Business purpose and measurable outcome
 - Tone, language, and response style
 - Approved knowledge domains
@@ -102,6 +102,7 @@ The intended product family is:
 - **HotelGPT:** hospitality knowledge, stay enquiries, availability, negotiation boundaries, and booking handoff
 - **ClinicGPT:** services, staff, calendars, appointment booking, and verified `AppointmentConfirmed` outcomes
 - **DineGPT:** menus, dietary information, restaurant reservations, offers, and order or human handoff
+- **eduGPT:** approved programmes, admission qualification, fee and eligibility guidance, counselling requests, and admissions handover
 - **PropertyGPT:** property inventory, buyer qualification, regulatory information, site visits, and sales routing
 - **FlowCart:** catalog, inventory, orders, delivery, returns, and commerce workflows
 - **Custom Business Bot:** a controlled blueprint for requirements that do not fit an approved standard category

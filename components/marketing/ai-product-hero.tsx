@@ -41,7 +41,7 @@ export function AIProductHero({
     window.location.assign(`https://app.aifrogi.com/register?${query.toString()}`);
   }
 
-  const usesJourneyHero = ["BusinessGPT", "HotelGPT", "ClinicGPT", "DineGPT", "PropertyGPT", "FlowCart", "Custom Business Bot"].includes(name);
+  const usesJourneyHero = ["BusinessGPT", "HotelGPT", "ClinicGPT", "DineGPT", "eduGPT", "PropertyGPT", "FlowCart", "Custom Business Bot"].includes(name);
 
   if (usesJourneyHero) {
     return (

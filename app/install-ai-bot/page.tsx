@@ -11,7 +11,7 @@ export const metadata: Metadata = marketingMetadata({
 });
 
 const journey = [
-  ["01", "Choose the AI Bot", "Select BusinessGPT, HotelGPT, ClinicGPT, DineGPT, PropertyGPT, FlowCart or a Custom Business Bot according to the first outcome you want to prove."],
+  ["01", "Choose the AI Bot", "Select BusinessGPT, HotelGPT, ClinicGPT, DineGPT, eduGPT, PropertyGPT, FlowCart or a Custom Business Bot according to the first outcome you want to prove."],
   ["02", "Start the 30-day trial", "Verify the business owner’s email and create a private workspace. Trial controls apply in the backend and automatically pause paid actions after 30 days."],
   ["03", "Build sovereign intelligence", "Approve first-party website pages, documents, structured information, persona, authority, prohibited claims and human escalation rules."],
   ["04", "Copy one installation code", "Use the generated JavaScript for most sites, an iFrame where scripts are restricted, or the same JavaScript in a WordPress Custom HTML block."],

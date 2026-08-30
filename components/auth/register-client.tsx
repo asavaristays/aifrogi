@@ -6,7 +6,7 @@ import { useState, type FormEvent } from "react";
 
 const industries = ["Hospitality", "Travel", "Retail", "Healthcare", "Education", "Real estate", "Professional services", "Other"];
 const botOptions = [
-  ["BUSINESS_AI", "BusinessGPT — services, leads and support"], ["STAY", "HotelGPT — stays and guest enquiries"], ["PINGBOOK", "ClinicGPT — appointments and confirmations"], ["RESTAURANT", "DineGPT — dining and reservations"], ["REAL_ESTATE", "PropertyGPT — discovery and site visits"], ["FLOWCART", "FlowCart — products, orders and payments"], ["CUSTOM", "Custom Business Bot — configured workflow"]
+  ["BUSINESS_AI", "BusinessGPT — services, leads and support"], ["STAY", "HotelGPT — stays and guest enquiries"], ["PINGBOOK", "ClinicGPT — appointments and confirmations"], ["RESTAURANT", "DineGPT — dining and reservations"], ["EDUCATION", "eduGPT — admissions and student enquiries"], ["REAL_ESTATE", "PropertyGPT — discovery and site visits"], ["FLOWCART", "FlowCart — products, orders and payments"], ["CUSTOM", "Custom Business Bot — configured workflow"]
 ];
 
 export function RegisterClient() {

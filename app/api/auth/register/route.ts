@@ -47,8 +47,8 @@ export async function POST(request: Request) {
   const country = clean(payload.country, 80) || "India";
   const timezone = clean(payload.timezone, 80) || "Asia/Kolkata";
   const source = clean(payload.source, 80) || "direct";
-  const allowedBotCategories = new Set(["BUSINESS_AI", "STAY", "PINGBOOK", "RESTAURANT", "REAL_ESTATE", "FLOWCART", "CUSTOM"]);
-  const botCategory = allowedBotCategories.has(clean(payload.botCategory, 40)) ? clean(payload.botCategory, 40) as "BUSINESS_AI" | "STAY" | "PINGBOOK" | "RESTAURANT" | "REAL_ESTATE" | "FLOWCART" | "CUSTOM" : "BUSINESS_AI";
+  const allowedBotCategories = new Set(["BUSINESS_AI", "STAY", "PINGBOOK", "RESTAURANT", "REAL_ESTATE", "EDUCATION", "FLOWCART", "CUSTOM"]);
+  const botCategory = allowedBotCategories.has(clean(payload.botCategory, 40)) ? clean(payload.botCategory, 40) as "BUSINESS_AI" | "STAY" | "PINGBOOK" | "RESTAURANT" | "REAL_ESTATE" | "EDUCATION" | "FLOWCART" | "CUSTOM" : "BUSINESS_AI";
   if (companyName.length < 2 || ownerName.length < 2 || !validEmail(ownerEmail)) return NextResponse.json({ error: "Add your company name, owner name, and a valid work email." }, { status: 400 });
   if (!validTimezone(timezone)) return NextResponse.json({ error: "Choose a valid business time zone." }, { status: 400 });
   const emailLimit = consumeRateLimit(`register:email:${ownerEmail}`, 4, 60 * 60 * 1000);
