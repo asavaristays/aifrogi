@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="border-t border-white/10 bg-[#101010] px-5 py-12 font-normal text-white sm:px-8">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_.8fr_.8fr_1.25fr]">
         <div>
-          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} className="h-auto w-[165px] grayscale contrast-125" />
+          <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} className="h-auto w-[165px] grayscale contrast-125" />
           <p className="mt-3 max-w-xs text-sm leading-6 text-white/55">Sovereign business intelligence, customer conversations, and human operations in one workspace.</p>
         </div>
 

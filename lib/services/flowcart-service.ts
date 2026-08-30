@@ -185,7 +185,7 @@ function mapDbProduct(product: {
     slug: product.slug,
     category: product.category,
     description: product.description,
-    imageUrl: product.imageUrl || "/brand/aifrogi-logo-transparent.png",
+    imageUrl: product.imageUrl || "/brand/aifrogi-logo-black.png",
     basePricePaisa: product.basePricePaisa,
     variants: product.variants.map((variant): FlowCartVariant => ({
       id: variant.id,

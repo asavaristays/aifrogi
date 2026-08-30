@@ -37,7 +37,7 @@ export function RegisterClient() {
     <main className="min-h-screen bg-[#fbfaf7] text-[#101010]">
       <header className="border-b border-[#ded8cb] bg-white px-5 sm:px-8">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
-          <Link href="https://aifrogi.com"><Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[118px] grayscale contrast-125 sm:w-[150px]" /></Link>
+          <Link href="https://aifrogi.com"><Image src="/brand/aifrogi-logo-black.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[118px] grayscale contrast-125 sm:w-[150px]" /></Link>
           <nav aria-label="Registration navigation" className="flex items-center gap-3 text-xs font-semibold sm:gap-4 sm:text-sm">
             <Link href="https://aifrogi.com" className="text-[#68645c] transition hover:text-[#101010]"><span className="sm:hidden">Main website</span><span className="hidden sm:inline">Back to main website</span></Link>
             <Link href="/login" className="text-[#6d5310]"><span className="hidden sm:inline">Already have an account? </span>Sign in</Link>

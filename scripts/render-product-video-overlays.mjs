@@ -8,7 +8,7 @@ if (!outputDirectory || !rootDirectory) {
 }
 
 await mkdir(outputDirectory, { recursive: true });
-const logoPath = path.join(rootDirectory, "public/brand/aifrogi-logo.png");
+const logoPath = path.join(rootDirectory, "public/brand/aifrogi-logo-white.png");
 const logo = await sharp(logoPath).resize(520, 195, { fit: "contain" }).png().toBuffer();
 
 function svgDocument(body, background = "transparent") {

@@ -39,7 +39,7 @@ export function ForgotPasswordClient() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-white px-6 py-12 text-[#101010]">
       <section className="w-full max-w-md">
-        <Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[170px] grayscale contrast-125" />
+        <Image src="/brand/aifrogi-logo-black.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[170px] grayscale contrast-125" />
         <p className="mt-10 text-sm font-semibold text-[#8a6a16]">Password reset</p>
         <h1 className="mt-2 text-3xl font-semibold">Reset your AiFrogi password</h1>
         <p className="mt-3 text-sm leading-6 text-[#68645c]">Enter your account email. If it has access, AiFrogi will create a secure reset link.</p>

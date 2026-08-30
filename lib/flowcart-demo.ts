@@ -59,7 +59,7 @@ export const EMILY_CAFE_PRODUCTS: FlowCartProduct[] = [
     slug: "signature-chocolate-cake",
     category: "Birthday Cakes",
     description: "Rich chocolate sponge, ganache finish, custom birthday message, and same-day delivery slots.",
-    imageUrl: "/brand/aifrogi-logo-transparent.png",
+    imageUrl: "/brand/aifrogi-logo-black.png",
     basePricePaisa: 95000,
     variants: [
       { id: "cake-500g", name: "500g", priceDeltaPaisa: 0 },
@@ -78,7 +78,7 @@ export const EMILY_CAFE_PRODUCTS: FlowCartProduct[] = [
     slug: "coffee-date-hamper",
     category: "Gift Hampers",
     description: "Two cold brews, brownies, cookies, greeting card, and ribbon packing for gifting.",
-    imageUrl: "/brand/aifrogi-logo-transparent.png",
+    imageUrl: "/brand/aifrogi-logo-black.png",
     basePricePaisa: 125000,
     variants: [
       { id: "hamper-classic", name: "Classic", priceDeltaPaisa: 0 },
@@ -95,7 +95,7 @@ export const EMILY_CAFE_PRODUCTS: FlowCartProduct[] = [
     slug: "party-snack-platter",
     category: "Party Orders",
     description: "Mini sandwiches, brownies, savoury bites, dips, and delivery coordination for small gatherings.",
-    imageUrl: "/brand/aifrogi-logo-transparent.png",
+    imageUrl: "/brand/aifrogi-logo-black.png",
     basePricePaisa: 180000,
     variants: [
       { id: "platter-8", name: "Serves 8", priceDeltaPaisa: 0 },
@@ -113,7 +113,7 @@ export const EMILY_CAFE_PRODUCTS: FlowCartProduct[] = [
     slug: "cold-brew-box",
     category: "Coffee Boxes",
     description: "Assorted cold brew bottles for office teams, birthdays, and weekend gifting.",
-    imageUrl: "/brand/aifrogi-logo-transparent.png",
+    imageUrl: "/brand/aifrogi-logo-black.png",
     basePricePaisa: 78000,
     variants: [
       { id: "brew-4", name: "4 bottles", priceDeltaPaisa: 0 },

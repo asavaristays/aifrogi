@@ -404,7 +404,7 @@ export function CustomerOnboarding({
       <header className="border-b border-black bg-[var(--ink-950)] px-5 py-4 text-white sm:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <Image
-            src="/brand/aifrogi-logo-transparent.png"
+            src="/brand/aifrogi-logo-white.png"
             alt="AiFrogi"
             width={800}
             height={300}

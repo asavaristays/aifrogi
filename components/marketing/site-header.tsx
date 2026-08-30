@@ -39,7 +39,7 @@ export function SiteHeader() {
       <div className="mx-auto max-w-7xl">
         <div className="flex min-h-[68px] items-center justify-between gap-3">
           <Link href="/" className="flex shrink-0 items-center" aria-label="AiFrogi home" onClick={() => setMenuOpen(false)}>
-            <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125 sm:w-[190px]" />
+            <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125 sm:w-[190px]" />
           </Link>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 md:flex">

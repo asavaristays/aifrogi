@@ -69,7 +69,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
     <main className="grid min-h-screen bg-[var(--warm-50)] text-[var(--ink-900)] lg:grid-cols-[0.92fr_1.08fr]">
       <section className="flex items-center bg-[var(--ink-950)] px-7 py-12 text-white sm:px-12 lg:px-16">
         <div className="mx-auto w-full max-w-xl">
-          <Image src="/brand/aifrogi-logo-transparent.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[240px] grayscale contrast-125" />
+          <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[240px] grayscale contrast-125" />
           <p className="mt-16 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--gold-300)]">Sovereign business intelligence</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">Your business intelligence. Under your control.</h1>
           <p className="mt-5 max-w-lg text-base leading-7 text-white/68">Operate customer conversations, approved knowledge, automation, and human handoffs from one accountable workspace.</p>

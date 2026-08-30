@@ -62,7 +62,7 @@ export function ResetPasswordClient({ token }: { token?: string }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f8f0d8] px-5 py-10 text-[#101010]">
       <section className="w-full max-w-lg rounded-lg border border-[#ded8cb] bg-white p-7 shadow-[0_18px_55px_rgba(16,16,16,0.08)] sm:p-9">
-        <Image src="/brand/aifrogi-logo.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[170px] grayscale contrast-125" />
+        <Image src="/brand/aifrogi-logo-black.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[170px] grayscale contrast-125" />
         {loading ? (
           <p className="mt-10 text-sm text-[#68645c]">Checking your secure reset link...</p>
         ) : completeEmail ? (
