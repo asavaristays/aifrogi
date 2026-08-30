@@ -13,6 +13,7 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
   const base = "https://app.aifrogi.com";
   const script = profile.installationKey ? `<script async src="${base}/api/public/website-bot/${slug}/install?key=${profile.installationKey}"></script>` : "Save the Website Bot blueprint to generate installation code.";
   const iframe = `<iframe src="${base}/embed/${slug}" title="AI Business Bot" width="390" height="680" style="border:0;border-radius:22px" loading="lazy"></iframe>`;
+  const standalone = `${base}/bot/${slug}`;
   const status = profile.status || "DRAFT";
   const detected = Boolean(profile.installationDetectedAt);
   const live = status === "LIVE" || status === "CONFIGURED";
@@ -33,10 +34,11 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
 
   return <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm sm:p-8">
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">Website installation</p><h2 className="mt-2 text-xl font-black">Install and activate the AI Bot</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-[#68645c]">Add one approved code option to the customer website. AiFrogi detects the first load, but the bot remains unavailable until Super Admin confirms the installation and makes it live.</p></div><span className={`status-pill ${live ? "status-success" : status === "PAUSED" || status === "DELETED" ? "status-error" : detected ? "status-warning" : "status-info"}`}>{statusLabel}</span></div>
-    <div className="mt-6 grid gap-4 lg:grid-cols-3">
+    <div className="mt-6 grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
       <CodeCard title="JavaScript" helper="Recommended for HTML, React, Shopify and most websites." value={script} onCopy={() => copy(script, "JavaScript")} disabled={!profile.installationKey} />
       <CodeCard title="iFrame" helper="Use when scripts are restricted. Super Admin approval still controls live access." value={iframe} onCopy={() => copy(iframe, "iFrame")} />
       <CodeCard title="WordPress" helper="Add the JavaScript in a Custom HTML block before the closing body tag." value={script} onCopy={() => copy(script, "WordPress code")} disabled={!profile.installationKey} />
+      <CodeCard title="Standalone web app" helper="Use for QR codes, social profiles, SMS or businesses without a website. It uses the same bot and knowledge base." value={standalone} onCopy={() => copy(standalone, "Standalone link")} />
     </div>
     <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-black/7 bg-black/7 sm:grid-cols-4">{[
       ["1", "Code generated", Boolean(profile.installationKey)], ["2", "Installed on website", detected], ["3", "Super Admin approved", live], ["4", "AI Bot live", live]
