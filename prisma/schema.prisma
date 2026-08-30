@@ -297,6 +297,8 @@ model Organization {
   publicBusinessHours  String?
   status               String                    @default("DRAFT")
   plan                 String                    @default("TRIAL")
+  isDemo               Boolean                   @default(false)
+  demoKey              String?                   @unique
   createdAt            DateTime                  @default(now())
   updatedAt            DateTime                  @updatedAt
   properties           Property[]
@@ -306,6 +308,7 @@ model Organization {
   botConfiguration     WhatsAppBotConfiguration?
   botProfile           BotProfile?
   botConnectors        BotConnectorConfiguration[]
+  demoSandbox          DemoSandbox?
   documents            OnboardingDocument[]
   activities           OnboardingActivity[]
   supportTickets       SupportTicket[]
@@ -318,6 +321,41 @@ model Organization {
 
   @@index([ownerEmail])
   @@index([status])
+}
+
+model DemoSandbox {
+  id              String               @id @default(cuid())
+  organizationId  String               @unique
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category         BotCategory
+  fixtureVersion   String               @default("1.0")
+  fixture           Json
+  status            String               @default("READY")
+  resetCount        Int                  @default(0)
+  lastResetAt       DateTime?
+  lastResetBy       String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  connectorEvents   DemoConnectorEvent[]
+
+  @@index([category, status])
+}
+
+model DemoConnectorEvent {
+  id              String      @id @default(cuid())
+  demoSandboxId   String
+  demoSandbox     DemoSandbox @relation(fields: [demoSandboxId], references: [id], onDelete: Cascade)
+  connectorKey    String
+  operation       String
+  idempotencyKey  String
+  status          String
+  request         Json
+  response        Json
+  createdAt       DateTime    @default(now())
+
+  @@unique([demoSandboxId, idempotencyKey])
+  @@index([demoSandboxId, createdAt])
+  @@index([connectorKey, status])
 }
 
 model UserSession {

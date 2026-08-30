@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 async function loadBot(slug: string) {
   const db = getDb();
-  return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { name: true, botProfile: { select: { status: true, channels: true } } } } } }) : null;
+  return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { name: true, isDemo: true, botProfile: { select: { status: true, channels: true, personaName: true } } } } } }) : null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -34,7 +34,7 @@ export default async function StandaloneWebsiteBotPage({ params }: { params: Pro
   return <main className="min-h-dvh bg-[#050505] px-3 py-4 sm:px-6 sm:py-8">
     <div className="mx-auto flex min-h-[calc(100dvh-2rem)] max-w-[460px] flex-col gap-3 sm:min-h-[calc(100dvh-4rem)]">
       <WebsiteBotDeliveryActions botName={`${name} AI Assistant`} />
-      <div className="min-h-0 flex-1"><WebsiteBotEmbed slug={slug} /></div>
+      <div className="min-h-0 flex-1"><WebsiteBotEmbed slug={slug} demo={bot.organization?.isDemo === true} botName={profile.personaName || `${name} AI`} /></div>
     </div>
   </main>;
 }

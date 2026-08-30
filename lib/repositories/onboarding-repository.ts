@@ -213,6 +213,7 @@ export async function listOrganizationsForAdmin() {
   if (!db) return [];
 
   return db.organization.findMany({
+    where: { isDemo: false },
     include: organizationInclude,
     orderBy: { updatedAt: "desc" }
   });

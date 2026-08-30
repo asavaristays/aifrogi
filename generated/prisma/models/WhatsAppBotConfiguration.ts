@@ -540,10 +540,6 @@ export type WhatsAppBotConfigurationCreateserviceBucketsInput = {
   set: string[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type WhatsAppBotConfigurationUpdateserviceBucketsInput = {
   set?: string[]
   push?: string | string[]
