@@ -49,6 +49,12 @@ test("context follow-up reuses the latest relevant question but skips weather", 
   assert.equal(resolved.priorQuestion, "Do you have upcoming training?");
 });
 
+test("short booking-link follow-up retains the prior training intent", () => {
+  const resolved = resolveWebsiteKnowledgeQuestion("Give me the link to book", ["What upcoming AI training can I book?"]);
+  assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
+  assert.equal(resolved.retrievalQuestion, "What upcoming AI training can I book?");
+});
+
 test("crawler prioritizes sitemap inventory before legacy seeds", () => {
   assert.match(source, /baseUrl, \.\.\.priorityUrls, \.\.\.sitemapUrls, \.\.\.homepageLinks, \.\.\.seedUrls/);
   assert.match(source, /MAX_DISCOVERY_URLS = 120/);

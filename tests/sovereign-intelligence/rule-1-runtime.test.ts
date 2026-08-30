@@ -26,6 +26,13 @@ test("off-topic interruption cannot contaminate a relevant contextual follow-up"
   assert.equal(decision.disposition, "ANSWER");
 });
 
+test("a short action follow-up inherits only the latest explicit business intent", () => {
+  const resolved = resolveSovereignQuestion("Give me the link to book", ["What is the weather?", "What upcoming AI training can I book?"]);
+  assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
+  assert.equal(resolved.resolvedQuestion, "What upcoming AI training can I book?");
+  assert.equal(resolved.contextUsed, true);
+});
+
 test("every category is registered under blueprint version 1.0", () => {
   const blueprints = listVersionedBotBlueprints();
   assert.equal(blueprints.length, 8);
