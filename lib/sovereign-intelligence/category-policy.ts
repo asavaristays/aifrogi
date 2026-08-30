@@ -11,6 +11,8 @@ export function evaluateCategoryHardBoundary(category: BotProfileInput["category
   if (category === "PINGBOOK" && /\b(emergency|chest pain|difficulty breathing|unconscious|severe bleeding|suicid)\b/.test(normalized)) {
     return { code: "MEDICAL_EMERGENCY", answer: "This may require urgent medical attention. Please contact local emergency services or the clinic’s emergency channel now; this bot cannot assess or treat an emergency." };
   }
+  if (category === "RESTAURANT" && /\b(allergen|allergic|nut free|nuts?|peanut|gluten free|contains? dairy|ingredient uncertainty)\b/.test(normalized)) {
+    return { code: "FOOD_ALLERGEN_AUTHORITY_REQUIRED", answer: "I cannot confirm an allergen or ingredient claim unless it is explicitly present in the restaurant’s approved information. Please ask an authorised restaurant team member to verify this before ordering." };
+  }
   return null;
 }
-

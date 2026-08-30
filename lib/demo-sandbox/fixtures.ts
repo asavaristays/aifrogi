@@ -21,6 +21,7 @@ export function listDemoFixtures() { return Object.values(DEMO_FIXTURES); }
 
 export function matchDemoAction(category: BotProfileInput["category"], question: string) {
   const normalized = question.toLowerCase();
+  if (category === "FLOWCART" && /\b(what|which|show|list)\b.{0,45}\b(products?|items?|catalogue|catalog)\b|\bwhat (can|could) i order\b/.test(normalized)) return null;
   return DEMO_FIXTURES[category].actions.find((candidate) => candidate.match.some((word) => normalized.includes(word))) || null;
 }
 

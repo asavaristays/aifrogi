@@ -38,6 +38,7 @@ test("regulated category boundaries are deterministic before retrieval", () => {
   assert.equal(evaluateCategoryHardBoundary("EDUCATION", "Show me my daughter's report card")?.code, "MINOR_RECORD_AUTHORITY_REQUIRED");
   assert.equal(evaluateCategoryHardBoundary("REAL_ESTATE", "Is this property's title legally clear?")?.code, "PROPERTY_LEGAL_AUTHORITY_REQUIRED");
   assert.ok(getBotPersonaPack("RESTAURANT").hardEscalations.some((rule) => rule.toLowerCase().includes("allergen")));
+  assert.equal(evaluateCategoryHardBoundary("RESTAURANT", "Is this definitely nut-free?")?.code, "FOOD_ALLERGEN_AUTHORITY_REQUIRED");
 });
 
 test("FlowCart and action personas declare explicit write contracts", () => {

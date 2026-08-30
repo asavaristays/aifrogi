@@ -31,6 +31,7 @@ test("persona journeys select the correct mock connector contract", () => {
   assert.equal(matchDemoAction("FLOWCART", "Order a cake")?.connectorKey, "COMMERCE_CATALOG");
   assert.equal(matchDemoAction("CUSTOM", "Create a maintenance request")?.connectorKey, "CUSTOM_SYSTEM");
   assert.equal(matchDemoAction("BUSINESS_AI", "I need a consultation")?.connectorKey, "LEAD_SYSTEM");
+  assert.equal(matchDemoAction("FLOWCART", "What products can I order?"), null);
 });
 
 test("vague action requests remain in clarification until required category slots exist", () => {

@@ -3,6 +3,7 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { classifyWebsiteQuestion, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
+import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
 
 const source = readFileSync(resolve(process.cwd(), "lib/services/website-knowledge-service.ts"), "utf8");
 
@@ -41,6 +42,10 @@ test("website intent routing separates identity, off-topic, and business questio
   assert.equal(classifyWebsiteQuestion("Who are you?"), "IDENTITY");
   assert.equal(classifyWebsiteQuestion("What is the weather today?"), "OFF_TOPIC");
   assert.equal(classifyWebsiteQuestion("Do you have upcoming AI training?"), "BUSINESS");
+});
+
+test("ordinary sports-result wording remains outside the business bot domain", () => {
+  assert.equal(classifySovereignIntent("Who won the football match?"), "OFF_TOPIC");
 });
 
 test("contact information remains distinct from a human callback request", () => {
