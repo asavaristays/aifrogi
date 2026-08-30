@@ -39,6 +39,9 @@ const MAX_PAGES = 40;
 const MAX_DISCOVERY_URLS = 120;
 const MAX_PAGE_CHARS = 4500;
 const MAX_CONTEXT_CHARS = 11000;
+// Operator-approved pages that may be active without appearing in navigation or
+// the sitemap. They are verified by the crawler before becoming answer sources.
+const PRIORITY_PATHS = ["/training-booking/"];
 const SEEDED_PATHS = [
   "/",
   "/ai-solutions/",
@@ -47,6 +50,7 @@ const SEEDED_PATHS = [
   "/ai-software-development-gurugram/",
   "/custom-software-development-india/",
   "/ai-products/",
+  "/training-booking/",
   "/channel-manager/",
   "/what-we-build/",
   "/goa-focus/",
@@ -71,6 +75,7 @@ export const BOT_ANSWER_CONSTITUTION = [
   "Answer the question first, then ask at most one useful follow-up question.",
   "Avoid Meta, Facebook, token, webhook, or developer jargon unless the user specifically asks about API setup.",
   "Guide the user toward one clear next action supported by the supplied knowledge, or offer a human specialist callback.",
+  "Use a URL only when it appears verbatim in the supplied approved knowledge. Never substitute a different booking, training, product, or contact URL.",
   "When the website knowledge base does not contain the answer, say that clearly and ask for the user's business name, website, location, and goal.",
   "Never ask for passwords, OTPs, payment card numbers, or admin access in chat.",
   "Immediately honor STOP, unsubscribe, or do-not-contact requests and do not continue selling.",
@@ -234,11 +239,12 @@ async function discoverUrls(baseUrl: string) {
 
   const homepage = await fetchText(baseUrl);
   const homepageLinks = Array.from(homepage.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]);
+  const priorityUrls = PRIORITY_PATHS.map((priorityPath) => new URL(priorityPath, baseUrl).toString());
   const seedUrls = SEEDED_PATHS.map((seedPath) => new URL(seedPath, baseUrl).toString());
 
   // Sitemap pages are the current first-party inventory. Legacy seeds are only
   // fallbacks and must not consume the crawl limit before live URLs are tried.
-  return uniqueSameOriginUrls(baseUrl, [baseUrl, ...sitemapUrls, ...homepageLinks, ...seedUrls]);
+  return uniqueSameOriginUrls(baseUrl, [baseUrl, ...priorityUrls, ...sitemapUrls, ...homepageLinks, ...seedUrls]);
 }
 
 async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<KnowledgeBase> {
@@ -351,7 +357,7 @@ export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
   };
 }
 
-function scorePage(page: KnowledgePage, question: string) {
+export function scoreWebsiteKnowledgePage(page: KnowledgePage, question: string) {
   const normalizedQuestion = question.toLowerCase();
   const terms = questionTerms(normalizedQuestion);
   const title = page.title.toLowerCase();
@@ -361,8 +367,13 @@ function scorePage(page: KnowledgePage, question: string) {
   let score = terms.reduce((total, term) => total + (title.includes(term) ? 4 : 0) + (bucket.includes(term) ? 3 : 0) + (text.includes(term) ? 1 : 0), 0);
   const asksAutomation = /\b(ai|automation|bot|assistant|workflow)\b/.test(normalizedQuestion);
   const asksHospitality = /\b(hotel|hospitality|resort|booking|guest)\b/.test(normalizedQuestion);
+  const asksTraining = /\b(train|training|course|bootcamp|learn|class|workshop|skill)\b/.test(normalizedQuestion);
+  const asksTrainingBooking = asksTraining && /\b(book|booking|register|registration|reserve|slot|link)\b/.test(normalizedQuestion);
   if (asksAutomation && /(ai-automation|ai-solutions|what-we-build|custom-software)/.test(pathname)) score += 10;
   if (asksHospitality && /(hotel|hospitality|channel-manager|booking)/.test(`${pathname} ${title} ${bucket}`)) score += 8;
+  if (asksTraining && /(training|course|bootcamp|workshop|skill)/.test(`${pathname} ${title} ${bucket} ${text.slice(0, 900)}`)) score += 16;
+  if (asksTrainingBooking && pathname === "/training-booking/") score += 40;
+  if (asksTraining && pathname === "/booking-engine/") score -= 30;
   if (!/\b(film|video|content)\b/.test(normalizedQuestion) && /(film|video|content creator)/.test(`${pathname} ${title}`)) score -= 12;
   if (!/\b(train|training|course|bootcamp|learn)\b/.test(normalizedQuestion) && /(training|course|bootcamp)/.test(`${pathname} ${title}`)) score -= 12;
   return score;
@@ -370,7 +381,7 @@ function scorePage(page: KnowledgePage, question: string) {
 
 function buildContext(knowledgeBase: KnowledgeBase, question: string) {
   const rankedPages = [...knowledgeBase.pages]
-    .map((page) => ({ page, score: scorePage(page, question) }))
+    .map((page) => ({ page, score: scoreWebsiteKnowledgePage(page, question) }))
     .sort((left, right) => right.score - left.score);
   if (!rankedPages.length || rankedPages[0].score === 0) {
     return { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
