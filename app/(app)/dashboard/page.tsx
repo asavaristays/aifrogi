@@ -36,7 +36,7 @@ export default async function DashboardPage() {
   const failedEngagement = countStatus("failed_engagement_limit");
   const failedRecipient = countStatus("failed_recipient_unavailable");
   const openTickets = tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status));
-  const botReadiness = evaluateBotReadiness({ profile: organization?.botProfile, businessVerified: organization?.onboarding?.kycStatus === "APPROVED", approvedKnowledgeCount: governance.entries.filter((item) => item.status === "APPROVED").length + governance.documents.filter((item) => item.status === "APPROVED").length, websitePageCount: knowledge.pages.length, whatsappConnected: connected });
+  const botReadiness = evaluateBotReadiness({ profile: organization?.botProfile, connectors: organization?.botConnectors || [], businessVerified: organization?.onboarding?.kycStatus === "APPROVED", approvedKnowledgeCount: governance.entries.filter((item) => item.status === "APPROVED").length + governance.documents.filter((item) => item.status === "APPROVED").length, websitePageCount: knowledge.pages.length, whatsappConnected: connected });
   const humanResponse = buildHumanResponseReport({ leads: allLeads, slaMinutes: organization?.botProfile?.responseSlaMinutes, reminderPercent: organization?.botProfile?.reminderPercent, fallbackEnabled: organization?.botProfile?.fallbackEnabled });
 
   const attention: DashboardAttention[] = [];

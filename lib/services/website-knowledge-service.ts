@@ -11,6 +11,8 @@ import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registr
 import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
 import { getDb } from "@/lib/db";
 import { executeReliableModel, escalationTierFor, modelHttpError, type ReliabilityEvidence, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
+import { getBotPersonaPack } from "@/lib/bot-persona-packs";
+import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 
 export type KnowledgePage = {
   url: string;
@@ -93,7 +95,10 @@ export const BOT_ANSWER_CONSTITUTION = [
 
 function personaInstructions(persona: Awaited<ReturnType<typeof getBotPersonaForPropertySlug>>) {
   if (!persona) return "No governed persona is configured. Use the neutral AiFrogi business-assistant identity and hand off uncertain requests.";
+  const pack = getBotPersonaPack(persona.category);
   return [
+    `Persona pack: ${pack.productName} v${pack.version}`,
+    `Platform identity: ${pack.identity}`,
     `Customer-facing name: ${persona.personaName || "Business Assistant"}`,
     `Bot category: ${persona.category.replaceAll("_", " ")}`,
     `Business objective: ${persona.businessObjective || "Answer approved business questions and arrange human follow-up."}`,
@@ -102,7 +107,11 @@ function personaInstructions(persona: Awaited<ReturnType<typeof getBotPersonaFor
     `Prohibited claims: ${persona.prohibitedClaims.join("; ") || "Do not invent any commercial or operational claim."}`,
     `Escalate to a human: ${persona.escalationTriggers.join("; ") || "Any low-confidence or sensitive request."}`,
     `Human handoff: ${persona.humanHandoffEnabled ? "enabled" : "not enabled; use safe refusal"}`,
-    `Business-action approval: ${persona.actionApprovalNeeded ? "required" : "subject to explicit tool authority"}`
+    `Business-action approval: ${persona.actionApprovalNeeded ? "required" : "subject to explicit tool authority"}`,
+    `Required conversation slots: ${pack.requiredSlots.join(", ")}`,
+    `Authority map: ${pack.authorities.map((item) => `${item.capability}=${item.level}`).join("; ")}`,
+    `Hard category escalations: ${pack.hardEscalations.join("; ")}`,
+    `Configured connector state: ${persona.connectors.map((item) => `${item.name}=${item.lifecycle}/${item.enabled ? "enabled" : "disabled"}; unavailable=${item.unavailableBehavior}`).join(" | ") || "No connector configured; do not claim live reads or writes."}`
   ].join("\n");
 }
 
@@ -464,12 +473,14 @@ export async function buildWebsiteKnowledgeAnswer({
   const organization = business?.organization;
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
-  const direct = (answer: string): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision: resolved.decision, claimIds: [], reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: resolved.decision.disposition }), degradedMode: false } });
+  const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
   const safeFailure = (failureLayer: ReliabilityEvidence["failureLayer"], failureCode: string, answer: string, latencyMs = 0, attemptCount = 0, degradedMode = false): KnowledgeAnswer => ({
     answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "SAFE_RELIABILITY_FALLBACK",
     decision: { ...resolved.decision, disposition: failureLayer === "KNOWLEDGE" ? "ESCALATE" : "FALLBACK", reason: `${failureLayer} reliability control returned ${failureCode}.` }, claimIds: [],
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer, failureCode, latencyMs, attemptCount, escalationTier: escalationTierFor({ failureLayer }), degradedMode }
   });
+  const categoryBoundary = persona ? evaluateCategoryHardBoundary(persona.category, question) : null;
+  if (categoryBoundary) return direct(categoryBoundary.answer, { ...resolved.decision, intent: "SENSITIVE", disposition: "ESCALATE", reason: `Hard category boundary ${categoryBoundary.code}.` });
   if (resolved.intent === "GREETING") return direct(`Hello. I’m ${assistantName}. I can answer approved questions about ${businessName} and help with the next step. What would you like to explore?`);
   if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for ${businessName}. I answer from approved business knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on ${businessName} business enquiries, so I don’t provide general weather, news, sports, or unrelated information. Please ask me about this business’s approved services, products, availability, or next steps.`);

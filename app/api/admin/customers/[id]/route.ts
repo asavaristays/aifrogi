@@ -6,7 +6,8 @@ import {
   updateOrganizationFlowStatus,
   saveOrganizationBotProfile,
   updateWebsiteBotLifecycle,
-  updateOrganizationStatus
+  updateOrganizationStatus,
+  updateBotConnectorPlan
 } from "@/lib/repositories/onboarding-repository";
 import { saveOrganizationWhatsAppBotConfiguration } from "@/lib/repositories/bot-configuration-repository";
 import { normalizeWhatsAppBotConfiguration, type WhatsAppBotConfigurationInput } from "@/lib/whatsapp-bot-config";
@@ -38,6 +39,10 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     configuration?: WhatsAppBotConfigurationInput;
     propertyId?: string;
     profile?: unknown;
+    connectorKey?: string;
+    provider?: string;
+    lifecycle?: string;
+    enabled?: boolean;
   } | null;
   const action = payload?.action?.trim().toUpperCase();
   if (action === "APPROVE_KYC" || action === "REJECT_KYC") {
@@ -110,6 +115,17 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       await sendBookingMail({ to: updated.ownerEmail, subject: `Install ${updated.botProfile.personaName || "your AiFrogi AI Bot"}`, body: `Hello ${updated.ownerName},\n\nYour governed Website AI Bot blueprint is ready for installation.\n\nRecommended JavaScript:\n${script}\n\nWordPress: add the same code in a Custom HTML block or approved footer-code area.\n\niFrame option:\n<iframe src="${appUrl}/embed/${updated.properties[0].slug}" title="AI Business Bot" width="390" height="680" style="border:0;border-radius:22px" loading="lazy"></iframe>\n\nAfter a valid website load is detected, AiFrogi Super Admin will perform the final readiness check and make the bot live. Never place OpenAI, database, Meta, password or OTP credentials in website code.\n\nAiFrogi` }).catch(() => null);
     }
     return NextResponse.json({ organization: updated });
+  }
+
+  if (action === "UPDATE_BOT_CONNECTOR") {
+    try {
+      const connectorKey = payload?.connectorKey?.trim() || "";
+      if (!connectorKey) return NextResponse.json({ error: "Connector is required." }, { status: 400 });
+      const updated = await updateBotConnectorPlan({ organizationId: id, connectorKey, provider: payload?.provider, lifecycle: payload?.lifecycle || "REQUESTED", enabled: payload?.enabled === true, actorEmail: user.username });
+      return NextResponse.json({ organization: updated });
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Connector plan could not be updated." }, { status: 400 });
+    }
   }
 
   if (["MAKE_LIVE", "PAUSE", "DELETE", "RESTORE"].includes(action || "")) {

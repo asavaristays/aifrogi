@@ -305,6 +305,7 @@ model Organization {
   onboardingCredential OnboardingCredential?
   botConfiguration     WhatsAppBotConfiguration?
   botProfile           BotProfile?
+  botConnectors        BotConnectorConfiguration[]
   documents            OnboardingDocument[]
   activities           OnboardingActivity[]
   supportTickets       SupportTicket[]
@@ -362,6 +363,7 @@ model BotProfile {
   organizationId       String           @unique
   organization         Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   category             BotCategory      @default(BUSINESS_AI)
+  personaPackVersion   String           @default("1.0")
   operatingMode        BotOperatingMode @default(LEAD_CAPTURE)
   channels             ChannelKind[]    @default([WEBSITE])
   capabilities         String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS"])
@@ -389,6 +391,30 @@ model BotProfile {
   configuredBy         String?
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
+}
+
+model BotConnectorConfiguration {
+  id                  String       @id @default(cuid())
+  organizationId      String
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connectorKey        String
+  name                String
+  provider            String?
+  requiredFor         String
+  required            Boolean      @default(false)
+  enabled             Boolean      @default(false)
+  lifecycle           String       @default("REQUESTED")
+  readOperations      String[]     @default([])
+  writeOperations     String[]     @default([])
+  unavailableBehavior String       @db.Text
+  lastVerifiedAt      DateTime?
+  configuredBy        String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@unique([organizationId, connectorKey])
+  @@index([organizationId, lifecycle])
+  @@index([organizationId, required, enabled])
 }
 
 model OrganizationMember {

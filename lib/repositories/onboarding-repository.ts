@@ -4,12 +4,14 @@ import { encryptSecretValue } from "@/lib/field-encryption";
 import { nextWebsiteBotStatus, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
 import { KB_FRAMEWORK_VERSION } from "@/lib/knowledge-verification";
+import { BOT_PERSONA_PACK_VERSION, getBotPersonaPack } from "@/lib/bot-persona-packs";
 
 const organizationInclude = {
   onboarding: true,
   subscription: { include: { plan: true } },
   botConfiguration: true,
   botProfile: true,
+  botConnectors: { orderBy: { createdAt: "asc" as const } },
   documents: {
     select: {
       id: true,
@@ -254,11 +256,24 @@ export async function saveOrganizationBotProfile(input: {
   const installationKey = existing?.installationKey || randomBytes(24).toString("base64url");
   const retainedStatuses = new Set(["INSTALLATION_DETECTED", "LIVE", "PAUSED"]);
   const status = existing?.status && retainedStatuses.has(existing.status) ? existing.status : "INSTALLATION_READY";
+  const personaPack = getBotPersonaPack(input.profile.category);
+  const actionMode = input.profile.operatingMode === "APPROVED_ACTIONS" || input.profile.operatingMode === "HUMAN_APPROVAL";
+  const leadMode = input.profile.operatingMode !== "ANSWER_ONLY";
+  const connectorKeys = personaPack.connectors.map((connector) => connector.key);
   await db.$transaction([
     db.botProfile.upsert({
       where: { organizationId: input.organizationId },
-      update: { ...input.profile, installationKey, status, configuredBy: input.actorEmail },
-      create: { organizationId: input.organizationId, ...input.profile, installationKey, status, configuredBy: input.actorEmail, kbGateVersion: KB_FRAMEWORK_VERSION }
+      update: { ...input.profile, personaPackVersion: BOT_PERSONA_PACK_VERSION, installationKey, status, configuredBy: input.actorEmail },
+      create: { organizationId: input.organizationId, ...input.profile, personaPackVersion: BOT_PERSONA_PACK_VERSION, installationKey, status, configuredBy: input.actorEmail, kbGateVersion: KB_FRAMEWORK_VERSION }
+    }),
+    db.botConnectorConfiguration.updateMany({ where: { organizationId: input.organizationId, connectorKey: { notIn: connectorKeys } }, data: { enabled: false, lifecycle: "RETIRED", configuredBy: input.actorEmail } }),
+    ...personaPack.connectors.map((connector) => {
+      const required = connector.requiredFor === "BASE" || (connector.requiredFor === "LEAD_CAPTURE" && leadMode) || (connector.requiredFor === "APPROVED_ACTIONS" && actionMode);
+      return db.botConnectorConfiguration.upsert({
+        where: { organizationId_connectorKey: { organizationId: input.organizationId, connectorKey: connector.key } },
+        update: { name: connector.name, requiredFor: connector.requiredFor, required, readOperations: connector.reads, writeOperations: connector.writes, unavailableBehavior: connector.unavailableBehavior, configuredBy: input.actorEmail },
+        create: { organizationId: input.organizationId, connectorKey: connector.key, name: connector.name, requiredFor: connector.requiredFor, required, readOperations: connector.reads, writeOperations: connector.writes, unavailableBehavior: connector.unavailableBehavior, configuredBy: input.actorEmail }
+      });
     }),
     db.onboardingActivity.create({
       data: {
@@ -288,6 +303,11 @@ export async function updateWebsiteBotLifecycle(input: {
     const readiness = await getKnowledgeVerificationReadiness(property.id, category);
     if (!readiness.ready) {
       throw new Error(`Product preparation is incomplete. KB coverage ${readiness.coverage.percentage}% (minimum ${profile.kbCoverageMinimum}%), freshness ${readiness.freshnessRate}% (minimum 95%), conflicts ${readiness.conflicts}, unsigned claims ${readiness.unsigned}, pending previews ${readiness.previewPending}, open answer flags ${readiness.openFlags}.`);
+    }
+    if (profile.operatingMode === "APPROVED_ACTIONS" || profile.operatingMode === "HUMAN_APPROVAL") {
+      const requiredConnectors = await db.botConnectorConfiguration.findMany({ where: { organizationId: input.organizationId, required: true, lifecycle: { not: "RETIRED" } }, select: { name: true, enabled: true, lifecycle: true } });
+      const unavailable = requiredConnectors.filter((connector) => !connector.enabled || !["LIVE", "MONITORED"].includes(connector.lifecycle));
+      if (!requiredConnectors.length || unavailable.length) throw new Error(`Connector preparation is incomplete. ${!requiredConnectors.length ? "No required category connector plan exists." : `${unavailable.map((connector)=>connector.name).join(", ")} must be verified, live, and enabled.`}`);
     }
   }
   const now = new Date();
@@ -335,6 +355,23 @@ export async function saveClientBotPersona(input: {
   await db.$transaction([
     db.botProfile.update({ where: { organizationId: input.organizationId }, data: { ...input.persona, configuredBy: input.actorEmail } }),
     db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "BOT_PERSONA_UPDATED", detail: `${input.persona.personaName}: ${input.persona.businessObjective.slice(0, 180)}` } })
+  ]);
+  return getOrganizationById(input.organizationId);
+}
+
+const CONNECTOR_LIFECYCLE_VALUES = new Set(["REQUESTED", "AUTHORISED", "CONNECTED", "MAPPED", "SANDBOX_TESTED", "VERIFIED", "LIVE", "MONITORED", "SUSPENDED", "RETIRED"]);
+
+export async function updateBotConnectorPlan(input: { organizationId: string; connectorKey: string; provider?: string | null; lifecycle: string; enabled: boolean; actorEmail: string }) {
+  const db = getDb();
+  if (!db) return null;
+  const lifecycle = input.lifecycle.trim().toUpperCase();
+  if (!CONNECTOR_LIFECYCLE_VALUES.has(lifecycle)) throw new Error("Select a valid connector lifecycle state.");
+  const connector = await db.botConnectorConfiguration.findUnique({ where: { organizationId_connectorKey: { organizationId: input.organizationId, connectorKey: input.connectorKey } } });
+  if (!connector) throw new Error("Connector requirement was not found for this bot persona.");
+  if (input.enabled && !["LIVE", "MONITORED"].includes(lifecycle)) throw new Error("A connector can be enabled only after it is verified and live.");
+  await db.$transaction([
+    db.botConnectorConfiguration.update({ where: { id: connector.id }, data: { provider: input.provider?.trim().slice(0, 120) || null, lifecycle, enabled: input.enabled, lastVerifiedAt: ["VERIFIED", "LIVE", "MONITORED"].includes(lifecycle) ? new Date() : connector.lastVerifiedAt, configuredBy: input.actorEmail } }),
+    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "BOT_CONNECTOR_UPDATED", detail: `${connector.name}: ${lifecycle} · ${input.enabled ? "enabled" : "disabled"}` } })
   ]);
   return getOrganizationById(input.organizationId);
 }

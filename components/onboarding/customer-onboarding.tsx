@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
+import { BotConnectorPlan, type BotConnectorView } from "@/components/bot-profile/bot-connector-plan";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 
 type DocumentRecord = {
@@ -76,6 +77,7 @@ export type CustomerOnboardingOrganization = {
   updatedAt: string | Date;
   onboarding: OnboardingRecord | null;
   botProfile: { category: string; operatingMode: string; channels: string[]; capabilities: string[]; humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; personaName?: string | null; businessObjective?: string | null; tone?: string | null; languages?: string[]; prohibitedClaims?: string[]; escalationTriggers?: string[]; responseSlaMinutes?: number; reminderPercent?: number; fallbackEnabled?: boolean; safeFallbackMessage?: string | null; status?: string; installationKey?: string | null; installationDetectedAt?: string | Date | null; liveAt?: string | Date | null } | null;
+  botConnectors: BotConnectorView[];
   documents: DocumentRecord[];
   activities: ActivityRecord[];
   properties: Array<{ id: string; name: string; slug: string }>;
@@ -476,6 +478,7 @@ export function CustomerOnboarding({
           />
           <OnboardingReadiness organization={organization} />
           {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
+          {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
           {organization?.properties[0] ? <WebsiteBotInstallation slug={organization.properties[0].slug} profile={organization.botProfile} /> : null}
           {usesWhatsApp ? <TechProviderGuide /> : null}
 

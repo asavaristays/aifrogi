@@ -1,3 +1,5 @@
+import { requiredCapabilitiesForCategory } from "@/lib/bot-persona-packs";
+
 export const BOT_CATEGORIES = ["BUSINESS_AI", "PINGBOOK", "FLOWCART", "STAY", "RESTAURANT", "REAL_ESTATE", "EDUCATION", "CUSTOM"] as const;
 export const BOT_OPERATING_MODES = ["ANSWER_ONLY", "LEAD_CAPTURE", "APPROVED_ACTIONS", "HUMAN_APPROVAL"] as const;
 export const BOT_CHANNELS = ["WEBSITE", "WHATSAPP"] as const;
@@ -42,8 +44,10 @@ export function parseBotProfile(value: unknown): { value?: BotProfileInput; erro
   if (!BOT_OPERATING_MODES.includes(operatingMode as BotProfileInput["operatingMode"])) return { error: "Select a valid operating mode" };
   if (!channels.length || channels.some((item) => !BOT_CHANNELS.includes(item as BotProfileInput["channels"][number]))) return { error: "Select at least one supported channel" };
   if (!capabilities.length || capabilities.some((item) => !BOT_CAPABILITIES.includes(item as BotProfileInput["capabilities"][number]))) return { error: "Select at least one supported capability" };
-  if (category === "PINGBOOK" && !capabilities.includes("BOOK_APPOINTMENTS")) return { error: "ClinicGPT requires appointment booking capability" };
-  if (category === "FLOWCART" && !capabilities.includes("CREATE_ORDERS")) return { error: "FlowCart requires order creation capability" };
+  const requiredCapabilities = requiredCapabilitiesForCategory(category as BotProfileInput["category"]);
+  const missingCapabilities = requiredCapabilities.filter((capability) => !capabilities.includes(capability));
+  const missingActionCapabilities = missingCapabilities.filter((capability) => capability === "BOOK_APPOINTMENTS" || capability === "CREATE_ORDERS");
+  if (missingActionCapabilities.length) return { error: `${category.replaceAll("_", " ")} requires ${missingActionCapabilities.map((capability)=>capability === "BOOK_APPOINTMENTS" ? "appointment booking" : "order creation").join(", ")} capability` };
   const personaName = text(input.personaName, 80);
   const businessObjective = text(input.businessObjective, 1000);
   const tone = text(input.tone, 160) || "Professional, clear and helpful";
@@ -54,6 +58,7 @@ export function parseBotProfile(value: unknown): { value?: BotProfileInput; erro
   if (!personaName) return { error: "Give this bot a customer-facing persona name" };
   if (!businessObjective) return { error: "Describe the bot's business objective" };
   if (!languages.length) return { error: "Select at least one supported language" };
+  if (missingCapabilities.length) return { error: `${category.replaceAll("_", " ")} requires ${missingCapabilities.map((capability)=>capability.toLowerCase().replaceAll("_", " ")).join(", ")} capability` };
   if (input.fallbackEnabled === true && safeFallbackMessage.length < 20) return { error: "Add approved safe fallback wording before enabling fallback" };
   return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false, personaName, businessObjective, tone, languages, prohibitedClaims: list(input.prohibitedClaims), escalationTriggers: list(input.escalationTriggers), responseSlaMinutes, reminderPercent, fallbackEnabled: input.fallbackEnabled === true, safeFallbackMessage } };
 }
