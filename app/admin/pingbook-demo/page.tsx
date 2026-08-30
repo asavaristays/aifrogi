@@ -27,7 +27,7 @@ function policyValue(workingHours: unknown, key: string, fallback: string) {
   return value === undefined || value === null || value === "" ? fallback : String(value);
 }
 
-export default async function AdminPingBookDemoPage() {
+export default async function AdminClinicGPTDemoPage() {
   const db = getDb();
   const organization = await db?.organization.findUnique({
     where: { slug: DEMO_SLUG },
@@ -60,7 +60,7 @@ export default async function AdminPingBookDemoPage() {
   const refundProcessingTime = policyValue(tenant?.workingHours, "refundProcessingTime", "5-7 working days");
   const slotHoldMinutes = policyValue(tenant?.workingHours, "slotHoldMinutes", "10");
   const checks = [
-    { label: "PingBook plan", ok: organization?.plan === "PINGBOOK" && organization.subscription?.plan.code === "PINGBOOK" },
+    { label: "ClinicGPT plan", ok: organization?.plan === "PINGBOOK" && organization.subscription?.plan.code === "PINGBOOK" },
     { label: "Clinic onboarding ready", ok: organization?.onboarding?.lifecycleStatus === "DEMO_READY" },
     { label: "Appointment tenant ready", ok: tenant?.status === "DEMO_READY" },
     { label: "Razorpay flow enabled", ok: Boolean(tenant?.razorpayEnabled) },
@@ -74,10 +74,10 @@ export default async function AdminPingBookDemoPage() {
       <main className="mx-auto max-w-5xl px-4 py-7 sm:px-8">
         <Link href="/admin/appointments" className="text-sm font-black text-[#8a6a16]">Back to appointments</Link>
         <section className="mt-6 rounded-lg border border-black/7 bg-white p-8 shadow-sm">
-          <p className="product-eyebrow">PingBook Demo</p>
+          <p className="product-eyebrow">ClinicGPT Demo</p>
           <h1 className="mt-2 text-3xl font-semibold">Demo workspace is not ready</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
-            The internal clinic demo was not found in the database. Run the PingBook demo seed on the VPS, then refresh this page.
+            The internal clinic demo was not found in the database. Run the ClinicGPT demo seed on the VPS, then refresh this page.
           </p>
           <code className="mt-5 block rounded-md bg-[#f8f0d8] p-4 text-sm text-[#101010]">npm run seed:pingbook-demo</code>
         </section>
@@ -89,7 +89,7 @@ export default async function AdminPingBookDemoPage() {
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-7 sm:px-8">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="product-eyebrow">PingBook Demo</p>
+          <p className="product-eyebrow">ClinicGPT Demo</p>
           <h1 className="mt-2 text-3xl font-semibold">Clinic sales cockpit</h1>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             {organization.name} · {property.city || "Goa"} · {tenant.timezone}
@@ -99,7 +99,7 @@ export default async function AdminPingBookDemoPage() {
           <Link href={`/admin/customers/${organization.id}`} className="inline-flex min-h-10 items-center rounded-md bg-[#101010] px-4 text-sm font-black text-white hover:bg-[#2b2b2b]">
             Open customer
           </Link>
-          <Link href="/solutions/pingbook" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#101010] hover:bg-[#f8faf9]">
+          <Link href="/solutions/clinicgpt" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#101010] hover:bg-[#f8faf9]">
             Public page
           </Link>
           <Link href="/admin/appointments" className="inline-flex min-h-10 items-center rounded-md border border-black/10 bg-white px-4 text-sm font-black text-[#101010] hover:bg-[#f8faf9]">
@@ -155,7 +155,7 @@ export default async function AdminPingBookDemoPage() {
 
         <div className="rounded-lg border border-black/7 bg-[#101010] p-6 text-white shadow-sm">
           <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#e2c66d]">Sales script</p>
-          <h2 className="mt-2 text-2xl font-semibold">Problem PingBook solves</h2>
+          <h2 className="mt-2 text-2xl font-semibold">Problem ClinicGPT solves</h2>
           <div className="mt-5 space-y-3">
             {[
               "Reception teams miss WhatsApp appointment requests during busy clinic hours.",
@@ -168,7 +168,7 @@ export default async function AdminPingBookDemoPage() {
           <div className="mt-6 rounded-md bg-white p-4 text-[#101010]">
             <p className="text-xs font-black uppercase text-[#6d5310]">Quote</p>
             <p className="mt-2 text-sm font-bold leading-6">
-              One-time setup Rs. 4,500. PingBook Rs. 1,250 per month, billed quarterly. Meta message fees separate as used.
+              One-time setup Rs. 4,500. ClinicGPT Rs. 1,250 per month, billed quarterly. Meta message fees separate as used.
             </p>
           </div>
         </div>

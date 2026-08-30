@@ -12,7 +12,7 @@ function rupees(value: number) {
   return `Rs. ${Math.round(value).toLocaleString("en-IN")}`;
 }
 
-export function PingBookPricingCalculator() {
+export function ClinicGPTPricingCalculator() {
   const [utilityMessages, setUtilityMessages] = useState(500);
   const [marketingMessages, setMarketingMessages] = useState(0);
 
@@ -61,7 +61,7 @@ export function PingBookPricingCalculator() {
       </div>
 
       <p className="mt-4 text-xs leading-5 text-white/52">
-        First quarter includes Rs. 4,500 setup plus Rs. 3,750 quarterly PingBook fee. Message rates are planning assumptions for India and can change by category, country, taxes, and provider fees.
+        First quarter includes Rs. 4,500 setup plus Rs. 3,750 quarterly ClinicGPT fee. Message rates are planning assumptions for India and can change by category, country, taxes, and provider fees.
       </p>
     </div>
   );

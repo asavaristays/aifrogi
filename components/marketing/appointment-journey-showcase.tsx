@@ -10,12 +10,12 @@ const highlights = [
 
 export function AppointmentJourneyShowcase() {
   return (
-    <section id="pingbook" className="border-b border-black/8 bg-white px-5 py-16 sm:px-8 sm:py-20">
+    <section id="clinicgpt" className="border-b border-black/8 bg-white px-5 py-16 sm:px-8 sm:py-20">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
         <div>
           <p className="product-eyebrow">AiFrogi</p>
           <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-tight tracking-[-.035em] sm:text-5xl">
-            PingBook turns WhatsApp enquiries into confirmed appointments.
+            ClinicGPT turns WhatsApp enquiries into confirmed appointments.
           </h2>
           <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">
             AiFrogi&apos;s appointment product helps service businesses book, confirm, remind, and grow through WhatsApp while keeping operations visible in trusted Google tools.
@@ -31,19 +31,19 @@ export function AppointmentJourneyShowcase() {
             ))}
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/solutions/pingbook" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold !text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
-              Explore PingBook
+            <Link href="/solutions/clinicgpt" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold !text-white shadow-[0_18px_42px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#8a6a16]">
+              Explore ClinicGPT
               <Icon name="arrow-right" />
             </Link>
-            <a href="https://app.aifrogi.com/register?source=pingbook-home" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-5 text-sm font-bold text-[#2b2b2b] transition hover:bg-[#fbfaf7]">
+            <a href="https://app.aifrogi.com/register?source=clinicgpt-home" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-black/10 bg-white px-5 text-sm font-bold text-[#2b2b2b] transition hover:bg-[#fbfaf7]">
               Start setup
               <Icon name="settings" />
             </a>
           </div>
         </div>
 
-        <Link href="/solutions/pingbook" className="group flex min-h-[260px] items-center justify-center">
-          <Image src="/brand/pingbook-logo-aifrogi-tight.png" alt="PingBook" width={1200} height={1200} className="h-[500px] w-[500px] max-w-full object-contain grayscale contrast-125 transition-transform duration-300 group-hover:scale-[1.02]" />
+        <Link href="/solutions/clinicgpt" className="group flex min-h-[260px] items-center justify-center">
+          <Image src="/brand/aifrogi-sovereign-bot.png" alt="ClinicGPT AI clinic assistant" width={1122} height={1402} className="h-[500px] w-[500px] max-w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" />
         </Link>
       </div>
     </section>

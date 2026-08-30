@@ -45,7 +45,7 @@ export const BOT_BLUEPRINTS: Record<BotProfileInput["category"], BotBlueprint> =
     evaluations: ["Room and policy accuracy", "Rate and availability accuracy", "Booking idempotency", "Booking read-back verification", "Guest escalation"]
   },
   PINGBOOK: {
-    productName: "PingBook",
+    productName: "ClinicGPT",
     categoryLabel: "Appointment Bot",
     promise: "Turn customer intent into a verified appointment while respecting availability, eligibility, and human authority.",
     requiredInputs: ["Services and duration", "Practitioners and locations", "Working hours and availability rules", "Pricing and deposits", "Preparation, cancellation, and escalation rules"],

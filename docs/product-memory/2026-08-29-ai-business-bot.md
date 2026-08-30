@@ -44,7 +44,7 @@ The bot category describes its business job. Website and WhatsApp are channels u
 Supported bot categories:
 
 - BusinessGPT
-- PingBook appointment bot
+- ClinicGPT appointment bot
 - FlowCart commerce bot
 - HotelGPT hospitality and revenue bot
 - DineGPT restaurant bot
@@ -83,7 +83,7 @@ Only these production businesses should remain unless a new client is deliberate
 - Test chat data was cleared on 29 August 2026.
 - Preserve the connected WhatsApp configuration unless an authorized migration is planned.
 
-The obsolete PingBook demo clinic tenant and unused HotelRadar website property were removed on 29 August 2026.
+The obsolete ClinicGPT demo clinic tenant and unused HotelRadar website property were removed on 29 August 2026.
 
 ## Live platform capabilities
 
@@ -208,7 +208,7 @@ Negotiation is governed by approved category rules, floors, ceilings, alternativ
 
 The Webtechnosys AI Business Bot end-to-end register is complete at production release `911ba98`. The numbered remaining count is `0`. Do not expand this register with another category or module.
 
-## PingBook milestone after website handoff
+## ClinicGPT milestone after website handoff
 
 The first verified agentic outcome remains `AppointmentConfirmed`:
 

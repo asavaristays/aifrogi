@@ -28,7 +28,7 @@ export const BILLING_PLAN_CATALOGUE = [
   },
   {
     code: "PINGBOOK",
-    name: "PingBook Clinic",
+    name: "ClinicGPT Clinic",
     description: "Clinic-first WhatsApp appointment automation with quarterly billing.",
     billingInterval: "QUARTERLY",
     amountPaisa: 375000,

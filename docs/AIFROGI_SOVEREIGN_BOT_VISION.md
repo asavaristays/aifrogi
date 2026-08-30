@@ -30,4 +30,4 @@ If the answer is no, the design does not yet satisfy the sovereign-bot vision.
 
 Onboarding must create a unique business intelligence profile rather than only collecting a generic prompt. That profile should connect approved sources, brand voice, services, audiences, differentiators, policies, permissions, escalation rules, prohibited claims, and measurable outcomes. Conversations and verified results can improve the profile only through governed, tenant-safe processes.
 
-This vision applies to regular business bots and all vertical products, including PingBook, FlowCart, and Stay. WhatsApp remains a connector—not the owner of the bot or its intelligence.
+This vision applies to regular business bots and all vertical products, including ClinicGPT, FlowCart, and Stay. WhatsApp remains a connector—not the owner of the bot or its intelligence.

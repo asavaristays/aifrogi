@@ -23,7 +23,7 @@ export default async function AdminAppointmentsPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/admin/pingbook-demo" className="inline-flex min-h-9 items-center rounded-md bg-[#101010] px-4 text-sm font-black text-white hover:bg-[#2b2b2b]">
-            Open PingBook Demo
+            Open ClinicGPT Demo
           </Link>
           <Badge tone="primary">{enabled} enabled</Badge>
           <Badge tone="secondary">{live} live</Badge>

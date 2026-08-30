@@ -41,7 +41,7 @@ export function AIProductHero({
     window.location.assign(`https://app.aifrogi.com/register?${query.toString()}`);
   }
 
-  if (name === "PingBook") {
+  if (name === "ClinicGPT") {
     return (
       <section className="relative overflow-hidden bg-black text-white">
         <div className="px-5 pb-8 pt-9 sm:px-8 sm:pt-12 lg:hidden">

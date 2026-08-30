@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export function AnimatedBotPhone({ botName = "PingBook" }: { botName?: string }) {
+export function AnimatedBotPhone({ botName = "ClinicGPT" }: { botName?: string }) {
   return (
     <div className="relative aspect-[9/14] w-full overflow-hidden bg-black sm:aspect-[2/1]" aria-label={`${botName} verified appointment conversation`}>
       <Image src="/media/ai-bot-phone-stage-v2.png" alt="Black and antique-gold phone frame for an AiFrogi business bot" fill priority sizes="100vw" className="object-cover object-[70%_center] sm:object-contain sm:object-center" />

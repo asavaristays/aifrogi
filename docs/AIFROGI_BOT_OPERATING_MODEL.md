@@ -58,7 +58,7 @@ Supported now: official website pages, PDF, DOCX, TXT, Markdown, CSV, JSON, and 
 
 Persona is not cosmetic. It is a governed combination of:
 
-- Product/category: BusinessGPT, HotelGPT, PingBook, DineGPT, PropertyGPT, FlowCart, or Custom
+- Product/category: BusinessGPT, HotelGPT, ClinicGPT, DineGPT, PropertyGPT, FlowCart, or Custom
 - Business purpose and measurable outcome
 - Tone, language, and response style
 - Approved knowledge domains
@@ -100,7 +100,7 @@ The intended product family is:
 
 - **BusinessGPT:** general services, business questions, lead capture, qualification, and human follow-up
 - **HotelGPT:** hospitality knowledge, stay enquiries, availability, negotiation boundaries, and booking handoff
-- **PingBook:** services, staff, calendars, appointment booking, and verified `AppointmentConfirmed` outcomes
+- **ClinicGPT:** services, staff, calendars, appointment booking, and verified `AppointmentConfirmed` outcomes
 - **DineGPT:** menus, dietary information, restaurant reservations, offers, and order or human handoff
 - **PropertyGPT:** property inventory, buyer qualification, regulatory information, site visits, and sales routing
 - **FlowCart:** catalog, inventory, orders, delivery, returns, and commerce workflows
@@ -135,7 +135,7 @@ Each category defines its own:
 AiFrogi must not attempt to complete every category simultaneously. The platform should first prove two reusable operating patterns:
 
 1. **Webtechnosys BusinessGPT** proves grounded business answers, qualification, consented lead capture, knowledge improvement, and human follow-up.
-2. **PingBook** proves a transactional bot that uses authority-controlled tools and read-back verification to record `AppointmentConfirmed`.
+2. **ClinicGPT** proves a transactional bot that uses authority-controlled tools and read-back verification to record `AppointmentConfirmed`.
 
 After these knowledge-based and action-based patterns are stable, HotelGPT becomes the principal commercial vertical. HotelGPT begins with governed knowledge and enquiry capture. It may claim live room availability only after a verified PMS, channel-manager, or booking-engine connector reads the current system of record. DineGPT, PropertyGPT, FlowCart, and Custom blueprints follow through the same shared runtime.
 

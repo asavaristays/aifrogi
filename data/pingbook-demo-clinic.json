@@ -1,6 +1,6 @@
 {
   "demoId": "pingbook-demo-clinic-v1",
-  "product": "AiFrogi PingBook",
+  "product": "AiFrogi ClinicGPT",
   "status": "internal_demo_ready",
   "positioning": {
     "primaryBuyer": "clinic",
@@ -81,16 +81,16 @@
     "bookingFee": 500,
     "expectedFlow": [
       "Patient asks for an appointment on WhatsApp.",
-      "PingBook asks for the service and offers available slots.",
+      "ClinicGPT asks for the service and offers available slots.",
       "Patient selects 18:30.",
-      "PingBook holds the slot for 10 minutes.",
-      "PingBook sends a Razorpay payment link for Rs. 500.",
+      "ClinicGPT holds the slot for 10 minutes.",
+      "ClinicGPT sends a Razorpay payment link for Rs. 500.",
       "Payment is captured and the booking is confirmed.",
       "Google Calendar receives the appointment event.",
       "Google Sheet receives the booking row.",
       "Reminder is sent before the appointment.",
       "Patient can cancel up to 2 hours before the appointment.",
-      "After completion, PingBook sends a feedback or review request."
+      "After completion, ClinicGPT sends a feedback or review request."
     ]
   },
   "messageToneExamples": {

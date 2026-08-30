@@ -36,7 +36,7 @@ export default function SolutionsPage() {
           <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               ...botProducts,
-              { slug: "pingbook", name: "PingBook", category: "Appointments", headline: "Verified appointment confirmation and follow-up." },
+              { slug: "clinicgpt", name: "ClinicGPT", category: "Appointments", headline: "Verified appointment confirmation and follow-up." },
               { slug: "flowcart", name: "FlowCart", category: "Commerce", headline: "Product discovery, orders, payment links and updates." }
             ].map((product) => (
               <Link key={product.slug} href={`/solutions/${product.slug}`} className="group flex min-h-56 flex-col rounded-lg border border-black/8 bg-white p-6 transition hover:-translate-y-1 hover:border-[var(--gold-500)]/45 hover:shadow-[0_20px_55px_rgba(16,16,16,.1)]">

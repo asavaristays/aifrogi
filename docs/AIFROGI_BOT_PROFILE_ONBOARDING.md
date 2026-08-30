@@ -6,7 +6,7 @@ Every profile represents a sovereign business bot. Its approved knowledge, busin
 
 ## Configuration dimensions
 
-- Category: Regular AI Business Bot, PingBook, FlowCart, Stay, or Custom.
+- Category: Regular AI Business Bot, ClinicGPT, FlowCart, Stay, or Custom.
 - Channels: Website Bot, WhatsApp Bot, or both.
 - Operating mode: answer only, lead capture, approved actions, or human approval.
 - Capabilities: questions, lead capture, qualification, appointments, and orders.

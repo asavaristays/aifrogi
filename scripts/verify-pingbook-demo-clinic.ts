@@ -10,7 +10,7 @@ async function main() {
   loadEnvConfig(process.cwd());
   const { getDb } = await import("@/lib/db");
   const db = getDb();
-  if (!db) throw new Error("Database unavailable for PingBook demo verification.");
+  if (!db) throw new Error("Database unavailable for ClinicGPT demo verification.");
   const profile = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data", "pingbook-demo-clinic.json"), "utf8"));
   const organization = await db.organization.findUnique({
     where: { slug: "pingbook-demo-clinic" },
@@ -33,7 +33,7 @@ async function main() {
   assert(organization, "Demo organization is missing.");
   assert(organization.industry === "Clinic", "Demo organization is not clinic-first.");
   assert(organization.plan === "PINGBOOK", "Demo organization plan is not PINGBOOK.");
-  assert(organization.subscription?.plan.code === "PINGBOOK", "Demo subscription is not on the PingBook plan.");
+  assert(organization.subscription?.plan.code === "PINGBOOK", "Demo subscription is not on the ClinicGPT plan.");
   assert(organization.subscription.status === "ACTIVE", "Demo subscription is not active.");
 
   const property = organization.properties.find((item) => item.slug === "pingbook-demo-clinic");

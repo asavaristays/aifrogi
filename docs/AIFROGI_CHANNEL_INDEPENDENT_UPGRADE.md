@@ -42,7 +42,7 @@ The target remains one Next.js modular monolith:
 1. Channel adapters normalize inbound events and implement outbound policy and delivery behavior.
 2. A central conversation service owns participants, conversations, messages, ordering, ownership, and channel metadata.
 3. An agent orchestrator owns intent, retrieval, planning, confidence, escalation, and verified responses.
-4. Vertical packs configure knowledge, policies, tools, and outcomes for Stay, PingBook, and FlowCart.
+4. Vertical packs configure knowledge, policies, tools, and outcomes for Stay, ClinicGPT, and FlowCart.
 5. A tool registry owns schemas, permissions, idempotency, execution, read-back verification, and failure handling.
 6. Operations services own human takeover, trace visibility, integration health, audits, and evidence-backed outcomes.
 
@@ -176,7 +176,7 @@ All flags default to false. Production activation requires an explicit workspace
 
 ### Phase 4 - first verified vertical workflow
 
-- PingBook checks availability, confirms permission, writes idempotently, reads back the appointment, and records an evidence-backed outcome.
+- ClinicGPT checks availability, confirms permission, writes idempotently, reads back the appointment, and records an evidence-backed outcome.
 - Failures and exceptions hand over with context.
 
 ### Phase 5 - outcomes and analytics

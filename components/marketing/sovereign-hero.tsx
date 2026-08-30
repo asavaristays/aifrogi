@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
 
-const botNames = ["HotelGPT", "PingBook", "DineGPT", "PropertyGPT", "BusinessGPT", "FlowCart"];
+const botNames = ["HotelGPT", "ClinicGPT", "DineGPT", "PropertyGPT", "BusinessGPT", "FlowCart"];
 
 export function SovereignHero({ registerUrl }: { registerUrl: string }) {
   const [activeIndex, setActiveIndex] = useState(0);

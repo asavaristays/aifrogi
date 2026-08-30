@@ -18,11 +18,11 @@ const products = [
     proof: ["WhatsApp Flow order capture", "Razorpay-ready payment status", "Shopify, WooCommerce, Sheet or API connector"]
   },
   {
-    name: "PingBook",
+    name: "ClinicGPT",
     label: "WhatsApp appointments",
-    href: "/solutions/pingbook",
-    setupHref: "https://app.aifrogi.com/register?source=pingbook-product-shell",
-    logo: "/brand/pingbook-logo-aifrogi-tight.png",
+    href: "/solutions/clinicgpt",
+    setupHref: "https://app.aifrogi.com/register?source=clinicgpt-product-shell",
+    logo: null,
     accent: "#6d5310",
     surface: "#fbfaf7",
     iconSurface: "#f8f0d8",
@@ -62,7 +62,7 @@ export function WhatsAppProductsShell({ eyebrow = "WhatsApp API products" }: { e
             >
               <div className="flex items-start gap-4">
                 <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-black/8 bg-white p-2">
-                  <Image src={product.logo} alt={`${product.name} logo`} width={160} height={160} className={`h-12 w-12 object-contain ${product.name === "PingBook" ? "grayscale contrast-125" : ""}`} />
+                  {product.logo ? <Image src={product.logo} alt={`${product.name} logo`} width={160} height={160} className="h-12 w-12 object-contain" /> : <span className="grid h-12 w-12 place-items-center rounded-full bg-[var(--gold-600)] text-sm font-semibold text-white" aria-label="ClinicGPT">CG</span>}
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-black uppercase tracking-[.12em]" style={{ color: product.accent }}>{product.label}</p>

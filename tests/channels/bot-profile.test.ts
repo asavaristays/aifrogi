@@ -13,7 +13,7 @@ test("configured bot requires governed persona identity and objective", () => {
   assert.match(parsed.error || "", /persona name/);
 });
 
-test("PingBook cannot be configured without appointment capability", () => {
+test("ClinicGPT cannot be configured without appointment capability", () => {
   const parsed = parseBotProfile({ category: "PINGBOOK", operatingMode: "APPROVED_ACTIONS", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS"] });
   assert.match(parsed.error || "", /appointment booking/);
 });

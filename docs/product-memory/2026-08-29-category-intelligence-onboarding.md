@@ -20,14 +20,14 @@ This protects the Sovereign Business Bot promise:
 | Internal category | Product name | Primary outcome |
 |---|---|---|
 | `STAY` | HotelGPT | Direct booking, guest assistance, upsell, and hotel revenue |
-| `PINGBOOK` | PingBook | Verified appointment confirmation |
+| `PINGBOOK` | ClinicGPT | Verified appointment confirmation |
 | `RESTAURANT` | DineGPT | Verified reservation, order, catering, or event enquiry |
 | `REAL_ESTATE` | PropertyGPT | Qualified buyer and verified site visit |
 | `BUSINESS_AI` | BusinessGPT | Qualified business lead and approved human or commercial action |
 | `FLOWCART` | FlowCart | Verified cart, order, and payment journey |
 | `CUSTOM` | Custom Business Bot | Explicitly designed and governed business workflow |
 
-HotelGPT is the flagship revenue category. PingBook remains the cleanest first proof of verified agentic action.
+HotelGPT is the flagship revenue category. ClinicGPT remains the cleanest first proof of verified agentic action.
 
 ## SuperAdmin flow
 
@@ -129,7 +129,7 @@ Every negotiation records the customer request, original value, offered value or
 
 HotelGPT may use approved rate fences, packages, upgrades, inclusions, and value-adds. It must never undercut a floor rate, invent a discount, override inventory, or grant an exception outside its authority. Group, wedding, long-stay, corporate, and exceptional requests escalate to the hotel team.
 
-## PingBook
+## ClinicGPT
 
 Required internal intelligence:
 
@@ -210,7 +210,7 @@ All bots require:
 Additional category evaluations:
 
 - HotelGPT: room, rate, policy, availability, booking idempotency, and booking read-back
-- PingBook: availability, slot collision, appointment idempotency, read-back, and safety escalation
+- ClinicGPT: availability, slot collision, appointment idempotency, read-back, and safety escalation
 - DineGPT: menu, price, allergen safety, reservation collision, and order verification
 - PropertyGPT: inventory, price, regulatory claims, suitability matching, site visit, and routing
 - FlowCart: catalog, inventory, pricing, order creation, payment verification, and returns

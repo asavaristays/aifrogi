@@ -42,7 +42,7 @@ export function parseBotProfile(value: unknown): { value?: BotProfileInput; erro
   if (!BOT_OPERATING_MODES.includes(operatingMode as BotProfileInput["operatingMode"])) return { error: "Select a valid operating mode" };
   if (!channels.length || channels.some((item) => !BOT_CHANNELS.includes(item as BotProfileInput["channels"][number]))) return { error: "Select at least one supported channel" };
   if (!capabilities.length || capabilities.some((item) => !BOT_CAPABILITIES.includes(item as BotProfileInput["capabilities"][number]))) return { error: "Select at least one supported capability" };
-  if (category === "PINGBOOK" && !capabilities.includes("BOOK_APPOINTMENTS")) return { error: "PingBook requires appointment booking capability" };
+  if (category === "PINGBOOK" && !capabilities.includes("BOOK_APPOINTMENTS")) return { error: "ClinicGPT requires appointment booking capability" };
   if (category === "FLOWCART" && !capabilities.includes("CREATE_ORDERS")) return { error: "FlowCart requires order creation capability" };
   const personaName = text(input.personaName, 80);
   const businessObjective = text(input.businessObjective, 1000);

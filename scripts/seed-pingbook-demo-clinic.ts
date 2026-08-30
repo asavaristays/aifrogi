@@ -63,7 +63,7 @@ async function main() {
     import("@/lib/appointment-journey-service")
   ]);
   const db = getDb();
-  if (!db) throw new Error("Database unavailable for PingBook demo seeding.");
+  if (!db) throw new Error("Database unavailable for ClinicGPT demo seeding.");
   const profile = readDemoProfile();
 
   await billing.ensureBillingPlans();
@@ -186,7 +186,7 @@ async function main() {
       priceInr: service.bookingFee
     }))
   });
-  if (provisioned.error || !provisioned.tenant) throw new Error(provisioned.error || "PingBook tenant provisioning failed.");
+  if (provisioned.error || !provisioned.tenant) throw new Error(provisioned.error || "ClinicGPT tenant provisioning failed.");
 
   const tenant = await db.appointmentTenant.update({
     where: { id: provisioned.tenant.id },
@@ -269,7 +269,7 @@ async function main() {
       action: "PINGBOOK_DEMO_SEEDED",
       targetType: "AppointmentTenant",
       targetId: tenant.id,
-      summary: "Seeded PingBook demo clinic workspace for sales and onboarding readiness.",
+      summary: "Seeded ClinicGPT demo clinic workspace for sales and onboarding readiness.",
       metadata: {
         demoId: profile.demoId,
         propertySlug: property.slug,

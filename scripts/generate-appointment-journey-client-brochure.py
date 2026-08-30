@@ -87,7 +87,7 @@ def brand_header(c, page, label):
     c.rect(0, PAGE_H - 40, 202, 40, fill=1, stroke=0)
     c.setFillColor(white)
     c.setFont(FONT_BOLD, 13)
-    c.drawString(24, PAGE_H - 25, "AiFrogi PingBook")
+    c.drawString(24, PAGE_H - 25, "AiFrogi ClinicGPT")
     c.setFont(FONT_REGULAR, 10)
     c.setFillColor(HexColor("#E6DCEA"))
     c.drawRightString(PAGE_W - 26, PAGE_H - 25, label)
@@ -95,7 +95,7 @@ def brand_header(c, page, label):
     c.rect(0, 0, PAGE_W, 22, fill=1, stroke=0)
     c.setFillColor(HexColor("#D8CFDF"))
     c.setFont(FONT_REGULAR, 9)
-    c.drawString(26, 8, "AiFrogi PingBook")
+    c.drawString(26, 8, "AiFrogi ClinicGPT")
     c.drawRightString(PAGE_W - 26, 8, f"Page {page}")
 
 
@@ -169,7 +169,7 @@ def cover(c):
     c.circle(PAGE_W - 120, 70, 148, fill=1, stroke=0)
     c.setFillColor(white)
     c.setFont(FONT_BOLD, 14)
-    c.drawString(50, PAGE_H - 64, "AiFrogi's PingBook")
+    c.drawString(50, PAGE_H - 64, "AiFrogi's ClinicGPT")
     pill(c, 50, PAGE_H - 124, "CLIENT E-BROCHURE")
     draw_text(c, "Book appointments\nfrom WhatsApp.", 50, PAGE_H - 190, 470, FONT_BOLD, 39, 48, white)
     draw_text(
@@ -193,7 +193,7 @@ def cover(c):
 def audience_1(c):
     brand_header(c, 2, "Target clients")
     title(c, "Built for businesses where every missed reply can become a missed booking.", size=27, width=740)
-    body(c, "PingBook is for service businesses that already receive enquiries on WhatsApp but still manage bookings manually across calls, diaries, spreadsheets and payment screenshots.", 45, 348, 680)
+    body(c, "ClinicGPT is for service businesses that already receive enquiries on WhatsApp but still manage bookings manually across calls, diaries, spreadsheets and payment screenshots.", 45, 348, 680)
     card(c, 54, 198, 220, 112, "Clinics & wellness", "Consultations, follow-ups, reminders and no-show reduction.", PINK)
     card(c, 310, 198, 220, 112, "Salons & spas", "Service selection, slot reminders and advance payment support.", GREEN)
     card(c, 566, 198, 220, 112, "Consultants", "Discovery calls, paid sessions and Google Calendar visibility.", BLUE)
@@ -326,7 +326,7 @@ def launch(c):
         ("1", "Create workspace", "Client account exists"),
         ("2", "Connect WhatsApp API", "WABA and phone connected"),
         ("3", "Approve templates", "Meta approval received"),
-        ("4", "Enable product", "PingBook active"),
+        ("4", "Enable product", "ClinicGPT active"),
         ("5", "Connect Google", "Calendar and Sheet ready"),
         ("6", "Configure payment", "Razorpay path ready if required"),
         ("7", "Run sandbox booking", "Booking appears in Calendar and Sheet"),
@@ -349,7 +349,7 @@ def launch(c):
 def build():
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     c = canvas.Canvas(str(OUTPUT), pagesize=landscape(A4))
-    c.setTitle("AiFrogi PingBook Client E-Brochure")
+    c.setTitle("AiFrogi ClinicGPT Client E-Brochure")
     c.setAuthor("AiFrogi")
     pages = [cover, audience_1, audience_2, problem, workflow, trusted, features_1, features_2, outcomes, launch]
     for i, fn in enumerate(pages):
