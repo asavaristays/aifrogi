@@ -45,3 +45,10 @@ test("crawler prioritizes sitemap inventory before legacy seeds", () => {
   assert.match(source, /MAX_DISCOVERY_URLS = 120/);
   assert.match(source, /pages\.length >= MAX_PAGES/);
 });
+
+test("crawler preserves approved JSON-LD and meta-description business facts", () => {
+  assert.match(source, /application\\\/ld\\\+json/);
+  assert.match(source, /structuredDataText\(html\)/);
+  assert.match(source, /name=\["'\]description/);
+  assert.match(source, /JSON\.parse\(match\[1\]\)/);
+});

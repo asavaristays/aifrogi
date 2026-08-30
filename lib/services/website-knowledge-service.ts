@@ -112,9 +112,27 @@ function decodeHtml(value: string) {
     .replace(/&gt;/g, ">");
 }
 
+function structuredDataText(html: string) {
+  const values = new Set<string>();
+  const collect = (value: unknown, key = "") => {
+    if (typeof value === "string") {
+      const clean = value.replace(/\s+/g, " ").trim();
+      if (clean && !/^https?:\/\//i.test(clean) && !["@context", "sameAs", "url", "image"].includes(key)) values.add(clean);
+      return;
+    }
+    if (Array.isArray(value)) { value.forEach((item) => collect(item, key)); return; }
+    if (value && typeof value === "object") Object.entries(value as Record<string, unknown>).forEach(([childKey, child]) => collect(child, childKey));
+  };
+  for (const match of html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try { collect(JSON.parse(match[1])); } catch { continue; }
+  }
+  return [...values].join(" ");
+}
+
 function stripHtml(html: string) {
   const title = decodeHtml(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || "Website page");
-  const text = decodeHtml(
+  const description = decodeHtml(html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]?.trim() || "");
+  const bodyText = decodeHtml(
     html
       .replace(/<script[\s\S]*?<\/script>/gi, " ")
       .replace(/<style[\s\S]*?<\/style>/gi, " ")
@@ -124,6 +142,7 @@ function stripHtml(html: string) {
       .replace(/\s+/g, " ")
       .trim()
   );
+  const text = [description, structuredDataText(html), bodyText].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 
   return { title, text };
 }
