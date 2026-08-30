@@ -25,7 +25,6 @@ const navItems = [
     ]
   },
   { label: "WhatsApp API", href: "/whatsapp-api" },
-  { label: "Resources", href: "/resources" },
   { label: "Pricing", href: "/pricing" }
 ];
 

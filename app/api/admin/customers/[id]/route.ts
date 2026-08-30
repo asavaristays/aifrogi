@@ -5,6 +5,7 @@ import {
   reviewOrganizationKyc,
   updateOrganizationFlowStatus,
   saveOrganizationBotProfile,
+  updateWebsiteBotLifecycle,
   updateOrganizationStatus
 } from "@/lib/repositories/onboarding-repository";
 import { saveOrganizationWhatsAppBotConfiguration } from "@/lib/repositories/bot-configuration-repository";
@@ -12,6 +13,7 @@ import { normalizeWhatsAppBotConfiguration, type WhatsAppBotConfigurationInput }
 import { updateOrganizationPlan } from "@/lib/billing-super-admin";
 import { setAppointmentJourneyEnabled } from "@/lib/appointment-journey-service";
 import { parseBotProfile } from "@/lib/bot-profile";
+import { sendBookingMail } from "@/lib/services/mailbox-service";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -102,7 +104,21 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     const parsed = parseBotProfile(payload?.profile);
     if (!parsed.value) return NextResponse.json({ error: parsed.error }, { status: 400 });
     const updated = await saveOrganizationBotProfile({ organizationId: id, actorEmail: user.username, profile: parsed.value });
+    if (!organization.botProfile?.installationKey && parsed.value.channels.includes("WEBSITE") && updated?.botProfile?.installationKey && updated.properties[0]) {
+      const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://app.aifrogi.com").replace(/\/$/, "");
+      const script = `<script async src="${appUrl}/api/public/website-bot/${updated.properties[0].slug}/install?key=${updated.botProfile.installationKey}"></script>`;
+      await sendBookingMail({ to: updated.ownerEmail, subject: `Install ${updated.botProfile.personaName || "your AiFrogi AI Bot"}`, body: `Hello ${updated.ownerName},\n\nYour governed Website AI Bot blueprint is ready for installation.\n\nRecommended JavaScript:\n${script}\n\nWordPress: add the same code in a Custom HTML block or approved footer-code area.\n\niFrame option:\n<iframe src="${appUrl}/embed/${updated.properties[0].slug}" title="AI Business Bot" width="390" height="680" style="border:0;border-radius:22px" loading="lazy"></iframe>\n\nAfter a valid website load is detected, AiFrogi Super Admin will perform the final readiness check and make the bot live. Never place OpenAI, database, Meta, password or OTP credentials in website code.\n\nAiFrogi` }).catch(() => null);
+    }
     return NextResponse.json({ organization: updated });
+  }
+
+  if (["MAKE_LIVE", "PAUSE", "DELETE", "RESTORE"].includes(action || "")) {
+    try {
+      const updated = await updateWebsiteBotLifecycle({ organizationId: id, actorEmail: user.username, action: action as "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE" });
+      return NextResponse.json({ organization: updated });
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Website Bot lifecycle could not be updated." }, { status: 400 });
+    }
   }
 
   if (action === "ENABLE_APPOINTMENT_JOURNEY" || action === "DISABLE_APPOINTMENT_JOURNEY") {

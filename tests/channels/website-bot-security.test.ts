@@ -5,9 +5,8 @@ import { resolve } from "node:path";
 
 const source = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]/route.ts"), "utf8");
 
-test("public website bot requires an enabled configured website profile", () => {
-  assert.match(source, /profile\.status !== "CONFIGURED"/);
-  assert.match(source, /profile\.channels\.includes\("WEBSITE"\)/);
+test("public website bot requires a lifecycle-approved website profile", () => {
+  assert.match(source, /canServeWebsiteBot\(profile\.status, profile\.channels\)/);
 });
 
 test("contact details are persisted only with explicit consent", () => {

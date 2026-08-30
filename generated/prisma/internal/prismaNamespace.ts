@@ -4793,6 +4793,12 @@ export const BotProfileScalarFieldEnum = {
   fallbackEnabled: 'fallbackEnabled',
   safeFallbackMessage: 'safeFallbackMessage',
   status: 'status',
+  installationKey: 'installationKey',
+  installationDetectedAt: 'installationDetectedAt',
+  liveAt: 'liveAt',
+  pausedAt: 'pausedAt',
+  deletedAt: 'deletedAt',
+  lifecycleUpdatedBy: 'lifecycleUpdatedBy',
   configuredBy: 'configuredBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

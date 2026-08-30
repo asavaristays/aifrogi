@@ -294,6 +294,12 @@ model BotProfile {
   fallbackEnabled       Boolean          @default(false)
   safeFallbackMessage   String?          @db.Text
   status               String           @default("DRAFT")
+  installationKey      String?          @unique
+  installationDetectedAt DateTime?
+  liveAt               DateTime?
+  pausedAt             DateTime?
+  deletedAt            DateTime?
+  lifecycleUpdatedBy   String?
   configuredBy         String?
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt

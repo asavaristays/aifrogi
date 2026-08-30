@@ -1,5 +1,7 @@
+import { randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import { encryptSecretValue } from "@/lib/field-encryption";
+import { nextWebsiteBotStatus, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
 
 const organizationInclude = {
   onboarding: true,
@@ -242,11 +244,15 @@ export async function saveOrganizationBotProfile(input: {
 }) {
   const db = getDb();
   if (!db) return null;
+  const existing = await db.botProfile.findUnique({ where: { organizationId: input.organizationId }, select: { installationKey: true, status: true } });
+  const installationKey = existing?.installationKey || randomBytes(24).toString("base64url");
+  const retainedStatuses = new Set(["INSTALLATION_DETECTED", "LIVE", "PAUSED"]);
+  const status = existing?.status && retainedStatuses.has(existing.status) ? existing.status : "INSTALLATION_READY";
   await db.$transaction([
     db.botProfile.upsert({
       where: { organizationId: input.organizationId },
-      update: { ...input.profile, status: "CONFIGURED", configuredBy: input.actorEmail },
-      create: { organizationId: input.organizationId, ...input.profile, status: "CONFIGURED", configuredBy: input.actorEmail }
+      update: { ...input.profile, installationKey, status, configuredBy: input.actorEmail },
+      create: { organizationId: input.organizationId, ...input.profile, installationKey, status, configuredBy: input.actorEmail }
     }),
     db.onboardingActivity.create({
       data: {
@@ -258,6 +264,50 @@ export async function saveOrganizationBotProfile(input: {
     })
   ]);
   return getOrganizationById(input.organizationId);
+}
+
+export async function updateWebsiteBotLifecycle(input: {
+  organizationId: string;
+  actorEmail: string;
+  action: WebsiteBotLifecycleAction;
+}) {
+  const db = getDb();
+  if (!db) return null;
+  const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
+  if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured Website Bot is required.");
+  const now = new Date();
+  const status = nextWebsiteBotStatus(profile.status, input.action, Boolean(profile.installationDetectedAt));
+  await db.$transaction([
+    db.botProfile.update({
+      where: { organizationId: input.organizationId },
+      data: {
+        status,
+        lifecycleUpdatedBy: input.actorEmail,
+        liveAt: input.action === "MAKE_LIVE" ? now : profile.liveAt,
+        pausedAt: input.action === "PAUSE" ? now : null,
+        deletedAt: input.action === "DELETE" ? now : null
+      }
+    }),
+    db.onboardingActivity.create({
+      data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: `WEBSITE_BOT_${input.action}`, detail: `Website Bot lifecycle changed from ${profile.status} to ${status}` }
+    })
+  ]);
+  return getOrganizationById(input.organizationId);
+}
+
+export async function recordWebsiteBotInstallation(slug: string, installationKey: string, origin?: string | null) {
+  const db = getDb();
+  if (!db) return null;
+  const property = await db.property.findUnique({ where: { slug }, select: { organizationId: true, organization: { select: { botProfile: true } } } });
+  const profile = property?.organization?.botProfile;
+  if (!property?.organizationId || !profile || profile.installationKey !== installationKey || !profile.channels.includes("WEBSITE") || profile.status === "DELETED") return null;
+  if (!profile.installationDetectedAt || profile.status === "INSTALLATION_READY") {
+    await db.$transaction([
+      db.botProfile.update({ where: { id: profile.id }, data: { installationDetectedAt: new Date(), status: profile.status === "LIVE" || profile.status === "PAUSED" ? profile.status : "INSTALLATION_DETECTED" } }),
+      db.onboardingActivity.create({ data: { organizationId: property.organizationId, action: "WEBSITE_BOT_INSTALLATION_DETECTED", detail: `Widget installation detected${origin ? ` on ${origin.slice(0, 180)}` : ""}; Super Admin approval required` } })
+    ]);
+  }
+  return { status: profile.status === "LIVE" ? "LIVE" : profile.status === "PAUSED" ? "PAUSED" : "AWAITING_APPROVAL" };
 }
 
 export async function saveClientBotPersona(input: {

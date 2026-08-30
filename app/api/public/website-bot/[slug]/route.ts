@@ -5,6 +5,7 @@ import { captureIncomingAiBotMessage } from "@/lib/services/lead-service";
 import type { WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
 import { hashWebsiteVisitorValue, issueWebsiteVisitorToken, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
 import { guardWebsiteVisitorMessage } from "@/lib/website-message-safety";
+import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -38,7 +39,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
   const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { botProfile: true } } } });
   const profile = property?.organization?.botProfile;
-  if (!property || !profile || profile.status !== "CONFIGURED" || !profile.channels.includes("WEBSITE")) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+  if (!property || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 
   const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);

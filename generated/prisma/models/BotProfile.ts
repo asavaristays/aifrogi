@@ -51,6 +51,12 @@ export type BotProfileMinAggregateOutputType = {
   fallbackEnabled: boolean | null
   safeFallbackMessage: string | null
   status: string | null
+  installationKey: string | null
+  installationDetectedAt: Date | null
+  liveAt: Date | null
+  pausedAt: Date | null
+  deletedAt: Date | null
+  lifecycleUpdatedBy: string | null
   configuredBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -71,6 +77,12 @@ export type BotProfileMaxAggregateOutputType = {
   fallbackEnabled: boolean | null
   safeFallbackMessage: string | null
   status: string | null
+  installationKey: string | null
+  installationDetectedAt: Date | null
+  liveAt: Date | null
+  pausedAt: Date | null
+  deletedAt: Date | null
+  lifecycleUpdatedBy: string | null
   configuredBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -96,6 +108,12 @@ export type BotProfileCountAggregateOutputType = {
   fallbackEnabled: number
   safeFallbackMessage: number
   status: number
+  installationKey: number
+  installationDetectedAt: number
+  liveAt: number
+  pausedAt: number
+  deletedAt: number
+  lifecycleUpdatedBy: number
   configuredBy: number
   createdAt: number
   updatedAt: number
@@ -128,6 +146,12 @@ export type BotProfileMinAggregateInputType = {
   fallbackEnabled?: true
   safeFallbackMessage?: true
   status?: true
+  installationKey?: true
+  installationDetectedAt?: true
+  liveAt?: true
+  pausedAt?: true
+  deletedAt?: true
+  lifecycleUpdatedBy?: true
   configuredBy?: true
   createdAt?: true
   updatedAt?: true
@@ -148,6 +172,12 @@ export type BotProfileMaxAggregateInputType = {
   fallbackEnabled?: true
   safeFallbackMessage?: true
   status?: true
+  installationKey?: true
+  installationDetectedAt?: true
+  liveAt?: true
+  pausedAt?: true
+  deletedAt?: true
+  lifecycleUpdatedBy?: true
   configuredBy?: true
   createdAt?: true
   updatedAt?: true
@@ -173,6 +203,12 @@ export type BotProfileCountAggregateInputType = {
   fallbackEnabled?: true
   safeFallbackMessage?: true
   status?: true
+  installationKey?: true
+  installationDetectedAt?: true
+  liveAt?: true
+  pausedAt?: true
+  deletedAt?: true
+  lifecycleUpdatedBy?: true
   configuredBy?: true
   createdAt?: true
   updatedAt?: true
@@ -285,6 +321,12 @@ export type BotProfileGroupByOutputType = {
   fallbackEnabled: boolean
   safeFallbackMessage: string | null
   status: string
+  installationKey: string | null
+  installationDetectedAt: Date | null
+  liveAt: Date | null
+  pausedAt: Date | null
+  deletedAt: Date | null
+  lifecycleUpdatedBy: string | null
   configuredBy: string | null
   createdAt: Date
   updatedAt: Date
@@ -333,6 +375,12 @@ export type BotProfileWhereInput = {
   fallbackEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
   safeFallbackMessage?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   status?: Prisma.StringFilter<"BotProfile"> | string
+  installationKey?: Prisma.StringNullableFilter<"BotProfile"> | string | null
+  installationDetectedAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  liveAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  pausedAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  lifecycleUpdatedBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   configuredBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
@@ -359,6 +407,12 @@ export type BotProfileOrderByWithRelationInput = {
   fallbackEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  installationKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  installationDetectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  liveAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  pausedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifecycleUpdatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -368,6 +422,7 @@ export type BotProfileOrderByWithRelationInput = {
 export type BotProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   organizationId?: string
+  installationKey?: string
   AND?: Prisma.BotProfileWhereInput | Prisma.BotProfileWhereInput[]
   OR?: Prisma.BotProfileWhereInput[]
   NOT?: Prisma.BotProfileWhereInput | Prisma.BotProfileWhereInput[]
@@ -388,11 +443,16 @@ export type BotProfileWhereUniqueInput = Prisma.AtLeast<{
   fallbackEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
   safeFallbackMessage?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   status?: Prisma.StringFilter<"BotProfile"> | string
+  installationDetectedAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  liveAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  pausedAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"BotProfile"> | Date | string | null
+  lifecycleUpdatedBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   configuredBy?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotProfile"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
-}, "id" | "organizationId">
+}, "id" | "organizationId" | "installationKey">
 
 export type BotProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -414,6 +474,12 @@ export type BotProfileOrderByWithAggregationInput = {
   fallbackEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  installationKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  installationDetectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  liveAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  pausedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lifecycleUpdatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -447,6 +513,12 @@ export type BotProfileScalarWhereWithAggregatesInput = {
   fallbackEnabled?: Prisma.BoolWithAggregatesFilter<"BotProfile"> | boolean
   safeFallbackMessage?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"BotProfile"> | string
+  installationKey?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
+  installationDetectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotProfile"> | Date | string | null
+  liveAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotProfile"> | Date | string | null
+  pausedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotProfile"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotProfile"> | Date | string | null
+  lifecycleUpdatedBy?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   configuredBy?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BotProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BotProfile"> | Date | string
@@ -471,6 +543,12 @@ export type BotProfileCreateInput = {
   fallbackEnabled?: boolean
   safeFallbackMessage?: string | null
   status?: string
+  installationKey?: string | null
+  installationDetectedAt?: Date | string | null
+  liveAt?: Date | string | null
+  pausedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  lifecycleUpdatedBy?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -497,6 +575,12 @@ export type BotProfileUncheckedCreateInput = {
   fallbackEnabled?: boolean
   safeFallbackMessage?: string | null
   status?: string
+  installationKey?: string | null
+  installationDetectedAt?: Date | string | null
+  liveAt?: Date | string | null
+  pausedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  lifecycleUpdatedBy?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -521,6 +605,12 @@ export type BotProfileUpdateInput = {
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  installationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  installationDetectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lifecycleUpdatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -547,6 +637,12 @@ export type BotProfileUncheckedUpdateInput = {
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  installationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  installationDetectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lifecycleUpdatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -572,6 +668,12 @@ export type BotProfileCreateManyInput = {
   fallbackEnabled?: boolean
   safeFallbackMessage?: string | null
   status?: string
+  installationKey?: string | null
+  installationDetectedAt?: Date | string | null
+  liveAt?: Date | string | null
+  pausedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  lifecycleUpdatedBy?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -596,6 +698,12 @@ export type BotProfileUpdateManyMutationInput = {
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  installationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  installationDetectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lifecycleUpdatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -621,6 +729,12 @@ export type BotProfileUncheckedUpdateManyInput = {
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  installationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  installationDetectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lifecycleUpdatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -659,6 +773,12 @@ export type BotProfileCountOrderByAggregateInput = {
   fallbackEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  installationKey?: Prisma.SortOrder
+  installationDetectedAt?: Prisma.SortOrder
+  liveAt?: Prisma.SortOrder
+  pausedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  lifecycleUpdatedBy?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -684,6 +804,12 @@ export type BotProfileMaxOrderByAggregateInput = {
   fallbackEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  installationKey?: Prisma.SortOrder
+  installationDetectedAt?: Prisma.SortOrder
+  liveAt?: Prisma.SortOrder
+  pausedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  lifecycleUpdatedBy?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -704,6 +830,12 @@ export type BotProfileMinOrderByAggregateInput = {
   fallbackEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  installationKey?: Prisma.SortOrder
+  installationDetectedAt?: Prisma.SortOrder
+  liveAt?: Prisma.SortOrder
+  pausedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  lifecycleUpdatedBy?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -818,6 +950,12 @@ export type BotProfileCreateWithoutOrganizationInput = {
   fallbackEnabled?: boolean
   safeFallbackMessage?: string | null
   status?: string
+  installationKey?: string | null
+  installationDetectedAt?: Date | string | null
+  liveAt?: Date | string | null
+  pausedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  lifecycleUpdatedBy?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -842,6 +980,12 @@ export type BotProfileUncheckedCreateWithoutOrganizationInput = {
   fallbackEnabled?: boolean
   safeFallbackMessage?: string | null
   status?: string
+  installationKey?: string | null
+  installationDetectedAt?: Date | string | null
+  liveAt?: Date | string | null
+  pausedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  lifecycleUpdatedBy?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -882,6 +1026,12 @@ export type BotProfileUpdateWithoutOrganizationInput = {
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  installationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  installationDetectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lifecycleUpdatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -906,6 +1056,12 @@ export type BotProfileUncheckedUpdateWithoutOrganizationInput = {
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  installationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  installationDetectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lifecycleUpdatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,6 +1089,12 @@ export type BotProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   fallbackEnabled?: boolean
   safeFallbackMessage?: boolean
   status?: boolean
+  installationKey?: boolean
+  installationDetectedAt?: boolean
+  liveAt?: boolean
+  pausedAt?: boolean
+  deletedAt?: boolean
+  lifecycleUpdatedBy?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -959,6 +1121,12 @@ export type BotProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   fallbackEnabled?: boolean
   safeFallbackMessage?: boolean
   status?: boolean
+  installationKey?: boolean
+  installationDetectedAt?: boolean
+  liveAt?: boolean
+  pausedAt?: boolean
+  deletedAt?: boolean
+  lifecycleUpdatedBy?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -985,6 +1153,12 @@ export type BotProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   fallbackEnabled?: boolean
   safeFallbackMessage?: boolean
   status?: boolean
+  installationKey?: boolean
+  installationDetectedAt?: boolean
+  liveAt?: boolean
+  pausedAt?: boolean
+  deletedAt?: boolean
+  lifecycleUpdatedBy?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1011,12 +1185,18 @@ export type BotProfileSelectScalar = {
   fallbackEnabled?: boolean
   safeFallbackMessage?: boolean
   status?: boolean
+  installationKey?: boolean
+  installationDetectedAt?: boolean
+  liveAt?: boolean
+  pausedAt?: boolean
+  deletedAt?: boolean
+  lifecycleUpdatedBy?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "responseSlaMinutes" | "reminderPercent" | "fallbackEnabled" | "safeFallbackMessage" | "status" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
+export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "responseSlaMinutes" | "reminderPercent" | "fallbackEnabled" | "safeFallbackMessage" | "status" | "installationKey" | "installationDetectedAt" | "liveAt" | "pausedAt" | "deletedAt" | "lifecycleUpdatedBy" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
 export type BotProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -1052,6 +1232,12 @@ export type $BotProfilePayload<ExtArgs extends runtime.Types.Extensions.Internal
     fallbackEnabled: boolean
     safeFallbackMessage: string | null
     status: string
+    installationKey: string | null
+    installationDetectedAt: Date | null
+    liveAt: Date | null
+    pausedAt: Date | null
+    deletedAt: Date | null
+    lifecycleUpdatedBy: string | null
     configuredBy: string | null
     createdAt: Date
     updatedAt: Date
@@ -1498,6 +1684,12 @@ export interface BotProfileFieldRefs {
   readonly fallbackEnabled: Prisma.FieldRef<"BotProfile", 'Boolean'>
   readonly safeFallbackMessage: Prisma.FieldRef<"BotProfile", 'String'>
   readonly status: Prisma.FieldRef<"BotProfile", 'String'>
+  readonly installationKey: Prisma.FieldRef<"BotProfile", 'String'>
+  readonly installationDetectedAt: Prisma.FieldRef<"BotProfile", 'DateTime'>
+  readonly liveAt: Prisma.FieldRef<"BotProfile", 'DateTime'>
+  readonly pausedAt: Prisma.FieldRef<"BotProfile", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"BotProfile", 'DateTime'>
+  readonly lifecycleUpdatedBy: Prisma.FieldRef<"BotProfile", 'String'>
   readonly configuredBy: Prisma.FieldRef<"BotProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"BotProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BotProfile", 'DateTime'>

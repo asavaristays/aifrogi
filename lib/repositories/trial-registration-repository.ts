@@ -21,6 +21,7 @@ export async function registerTrialOrganization(input: {
   country: string;
   timezone: string;
   source?: string;
+  botCategory?: "BUSINESS_AI" | "STAY" | "PINGBOOK" | "RESTAURANT" | "REAL_ESTATE" | "FLOWCART" | "CUSTOM";
 }) {
   const db = getDb();
   if (!db) throw new Error("Registration is temporarily unavailable.");
@@ -44,6 +45,7 @@ export async function registerTrialOrganization(input: {
         data: { name: input.companyName, industry: input.industry, website: input.website, country: input.country, timezone: input.timezone, ownerName: input.ownerName, ownerMobile: input.ownerMobile || null }
       });
       await tx.property.updateMany({ where: { organizationId: existing.organization.id }, data: { name: input.companyName, timezone: input.timezone } });
+      await tx.botProfile.upsert({ where: { organizationId: existing.organization.id }, update: { category: input.botCategory || "BUSINESS_AI" }, create: { organizationId: existing.organization.id, category: input.botCategory || "BUSINESS_AI", status: "DRAFT" } });
       await tx.organizationMember.update({
         where: { id: existing.id },
         data: { name: input.ownerName, invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt, invitedAt: new Date() }
@@ -84,6 +86,9 @@ export async function registerTrialOrganization(input: {
         },
         properties: {
           create: { name: input.companyName, slug, timezone: input.timezone }
+        },
+        botProfile: {
+          create: { category: input.botCategory || "BUSINESS_AI", status: "DRAFT" }
         },
         activities: {
           create: { actorEmail: email, action: "TRIAL_REGISTERED", detail: `Trial workspace reserved; source=${input.source || "direct"}; email verification required` }

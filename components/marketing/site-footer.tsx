@@ -16,6 +16,7 @@ export function SiteFooter() {
           <Link className="block hover:text-white" href="/whatsapp-api">WhatsApp API</Link>
           <Link className="block hover:text-white" href="/integration">Integration</Link>
           <Link className="block hover:text-white" href="/resources">Resources</Link>
+          <Link className="block hover:text-white" href="/install-ai-bot">How to install AI Bot</Link>
           <Link className="block hover:text-white" href="/pricing">Pricing</Link>
         </nav>
 

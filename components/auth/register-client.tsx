@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 
 const industries = ["Hospitality", "Travel", "Retail", "Healthcare", "Education", "Real estate", "Professional services", "Other"];
+const botOptions = [
+  ["BUSINESS_AI", "BusinessGPT — services, leads and support"], ["STAY", "HotelGPT — stays and guest enquiries"], ["PINGBOOK", "ClinicGPT — appointments and confirmations"], ["RESTAURANT", "DineGPT — dining and reservations"], ["REAL_ESTATE", "PropertyGPT — discovery and site visits"], ["FLOWCART", "FlowCart — products, orders and payments"], ["CUSTOM", "Custom Business Bot — configured workflow"]
+];
 
 export function RegisterClient() {
   const [saving, setSaving] = useState(false);
@@ -43,11 +46,11 @@ export function RegisterClient() {
         <section className="order-2 lg:order-1 lg:pt-7">
           <p className="product-eyebrow">30-day working trial</p>
           <h1 className="mt-4 max-w-lg text-4xl font-semibold leading-tight sm:text-5xl">Create your business workspace.</h1>
-          <p className="mt-5 max-w-lg text-base leading-7 text-[var(--text-muted)]">Start with your business identity. After email verification, AiFrogi guides WhatsApp connection, template readiness, and the first test message.</p>
+          <p className="mt-5 max-w-lg text-base leading-7 text-[var(--text-muted)]">Choose the AI Bot that matches your first business outcome. After email verification, AiFrogi prepares its intelligence, installation code and controlled go-live journey.</p>
           <div className="mt-9 divide-y divide-[#ded8cb] border-y border-[#ded8cb]">
             <FlowRow number="1" title="Verify ownership" copy="A private 24-hour link is sent to your work email." />
-            <FlowRow number="2" title="Complete business setup" copy="Save progress while AiFrogi explains what you, AiFrogi, and Meta need to do." />
-            <FlowRow number="3" title="Test before going live" copy="Approve a template and send a controlled first message." />
+            <FlowRow number="2" title="Prepare business intelligence" copy="Approve trusted sources, persona, customer journey and human handover rules." />
+            <FlowRow number="3" title="Install and verify" copy="Copy JavaScript, iFrame or WordPress code; AiFrogi detects it before Super Admin enables live traffic." />
           </div>
           <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>30 days only:</strong> after the trial, messaging, campaigns, and automation pause automatically until a paid plan is activated. Your data remains preserved. No Facebook password, email password, permanent token, or OTP is requested.</p>
         </section>
@@ -72,6 +75,7 @@ export function RegisterClient() {
                 <Field label="Work email"><input name="ownerEmail" className="product-input mt-2" type="email" autoComplete="email" required /></Field>
                 <Field label="Mobile"><input name="ownerMobile" className="product-input mt-2" type="tel" autoComplete="tel" placeholder="+91" /></Field>
                 <Field label="Business website" wide><input name="website" className="product-input mt-2" type="text" inputMode="url" autoComplete="url" placeholder="https://example.com" required /></Field>
+                <Field label="Select your AI Bot" wide><select name="botCategory" className="product-input mt-2" defaultValue="BUSINESS_AI">{botOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
                 <Field label="Industry"><select name="industry" className="product-input mt-2" defaultValue="Hospitality">{industries.map((industry) => <option key={industry}>{industry}</option>)}</select></Field>
                 <Field label="Country"><select name="country" className="product-input mt-2" defaultValue="India"><option>India</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Other</option></select></Field>
                 <Field label="Time zone" wide><select name="timezone" className="product-input mt-2" defaultValue="Asia/Kolkata"><option value="Asia/Kolkata">India Standard Time</option><option value="Asia/Dubai">Gulf Standard Time</option><option value="Europe/London">United Kingdom</option><option value="America/New_York">US Eastern Time</option><option value="America/Los_Angeles">US Pacific Time</option></select></Field>

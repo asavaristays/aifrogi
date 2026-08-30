@@ -15,6 +15,7 @@ import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-acce
 import { AppointmentJourneyAdminControl } from "@/components/admin/appointment-journey-admin-control";
 import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-service";
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
+import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -76,6 +77,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           initialConfiguration={organization.botConfiguration}
         />
         <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} />
+        <WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin />
         <div className="space-y-6">
           <Section title="Company details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Google Maps" value={onboarding?.googleMapsUrl} /><Detail label="Google Business Profile" value={onboarding?.googleBusinessProfileUrl} /><Detail label="Instagram" value={onboarding?.instagramUrl} /><Detail label="Approved photos" value={onboarding?.photoUrls?.length ? `${onboarding.photoUrls.length} supplied` : null} /><Detail label="GST / registration" value={onboarding?.registrationNumber || organization.gstNumber} /><Detail label="Address" value={organization.businessAddress} /></Section>
           <Section title="WhatsApp health"><Detail label="Phone" value={onboarding?.displayPhoneNumber || onboarding?.phoneNumber} /><Detail label="Phone verification" value={onboarding?.phoneVerificationStatus} /><Detail label="Connection" value={onboarding?.facebookStatus} /><Detail label="API status" value={onboarding?.metaStatus} /><Detail label="Webhook" value={onboarding?.webhookStatus} /><Detail label="Credential" value={onboarding?.tokenStatus} /><Detail label="Quality rating" value={onboarding?.qualityRating} /></Section>

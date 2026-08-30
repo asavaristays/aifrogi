@@ -12,6 +12,7 @@ const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], nu
   ["/pricing", "weekly", 0.9],
   ["/whatsapp-api", "monthly", 0.9],
   ["/integration", "monthly", 0.8],
+  ["/install-ai-bot", "monthly", 0.9],
   ["/resources", "weekly", 0.7],
   ["/help", "weekly", 0.7],
   ["/security", "monthly", 0.6],
