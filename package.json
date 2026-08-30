@@ -22,6 +22,7 @@
     "seed:webtechnosys-demo": "tsx scripts/seed-webtechnosys-ai-demo.ts",
     "seed:persona-demos": "tsx scripts/seed-all-persona-demos.ts",
     "verify:persona-demos": "tsx scripts/verify-persona-demos.ts",
+    "verify:live-rule11": "tsx scripts/verify-live-rule11-stress.ts",
     "verify:pingbook-demo": "tsx scripts/verify-pingbook-demo-clinic.ts",
     "verify:billing": "tsx scripts/verify-billing-super-admin.ts",
     "verify:meta-webhook": "tsx scripts/verify-meta-webhook-enforcement.ts",

@@ -3,6 +3,7 @@ import type { KnowledgeSourceEvidence } from "@/lib/services/website-knowledge-s
 import type { SovereignDecision } from "@/lib/sovereign-intelligence/decision";
 import { SOVEREIGN_EVALUATION_VERSION } from "@/lib/sovereign-intelligence/resolution";
 import type { ReliabilityEvidence } from "@/lib/reliability/runtime";
+import { evaluateDecisionBehaviourConsistency } from "@/lib/sovereign-intelligence/evidence-consistency";
 
 export async function recordSovereignAnswerEvidence(input: {
   propertyId: string;
@@ -24,16 +25,18 @@ export async function recordSovereignAnswerEvidence(input: {
   circuitBreakerReason?: string | null;
   knowledgeClaimIds?: string[];
   reliability?: ReliabilityEvidence;
+  actionPerformed?: boolean;
 }) {
   const db = getDb();
   if (!db) return null;
   const knowledgeAsOf = input.knowledgeAsOf ? new Date(input.knowledgeAsOf) : null;
+  const consistency = evaluateDecisionBehaviourConsistency({ disposition: input.decision.disposition, answer: input.answer, resolutionState: input.resolutionState || "RESOLVED", circuitBreaker: Boolean(input.circuitBreaker), actionPerformed: input.actionPerformed, failureLayer: input.reliability?.failureLayer || "NONE" });
   return db.sovereignAnswerEvidence.create({ data: {
     propertyId: input.propertyId, leadId: input.leadId || null, sessionIdHash: input.sessionIdHash,
     constitutionVersion: input.decision.constitutionVersion, blueprintVersion: input.decision.blueprintVersion,
     intent: input.decision.intent, disposition: input.decision.disposition, contextUsed: input.decision.contextUsed,
     confidence: Math.max(0, Math.min(1, input.confidence || 0)), safetyClassification: input.safetyClassification || "STANDARD",
-    permittedOperation: input.permittedOperation || input.decision.disposition, resolutionState: input.resolutionState || "RESOLVED",
+    permittedOperation: input.permittedOperation || input.decision.disposition, observedBehavior: consistency.observedBehavior, decisionConsistent: consistency.decisionConsistent, consistencyReason: consistency.consistencyReason, resolutionState: input.resolutionState || "RESOLVED",
     clarifyCount: Math.max(0, input.clarifyCount || 0), circuitBreaker: Boolean(input.circuitBreaker), circuitBreakerReason: input.circuitBreakerReason || null,
     evaluationVersion: SOVEREIGN_EVALUATION_VERSION,
     decisionReason: input.decision.reason, question: input.question.slice(0, 1200), resolvedQuestion: input.decision.resolvedQuestion.slice(0, 1200),
@@ -48,8 +51,8 @@ export async function recordSovereignAnswerEvidence(input: {
 
 export async function getSovereignIntelligenceReport() {
   const db = getDb();
-  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, tier0: 0, tier1: 0, tier2: 0, tier3: 0, degraded: 0, failures: 0, averageLatencyMs: 0, automatedResolutionRate: null as number | null, supportCallsPerThousand: null as number | null, recent: [] };
-  const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, feedbackTotal, helpfulFeedback, tier0, tier1, tier2, tier3, degraded, failures, latency, recent] = await Promise.all([
+  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, consistencyMismatches: 0, consistencyRate: null as number | null, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, tier0: 0, tier1: 0, tier2: 0, tier3: 0, degraded: 0, failures: 0, averageLatencyMs: 0, automatedResolutionRate: null as number | null, supportCallsPerThousand: null as number | null, recent: [] };
+  const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, feedbackTotal, helpfulFeedback, tier0, tier1, tier2, tier3, degraded, failures, latency, recent] = await Promise.all([
     db.sovereignAnswerEvidence.count(),
     db.sovereignAnswerEvidence.count({ where: { grounded: true } }),
     db.sovereignAnswerEvidence.count({ where: { disposition: "FALLBACK" } }),
@@ -58,6 +61,8 @@ export async function getSovereignIntelligenceReport() {
     db.sovereignAnswerEvidence.count({ where: { contextUsed: true } }),
     db.sovereignAnswerEvidence.count({ where: { circuitBreaker: true } }),
     db.sovereignAnswerEvidence.count({ where: { resolutionState: "ACTIVE" } }),
+    db.sovereignAnswerEvidence.count({ where: { observedBehavior: { not: "UNKNOWN" } } }),
+    db.sovereignAnswerEvidence.count({ where: { observedBehavior: { not: "UNKNOWN" }, decisionConsistent: false } }),
     db.sovereignAnswerFeedback.count(),
     db.sovereignAnswerFeedback.count({ where: { helpful: true } }),
     db.sovereignAnswerEvidence.count({ where: { escalationTier: "TIER_0_SELF_RESOLVE" } }),
@@ -72,5 +77,6 @@ export async function getSovereignIntelligenceReport() {
   const helpfulRate = feedbackTotal ? Number(((helpfulFeedback / feedbackTotal) * 100).toFixed(1)) : null;
   const automatedResolutionRate = total ? Number(((tier0 / total) * 100).toFixed(1)) : null;
   const supportCallsPerThousand = total ? Number(((tier3 / total) * 1000).toFixed(2)) : null;
-  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, feedbackTotal, helpfulFeedback, helpfulRate, tier0, tier1, tier2, tier3, degraded, failures, averageLatencyMs: Math.round(latency._avg.latencyMs || 0), automatedResolutionRate, supportCallsPerThousand, recent };
+  const consistencyRate = consistencyEligible ? Number((((consistencyEligible - consistencyMismatches) / consistencyEligible) * 100).toFixed(1)) : null;
+  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, consistencyRate, feedbackTotal, helpfulFeedback, helpfulRate, tier0, tier1, tier2, tier3, degraded, failures, averageLatencyMs: Math.round(latency._avg.latencyMs || 0), automatedResolutionRate, supportCallsPerThousand, recent };
 }

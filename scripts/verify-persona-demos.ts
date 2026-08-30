@@ -20,7 +20,13 @@ async function main() {
   }
   const clientDemos = await db.organization.count({ where: { isDemo: false, demoKey: { not: null } } });
   if (clientDemos) throw new Error("A client tenant contains a demo key.");
-  console.log(JSON.stringify({ status: "PASS", demos: demos.map((item) => ({ category: item.demoKey, slug: item.properties[0].slug, connectors: item.botConnectors.length })) }, null, 2));
+  const demoPropertyIds = demos.flatMap((item) => item.properties.map((property) => property.id));
+  const [consistencyEligible, consistencyMismatches] = await Promise.all([
+    db.sovereignAnswerEvidence.count({ where: { propertyId: { in: demoPropertyIds }, observedBehavior: { not: "UNKNOWN" } } }),
+    db.sovereignAnswerEvidence.count({ where: { propertyId: { in: demoPropertyIds }, observedBehavior: { not: "UNKNOWN" }, decisionConsistent: false } })
+  ]);
+  if (consistencyMismatches) throw new Error(`Evidence integrity gate failed: ${consistencyMismatches}/${consistencyEligible} classified demo decisions disagree with observed behaviour.`);
+  console.log(JSON.stringify({ status: "PASS", evidenceIntegrity: { eligible: consistencyEligible, mismatches: consistencyMismatches, rate: consistencyEligible ? 100 : null }, demos: demos.map((item) => ({ category: item.demoKey, slug: item.properties[0].slug, connectors: item.botConnectors.length })) }, null, 2));
 }
 
 main().catch((error) => { console.error(error); process.exitCode = 1; }).finally(async () => { const { getDb } = await import("@/lib/db"); await getDb()?.$disconnect(); });

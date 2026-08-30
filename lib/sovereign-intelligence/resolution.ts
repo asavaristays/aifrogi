@@ -108,6 +108,11 @@ export function governResolutionOutcome(input: {
   const previous = safeState(input.previousState);
   const currentIntentKey = intentKey(input.decision);
   const semanticallyContinues = Boolean(previous && semanticSimilarity(previous.resolvedQuestion, input.decision.resolvedQuestion) >= CUSTOMER_SEMANTIC_REPEAT_THRESHOLD);
+  if (previous?.status === "ESCALATED" && previous.circuitBreakerTriggered && (previous.activeIntentKey === currentIntentKey || semanticallyContinues || input.decision.contextUsed)) {
+    const answer = circuitBreakerAnswer(previous.circuitBreakerReason || "CLARIFY_LIMIT");
+    const decision: SovereignDecision = { ...input.decision, disposition: "ESCALATE", reason: `Bounded Resolution circuit breaker remains locked: ${previous.circuitBreakerReason || "CLARIFY_LIMIT"}.` };
+    return { answer, decision, state: { ...previous, lastCustomerFingerprint: fingerprint(input.question), lastCustomerText: normalize(input.question).slice(0, 600), lastAnswerFingerprint: fingerprint(answer), lastAnswerText: normalize(answer).slice(0, 1200), updatedAt: new Date().toISOString() } };
+  }
   const continuesIntent = Boolean(previous && (input.decision.contextUsed || previous.activeIntentKey === currentIntentKey || semanticallyContinues) && previous.status === "ACTIVE");
   const customerFingerprint = fingerprint(input.question);
   const answerFingerprint = fingerprint(input.answer);

@@ -53,6 +53,9 @@ export type SovereignAnswerEvidenceMinAggregateOutputType = {
   confidence: number | null
   safetyClassification: string | null
   permittedOperation: string | null
+  observedBehavior: string | null
+  decisionConsistent: boolean | null
+  consistencyReason: string | null
   resolutionState: string | null
   clarifyCount: number | null
   circuitBreaker: boolean | null
@@ -87,6 +90,9 @@ export type SovereignAnswerEvidenceMaxAggregateOutputType = {
   confidence: number | null
   safetyClassification: string | null
   permittedOperation: string | null
+  observedBehavior: string | null
+  decisionConsistent: boolean | null
+  consistencyReason: string | null
   resolutionState: string | null
   clarifyCount: number | null
   circuitBreaker: boolean | null
@@ -121,6 +127,9 @@ export type SovereignAnswerEvidenceCountAggregateOutputType = {
   confidence: number
   safetyClassification: number
   permittedOperation: number
+  observedBehavior: number
+  decisionConsistent: number
+  consistencyReason: number
   resolutionState: number
   clarifyCount: number
   circuitBreaker: number
@@ -173,6 +182,9 @@ export type SovereignAnswerEvidenceMinAggregateInputType = {
   confidence?: true
   safetyClassification?: true
   permittedOperation?: true
+  observedBehavior?: true
+  decisionConsistent?: true
+  consistencyReason?: true
   resolutionState?: true
   clarifyCount?: true
   circuitBreaker?: true
@@ -207,6 +219,9 @@ export type SovereignAnswerEvidenceMaxAggregateInputType = {
   confidence?: true
   safetyClassification?: true
   permittedOperation?: true
+  observedBehavior?: true
+  decisionConsistent?: true
+  consistencyReason?: true
   resolutionState?: true
   clarifyCount?: true
   circuitBreaker?: true
@@ -241,6 +256,9 @@ export type SovereignAnswerEvidenceCountAggregateInputType = {
   confidence?: true
   safetyClassification?: true
   permittedOperation?: true
+  observedBehavior?: true
+  decisionConsistent?: true
+  consistencyReason?: true
   resolutionState?: true
   clarifyCount?: true
   circuitBreaker?: true
@@ -364,6 +382,9 @@ export type SovereignAnswerEvidenceGroupByOutputType = {
   confidence: number
   safetyClassification: string
   permittedOperation: string
+  observedBehavior: string
+  decisionConsistent: boolean
+  consistencyReason: string | null
   resolutionState: string
   clarifyCount: number
   circuitBreaker: boolean
@@ -423,6 +444,9 @@ export type SovereignAnswerEvidenceWhereInput = {
   confidence?: Prisma.FloatFilter<"SovereignAnswerEvidence"> | number
   safetyClassification?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   permittedOperation?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  observedBehavior?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  decisionConsistent?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  consistencyReason?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
   resolutionState?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   clarifyCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
   circuitBreaker?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
@@ -461,6 +485,9 @@ export type SovereignAnswerEvidenceOrderByWithRelationInput = {
   confidence?: Prisma.SortOrder
   safetyClassification?: Prisma.SortOrder
   permittedOperation?: Prisma.SortOrder
+  observedBehavior?: Prisma.SortOrder
+  decisionConsistent?: Prisma.SortOrder
+  consistencyReason?: Prisma.SortOrderInput | Prisma.SortOrder
   resolutionState?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
   circuitBreaker?: Prisma.SortOrder
@@ -502,6 +529,9 @@ export type SovereignAnswerEvidenceWhereUniqueInput = Prisma.AtLeast<{
   confidence?: Prisma.FloatFilter<"SovereignAnswerEvidence"> | number
   safetyClassification?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   permittedOperation?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  observedBehavior?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  decisionConsistent?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  consistencyReason?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
   resolutionState?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   clarifyCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
   circuitBreaker?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
@@ -540,6 +570,9 @@ export type SovereignAnswerEvidenceOrderByWithAggregationInput = {
   confidence?: Prisma.SortOrder
   safetyClassification?: Prisma.SortOrder
   permittedOperation?: Prisma.SortOrder
+  observedBehavior?: Prisma.SortOrder
+  decisionConsistent?: Prisma.SortOrder
+  consistencyReason?: Prisma.SortOrderInput | Prisma.SortOrder
   resolutionState?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
   circuitBreaker?: Prisma.SortOrder
@@ -584,6 +617,9 @@ export type SovereignAnswerEvidenceScalarWhereWithAggregatesInput = {
   confidence?: Prisma.FloatWithAggregatesFilter<"SovereignAnswerEvidence"> | number
   safetyClassification?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
   permittedOperation?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  observedBehavior?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  decisionConsistent?: Prisma.BoolWithAggregatesFilter<"SovereignAnswerEvidence"> | boolean
+  consistencyReason?: Prisma.StringNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | string | null
   resolutionState?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
   clarifyCount?: Prisma.IntWithAggregatesFilter<"SovereignAnswerEvidence"> | number
   circuitBreaker?: Prisma.BoolWithAggregatesFilter<"SovereignAnswerEvidence"> | boolean
@@ -619,6 +655,9 @@ export type SovereignAnswerEvidenceCreateInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -657,6 +696,9 @@ export type SovereignAnswerEvidenceUncheckedCreateInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -693,6 +735,9 @@ export type SovereignAnswerEvidenceUpdateInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -731,6 +776,9 @@ export type SovereignAnswerEvidenceUncheckedUpdateInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -768,6 +816,9 @@ export type SovereignAnswerEvidenceCreateManyInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -803,6 +854,9 @@ export type SovereignAnswerEvidenceUpdateManyMutationInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -839,6 +893,9 @@ export type SovereignAnswerEvidenceUncheckedUpdateManyInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -885,6 +942,9 @@ export type SovereignAnswerEvidenceCountOrderByAggregateInput = {
   confidence?: Prisma.SortOrder
   safetyClassification?: Prisma.SortOrder
   permittedOperation?: Prisma.SortOrder
+  observedBehavior?: Prisma.SortOrder
+  decisionConsistent?: Prisma.SortOrder
+  consistencyReason?: Prisma.SortOrder
   resolutionState?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
   circuitBreaker?: Prisma.SortOrder
@@ -928,6 +988,9 @@ export type SovereignAnswerEvidenceMaxOrderByAggregateInput = {
   confidence?: Prisma.SortOrder
   safetyClassification?: Prisma.SortOrder
   permittedOperation?: Prisma.SortOrder
+  observedBehavior?: Prisma.SortOrder
+  decisionConsistent?: Prisma.SortOrder
+  consistencyReason?: Prisma.SortOrder
   resolutionState?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
   circuitBreaker?: Prisma.SortOrder
@@ -962,6 +1025,9 @@ export type SovereignAnswerEvidenceMinOrderByAggregateInput = {
   confidence?: Prisma.SortOrder
   safetyClassification?: Prisma.SortOrder
   permittedOperation?: Prisma.SortOrder
+  observedBehavior?: Prisma.SortOrder
+  decisionConsistent?: Prisma.SortOrder
+  consistencyReason?: Prisma.SortOrder
   resolutionState?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
   circuitBreaker?: Prisma.SortOrder
@@ -1080,6 +1146,9 @@ export type SovereignAnswerEvidenceCreateWithoutPropertyInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -1116,6 +1185,9 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -1182,6 +1254,9 @@ export type SovereignAnswerEvidenceScalarWhereInput = {
   confidence?: Prisma.FloatFilter<"SovereignAnswerEvidence"> | number
   safetyClassification?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   permittedOperation?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  observedBehavior?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  decisionConsistent?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  consistencyReason?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
   resolutionState?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   clarifyCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
   circuitBreaker?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
@@ -1217,6 +1292,9 @@ export type SovereignAnswerEvidenceCreateWithoutFeedbackInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -1254,6 +1332,9 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -1305,6 +1386,9 @@ export type SovereignAnswerEvidenceUpdateWithoutFeedbackInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1342,6 +1426,9 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1377,6 +1464,9 @@ export type SovereignAnswerEvidenceCreateManyPropertyInput = {
   confidence?: number
   safetyClassification?: string
   permittedOperation?: string
+  observedBehavior?: string
+  decisionConsistent?: boolean
+  consistencyReason?: string | null
   resolutionState?: string
   clarifyCount?: number
   circuitBreaker?: boolean
@@ -1412,6 +1502,9 @@ export type SovereignAnswerEvidenceUpdateWithoutPropertyInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1448,6 +1541,9 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutPropertyInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1484,6 +1580,9 @@ export type SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyInput = {
   confidence?: Prisma.FloatFieldUpdateOperationsInput | number
   safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
   permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  observedBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionConsistent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  consistencyReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
   clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
   circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1522,6 +1621,9 @@ export type SovereignAnswerEvidenceSelect<ExtArgs extends runtime.Types.Extensio
   confidence?: boolean
   safetyClassification?: boolean
   permittedOperation?: boolean
+  observedBehavior?: boolean
+  decisionConsistent?: boolean
+  consistencyReason?: boolean
   resolutionState?: boolean
   clarifyCount?: boolean
   circuitBreaker?: boolean
@@ -1560,6 +1662,9 @@ export type SovereignAnswerEvidenceSelectCreateManyAndReturn<ExtArgs extends run
   confidence?: boolean
   safetyClassification?: boolean
   permittedOperation?: boolean
+  observedBehavior?: boolean
+  decisionConsistent?: boolean
+  consistencyReason?: boolean
   resolutionState?: boolean
   clarifyCount?: boolean
   circuitBreaker?: boolean
@@ -1597,6 +1702,9 @@ export type SovereignAnswerEvidenceSelectUpdateManyAndReturn<ExtArgs extends run
   confidence?: boolean
   safetyClassification?: boolean
   permittedOperation?: boolean
+  observedBehavior?: boolean
+  decisionConsistent?: boolean
+  consistencyReason?: boolean
   resolutionState?: boolean
   clarifyCount?: boolean
   circuitBreaker?: boolean
@@ -1634,6 +1742,9 @@ export type SovereignAnswerEvidenceSelectScalar = {
   confidence?: boolean
   safetyClassification?: boolean
   permittedOperation?: boolean
+  observedBehavior?: boolean
+  decisionConsistent?: boolean
+  consistencyReason?: boolean
   resolutionState?: boolean
   clarifyCount?: boolean
   circuitBreaker?: boolean
@@ -1657,7 +1768,7 @@ export type SovereignAnswerEvidenceSelectScalar = {
   createdAt?: boolean
 }
 
-export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "failureLayer" | "failureCode" | "latencyMs" | "attemptCount" | "escalationTier" | "degradedMode" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
+export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "observedBehavior" | "decisionConsistent" | "consistencyReason" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "failureLayer" | "failureCode" | "latencyMs" | "attemptCount" | "escalationTier" | "degradedMode" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
 export type SovereignAnswerEvidenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
@@ -1688,6 +1799,9 @@ export type $SovereignAnswerEvidencePayload<ExtArgs extends runtime.Types.Extens
     confidence: number
     safetyClassification: string
     permittedOperation: string
+    observedBehavior: string
+    decisionConsistent: boolean
+    consistencyReason: string | null
     resolutionState: string
     clarifyCount: number
     circuitBreaker: boolean
@@ -2146,6 +2260,9 @@ export interface SovereignAnswerEvidenceFieldRefs {
   readonly confidence: Prisma.FieldRef<"SovereignAnswerEvidence", 'Float'>
   readonly safetyClassification: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
   readonly permittedOperation: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly observedBehavior: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly decisionConsistent: Prisma.FieldRef<"SovereignAnswerEvidence", 'Boolean'>
+  readonly consistencyReason: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
   readonly resolutionState: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
   readonly clarifyCount: Prisma.FieldRef<"SovereignAnswerEvidence", 'Int'>
   readonly circuitBreaker: Prisma.FieldRef<"SovereignAnswerEvidence", 'Boolean'>

@@ -13,6 +13,7 @@ import { governResolutionOutcome } from "@/lib/sovereign-intelligence/resolution
 import { escalationTierFor, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
 import { resolveDemoConnectorTurn } from "@/lib/demo-sandbox/service";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
+import type { Prisma } from "@/generated/prisma/client";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -103,7 +104,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null,
     confidence: reliability.failureLayer !== "NONE" ? 0.2 : result?.sources.length || result?.claimIds.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
     safetyClassification: safety.safetyClassification || (evidenceDecision.intent === "OFF_TOPIC" ? "BOUNDED_OFF_TOPIC" : "STANDARD"),
-    permittedOperation: evidenceDecision.disposition,
+    permittedOperation: demoTurn?.status === "SUCCEEDED" ? "ACT" : evidenceDecision.disposition,
+    actionPerformed: demoTurn?.status === "SUCCEEDED",
     resolutionState: resolution.state.status,
     clarifyCount: resolution.state.clarifyCount,
     circuitBreaker: resolution.state.circuitBreakerTriggered,
@@ -114,6 +116,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
   const consented = Boolean(payload?.consent && payload.contact);
+  const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
+  const sessionResolutionState = (preserveActiveState ? existingResolutionState : resolution.state) as Prisma.InputJsonValue;
   await db.websiteVisitorSession.upsert({
     where: { leadId: captured.lead.id },
     create: {
@@ -122,7 +126,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     },
     update: {
-      capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: resolution.state,
+      capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: sessionResolutionState,
       expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
       ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     }

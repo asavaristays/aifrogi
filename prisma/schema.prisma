@@ -636,6 +636,9 @@ model SovereignAnswerEvidence {
   confidence          Float    @default(0)
   safetyClassification String  @default("STANDARD")
   permittedOperation  String   @default("ANSWER")
+  observedBehavior    String   @default("UNKNOWN")
+  decisionConsistent  Boolean  @default(false)
+  consistencyReason   String?  @db.Text
   resolutionState     String   @default("RESOLVED")
   clarifyCount        Int      @default(0)
   circuitBreaker      Boolean  @default(false)
@@ -661,6 +664,7 @@ model SovereignAnswerEvidence {
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
+  @@index([propertyId, decisionConsistent, createdAt])
   @@index([propertyId, circuitBreaker, createdAt])
   @@index([propertyId, failureLayer, createdAt])
   @@index([propertyId, escalationTier, createdAt])

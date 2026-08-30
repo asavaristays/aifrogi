@@ -40,6 +40,10 @@ test("repeated unresolved intent trips the circuit breaker before a third clarif
   assert.equal(second.state.clarifyCount, 2);
   assert.equal(second.decision.disposition, "ESCALATE");
   assert.equal(second.state.circuitBreakerReason, "CUSTOMER_REPEAT");
+  const third = governResolutionOutcome({ question: "What is your cancellation policy?", answer: "I do not have approved policy information.", decision, previousState: second.state });
+  assert.equal(third.decision.disposition, "ESCALATE");
+  assert.equal(third.state.circuitBreakerTriggered, true);
+  assert.equal(third.state.clarifyCount, 2);
 });
 
 test("consented facts are retained and not lost across a contextual follow-up", () => {
