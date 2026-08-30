@@ -464,6 +464,7 @@ model WebsiteVisitorSession {
   expiresAt          DateTime
   lastDeliveredAt    DateTime?
   lastReadAt         DateTime?
+  resolutionState    Json?
   revokedAt          DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
@@ -484,6 +485,14 @@ model SovereignAnswerEvidence {
   intent              String
   disposition         String
   contextUsed         Boolean  @default(false)
+  confidence          Float    @default(0)
+  safetyClassification String  @default("STANDARD")
+  permittedOperation  String   @default("ANSWER")
+  resolutionState     String   @default("RESOLVED")
+  clarifyCount        Int      @default(0)
+  circuitBreaker      Boolean  @default(false)
+  circuitBreakerReason String?
+  evaluationVersion   String   @default("1.1")
   decisionReason      String   @db.Text
   question            String   @db.Text
   resolvedQuestion    String   @db.Text
@@ -496,6 +505,7 @@ model SovereignAnswerEvidence {
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
+  @@index([propertyId, circuitBreaker, createdAt])
   @@index([leadId, createdAt])
 }
 

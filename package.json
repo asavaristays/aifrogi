@@ -26,9 +26,10 @@
     "verify:security-boundaries": "tsx scripts/verify-security-boundaries.ts",
     "verify:security-boundaries:fixtures": "tsx scripts/verify-security-boundaries-with-fixtures.ts",
     "verify:client-secrets": "tsx scripts/verify-client-bundle-secrets.ts",
+    "verify:sovereign": "node --import tsx --test tests/sovereign-intelligence/*.test.ts",
     "verify:flow": "tsx scripts/verify-product-flow.ts",
     "verify:launch": "tsx scripts/verify-commercial-launch.ts",
-    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch"
+    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run verify:sovereign"
   },
   "dependencies": {
     "@prisma/adapter-pg": "latest",

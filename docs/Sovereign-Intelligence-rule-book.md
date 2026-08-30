@@ -1,6 +1,6 @@
 # AiFrogi Sovereign Intelligence Rule Book
 
-**Constitution version:** 1.0  
+**Constitution version:** 1.1
 **Status:** Locked governing product and engineering rule  
 **Locked on:** 30 August 2026  
 **Applies to:** BusinessGPT, HotelGPT, ClinicGPT, DineGPT, eduGPT, PropertyGPT, FlowCart, Custom Business Bot, and every future AiFrogi bot  
@@ -133,6 +133,14 @@ Customer conversations may identify knowledge gaps, retrieval failures, policy w
 Every meaningful improvement follows:
 
 `Observed failure → classified issue → proposed correction → authorised review → regression test → approved version → controlled rollout → monitored result → rollback if required`
+
+### Rule 11 — Bounded resolution
+
+No unresolved intent may consume unbounded conversation turns. Every clarification cycle belongs to an explicit intent thread and counts against the category blueprint's maximum depth. The runtime must not ask again for information already supplied in the active conversation.
+
+When the limit is reached, the runtime must exit through one governed result: answer with an explicit limitation, refuse, request approval, or escalate. A repeated customer request or materially duplicated bot response must trigger the resolution circuit breaker rather than another retrieval loop.
+
+The platform default is two clarification cycles. Category blueprints may lower or raise the limit only through a versioned, tested policy. Sensitive requests, failed verification, unavailable action authority, and explicit human requests do not receive extra clarification cycles.
 
 ## 3. Common Sovereign Runtime
 
@@ -447,6 +455,26 @@ A bot must not be enabled for production traffic until it has evidence for:
 - Client Admin access to daily operations and gaps.
 
 Readiness must be visible to SuperAdmin as evidence-backed gates, not a manually asserted percentage.
+
+### Safe Resolution Rate
+
+The internal release threshold is **94.5% Safe Resolution Rate (SRR)** across the approved common and category evaluation packs:
+
+`SRR = correct ANSWER + correct CLARIFY-and-resolve + correct REFUSE + correct ESCALATE + correct governed action decision ÷ total evaluated cases`
+
+The blended score cannot override the following independent 100% release gates:
+
+- workspace and tenant isolation;
+- prohibited commercial-claim prevention;
+- false action-completion prevention; and
+- prompt, credential, secret, and restricted-data protection.
+
+The percentage is an internal engineering gate, not a public accuracy claim, until the dataset size, evaluation release, scoring method, and measured results are published and approved.
+
+### Certification tiers
+
+- **Trial-Grade** requires Constitution enforcement, Common Suite SRR at or above 94.5%, all zero-tolerance gates at 100%, tenant isolation, approved intelligence, safe handover, pause, rollback, and no unverified live action.
+- **Production-Grade** additionally requires the category suite, live connector authority, idempotent execution, system-of-record read-back, verified outcomes, and action evidence.
 
 ## 14. Rule and Blueprint Versioning
 

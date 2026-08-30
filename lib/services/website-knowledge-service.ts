@@ -7,6 +7,7 @@ import { getBotPersonaForPropertySlug } from "@/lib/repositories/bot-profile-rep
 import { sovereignConstitutionPrompt } from "@/lib/sovereign-intelligence/constitution";
 import { classifySovereignIntent, resolveSovereignQuestion, type SovereignDecision, type SovereignIntent } from "@/lib/sovereign-intelligence/decision";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
+import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
 
 export type KnowledgePage = {
   url: string;
@@ -504,6 +505,12 @@ export async function buildWebsiteKnowledgeAnswer({
   const payload = (await response.json().catch(() => null)) as Record<string, unknown> | null;
   const answer = payload ? extractOpenAiText(payload) : "";
   if (!answer) return null;
+  const claimValidation = validateGeneratedClaims({ answer, approvedContext: context, connectorVerified: false });
+  if (!claimValidation.valid) {
+    console.error("Sovereign claim validation blocked an answer", { propertySlug, violations: claimValidation.violations });
+    await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
+    return null;
+  }
 
   return {
     answer,

@@ -76,6 +76,7 @@ export type WebsiteVisitorSessionCountAggregateOutputType = {
   expiresAt: number
   lastDeliveredAt: number
   lastReadAt: number
+  resolutionState: number
   revokedAt: number
   createdAt: number
   updatedAt: number
@@ -135,6 +136,7 @@ export type WebsiteVisitorSessionCountAggregateInputType = {
   expiresAt?: true
   lastDeliveredAt?: true
   lastReadAt?: true
+  resolutionState?: true
   revokedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -227,6 +229,7 @@ export type WebsiteVisitorSessionGroupByOutputType = {
   expiresAt: Date
   lastDeliveredAt: Date | null
   lastReadAt: Date | null
+  resolutionState: runtime.JsonValue | null
   revokedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -267,6 +270,7 @@ export type WebsiteVisitorSessionWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
   lastDeliveredAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
   lastReadAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
+  resolutionState?: Prisma.JsonNullableFilter<"WebsiteVisitorSession">
   revokedAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
@@ -288,6 +292,7 @@ export type WebsiteVisitorSessionOrderByWithRelationInput = {
   expiresAt?: Prisma.SortOrder
   lastDeliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastReadAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolutionState?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -313,6 +318,7 @@ export type WebsiteVisitorSessionWhereUniqueInput = Prisma.AtLeast<{
   expiresAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
   lastDeliveredAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
   lastReadAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
+  resolutionState?: Prisma.JsonNullableFilter<"WebsiteVisitorSession">
   revokedAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
@@ -334,6 +340,7 @@ export type WebsiteVisitorSessionOrderByWithAggregationInput = {
   expiresAt?: Prisma.SortOrder
   lastDeliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastReadAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolutionState?: Prisma.SortOrderInput | Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -359,6 +366,7 @@ export type WebsiteVisitorSessionScalarWhereWithAggregatesInput = {
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"WebsiteVisitorSession"> | Date | string
   lastDeliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebsiteVisitorSession"> | Date | string | null
   lastReadAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebsiteVisitorSession"> | Date | string | null
+  resolutionState?: Prisma.JsonNullableWithAggregatesFilter<"WebsiteVisitorSession">
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebsiteVisitorSession"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WebsiteVisitorSession"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"WebsiteVisitorSession"> | Date | string
@@ -376,6 +384,7 @@ export type WebsiteVisitorSessionCreateInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -397,6 +406,7 @@ export type WebsiteVisitorSessionUncheckedCreateInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -414,6 +424,7 @@ export type WebsiteVisitorSessionUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +446,7 @@ export type WebsiteVisitorSessionUncheckedUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -454,6 +466,7 @@ export type WebsiteVisitorSessionCreateManyInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -471,6 +484,7 @@ export type WebsiteVisitorSessionUpdateManyMutationInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -490,6 +504,7 @@ export type WebsiteVisitorSessionUncheckedUpdateManyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -529,6 +544,7 @@ export type WebsiteVisitorSessionCountOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   lastDeliveredAt?: Prisma.SortOrder
   lastReadAt?: Prisma.SortOrder
+  resolutionState?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -658,6 +674,7 @@ export type WebsiteVisitorSessionCreateWithoutPropertyInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -677,6 +694,7 @@ export type WebsiteVisitorSessionUncheckedCreateWithoutPropertyInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -725,6 +743,7 @@ export type WebsiteVisitorSessionScalarWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
   lastDeliveredAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
   lastReadAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
+  resolutionState?: Prisma.JsonNullableFilter<"WebsiteVisitorSession">
   revokedAt?: Prisma.DateTimeNullableFilter<"WebsiteVisitorSession"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WebsiteVisitorSession"> | Date | string
@@ -742,6 +761,7 @@ export type WebsiteVisitorSessionCreateWithoutLeadInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -761,6 +781,7 @@ export type WebsiteVisitorSessionUncheckedCreateWithoutLeadInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -794,6 +815,7 @@ export type WebsiteVisitorSessionUpdateWithoutLeadInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -813,6 +835,7 @@ export type WebsiteVisitorSessionUncheckedUpdateWithoutLeadInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -831,6 +854,7 @@ export type WebsiteVisitorSessionCreateManyPropertyInput = {
   expiresAt: Date | string
   lastDeliveredAt?: Date | string | null
   lastReadAt?: Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -848,6 +872,7 @@ export type WebsiteVisitorSessionUpdateWithoutPropertyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -867,6 +892,7 @@ export type WebsiteVisitorSessionUncheckedUpdateWithoutPropertyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -885,6 +911,7 @@ export type WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolutionState?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -906,6 +933,7 @@ export type WebsiteVisitorSessionSelect<ExtArgs extends runtime.Types.Extensions
   expiresAt?: boolean
   lastDeliveredAt?: boolean
   lastReadAt?: boolean
+  resolutionState?: boolean
   revokedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -927,6 +955,7 @@ export type WebsiteVisitorSessionSelectCreateManyAndReturn<ExtArgs extends runti
   expiresAt?: boolean
   lastDeliveredAt?: boolean
   lastReadAt?: boolean
+  resolutionState?: boolean
   revokedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -948,6 +977,7 @@ export type WebsiteVisitorSessionSelectUpdateManyAndReturn<ExtArgs extends runti
   expiresAt?: boolean
   lastDeliveredAt?: boolean
   lastReadAt?: boolean
+  resolutionState?: boolean
   revokedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -969,12 +999,13 @@ export type WebsiteVisitorSessionSelectScalar = {
   expiresAt?: boolean
   lastDeliveredAt?: boolean
   lastReadAt?: boolean
+  resolutionState?: boolean
   revokedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WebsiteVisitorSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "capabilityHash" | "status" | "contactName" | "contactValue" | "consentText" | "consentedAt" | "expiresAt" | "lastDeliveredAt" | "lastReadAt" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["websiteVisitorSession"]>
+export type WebsiteVisitorSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "capabilityHash" | "status" | "contactName" | "contactValue" | "consentText" | "consentedAt" | "expiresAt" | "lastDeliveredAt" | "lastReadAt" | "resolutionState" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["websiteVisitorSession"]>
 export type WebsiteVisitorSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   lead?: boolean | Prisma.LeadDefaultArgs<ExtArgs>
@@ -1008,6 +1039,7 @@ export type $WebsiteVisitorSessionPayload<ExtArgs extends runtime.Types.Extensio
     expiresAt: Date
     lastDeliveredAt: Date | null
     lastReadAt: Date | null
+    resolutionState: runtime.JsonValue | null
     revokedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1449,6 +1481,7 @@ export interface WebsiteVisitorSessionFieldRefs {
   readonly expiresAt: Prisma.FieldRef<"WebsiteVisitorSession", 'DateTime'>
   readonly lastDeliveredAt: Prisma.FieldRef<"WebsiteVisitorSession", 'DateTime'>
   readonly lastReadAt: Prisma.FieldRef<"WebsiteVisitorSession", 'DateTime'>
+  readonly resolutionState: Prisma.FieldRef<"WebsiteVisitorSession", 'Json'>
   readonly revokedAt: Prisma.FieldRef<"WebsiteVisitorSession", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"WebsiteVisitorSession", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"WebsiteVisitorSession", 'DateTime'>

@@ -437,6 +437,7 @@ export const WebsiteVisitorSessionScalarFieldEnum = {
   expiresAt: 'expiresAt',
   lastDeliveredAt: 'lastDeliveredAt',
   lastReadAt: 'lastReadAt',
+  resolutionState: 'resolutionState',
   revokedAt: 'revokedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -455,6 +456,14 @@ export const SovereignAnswerEvidenceScalarFieldEnum = {
   intent: 'intent',
   disposition: 'disposition',
   contextUsed: 'contextUsed',
+  confidence: 'confidence',
+  safetyClassification: 'safetyClassification',
+  permittedOperation: 'permittedOperation',
+  resolutionState: 'resolutionState',
+  clarifyCount: 'clarifyCount',
+  circuitBreaker: 'circuitBreaker',
+  circuitBreakerReason: 'circuitBreakerReason',
+  evaluationVersion: 'evaluationVersion',
   decisionReason: 'decisionReason',
   question: 'question',
   resolvedQuestion: 'resolvedQuestion',
@@ -1262,19 +1271,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

@@ -599,14 +599,6 @@ export type MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput = {
   deleteMany?: Prisma.MetricDailyScalarWhereInput | Prisma.MetricDailyScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type MetricDailyCreateWithoutPropertyInput = {
   id?: string
   date: Date | string

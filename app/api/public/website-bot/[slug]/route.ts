@@ -9,6 +9,7 @@ import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { recordSovereignAnswerEvidence } from "@/lib/repositories/sovereign-evidence-repository";
 import { resolveSovereignQuestion } from "@/lib/sovereign-intelligence/decision";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
+import { governResolutionOutcome } from "@/lib/sovereign-intelligence/resolution";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -50,10 +51,12 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
 
   const priorToken = payload?.visitorToken ? verifyWebsiteVisitorToken(payload.visitorToken, slug) : null;
+  let existingResolutionState: unknown = null;
   if (payload?.visitorToken && (!priorToken || priorToken.sessionId !== sessionId)) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
   if (payload?.visitorToken) {
-    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true } });
+    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true, resolutionState: true } });
     if (!activeSession) return NextResponse.json({ error: "Visitor session is invalid, closed, or expired." }, { status: 401, headers: responseHeaders });
+    existingResolutionState = activeSession.resolutionState;
   }
 
   const priorQuestions = priorToken ? (await db.leadMessage.findMany({
@@ -61,7 +64,20 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
   const result = safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration, priorQuestions }).catch(() => null);
-  const answer = safety.answer || result?.answer || "I do not have enough approved Webtechnosys information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.";
+  const proposedAnswer = safety.answer || result?.answer || "I do not have enough approved Webtechnosys information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.";
+  const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION);
+  const proposedDecision = result?.decision || (safety.blocked
+    ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
+    : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
+  const resolution = governResolutionOutcome({
+    question: message,
+    answer: proposedAnswer,
+    decision: proposedDecision,
+    previousState: existingResolutionState,
+    consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
+  });
+  const answer = resolution.answer;
+  const evidenceDecision = resolution.decision;
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,
     phone: payload?.consent && payload.contact ? String(payload.contact).slice(0, 120) : undefined,
@@ -70,14 +86,17 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
-  const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION);
-  const evidenceDecision = result?.decision || (safety.blocked
-    ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
-    : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
   await recordSovereignAnswerEvidence({
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
     answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
-    sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null
+    sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null,
+    confidence: result?.sources.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
+    safetyClassification: safety.safetyClassification || (evidenceDecision.intent === "OFF_TOPIC" ? "BOUNDED_OFF_TOPIC" : "STANDARD"),
+    permittedOperation: evidenceDecision.disposition,
+    resolutionState: resolution.state.status,
+    clarifyCount: resolution.state.clarifyCount,
+    circuitBreaker: resolution.state.circuitBreakerTriggered,
+    circuitBreakerReason: resolution.state.circuitBreakerReason
   }).catch(() => null);
   const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
@@ -86,17 +105,17 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     where: { leadId: captured.lead.id },
     create: {
       propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
-      status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
+      status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", resolutionState: resolution.state, expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
       ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: "Webtechnosys may store these details and contact me about this enquiry.", consentedAt: new Date() } : {})
     },
     update: {
-      capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined,
+      capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: resolution.state,
       expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
       ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: "Webtechnosys may store these details and contact me about this enquiry.", consentedAt: new Date() } : {})
     }
   });
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {

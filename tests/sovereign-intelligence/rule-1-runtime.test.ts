@@ -5,10 +5,10 @@ import { classifySovereignIntent, resolveSovereignQuestion } from "../../lib/sov
 import { connectorMayAct } from "../../lib/sovereign-intelligence/connector-policy";
 import { listVersionedBotBlueprints } from "../../lib/sovereign-intelligence/registry";
 
-test("Rule 1.0 has ten locked constitutional controls", () => {
-  assert.equal(SOVEREIGN_CONSTITUTION.version, "1.0");
+test("Rule 1.1 has eleven locked constitutional controls", () => {
+  assert.equal(SOVEREIGN_CONSTITUTION.version, "1.1");
   assert.equal(SOVEREIGN_CONSTITUTION.status, "LOCKED");
-  assert.equal(SOVEREIGN_CONSTITUTION.rules.length, 10);
+  assert.equal(SOVEREIGN_CONSTITUTION.rules.length, 11);
 });
 
 test("adversarial intent pack produces governed dispositions", () => {
