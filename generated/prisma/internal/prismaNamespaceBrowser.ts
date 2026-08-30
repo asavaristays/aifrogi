@@ -66,6 +66,7 @@ export const ModelName = {
   OnboardingActivity: 'OnboardingActivity',
   Lead: 'Lead',
   WebsiteVisitorSession: 'WebsiteVisitorSession',
+  SovereignAnswerEvidence: 'SovereignAnswerEvidence',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
   ChannelConnection: 'ChannelConnection',
@@ -442,6 +443,30 @@ export const WebsiteVisitorSessionScalarFieldEnum = {
 } as const
 
 export type WebsiteVisitorSessionScalarFieldEnum = (typeof WebsiteVisitorSessionScalarFieldEnum)[keyof typeof WebsiteVisitorSessionScalarFieldEnum]
+
+
+export const SovereignAnswerEvidenceScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  sessionIdHash: 'sessionIdHash',
+  constitutionVersion: 'constitutionVersion',
+  blueprintVersion: 'blueprintVersion',
+  intent: 'intent',
+  disposition: 'disposition',
+  contextUsed: 'contextUsed',
+  decisionReason: 'decisionReason',
+  question: 'question',
+  resolvedQuestion: 'resolvedQuestion',
+  answer: 'answer',
+  grounded: 'grounded',
+  model: 'model',
+  sources: 'sources',
+  knowledgeAsOf: 'knowledgeAsOf',
+  createdAt: 'createdAt'
+} as const
+
+export type SovereignAnswerEvidenceScalarFieldEnum = (typeof SovereignAnswerEvidenceScalarFieldEnum)[keyof typeof SovereignAnswerEvidenceScalarFieldEnum]
 
 
 export const LeadTagScalarFieldEnum = {
@@ -1237,19 +1262,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

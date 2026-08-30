@@ -399,6 +399,7 @@ export const ModelName = {
   OnboardingActivity: 'OnboardingActivity',
   Lead: 'Lead',
   WebsiteVisitorSession: 'WebsiteVisitorSession',
+  SovereignAnswerEvidence: 'SovereignAnswerEvidence',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
   ChannelConnection: 'ChannelConnection',
@@ -455,7 +456,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "sovereignAnswerEvidence" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1566,6 +1567,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.WebsiteVisitorSessionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.WebsiteVisitorSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    SovereignAnswerEvidence: {
+      payload: Prisma.$SovereignAnswerEvidencePayload<ExtArgs>
+      fields: Prisma.SovereignAnswerEvidenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SovereignAnswerEvidenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SovereignAnswerEvidenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>
+        }
+        findFirst: {
+          args: Prisma.SovereignAnswerEvidenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SovereignAnswerEvidenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>
+        }
+        findMany: {
+          args: Prisma.SovereignAnswerEvidenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>[]
+        }
+        create: {
+          args: Prisma.SovereignAnswerEvidenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>
+        }
+        createMany: {
+          args: Prisma.SovereignAnswerEvidenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SovereignAnswerEvidenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>[]
+        }
+        delete: {
+          args: Prisma.SovereignAnswerEvidenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>
+        }
+        update: {
+          args: Prisma.SovereignAnswerEvidenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>
+        }
+        deleteMany: {
+          args: Prisma.SovereignAnswerEvidenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SovereignAnswerEvidenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SovereignAnswerEvidenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>[]
+        }
+        upsert: {
+          args: Prisma.SovereignAnswerEvidenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerEvidencePayload>
+        }
+        aggregate: {
+          args: Prisma.SovereignAnswerEvidenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSovereignAnswerEvidence>
+        }
+        groupBy: {
+          args: Prisma.SovereignAnswerEvidenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SovereignAnswerEvidenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SovereignAnswerEvidenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SovereignAnswerEvidenceCountAggregateOutputType> | number
         }
       }
     }
@@ -4961,6 +5036,30 @@ export const WebsiteVisitorSessionScalarFieldEnum = {
 export type WebsiteVisitorSessionScalarFieldEnum = (typeof WebsiteVisitorSessionScalarFieldEnum)[keyof typeof WebsiteVisitorSessionScalarFieldEnum]
 
 
+export const SovereignAnswerEvidenceScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  sessionIdHash: 'sessionIdHash',
+  constitutionVersion: 'constitutionVersion',
+  blueprintVersion: 'blueprintVersion',
+  intent: 'intent',
+  disposition: 'disposition',
+  contextUsed: 'contextUsed',
+  decisionReason: 'decisionReason',
+  question: 'question',
+  resolvedQuestion: 'resolvedQuestion',
+  answer: 'answer',
+  grounded: 'grounded',
+  model: 'model',
+  sources: 'sources',
+  knowledgeAsOf: 'knowledgeAsOf',
+  createdAt: 'createdAt'
+} as const
+
+export type SovereignAnswerEvidenceScalarFieldEnum = (typeof SovereignAnswerEvidenceScalarFieldEnum)[keyof typeof SovereignAnswerEvidenceScalarFieldEnum]
+
+
 export const LeadTagScalarFieldEnum = {
   id: 'id',
   leadId: 'leadId',
@@ -5754,19 +5853,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -5934,6 +6033,20 @@ export type ListEnumLeadLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'MessageSender'
  */
 export type EnumMessageSenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageSender'>
@@ -5958,20 +6071,6 @@ export type EnumChannelConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInp
  * Reference to a field of type 'ChannelConnectionStatus[]'
  */
 export type ListEnumChannelConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelConnectionStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -6168,6 +6267,7 @@ export type GlobalOmitConfig = {
   onboardingActivity?: Prisma.OnboardingActivityOmit
   lead?: Prisma.LeadOmit
   websiteVisitorSession?: Prisma.WebsiteVisitorSessionOmit
+  sovereignAnswerEvidence?: Prisma.SovereignAnswerEvidenceOmit
   leadTag?: Prisma.LeadTagOmit
   leadMessage?: Prisma.LeadMessageOmit
   channelConnection?: Prisma.ChannelConnectionOmit

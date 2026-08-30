@@ -6,6 +6,9 @@ import type { WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
 import { hashWebsiteVisitorValue, issueWebsiteVisitorToken, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
 import { guardWebsiteVisitorMessage } from "@/lib/website-message-safety";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
+import { recordSovereignAnswerEvidence } from "@/lib/repositories/sovereign-evidence-repository";
+import { resolveSovereignQuestion } from "@/lib/sovereign-intelligence/decision";
+import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -67,7 +70,16 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
-  const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested);
+  const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION);
+  const evidenceDecision = result?.decision || (safety.blocked
+    ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
+    : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
+  await recordSovereignAnswerEvidence({
+    propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
+    answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
+    sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null
+  }).catch(() => null);
+  const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
   const consented = Boolean(payload?.consent && payload.contact);
   await db.websiteVisitorSession.upsert({
@@ -84,7 +96,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     }
   });
 
-  return NextResponse.json({ answer, grounded: Boolean(result), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {

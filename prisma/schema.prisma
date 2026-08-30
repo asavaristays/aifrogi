@@ -134,6 +134,7 @@ model Property {
   neutralMessages     Message[]
   aiOperations        AiOperation[]
   websiteSessions     WebsiteVisitorSession[]
+  sovereignEvidence   SovereignAnswerEvidence[]
 
   @@index([organizationId])
 }
@@ -470,6 +471,32 @@ model WebsiteVisitorSession {
   @@unique([propertyId, sessionIdHash])
   @@index([propertyId, status, updatedAt])
   @@index([expiresAt, revokedAt])
+}
+
+model SovereignAnswerEvidence {
+  id                  String   @id @default(cuid())
+  propertyId          String
+  property            Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId              String?
+  sessionIdHash       String
+  constitutionVersion String
+  blueprintVersion    String
+  intent              String
+  disposition         String
+  contextUsed         Boolean  @default(false)
+  decisionReason      String   @db.Text
+  question            String   @db.Text
+  resolvedQuestion    String   @db.Text
+  answer              String   @db.Text
+  grounded            Boolean  @default(false)
+  model               String
+  sources             Json
+  knowledgeAsOf       DateTime?
+  createdAt           DateTime @default(now())
+
+  @@index([propertyId, createdAt])
+  @@index([propertyId, intent, disposition])
+  @@index([leadId, createdAt])
 }
 
 model LeadTag {

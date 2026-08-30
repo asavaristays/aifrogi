@@ -1,0 +1,28 @@
+import { getSovereignIntelligenceReport } from "@/lib/repositories/sovereign-evidence-repository";
+import { SOVEREIGN_CONSTITUTION } from "@/lib/sovereign-intelligence/constitution";
+import { listVersionedBotBlueprints } from "@/lib/sovereign-intelligence/registry";
+
+export const dynamic = "force-dynamic";
+
+export default async function SovereignIntelligencePage() {
+  const report = await getSovereignIntelligenceReport();
+  const blueprints = listVersionedBotBlueprints();
+  const groundedRate = report.total ? Math.round((report.grounded / report.total) * 100) : 0;
+  const checks = [
+    ["Constitution", `Rule ${SOVEREIGN_CONSTITUTION.version} locked`, true],
+    ["Category registry", `${blueprints.length} versioned blueprints`, blueprints.length > 0],
+    ["Decision contract", "Intent, context and disposition recorded", true],
+    ["Evidence ledger", `${report.total} production decisions retained`, true],
+    ["Connector authority", "Live action requires permission, idempotency and read-back", true],
+    ["Human control", "Fallback, escalation, pause and handover preserved", true]
+  ] as const;
+
+  return <main className="mx-auto max-w-7xl space-y-6 px-4 py-7 sm:px-8">
+    <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="product-eyebrow">Sovereign Intelligence</p><h1 className="mt-2 text-3xl font-semibold">Rule 1.0 command center</h1><p className="mt-2 max-w-3xl text-sm text-[var(--text-muted)]">Evidence-backed visibility into the constitution, category blueprints, intent decisions, grounded answers, contextual recovery, fallback and escalation.</p></div><span className="status-pill status-success">Rule {SOVEREIGN_CONSTITUTION.version} active</span></section>
+    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6"><Metric label="Decisions" value={report.total} helper="Evidence records"/><Metric label="Grounded" value={`${groundedRate}%`} helper={`${report.grounded} source-backed`}/><Metric label="Context reused" value={report.contextual} helper="Relevant follow-ups"/><Metric label="Off-topic" value={report.offTopic} helper="Isolated safely"/><Metric label="Fallback" value={report.fallback} helper="Needs review"/><Metric label="Escalated" value={report.escalated} helper="Human authority"/></section>
+    <section className="grid gap-6 lg:grid-cols-[.9fr_1.1fr]"><div className="rounded-lg border border-black/7 bg-white p-6 shadow-sm"><p className="product-eyebrow">Readiness gates</p><h2 className="mt-2 text-xl font-semibold">Shared runtime foundation</h2><div className="mt-5 divide-y divide-black/8 border-y border-black/8">{checks.map(([label,detail,complete])=><div key={label} className="flex items-center justify-between gap-4 py-4"><div><strong className="text-sm">{label}</strong><p className="mt-1 text-xs text-[var(--text-muted)]">{detail}</p></div><span className={`status-pill ${complete?"status-success":"status-warning"}`}>{complete?"ready":"pending"}</span></div>)}</div></div><div className="rounded-lg border border-black/7 bg-[#101010] p-6 text-white shadow-sm"><p className="product-eyebrow text-[#e2c66d]">Constitution 1.0</p><h2 className="mt-2 text-xl font-semibold">Ten rules govern every category.</h2><ol className="mt-5 grid gap-2 text-sm text-white/70">{SOVEREIGN_CONSTITUTION.rules.map((rule,index)=><li key={rule.code}><span className="mr-2 font-mono text-[#e2c66d]">{String(index+1).padStart(2,"0")}</span>{rule.code.replaceAll("_"," ")}</li>)}</ol></div></section>
+    <section className="overflow-hidden rounded-lg border border-black/7 bg-white shadow-sm"><div className="border-b border-black/6 px-5 py-4"><p className="product-eyebrow">Answer evidence</p><h2 className="mt-1 text-xl font-semibold">Recent governed decisions</h2></div><div className="overflow-x-auto"><table className="w-full min-w-[900px] text-left text-sm"><thead className="bg-[#f7f9f8] text-xs text-[var(--text-muted)]"><tr><th className="px-5 py-3">Workspace</th><th className="px-5 py-3">Intent</th><th className="px-5 py-3">Disposition</th><th className="px-5 py-3">Evidence</th><th className="px-5 py-3">Versions</th><th className="px-5 py-3">Time</th></tr></thead><tbody className="divide-y divide-black/6">{report.recent.map((item)=><tr key={item.id}><td className="px-5 py-4"><strong>{item.property.name}</strong><small className="block text-[var(--text-muted)]">{item.property.slug}</small></td><td className="px-5 py-4">{item.intent.toLowerCase().replaceAll("_"," ")}</td><td className="px-5 py-4"><span className={`status-pill ${item.disposition==="ANSWER"?"status-success":item.disposition==="ESCALATE"?"status-warning":"status-info"}`}>{item.disposition.toLowerCase()}</span></td><td className="px-5 py-4">{item.grounded?"Approved sources":"Constitutional / fallback"}</td><td className="px-5 py-4 font-mono text-xs">C{item.constitutionVersion} · B{item.blueprintVersion}</td><td className="px-5 py-4 text-xs text-[var(--text-muted)]">{item.createdAt.toLocaleString("en-IN",{timeZone:"Asia/Kolkata"})}</td></tr>)}</tbody></table></div>{report.recent.length?null:<p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">Evidence collection starts with the next Website Bot answer after deployment.</p>}</section>
+  </main>;
+}
+
+function Metric({label,value,helper}:{label:string;value:string|number;helper:string}){return <article className="rounded-lg border border-black/7 bg-white p-5 shadow-sm"><p className="product-eyebrow">{label}</p><p className="mt-3 text-3xl font-semibold">{value}</p><p className="mt-2 text-xs text-[var(--text-muted)]">{helper}</p></article>}

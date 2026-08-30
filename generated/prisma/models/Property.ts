@@ -232,6 +232,7 @@ export type PropertyWhereInput = {
   neutralMessages?: Prisma.MessageListRelationFilter
   aiOperations?: Prisma.AiOperationListRelationFilter
   websiteSessions?: Prisma.WebsiteVisitorSessionListRelationFilter
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceListRelationFilter
 }
 
 export type PropertyOrderByWithRelationInput = {
@@ -262,6 +263,7 @@ export type PropertyOrderByWithRelationInput = {
   neutralMessages?: Prisma.MessageOrderByRelationAggregateInput
   aiOperations?: Prisma.AiOperationOrderByRelationAggregateInput
   websiteSessions?: Prisma.WebsiteVisitorSessionOrderByRelationAggregateInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceOrderByRelationAggregateInput
 }
 
 export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -295,6 +297,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   neutralMessages?: Prisma.MessageListRelationFilter
   aiOperations?: Prisma.AiOperationListRelationFilter
   websiteSessions?: Prisma.WebsiteVisitorSessionListRelationFilter
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceListRelationFilter
 }, "id" | "slug">
 
 export type PropertyOrderByWithAggregationInput = {
@@ -354,6 +357,7 @@ export type PropertyCreateInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateInput = {
@@ -383,6 +387,7 @@ export type PropertyUncheckedCreateInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
@@ -412,6 +417,7 @@ export type PropertyUpdateInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
@@ -441,6 +447,7 @@ export type PropertyUncheckedUpdateInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
@@ -653,6 +660,20 @@ export type PropertyUpdateOneRequiredWithoutWebsiteSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutWebsiteSessionsInput, Prisma.PropertyUpdateWithoutWebsiteSessionsInput>, Prisma.PropertyUncheckedUpdateWithoutWebsiteSessionsInput>
 }
 
+export type PropertyCreateNestedOneWithoutSovereignEvidenceInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutSovereignEvidenceInput, Prisma.PropertyUncheckedCreateWithoutSovereignEvidenceInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutSovereignEvidenceInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutSovereignEvidenceInput, Prisma.PropertyUncheckedCreateWithoutSovereignEvidenceInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutSovereignEvidenceInput
+  upsert?: Prisma.PropertyUpsertWithoutSovereignEvidenceInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutSovereignEvidenceInput, Prisma.PropertyUpdateWithoutSovereignEvidenceInput>, Prisma.PropertyUncheckedUpdateWithoutSovereignEvidenceInput>
+}
+
 export type PropertyCreateNestedOneWithoutChannelConnectionsInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutChannelConnectionsInput, Prisma.PropertyUncheckedCreateWithoutChannelConnectionsInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutChannelConnectionsInput
@@ -847,6 +868,7 @@ export type PropertyCreateWithoutKnowledgeDocumentsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
@@ -875,6 +897,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutKnowledgeDocumentsInput = {
@@ -919,6 +942,7 @@ export type PropertyUpdateWithoutKnowledgeDocumentsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
@@ -947,6 +971,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutKnowledgeEntriesInput = {
@@ -975,6 +1000,7 @@ export type PropertyCreateWithoutKnowledgeEntriesInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
@@ -1003,6 +1029,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutKnowledgeEntriesInput = {
@@ -1047,6 +1074,7 @@ export type PropertyUpdateWithoutKnowledgeEntriesInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
@@ -1075,6 +1103,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutKnowledgeGapsInput = {
@@ -1103,6 +1132,7 @@ export type PropertyCreateWithoutKnowledgeGapsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
@@ -1131,6 +1161,7 @@ export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutKnowledgeGapsInput = {
@@ -1175,6 +1206,7 @@ export type PropertyUpdateWithoutKnowledgeGapsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
@@ -1203,6 +1235,7 @@ export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutOrganizationInput = {
@@ -1231,6 +1264,7 @@ export type PropertyCreateWithoutOrganizationInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutOrganizationInput = {
@@ -1259,6 +1293,7 @@ export type PropertyUncheckedCreateWithoutOrganizationInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutOrganizationInput = {
@@ -1328,6 +1363,7 @@ export type PropertyCreateWithoutLeadsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutLeadsInput = {
@@ -1356,6 +1392,7 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutLeadsInput = {
@@ -1400,6 +1437,7 @@ export type PropertyUpdateWithoutLeadsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutLeadsInput = {
@@ -1428,6 +1466,7 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutWebsiteSessionsInput = {
@@ -1456,6 +1495,7 @@ export type PropertyCreateWithoutWebsiteSessionsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutWebsiteSessionsInput = {
@@ -1484,6 +1524,7 @@ export type PropertyUncheckedCreateWithoutWebsiteSessionsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutWebsiteSessionsInput = {
@@ -1528,6 +1569,7 @@ export type PropertyUpdateWithoutWebsiteSessionsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutWebsiteSessionsInput = {
@@ -1556,6 +1598,139 @@ export type PropertyUncheckedUpdateWithoutWebsiteSessionsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutSovereignEvidenceInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutSovereignEvidenceInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutSovereignEvidenceInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutSovereignEvidenceInput, Prisma.PropertyUncheckedCreateWithoutSovereignEvidenceInput>
+}
+
+export type PropertyUpsertWithoutSovereignEvidenceInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutSovereignEvidenceInput, Prisma.PropertyUncheckedUpdateWithoutSovereignEvidenceInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutSovereignEvidenceInput, Prisma.PropertyUncheckedCreateWithoutSovereignEvidenceInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutSovereignEvidenceInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutSovereignEvidenceInput, Prisma.PropertyUncheckedUpdateWithoutSovereignEvidenceInput>
+}
+
+export type PropertyUpdateWithoutSovereignEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutSovereignEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutChannelConnectionsInput = {
@@ -1584,6 +1759,7 @@ export type PropertyCreateWithoutChannelConnectionsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutChannelConnectionsInput = {
@@ -1612,6 +1788,7 @@ export type PropertyUncheckedCreateWithoutChannelConnectionsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutChannelConnectionsInput = {
@@ -1656,6 +1833,7 @@ export type PropertyUpdateWithoutChannelConnectionsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutChannelConnectionsInput = {
@@ -1684,6 +1862,7 @@ export type PropertyUncheckedUpdateWithoutChannelConnectionsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutParticipantsInput = {
@@ -1712,6 +1891,7 @@ export type PropertyCreateWithoutParticipantsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutParticipantsInput = {
@@ -1740,6 +1920,7 @@ export type PropertyUncheckedCreateWithoutParticipantsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutParticipantsInput = {
@@ -1784,6 +1965,7 @@ export type PropertyUpdateWithoutParticipantsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutParticipantsInput = {
@@ -1812,6 +1994,7 @@ export type PropertyUncheckedUpdateWithoutParticipantsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutConversationsInput = {
@@ -1840,6 +2023,7 @@ export type PropertyCreateWithoutConversationsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutConversationsInput = {
@@ -1868,6 +2052,7 @@ export type PropertyUncheckedCreateWithoutConversationsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutConversationsInput = {
@@ -1912,6 +2097,7 @@ export type PropertyUpdateWithoutConversationsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutConversationsInput = {
@@ -1940,6 +2126,7 @@ export type PropertyUncheckedUpdateWithoutConversationsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutNeutralMessagesInput = {
@@ -1968,6 +2155,7 @@ export type PropertyCreateWithoutNeutralMessagesInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutNeutralMessagesInput = {
@@ -1996,6 +2184,7 @@ export type PropertyUncheckedCreateWithoutNeutralMessagesInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutNeutralMessagesInput = {
@@ -2040,6 +2229,7 @@ export type PropertyUpdateWithoutNeutralMessagesInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutNeutralMessagesInput = {
@@ -2068,6 +2258,7 @@ export type PropertyUncheckedUpdateWithoutNeutralMessagesInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAiOperationsInput = {
@@ -2096,6 +2287,7 @@ export type PropertyCreateWithoutAiOperationsInput = {
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAiOperationsInput = {
@@ -2124,6 +2316,7 @@ export type PropertyUncheckedCreateWithoutAiOperationsInput = {
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAiOperationsInput = {
@@ -2168,6 +2361,7 @@ export type PropertyUpdateWithoutAiOperationsInput = {
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAiOperationsInput = {
@@ -2196,6 +2390,7 @@ export type PropertyUncheckedUpdateWithoutAiOperationsInput = {
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutMetricsInput = {
@@ -2224,6 +2419,7 @@ export type PropertyCreateWithoutMetricsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutMetricsInput = {
@@ -2252,6 +2448,7 @@ export type PropertyUncheckedCreateWithoutMetricsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutMetricsInput = {
@@ -2296,6 +2493,7 @@ export type PropertyUpdateWithoutMetricsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutMetricsInput = {
@@ -2324,6 +2522,7 @@ export type PropertyUncheckedUpdateWithoutMetricsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCampaignsInput = {
@@ -2352,6 +2551,7 @@ export type PropertyCreateWithoutCampaignsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutCampaignsInput = {
@@ -2380,6 +2580,7 @@ export type PropertyUncheckedCreateWithoutCampaignsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCampaignsInput = {
@@ -2424,6 +2625,7 @@ export type PropertyUpdateWithoutCampaignsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCampaignsInput = {
@@ -2452,6 +2654,7 @@ export type PropertyUncheckedUpdateWithoutCampaignsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAutomationJobsInput = {
@@ -2480,6 +2683,7 @@ export type PropertyCreateWithoutAutomationJobsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
@@ -2508,6 +2712,7 @@ export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAutomationJobsInput = {
@@ -2552,6 +2757,7 @@ export type PropertyUpdateWithoutAutomationJobsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
@@ -2580,6 +2786,7 @@ export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAssetsInput = {
@@ -2608,6 +2815,7 @@ export type PropertyCreateWithoutAssetsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAssetsInput = {
@@ -2636,6 +2844,7 @@ export type PropertyUncheckedCreateWithoutAssetsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAssetsInput = {
@@ -2680,6 +2889,7 @@ export type PropertyUpdateWithoutAssetsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAssetsInput = {
@@ -2708,6 +2918,7 @@ export type PropertyUncheckedUpdateWithoutAssetsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutWhatsappIntegrationInput = {
@@ -2736,6 +2947,7 @@ export type PropertyCreateWithoutWhatsappIntegrationInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
@@ -2764,6 +2976,7 @@ export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutWhatsappIntegrationInput = {
@@ -2808,6 +3021,7 @@ export type PropertyUpdateWithoutWhatsappIntegrationInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
@@ -2836,6 +3050,7 @@ export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutAppointmentTenantsInput = {
@@ -2864,6 +3079,7 @@ export type PropertyCreateWithoutAppointmentTenantsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAppointmentTenantsInput = {
@@ -2892,6 +3108,7 @@ export type PropertyUncheckedCreateWithoutAppointmentTenantsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAppointmentTenantsInput = {
@@ -2936,6 +3153,7 @@ export type PropertyUpdateWithoutAppointmentTenantsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAppointmentTenantsInput = {
@@ -2964,6 +3182,7 @@ export type PropertyUncheckedUpdateWithoutAppointmentTenantsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateWithoutCommerceTenantsInput = {
@@ -2992,6 +3211,7 @@ export type PropertyCreateWithoutCommerceTenantsInput = {
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutCommerceTenantsInput = {
@@ -3020,6 +3240,7 @@ export type PropertyUncheckedCreateWithoutCommerceTenantsInput = {
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
   aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutCommerceTenantsInput = {
@@ -3064,6 +3285,7 @@ export type PropertyUpdateWithoutCommerceTenantsInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutCommerceTenantsInput = {
@@ -3092,6 +3314,7 @@ export type PropertyUncheckedUpdateWithoutCommerceTenantsInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyOrganizationInput = {
@@ -3131,6 +3354,7 @@ export type PropertyUpdateWithoutOrganizationInput = {
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutOrganizationInput = {
@@ -3159,6 +3383,7 @@ export type PropertyUncheckedUpdateWithoutOrganizationInput = {
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
   aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
   websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutOrganizationInput = {
@@ -3194,6 +3419,7 @@ export type PropertyCountOutputType = {
   neutralMessages: number
   aiOperations: number
   websiteSessions: number
+  sovereignEvidence: number
 }
 
 export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3213,6 +3439,7 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   neutralMessages?: boolean | PropertyCountOutputTypeCountNeutralMessagesArgs
   aiOperations?: boolean | PropertyCountOutputTypeCountAiOperationsArgs
   websiteSessions?: boolean | PropertyCountOutputTypeCountWebsiteSessionsArgs
+  sovereignEvidence?: boolean | PropertyCountOutputTypeCountSovereignEvidenceArgs
 }
 
 /**
@@ -3337,6 +3564,13 @@ export type PropertyCountOutputTypeCountWebsiteSessionsArgs<ExtArgs extends runt
   where?: Prisma.WebsiteVisitorSessionWhereInput
 }
 
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountSovereignEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SovereignAnswerEvidenceWhereInput
+}
+
 
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3366,6 +3600,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   neutralMessages?: boolean | Prisma.Property$neutralMessagesArgs<ExtArgs>
   aiOperations?: boolean | Prisma.Property$aiOperationsArgs<ExtArgs>
   websiteSessions?: boolean | Prisma.Property$websiteSessionsArgs<ExtArgs>
+  sovereignEvidence?: boolean | Prisma.Property$sovereignEvidenceArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
@@ -3427,6 +3662,7 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   neutralMessages?: boolean | Prisma.Property$neutralMessagesArgs<ExtArgs>
   aiOperations?: boolean | Prisma.Property$aiOperationsArgs<ExtArgs>
   websiteSessions?: boolean | Prisma.Property$websiteSessionsArgs<ExtArgs>
+  sovereignEvidence?: boolean | Prisma.Property$sovereignEvidenceArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3457,6 +3693,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     neutralMessages: Prisma.$MessagePayload<ExtArgs>[]
     aiOperations: Prisma.$AiOperationPayload<ExtArgs>[]
     websiteSessions: Prisma.$WebsiteVisitorSessionPayload<ExtArgs>[]
+    sovereignEvidence: Prisma.$SovereignAnswerEvidencePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3880,6 +4117,7 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   neutralMessages<T extends Prisma.Property$neutralMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$neutralMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aiOperations<T extends Prisma.Property$aiOperationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$aiOperationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiOperationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   websiteSessions<T extends Prisma.Property$websiteSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$websiteSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebsiteVisitorSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sovereignEvidence<T extends Prisma.Property$sovereignEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$sovereignEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SovereignAnswerEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4738,6 +4976,30 @@ export type Property$websiteSessionsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.WebsiteVisitorSessionScalarFieldEnum | Prisma.WebsiteVisitorSessionScalarFieldEnum[]
+}
+
+/**
+ * Property.sovereignEvidence
+ */
+export type Property$sovereignEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SovereignAnswerEvidence
+   */
+  select?: Prisma.SovereignAnswerEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SovereignAnswerEvidence
+   */
+  omit?: Prisma.SovereignAnswerEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SovereignAnswerEvidenceInclude<ExtArgs> | null
+  where?: Prisma.SovereignAnswerEvidenceWhereInput
+  orderBy?: Prisma.SovereignAnswerEvidenceOrderByWithRelationInput | Prisma.SovereignAnswerEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.SovereignAnswerEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SovereignAnswerEvidenceScalarFieldEnum | Prisma.SovereignAnswerEvidenceScalarFieldEnum[]
 }
 
 /**

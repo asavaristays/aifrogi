@@ -33,6 +33,13 @@ test("website reply retrieval requires a signed tenant-bound visitor session", (
   assert.match(source, /revokedAt: null/);
 });
 
+test("every website answer records Sovereign Intelligence evidence and escalates governed sensitive intent", () => {
+  assert.match(source, /recordSovereignAnswerEvidence/);
+  assert.match(source, /constitutionVersion: evidenceDecision\.constitutionVersion/);
+  assert.match(source, /evidenceDecision\.disposition === "ESCALATE"/);
+  assert.match(source, /grounded: Boolean\(result\?\.sources\.length\)/);
+});
+
 test("partner responses expose governed source labels, freshness, and response SLA", () => {
   assert.match(source, /sources: result\?\.sources\.slice\(0, 3\)/);
   assert.match(source, /knowledgeAsOf:/);
