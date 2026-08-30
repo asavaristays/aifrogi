@@ -5358,6 +5358,12 @@ export const SovereignAnswerEvidenceScalarFieldEnum = {
   sources: 'sources',
   knowledgeAsOf: 'knowledgeAsOf',
   knowledgeClaimIds: 'knowledgeClaimIds',
+  failureLayer: 'failureLayer',
+  failureCode: 'failureCode',
+  latencyMs: 'latencyMs',
+  attemptCount: 'attemptCount',
+  escalationTier: 'escalationTier',
+  degradedMode: 'degradedMode',
   createdAt: 'createdAt'
 } as const
 

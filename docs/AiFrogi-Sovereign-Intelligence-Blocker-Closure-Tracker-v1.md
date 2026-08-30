@@ -152,3 +152,19 @@ Rubric ID | Baseline status | Current status | Evidence URI/path | Regression te
 ```
 
 Expected milestone after Waves 1–3: all active blockers closed and a likely C/D numeric grade. This is a valid engineering milestone, but it is not certification. Trial-Grade is awarded only when the unchanged rubric, complete suite, threshold and all zero-tolerance conditions pass together.
+
+## Section 7 — Reliability and support-load closure
+
+Authority: `AiFrogi-Reliability-Support-Load-Framework-v1.0.md` and machine-readable controls in `lib/reliability/grading.ts`.
+
+| Control | Status | Required evidence before certification |
+|---|---|---|
+| R7-01 tenant isolation under degradation (BLOCKER) | Tenant-namespaced website rate limiting implemented; failure-injection evidence pending | Cross-tenant load/failure exercise with separate evidence streams |
+| R7-02 duplicate material action prevention (BLOCKER) | Idempotency policy and regression tests implemented | Connector-specific sandbox replay and authoritative one-result read-back |
+| R7-03 no false completion after write failure (BLOCKER) | Read/write fallback asymmetry and claim validator implemented | Failed-write transcript for each live connector category |
+| R7-04 bounded model execution | Timeout, transient retry, exponential backoff with jitter, optional fallback model and output validation implemented | Production timeout/fallback canary record |
+| R7-05 reliability evidence | Schema/runtime/dashboard implemented | Non-zero production records with layer, code, latency, attempt and tier |
+| R7-06 measured Tier 3 call rate | Calculation implemented | Defined non-zero production sample; no inferred or synthetic marketing claim |
+| R7-07 standing canary and chaos practice | Pending | Dated connector, model and infrastructure exercises with recovery evidence |
+
+Section 7 remains `BLOCKED` until every row has the required evidence. Code presence does not convert a target into a certified claim.

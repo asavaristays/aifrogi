@@ -586,12 +586,20 @@ model SovereignAnswerEvidence {
   sources             Json
   knowledgeAsOf       DateTime?
   knowledgeClaimIds   String[] @default([])
+  failureLayer        String   @default("NONE")
+  failureCode         String?
+  latencyMs           Int      @default(0)
+  attemptCount        Int      @default(0)
+  escalationTier      String   @default("TIER_0_SELF_RESOLVE")
+  degradedMode        Boolean  @default(false)
   createdAt           DateTime @default(now())
   feedback            SovereignAnswerFeedback?
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
   @@index([propertyId, circuitBreaker, createdAt])
+  @@index([propertyId, failureLayer, createdAt])
+  @@index([propertyId, escalationTier, createdAt])
   @@index([leadId, createdAt])
 }
 

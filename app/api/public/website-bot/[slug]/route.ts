@@ -10,6 +10,7 @@ import { recordSovereignAnswerEvidence } from "@/lib/repositories/sovereign-evid
 import { resolveSovereignQuestion } from "@/lib/sovereign-intelligence/decision";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { governResolutionOutcome } from "@/lib/sovereign-intelligence/resolution";
+import { escalationTierFor, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -26,9 +27,9 @@ function bearerToken(request: Request) {
   return authorization.startsWith("Bearer ") ? authorization.slice(7).trim() : "";
 }
 
-function rateLimited(request: Request, limit = 12) {
+function rateLimited(request: Request, tenantKey: string, limit = 12) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const key = `${request.method}:${ip}`;
+  const key = `${tenantKey}:${request.method}:${ip}`;
   const now = Date.now();
   const current = buckets.get(key);
   if (!current || current.resetAt <= now) { buckets.set(key, { count: 1, resetAt: now + 60_000 }); return false; }
@@ -37,8 +38,8 @@ function rateLimited(request: Request, limit = 12) {
 }
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
-  if (rateLimited(request)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const { slug } = await context.params;
+  if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
   const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { name: true, botProfile: true } } } });
@@ -79,6 +80,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   });
   const answer = resolution.answer;
   const evidenceDecision = resolution.decision;
+  const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "INFRASTRUCTURE" as const, failureCode: safety.blocked ? null : "UNATTRIBUTED_RUNTIME_FAILURE", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,
     phone: payload?.consent && payload.contact ? String(payload.contact).slice(0, 120) : undefined,
@@ -91,14 +93,15 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
     answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length || result?.claimIds.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
     sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null,
-    confidence: result?.sources.length || result?.claimIds.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
+    confidence: reliability.failureLayer !== "NONE" ? 0.2 : result?.sources.length || result?.claimIds.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
     safetyClassification: safety.safetyClassification || (evidenceDecision.intent === "OFF_TOPIC" ? "BOUNDED_OFF_TOPIC" : "STANDARD"),
     permittedOperation: evidenceDecision.disposition,
     resolutionState: resolution.state.status,
     clarifyCount: resolution.state.clarifyCount,
     circuitBreaker: resolution.state.circuitBreakerTriggered,
     circuitBreakerReason: resolution.state.circuitBreakerReason,
-    knowledgeClaimIds: result?.claimIds || []
+    knowledgeClaimIds: result?.claimIds || [],
+    reliability
   }).catch(() => null);
   const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
@@ -121,8 +124,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
-  if (rateLimited(request, 60)) return NextResponse.json({ error: "Please wait a moment before checking replies." }, { status: 429, headers: responseHeaders });
   const { slug } = await context.params;
+  if (rateLimited(request, slug, 60)) return NextResponse.json({ error: "Please wait a moment before checking replies." }, { status: 429, headers: responseHeaders });
   const token = verifyWebsiteVisitorToken(bearerToken(request), slug);
   if (!token) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
   const db = getDb();
@@ -158,8 +161,8 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ slug: string }> }) {
-  if (rateLimited(request, 60)) return NextResponse.json({ error: "Please wait a moment." }, { status: 429, headers: responseHeaders });
   const { slug } = await context.params;
+  if (rateLimited(request, slug, 60)) return NextResponse.json({ error: "Please wait a moment." }, { status: 429, headers: responseHeaders });
   const token = verifyWebsiteVisitorToken(bearerToken(request), slug);
   if (!token) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
   const payload = await request.json().catch(() => null) as { messageIds?: unknown } | null;

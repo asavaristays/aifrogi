@@ -10,6 +10,7 @@ import { classifySovereignIntent, resolveSovereignQuestion, type SovereignDecisi
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
 import { getDb } from "@/lib/db";
+import { executeReliableModel, escalationTierFor, modelHttpError, type ReliabilityEvidence, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
 
 export type KnowledgePage = {
   url: string;
@@ -36,6 +37,7 @@ export type KnowledgeAnswer = {
   model: string;
   decision: SovereignDecision;
   claimIds: string[];
+  reliability: ReliabilityEvidence;
 };
 
 const DEFAULT_TTL_MS = 6 * 60 * 60 * 1000;
@@ -462,7 +464,12 @@ export async function buildWebsiteKnowledgeAnswer({
   const organization = business?.organization;
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
-  const direct = (answer: string): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision: resolved.decision, claimIds: [] });
+  const direct = (answer: string): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision: resolved.decision, claimIds: [], reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: resolved.decision.disposition }), degradedMode: false } });
+  const safeFailure = (failureLayer: ReliabilityEvidence["failureLayer"], failureCode: string, answer: string, latencyMs = 0, attemptCount = 0, degradedMode = false): KnowledgeAnswer => ({
+    answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "SAFE_RELIABILITY_FALLBACK",
+    decision: { ...resolved.decision, disposition: failureLayer === "KNOWLEDGE" ? "ESCALATE" : "FALLBACK", reason: `${failureLayer} reliability control returned ${failureCode}.` }, claimIds: [],
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer, failureCode, latencyMs, attemptCount, escalationTier: escalationTierFor({ failureLayer }), degradedMode }
+  });
   if (resolved.intent === "GREETING") return direct(`Hello. I’m ${assistantName}. I can answer approved questions about ${businessName} and help with the next step. What would you like to explore?`);
   if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for ${businessName}. I answer from approved business knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on ${businessName} business enquiries, so I don’t provide general weather, news, sports, or unrelated information. Please ask me about this business’s approved services, products, availability, or next steps.`);
@@ -480,7 +487,8 @@ export async function buildWebsiteKnowledgeAnswer({
         answer: `Here are the approved contact details for ${organization.name}:\n${details.join("\n")}`,
         sourceUrls: organization.website ? [organization.website] : [],
         sources: [{ title: `${organization.name} approved business profile`, url: organization.website || "", crawledAt: organization.updatedAt.toISOString(), authority: "APPROVED_BUSINESS_PROFILE", freshness: "CURRENT" }],
-        knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "STRUCTURED_BUSINESS_PROFILE", decision: resolved.decision, claimIds: []
+        knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "STRUCTURED_BUSINESS_PROFILE", decision: resolved.decision, claimIds: [],
+        reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE", degradedMode: false }
       };
     }
   }
@@ -492,51 +500,47 @@ export async function buildWebsiteKnowledgeAnswer({
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
-    return null;
+    return safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);
   }
 
-  if (!apiKey) return null;
+  if (!apiKey) return safeFailure("INFRASTRUCTURE", "MODEL_CREDENTIAL_UNAVAILABLE", "I’m temporarily unable to generate a verified answer. Your question has been retained for asynchronous AiFrogi review, so you do not need to repeat it.");
 
   const menu = buildWhatsAppBotMenuOptions(configuration)
     .map((option, index) => `${index + 1}. ${option.label}: ${option.description}`)
     .join("\n");
 
-  const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
-  const response = await fetch("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
+  const primaryModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+  const fallbackModel = process.env.OPENAI_FALLBACK_MODEL?.trim();
+  const reliable = await executeReliableModel({
+    models: [primaryModel, ...(fallbackModel ? [fallbackModel] : [])],
+    attemptsPerModel: 2,
+    attemptTimeoutMs: Math.max(2500, Math.min(7000, Number(process.env.OPENAI_ATTEMPT_TIMEOUT_MS) || 4500)),
+    totalBudgetMs: Math.max(6000, Math.min(12000, Number(process.env.OPENAI_TOTAL_BUDGET_MS) || 10500)),
+    execute: async (model, signal) => {
+      const response = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST", signal,
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ model, input: [
+          { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}` },
+          { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
+        ], max_output_tokens: 320 })
+      });
+      if (!response.ok) throw modelHttpError(response.status);
+      const payload = (await response.json().catch(() => null)) as Record<string, unknown> | null;
+      return payload ? extractOpenAiText(payload) : "";
     },
-    body: JSON.stringify({
-      model,
-      input: [
-        {
-          role: "system",
-          content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}`
-        },
-        {
-          role: "user",
-          content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.`
-        }
-      ],
-      max_output_tokens: 320
-    })
+    validate: (value) => Boolean(value.trim()) && value.length <= 5000
   });
-
-  if (!response.ok) {
-    console.error("OpenAI KB answer failed", { status: response.status, body: await response.text().catch(() => "") });
-    return null;
+  if (!reliable.ok) {
+    console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });
+    return safeFailure(reliable.evidence.failureLayer, reliable.error.code, "I’m temporarily unable to generate a verified answer. Your question has been retained for asynchronous AiFrogi review, so you do not need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
   }
-
-  const payload = (await response.json().catch(() => null)) as Record<string, unknown> | null;
-  const answer = payload ? extractOpenAiText(payload) : "";
-  if (!answer) return null;
+  const answer = reliable.value;
   const claimValidation = validateGeneratedClaims({ answer, approvedContext: context, connectorVerified: false });
   if (!claimValidation.valid) {
     console.error("Sovereign claim validation blocked an answer", { propertySlug, violations: claimValidation.violations });
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
-    return null;
+    return safeFailure("MODEL", "OUTPUT_CLAIM_VALIDATION_BLOCKED", "I could not validate that generated answer against the approved business knowledge, so I have withheld it and retained your question for asynchronous review.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
   }
 
   return {
@@ -545,8 +549,9 @@ export async function buildWebsiteKnowledgeAnswer({
     sources: websiteResult.sources,
     knowledgeAsOf: knowledgeBase?.crawledAt || new Date().toISOString(),
     usedOpenAi: true,
-    model,
+    model: reliable.model,
     decision: { ...resolved.decision, disposition: "ANSWER", reason: `Grounded answer generated from ${websiteResult.sources.length || "approved workspace"} source evidence item(s).` },
-    claimIds: governed.claimIds
+    claimIds: governed.claimIds,
+    reliability: reliable.evidence
   };
 }

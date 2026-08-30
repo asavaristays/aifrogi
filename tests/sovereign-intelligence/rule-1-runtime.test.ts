@@ -46,4 +46,6 @@ test("connector action requires live state, explicit write authority, idempotenc
   assert.equal(connectorMayAct({ lifecycle: "CONNECTED", enabled: true, operation: "appointment.create", authority }).allowed, false);
   assert.equal(connectorMayAct({ lifecycle: "LIVE", enabled: true, operation: "refund.create", authority }).allowed, false);
   assert.equal(connectorMayAct({ lifecycle: "LIVE", enabled: true, operation: "appointment.create", authority }).allowed, true);
+  assert.equal(connectorMayAct({ lifecycle: "LIVE", enabled: true, operation: "appointment.create", authority, runtimeMode: "ANSWER_ONLY" }).allowed, false);
+  assert.equal(connectorMayAct({ lifecycle: "LIVE", enabled: true, operation: "appointment.create", authority, circuitState: "OPEN" }).allowed, false);
 });

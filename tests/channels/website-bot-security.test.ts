@@ -18,9 +18,14 @@ test("contact details are persisted only with explicit consent", () => {
 
 test("website bot limits request size and request rate", () => {
   assert.match(source, /slice\(0, 1200\)/);
-  assert.match(source, /rateLimited\(request\)/);
+  assert.match(source, /rateLimited\(request, slug/);
   assert.match(source, /current\.count > limit/);
   assert.match(source, /status: 429/);
+});
+
+test("website bot rate limits are namespaced per tenant", () => {
+  assert.match(source, /const key = `\$\{tenantKey\}:\$\{request\.method\}:\$\{ip\}`/);
+  assert.match(source, /rateLimited\(request, slug/);
 });
 
 test("website reply retrieval requires a signed tenant-bound visitor session", () => {

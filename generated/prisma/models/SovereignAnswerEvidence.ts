@@ -29,11 +29,15 @@ export type AggregateSovereignAnswerEvidence = {
 export type SovereignAnswerEvidenceAvgAggregateOutputType = {
   confidence: number | null
   clarifyCount: number | null
+  latencyMs: number | null
+  attemptCount: number | null
 }
 
 export type SovereignAnswerEvidenceSumAggregateOutputType = {
   confidence: number | null
   clarifyCount: number | null
+  latencyMs: number | null
+  attemptCount: number | null
 }
 
 export type SovereignAnswerEvidenceMinAggregateOutputType = {
@@ -61,6 +65,12 @@ export type SovereignAnswerEvidenceMinAggregateOutputType = {
   grounded: boolean | null
   model: string | null
   knowledgeAsOf: Date | null
+  failureLayer: string | null
+  failureCode: string | null
+  latencyMs: number | null
+  attemptCount: number | null
+  escalationTier: string | null
+  degradedMode: boolean | null
   createdAt: Date | null
 }
 
@@ -89,6 +99,12 @@ export type SovereignAnswerEvidenceMaxAggregateOutputType = {
   grounded: boolean | null
   model: string | null
   knowledgeAsOf: Date | null
+  failureLayer: string | null
+  failureCode: string | null
+  latencyMs: number | null
+  attemptCount: number | null
+  escalationTier: string | null
+  degradedMode: boolean | null
   createdAt: Date | null
 }
 
@@ -119,6 +135,12 @@ export type SovereignAnswerEvidenceCountAggregateOutputType = {
   sources: number
   knowledgeAsOf: number
   knowledgeClaimIds: number
+  failureLayer: number
+  failureCode: number
+  latencyMs: number
+  attemptCount: number
+  escalationTier: number
+  degradedMode: number
   createdAt: number
   _all: number
 }
@@ -127,11 +149,15 @@ export type SovereignAnswerEvidenceCountAggregateOutputType = {
 export type SovereignAnswerEvidenceAvgAggregateInputType = {
   confidence?: true
   clarifyCount?: true
+  latencyMs?: true
+  attemptCount?: true
 }
 
 export type SovereignAnswerEvidenceSumAggregateInputType = {
   confidence?: true
   clarifyCount?: true
+  latencyMs?: true
+  attemptCount?: true
 }
 
 export type SovereignAnswerEvidenceMinAggregateInputType = {
@@ -159,6 +185,12 @@ export type SovereignAnswerEvidenceMinAggregateInputType = {
   grounded?: true
   model?: true
   knowledgeAsOf?: true
+  failureLayer?: true
+  failureCode?: true
+  latencyMs?: true
+  attemptCount?: true
+  escalationTier?: true
+  degradedMode?: true
   createdAt?: true
 }
 
@@ -187,6 +219,12 @@ export type SovereignAnswerEvidenceMaxAggregateInputType = {
   grounded?: true
   model?: true
   knowledgeAsOf?: true
+  failureLayer?: true
+  failureCode?: true
+  latencyMs?: true
+  attemptCount?: true
+  escalationTier?: true
+  degradedMode?: true
   createdAt?: true
 }
 
@@ -217,6 +255,12 @@ export type SovereignAnswerEvidenceCountAggregateInputType = {
   sources?: true
   knowledgeAsOf?: true
   knowledgeClaimIds?: true
+  failureLayer?: true
+  failureCode?: true
+  latencyMs?: true
+  attemptCount?: true
+  escalationTier?: true
+  degradedMode?: true
   createdAt?: true
   _all?: true
 }
@@ -334,6 +378,12 @@ export type SovereignAnswerEvidenceGroupByOutputType = {
   sources: runtime.JsonValue
   knowledgeAsOf: Date | null
   knowledgeClaimIds: string[]
+  failureLayer: string
+  failureCode: string | null
+  latencyMs: number
+  attemptCount: number
+  escalationTier: string
+  degradedMode: boolean
   createdAt: Date
   _count: SovereignAnswerEvidenceCountAggregateOutputType | null
   _avg: SovereignAnswerEvidenceAvgAggregateOutputType | null
@@ -387,6 +437,12 @@ export type SovereignAnswerEvidenceWhereInput = {
   sources?: Prisma.JsonFilter<"SovereignAnswerEvidence">
   knowledgeAsOf?: Prisma.DateTimeNullableFilter<"SovereignAnswerEvidence"> | Date | string | null
   knowledgeClaimIds?: Prisma.StringNullableListFilter<"SovereignAnswerEvidence">
+  failureLayer?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  failureCode?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  latencyMs?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
+  attemptCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
+  escalationTier?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  degradedMode?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   feedback?: Prisma.XOR<Prisma.SovereignAnswerFeedbackNullableScalarRelationFilter, Prisma.SovereignAnswerFeedbackWhereInput> | null
@@ -419,6 +475,12 @@ export type SovereignAnswerEvidenceOrderByWithRelationInput = {
   sources?: Prisma.SortOrder
   knowledgeAsOf?: Prisma.SortOrderInput | Prisma.SortOrder
   knowledgeClaimIds?: Prisma.SortOrder
+  failureLayer?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  escalationTier?: Prisma.SortOrder
+  degradedMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
   feedback?: Prisma.SovereignAnswerFeedbackOrderByWithRelationInput
@@ -454,6 +516,12 @@ export type SovereignAnswerEvidenceWhereUniqueInput = Prisma.AtLeast<{
   sources?: Prisma.JsonFilter<"SovereignAnswerEvidence">
   knowledgeAsOf?: Prisma.DateTimeNullableFilter<"SovereignAnswerEvidence"> | Date | string | null
   knowledgeClaimIds?: Prisma.StringNullableListFilter<"SovereignAnswerEvidence">
+  failureLayer?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  failureCode?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  latencyMs?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
+  attemptCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
+  escalationTier?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  degradedMode?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   feedback?: Prisma.XOR<Prisma.SovereignAnswerFeedbackNullableScalarRelationFilter, Prisma.SovereignAnswerFeedbackWhereInput> | null
@@ -486,6 +554,12 @@ export type SovereignAnswerEvidenceOrderByWithAggregationInput = {
   sources?: Prisma.SortOrder
   knowledgeAsOf?: Prisma.SortOrderInput | Prisma.SortOrder
   knowledgeClaimIds?: Prisma.SortOrder
+  failureLayer?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  escalationTier?: Prisma.SortOrder
+  degradedMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.SovereignAnswerEvidenceCountOrderByAggregateInput
   _avg?: Prisma.SovereignAnswerEvidenceAvgOrderByAggregateInput
@@ -524,6 +598,12 @@ export type SovereignAnswerEvidenceScalarWhereWithAggregatesInput = {
   sources?: Prisma.JsonWithAggregatesFilter<"SovereignAnswerEvidence">
   knowledgeAsOf?: Prisma.DateTimeNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | Date | string | null
   knowledgeClaimIds?: Prisma.StringNullableListFilter<"SovereignAnswerEvidence">
+  failureLayer?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  failureCode?: Prisma.StringNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | string | null
+  latencyMs?: Prisma.IntWithAggregatesFilter<"SovereignAnswerEvidence"> | number
+  attemptCount?: Prisma.IntWithAggregatesFilter<"SovereignAnswerEvidence"> | number
+  escalationTier?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  degradedMode?: Prisma.BoolWithAggregatesFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SovereignAnswerEvidence"> | Date | string
 }
 
@@ -553,6 +633,12 @@ export type SovereignAnswerEvidenceCreateInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
   feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
@@ -585,6 +671,12 @@ export type SovereignAnswerEvidenceUncheckedCreateInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
 }
@@ -615,6 +707,12 @@ export type SovereignAnswerEvidenceUpdateInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
   feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
@@ -647,6 +745,12 @@ export type SovereignAnswerEvidenceUncheckedUpdateInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
 }
@@ -678,6 +782,12 @@ export type SovereignAnswerEvidenceCreateManyInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
 }
 
@@ -707,6 +817,12 @@ export type SovereignAnswerEvidenceUpdateManyMutationInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -737,6 +853,12 @@ export type SovereignAnswerEvidenceUncheckedUpdateManyInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -777,12 +899,20 @@ export type SovereignAnswerEvidenceCountOrderByAggregateInput = {
   sources?: Prisma.SortOrder
   knowledgeAsOf?: Prisma.SortOrder
   knowledgeClaimIds?: Prisma.SortOrder
+  failureLayer?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  escalationTier?: Prisma.SortOrder
+  degradedMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type SovereignAnswerEvidenceAvgOrderByAggregateInput = {
   confidence?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
 }
 
 export type SovereignAnswerEvidenceMaxOrderByAggregateInput = {
@@ -810,6 +940,12 @@ export type SovereignAnswerEvidenceMaxOrderByAggregateInput = {
   grounded?: Prisma.SortOrder
   model?: Prisma.SortOrder
   knowledgeAsOf?: Prisma.SortOrder
+  failureLayer?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  escalationTier?: Prisma.SortOrder
+  degradedMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -838,12 +974,20 @@ export type SovereignAnswerEvidenceMinOrderByAggregateInput = {
   grounded?: Prisma.SortOrder
   model?: Prisma.SortOrder
   knowledgeAsOf?: Prisma.SortOrder
+  failureLayer?: Prisma.SortOrder
+  failureCode?: Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+  escalationTier?: Prisma.SortOrder
+  degradedMode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type SovereignAnswerEvidenceSumOrderByAggregateInput = {
   confidence?: Prisma.SortOrder
   clarifyCount?: Prisma.SortOrder
+  latencyMs?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
 }
 
 export type SovereignAnswerEvidenceScalarRelationFilter = {
@@ -950,6 +1094,12 @@ export type SovereignAnswerEvidenceCreateWithoutPropertyInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
 }
@@ -980,6 +1130,12 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
 }
@@ -1040,6 +1196,12 @@ export type SovereignAnswerEvidenceScalarWhereInput = {
   sources?: Prisma.JsonFilter<"SovereignAnswerEvidence">
   knowledgeAsOf?: Prisma.DateTimeNullableFilter<"SovereignAnswerEvidence"> | Date | string | null
   knowledgeClaimIds?: Prisma.StringNullableListFilter<"SovereignAnswerEvidence">
+  failureLayer?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  failureCode?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  latencyMs?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
+  attemptCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
+  escalationTier?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  degradedMode?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
 }
 
@@ -1069,6 +1231,12 @@ export type SovereignAnswerEvidenceCreateWithoutFeedbackInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
 }
@@ -1100,6 +1268,12 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
 }
 
@@ -1145,6 +1319,12 @@ export type SovereignAnswerEvidenceUpdateWithoutFeedbackInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
 }
@@ -1176,6 +1356,12 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1205,6 +1391,12 @@ export type SovereignAnswerEvidenceCreateManyPropertyInput = {
   sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  failureLayer?: string
+  failureCode?: string | null
+  latencyMs?: number
+  attemptCount?: number
+  escalationTier?: string
+  degradedMode?: boolean
   createdAt?: Date | string
 }
 
@@ -1234,6 +1426,12 @@ export type SovereignAnswerEvidenceUpdateWithoutPropertyInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
 }
@@ -1264,6 +1462,12 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutPropertyInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
 }
@@ -1294,6 +1498,12 @@ export type SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyInput = {
   sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  failureLayer?: Prisma.StringFieldUpdateOperationsInput | string
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latencyMs?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
+  degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1326,6 +1536,12 @@ export type SovereignAnswerEvidenceSelect<ExtArgs extends runtime.Types.Extensio
   sources?: boolean
   knowledgeAsOf?: boolean
   knowledgeClaimIds?: boolean
+  failureLayer?: boolean
+  failureCode?: boolean
+  latencyMs?: boolean
+  attemptCount?: boolean
+  escalationTier?: boolean
+  degradedMode?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
@@ -1358,6 +1574,12 @@ export type SovereignAnswerEvidenceSelectCreateManyAndReturn<ExtArgs extends run
   sources?: boolean
   knowledgeAsOf?: boolean
   knowledgeClaimIds?: boolean
+  failureLayer?: boolean
+  failureCode?: boolean
+  latencyMs?: boolean
+  attemptCount?: boolean
+  escalationTier?: boolean
+  degradedMode?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sovereignAnswerEvidence"]>
@@ -1389,6 +1611,12 @@ export type SovereignAnswerEvidenceSelectUpdateManyAndReturn<ExtArgs extends run
   sources?: boolean
   knowledgeAsOf?: boolean
   knowledgeClaimIds?: boolean
+  failureLayer?: boolean
+  failureCode?: boolean
+  latencyMs?: boolean
+  attemptCount?: boolean
+  escalationTier?: boolean
+  degradedMode?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sovereignAnswerEvidence"]>
@@ -1420,10 +1648,16 @@ export type SovereignAnswerEvidenceSelectScalar = {
   sources?: boolean
   knowledgeAsOf?: boolean
   knowledgeClaimIds?: boolean
+  failureLayer?: boolean
+  failureCode?: boolean
+  latencyMs?: boolean
+  attemptCount?: boolean
+  escalationTier?: boolean
+  degradedMode?: boolean
   createdAt?: boolean
 }
 
-export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
+export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "failureLayer" | "failureCode" | "latencyMs" | "attemptCount" | "escalationTier" | "degradedMode" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
 export type SovereignAnswerEvidenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
@@ -1468,6 +1702,12 @@ export type $SovereignAnswerEvidencePayload<ExtArgs extends runtime.Types.Extens
     sources: runtime.JsonValue
     knowledgeAsOf: Date | null
     knowledgeClaimIds: string[]
+    failureLayer: string
+    failureCode: string | null
+    latencyMs: number
+    attemptCount: number
+    escalationTier: string
+    degradedMode: boolean
     createdAt: Date
   }, ExtArgs["result"]["sovereignAnswerEvidence"]>
   composites: {}
@@ -1920,6 +2160,12 @@ export interface SovereignAnswerEvidenceFieldRefs {
   readonly sources: Prisma.FieldRef<"SovereignAnswerEvidence", 'Json'>
   readonly knowledgeAsOf: Prisma.FieldRef<"SovereignAnswerEvidence", 'DateTime'>
   readonly knowledgeClaimIds: Prisma.FieldRef<"SovereignAnswerEvidence", 'String[]'>
+  readonly failureLayer: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly failureCode: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly latencyMs: Prisma.FieldRef<"SovereignAnswerEvidence", 'Int'>
+  readonly attemptCount: Prisma.FieldRef<"SovereignAnswerEvidence", 'Int'>
+  readonly escalationTier: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly degradedMode: Prisma.FieldRef<"SovereignAnswerEvidence", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"SovereignAnswerEvidence", 'DateTime'>
 }
     
