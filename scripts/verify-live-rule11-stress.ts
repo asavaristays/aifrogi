@@ -17,6 +17,7 @@ async function ask(slug: string, message: string, sessionId: string, visitorToke
   return { httpStatus: response.status, ...await response.json() } as { httpStatus: number; answer: string; visitorToken: string; answerEvidenceId: string; governance: { disposition: string; resolutionState: string; clarifyCount: number; circuitBreaker: boolean } };
 }
 
+async function main() {
 const results: Array<{ persona: string; gate: string; pass: boolean; detail: unknown }> = [];
 for (const item of cases) {
   const root = randomUUID().replaceAll("-", "").slice(0, 18);
@@ -39,3 +40,6 @@ const passed = results.filter((item) => item.pass).length;
 const report = { framework: "RULE_11_LIVE_STRESS_1.0", timestamp: new Date().toISOString(), passed, total: results.length, rate: Number(((passed / results.length) * 100).toFixed(1)), releasePassed: passed === results.length, failures: results.filter((item) => !item.pass), results };
 console.log(JSON.stringify(report, null, 2));
 if (!report.releasePassed) process.exitCode = 1;
+}
+
+main().catch((error) => { console.error(error); process.exitCode = 1; });
