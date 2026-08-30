@@ -37,7 +37,16 @@ test("every website answer records Sovereign Intelligence evidence and escalates
   assert.match(source, /recordSovereignAnswerEvidence/);
   assert.match(source, /constitutionVersion: evidenceDecision\.constitutionVersion/);
   assert.match(source, /evidenceDecision\.disposition === "ESCALATE"/);
-  assert.match(source, /grounded: Boolean\(result\?\.sources\.length\)/);
+  assert.match(source, /knowledgeClaimIds: result\?\.claimIds/);
+  assert.match(source, /answerEvidenceId:/);
+});
+
+test("answer correction is tenant-bound and pauses only cited claims", () => {
+  const flagSource = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]/flag/route.ts"), "utf8");
+  assert.match(flagSource, /verifyWebsiteVisitorToken\(rawToken, slug\)/);
+  assert.match(flagSource, /propertyId: session\.propertyId, leadId: token\.leadId/);
+  assert.match(flagSource, /evidence\.knowledgeClaimIds/);
+  assert.match(flagSource, /flagKnowledgeAnswer/);
 });
 
 test("partner responses expose governed source labels, freshness, and response SLA", () => {

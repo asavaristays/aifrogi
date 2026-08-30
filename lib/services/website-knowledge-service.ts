@@ -2,7 +2,8 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { buildWhatsAppBotMenuOptions, type WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
-import { getApprovedKnowledgeContext, recordKnowledgeGap } from "@/lib/repositories/knowledge-content-repository";
+import { recordKnowledgeGap } from "@/lib/repositories/knowledge-content-repository";
+import { getPublishedClaimContext } from "@/lib/repositories/knowledge-verification-repository";
 import { getBotPersonaForPropertySlug } from "@/lib/repositories/bot-profile-repository";
 import { sovereignConstitutionPrompt } from "@/lib/sovereign-intelligence/constitution";
 import { classifySovereignIntent, resolveSovereignQuestion, type SovereignDecision, type SovereignIntent } from "@/lib/sovereign-intelligence/decision";
@@ -33,6 +34,7 @@ export type KnowledgeAnswer = {
   usedOpenAi: boolean;
   model: string;
   decision: SovereignDecision;
+  claimIds: string[];
 };
 
 const DEFAULT_TTL_MS = 6 * 60 * 60 * 1000;
@@ -452,17 +454,17 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions);
   const assistantName = persona?.personaName || "Webtechnosys AI";
-  const direct = (answer: string): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision: resolved.decision });
+  const direct = (answer: string): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision: resolved.decision, claimIds: [] });
   if (resolved.intent === "GREETING") return direct(`Hello. I’m ${assistantName}. I can help with Webtechnosys services, AI automation, websites, hotel technology, training, and project enquiries. What would you like to explore?`);
   if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for Webtechnosys. I answer from approved Webtechnosys knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on Webtechnosys business enquiries, so I don’t provide general weather, news, sports, or unrelated information. I can help with AI automation, websites, software, hotel solutions, training, or starting a project.`);
   if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct("I’ll keep this request for the Webtechnosys team because it needs human attention. Please use the human-contact option and share only the minimum contact details needed for follow-up—never a password, OTP, or payment-card detail.");
   if (resolved.intent === "CONTEXT_FOLLOW_UP" && !resolved.priorQuestion) return direct("I retain this conversation for continuity and human handover, but I need the business topic stated clearly before using approved knowledge. Please restate the Webtechnosys service or project question you want me to answer.");
 
-  const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
+  const knowledgeBase = persona?.kbGateVersion ? null : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
-  const governedContext = await getApprovedKnowledgeContext(propertySlug, resolved.retrievalQuestion);
-  const context = [websiteResult.context, governedContext].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
+  const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
+  const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
     return null;
@@ -519,6 +521,7 @@ export async function buildWebsiteKnowledgeAnswer({
     knowledgeAsOf: knowledgeBase?.crawledAt || new Date().toISOString(),
     usedOpenAi: true,
     model,
-    decision: { ...resolved.decision, disposition: "ANSWER", reason: `Grounded answer generated from ${websiteResult.sources.length || "approved workspace"} source evidence item(s).` }
+    decision: { ...resolved.decision, disposition: "ANSWER", reason: `Grounded answer generated from ${websiteResult.sources.length || "approved workspace"} source evidence item(s).` },
+    claimIds: governed.claimIds
   };
 }

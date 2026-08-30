@@ -21,6 +21,7 @@ export async function recordSovereignAnswerEvidence(input: {
   clarifyCount?: number;
   circuitBreaker?: boolean;
   circuitBreakerReason?: string | null;
+  knowledgeClaimIds?: string[];
 }) {
   const db = getDb();
   if (!db) return null;
@@ -35,7 +36,8 @@ export async function recordSovereignAnswerEvidence(input: {
     evaluationVersion: SOVEREIGN_EVALUATION_VERSION,
     decisionReason: input.decision.reason, question: input.question.slice(0, 1200), resolvedQuestion: input.decision.resolvedQuestion.slice(0, 1200),
     answer: input.answer.slice(0, 5000), grounded: input.grounded, model: input.model.slice(0, 120), sources: input.sources,
-    knowledgeAsOf: knowledgeAsOf && !Number.isNaN(knowledgeAsOf.getTime()) ? knowledgeAsOf : null
+    knowledgeAsOf: knowledgeAsOf && !Number.isNaN(knowledgeAsOf.getTime()) ? knowledgeAsOf : null,
+    knowledgeClaimIds: input.knowledgeClaimIds || []
   } });
 }
 

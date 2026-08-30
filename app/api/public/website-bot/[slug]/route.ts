@@ -86,17 +86,18 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
-  await recordSovereignAnswerEvidence({
+  const evidence = await recordSovereignAnswerEvidence({
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
-    answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
+    answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length || result?.claimIds.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
     sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null,
-    confidence: result?.sources.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
+    confidence: result?.sources.length || result?.claimIds.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
     safetyClassification: safety.safetyClassification || (evidenceDecision.intent === "OFF_TOPIC" ? "BOUNDED_OFF_TOPIC" : "STANDARD"),
     permittedOperation: evidenceDecision.disposition,
     resolutionState: resolution.state.status,
     clarifyCount: resolution.state.clarifyCount,
     circuitBreaker: resolution.state.circuitBreakerTriggered,
-    circuitBreakerReason: resolution.state.circuitBreakerReason
+    circuitBreakerReason: resolution.state.circuitBreakerReason,
+    knowledgeClaimIds: result?.claimIds || []
   }).catch(() => null);
   const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
@@ -115,7 +116,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     }
   });
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {

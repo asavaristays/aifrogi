@@ -11,6 +11,8 @@
 export type * from './models/Property'
 export type * from './models/KnowledgeDocument'
 export type * from './models/KnowledgeEntry'
+export type * from './models/KnowledgePreview'
+export type * from './models/KnowledgeAnswerFlag'
 export type * from './models/KnowledgeGap'
 export type * from './models/Organization'
 export type * from './models/UserSession'

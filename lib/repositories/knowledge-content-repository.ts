@@ -108,29 +108,17 @@ export async function getKnowledgeGovernanceSummary(propertySlug: string) {
   if (!db) return { propertyId: null, documents: [], entries: [], gaps: [] };
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
   if (!property) return { propertyId: null, documents: [], entries: [], gaps: [] };
-  const [documents, entries, gaps] = await Promise.all([
+  const [documents, entries, gaps, previews, flags] = await Promise.all([
     db.knowledgeDocument.findMany({ where: { propertyId: property.id }, select: { id: true, fileName: true, mimeType: true, sizeBytes: true, status: true, conflictSummary: true, uploadedBy: true, approvedBy: true, createdAt: true, updatedAt: true }, orderBy: { updatedAt: "desc" } }),
-    db.knowledgeEntry.findMany({ where: { propertyId: property.id }, select: { id: true, question: true, answer: true, category: true, status: true, conflictSummary: true, createdBy: true, approvedBy: true, createdAt: true, updatedAt: true }, orderBy: { updatedAt: "desc" } }),
-    db.knowledgeGap.findMany({ where: { propertyId: property.id, status: "OPEN" }, select: { id: true, question: true, occurrenceCount: true, status: true, lastAskedAt: true }, orderBy: [{ occurrenceCount: "desc" }, { lastAskedAt: "desc" }], take: 30 })
+    db.knowledgeEntry.findMany({ where: { propertyId: property.id }, select: { id: true, question: true, answer: true, category: true, status: true, claimKey: true, claimType: true, valueType: true, currency: true, version: true, validationStatus: true, validationErrors: true, conflictStatus: true, conflictSummary: true, fieldApprovedBy: true, fieldApprovedAt: true, previewApprovedBy: true, previewApprovedAt: true, expiresAt: true, pausedAt: true, pauseReason: true, createdBy: true, approvedBy: true, createdAt: true, updatedAt: true }, orderBy: { updatedAt: "desc" } }),
+    db.knowledgeGap.findMany({ where: { propertyId: property.id, status: "OPEN" }, select: { id: true, question: true, occurrenceCount: true, status: true, lastAskedAt: true }, orderBy: [{ occurrenceCount: "desc" }, { lastAskedAt: "desc" }], take: 30 }),
+    db.knowledgePreview.findMany({ where: { propertyId: property.id }, orderBy: { createdAt: "desc" }, take: 50 }),
+    db.knowledgeAnswerFlag.findMany({ where: { propertyId: property.id }, orderBy: { createdAt: "desc" }, take: 50 })
   ]);
-  return { propertyId: property.id, documents, entries, gaps };
+  return { propertyId: property.id, documents, entries, gaps, previews, flags };
 }
 
 export async function getApprovedKnowledgeContext(propertySlug: string, question: string) {
-  const db = getDb();
-  if (!db) return "";
-  const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
-  if (!property) return "";
-  const terms = [...normalizedTerms(question)];
-  const [entries, documents] = await Promise.all([
-    db.knowledgeEntry.findMany({ where: { propertyId: property.id, status: "APPROVED" }, select: { question: true, answer: true, category: true }, take: 80 }),
-    db.knowledgeDocument.findMany({ where: { propertyId: property.id, status: "APPROVED" }, select: { fileName: true, extractedText: true }, take: 20 })
-  ]);
-  const rankedEntries = entries.map((entry) => ({ entry, score: terms.filter((term) => `${entry.question} ${entry.answer} ${entry.category}`.toLowerCase().includes(term)).length })).filter((item) => item.score > 0).sort((a,b) => b.score-a.score).slice(0,8);
-  const rankedDocs = documents.map((document) => ({ document, score: terms.filter((term) => document.extractedText.toLowerCase().includes(term)).length })).filter((item) => item.score > 0).sort((a,b) => b.score-a.score).slice(0,4);
-  const blocks = [
-    ...rankedEntries.map(({ entry }) => `Approved answer (${entry.category})\nQuestion: ${entry.question}\nAnswer: ${entry.answer}`),
-    ...rankedDocs.map(({ document }) => `Approved document: ${document.fileName}\n${document.extractedText.slice(0, 3500)}`)
-  ];
-  return blocks.join("\n\n---\n\n").slice(0, 9000);
+  const { getPublishedClaimContext } = await import("@/lib/repositories/knowledge-verification-repository");
+  return (await getPublishedClaimContext(propertySlug, question)).context;
 }

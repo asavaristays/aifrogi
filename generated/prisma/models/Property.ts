@@ -226,6 +226,8 @@ export type PropertyWhereInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentListRelationFilter
   knowledgeEntries?: Prisma.KnowledgeEntryListRelationFilter
   knowledgeGaps?: Prisma.KnowledgeGapListRelationFilter
+  knowledgePreviews?: Prisma.KnowledgePreviewListRelationFilter
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagListRelationFilter
   channelConnections?: Prisma.ChannelConnectionListRelationFilter
   participants?: Prisma.ParticipantListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
@@ -257,6 +259,8 @@ export type PropertyOrderByWithRelationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentOrderByRelationAggregateInput
   knowledgeEntries?: Prisma.KnowledgeEntryOrderByRelationAggregateInput
   knowledgeGaps?: Prisma.KnowledgeGapOrderByRelationAggregateInput
+  knowledgePreviews?: Prisma.KnowledgePreviewOrderByRelationAggregateInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagOrderByRelationAggregateInput
   channelConnections?: Prisma.ChannelConnectionOrderByRelationAggregateInput
   participants?: Prisma.ParticipantOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
@@ -291,6 +295,8 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   knowledgeDocuments?: Prisma.KnowledgeDocumentListRelationFilter
   knowledgeEntries?: Prisma.KnowledgeEntryListRelationFilter
   knowledgeGaps?: Prisma.KnowledgeGapListRelationFilter
+  knowledgePreviews?: Prisma.KnowledgePreviewListRelationFilter
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagListRelationFilter
   channelConnections?: Prisma.ChannelConnectionListRelationFilter
   participants?: Prisma.ParticipantListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
@@ -351,6 +357,8 @@ export type PropertyCreateInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -381,6 +389,8 @@ export type PropertyUncheckedCreateInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -411,6 +421,8 @@ export type PropertyUpdateInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -441,6 +453,8 @@ export type PropertyUncheckedUpdateInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -574,6 +588,34 @@ export type PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput = {
   upsert?: Prisma.PropertyUpsertWithoutKnowledgeEntriesInput
   connect?: Prisma.PropertyWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutKnowledgeEntriesInput, Prisma.PropertyUpdateWithoutKnowledgeEntriesInput>, Prisma.PropertyUncheckedUpdateWithoutKnowledgeEntriesInput>
+}
+
+export type PropertyCreateNestedOneWithoutKnowledgePreviewsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgePreviewsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgePreviewsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutKnowledgePreviewsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutKnowledgePreviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgePreviewsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgePreviewsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutKnowledgePreviewsInput
+  upsert?: Prisma.PropertyUpsertWithoutKnowledgePreviewsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutKnowledgePreviewsInput, Prisma.PropertyUpdateWithoutKnowledgePreviewsInput>, Prisma.PropertyUncheckedUpdateWithoutKnowledgePreviewsInput>
+}
+
+export type PropertyCreateNestedOneWithoutKnowledgeFlagsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgeFlagsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgeFlagsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutKnowledgeFlagsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneRequiredWithoutKnowledgeFlagsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgeFlagsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgeFlagsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutKnowledgeFlagsInput
+  upsert?: Prisma.PropertyUpsertWithoutKnowledgeFlagsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutKnowledgeFlagsInput, Prisma.PropertyUpdateWithoutKnowledgeFlagsInput>, Prisma.PropertyUncheckedUpdateWithoutKnowledgeFlagsInput>
 }
 
 export type PropertyCreateNestedOneWithoutKnowledgeGapsInput = {
@@ -862,6 +904,8 @@ export type PropertyCreateWithoutKnowledgeDocumentsInput = {
   commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -891,6 +935,8 @@ export type PropertyUncheckedCreateWithoutKnowledgeDocumentsInput = {
   commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -936,6 +982,8 @@ export type PropertyUpdateWithoutKnowledgeDocumentsInput = {
   commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -965,6 +1013,8 @@ export type PropertyUncheckedUpdateWithoutKnowledgeDocumentsInput = {
   commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -994,6 +1044,8 @@ export type PropertyCreateWithoutKnowledgeEntriesInput = {
   commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -1023,6 +1075,8 @@ export type PropertyUncheckedCreateWithoutKnowledgeEntriesInput = {
   commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -1068,6 +1122,8 @@ export type PropertyUpdateWithoutKnowledgeEntriesInput = {
   commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -1097,6 +1153,288 @@ export type PropertyUncheckedUpdateWithoutKnowledgeEntriesInput = {
   commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutKnowledgePreviewsInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutKnowledgePreviewsInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutKnowledgePreviewsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgePreviewsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgePreviewsInput>
+}
+
+export type PropertyUpsertWithoutKnowledgePreviewsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutKnowledgePreviewsInput, Prisma.PropertyUncheckedUpdateWithoutKnowledgePreviewsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgePreviewsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgePreviewsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutKnowledgePreviewsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutKnowledgePreviewsInput, Prisma.PropertyUncheckedUpdateWithoutKnowledgePreviewsInput>
+}
+
+export type PropertyUpdateWithoutKnowledgePreviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutKnowledgePreviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUncheckedUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyCreateWithoutKnowledgeFlagsInput = {
+  id?: string
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutPropertiesInput
+  leads?: Prisma.LeadCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyUncheckedCreateWithoutKnowledgeFlagsInput = {
+  id?: string
+  organizationId?: string | null
+  name: string
+  slug: string
+  city?: string | null
+  state?: string | null
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutPropertyInput
+  metrics?: Prisma.MetricDailyUncheckedCreateNestedManyWithoutPropertyInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutPropertyInput
+  automationJobs?: Prisma.AutomationJobUncheckedCreateNestedManyWithoutPropertyInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutPropertyInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedCreateNestedOneWithoutPropertyInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedCreateNestedManyWithoutPropertyInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
+  participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
+  neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
+  aiOperations?: Prisma.AiOperationUncheckedCreateNestedManyWithoutPropertyInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUncheckedCreateNestedManyWithoutPropertyInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUncheckedCreateNestedManyWithoutPropertyInput
+}
+
+export type PropertyCreateOrConnectWithoutKnowledgeFlagsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgeFlagsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgeFlagsInput>
+}
+
+export type PropertyUpsertWithoutKnowledgeFlagsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutKnowledgeFlagsInput, Prisma.PropertyUncheckedUpdateWithoutKnowledgeFlagsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutKnowledgeFlagsInput, Prisma.PropertyUncheckedCreateWithoutKnowledgeFlagsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutKnowledgeFlagsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutKnowledgeFlagsInput, Prisma.PropertyUncheckedUpdateWithoutKnowledgeFlagsInput>
+}
+
+export type PropertyUpdateWithoutKnowledgeFlagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutPropertiesNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
+  participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
+  neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
+  aiOperations?: Prisma.AiOperationUpdateManyWithoutPropertyNestedInput
+  websiteSessions?: Prisma.WebsiteVisitorSessionUpdateManyWithoutPropertyNestedInput
+  sovereignEvidence?: Prisma.SovereignAnswerEvidenceUpdateManyWithoutPropertyNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutKnowledgeFlagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutPropertyNestedInput
+  metrics?: Prisma.MetricDailyUncheckedUpdateManyWithoutPropertyNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutPropertyNestedInput
+  automationJobs?: Prisma.AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutPropertyNestedInput
+  whatsappIntegration?: Prisma.WhatsAppIntegrationUncheckedUpdateOneWithoutPropertyNestedInput
+  appointmentTenants?: Prisma.AppointmentTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1126,6 +1464,8 @@ export type PropertyCreateWithoutKnowledgeGapsInput = {
   commerceTenants?: Prisma.CommerceTenantCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -1155,6 +1495,8 @@ export type PropertyUncheckedCreateWithoutKnowledgeGapsInput = {
   commerceTenants?: Prisma.CommerceTenantUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -1200,6 +1542,8 @@ export type PropertyUpdateWithoutKnowledgeGapsInput = {
   commerceTenants?: Prisma.CommerceTenantUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -1229,6 +1573,8 @@ export type PropertyUncheckedUpdateWithoutKnowledgeGapsInput = {
   commerceTenants?: Prisma.CommerceTenantUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1258,6 +1604,8 @@ export type PropertyCreateWithoutOrganizationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -1287,6 +1635,8 @@ export type PropertyUncheckedCreateWithoutOrganizationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -1357,6 +1707,8 @@ export type PropertyCreateWithoutLeadsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -1386,6 +1738,8 @@ export type PropertyUncheckedCreateWithoutLeadsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -1431,6 +1785,8 @@ export type PropertyUpdateWithoutLeadsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -1460,6 +1816,8 @@ export type PropertyUncheckedUpdateWithoutLeadsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1490,6 +1848,8 @@ export type PropertyCreateWithoutWebsiteSessionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -1519,6 +1879,8 @@ export type PropertyUncheckedCreateWithoutWebsiteSessionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -1564,6 +1926,8 @@ export type PropertyUpdateWithoutWebsiteSessionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -1593,6 +1957,8 @@ export type PropertyUncheckedUpdateWithoutWebsiteSessionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1622,6 +1988,8 @@ export type PropertyCreateWithoutSovereignEvidenceInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -1651,6 +2019,8 @@ export type PropertyUncheckedCreateWithoutSovereignEvidenceInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -1696,6 +2066,8 @@ export type PropertyUpdateWithoutSovereignEvidenceInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -1725,6 +2097,8 @@ export type PropertyUncheckedUpdateWithoutSovereignEvidenceInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1754,6 +2128,8 @@ export type PropertyCreateWithoutChannelConnectionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
@@ -1783,6 +2159,8 @@ export type PropertyUncheckedCreateWithoutChannelConnectionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
@@ -1828,6 +2206,8 @@ export type PropertyUpdateWithoutChannelConnectionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
@@ -1857,6 +2237,8 @@ export type PropertyUncheckedUpdateWithoutChannelConnectionsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -1886,6 +2268,8 @@ export type PropertyCreateWithoutParticipantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
@@ -1915,6 +2299,8 @@ export type PropertyUncheckedCreateWithoutParticipantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
@@ -1960,6 +2346,8 @@ export type PropertyUpdateWithoutParticipantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
@@ -1989,6 +2377,8 @@ export type PropertyUncheckedUpdateWithoutParticipantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2018,6 +2408,8 @@ export type PropertyCreateWithoutConversationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageCreateNestedManyWithoutPropertyInput
@@ -2047,6 +2439,8 @@ export type PropertyUncheckedCreateWithoutConversationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   neutralMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPropertyInput
@@ -2092,6 +2486,8 @@ export type PropertyUpdateWithoutConversationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUpdateManyWithoutPropertyNestedInput
@@ -2121,6 +2517,8 @@ export type PropertyUncheckedUpdateWithoutConversationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   neutralMessages?: Prisma.MessageUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2150,6 +2548,8 @@ export type PropertyCreateWithoutNeutralMessagesInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2179,6 +2579,8 @@ export type PropertyUncheckedCreateWithoutNeutralMessagesInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -2224,6 +2626,8 @@ export type PropertyUpdateWithoutNeutralMessagesInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -2253,6 +2657,8 @@ export type PropertyUncheckedUpdateWithoutNeutralMessagesInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2282,6 +2688,8 @@ export type PropertyCreateWithoutAiOperationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2311,6 +2719,8 @@ export type PropertyUncheckedCreateWithoutAiOperationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -2356,6 +2766,8 @@ export type PropertyUpdateWithoutAiOperationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -2385,6 +2797,8 @@ export type PropertyUncheckedUpdateWithoutAiOperationsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2413,6 +2827,8 @@ export type PropertyCreateWithoutMetricsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2442,6 +2858,8 @@ export type PropertyUncheckedCreateWithoutMetricsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -2487,6 +2905,8 @@ export type PropertyUpdateWithoutMetricsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -2516,6 +2936,8 @@ export type PropertyUncheckedUpdateWithoutMetricsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2545,6 +2967,8 @@ export type PropertyCreateWithoutCampaignsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2574,6 +2998,8 @@ export type PropertyUncheckedCreateWithoutCampaignsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -2619,6 +3045,8 @@ export type PropertyUpdateWithoutCampaignsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -2648,6 +3076,8 @@ export type PropertyUncheckedUpdateWithoutCampaignsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2677,6 +3107,8 @@ export type PropertyCreateWithoutAutomationJobsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2706,6 +3138,8 @@ export type PropertyUncheckedCreateWithoutAutomationJobsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -2751,6 +3185,8 @@ export type PropertyUpdateWithoutAutomationJobsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -2780,6 +3216,8 @@ export type PropertyUncheckedUpdateWithoutAutomationJobsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2809,6 +3247,8 @@ export type PropertyCreateWithoutAssetsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2838,6 +3278,8 @@ export type PropertyUncheckedCreateWithoutAssetsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -2883,6 +3325,8 @@ export type PropertyUpdateWithoutAssetsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -2912,6 +3356,8 @@ export type PropertyUncheckedUpdateWithoutAssetsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -2941,6 +3387,8 @@ export type PropertyCreateWithoutWhatsappIntegrationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -2970,6 +3418,8 @@ export type PropertyUncheckedCreateWithoutWhatsappIntegrationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -3015,6 +3465,8 @@ export type PropertyUpdateWithoutWhatsappIntegrationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -3044,6 +3496,8 @@ export type PropertyUncheckedUpdateWithoutWhatsappIntegrationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3073,6 +3527,8 @@ export type PropertyCreateWithoutAppointmentTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -3102,6 +3558,8 @@ export type PropertyUncheckedCreateWithoutAppointmentTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -3147,6 +3605,8 @@ export type PropertyUpdateWithoutAppointmentTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -3176,6 +3636,8 @@ export type PropertyUncheckedUpdateWithoutAppointmentTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3205,6 +3667,8 @@ export type PropertyCreateWithoutCommerceTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPropertyInput
@@ -3234,6 +3698,8 @@ export type PropertyUncheckedCreateWithoutCommerceTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutPropertyInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutPropertyInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutPropertyInput
   channelConnections?: Prisma.ChannelConnectionUncheckedCreateNestedManyWithoutPropertyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPropertyInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPropertyInput
@@ -3279,6 +3745,8 @@ export type PropertyUpdateWithoutCommerceTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -3308,6 +3776,8 @@ export type PropertyUncheckedUpdateWithoutCommerceTenantsInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3348,6 +3818,8 @@ export type PropertyUpdateWithoutOrganizationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPropertyNestedInput
@@ -3377,6 +3849,8 @@ export type PropertyUncheckedUpdateWithoutOrganizationInput = {
   knowledgeDocuments?: Prisma.KnowledgeDocumentUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeEntries?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyNestedInput
   knowledgeGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgePreviews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutPropertyNestedInput
+  knowledgeFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutPropertyNestedInput
   channelConnections?: Prisma.ChannelConnectionUncheckedUpdateManyWithoutPropertyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPropertyNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPropertyNestedInput
@@ -3413,6 +3887,8 @@ export type PropertyCountOutputType = {
   knowledgeDocuments: number
   knowledgeEntries: number
   knowledgeGaps: number
+  knowledgePreviews: number
+  knowledgeFlags: number
   channelConnections: number
   participants: number
   conversations: number
@@ -3433,6 +3909,8 @@ export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   knowledgeDocuments?: boolean | PropertyCountOutputTypeCountKnowledgeDocumentsArgs
   knowledgeEntries?: boolean | PropertyCountOutputTypeCountKnowledgeEntriesArgs
   knowledgeGaps?: boolean | PropertyCountOutputTypeCountKnowledgeGapsArgs
+  knowledgePreviews?: boolean | PropertyCountOutputTypeCountKnowledgePreviewsArgs
+  knowledgeFlags?: boolean | PropertyCountOutputTypeCountKnowledgeFlagsArgs
   channelConnections?: boolean | PropertyCountOutputTypeCountChannelConnectionsArgs
   participants?: boolean | PropertyCountOutputTypeCountParticipantsArgs
   conversations?: boolean | PropertyCountOutputTypeCountConversationsArgs
@@ -3525,6 +4003,20 @@ export type PropertyCountOutputTypeCountKnowledgeGapsArgs<ExtArgs extends runtim
 /**
  * PropertyCountOutputType without action
  */
+export type PropertyCountOutputTypeCountKnowledgePreviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgePreviewWhereInput
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountKnowledgeFlagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeAnswerFlagWhereInput
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
 export type PropertyCountOutputTypeCountChannelConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ChannelConnectionWhereInput
 }
@@ -3594,6 +4086,8 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   knowledgeDocuments?: boolean | Prisma.Property$knowledgeDocumentsArgs<ExtArgs>
   knowledgeEntries?: boolean | Prisma.Property$knowledgeEntriesArgs<ExtArgs>
   knowledgeGaps?: boolean | Prisma.Property$knowledgeGapsArgs<ExtArgs>
+  knowledgePreviews?: boolean | Prisma.Property$knowledgePreviewsArgs<ExtArgs>
+  knowledgeFlags?: boolean | Prisma.Property$knowledgeFlagsArgs<ExtArgs>
   channelConnections?: boolean | Prisma.Property$channelConnectionsArgs<ExtArgs>
   participants?: boolean | Prisma.Property$participantsArgs<ExtArgs>
   conversations?: boolean | Prisma.Property$conversationsArgs<ExtArgs>
@@ -3656,6 +4150,8 @@ export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   knowledgeDocuments?: boolean | Prisma.Property$knowledgeDocumentsArgs<ExtArgs>
   knowledgeEntries?: boolean | Prisma.Property$knowledgeEntriesArgs<ExtArgs>
   knowledgeGaps?: boolean | Prisma.Property$knowledgeGapsArgs<ExtArgs>
+  knowledgePreviews?: boolean | Prisma.Property$knowledgePreviewsArgs<ExtArgs>
+  knowledgeFlags?: boolean | Prisma.Property$knowledgeFlagsArgs<ExtArgs>
   channelConnections?: boolean | Prisma.Property$channelConnectionsArgs<ExtArgs>
   participants?: boolean | Prisma.Property$participantsArgs<ExtArgs>
   conversations?: boolean | Prisma.Property$conversationsArgs<ExtArgs>
@@ -3687,6 +4183,8 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     knowledgeDocuments: Prisma.$KnowledgeDocumentPayload<ExtArgs>[]
     knowledgeEntries: Prisma.$KnowledgeEntryPayload<ExtArgs>[]
     knowledgeGaps: Prisma.$KnowledgeGapPayload<ExtArgs>[]
+    knowledgePreviews: Prisma.$KnowledgePreviewPayload<ExtArgs>[]
+    knowledgeFlags: Prisma.$KnowledgeAnswerFlagPayload<ExtArgs>[]
     channelConnections: Prisma.$ChannelConnectionPayload<ExtArgs>[]
     participants: Prisma.$ParticipantPayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
@@ -4111,6 +4609,8 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   knowledgeDocuments<T extends Prisma.Property$knowledgeDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgeEntries<T extends Prisma.Property$knowledgeEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledgeGaps<T extends Prisma.Property$knowledgeGapsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeGapsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  knowledgePreviews<T extends Prisma.Property$knowledgePreviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgePreviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgePreviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  knowledgeFlags<T extends Prisma.Property$knowledgeFlagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$knowledgeFlagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeAnswerFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   channelConnections<T extends Prisma.Property$channelConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$channelConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   participants<T extends Prisma.Property$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.Property$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4832,6 +5332,54 @@ export type Property$knowledgeGapsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.KnowledgeGapScalarFieldEnum | Prisma.KnowledgeGapScalarFieldEnum[]
+}
+
+/**
+ * Property.knowledgePreviews
+ */
+export type Property$knowledgePreviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgePreview
+   */
+  select?: Prisma.KnowledgePreviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgePreview
+   */
+  omit?: Prisma.KnowledgePreviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgePreviewInclude<ExtArgs> | null
+  where?: Prisma.KnowledgePreviewWhereInput
+  orderBy?: Prisma.KnowledgePreviewOrderByWithRelationInput | Prisma.KnowledgePreviewOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgePreviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgePreviewScalarFieldEnum | Prisma.KnowledgePreviewScalarFieldEnum[]
+}
+
+/**
+ * Property.knowledgeFlags
+ */
+export type Property$knowledgeFlagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeAnswerFlag
+   */
+  select?: Prisma.KnowledgeAnswerFlagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeAnswerFlag
+   */
+  omit?: Prisma.KnowledgeAnswerFlagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeAnswerFlagInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeAnswerFlagWhereInput
+  orderBy?: Prisma.KnowledgeAnswerFlagOrderByWithRelationInput | Prisma.KnowledgeAnswerFlagOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeAnswerFlagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeAnswerFlagScalarFieldEnum | Prisma.KnowledgeAnswerFlagScalarFieldEnum[]
 }
 
 /**

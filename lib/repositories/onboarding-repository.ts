@@ -2,6 +2,8 @@ import { randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import { encryptSecretValue } from "@/lib/field-encryption";
 import { nextWebsiteBotStatus, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
+import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
+import { KB_FRAMEWORK_VERSION } from "@/lib/knowledge-verification";
 
 const organizationInclude = {
   onboarding: true,
@@ -252,7 +254,7 @@ export async function saveOrganizationBotProfile(input: {
     db.botProfile.upsert({
       where: { organizationId: input.organizationId },
       update: { ...input.profile, installationKey, status, configuredBy: input.actorEmail },
-      create: { organizationId: input.organizationId, ...input.profile, installationKey, status, configuredBy: input.actorEmail }
+      create: { organizationId: input.organizationId, ...input.profile, installationKey, status, configuredBy: input.actorEmail, kbGateVersion: KB_FRAMEWORK_VERSION }
     }),
     db.onboardingActivity.create({
       data: {
@@ -275,6 +277,15 @@ export async function updateWebsiteBotLifecycle(input: {
   if (!db) return null;
   const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
   if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured Website Bot is required.");
+  if (input.action === "MAKE_LIVE" && profile.kbGateVersion) {
+    const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true } });
+    if (!property) throw new Error("A business workspace is required before this bot can go live.");
+    const category = profile.category === "PINGBOOK" ? "APPOINTMENTS" : profile.category === "STAY" ? "HOSPITALITY" : profile.category;
+    const readiness = await getKnowledgeVerificationReadiness(property.id, category);
+    if (!readiness.ready) {
+      throw new Error(`Product preparation is incomplete. KB coverage ${readiness.coverage.percentage}% (minimum ${profile.kbCoverageMinimum}%), freshness ${readiness.freshnessRate}% (minimum 95%), conflicts ${readiness.conflicts}, unsigned claims ${readiness.unsigned}, pending previews ${readiness.previewPending}, open answer flags ${readiness.openFlags}.`);
+    }
+  }
   const now = new Date();
   const status = nextWebsiteBotStatus(profile.status, input.action, Boolean(profile.installationDetectedAt));
   await db.$transaction([

@@ -4,6 +4,8 @@ import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeWorkspaceSummary, getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
 import { writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
+import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
+import { getDb } from "@/lib/db";
 
 export async function GET() {
   const access = await getCurrentClientAccess();
@@ -11,7 +13,12 @@ export async function GET() {
   const propertySlug = await getCurrentWorkspaceSlug();
   const summary = await getKnowledgeWorkspaceSummary(propertySlug);
   const governance = await getKnowledgeGovernanceSummary(propertySlug);
-  return NextResponse.json({ ...summary, ...governance, propertySlug, canManage: canManageWorkspace(access.role) });
+  const db = getDb();
+  const property = db ? await db.property.findUnique({ where: { slug: propertySlug }, select: { organization: { select: { botProfile: { select: { category: true, kbGateVersion: true } } } } } }) : null;
+  const rawCategory = property?.organization?.botProfile?.category || "BUSINESS_AI";
+  const category = rawCategory === "PINGBOOK" ? "APPOINTMENTS" : rawCategory === "STAY" ? "HOSPITALITY" : rawCategory;
+  const verification = governance.propertyId ? await getKnowledgeVerificationReadiness(governance.propertyId, category) : null;
+  return NextResponse.json({ ...summary, ...governance, verification, kbGateEnabled: Boolean(property?.organization?.botProfile?.kbGateVersion), propertySlug, canManage: canManageWorkspace(access.role) });
 }
 
 export async function PATCH(request: Request) {

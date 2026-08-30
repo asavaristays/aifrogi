@@ -54,6 +54,8 @@ export const ModelName = {
   Property: 'Property',
   KnowledgeDocument: 'KnowledgeDocument',
   KnowledgeEntry: 'KnowledgeEntry',
+  KnowledgePreview: 'KnowledgePreview',
+  KnowledgeAnswerFlag: 'KnowledgeAnswerFlag',
   KnowledgeGap: 'KnowledgeGap',
   Organization: 'Organization',
   UserSession: 'UserSession',
@@ -170,6 +172,28 @@ export const KnowledgeEntryScalarFieldEnum = {
   category: 'category',
   status: 'status',
   conflictSummary: 'conflictSummary',
+  claimKey: 'claimKey',
+  claimType: 'claimType',
+  valueType: 'valueType',
+  currency: 'currency',
+  effectiveAt: 'effectiveAt',
+  expiresAt: 'expiresAt',
+  refreshDays: 'refreshDays',
+  reliability: 'reliability',
+  authorityLevel: 'authorityLevel',
+  version: 'version',
+  supersedesId: 'supersedesId',
+  validationStatus: 'validationStatus',
+  validationErrors: 'validationErrors',
+  conflictStatus: 'conflictStatus',
+  fieldApprovedBy: 'fieldApprovedBy',
+  fieldApprovedAt: 'fieldApprovedAt',
+  previewApprovedBy: 'previewApprovedBy',
+  previewApprovedAt: 'previewApprovedAt',
+  publishedAt: 'publishedAt',
+  pausedAt: 'pausedAt',
+  pauseReason: 'pauseReason',
+  lastConfirmedAt: 'lastConfirmedAt',
   createdBy: 'createdBy',
   approvedBy: 'approvedBy',
   approvedAt: 'approvedAt',
@@ -178,6 +202,47 @@ export const KnowledgeEntryScalarFieldEnum = {
 } as const
 
 export type KnowledgeEntryScalarFieldEnum = (typeof KnowledgeEntryScalarFieldEnum)[keyof typeof KnowledgeEntryScalarFieldEnum]
+
+
+export const KnowledgePreviewScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  entryId: 'entryId',
+  question: 'question',
+  generatedAnswer: 'generatedAnswer',
+  status: 'status',
+  generatedAt: 'generatedAt',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgePreviewScalarFieldEnum = (typeof KnowledgePreviewScalarFieldEnum)[keyof typeof KnowledgePreviewScalarFieldEnum]
+
+
+export const KnowledgeAnswerFlagScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  entryId: 'entryId',
+  evidenceId: 'evidenceId',
+  reporterType: 'reporterType',
+  reporterId: 'reporterId',
+  reason: 'reason',
+  status: 'status',
+  acknowledgeDueAt: 'acknowledgeDueAt',
+  resolveDueAt: 'resolveDueAt',
+  acknowledgedAt: 'acknowledgedAt',
+  acknowledgedBy: 'acknowledgedBy',
+  resolvedAt: 'resolvedAt',
+  resolvedBy: 'resolvedBy',
+  resolution: 'resolution',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeAnswerFlagScalarFieldEnum = (typeof KnowledgeAnswerFlagScalarFieldEnum)[keyof typeof KnowledgeAnswerFlagScalarFieldEnum]
 
 
 export const KnowledgeGapScalarFieldEnum = {
@@ -276,6 +341,8 @@ export const BotProfileScalarFieldEnum = {
   reminderPercent: 'reminderPercent',
   fallbackEnabled: 'fallbackEnabled',
   safeFallbackMessage: 'safeFallbackMessage',
+  kbGateVersion: 'kbGateVersion',
+  kbCoverageMinimum: 'kbCoverageMinimum',
   status: 'status',
   installationKey: 'installationKey',
   installationDetectedAt: 'installationDetectedAt',
@@ -472,6 +539,7 @@ export const SovereignAnswerEvidenceScalarFieldEnum = {
   model: 'model',
   sources: 'sources',
   knowledgeAsOf: 'knowledgeAsOf',
+  knowledgeClaimIds: 'knowledgeClaimIds',
   createdAt: 'createdAt'
 } as const
 
