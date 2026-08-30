@@ -49,6 +49,22 @@ test("answer correction is tenant-bound and pauses only cited claims", () => {
   assert.match(flagSource, /flagKnowledgeAnswer/);
 });
 
+test("answer feedback is tenant, visitor, and evidence bound", () => {
+  const feedbackSource = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]/feedback/route.ts"), "utf8");
+  assert.match(feedbackSource, /verifyWebsiteVisitorToken\(rawToken, slug\)/);
+  assert.match(feedbackSource, /propertyId: session\.propertyId, leadId: token\.leadId/);
+  assert.match(feedbackSource, /where: \{ evidenceId: evidence\.id \}/);
+  assert.doesNotMatch(feedbackSource, /flagKnowledgeAnswer/);
+});
+
+test("widget connects helpful feedback to the returned evidence id", () => {
+  const widgetSource = readFileSync(resolve(process.cwd(), "components/website-bot/website-bot-embed.tsx"), "utf8");
+  assert.match(widgetSource, /answerEvidenceId/);
+  assert.match(widgetSource, /Did this answer help\?/);
+  assert.match(widgetSource, /\/feedback/);
+  assert.match(widgetSource, /Authorization: `Bearer \$\{visitorToken\}`/);
+});
+
 test("partner responses expose governed source labels, freshness, and response SLA", () => {
   assert.match(source, /sources: result\?\.sources\.slice\(0, 3\)/);
   assert.match(source, /knowledgeAsOf:/);

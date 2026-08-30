@@ -132,6 +132,11 @@ export type WebsiteVisitorSession = Prisma.WebsiteVisitorSessionModel
  */
 export type SovereignAnswerEvidence = Prisma.SovereignAnswerEvidenceModel
 /**
+ * Model SovereignAnswerFeedback
+ * 
+ */
+export type SovereignAnswerFeedback = Prisma.SovereignAnswerFeedbackModel
+/**
  * Model LeadTag
  * 
  */

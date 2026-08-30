@@ -43,8 +43,8 @@ export async function recordSovereignAnswerEvidence(input: {
 
 export async function getSovereignIntelligenceReport() {
   const db = getDb();
-  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, recent: [] };
-  const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, recent] = await Promise.all([
+  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, recent: [] };
+  const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, feedbackTotal, helpfulFeedback, recent] = await Promise.all([
     db.sovereignAnswerEvidence.count(),
     db.sovereignAnswerEvidence.count({ where: { grounded: true } }),
     db.sovereignAnswerEvidence.count({ where: { disposition: "FALLBACK" } }),
@@ -53,7 +53,10 @@ export async function getSovereignIntelligenceReport() {
     db.sovereignAnswerEvidence.count({ where: { contextUsed: true } }),
     db.sovereignAnswerEvidence.count({ where: { circuitBreaker: true } }),
     db.sovereignAnswerEvidence.count({ where: { resolutionState: "ACTIVE" } }),
+    db.sovereignAnswerFeedback.count(),
+    db.sovereignAnswerFeedback.count({ where: { helpful: true } }),
     db.sovereignAnswerEvidence.findMany({ include: { property: { select: { name: true, slug: true } } }, orderBy: { createdAt: "desc" }, take: 30 })
   ]);
-  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, recent };
+  const helpfulRate = feedbackTotal ? Number(((helpfulFeedback / feedbackTotal) * 100).toFixed(1)) : null;
+  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, feedbackTotal, helpfulFeedback, helpfulRate, recent };
 }

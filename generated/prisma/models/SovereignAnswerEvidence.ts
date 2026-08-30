@@ -389,6 +389,7 @@ export type SovereignAnswerEvidenceWhereInput = {
   knowledgeClaimIds?: Prisma.StringNullableListFilter<"SovereignAnswerEvidence">
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  feedback?: Prisma.XOR<Prisma.SovereignAnswerFeedbackNullableScalarRelationFilter, Prisma.SovereignAnswerFeedbackWhereInput> | null
 }
 
 export type SovereignAnswerEvidenceOrderByWithRelationInput = {
@@ -420,6 +421,7 @@ export type SovereignAnswerEvidenceOrderByWithRelationInput = {
   knowledgeClaimIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
+  feedback?: Prisma.SovereignAnswerFeedbackOrderByWithRelationInput
 }
 
 export type SovereignAnswerEvidenceWhereUniqueInput = Prisma.AtLeast<{
@@ -454,6 +456,7 @@ export type SovereignAnswerEvidenceWhereUniqueInput = Prisma.AtLeast<{
   knowledgeClaimIds?: Prisma.StringNullableListFilter<"SovereignAnswerEvidence">
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  feedback?: Prisma.XOR<Prisma.SovereignAnswerFeedbackNullableScalarRelationFilter, Prisma.SovereignAnswerFeedbackWhereInput> | null
 }, "id">
 
 export type SovereignAnswerEvidenceOrderByWithAggregationInput = {
@@ -552,6 +555,7 @@ export type SovereignAnswerEvidenceCreateInput = {
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
+  feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
 }
 
 export type SovereignAnswerEvidenceUncheckedCreateInput = {
@@ -582,6 +586,7 @@ export type SovereignAnswerEvidenceUncheckedCreateInput = {
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
   createdAt?: Date | string
+  feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
 }
 
 export type SovereignAnswerEvidenceUpdateInput = {
@@ -612,6 +617,7 @@ export type SovereignAnswerEvidenceUpdateInput = {
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
+  feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
 }
 
 export type SovereignAnswerEvidenceUncheckedUpdateInput = {
@@ -642,6 +648,7 @@ export type SovereignAnswerEvidenceUncheckedUpdateInput = {
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
 }
 
 export type SovereignAnswerEvidenceCreateManyInput = {
@@ -839,6 +846,11 @@ export type SovereignAnswerEvidenceSumOrderByAggregateInput = {
   clarifyCount?: Prisma.SortOrder
 }
 
+export type SovereignAnswerEvidenceScalarRelationFilter = {
+  is?: Prisma.SovereignAnswerEvidenceWhereInput
+  isNot?: Prisma.SovereignAnswerEvidenceWhereInput
+}
+
 export type SovereignAnswerEvidenceCreateNestedManyWithoutPropertyInput = {
   create?: Prisma.XOR<Prisma.SovereignAnswerEvidenceCreateWithoutPropertyInput, Prisma.SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput> | Prisma.SovereignAnswerEvidenceCreateWithoutPropertyInput[] | Prisma.SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput[]
   connectOrCreate?: Prisma.SovereignAnswerEvidenceCreateOrConnectWithoutPropertyInput | Prisma.SovereignAnswerEvidenceCreateOrConnectWithoutPropertyInput[]
@@ -898,6 +910,20 @@ export type SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput = {
   push?: string | string[]
 }
 
+export type SovereignAnswerEvidenceCreateNestedOneWithoutFeedbackInput = {
+  create?: Prisma.XOR<Prisma.SovereignAnswerEvidenceCreateWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput>
+  connectOrCreate?: Prisma.SovereignAnswerEvidenceCreateOrConnectWithoutFeedbackInput
+  connect?: Prisma.SovereignAnswerEvidenceWhereUniqueInput
+}
+
+export type SovereignAnswerEvidenceUpdateOneRequiredWithoutFeedbackNestedInput = {
+  create?: Prisma.XOR<Prisma.SovereignAnswerEvidenceCreateWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput>
+  connectOrCreate?: Prisma.SovereignAnswerEvidenceCreateOrConnectWithoutFeedbackInput
+  upsert?: Prisma.SovereignAnswerEvidenceUpsertWithoutFeedbackInput
+  connect?: Prisma.SovereignAnswerEvidenceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SovereignAnswerEvidenceUpdateToOneWithWhereWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUpdateWithoutFeedbackInput>, Prisma.SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput>
+}
+
 export type SovereignAnswerEvidenceCreateWithoutPropertyInput = {
   id?: string
   leadId?: string | null
@@ -925,6 +951,7 @@ export type SovereignAnswerEvidenceCreateWithoutPropertyInput = {
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
   createdAt?: Date | string
+  feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
 }
 
 export type SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput = {
@@ -954,6 +981,7 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput = {
   knowledgeAsOf?: Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
   createdAt?: Date | string
+  feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
 }
 
 export type SovereignAnswerEvidenceCreateOrConnectWithoutPropertyInput = {
@@ -1015,6 +1043,142 @@ export type SovereignAnswerEvidenceScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
 }
 
+export type SovereignAnswerEvidenceCreateWithoutFeedbackInput = {
+  id?: string
+  leadId?: string | null
+  sessionIdHash: string
+  constitutionVersion: string
+  blueprintVersion: string
+  intent: string
+  disposition: string
+  contextUsed?: boolean
+  confidence?: number
+  safetyClassification?: string
+  permittedOperation?: string
+  resolutionState?: string
+  clarifyCount?: number
+  circuitBreaker?: boolean
+  circuitBreakerReason?: string | null
+  evaluationVersion?: string
+  decisionReason: string
+  question: string
+  resolvedQuestion: string
+  answer: string
+  grounded?: boolean
+  model: string
+  sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  knowledgeAsOf?: Date | string | null
+  knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  createdAt?: Date | string
+  property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
+}
+
+export type SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput = {
+  id?: string
+  propertyId: string
+  leadId?: string | null
+  sessionIdHash: string
+  constitutionVersion: string
+  blueprintVersion: string
+  intent: string
+  disposition: string
+  contextUsed?: boolean
+  confidence?: number
+  safetyClassification?: string
+  permittedOperation?: string
+  resolutionState?: string
+  clarifyCount?: number
+  circuitBreaker?: boolean
+  circuitBreakerReason?: string | null
+  evaluationVersion?: string
+  decisionReason: string
+  question: string
+  resolvedQuestion: string
+  answer: string
+  grounded?: boolean
+  model: string
+  sources: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  knowledgeAsOf?: Date | string | null
+  knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceCreateknowledgeClaimIdsInput | string[]
+  createdAt?: Date | string
+}
+
+export type SovereignAnswerEvidenceCreateOrConnectWithoutFeedbackInput = {
+  where: Prisma.SovereignAnswerEvidenceWhereUniqueInput
+  create: Prisma.XOR<Prisma.SovereignAnswerEvidenceCreateWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput>
+}
+
+export type SovereignAnswerEvidenceUpsertWithoutFeedbackInput = {
+  update: Prisma.XOR<Prisma.SovereignAnswerEvidenceUpdateWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput>
+  create: Prisma.XOR<Prisma.SovereignAnswerEvidenceCreateWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput>
+  where?: Prisma.SovereignAnswerEvidenceWhereInput
+}
+
+export type SovereignAnswerEvidenceUpdateToOneWithWhereWithoutFeedbackInput = {
+  where?: Prisma.SovereignAnswerEvidenceWhereInput
+  data: Prisma.XOR<Prisma.SovereignAnswerEvidenceUpdateWithoutFeedbackInput, Prisma.SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput>
+}
+
+export type SovereignAnswerEvidenceUpdateWithoutFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  leadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionIdHash?: Prisma.StringFieldUpdateOperationsInput | string
+  constitutionVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  blueprintVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  intent?: Prisma.StringFieldUpdateOperationsInput | string
+  disposition?: Prisma.StringFieldUpdateOperationsInput | string
+  contextUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
+  permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
+  clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
+  circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  circuitBreakerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  evaluationVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedQuestion?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  grounded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
+}
+
+export type SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  leadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionIdHash?: Prisma.StringFieldUpdateOperationsInput | string
+  constitutionVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  blueprintVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  intent?: Prisma.StringFieldUpdateOperationsInput | string
+  disposition?: Prisma.StringFieldUpdateOperationsInput | string
+  contextUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  confidence?: Prisma.FloatFieldUpdateOperationsInput | number
+  safetyClassification?: Prisma.StringFieldUpdateOperationsInput | string
+  permittedOperation?: Prisma.StringFieldUpdateOperationsInput | string
+  resolutionState?: Prisma.StringFieldUpdateOperationsInput | string
+  clarifyCount?: Prisma.IntFieldUpdateOperationsInput | number
+  circuitBreaker?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  circuitBreakerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  evaluationVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedQuestion?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  grounded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  sources?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type SovereignAnswerEvidenceCreateManyPropertyInput = {
   id?: string
   leadId?: string | null
@@ -1071,6 +1235,7 @@ export type SovereignAnswerEvidenceUpdateWithoutPropertyInput = {
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
 }
 
 export type SovereignAnswerEvidenceUncheckedUpdateWithoutPropertyInput = {
@@ -1100,6 +1265,7 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutPropertyInput = {
   knowledgeAsOf?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   knowledgeClaimIds?: Prisma.SovereignAnswerEvidenceUpdateknowledgeClaimIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
 }
 
 export type SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyInput = {
@@ -1162,6 +1328,7 @@ export type SovereignAnswerEvidenceSelect<ExtArgs extends runtime.Types.Extensio
   knowledgeClaimIds?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
 }, ExtArgs["result"]["sovereignAnswerEvidence"]>
 
 export type SovereignAnswerEvidenceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1259,6 +1426,7 @@ export type SovereignAnswerEvidenceSelectScalar = {
 export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
 export type SovereignAnswerEvidenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
 }
 export type SovereignAnswerEvidenceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -1271,6 +1439,7 @@ export type $SovereignAnswerEvidencePayload<ExtArgs extends runtime.Types.Extens
   name: "SovereignAnswerEvidence"
   objects: {
     property: Prisma.$PropertyPayload<ExtArgs>
+    feedback: Prisma.$SovereignAnswerFeedbackPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1695,6 +1864,7 @@ readonly fields: SovereignAnswerEvidenceFieldRefs;
 export interface Prisma__SovereignAnswerEvidenceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   property<T extends Prisma.PropertyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyDefaultArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  feedback<T extends Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>>): Prisma.Prisma__SovereignAnswerFeedbackClient<runtime.Types.Result.GetResult<Prisma.$SovereignAnswerFeedbackPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2149,6 +2319,25 @@ export type SovereignAnswerEvidenceDeleteManyArgs<ExtArgs extends runtime.Types.
    * Limit how many SovereignAnswerEvidences to delete.
    */
   limit?: number
+}
+
+/**
+ * SovereignAnswerEvidence.feedback
+ */
+export type SovereignAnswerEvidence$feedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SovereignAnswerFeedback
+   */
+  select?: Prisma.SovereignAnswerFeedbackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SovereignAnswerFeedback
+   */
+  omit?: Prisma.SovereignAnswerFeedbackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SovereignAnswerFeedbackInclude<ExtArgs> | null
+  where?: Prisma.SovereignAnswerFeedbackWhereInput
 }
 
 /**

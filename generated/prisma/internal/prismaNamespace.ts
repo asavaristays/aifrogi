@@ -402,6 +402,7 @@ export const ModelName = {
   Lead: 'Lead',
   WebsiteVisitorSession: 'WebsiteVisitorSession',
   SovereignAnswerEvidence: 'SovereignAnswerEvidence',
+  SovereignAnswerFeedback: 'SovereignAnswerFeedback',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
   ChannelConnection: 'ChannelConnection',
@@ -458,7 +459,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgePreview" | "knowledgeAnswerFlag" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "sovereignAnswerEvidence" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgePreview" | "knowledgeAnswerFlag" | "knowledgeGap" | "organization" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "sovereignAnswerEvidence" | "sovereignAnswerFeedback" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1791,6 +1792,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SovereignAnswerEvidenceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SovereignAnswerEvidenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    SovereignAnswerFeedback: {
+      payload: Prisma.$SovereignAnswerFeedbackPayload<ExtArgs>
+      fields: Prisma.SovereignAnswerFeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SovereignAnswerFeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SovereignAnswerFeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.SovereignAnswerFeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SovereignAnswerFeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.SovereignAnswerFeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.SovereignAnswerFeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.SovereignAnswerFeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SovereignAnswerFeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.SovereignAnswerFeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>
+        }
+        update: {
+          args: Prisma.SovereignAnswerFeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.SovereignAnswerFeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SovereignAnswerFeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SovereignAnswerFeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.SovereignAnswerFeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SovereignAnswerFeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.SovereignAnswerFeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSovereignAnswerFeedback>
+        }
+        groupBy: {
+          args: Prisma.SovereignAnswerFeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SovereignAnswerFeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SovereignAnswerFeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SovereignAnswerFeedbackCountAggregateOutputType> | number
         }
       }
     }
@@ -5285,6 +5360,21 @@ export const SovereignAnswerEvidenceScalarFieldEnum = {
 export type SovereignAnswerEvidenceScalarFieldEnum = (typeof SovereignAnswerEvidenceScalarFieldEnum)[keyof typeof SovereignAnswerEvidenceScalarFieldEnum]
 
 
+export const SovereignAnswerFeedbackScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  evidenceId: 'evidenceId',
+  leadId: 'leadId',
+  helpful: 'helpful',
+  reason: 'reason',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SovereignAnswerFeedbackScalarFieldEnum = (typeof SovereignAnswerFeedbackScalarFieldEnum)[keyof typeof SovereignAnswerFeedbackScalarFieldEnum]
+
+
 export const LeadTagScalarFieldEnum = {
   id: 'id',
   leadId: 'leadId',
@@ -6495,6 +6585,7 @@ export type GlobalOmitConfig = {
   lead?: Prisma.LeadOmit
   websiteVisitorSession?: Prisma.WebsiteVisitorSessionOmit
   sovereignAnswerEvidence?: Prisma.SovereignAnswerEvidenceOmit
+  sovereignAnswerFeedback?: Prisma.SovereignAnswerFeedbackOmit
   leadTag?: Prisma.LeadTagOmit
   leadMessage?: Prisma.LeadMessageOmit
   channelConnection?: Prisma.ChannelConnectionOmit

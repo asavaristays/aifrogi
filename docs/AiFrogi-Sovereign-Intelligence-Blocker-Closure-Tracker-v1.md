@@ -129,6 +129,13 @@ Unblocks: C3-06, C4-04, C5-04, C6-01, C6-02 and mature C6-04.
 | W5-04 | C5-04 | Calculate acknowledgment and 24-hour resolution SLA performance from flag timestamps. | Pending | Non-zero sample report and independently matching query. |
 | W5-05 | C6-03/C6-04 | Keep published unresolved conflicts at zero and expose the confidence dashboard to Client Admin and Super Admin. | Conflict gate/client summary exist | Non-zero published sample, zero-conflict query and both role screenshots. |
 
+Pilot feedback instrumentation added after baseline:
+
+- Every evidence-backed widget answer asks “Did this answer help?” with Yes/No choices.
+- Feedback is tenant/session/evidence bound and update-idempotent per answer.
+- Helpful rate is shown only with its rated-answer sample size; no sample displays “No sample.”
+- Negative feedback contributes to quality analysis but does not auto-pause knowledge. Explicit incorrect-answer flags retain that higher-authority behavior.
+
 Wave 5 exit gate:
 
 - At least one full expiry/reconfirmation cycle is recorded.

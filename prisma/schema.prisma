@@ -137,6 +137,7 @@ model Property {
   aiOperations        AiOperation[]
   websiteSessions     WebsiteVisitorSession[]
   sovereignEvidence   SovereignAnswerEvidence[]
+  answerFeedback      SovereignAnswerFeedback[]
 
   @@index([organizationId])
 }
@@ -582,10 +583,28 @@ model SovereignAnswerEvidence {
   knowledgeAsOf       DateTime?
   knowledgeClaimIds   String[] @default([])
   createdAt           DateTime @default(now())
+  feedback            SovereignAnswerFeedback?
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
   @@index([propertyId, circuitBreaker, createdAt])
+  @@index([leadId, createdAt])
+}
+
+model SovereignAnswerFeedback {
+  id           String                  @id @default(cuid())
+  propertyId   String
+  property     Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  evidenceId   String                  @unique
+  evidence     SovereignAnswerEvidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  leadId       String?
+  helpful      Boolean
+  reason       String?                 @db.Text
+  source       String                  @default("WEBSITE_WIDGET")
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+
+  @@index([propertyId, helpful, createdAt])
   @@index([leadId, createdAt])
 }
 

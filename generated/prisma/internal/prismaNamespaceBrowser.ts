@@ -69,6 +69,7 @@ export const ModelName = {
   Lead: 'Lead',
   WebsiteVisitorSession: 'WebsiteVisitorSession',
   SovereignAnswerEvidence: 'SovereignAnswerEvidence',
+  SovereignAnswerFeedback: 'SovereignAnswerFeedback',
   LeadTag: 'LeadTag',
   LeadMessage: 'LeadMessage',
   ChannelConnection: 'ChannelConnection',
@@ -544,6 +545,21 @@ export const SovereignAnswerEvidenceScalarFieldEnum = {
 } as const
 
 export type SovereignAnswerEvidenceScalarFieldEnum = (typeof SovereignAnswerEvidenceScalarFieldEnum)[keyof typeof SovereignAnswerEvidenceScalarFieldEnum]
+
+
+export const SovereignAnswerFeedbackScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  evidenceId: 'evidenceId',
+  leadId: 'leadId',
+  helpful: 'helpful',
+  reason: 'reason',
+  source: 'source',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SovereignAnswerFeedbackScalarFieldEnum = (typeof SovereignAnswerFeedbackScalarFieldEnum)[keyof typeof SovereignAnswerFeedbackScalarFieldEnum]
 
 
 export const LeadTagScalarFieldEnum = {
