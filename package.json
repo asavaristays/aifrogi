@@ -42,6 +42,7 @@
     "nodemailer": "^8.0.5",
     "pdf-parse": "^1.1.1",
     "pg": "latest",
+    "qrcode": "^1.5.4",
     "react": "latest",
     "react-dom": "latest",
     "recharts": "^3.8.1"
@@ -50,6 +51,7 @@
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
     "@types/pdf-parse": "^1.1.5",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "^9.39.4",

@@ -104,7 +104,7 @@ export function BotSubscriptionConfig({
 
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
             <Toggle label="AI Audit offer" checked={configuration.auditEnabled} onChange={(value) => setFlag("auditEnabled", value)} />
-            <Toggle label="30-day trial" checked={configuration.trialEnabled} onChange={(value) => setFlag("trialEnabled", value)} />
+            <Toggle label="15-day trial" checked={configuration.trialEnabled} onChange={(value) => setFlag("trialEnabled", value)} />
             <Toggle label="Human handoff" checked={configuration.humanHandoffEnabled} onChange={(value) => setFlag("humanHandoffEnabled", value)} />
             <Toggle label="Collect lead details" checked={configuration.collectLeadDetails} onChange={(value) => setFlag("collectLeadDetails", value)} />
             <Toggle label="First-contact welcome" checked={configuration.welcomeEnabled} onChange={(value) => setFlag("welcomeEnabled", value)} />

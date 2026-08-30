@@ -21,7 +21,7 @@ export const helpArticles: HelpArticle[] = [
       { title: "Separate platform and Meta costs", body: "AiFrogi charges for the workspace, automation, support, and plan allowances. Meta separately charges eligible template messages according to category, destination market, and applicable volume rules." },
       { title: "Choose India or UAE by recipient", body: "Meta pricing follows the recipient market rather than only the sender's business location. Estimate India and UAE audiences separately when a campaign contains both." },
       { title: "Include implementation only when needed", body: "Standard available connectors and custom integration work are shown separately. Payment-provider, commerce, CRM, or bespoke API fees are not hidden inside Meta usage." },
-      { title: "Start with the 30-day trial", body: "The trial lasts 30 days and then paid actions pause automatically. Use it to validate onboarding, inbox, template, and workflow fit before activating a paid plan." }
+      { title: "Start with the 15-day trial", body: "The trial lasts 15 days and then paid actions pause automatically. Use it to validate onboarding, inbox, template, and workflow fit before activating a paid plan." }
     ],
     checks: ["Recipient markets identified", "Meta usage separated from AiFrogi fee", "Tax and integration work considered", "Trial expiry understood"]
   },

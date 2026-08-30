@@ -12,7 +12,7 @@ const sections = [
   {
     title: "Billing and usage",
     href: "/billing",
-    description: "Review the 30-day trial, plan status, allowances, usage and invoices."
+    description: "Review the 15-day trial, plan status, allowances, usage and invoices."
   },
   {
     title: "WhatsApp API",

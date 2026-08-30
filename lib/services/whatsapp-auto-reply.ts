@@ -49,7 +49,7 @@ export function buildWhatsAppFirstReply(configuration = DEFAULT_WHATSAPP_BOT_CON
     .map((option) => option.label);
 
   if (configuration.auditEnabled) capabilities.push("AI Audit of your website and enquiry process");
-  if (configuration.trialEnabled) capabilities.push("30-day working trial");
+  if (configuration.trialEnabled) capabilities.push("15-day working trial");
 
   const numberedCapabilities = capabilities.map((label, index) => `${index + 1}. ${label}`).join("\n");
   const detailsPrompt = configuration.collectLeadDetails
@@ -79,7 +79,7 @@ export function classifyWhatsAppAgencyInquiry(
       tag: "Test Message",
       score: 45,
       highPriority: false,
-      reply: "Test received. HotelRADAR AI is connected and can help with website/CMS, SEO and online growth, WhatsApp automation, AI tools, business integrations, AI website audit, and the 30-day trial. Ask a question or reply with the area you want to check next."
+      reply: "Test received. HotelRADAR AI is connected and can help with website/CMS, SEO and online growth, WhatsApp automation, AI tools, business integrations, AI website audit, and the 15-day trial. Ask a question or reply with the area you want to check next."
     };
   }
 
@@ -104,11 +104,11 @@ export function classifyWhatsAppAgencyInquiry(
   if (includesAny(normalized, ["price", "pricing", "cost", "charges", "package", "plan", "trial", "demo", "quotation", "quote", "how much"])) {
     return configuration.trialEnabled ? {
       bucket: "PRICING_TRIAL",
-      label: "Pricing and 30-day trial",
+      label: "Pricing and 15-day trial",
       tag: "Pricing & Trial",
       score: 82,
       highPriority: true,
-      reply: "Thank you for your interest in the 30-day HotelRADAR trial. We can start without PMS, channel-manager, payment, or admin access.\n\nTo prepare your trial, please share:\n1. Property name and type\n2. Goa location\n3. Owner or manager name\n4. Mobile and WhatsApp number\n5. Email\n6. Existing website, Google Business, or Instagram link if available\n7. Booking engine or OTA link if available\n8. Primary goal: new website, direct bookings, Goa SEO, WhatsApp leads, booking engine, or AI tools\n9. Rooms/villas count and one short note on the main problem\n\nTrial details/form: https://website.hotelradar.in/#contact\nA HotelRADAR specialist can also call you from +91-7058963898. Reply STOP if you do not want further messages."
+      reply: "Thank you for your interest in the 15-day HotelRADAR trial. We can start without PMS, channel-manager, payment, or admin access.\n\nTo prepare your trial, please share:\n1. Property name and type\n2. Goa location\n3. Owner or manager name\n4. Mobile and WhatsApp number\n5. Email\n6. Existing website, Google Business, or Instagram link if available\n7. Booking engine or OTA link if available\n8. Primary goal: new website, direct bookings, Goa SEO, WhatsApp leads, booking engine, or AI tools\n9. Rooms/villas count and one short note on the main problem\n\nTrial details/form: https://website.hotelradar.in/#contact\nA HotelRADAR specialist can also call you from +91-7058963898. Reply STOP if you do not want further messages."
     } : {
       bucket: "PRICING_TRIAL",
       label: "Plan enquiry",

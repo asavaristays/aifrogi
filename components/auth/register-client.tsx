@@ -47,7 +47,7 @@ export function RegisterClient() {
 
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[0.75fr_1.25fr] lg:py-14">
         <section className="order-2 lg:order-1 lg:pt-7">
-          <p className="product-eyebrow">30-day working trial</p>
+          <p className="product-eyebrow">15-day working trial</p>
           <h1 className="mt-4 max-w-lg text-4xl font-semibold leading-tight sm:text-5xl">Create your business workspace.</h1>
           <p className="mt-5 max-w-lg text-base leading-7 text-[var(--text-muted)]">Choose the AI Bot that matches your first business outcome. After email verification, AiFrogi prepares its intelligence, installation code and controlled go-live journey.</p>
           <div className="mt-9 divide-y divide-[#ded8cb] border-y border-[#ded8cb]">
@@ -55,7 +55,7 @@ export function RegisterClient() {
             <FlowRow number="2" title="Prepare business intelligence" copy="Approve trusted sources, persona, customer journey and human handover rules." />
             <FlowRow number="3" title="Install and verify" copy="Copy JavaScript, iFrame or WordPress code; AiFrogi detects it before Super Admin enables live traffic." />
           </div>
-          <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>30 days only:</strong> after the trial, messaging, campaigns, and automation pause automatically until a paid plan is activated. Your data remains preserved. No Facebook password, email password, permanent token, or OTP is requested.</p>
+          <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>15 days only:</strong> after the trial, messaging, campaigns, and automation pause automatically until a paid plan is activated. Your data remains preserved. No Facebook password, email password, permanent token, or OTP is requested.</p>
         </section>
 
         <section className="order-1 rounded-lg border border-[#ded8cb] bg-white p-6 shadow-[0_18px_55px_rgba(16,16,16,0.08)] sm:p-8 lg:order-2">
@@ -85,7 +85,7 @@ export function RegisterClient() {
                 <input name="fax" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                 {error ? <p role="alert" className="rounded-md border border-[#b23a32]/20 bg-[#fff0ee] px-4 py-3 text-sm text-[#9b2f28] sm:col-span-2">{error}</p> : null}
                 <button disabled={saving} className="min-h-12 rounded-md bg-[#8a6a16] px-5 text-sm font-bold text-white hover:bg-[#b28728] disabled:cursor-wait disabled:opacity-60 sm:col-span-2">{saving ? "Reserving workspace..." : "Create trial workspace"}</button>
-                <p className="text-xs leading-5 text-[var(--text-muted)] sm:col-span-2">The trial lasts 30 days and then pauses automatically; it is not a free-forever plan. By continuing, you agree to the <Link href="/terms-of-service" className="font-semibold text-[#6d5310]">Terms</Link> and acknowledge the <Link href="/privacy-policy" className="font-semibold text-[#6d5310]">Privacy Policy</Link>.</p>
+                <p className="text-xs leading-5 text-[var(--text-muted)] sm:col-span-2">The trial lasts 15 days and then pauses automatically; it is not a free-forever plan. By continuing, you agree to the <Link href="/terms-of-service" className="font-semibold text-[#6d5310]">Terms</Link> and acknowledge the <Link href="/privacy-policy" className="font-semibold text-[#6d5310]">Privacy Policy</Link>.</p>
               </form>
             </>
           )}

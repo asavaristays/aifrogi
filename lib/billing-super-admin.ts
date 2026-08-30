@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { Prisma } from "../generated/prisma/client";
+import { TRIAL_DAYS } from "@/lib/trial-policy";
 
 export type PlanLimits = {
   contacts: number;
@@ -18,11 +19,11 @@ export type BillingHealth = {
 export const BILLING_PLAN_CATALOGUE = [
   {
     code: "TRIAL",
-    name: "30-Day Trial",
+    name: "15-Day Trial",
     description: "Guided proof-of-value workspace before paid activation.",
     billingInterval: "TRIAL",
     amountPaisa: 0,
-    trialDays: 30,
+    trialDays: TRIAL_DAYS,
     sortOrder: 1,
     limits: { contacts: 250, messages: 500, campaigns: 1, aiReplies: 100, teamUsers: 2 }
   },

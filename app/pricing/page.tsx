@@ -10,7 +10,7 @@ const registerUrl = "https://app.aifrogi.com/register?source=pricing";
 
 export const metadata: Metadata = marketingMetadata({
   title: "AI Business Bot Pricing | AiFrogi",
-  description: "Compare AiFrogi plans for intelligent customer conversations, workflow automation, AI knowledge, campaigns, and follow-ups. Start with a 30-day trial.",
+  description: "Compare AiFrogi plans for intelligent customer conversations, workflow automation, AI knowledge, campaigns, and follow-ups. Start with a 15-day trial.",
   path: "/pricing"
 });
 
@@ -18,9 +18,9 @@ const plans = [
   {
     name: "30-Day Trial",
     price: "₹0",
-    billing: "30 days only · pauses automatically",
+    billing: "15 days only · pauses automatically",
     bestFor: "Prove the WhatsApp workflow before choosing a paid plan.",
-    cta: "Start 30-day trial",
+    cta: "Start 15-day trial",
     features: ["1 WhatsApp number", "2 users", "Shared team inbox", "Contacts and template sync", "Manual customer replies", "Basic support"]
   },
   {
@@ -28,7 +28,7 @@ const plans = [
     price: "₹1,650",
     billing: "₹4,950 billed quarterly",
     bestFor: "Small teams starting campaigns and customer follow-up.",
-    cta: "Start 30-day trial",
+    cta: "Start 15-day trial",
     features: ["Everything in Trial", "Basic broadcasts", "Campaign history", "Contact segmentation", "Basic performance analytics", "Guided onboarding support"]
   },
   {
@@ -36,7 +36,7 @@ const plans = [
     price: "₹3,550",
     billing: "₹10,650 billed quarterly",
     bestFor: "Growing teams that need campaigns, automation, and conversion workflows.",
-    cta: "Start 30-day trial",
+    cta: "Start 15-day trial",
     featured: true,
     features: ["Everything in Starter", "Multi-agent operations", "E-commerce retargeting", "Reminders and follow-ups", "Payment and form collection", "5 automation workflows", "Priority support"]
   },
@@ -45,7 +45,7 @@ const plans = [
     price: "₹5,500",
     billing: "₹16,500 billed quarterly",
     bestFor: "Teams ready for AI-led answers, qualification, and assisted automation.",
-    cta: "Start 30-day trial",
+    cta: "Start 15-day trial",
     features: ["Everything in Growth", "AI chatbot", "Approved knowledge answers", "AI lead qualification", "Advanced workflow design", "Human handover controls", "Advanced analytics"]
   }
 ];
@@ -58,7 +58,7 @@ export default function PricingPage() {
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Clear pricing</p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-6xl">Platform fee and Meta usage stay separate.</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Start with a 30-day trial. Choose a paid plan to continue after the trial; Meta template-message charges remain visible and separate.</p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Start with a 15-day trial. Choose a paid plan to continue after the trial; Meta template-message charges remain visible and separate.</p>
         </div>
       </section>
 
@@ -67,7 +67,7 @@ export default function PricingPage() {
           <div className="max-w-2xl">
             <p className="product-eyebrow">Choose your workspace</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">A simple plan for every stage.</h2>
-            <p className="mt-4 leading-7 text-[var(--text-muted)]">The trial is available for 30 days only. When it ends, messaging, campaigns, and automation pause automatically while your data remains preserved.</p>
+            <p className="mt-4 leading-7 text-[var(--text-muted)]">The trial is available for 15 days only. When it ends, messaging, campaigns, and automation pause automatically while your data remains preserved.</p>
           </div>
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">

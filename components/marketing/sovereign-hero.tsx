@@ -30,7 +30,7 @@ export function SovereignHero({ registerUrl }: { registerUrl: string }) {
 
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/62 sm:text-lg lg:mx-0">One sovereign intelligence system, configured for the way your business answers, qualifies, recommends and acts.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
-          <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-md bg-[var(--gold-600)] px-6 text-sm font-bold text-[var(--ink-600)] shadow-[0_12px_34px_rgba(138,106,22,.24)] transition hover:-translate-y-0.5 hover:bg-[var(--gold-500)]">Start 30-day trial <Icon name="arrow-right" /></a>
+          <a href={registerUrl} className="inline-flex min-h-12 items-center gap-2 rounded-md bg-[var(--gold-600)] px-6 text-sm font-bold text-[var(--ink-600)] shadow-[0_12px_34px_rgba(138,106,22,.24)] transition hover:-translate-y-0.5 hover:bg-[var(--gold-500)]">Start 15-day trial <Icon name="arrow-right" /></a>
           <Link href="/solutions" className="inline-flex min-h-12 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-6 text-sm font-semibold text-white/76 transition hover:border-[var(--gold-300)]/45 hover:bg-white/10 hover:text-white">Explore business bots</Link>
         </div>
       </div>

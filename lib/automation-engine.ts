@@ -3,6 +3,8 @@ import { Prisma, type AutomationJob } from "../generated/prisma/client";
 import { sendWhatsAppTemplateMessage } from "@/lib/services/whatsapp-service";
 import { finalizeCampaignRun, recordCampaignRecipientResult } from "@/lib/repositories/campaign-repository";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { sendBookingMail } from "@/lib/services/mailbox-service";
+import { DEFAULT_PAID_PLAN, TRIAL_DAYS } from "@/lib/trial-policy";
 
 export const AUTOMATION_JOB_STATUS = {
   QUEUED: "QUEUED",
@@ -21,6 +23,7 @@ export const AUTOMATION_ACTION_TYPE = {
   HUMAN_HANDOFF: "HUMAN_HANDOFF",
   DAILY_DIGEST_SIMULATION: "DAILY_DIGEST_SIMULATION",
   WHATSAPP_TEMPLATE_CAMPAIGN: "WHATSAPP_TEMPLATE_CAMPAIGN",
+  TRIAL_CONVERSION_EMAIL: "TRIAL_CONVERSION_EMAIL",
   FAIL_VERIFICATION: "FAIL_VERIFICATION"
 } as const;
 
@@ -224,6 +227,10 @@ export async function executeAutomationJob(job: AutomationJob, options: { dryRun
     return executeScheduledWhatsAppCampaign(job, options);
   }
 
+  if (job.actionType === AUTOMATION_ACTION_TYPE.TRIAL_CONVERSION_EMAIL) {
+    return executeTrialConversionEmail(job, options);
+  }
+
   const result = {
     dryRun: Boolean(options.dryRun),
     actionType: job.actionType,
@@ -233,6 +240,33 @@ export async function executeAutomationJob(job: AutomationJob, options: { dryRun
   };
 
   return completeAutomationJob(job.id, result);
+}
+
+async function executeTrialConversionEmail(job: AutomationJob, options: { dryRun?: boolean }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const payload = job.payload && typeof job.payload === "object" && !Array.isArray(job.payload) ? job.payload as Record<string, unknown> : {};
+  const email = String(payload.email || "").trim().toLowerCase();
+  const ownerName = String(payload.ownerName || "Customer");
+  const companyName = String(payload.companyName || "your business");
+  const day = Number(payload.day);
+  if (!email || ![13, TRIAL_DAYS].includes(day)) throw new Error("Trial conversion email payload is invalid.");
+  const property = await db.property.findUnique({ where: { id: job.propertyId }, select: { organizationId: true } });
+  if (!property?.organizationId) throw new Error("Trial workspace is unavailable.");
+  const access = await getOrganizationSubscriptionAccess(property.organizationId);
+  if (!access || access.planCode !== "TRIAL") return completeAutomationJob(job.id, { skipped: true, reason: "Paid plan already active" });
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://app.aifrogi.com").replace(/\/$/, "");
+  const upgradeUrl = `${appUrl}/billing?upgrade=${DEFAULT_PAID_PLAN}`;
+  if (options.dryRun) return completeAutomationJob(job.id, { dryRun: true, day, email });
+  const ending = day === TRIAL_DAYS;
+  const mail = await sendBookingMail({
+    to: email,
+    subject: ending ? "Your AiFrogi trial has ended — activate Starter" : "Two days remain in your AiFrogi trial",
+    body: `Hello ${ownerName},\n\n${ending ? `Your ${TRIAL_DAYS}-day AiFrogi trial for ${companyName} has ended. Trial actions are now paused, while your workspace data remains preserved.` : `Day 13 of your ${TRIAL_DAYS}-day AiFrogi trial for ${companyName} is complete. Two days remain.`}\n\nActivate ${DEFAULT_PAID_PLAN}: ${upgradeUrl}\n\nAiFrogi`,
+    html: `<div style="background:#050505;padding:30px;font-family:Arial,sans-serif;color:#fff"><div style="max-width:600px;margin:auto;border:1px solid #403617;border-radius:16px;padding:28px;background:#101010"><p style="color:#e2c66d;font-size:12px;letter-spacing:2px">AIFROGI TRIAL</p><h1 style="font-size:26px;font-weight:600">${ending ? "Keep your AI Business Bot active." : "Two days remain."}</h1><p style="color:#c8c8c8;line-height:1.7">${ending ? `Your ${TRIAL_DAYS}-day trial for ${companyName} has ended. Actions are paused, but your workspace data is preserved.` : `Your ${TRIAL_DAYS}-day trial for ${companyName} reaches day 13 today.`}</p><a href="${upgradeUrl}" style="display:inline-block;margin-top:14px;background:#8a6a16;color:#fff;text-decoration:none;padding:13px 20px;border-radius:8px;font-weight:700">Activate Starter</a></div></div>`
+  });
+  if (mail.error) throw new Error(mail.error);
+  return completeAutomationJob(job.id, { delivered: true, day, plan: DEFAULT_PAID_PLAN });
 }
 
 async function executeScheduledWhatsAppCampaign(job: AutomationJob, options: { dryRun?: boolean }) {

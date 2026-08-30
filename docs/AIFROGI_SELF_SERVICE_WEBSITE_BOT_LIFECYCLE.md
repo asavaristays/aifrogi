@@ -5,7 +5,16 @@ Status: Canonical execution specification
 
 ## Objective
 
-Allow a business owner to select an AI Business Bot, start a controlled 30-day trial, prepare sovereign business intelligence, install the bot on a website and reach a verified live state without bypassing tenant isolation, human accountability or Super Admin safety approval.
+Allow a business owner to select an AI Business Bot, start a controlled 15-day trial, prepare sovereign business intelligence, install the bot on a website and reach a verified live state without bypassing tenant isolation, human accountability or Super Admin safety approval.
+
+## Email and access lifecycle
+
+1. Registration sends a branded welcome email containing the verified username, a 24-hour password-creation link and a QR for that same signed activation link.
+2. AiFrogi never generates, emails or places a reusable password in a QR code.
+3. After ownership activation, a second branded installation-kit email provides the tenant JavaScript, WordPress-compatible code, iframe, standalone bot URL and QR.
+4. Installation code remains controlled by the lifecycle gate; receiving code does not make an unapproved bot live.
+5. An idempotent day-13 automation emails the owner that two trial days remain and links to the Starter upgrade path.
+6. An idempotent day-15 automation confirms trial expiry, preserves workspace data, pauses paid actions and links to Starter.
 
 ## Roles
 

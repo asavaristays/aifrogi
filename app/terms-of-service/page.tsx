@@ -40,7 +40,7 @@ export default function TermsOfServicePage() {
       </LegalSection>
 
       <LegalSection title="7. Suspension and termination">
-        <p>The introductory trial lasts 30 days and is not a free-forever plan. At trial expiry, messaging, campaigns, automation, and other paid actions pause automatically until a paid plan is activated. Workspace data remains preserved subject to the retention and deletion terms. We may also restrict or suspend access for security threats, unlawful activity, material policy violations, non-payment, or conduct that risks the service or third-party platforms.</p>
+        <p>The introductory trial lasts 15 days and is not a free-forever plan. At trial expiry, messaging, campaigns, automation, and other paid actions pause automatically until a paid plan is activated. Workspace data remains preserved subject to the retention and deletion terms. We may also restrict or suspend access for security threats, unlawful activity, material policy violations, non-payment, or conduct that risks the service or third-party platforms.</p>
       </LegalSection>
 
       <LegalSection title="8. Liability and contact">

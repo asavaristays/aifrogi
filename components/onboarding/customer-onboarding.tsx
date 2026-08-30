@@ -417,7 +417,7 @@ export function CustomerOnboarding({
           {trial.enabled ? (
             <div className="mt-5 rounded-md border border-[var(--gold-300)] bg-[var(--primary-soft)] p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-black text-[#404040]">30-day trial</p>
+                <p className="text-xs font-black text-[#404040]">15-day trial</p>
                 <span className="text-xs font-black text-[var(--gold-700)]">{trial.label}</span>
               </div>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">

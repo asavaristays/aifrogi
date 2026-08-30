@@ -145,7 +145,7 @@ export function LoginClient({ returnTo }: { returnTo?: string }) {
               </button>
             ) : null}
           </form>
-          <p className="mt-7 text-sm text-[var(--text-muted)]">New to AiFrogi? <Link href="/register" className="font-semibold text-[var(--gold-700)]">Start a 30-day trial</Link></p>
+          <p className="mt-7 text-sm text-[var(--text-muted)]">New to AiFrogi? <Link href="/register" className="font-semibold text-[var(--gold-700)]">Start a 15-day trial</Link></p>
           <div className="mt-5 flex items-center justify-between gap-4 text-sm">
             <Link href="/forgot-password" className="font-semibold text-[var(--gold-700)]">Forgot password?</Link>
             <span className="text-xs text-[#68645c]">Never share OTPs or credentials.</span>

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { recordRegistrationEmailResult, registerTrialOrganization } from "@/lib/repositories/trial-registration-repository";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
+import { TRIAL_DAYS } from "@/lib/trial-policy";
+import QRCode from "qrcode";
 
 function clean(value: unknown, max = 180) {
   return typeof value === "string" ? value.trim().replace(/[\r\n]+/g, " ").slice(0, max) : "";
@@ -9,6 +11,10 @@ function clean(value: unknown, max = 180) {
 
 function validEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
 }
 
 function normalizeWebsite(value: string) {
@@ -67,10 +73,16 @@ export async function POST(request: Request) {
     const activationUrl = `${appUrl}/activate?token=${encodeURIComponent(registration.token)}`;
     let emailDelivered = false;
     try {
+      const qr = await QRCode.toBuffer(activationUrl, { width: 220, margin: 1, color: { dark: "#8A6A16", light: "#FFFFFF" } });
       const mail = await sendBookingMail({
         to: ownerEmail,
-        subject: "Activate your AiFrogi trial workspace",
-        body: `Hello ${ownerName},\n\nYour 30-day AiFrogi trial workspace for ${companyName} is ready to activate.\n\nCreate your personal password within 24 hours:\n${activationUrl}\n\nAfter signing in, AiFrogi will guide you through approved business intelligence, website installation, controlled testing, and final Super Admin go-live approval. The trial is not free forever: when 30 days end, messaging and automation pause until a paid plan is activated. Your data remains preserved.\n\nNever share passwords, OTPs, or credentials with anyone.\n\nAiFrogi`
+        subject: "Welcome to AiFrogi — activate your AI Business Bot",
+        body: `Hello ${ownerName},\n\nYour ${TRIAL_DAYS}-day AiFrogi trial workspace for ${companyName} is ready.\n\nUsername: ${ownerEmail}\nCreate your private password within 24 hours: ${activationUrl}\n\nYou can also scan the activation QR in the branded email. After activation, complete onboarding to generate your website JavaScript, WordPress, iframe and standalone bot link. For security, installation code is not issued before ownership verification.\n\nOn day ${TRIAL_DAYS}, trial actions pause until Starter or another paid plan is activated. Your data remains preserved.\n\nNever share passwords, OTPs, or credentials.\n\nAiFrogi`,
+        html: `<div style="margin:0;background:#050505;padding:32px 16px;font-family:Arial,sans-serif;color:#fff"><div style="max-width:620px;margin:auto;border:1px solid #403617;border-radius:18px;padding:30px;background:#101010"><img src="cid:aifrogi-logo" alt="AiFrogi" style="width:170px;height:auto"><p style="margin:28px 0 6px;color:#e2c66d;font-size:12px;letter-spacing:2px;text-transform:uppercase">Sovereign AI Business Bot</p><h1 style="margin:0 0 16px;font-size:28px;font-weight:600">Welcome, ${escapeHtml(ownerName)}.</h1><p style="color:#c8c8c8;line-height:1.7">Your ${TRIAL_DAYS}-day trial workspace for <strong style="color:#fff">${escapeHtml(companyName)}</strong> is ready. Verify ownership and create your private password.</p><div style="margin:24px 0;padding:18px;background:#1c1c1c;border-radius:12px"><div style="display:inline-block;vertical-align:middle;max-width:310px"><p style="margin:0 0 8px;color:#999;font-size:12px">USERNAME</p><p style="margin:0 0 20px;color:#fff">${escapeHtml(ownerEmail)}</p><a href="${activationUrl}" style="display:inline-block;background:#8a6a16;color:#fff;text-decoration:none;padding:13px 20px;border-radius:8px;font-weight:700">Create password & activate</a><p style="margin:12px 0 0;color:#999;font-size:12px">Secure link expires in 24 hours.</p></div><img src="cid:activation-qr" alt="Activation QR" width="150" height="150" style="display:inline-block;vertical-align:middle;margin-left:24px;border-radius:8px;background:#fff"></div><p style="color:#c8c8c8;line-height:1.7">After activation, onboarding generates your JavaScript, WordPress, iframe and standalone bot link. Installation credentials are released only after ownership verification.</p><p style="color:#999;font-size:12px;line-height:1.6">Never share passwords, OTPs or payment details. Trial actions pause after ${TRIAL_DAYS} days unless a paid plan is activated; workspace data remains preserved.</p></div></div>`,
+        attachments: [
+          { filename: "activation-qr.png", content: qr, cid: "activation-qr", contentType: "image/png" },
+          { filename: "aifrogi-logo.png", content: await (await fetch(`${appUrl}/brand/aifrogi-logo.png`)).arrayBuffer().then((value) => Buffer.from(value)), cid: "aifrogi-logo", contentType: "image/png" }
+        ]
       });
       emailDelivered = !mail.error;
     } catch {

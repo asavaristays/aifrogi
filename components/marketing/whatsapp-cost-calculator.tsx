@@ -151,7 +151,7 @@ export function WhatsAppCostCalculator() {
             </div>
 
             <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-xs leading-5 text-white/52"><strong className="block text-white/82">Good to know</strong>Utility templates sent inside an open 24-hour customer service window may be free. International authentication and taxes can change the final charge.</div>
-            <a href="https://app.aifrogi.com/register" className="mt-6 inline-flex min-h-12 items-center justify-center rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:bg-[#b28728]">Start 30-day trial</a>
+            <a href="https://app.aifrogi.com/register" className="mt-6 inline-flex min-h-12 items-center justify-center rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:bg-[#b28728]">Start 15-day trial</a>
             <a href="https://business.whatsapp.com/products/platform-pricing#rates" target="_blank" rel="noreferrer" className="mt-4 text-center text-xs font-semibold text-white/45 underline decoration-white/20 underline-offset-4 hover:text-white">View official Meta pricing</a>
           </aside>
         </div>

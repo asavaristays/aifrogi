@@ -32,7 +32,7 @@ export type WhatsAppBotConfigurationInput = Partial<Omit<WhatsAppBotConfiguratio
   serviceBuckets?: string[];
 };
 
-export const DEFAULT_WHATSAPP_BOT_WELCOME = "Thank you for contacting HotelRADAR AI Agency. I can help you choose the right website, WhatsApp automation, AI audit, or 30-day trial path.";
+export const DEFAULT_WHATSAPP_BOT_WELCOME = "Thank you for contacting HotelRADAR AI Agency. I can help you choose the right website, WhatsApp automation, AI audit, or 15-day trial path.";
 
 export const DEFAULT_WHATSAPP_BOT_CONFIGURATION: WhatsAppBotConfiguration = {
   enabled: true,
@@ -89,7 +89,7 @@ export function buildWhatsAppBotMenuOptions(configuration: WhatsAppBotConfigurat
       id: "menu_trial",
       label: "30-Day Trial",
       description: "Explore a working automation trial",
-      prompt: "I want information about the 30-day working trial."
+      prompt: "I want information about the 15-day working trial."
     });
   }
 

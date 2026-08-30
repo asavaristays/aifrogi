@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { ensureOrganizationSubscription } from "@/lib/billing-super-admin";
+import { TRIAL_DAYS } from "@/lib/trial-policy";
 
 export type SubscriptionAccessState = {
   planCode: string;
@@ -46,7 +47,7 @@ export async function getOrganizationSubscriptionAccess(
           action: "TRIAL_AUTOMATICALLY_PAUSED",
           targetType: "Subscription",
           targetId: subscription!.id,
-          summary: "30-day trial ended; paid actions paused while customer data remains available."
+          summary: `${TRIAL_DAYS}-day trial ended; paid actions paused while customer data remains available.`
         }
       });
       return { ...updated, plan: subscription!.plan };
@@ -67,9 +68,9 @@ export async function getOrganizationSubscriptionAccess(
     paused,
     canUsePaidActions: !paused,
     message: paused
-      ? "Your 30-day trial has ended. Customer data is preserved, but messaging, campaigns, and automation are paused until a paid plan is activated."
+      ? `Your ${TRIAL_DAYS}-day trial has ended. Customer data is preserved, but messaging, campaigns, and automation are paused until a paid plan is activated.`
       : subscription.plan.code === "TRIAL"
-        ? `${daysLeft ?? 0} day${daysLeft === 1 ? "" : "s"} remain in your 30-day trial.`
+        ? `${daysLeft ?? 0} day${daysLeft === 1 ? "" : "s"} remain in your ${TRIAL_DAYS}-day trial.`
         : `${subscription.plan.name} is active.`
   };
 }

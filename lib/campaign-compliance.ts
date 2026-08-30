@@ -43,8 +43,8 @@ export const CAMPAIGN_TEMPLATES: CampaignTemplate[] = [
     languageCode: "en_US",
     status: "APPROVED",
     headerType: "NONE",
-    purpose: "Text opener for AI audit and 30-day working trial.",
-    bodyPreview: "Hi, this is HotelRADAR AI. We can review your hotel website, WhatsApp lead flow, and booking gaps. Reply AUDIT for a free AI audit or TRIAL for the 30-day working trial.",
+    purpose: "Text opener for AI audit and 15-day working trial.",
+    bodyPreview: "Hi, this is HotelRADAR AI. We can review your hotel website, WhatsApp lead flow, and booking gaps. Reply AUDIT for a free AI audit or TRIAL for the 15-day working trial.",
     buttonLabels: ["AUDIT", "TRIAL", "STOP"],
     variableHints: []
   },
@@ -56,7 +56,7 @@ export const CAMPAIGN_TEMPLATES: CampaignTemplate[] = [
     status: "APPROVED",
     headerType: "NONE",
     purpose: "Follow up with prospects who asked about the working trial.",
-    bodyPreview: "Thank you for your interest in the 30-day working trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first.",
+    bodyPreview: "Thank you for your interest in the 15-day working trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first.",
     buttonLabels: ["Share details", "Talk to team", "STOP"],
     variableHints: []
   },

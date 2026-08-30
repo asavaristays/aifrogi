@@ -40,7 +40,7 @@ export function WhatsAppIntegrationCard({
   const [error, setError] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<string | null>(null);
   const [kbResult, setKbResult] = useState<string | null>(null);
-  const [kbQuestion, setKbQuestion] = useState("What is included in the 30-day trial?");
+  const [kbQuestion, setKbQuestion] = useState("What is included in the 15-day trial?");
 
   async function save() {
     setSaving(true);

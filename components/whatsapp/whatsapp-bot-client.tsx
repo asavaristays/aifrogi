@@ -448,7 +448,7 @@ export function WhatsAppBotClient({
       { key: "ai_replied" as const, label: "AI replied", helper: "Review automation", tone: "bg-[#3d8be3]", matches: matches.ai_replied },
       { key: "human_needed" as const, label: "Human needed", helper: "Manual attention", tone: "bg-[#8d4d10]", matches: matches.human_needed },
       { key: "campaign_replies" as const, label: "Campaign replies", helper: "Broadcast response", tone: "bg-[#8a6a16]", matches: matches.campaign_replies },
-      { key: "trial_leads" as const, label: "Trial leads", helper: "30-day trial", tone: "bg-[#27aa78]", matches: matches.trial_leads },
+      { key: "trial_leads" as const, label: "Trial leads", helper: "15-day trial", tone: "bg-[#27aa78]", matches: matches.trial_leads },
       { key: "audit_leads" as const, label: "Audit leads", helper: "AI audit interest", tone: "bg-[#1b62a5]", matches: matches.audit_leads },
       { key: "resolved" as const, label: "Resolved", helper: "Closed work", tone: "bg-[#6b7280]", matches: matches.resolved },
       { key: "failed_delivery" as const, label: "Failed delivery", helper: "Needs diagnosis", tone: "bg-[#d9493f]", matches: matches.failed_delivery }
@@ -819,7 +819,7 @@ export function WhatsAppBotClient({
     activeSource === "AI audit"
       ? "Thanks for your interest in the AI audit. Please share your hotel name, website, city, and current booking channels. I will review visibility, conversion gaps, and WhatsApp follow-up opportunities."
       : activeSource === "Trial"
-        ? "Thanks for your interest in the 30-day trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first."
+        ? "Thanks for your interest in the 15-day trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first."
         : "Thanks for reaching out. Please share your business name, website, current tools, and the result you want to achieve so we can guide the next step.";
 
   return (

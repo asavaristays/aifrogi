@@ -2,6 +2,7 @@ import { createHash, randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import { hashCredentialPassword, verifyCredentialPassword } from "@/lib/credential-store";
 import { SELF_SERVICE_REGISTRATION } from "@/lib/repositories/trial-registration-repository";
+import { TRIAL_DAYS, TRIAL_UPGRADE_REMINDER_DAY } from "@/lib/trial-policy";
 
 export type TeamRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -45,7 +46,7 @@ export async function getInvitation(token: string) {
   if (!db || !token) return null;
   return db.organizationMember.findUnique({
     where: { invitationTokenHash: tokenHash(token) },
-    select: { id: true, email: true, name: true, role: true, status: true, invitedBy: true, invitationExpiresAt: true, organization: { select: { id: true, name: true, status: true } } }
+    select: { id: true, email: true, name: true, role: true, status: true, invitedBy: true, invitationExpiresAt: true, organization: { select: { id: true, name: true, status: true, createdAt: true } } }
   });
 }
 
@@ -61,12 +62,42 @@ export async function activateInvitation(token: string, password: string) {
       data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
       select: { email: true, name: true, role: true, organizationId: true }
     });
+    let installation: { companyName: string; propertySlug: string; installationKey: string } | null = null;
     if (invitation.invitedBy === SELF_SERVICE_REGISTRATION) {
       await tx.organization.update({ where: { id: invitation.organization.id }, data: { status: "ONBOARDING" } });
       await tx.onboardingProfile.update({ where: { organizationId: invitation.organization.id }, data: { lifecycleStatus: "DRAFT", currentStep: 1, progressPercent: 10 } });
       await tx.onboardingActivity.create({ data: { organizationId: invitation.organization.id, actorEmail: invitation.email, action: "EMAIL_VERIFIED", detail: "Owner activated the trial workspace" } });
+      const property = await tx.property.findFirst({ where: { organizationId: invitation.organization.id }, select: { id: true } });
+      if (property) {
+        const fullProperty = await tx.property.findUnique({ where: { id: property.id }, select: { slug: true } });
+        const profile = await tx.botProfile.findUnique({ where: { organizationId: invitation.organization.id }, select: { installationKey: true } });
+        const installationKey = profile?.installationKey || randomBytes(24).toString("base64url");
+        if (!profile?.installationKey) await tx.botProfile.update({ where: { organizationId: invitation.organization.id }, data: { installationKey } });
+        installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey };
+        const schedule = (day: number) => new Date(invitation.organization.createdAt.getTime() + day * 24 * 60 * 60 * 1000);
+        for (const day of [TRIAL_UPGRADE_REMINDER_DAY, TRIAL_DAYS]) {
+          await tx.automationJob.upsert({
+            where: { idempotencyKey: `trial-conversion:${invitation.organization.id}:day-${day}` },
+            update: {},
+            create: {
+              propertyId: property.id,
+              workflowId: "trial-to-starter-v1",
+              triggerType: "TRIAL_DAY_REACHED",
+              triggerRef: invitation.organization.id,
+              actionType: "TRIAL_CONVERSION_EMAIL",
+              payload: { email: invitation.email, ownerName: invitation.name || "Customer", companyName: invitation.organization.name, day },
+              idempotencyKey: `trial-conversion:${invitation.organization.id}:day-${day}`,
+              scheduledFor: schedule(day),
+              nextRunAt: schedule(day),
+              priority: 2,
+              maxAttempts: 5,
+              createdBy: "system@aifrogi.com"
+            }
+          });
+        }
+      }
     }
-    return { ...member, registration: invitation.invitedBy === SELF_SERVICE_REGISTRATION };
+    return { ...member, registration: invitation.invitedBy === SELF_SERVICE_REGISTRATION, installation };
   });
 }
 

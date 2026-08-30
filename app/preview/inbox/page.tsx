@@ -68,7 +68,7 @@ const leads: Lead[] = [
     stage: "Qualified",
     minutesAgo: 34,
     language: "EN",
-    intent: "30-day trial",
+    intent: "15-day trial",
     stay: "morjimbeachvilla.in",
     party: "Lead reply automation",
     budget: "Starter plan",
@@ -80,7 +80,7 @@ const leads: Lead[] = [
       {
         id: "m3",
         from: "guest",
-        text: "Can we test the 30 day trial for our villa leads?",
+        text: "Can we test the 15 day trial for our villa leads?",
         time: "3:40 PM",
         sentAtIso: minutesAgo(34)
       },

@@ -1,3 +1,5 @@
+import { TRIAL_DAYS } from "@/lib/trial-policy";
+
 export type OnboardingOwner = "You" | "AiFrogi" | "Meta";
 
 export type OnboardingGuidanceRecord = {
@@ -68,7 +70,7 @@ export function getTrialWindow(organization: OnboardingGuidanceOrganization | nu
   }
 
   const startsAt = asDate(organization.createdAt) || now;
-  const endsAt = addDays(startsAt, 30);
+  const endsAt = addDays(startsAt, TRIAL_DAYS);
   const totalMs = Math.max(1, endsAt.getTime() - startsAt.getTime());
   const elapsedMs = Math.max(0, Math.min(totalMs, now.getTime() - startsAt.getTime()));
   const daysLeft = Math.max(0, Math.ceil((endsAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)));

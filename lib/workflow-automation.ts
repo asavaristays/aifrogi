@@ -83,7 +83,7 @@ export function buildAutomationWorkflows(leads: Lead[] = []): AutomationWorkflow
   });
   const trialCount = countWhere(leads, (lead) => {
     const text = textForLead(lead);
-    return text.includes("trial") || text.includes("30-day") || text.includes("30 day");
+    return text.includes("trial") || text.includes("15-day") || text.includes("15 day");
   });
   const missedCount = countWhere(leads, (lead) => lastMessage(lead)?.from === "guest" && lead.minutesAgo >= 10);
   const quoteCount = countWhere(leads, (lead) => {
@@ -126,7 +126,7 @@ export function buildAutomationWorkflows(leads: Lead[] = []): AutomationWorkflow
       id: "audit_to_trial",
       title: "AI Audit To Trial Conversion",
       audience: "AiFrogi",
-      promise: "Turn a campaign click into a structured audit request and then a 30-day trial conversation.",
+      promise: "Turn a campaign click into a structured audit request and then a 15-day trial conversation.",
       trigger: "Visitor clicks Free AI Audit, replies AUDIT, or submits the audit page.",
       liveSignal: `${auditCount} audit-related lead${auditCount === 1 ? "" : "s"} detected`,
       activeCount: auditCount,

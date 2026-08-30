@@ -227,7 +227,7 @@ export async function loadBookingMailbox(limit = 10): Promise<MailboxSummary> {
   };
 }
 
-export async function sendBookingMail(input: { to: string; subject: string; body: string }) {
+export async function sendBookingMail(input: { to: string; subject: string; body: string; html?: string; attachments?: Array<{ filename: string; content: Buffer; cid?: string; contentType?: string }> }) {
   if (!isConfigured()) {
     return {
       error: "Booking mailbox is not configured with IMAP/SMTP credentials.",
@@ -250,6 +250,8 @@ export async function sendBookingMail(input: { to: string; subject: string; body
     to: input.to,
     subject: input.subject,
     text: input.body,
+    html: input.html,
+    attachments: input.attachments,
     replyTo: BOOKING_MAILBOX.email
   });
 

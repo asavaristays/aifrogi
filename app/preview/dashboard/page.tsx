@@ -10,7 +10,7 @@ export default async function DashboardPreviewPage({ searchParams }: { searchPar
   const empty = state === "empty";
   const healthy = state === "healthy";
   const leads: Lead[] = empty ? [] : [
-    previewLead("preview-1", "Aarav Mehta", "AM", "Can you share what is included in the 30-day trial?", healthy ? "agent" : "guest", 8, !healthy),
+    previewLead("preview-1", "Aarav Mehta", "AM", "Can you share what is included in the 15-day trial?", healthy ? "agent" : "guest", 8, !healthy),
     previewLead("preview-2", "Casa Sereno Goa", "CS", "Thank you. We will review the audit link today.", "agent", 24, false),
     previewLead("preview-3", "Palm Grove Villas", "PG", "We need WhatsApp automation for booking enquiries.", healthy ? "agent" : "guest", 41, false)
   ];
@@ -49,7 +49,7 @@ export default async function DashboardPreviewPage({ searchParams }: { searchPar
       { key: "authority", label: "Action authority", complete: healthy, detail: healthy ? "Approval boundary active" : "Approval boundary required", href: "/onboarding" }
     ]}}
     humanResponse={{ slaMinutes: 60, reminderPercent: 50, waiting: healthy ? 0 : 2, reminder: healthy ? 0 : 1, overdue: healthy ? 0 : 1, fallbackEligible: 0, oldestWaitingMinutes: healthy ? 0 : 72, items: healthy ? [] : [
-      { leadId: "preview-1", name: "Aarav Mehta", channel: "WhatsApp", state: "OVERDUE", waitingMinutes: 72, dueAt: new Date().toISOString(), fallbackEligible: false, latestMessage: "Can you share what is included in the 30-day trial?" },
+      { leadId: "preview-1", name: "Aarav Mehta", channel: "WhatsApp", state: "OVERDUE", waitingMinutes: 72, dueAt: new Date().toISOString(), fallbackEligible: false, latestMessage: "Can you share what is included in the 15-day trial?" },
       { leadId: "preview-3", name: "Palm Grove Villas", channel: "WhatsApp", state: "REMINDER", waitingMinutes: 41, dueAt: new Date().toISOString(), fallbackEligible: false, latestMessage: "We need WhatsApp automation for booking enquiries." }
     ]}}
     attention={attention}

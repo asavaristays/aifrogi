@@ -69,7 +69,7 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 30-day trial</a>
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 15-day trial</a>
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
