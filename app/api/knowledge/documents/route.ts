@@ -3,7 +3,8 @@ import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access"
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
 import { createKnowledgeDocument, detectDocumentConflict, reviewKnowledgeDocument } from "@/lib/repositories/knowledge-content-repository";
-import { extractKnowledgeDocument } from "@/lib/services/knowledge-document-service";
+import { extractKnowledgeDocument, stageAtomicClaims } from "@/lib/services/knowledge-document-service";
+import { stageDocumentAtomicClaims } from "@/lib/repositories/knowledge-verification-repository";
 
 async function context() {
   const access = await getCurrentClientAccess();
@@ -22,7 +23,9 @@ export async function POST(request: Request) {
     const extracted = await extractKnowledgeDocument(file);
     const conflictSummary = await detectDocumentConflict(current.property.id, extracted.extractedText);
     const document = await createKnowledgeDocument({ propertyId: current.property.id, fileName: file.name.replace(/[\r\n]/g, " ").slice(0, 180), mimeType: file.type, sizeBytes: file.size, content: extracted.content, extractedText: extracted.extractedText, uploadedBy: current.access.user.username, conflictSummary });
-    return NextResponse.json({ ok: true, document }, { status: 201 });
+    const candidates = stageAtomicClaims(extracted.extractedText, file.type);
+    const stagedClaims = candidates.length ? await stageDocumentAtomicClaims({ propertyId: current.property.id, documentId: document.id, createdBy: current.access.user.username, claims: candidates }) : [];
+    return NextResponse.json({ ok: true, document, stagedClaims: stagedClaims.map((entry) => ({ id: entry.id, question: entry.question, status: entry.status, validationErrors: entry.validationErrors })), stagedCount: stagedClaims.length }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not process this document." }, { status: 400 });
   }

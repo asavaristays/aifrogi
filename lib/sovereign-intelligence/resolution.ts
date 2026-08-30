@@ -21,6 +21,8 @@ export type SovereignResolutionState = {
   assistantDuplicateCount: number;
   lastCustomerFingerprint: string;
   lastAnswerFingerprint: string;
+  lastCustomerText: string;
+  lastAnswerText: string;
   collectedFacts: Record<string, CollectedFact>;
   missingFields: string[];
   status: "ACTIVE" | "RESOLVED" | "ESCALATED" | "REFUSED";
@@ -35,6 +37,33 @@ function normalize(value: string) {
 
 function fingerprint(value: string) {
   return createHash("sha256").update(normalize(value)).digest("hex").slice(0, 24);
+}
+
+export const CUSTOMER_SEMANTIC_REPEAT_THRESHOLD = 0.72;
+export const ASSISTANT_SEMANTIC_REPEAT_THRESHOLD = 0.82;
+
+function semanticTerms(value: string) {
+  const stop = new Set(["a", "an", "and", "are", "can", "could", "do", "for", "i", "is", "it", "me", "my", "of", "please", "the", "to", "what", "would", "you", "your"]);
+  return new Set(normalize(value).split(" ").filter((term) => term.length > 1 && !stop.has(term)));
+}
+
+export function semanticSimilarity(left: string, right: string) {
+  const a = semanticTerms(left);
+  const b = semanticTerms(right);
+  if (!a.size || !b.size) return 0;
+  const intersection = [...a].filter((term) => b.has(term)).length;
+  return intersection / Math.max(a.size, b.size);
+}
+
+function requestedKnownSlot(answer: string, facts: Record<string, CollectedFact>) {
+  const normalizedAnswer = normalize(answer);
+  const requested = [
+    ["name", /\b(?:your|customer) name\b|\bwhat name\b/],
+    ["contact", /\b(?:mobile|phone|contact|email)(?: number| address)?\b/],
+    ["date", /\b(?:which|what|preferred) (?:date|day)\b|\bwhen would\b/],
+    ["topic", /\b(?:which|what) (?:service|course|room|appointment|product)\b/]
+  ] as const;
+  return requested.find(([slot, pattern]) => facts[slot] && pattern.test(normalizedAnswer))?.[0] || null;
 }
 
 function intentKey(decision: SovereignDecision) {
@@ -62,6 +91,7 @@ function explicitFacts(question: string, consentedFacts: Record<string, string> 
 }
 
 function circuitBreakerAnswer(reason: string) {
+  if (reason === "REDUNDANT_SLOT_REQUEST") return "I have retained the information already provided and will not ask for it again. I need the business team to continue from the saved details because I do not have enough verified information for the next step.";
   if (reason === "CUSTOMER_REPEAT") return "I can see that this request is still unresolved, so I will not repeat the same answer or question. I’m preserving the details already provided and requesting Webtechnosys team assistance for the next step.";
   if (reason === "DUPLICATE_RESPONSE") return "I do not have enough new approved information to improve that answer, so I will not repeat it. I’m preserving the current context and requesting Webtechnosys team assistance.";
   return "I have reached the safe clarification limit without enough verified information to resolve this confidently. I’m preserving what you already provided and requesting Webtechnosys team assistance.";
@@ -77,15 +107,18 @@ export function governResolutionOutcome(input: {
 }) {
   const previous = safeState(input.previousState);
   const currentIntentKey = intentKey(input.decision);
-  const continuesIntent = Boolean(previous && (input.decision.contextUsed || previous.activeIntentKey === currentIntentKey) && previous.status === "ACTIVE");
+  const semanticallyContinues = Boolean(previous && semanticSimilarity(previous.resolvedQuestion, input.decision.resolvedQuestion) >= CUSTOMER_SEMANTIC_REPEAT_THRESHOLD);
+  const continuesIntent = Boolean(previous && (input.decision.contextUsed || previous.activeIntentKey === currentIntentKey || semanticallyContinues) && previous.status === "ACTIVE");
   const customerFingerprint = fingerprint(input.question);
   const answerFingerprint = fingerprint(input.answer);
-  const repeatedCustomer = Boolean(continuesIntent && previous?.lastCustomerFingerprint === customerFingerprint);
+  const repeatedCustomer = Boolean(continuesIntent && (previous?.lastCustomerFingerprint === customerFingerprint || semanticSimilarity(previous?.lastCustomerText || "", input.question) >= CUSTOMER_SEMANTIC_REPEAT_THRESHOLD));
   const unresolved = ["CLARIFY", "FALLBACK"].includes(input.decision.disposition);
-  const repeatedAnswer = Boolean(unresolved && continuesIntent && previous?.lastAnswerFingerprint === answerFingerprint);
+  const repeatedAnswer = Boolean(unresolved && continuesIntent && (previous?.lastAnswerFingerprint === answerFingerprint || semanticSimilarity(previous?.lastAnswerText || "", input.answer) >= ASSISTANT_SEMANTIC_REPEAT_THRESHOLD));
+  const collectedFacts = { ...(continuesIntent ? previous?.collectedFacts : {}), ...explicitFacts(input.question, input.consentedFacts) };
+  const redundantSlot = unresolved && continuesIntent ? requestedKnownSlot(input.answer, previous?.collectedFacts || {}) : null;
   const clarifyCount = unresolved ? (continuesIntent ? previous!.clarifyCount : 0) + 1 : 0;
   const maxClarifyCycles = Math.max(0, input.maxClarifyCycles ?? previous?.maxClarifyCycles ?? DEFAULT_MAX_CLARIFY_CYCLES);
-  const breakerReason = repeatedCustomer ? "CUSTOMER_REPEAT" : repeatedAnswer ? "DUPLICATE_RESPONSE" : clarifyCount >= maxClarifyCycles && unresolved ? "CLARIFY_LIMIT" : null;
+  const breakerReason = redundantSlot ? "REDUNDANT_SLOT_REQUEST" : repeatedCustomer ? "CUSTOMER_REPEAT" : repeatedAnswer ? "DUPLICATE_RESPONSE" : clarifyCount >= maxClarifyCycles && unresolved ? "CLARIFY_LIMIT" : null;
   const circuitBreakerTriggered = Boolean(breakerReason);
   const decision: SovereignDecision = circuitBreakerTriggered
     ? { ...input.decision, disposition: "ESCALATE", reason: `Bounded Resolution circuit breaker: ${breakerReason}.` }
@@ -105,7 +138,9 @@ export function governResolutionOutcome(input: {
     assistantDuplicateCount: continuesIntent ? (previous?.assistantDuplicateCount || 0) + (repeatedAnswer ? 1 : 0) : 0,
     lastCustomerFingerprint: customerFingerprint,
     lastAnswerFingerprint: fingerprint(answer),
-    collectedFacts: { ...(continuesIntent ? previous?.collectedFacts : {}), ...explicitFacts(input.question, input.consentedFacts) },
+    lastCustomerText: normalize(input.question).slice(0, 600),
+    lastAnswerText: normalize(answer).slice(0, 1200),
+    collectedFacts,
     missingFields: unresolved ? previous?.missingFields || [] : [],
     status,
     circuitBreakerTriggered,

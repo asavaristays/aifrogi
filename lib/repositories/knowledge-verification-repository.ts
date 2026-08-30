@@ -11,7 +11,7 @@ export async function expirePublishedClaims(propertyId?: string) {
   return result.count;
 }
 
-export async function createAtomicClaim(input: { propertyId: string; question: string; answer: string; category: string; claimType?: string; valueType?: string; currency?: string | null; effectiveAt?: Date | null; expiresAt?: Date | null; refreshDays?: number; createdBy: string; gapId?: string }) {
+export async function createAtomicClaim(input: { propertyId: string; question: string; answer: string; category: string; claimType?: string; valueType?: string; currency?: string | null; effectiveAt?: Date | null; expiresAt?: Date | null; refreshDays?: number; createdBy: string; gapId?: string; documentId?: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const validation = validateAtomicClaim(input);
@@ -19,7 +19,7 @@ export async function createAtomicClaim(input: { propertyId: string; question: s
   const existingConflict = await db.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: validation.claimKey, status: { in: ["PUBLISHED", "FIELD_APPROVED", "PREVIEW_PENDING", "APPROVED"] }, answer: { not: input.answer.trim() } } });
   const conflictSummary = existingConflict ? `Conflicts with active claim version ${existingConflict.version}. Resolve by explicitly superseding that version.` : null;
   const entry = await db.knowledgeEntry.create({ data: {
-    propertyId: input.propertyId, question: input.question.trim(), answer: input.answer.trim(), category: input.category.trim() || "General", createdBy: input.createdBy,
+    propertyId: input.propertyId, documentId: input.documentId || null, question: input.question.trim(), answer: input.answer.trim(), category: input.category.trim() || "General", createdBy: input.createdBy,
     claimKey: validation.claimKey, claimType: (input.claimType || "FACT").toUpperCase(), valueType: (input.valueType || "TEXT").toUpperCase(), currency: input.currency?.trim().toUpperCase() || null,
     effectiveAt: input.effectiveAt || new Date(), expiresAt: input.expiresAt || new Date(Date.now() + (input.refreshDays || 90) * 86400000), refreshDays: input.refreshDays || 90,
     version: (latest?.version || 0) + 1, validationStatus: validation.valid ? "VALID" : "INVALID", validationErrors: validation.errors,
@@ -27,6 +27,18 @@ export async function createAtomicClaim(input: { propertyId: string; question: s
   } });
   if (input.gapId) await db.knowledgeGap.updateMany({ where: { id: input.gapId, propertyId: input.propertyId }, data: { resolutionEntryId: entry.id, status: "RESOLVED" } });
   return entry;
+}
+
+export async function stageDocumentAtomicClaims(input: { propertyId: string; documentId: string; createdBy: string; claims: Array<{ question: string; answer: string; category: string; claimType: string; valueType: string; currency: string | null; refreshDays: number }> }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const document = await db.knowledgeDocument.findFirst({ where: { id: input.documentId, propertyId: input.propertyId }, select: { id: true } });
+  if (!document) throw new Error("Trusted source document not found in this workspace.");
+  const existing = await db.knowledgeEntry.count({ where: { documentId: document.id } });
+  if (existing) throw new Error("This source has already been structured. Review its existing staged claims.");
+  const entries = [];
+  for (const claim of input.claims.slice(0, 100)) entries.push(await createAtomicClaim({ ...claim, propertyId: input.propertyId, documentId: document.id, createdBy: input.createdBy }));
+  return entries;
 }
 
 export async function fieldApproveClaim(input: { propertyId: string; entryId: string; actorEmail: string; supersedesId?: string }) {

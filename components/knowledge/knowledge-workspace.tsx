@@ -105,7 +105,7 @@ export function KnowledgeWorkspace({
       if (!response.ok) throw new Error(payload.error || "Could not upload this document.");
       await refreshGovernance();
       form.reset();
-      setNotice(payload.document.status === "CONFLICT" ? "Document uploaded with a possible conflict. Review it before approval." : "Document extracted. Review and approve it before AI can use it.");
+      setNotice(payload.stagedCount ? `${payload.stagedCount} atomic claim suggestion${payload.stagedCount === 1 ? "" : "s"} extracted. Review every claim; none is live yet.` : "Source uploaded, but no safe atomic claim structure was detected. Add its facts manually; the raw document will not be used by AI.");
     } catch (error) { setNotice(error instanceof Error ? error.message : "Could not upload this document."); }
     finally { setUploading(false); }
   }
