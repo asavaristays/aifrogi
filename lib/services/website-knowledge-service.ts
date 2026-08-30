@@ -28,7 +28,8 @@ type KnowledgeAnswer = {
 };
 
 const DEFAULT_TTL_MS = 6 * 60 * 60 * 1000;
-const MAX_PAGES = 24;
+const MAX_PAGES = 40;
+const MAX_DISCOVERY_URLS = 120;
 const MAX_PAGE_CHARS = 4500;
 const MAX_CONTEXT_CHARS = 11000;
 const SEEDED_PATHS = [
@@ -189,7 +190,7 @@ function uniqueSameOriginUrls(baseUrl: string, urls: string[]) {
     }
   }
 
-  return result.slice(0, MAX_PAGES);
+  return result.slice(0, MAX_DISCOVERY_URLS);
 }
 
 async function discoverUrls(baseUrl: string) {
@@ -208,7 +209,9 @@ async function discoverUrls(baseUrl: string) {
   const homepageLinks = Array.from(homepage.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]);
   const seedUrls = SEEDED_PATHS.map((seedPath) => new URL(seedPath, baseUrl).toString());
 
-  return uniqueSameOriginUrls(baseUrl, [baseUrl, ...seedUrls, ...sitemapUrls, ...homepageLinks]);
+  // Sitemap pages are the current first-party inventory. Legacy seeds are only
+  // fallbacks and must not consume the crawl limit before live URLs are tried.
+  return uniqueSameOriginUrls(baseUrl, [baseUrl, ...sitemapUrls, ...homepageLinks, ...seedUrls]);
 }
 
 async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<KnowledgeBase> {
@@ -221,6 +224,7 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     const pages: KnowledgePage[] = [];
 
     for (const url of urls) {
+      if (pages.length >= MAX_PAGES) break;
       try {
         const html = await fetchText(url);
         const { title, text } = stripHtml(html);
@@ -262,6 +266,36 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     });
     throw error;
   }
+}
+
+const QUESTION_STOP_WORDS = new Set([
+  "about", "after", "already", "also", "and", "are", "can", "context", "could", "does", "for", "from", "have", "how", "into", "more", "our", "please", "tell", "that", "the", "their", "there", "they", "this", "what", "when", "where", "which", "who", "will", "with", "would", "you", "your"
+]);
+
+function questionTerms(value: string) {
+  return [...new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !QUESTION_STOP_WORDS.has(term)))];
+}
+
+export type WebsiteQuestionIntent = "BUSINESS" | "IDENTITY" | "GREETING" | "OFF_TOPIC" | "CONTEXT_FOLLOW_UP" | "UNKNOWN";
+
+export function classifyWebsiteQuestion(question: string): WebsiteQuestionIntent {
+  const normalized = question.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  if (/^(hi|hello|hey|good morning|good afternoon|good evening|namaste)( there)?$/.test(normalized)) return "GREETING";
+  if (/\b(who are you|what are you|your name|are you (a |an )?(bot|ai)|introduce yourself)\b/.test(normalized)) return "IDENTITY";
+  if (/\b(you already (have|know)|already have context|as i said|as mentioned|previous question|earlier question|use the context|same question|tell me more about (it|that))\b/.test(normalized)) return "CONTEXT_FOLLOW_UP";
+  if (/\b(weather|temperature|forecast|rain today|cricket score|football score|stock price|share price|election result|horoscope|recipe|movie showtime)\b/.test(normalized)) return "OFF_TOPIC";
+  if (/\b(webtechnosys|service|website|web design|development|software|application|mobile app|ai|automation|bot|whatsapp|hotel|hospitality|channel manager|training|course|bootcamp|seo|marketing|integration|pricing|price|cost|quote|demo|consultation|build|project)\b/.test(normalized)) return "BUSINESS";
+  return "UNKNOWN";
+}
+
+export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = []) {
+  const intent = classifyWebsiteQuestion(question);
+  if (intent !== "CONTEXT_FOLLOW_UP") return { intent, retrievalQuestion: question.trim(), priorQuestion: null as string | null };
+  const priorQuestion = priorQuestions.find((candidate) => {
+    const candidateIntent = classifyWebsiteQuestion(candidate);
+    return candidateIntent === "BUSINESS" || candidateIntent === "UNKNOWN";
+  })?.trim() || null;
+  return { intent, retrievalQuestion: priorQuestion || question.trim(), priorQuestion };
 }
 
 async function readCachedKnowledgeBase(propertySlug: string, baseUrl: string, ttlMs: number): Promise<KnowledgeBase | null> {
@@ -306,10 +340,7 @@ export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
 
 function scorePage(page: KnowledgePage, question: string) {
   const normalizedQuestion = question.toLowerCase();
-  const terms = normalizedQuestion
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((term) => term.length > 2);
+  const terms = questionTerms(normalizedQuestion);
   const title = page.title.toLowerCase();
   const bucket = page.bucket.toLowerCase();
   const text = page.text.toLowerCase();
@@ -379,11 +410,13 @@ function extractOpenAiText(payload: Record<string, unknown>) {
 export async function buildWebsiteKnowledgeAnswer({
   question,
   propertySlug,
-  configuration
+  configuration,
+  priorQuestions = []
 }: {
   question: string;
   propertySlug: string;
   configuration: WhatsAppBotConfiguration;
+  priorQuestions?: string[];
 }): Promise<KnowledgeAnswer | null> {
   if (!question.trim()) return null;
 
@@ -392,12 +425,19 @@ export async function buildWebsiteKnowledgeAnswer({
   const [settings, persona] = await Promise.all([readKnowledgeSettings(propertySlug), getBotPersonaForPropertySlug(propertySlug)]);
   if (!settings.approvedForAi) return null;
 
+  const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions);
+  const assistantName = persona?.personaName || "Webtechnosys AI";
+  if (resolved.intent === "GREETING") return { answer: `Hello. I’m ${assistantName}. I can help with Webtechnosys services, AI automation, websites, hotel technology, training, and project enquiries. What would you like to explore?`, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false };
+  if (resolved.intent === "IDENTITY") return { answer: `I’m ${assistantName}, an AiFrogi-powered business assistant for Webtechnosys. I answer from approved Webtechnosys knowledge, help qualify requirements, and involve the team when human judgment is needed.`, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false };
+  if (resolved.intent === "OFF_TOPIC") return { answer: `I’m focused on Webtechnosys business enquiries, so I don’t provide general weather, news, sports, or unrelated information. I can help with AI automation, websites, software, hotel solutions, training, or starting a project.`, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false };
+  if (resolved.intent === "CONTEXT_FOLLOW_UP" && !resolved.priorQuestion) return { answer: "I retain this conversation for continuity and human handover, but I need the business topic stated clearly before using approved knowledge. Please restate the Webtechnosys service or project question you want me to answer.", sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false };
+
   const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
-  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, question) : { context: "", sourceUrls: [] as string[], sources: [] as Array<{ title: string; url: string; crawledAt: string }> };
-  const governedContext = await getApprovedKnowledgeContext(propertySlug, question);
+  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as Array<{ title: string; url: string; crawledAt: string }> };
+  const governedContext = await getApprovedKnowledgeContext(propertySlug, resolved.retrievalQuestion);
   const context = [websiteResult.context, governedContext].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
-    await recordKnowledgeGap(propertySlug, question);
+    await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
     return null;
   }
 
@@ -422,7 +462,7 @@ export async function buildWebsiteKnowledgeAnswer({
         },
         {
           role: "user",
-          content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}`
+          content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.`
         }
       ],
       max_output_tokens: 320

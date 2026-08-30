@@ -53,8 +53,11 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     if (!activeSession) return NextResponse.json({ error: "Visitor session is invalid, closed, or expired." }, { status: 401, headers: responseHeaders });
   }
 
+  const priorQuestions = priorToken ? (await db.leadMessage.findMany({
+    where: { leadId: priorToken.leadId, sender: "GUEST" }, orderBy: [{ sentAt: "desc" }, { id: "desc" }], take: 6, select: { body: true }
+  })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
-  const result = safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration }).catch(() => null);
+  const result = safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration, priorQuestions }).catch(() => null);
   const answer = safety.answer || result?.answer || "I do not have enough approved Webtechnosys information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.";
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,

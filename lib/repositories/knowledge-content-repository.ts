@@ -1,7 +1,8 @@
 import { getDb } from "@/lib/db";
 
 function normalizedTerms(value: string) {
-  return new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2));
+  const stopWords = new Set(["about", "already", "and", "are", "can", "context", "does", "for", "from", "have", "how", "please", "that", "the", "this", "what", "when", "where", "which", "who", "will", "with", "would", "you", "your"]);
+  return new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !stopWords.has(term)));
 }
 
 function similarity(left: string, right: string) {
