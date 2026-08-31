@@ -239,6 +239,30 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-08-31 - Governed repair and Webtechnosys reference-bot review
+
+### Implemented
+- Added publication and reconfirmation regression gates with stored evidence.
+- Added governed improvement routing and tenant-bound feedback normalization.
+- Published six Webtechnosys contact, location, callback, training and service claims through the full approval lifecycle.
+- Corrected universal callback and specific-date intent handling.
+- Added the universal three-layer bot repair system, Knowledge workspace guide and public Help Center procedure.
+- Replaced the legacy dashboard social image with the AiFrogi mascot.
+
+### Verification evidence
+- Production build: 94 routes.
+- Sovereign Intelligence: 48/48 passed.
+- Production health: healthy.
+- Webtechnosys contact, location, callback and training-date journeys: passed.
+- Webtechnosys knowledge: six published and fresh claims; zero conflicts, unsigned claims, pending previews or open flags.
+
+### Remaining limitation
+- Webtechnosys BusinessGPT coverage is 30%, below the 80% activation gate. Seven named topics remain and should be completed before Super Admin activation.
+- Enterprise readiness still depends on evidence from 3–5 real clients.
+
+### Management report
+- See `docs/AiFrogi-Management-Product-Status-2026-08-31.md`.
+
 ## Template for the next entry
 
 ```markdown
