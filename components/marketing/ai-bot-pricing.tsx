@@ -1,22 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 const registerUrl = "https://app.aifrogi.com/register?source=pricing";
-const connectors = [
-  { id: "sheets", name: "Google Sheets", use: "Approved leads, enquiries and operational records.", india: 2999, global: 59, from: false },
-  { id: "calendar", name: "Google Calendar", use: "Availability, appointments and reminders.", india: 2999, global: 59, from: false },
-  { id: "commerce", name: "E-commerce Store", use: "Shopify, WooCommerce or supported store API.", india: 14999, global: 299, from: true },
-  { id: "pms", name: "PMS / Channel Manager", use: "Hotel availability and reservation workflows.", india: 24999, global: 499, from: true }
-] as const;
-
 export function AiBotPricing() {
   const [annual, setAnnual] = useState(false);
-  const [region, setRegion] = useState<"india" | "global">("india");
-  const [selected, setSelected] = useState<string[]>(["sheets", "calendar"]);
-  const total = useMemo(() => connectors.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item[region], 0), [region, selected]);
-  const money = (value: number) => region === "india" ? `₹${value.toLocaleString("en-IN")}` : `$${value.toLocaleString("en-US")}`;
-  const toggle = (id: string) => setSelected((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
 
   return <>
     <section className="bg-[#050505] px-5 py-20 text-center text-white sm:px-8 sm:py-24">
@@ -35,12 +23,7 @@ export function AiBotPricing() {
 
     <WhatsAppPricing />
 
-    <section className="bg-white px-5 py-16 sm:px-8 sm:py-20"><div className="mx-auto max-w-7xl">
-      <div className="max-w-3xl"><p className="product-eyebrow">Optional connectors</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Connect actions only when needed.</h2><p className="mt-4 leading-7 text-[var(--text-muted)]">Indicative one-time implementation charges—not Google or software-provider fees. Final scope depends on API access, data quality and workflow complexity.</p></div>
-      <div className="mt-10 overflow-x-auto rounded-2xl border border-black/10"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-[#101010] text-white"><tr><th className="p-5">Connector</th><th className="p-5">Typical use</th><th className="p-5">India setup</th><th className="p-5">Global setup</th></tr></thead><tbody>{connectors.map((item) => <tr key={item.id} className="border-t border-black/8"><th className="p-5 font-semibold">{item.name}</th><td className="p-5 text-[#5f5f5f]">{item.use}</td><td className="p-5">{item.from ? "From " : ""}₹{item.india.toLocaleString("en-IN")}</td><td className="p-5">{item.from ? "From " : ""}${item.global}</td></tr>)}</tbody></table></div>
-      <div className="mt-8 grid overflow-hidden rounded-2xl bg-[#050505] text-white lg:grid-cols-[.8fr_1.2fr]"><div className="p-7 sm:p-9"><p className="text-xs uppercase tracking-[.18em] text-[#e2c66d]">Connector estimator</p><h3 className="mt-3 text-2xl font-semibold">Estimate initial setup.</h3><p className="mt-3 text-sm leading-6 text-white/60">Planning estimate only. Credentials, subscriptions, taxes and custom development are excluded.</p><div className="mt-6 inline-flex rounded-full border border-white/15 p-1"><button type="button" onClick={() => setRegion("india")} className={`rounded-full px-4 py-2 text-sm ${region === "india" ? "bg-[#8a6a16]" : "text-white/65"}`}>India</button><button type="button" onClick={() => setRegion("global")} className={`rounded-full px-4 py-2 text-sm ${region === "global" ? "bg-[#8a6a16]" : "text-white/65"}`}>Global</button></div></div><div className="border-t border-white/10 p-7 sm:p-9 lg:border-l lg:border-t-0"><div className="grid gap-3 sm:grid-cols-2">{connectors.map((item) => <label key={item.id} className={`flex cursor-pointer items-center justify-between gap-4 rounded-xl border p-4 ${selected.includes(item.id) ? "border-[#b28728] bg-[#8a6a16]/15" : "border-white/12 bg-white/[.03]"}`}><span><strong className="block text-sm">{item.name}</strong><small className="text-white/50">{item.from ? "From " : ""}{money(item[region])}</small></span><input type="checkbox" checked={selected.includes(item.id)} onChange={() => toggle(item.id)} className="size-4 accent-[#b28728]" /></label>)}</div><div className="mt-6 flex items-end justify-between gap-6 border-t border-white/12 pt-6"><span className="text-sm text-white/55">Indicative one-time total</span><strong className="text-right text-3xl text-[#e2c66d]">{selected.some((id) => id === "commerce" || id === "pms") ? "From " : ""}{money(total)}</strong></div></div></div>
-      <div className="mt-6 grid gap-4 text-sm leading-6 text-[#5f5f5f] md:grid-cols-3"><p><strong className="block text-[#101010]">Optional monitoring</strong>From ₹1,499/month or $29/month for connector health and incident review.</p><p><strong className="block text-[#101010]">Provider usage</strong>OpenAI, PMS, commerce, Meta or other provider charges are separate where applicable.</p><p><strong className="block text-[#101010]">Google Workspace APIs</strong>Google currently publishes quota-based usage; provider terms and pricing can change.</p></div>
-    </div></section>
+    <section className="bg-white px-5 py-10 sm:px-8"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 rounded-2xl border border-black/10 bg-[#fbfaf7] p-6 sm:flex-row sm:items-center sm:p-8"><p className="max-w-4xl leading-7 text-[#404040]"><strong className="text-[#101010]">Need calendar, CRM, payment, ecommerce or PMS integration?</strong> Connector pricing is quoted separately based on your requirements.</p><a href="mailto:info@aifrogi.com?subject=AiFrogi%20Connector%20Requirement" className="shrink-0 font-semibold text-[#6d5310] underline underline-offset-4">Contact us →</a></div></section>
 
     <section className="bg-[#f3e5b5] px-5 py-14 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.7fr_1.3fr]"><div><p className="text-xs uppercase tracking-[.18em] text-[#6d5310]">Before payment</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">Clear commercial terms.</h2></div><div className="grid gap-5 text-sm leading-6 text-[#404040] sm:grid-cols-2"><p><strong className="block text-[#101010]">Subscriptions</strong>Paid in advance and renew until cancelled. Cancellation stops the next renewal; access continues to the paid-period end.</p><p><strong className="block text-[#101010]">Connector projects</strong>Scope, milestones, dependencies and provider access are confirmed before work begins.</p><p><strong className="block text-[#101010]">Refunds</strong>Duplicate or erroneous payments are reviewed. Activated subscriptions and completed work are generally non-refundable, subject to applicable law.</p><p><strong className="block text-[#101010]">Allowances and extras</strong>Current limits are published above. Taxes, higher usage, provider fees and custom work are disclosed before billing whenever applicable.</p></div><div className="lg:col-start-2"><a href="/terms-of-service" className="inline-flex rounded-lg bg-[#8a6a16] px-5 py-3 text-sm font-semibold text-white">Read full payment and service terms</a></div></div></section>
   </>;
