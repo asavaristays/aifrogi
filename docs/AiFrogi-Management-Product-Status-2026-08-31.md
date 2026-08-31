@@ -1,6 +1,7 @@
 # AiFrogi Management Product Status
 
 Reporting date: 31 August 2026  
+Revision: 1.1 — management review corrections applied
 Product stage: Controlled pilot-grade SaaS  
 Management decision: Complete and activate Webtechnosys as the reference bot, then onboard 3–5 controlled clients before evidence-driven optimisation.
 
@@ -12,19 +13,28 @@ The technical foundation is suitable for a controlled first-client launch. It is
 
 The immediate bottleneck is not another broad development cycle. The Webtechnosys reference bot must finish its approved knowledge coverage and be activated under monitoring.
 
-## 2. Current ratings
+## 2. Current maturity assessment
 
-| Area | Rating | Management interpretation |
-| --- | ---: | --- |
-| Frontend and product experience | 8.2/10 | Coherent premium website, responsive product console, onboarding, inbox, knowledge, pricing, help and admin surfaces |
-| Backend and governance | 8.1/10 | Tenant-scoped data, role controls, evidence records, approval lifecycle, safety fallbacks and publication gates are implemented |
-| Sovereign Intelligence | 8.7/10 | Strongest layer: intent boundaries, approved knowledge, Rule 11, persona controls, action verification and evidence consistency |
-| Security controls | 7.8/10 | Application controls are credible; formal external certification remains outstanding |
-| Reliability and operations | 7.3/10 | Suitable for monitored pilots; real workload, recovery and sustained connector evidence remain limited |
-| Controlled-pilot readiness | 8.2/10 | Ready to complete and operate the Webtechnosys reference bot |
-| Enterprise-scale readiness | 7.0/10 | Requires 3–5 client datasets, measured production accuracy, connector evidence and operational history |
+Decimal ratings used in earlier working discussions were directional engineering judgments, not audited scores. Management reporting now uses evidence bands until real-client volume supports a reproducible numerical model.
 
-Ratings increase only when new evidence is produced. Registering a client alone does not improve readiness.
+| Area | Maturity band | Evidence basis | Evidence gap |
+| --- | --- | --- | --- |
+| Frontend and product experience | Strong pilot | Production marketing site and console, responsive layouts, 94-route build, onboarding, inbox, knowledge, pricing, help and admin surfaces | Broader external usability evidence |
+| Backend and governance | Strong pilot | Tenant-scoped data, role controls, evidence records, approval lifecycle, safety fallbacks and publication gates | Multi-client operating history |
+| Sovereign Intelligence | Strong pilot | 48/48 current tests, Common Suite completeness, Rule 11, persona controls, action verification and evidence consistency | Real-language Safe Resolution Rate |
+| Security controls | Pilot-ready | Application controls and zero-tolerance tests | Independent audit and formal certification |
+| Reliability and operations | Pilot-ready with monitoring | Health controls, failure attribution and safe connector policy | Sustained workload, recovery and live-connector evidence |
+| Controlled reference activation | Ready after KB gate | Platform can operate the Webtechnosys reference bot | Webtechnosys coverage is currently 30% |
+| Enterprise scale | Evidence incomplete | Architecture and controls exist | 3–5 client datasets, measured accuracy, support load and connector history |
+
+These bands consider implementation completeness, automated evidence, production evidence, operational repeatability and external assurance. A band increases only when its missing evidence is produced. Registering a client alone does not increase maturity.
+
+### Terminology used in this report
+
+- **Pilot-grade platform:** the current AiFrogi product stage.
+- **Reference bot:** the Webtechnosys bot used for the first production-validation cycle; currently CONFIGURED and pre-LIVE.
+- **Controlled activation:** Super Admin enables the reference bot after readiness and installation gates pass.
+- **Validated reference bot:** the reference bot after its seven-day monitored evidence window closes without an unresolved stop condition.
 
 ## 3. Product capabilities delivered
 
@@ -35,7 +45,7 @@ Ratings increase only when new evidence is produced. Registering a client alone 
 - Homepage focused on intelligent AI business bots rather than WhatsApp-only automation.
 - AI Bot portfolio pages for BusinessGPT, HotelGPT, ClinicGPT, DineGPT, PropertyGPT, eduGPT, FlowCart and Custom Bot.
 - Dedicated WhatsApp API section separated from AI Bot positioning.
-- AI Bot pricing: 15-day trial, monthly/yearly Starter and Custom/Enterprise route.
+- AI Bot pricing: 15-day trial, ₹499 monthly Starter, ₹4,999 yearly Starter with ₹989 saving, and Custom/Enterprise route. The current pricing component renders both amounts and passes the selected billing period into registration.
 - Simplified installation and onboarding explanation.
 - Security Compliance, Privacy, Terms, Help Center and installation resources.
 - Current AiFrogi logo, favicon and mascot-based social preview metadata.
@@ -168,7 +178,7 @@ Seven BusinessGPT topics remain uncovered:
 6. What cannot the bot confirm?
 7. How is customer data handled?
 
-At least five of these seven topics must be published to reach the 80% minimum. Management should prefer completing all seven for a stronger reference implementation.
+Coverage is calculated against a ten-question BusinessGPT readiness bank, not by dividing the number of published claims. The current six claims collectively cover three of those ten required topics. Publishing approved answers that each cover five currently missing bank questions would move coverage from 3/10 to 8/10, or 80%. One claim may cover multiple bank questions, while a valid claim outside the bank may add no coverage. Management should prefer completing all seven missing topics for a stronger reference implementation.
 
 No live connector is required for the initial Webtechnosys scope of answering, qualifying, capturing leads and handing over to humans.
 
@@ -186,6 +196,14 @@ This bucket is narrow and launch-specific.
 
 Bucket 1 exit condition: Webtechnosys answers approved questions, captures consented demand, hands over safely, can be paused, and produces seven days of reviewable evidence without an unresolved safety blocker.
 
+### Monitoring stop and hold conditions
+
+**Pause the complete bot immediately** when any zero-tolerance event is confirmed: cross-tenant disclosure, secret exposure, unverified completed booking/payment/order claim, prohibited high-risk guidance, inability to stop or hand over, or a systemic circuit-breaker failure affecting multiple intents.
+
+**Contain the claim or journey and hold expansion** when an incorrect-fact flag is opened, the same material failure repeats twice within 24 hours, a human request is not routed, or a knowledge conflict/expiry remains retrievable. Claim-level containment is preferred when unaffected bot capabilities remain safe.
+
+**Do not close the seven-day gate** while a P0 event is unresolved, a fact flag has exceeded its 24-hour resolution target, decision-versus-behaviour consistency is below 100%, a zero-tolerance gate is below 100%, readiness falls below 80% coverage or 95% freshness, or required human handover evidence is missing. With fewer than 20 rated conversations, helpfulness is reported descriptively and is not treated as a statistically reliable percentage.
+
 ## 8. Remaining work — Bucket 2: after 3–5 clients
 
 These items need real usage patterns and should not be guessed now.
@@ -201,6 +219,8 @@ These items need real usage patterns and should not be guessed now.
 - Run sustained load, connector degradation, recovery and rollback exercises at the usage levels actually observed.
 - Reassess Starter allowances, connector pricing and support economics using measured cost-to-serve.
 - Begin formal security/compliance certification planning when commercial volume justifies it.
+
+Mechanism reference: `AiFrogi-Governed-Improvement-Corrections-v1.0.md`. Operational repair reference: `AiFrogi-Universal-Bot-Repair-Guideline-v1.0.md`.
 
 ## 9. Claims management may make now
 
@@ -219,20 +239,20 @@ Management should not yet claim:
 
 ## 10. Principal risks and controls
 
-| Risk | Current control | Remaining evidence |
-| --- | --- | --- |
-| Client approves wrong information | Field approval, Preview Approval, flags, versioning and responsibility trail | Real client approval behaviour |
-| Hallucinated commercial fact | Approved context, claim validator and safe fallback | Real-language production sample |
-| Repetitive clarification | Rule 11 and semantic circuit breaker | Real-client loop rate |
-| False booking/payment confirmation | Connector authority, idempotency and read-back requirements | Per-connector certification |
-| Cross-tenant leakage | Tenant-scoped queries, signed sessions and isolation tests | Continued production monitoring |
-| Support cost grows with installs | Failure attribution and escalation ladder | Actual support-load distribution |
-| Overstated maturity | Evidence-based reporting and explicit limitations | Maintain discipline as sales volume grows |
+| Scope | Risk | Current control | Remaining evidence |
+| --- | --- | --- | --- |
+| Webtechnosys reference bot | Client approves wrong information | Field approval, Preview Approval, flags, versioning and responsibility trail | Real owner approval behaviour |
+| Webtechnosys reference bot | Hallucinated commercial fact | Approved context, claim validator and safe fallback | Real-language production sample |
+| Webtechnosys reference bot | Repetitive clarification | Rule 11 and semantic circuit breaker | Real-client loop rate |
+| Platform and future action bots | False booking/payment confirmation | Connector authority, idempotency and read-back requirements | Per-connector certification; no connector write is in the initial Webtechnosys scope |
+| Platform | Cross-tenant leakage | Tenant-scoped queries, signed sessions and isolation tests | Continued multi-client monitoring |
+| Platform | Support cost grows with installs | Failure attribution and escalation ladder | Actual support-load distribution |
+| Management | Overstated maturity | Evidence bands and explicit claim limitations | Maintain discipline as sales volume grows |
 
 ## 11. Management decisions requested
 
 1. Approve Webtechnosys as the reference production-validation bot.
-2. Assign one business owner to approve the seven missing topics.
+2. Assign one Webtechnosys user holding the Client `OWNER` or `ADMIN` role to approve the seven missing topics. Agent and Viewer roles cannot approve them.
 3. Keep initial authority to Answer, Clarify, Recommend, Capture Lead and Human Handover.
 4. Do not require a connector for the first Webtechnosys launch.
 5. Approve one-at-a-time onboarding for the first 3–5 clients.
