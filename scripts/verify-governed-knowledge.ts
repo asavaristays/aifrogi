@@ -129,7 +129,7 @@ async function main() {
     assert(!answerContext.includes("15 days"), "Older disputed answer remained available to retrieval.");
     assert(!answerContext.includes("45 days"), "Conflicted answer leaked into approved retrieval.");
     const documentContext = await getApprovedKnowledgeContext(property.slug, `${runId} escalation desk`);
-    assert(documentContext.includes("Escalation desk"), "Approved document was not available to retrieval.");
+    assert(!documentContext.includes("Escalation desk"), "Raw approved document text bypassed atomic-claim publication.");
 
     const summary = await getKnowledgeGovernanceSummary(property.slug);
     assert(summary.entries.some((entry) => entry.id === approvedEntry.id), "Governance summary omitted the approved answer.");
