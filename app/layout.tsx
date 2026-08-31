@@ -20,10 +20,10 @@ export const metadata: Metadata = {
     title: "AiFrogi | Intelligent AI Bot for Business",
     description: "Turn customer conversations into the right next action with an intelligent AI bot, workflow automation, and human control.",
     url: "/",
-    images: [{ url: socialImage, width: 1265, height: 712, alt: "AiFrogi AI business bot workspace" }]
+    images: [{ url: socialImage, width: 150, height: 137, alt: "AiFrogi AI business bot mascot" }]
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "AiFrogi | Intelligent AI Bot for Business",
     description: "Turn customer conversations into the right next action with an intelligent AI bot, workflow automation, and human control.",
     images: [socialImage]
