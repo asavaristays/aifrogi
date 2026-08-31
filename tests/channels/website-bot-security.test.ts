@@ -43,6 +43,8 @@ test("every website answer records Sovereign Intelligence evidence and escalates
   assert.match(source, /constitutionVersion: evidenceDecision\.constitutionVersion/);
   assert.match(source, /evidenceDecision\.disposition === "ESCALATE"/);
   assert.match(source, /knowledgeClaimIds: result\?\.claimIds/);
+  assert.match(source, /personaCategory: profile\.category/);
+  assert.match(source, /retrieval: result\?\.retrieval/);
   assert.match(source, /answerEvidenceId:/);
 });
 
@@ -59,6 +61,9 @@ test("answer feedback is tenant, visitor, and evidence bound", () => {
   assert.match(feedbackSource, /verifyWebsiteVisitorToken\(rawToken, slug\)/);
   assert.match(feedbackSource, /propertyId: session\.propertyId, leadId: token\.leadId/);
   assert.match(feedbackSource, /where: \{ evidenceId: evidence\.id \}/);
+  assert.match(feedbackSource, /sovereignReplayCase\.upsert/);
+  assert.match(feedbackSource, /anonymizeReplayText/);
+  assert.match(feedbackSource, /safeResolution: false/);
   assert.doesNotMatch(feedbackSource, /flagKnowledgeAnswer/);
 });
 

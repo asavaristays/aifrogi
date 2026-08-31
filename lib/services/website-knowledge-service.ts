@@ -14,6 +14,7 @@ import { getDb } from "@/lib/db";
 import { executeReliableModel, escalationTierFor, modelHttpError, type ReliabilityEvidence, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
 import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
+import { inferUsedClaimIds, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 
 export type KnowledgePage = {
   url: string;
@@ -40,8 +41,12 @@ export type KnowledgeAnswer = {
   model: string;
   decision: SovereignDecision;
   claimIds: string[];
+  retrieval: { candidates: RetrievalCandidate[]; retrievedClaimIds: string[]; usedClaimIds: string[]; nearMissClaimIds: string[] };
   reliability: ReliabilityEvidence;
 };
+
+const emptyRetrieval = () => ({ candidates: [] as RetrievalCandidate[], retrievedClaimIds: [] as string[], usedClaimIds: [] as string[], nearMissClaimIds: [] as string[] });
+const publicRetrievalCandidates = (candidates: Array<RetrievalCandidate & { answer: string }>): RetrievalCandidate[] => candidates.map((candidate) => ({ claimId: candidate.claimId, claimKey: candidate.claimKey, score: candidate.score, selected: candidate.selected, status: candidate.status }));
 
 const DEFAULT_TTL_MS = 6 * 60 * 60 * 1000;
 const MAX_PAGES = 40;
@@ -474,10 +479,10 @@ export async function buildWebsiteKnowledgeAnswer({
   const organization = business?.organization;
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
-  const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
+  const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], retrieval: emptyRetrieval(), reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
   const safeFailure = (failureLayer: ReliabilityEvidence["failureLayer"], failureCode: string, answer: string, latencyMs = 0, attemptCount = 0, degradedMode = false): KnowledgeAnswer => ({
     answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "SAFE_RELIABILITY_FALLBACK",
-    decision: { ...resolved.decision, disposition: failureLayer === "KNOWLEDGE" ? "ESCALATE" : "FALLBACK", reason: `${failureLayer} reliability control returned ${failureCode}.` }, claimIds: [],
+    decision: { ...resolved.decision, disposition: failureLayer === "KNOWLEDGE" ? "ESCALATE" : "FALLBACK", reason: `${failureLayer} reliability control returned ${failureCode}.` }, claimIds: [], retrieval: emptyRetrieval(),
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer, failureCode, latencyMs, attemptCount, escalationTier: escalationTierFor({ failureLayer }), degradedMode }
   });
   const categoryBoundary = persona ? evaluateCategoryHardBoundary(persona.category, question) : null;
@@ -499,7 +504,7 @@ export async function buildWebsiteKnowledgeAnswer({
         answer: `Here are the approved contact details for ${organization.name}:\n${details.join("\n")}`,
         sourceUrls: organization.website ? [organization.website] : [],
         sources: [{ title: `${organization.name} approved business profile`, url: organization.website || "", crawledAt: organization.updatedAt.toISOString(), authority: "APPROVED_BUSINESS_PROFILE", freshness: "CURRENT" }],
-        knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "STRUCTURED_BUSINESS_PROFILE", decision: resolved.decision, claimIds: [],
+        knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "STRUCTURED_BUSINESS_PROFILE", decision: resolved.decision, claimIds: [], retrieval: emptyRetrieval(),
         reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE", degradedMode: false }
       };
     }
@@ -510,12 +515,16 @@ export async function buildWebsiteKnowledgeAnswer({
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
   const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
   if (governed.blockedState) {
-    return safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));
+    const failed = safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));
+    failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
+    return failed;
   }
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
-    return safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);
+    const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);
+    failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
+    return failed;
   }
 
   if (!apiKey) return safeFailure("INFRASTRUCTURE", "MODEL_CREDENTIAL_UNAVAILABLE", "I’m temporarily unable to generate a verified answer. Your question has been retained for asynchronous AiFrogi review, so you do not need to repeat it.");
@@ -567,6 +576,12 @@ export async function buildWebsiteKnowledgeAnswer({
     model: reliable.model,
     decision: { ...resolved.decision, disposition: "ANSWER", reason: `Grounded answer generated from ${websiteResult.sources.length || "approved workspace"} source evidence item(s).` },
     claimIds: governed.claimIds,
+    retrieval: {
+      candidates: publicRetrievalCandidates(governed.candidates),
+      retrievedClaimIds: governed.claimIds,
+      usedClaimIds: inferUsedClaimIds(answer, governed.candidates),
+      nearMissClaimIds: governed.nearMissClaimIds
+    },
     reliability: reliable.evidence
   };
 }

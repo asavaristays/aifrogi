@@ -138,6 +138,7 @@ model Property {
   websiteSessions     WebsiteVisitorSession[]
   sovereignEvidence   SovereignAnswerEvidence[]
   answerFeedback      SovereignAnswerFeedback[]
+  sovereignReplayCases SovereignReplayCase[]
 
   @@index([organizationId])
 }
@@ -653,6 +654,15 @@ model SovereignAnswerEvidence {
   sources             Json
   knowledgeAsOf       DateTime?
   knowledgeClaimIds   String[] @default([])
+  personaCategory     String   @default("UNKNOWN")
+  personaVersion      String   @default("UNKNOWN")
+  retrievalCandidates Json     @default("[]")
+  retrievedClaimIds   String[] @default([])
+  usedClaimIds        String[] @default([])
+  nearMissClaimIds    String[] @default([])
+  failureClassification String @default("NONE")
+  safeResolution      Boolean  @default(false)
+  evidencePipelineVersion String @default("1.0")
   failureLayer        String   @default("NONE")
   failureCode         String?
   latencyMs           Int      @default(0)
@@ -661,6 +671,7 @@ model SovereignAnswerEvidence {
   degradedMode        Boolean  @default(false)
   createdAt           DateTime @default(now())
   feedback            SovereignAnswerFeedback?
+  replayCase          SovereignReplayCase?
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
@@ -668,6 +679,8 @@ model SovereignAnswerEvidence {
   @@index([propertyId, circuitBreaker, createdAt])
   @@index([propertyId, failureLayer, createdAt])
   @@index([propertyId, escalationTier, createdAt])
+  @@index([personaCategory, safeResolution, createdAt])
+  @@index([propertyId, failureClassification, createdAt])
   @@index([leadId, createdAt])
 }
 
@@ -686,6 +699,28 @@ model SovereignAnswerFeedback {
 
   @@index([propertyId, helpful, createdAt])
   @@index([leadId, createdAt])
+}
+
+model SovereignReplayCase {
+  id                    String                  @id @default(cuid())
+  propertyId            String
+  property              Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  sourceEvidenceId      String                  @unique
+  sourceEvidence        SovereignAnswerEvidence @relation(fields: [sourceEvidenceId], references: [id], onDelete: Cascade)
+  personaCategory       String
+  personaVersion        String
+  anonymizedQuestion    String                  @db.Text
+  anonymizedPriorTurns  Json                    @default("[]")
+  expectedDisposition   String
+  expectedClaimIds      String[]                @default([])
+  failureClassification String
+  status                String                  @default("PENDING_REVIEW")
+  anonymizationVersion  String                  @default("1.0")
+  createdAt             DateTime                @default(now())
+  reviewedAt            DateTime?
+
+  @@index([propertyId, status, createdAt])
+  @@index([personaCategory, status, createdAt])
 }
 
 model LeadTag {

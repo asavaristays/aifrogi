@@ -76,6 +76,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const demoTurn = !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
   const result = safety.blocked ? null : demoTurn ? {
     answer: demoTurn.answer, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "AIFROGI_DEMO_MOCK_CONNECTOR",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: demoTurn.status === "SUCCEEDED" ? "ANSWER" as const : demoTurn.status === "CLARIFY" ? "CLARIFY" as const : "ESCALATE" as const, reason: `Isolated demo connector ${demoTurn.connectorKey}/${demoTurn.operation} returned ${demoTurn.status}.` },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: demoTurn.status === "SAFE_FAILURE" ? "CONNECTOR" as const : "NONE" as const, failureCode: demoTurn.status === "SAFE_FAILURE" ? "DEMO_CONNECTOR_UNAVAILABLE" : null, latencyMs: 0, attemptCount: demoTurn.status === "CLARIFY" ? 0 : 1, escalationTier: demoTurn.status === "SAFE_FAILURE" ? "TIER_1_BUSINESS_ASYNC" as const : "TIER_0_SELF_RESOLVE" as const, degradedMode: demoTurn.status === "SAFE_FAILURE" }
   } : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration, priorQuestions }).catch(() => null);
@@ -115,6 +116,9 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     circuitBreaker: resolution.state.circuitBreakerTriggered,
     circuitBreakerReason: resolution.state.circuitBreakerReason,
     knowledgeClaimIds: result?.claimIds || [],
+    personaCategory: profile.category,
+    personaVersion: profile.personaPackVersion,
+    retrieval: result?.retrieval || { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     reliability
   }).catch(() => null);
   const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");

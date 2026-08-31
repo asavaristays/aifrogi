@@ -4,6 +4,7 @@ import type { SovereignDecision } from "@/lib/sovereign-intelligence/decision";
 import { SOVEREIGN_EVALUATION_VERSION } from "@/lib/sovereign-intelligence/resolution";
 import type { ReliabilityEvidence } from "@/lib/reliability/runtime";
 import { evaluateDecisionBehaviourConsistency } from "@/lib/sovereign-intelligence/evidence-consistency";
+import { classifyEvidenceFailure, INTELLIGENCE_EVIDENCE_VERSION, isSafeResolution, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 
 export async function recordSovereignAnswerEvidence(input: {
   propertyId: string;
@@ -26,11 +27,16 @@ export async function recordSovereignAnswerEvidence(input: {
   knowledgeClaimIds?: string[];
   reliability?: ReliabilityEvidence;
   actionPerformed?: boolean;
+  personaCategory?: string;
+  personaVersion?: string;
+  retrieval?: { candidates: RetrievalCandidate[]; retrievedClaimIds: string[]; usedClaimIds: string[]; nearMissClaimIds: string[] };
 }) {
   const db = getDb();
   if (!db) return null;
   const knowledgeAsOf = input.knowledgeAsOf ? new Date(input.knowledgeAsOf) : null;
   const consistency = evaluateDecisionBehaviourConsistency({ disposition: input.decision.disposition, answer: input.answer, resolutionState: input.resolutionState || "RESOLVED", circuitBreaker: Boolean(input.circuitBreaker), actionPerformed: input.actionPerformed, failureLayer: input.reliability?.failureLayer || "NONE" });
+  const failureClassification = classifyEvidenceFailure({ decision: input.decision, grounded: input.grounded, failureLayer: input.reliability?.failureLayer, nearMissClaimIds: input.retrieval?.nearMissClaimIds, circuitBreaker: input.circuitBreaker, decisionConsistent: consistency.decisionConsistent });
+  const safeResolution = isSafeResolution({ classification: failureClassification, decisionConsistent: consistency.decisionConsistent, disposition: input.decision.disposition, grounded: input.grounded, intent: input.decision.intent });
   return db.sovereignAnswerEvidence.create({ data: {
     propertyId: input.propertyId, leadId: input.leadId || null, sessionIdHash: input.sessionIdHash,
     constitutionVersion: input.decision.constitutionVersion, blueprintVersion: input.decision.blueprintVersion,
@@ -43,6 +49,9 @@ export async function recordSovereignAnswerEvidence(input: {
     answer: input.answer.slice(0, 5000), grounded: input.grounded, model: input.model.slice(0, 120), sources: input.sources,
     knowledgeAsOf: knowledgeAsOf && !Number.isNaN(knowledgeAsOf.getTime()) ? knowledgeAsOf : null,
     knowledgeClaimIds: input.knowledgeClaimIds || [],
+    personaCategory: input.personaCategory || "UNKNOWN", personaVersion: input.personaVersion || "UNKNOWN",
+    retrievalCandidates: input.retrieval?.candidates || [], retrievedClaimIds: input.retrieval?.retrievedClaimIds || [], usedClaimIds: input.retrieval?.usedClaimIds || [], nearMissClaimIds: input.retrieval?.nearMissClaimIds || [],
+    failureClassification, safeResolution, evidencePipelineVersion: INTELLIGENCE_EVIDENCE_VERSION,
     failureLayer: input.reliability?.failureLayer || "NONE", failureCode: input.reliability?.failureCode || null,
     latencyMs: Math.max(0, Math.round(input.reliability?.latencyMs || 0)), attemptCount: Math.max(0, Math.round(input.reliability?.attemptCount || 0)),
     escalationTier: input.reliability?.escalationTier || "TIER_0_SELF_RESOLVE", degradedMode: Boolean(input.reliability?.degradedMode)
@@ -51,8 +60,8 @@ export async function recordSovereignAnswerEvidence(input: {
 
 export async function getSovereignIntelligenceReport() {
   const db = getDb();
-  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, consistencyMismatches: 0, consistencyRate: null as number | null, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, tier0: 0, tier1: 0, tier2: 0, tier3: 0, degraded: 0, failures: 0, averageLatencyMs: 0, automatedResolutionRate: null as number | null, supportCallsPerThousand: null as number | null, recent: [] };
-  const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, feedbackTotal, helpfulFeedback, tier0, tier1, tier2, tier3, degraded, failures, latency, recent] = await Promise.all([
+  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, consistencyMismatches: 0, consistencyRate: null as number | null, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, tier0: 0, tier1: 0, tier2: 0, tier3: 0, degraded: 0, failures: 0, averageLatencyMs: 0, automatedResolutionRate: null as number | null, supportCallsPerThousand: null as number | null, nearMisses: 0, replayCases: 0, pendingReplayCases: 0, personaMetrics: [] as Array<{ personaCategory: string; total: number; safe: number; srr: number }>, recent: [] };
+  const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, feedbackTotal, helpfulFeedback, tier0, tier1, tier2, tier3, degraded, failures, latency, nearMisses, replayCases, pendingReplayCases, personaTotals, personaSafe, recent] = await Promise.all([
     db.sovereignAnswerEvidence.count(),
     db.sovereignAnswerEvidence.count({ where: { grounded: true } }),
     db.sovereignAnswerEvidence.count({ where: { disposition: "FALLBACK" } }),
@@ -72,11 +81,18 @@ export async function getSovereignIntelligenceReport() {
     db.sovereignAnswerEvidence.count({ where: { degradedMode: true } }),
     db.sovereignAnswerEvidence.count({ where: { failureLayer: { not: "NONE" } } }),
     db.sovereignAnswerEvidence.aggregate({ _avg: { latencyMs: true } }),
+    db.sovereignAnswerEvidence.count({ where: { nearMissClaimIds: { isEmpty: false } } }),
+    db.sovereignReplayCase.count(),
+    db.sovereignReplayCase.count({ where: { status: "PENDING_REVIEW" } }),
+    db.sovereignAnswerEvidence.groupBy({ by: ["personaCategory"], _count: { _all: true } }),
+    db.sovereignAnswerEvidence.groupBy({ by: ["personaCategory"], where: { safeResolution: true }, _count: { _all: true } }),
     db.sovereignAnswerEvidence.findMany({ include: { property: { select: { name: true, slug: true } } }, orderBy: { createdAt: "desc" }, take: 30 })
   ]);
   const helpfulRate = feedbackTotal ? Number(((helpfulFeedback / feedbackTotal) * 100).toFixed(1)) : null;
   const automatedResolutionRate = total ? Number(((tier0 / total) * 100).toFixed(1)) : null;
   const supportCallsPerThousand = total ? Number(((tier3 / total) * 1000).toFixed(2)) : null;
   const consistencyRate = consistencyEligible ? Number((((consistencyEligible - consistencyMismatches) / consistencyEligible) * 100).toFixed(1)) : null;
-  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, consistencyRate, feedbackTotal, helpfulFeedback, helpfulRate, tier0, tier1, tier2, tier3, degraded, failures, averageLatencyMs: Math.round(latency._avg.latencyMs || 0), automatedResolutionRate, supportCallsPerThousand, recent };
+  const safeByPersona = new Map(personaSafe.map((item) => [item.personaCategory, item._count._all]));
+  const personaMetrics = personaTotals.map((item) => { const safe = safeByPersona.get(item.personaCategory) || 0; return { personaCategory: item.personaCategory, total: item._count._all, safe, srr: Number(((safe / item._count._all) * 100).toFixed(1)) }; }).sort((a, b) => b.total - a.total);
+  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, consistencyRate, feedbackTotal, helpfulFeedback, helpfulRate, tier0, tier1, tier2, tier3, degraded, failures, averageLatencyMs: Math.round(latency._avg.latencyMs || 0), automatedResolutionRate, supportCallsPerThousand, nearMisses, replayCases, pendingReplayCases, personaMetrics, recent };
 }

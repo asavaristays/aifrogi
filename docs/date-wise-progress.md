@@ -263,6 +263,26 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 ### Management report
 - See `docs/AiFrogi-Management-Product-Status-2026-08-31.md`.
 
+---
+
+## 2026-08-31 - Intelligence Evidence Pipeline v1.0
+
+### Implemented
+- Added per-turn retrieval candidates, normalized scores, selected claims, inferred used claims and near-miss evidence.
+- Added governed failure classification and Safe Resolution calculation.
+- Added persona-pack identity to every new evidence record and persona-level SRR reporting.
+- Added anonymized replay-case creation from negative visitor feedback.
+- Expanded the Super Admin Sovereign Intelligence command center with near-miss, replay and persona metrics.
+- Documented the evidence boundary between measurable retrieval traces and formal recall.
+
+### Verification evidence
+- New Intelligence Evidence Pipeline tests cover synonym retrieval, candidate-versus-used evidence, failure separation, safe-resolution rules and replay redaction.
+- Existing Rule 11 multi-turn and decision-consistency tests remain part of the regression run.
+
+### Remaining limitation
+- Replay cases require authorised labels and real-client samples before they can become statistical recall or threshold-tuning evidence.
+- No automatic prompt or knowledge mutation is permitted from feedback.
+
 ## Template for the next entry
 
 ```markdown

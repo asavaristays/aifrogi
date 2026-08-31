@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { scoreRetrievalCandidate, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 import { calculateCoverage, KB_FRAMEWORK_VERSION, KB_FRESHNESS_TARGET, KB_MINIMUM_COVERAGE, validateAtomicClaim } from "@/lib/knowledge-verification";
 import { runKnowledgePublicationGate } from "@/lib/knowledge-publication-gate";
 
@@ -209,15 +210,19 @@ export async function getKnowledgeVerificationReadiness(propertyId: string, cate
 
 export async function getPublishedClaimContext(propertySlug: string, question: string) {
   const db = getDb();
-  if (!db) return { context: "", claimIds: [] as string[], blockedState: null as null | "CONFLICT" | "FLAGGED" | "EXPIRED" | "PAUSED" };
+  const empty = { context: "", claimIds: [] as string[], candidates: [] as Array<RetrievalCandidate & { answer: string }>, nearMissClaimIds: [] as string[], blockedState: null as null | "CONFLICT" | "FLAGGED" | "EXPIRED" | "PAUSED" };
+  if (!db) return empty;
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
-  if (!property) return { context: "", claimIds: [] as string[], blockedState: null as null | "CONFLICT" | "FLAGGED" | "EXPIRED" | "PAUSED" };
+  if (!property) return empty;
   await expirePublishedClaims(property.id);
-  const search = question.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2);
   const claims = await db.knowledgeEntry.findMany({ where: { propertyId: property.id, status: { in: ["PUBLISHED", "APPROVED"] }, conflictStatus: { not: "UNRESOLVED" }, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] }, take: 100 });
-  const ranked = claims.map((claim) => ({ claim, score: search.filter((term) => `${claim.question} ${claim.answer} ${claim.category}`.toLowerCase().includes(term)).length })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score).slice(0,8);
+  const scored = claims.map((claim) => ({ claim, score: scoreRetrievalCandidate(question, claim) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score);
+  const ranked = scored.filter((item) => item.score >= 0.12).slice(0, 8);
+  const selectedIds = new Set(ranked.map(({ claim }) => claim.id));
+  const candidates = scored.slice(0, 12).map(({ claim, score }) => ({ claimId: claim.id, claimKey: claim.claimKey, score, selected: selectedIds.has(claim.id), status: claim.status, answer: claim.answer }));
+  const nearMissClaimIds = ranked.length ? [] : candidates.filter((candidate) => candidate.score >= 0.08).slice(0, 3).map((candidate) => candidate.claimId);
   const unavailable = await db.knowledgeEntry.findMany({ where: { propertyId: property.id, OR: [{ status: { in: ["PAUSED", "EXPIRED", "CONFLICT"] } }, { conflictStatus: "UNRESOLVED" }] }, take: 100 });
-  const blocked = unavailable.map((claim) => ({ claim, score: search.filter((term) => `${claim.question} ${claim.answer} ${claim.category}`.toLowerCase().includes(term)).length })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score)[0]?.claim;
+  const blocked = unavailable.map((claim) => ({ claim, score: scoreRetrievalCandidate(question, claim) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score)[0]?.claim;
   const blockedState = !blocked ? null : blocked.conflictStatus === "UNRESOLVED" || blocked.status === "CONFLICT" ? "CONFLICT" as const : blocked.status === "EXPIRED" ? "EXPIRED" as const : blocked.pauseReason?.toLowerCase().includes("flag") ? "FLAGGED" as const : "PAUSED" as const;
-  return { context: ranked.map(({claim})=>`Approved atomic claim ${claim.claimKey || claim.id} v${claim.version}\nQuestion: ${claim.question}\nAnswer: ${claim.answer}\nEffective: ${claim.effectiveAt?.toISOString() || "not specified"}\nExpires: ${claim.expiresAt?.toISOString() || "not specified"}`).join("\n\n---\n\n").slice(0,9000), claimIds: ranked.map(({claim})=>claim.id), blockedState };
+  return { context: ranked.map(({claim})=>`Approved atomic claim ${claim.claimKey || claim.id} v${claim.version}\nQuestion: ${claim.question}\nAnswer: ${claim.answer}\nEffective: ${claim.effectiveAt?.toISOString() || "not specified"}\nExpires: ${claim.expiresAt?.toISOString() || "not specified"}`).join("\n\n---\n\n").slice(0,9000), claimIds: ranked.map(({claim})=>claim.id), candidates, nearMissClaimIds, blockedState };
 }
