@@ -3,6 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { Icon } from "@/components/icons";
 import type { KnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+import { BOT_REPAIR_LAYERS } from "@/lib/bot-repair-guidance";
 
 type KnowledgePageSummary = { url: string; title: string; bucket: string; crawledAt: string };
 type KnowledgeDocumentSummary = { id: string; fileName: string; mimeType: string; sizeBytes: number; status: string; conflictSummary: string | null; uploadedBy: string; approvedBy: string | null; createdAt: string | Date; updatedAt: string | Date };
@@ -193,6 +194,8 @@ export function KnowledgeWorkspace({
       </section>
 
       {notice ? <div className="rounded-md border border-[#dbe8ff] bg-[var(--info-soft)] px-4 py-3 text-sm text-[#385d8e]">{notice}</div> : null}
+
+      <section className="soft-card overflow-hidden rounded-lg"><div className="flex flex-col gap-3 border-b border-[var(--border)] px-5 py-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="product-eyebrow">Universal repair guide</p><h2 className="mt-1 text-lg font-semibold">Repair the correct layer</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Business facts stay tenant-specific. Shared intelligence and connector defects follow separate engineering controls.</p></div><a href="/help/repair-an-ai-bot" target="_blank" className="text-xs font-semibold text-[var(--primary-strong)]">Open full guideline →</a></div><div className="grid gap-px bg-[var(--border)] md:grid-cols-3">{BOT_REPAIR_LAYERS.map((layer) => <article key={layer.key} className="bg-white p-5"><div className="flex items-start justify-between gap-3"><h3 className="text-sm font-semibold">{layer.title}</h3><span className="status-pill status-warning">{layer.owner}</span></div><p className="mt-3 text-xs font-semibold text-[var(--text)]">{layer.symptom}</p><p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{layer.action}</p></article>)}</div></section>
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="space-y-5">

@@ -101,6 +101,24 @@ export const helpArticles: HelpArticle[] = [
     checks: ["Sources are current", "Sensitive topics require handoff", "Low confidence falls back safely", "A human can pause automation"]
   },
   {
+    slug: "repair-an-ai-bot",
+    category: "Knowledge and AI",
+    title: "Repair an AI bot safely",
+    summary: "Classify a failed answer, correct the right layer, preserve tenant isolation, and prove the repair before resolving its evidence.",
+    outcome: "A Client Admin can repair business knowledge without code, while intelligence and connector defects reach the correct AiFrogi owner.",
+    minutes: 8,
+    steps: [
+      { title: "Start from evidence", body: "Open Knowledge and review Governed improvement routing, negative feedback, incorrect-fact flags, knowledge gaps, conflict state and the original customer question. Do not repair from memory alone." },
+      { title: "Choose the repair layer", body: "Missing or incorrect business truth belongs to the tenant Knowledge layer. Intent, context, repetition, persona or evidence errors belong to shared intelligence. Live booking, availability, payment, order or external updates belong to the connector layer." },
+      { title: "Contain risk first", body: "Pause an incorrect fact immediately. Keep disputed or expired claims out of retrieval. Suspend connector writes when completion cannot be verified. Unaffected answers may continue operating." },
+      { title: "Correct tenant knowledge", body: "Create a precise atomic claim or an explicit superseding version. Complete named field approval and read the actual customer-facing Preview Approval before publication." },
+      { title: "Escalate shared defects", body: "Send intent, context, loop, persona-boundary and evidence-classification defects to AiFrogi Engineering. The repair must add a universal regression case so future bots inherit it safely." },
+      { title: "Certify connector repairs", body: "Verify tenant scope, authentication, idempotency, read-back and safe failure before re-enabling any external write action. Never infer a completed action from a request alone." },
+      { title: "Retest and close", body: "Retest the original wording, two paraphrases, a contextual follow-up and a nearby unsafe case. Resolve the flag or gap only after the publication or connector gate passes and the evidence matches observed behaviour." }
+    ],
+    checks: ["Failure layer identified", "Risk contained before editing", "No cross-tenant fact copied", "Approvals and regression gate passed", "Original question and variants retested"]
+  },
+  {
     slug: "manage-team-access",
     category: "Account and security",
     title: "Manage team access safely",
