@@ -12,6 +12,9 @@ test("public pricing is AI Bot-first and contains the approved launch plans", ()
   assert.match(pricing, /15-day trial/);
   assert.match(pricing, /₹499/);
   assert.match(pricing, /₹4,999/);
+  assert.match(pricing, /Pay ₹499 monthly or ₹4,999 yearly and save ₹989/);
+  assert.match(pricing, /aria-pressed=\{!annual\}/);
+  assert.match(pricing, /aria-pressed=\{annual\}/);
   assert.match(pricing, /Custom \/ Enterprise/);
   assert.match(pricing, /1,000 AI replies/);
   assert.match(pricing, /No surprise cap/);
@@ -20,8 +23,8 @@ test("public pricing is AI Bot-first and contains the approved launch plans", ()
 });
 
 test("connector estimates and payment boundaries remain visible", () => {
-  for (const name of ["Google Sheets", "Google Calendar", "E-commerce Store", "PMS / Channel Manager"]) assert.match(pricing, new RegExp(name.replace("/", "\\/")));
-  assert.match(pricing, /Indicative one-time total/);
+  for (const name of ["Google Sheets", "Google Calendar", "Shopify/WooCommerce", "PMS, channel manager"]) assert.match(pricing, new RegExp(name.replace("/", "\\/")));
+  assert.match(pricing, /Connector pricing is quoted separately/);
   assert.match(pricing, /Read full payment and service terms/);
   assert.match(terms, /Refunds and billing corrections/);
   assert.match(terms, /third-party charges/);
@@ -29,9 +32,9 @@ test("connector estimates and payment boundaries remain visible", () => {
 
 test("WhatsApp remains an optional separately priced channel", () => {
   assert.match(pricing, /Add WhatsApp to your AI Bot/);
-  assert.match(pricing, /₹3,750\/qtr/);
-  assert.match(pricing, /₹25,500\/qtr/);
-  assert.match(pricing, /One-time setup — ₹4,500/);
+  assert.match(pricing, /₹3,750/);
+  assert.match(pricing, /₹25,500/);
+  assert.match(pricing, /Required WhatsApp setup — ₹4,500 one time/);
   assert.match(pricing, /\/whatsapp-api#calculator/);
   assert.match(pricing, /Meta usage billed separately/);
   assert.match(whatsappPage, /<WhatsAppPricing \/>/);

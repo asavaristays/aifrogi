@@ -45,7 +45,7 @@ These bands consider implementation completeness, automated evidence, production
 - Homepage focused on intelligent AI business bots rather than WhatsApp-only automation.
 - AI Bot portfolio pages for BusinessGPT, HotelGPT, ClinicGPT, DineGPT, PropertyGPT, eduGPT, FlowCart and Custom Bot.
 - Dedicated WhatsApp API section separated from AI Bot positioning.
-- AI Bot pricing: 15-day trial, ₹499 monthly Starter, ₹4,999 yearly Starter with ₹989 saving, and Custom/Enterprise route. The current pricing component renders both amounts and passes the selected billing period into registration.
+- AI Bot pricing: 15-day trial, ₹499 monthly Starter, ₹4,999 yearly Starter with ₹989 saving, and Custom/Enterprise route. Both prices are published in always-visible copy; the client-side selector updates the Starter card and passes the selected billing period into registration.
 - Simplified installation and onboarding explanation.
 - Security Compliance, Privacy, Terms, Help Center and installation resources.
 - Current AiFrogi logo, favicon and mascot-based social preview metadata.
@@ -148,7 +148,7 @@ Formal ISO, SOC 2 or equivalent certification is not claimed.
 | Production health | Database, session secret, public URL and webhook controls report healthy |
 | Webtechnosys corrected journeys | Contact, location, callback and training-date checks passed against production runtime |
 | Training link | Active HTTP 200 at `https://webtechnosys.com/training-booking/` |
-| Published Webtechnosys claims | 6 published; 6 fresh; 0 conflicts; 0 unsigned; 0 pending previews; 0 open flags |
+| Published Webtechnosys claims | 6 published; 6 fresh; 0 conflicts; 0 unsigned; 0 pending previews; 0 open flags. These claims currently cover 3 of the 10 readiness topics (30%); see Section 6. |
 
 Automated test passes prove implemented controls. They do not prove real-world answer accuracy across future client language.
 
