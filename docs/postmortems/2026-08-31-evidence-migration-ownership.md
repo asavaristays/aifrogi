@@ -33,6 +33,12 @@ The production schema is owned by `postgres`, while normal application access us
 - Unknown, missing or mixed ownership blocks the deployment.
 - Administrator execution remains explicit; the gate never elevates the runtime application role.
 
+## Preflight evidence boundary
+
+The production check after deployment was a **live, read-only dry run** against the real `SovereignAnswerEvidence` table and real production roles. It correctly returned `ADMIN_OWNER_REQUIRED` before executing any migration command. It was not a deliberately blocked migration attempt.
+
+The `RUNTIME_OWNER` true-positive path is covered by an automated regression test in which the runtime role owns every supplied target. Production currently has no application-owned migration target suitable for a non-destructive true-positive exercise, so that branch must not be described as production-proven. A future application-owned target may provide that evidence naturally; creating and deleting a production table solely to improve the test claim is not justified.
+
 ## Rollback capability
 
 - Verified encrypted database backup retained under `/var/backups/aifrogi`.

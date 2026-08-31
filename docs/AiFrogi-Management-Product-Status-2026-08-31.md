@@ -147,6 +147,8 @@ This closes part of the former *measurement-mechanism* gap for Accuracy Engineer
 
 The encrypted backup was checksum/decrypt/`pg_restore` verified before the first migration attempt. The ownership incident and corrective preflight are recorded in `docs/postmortems/2026-08-31-evidence-migration-ownership.md`.
 
+The ownership preflight has two distinct evidence levels: `ADMIN_OWNER_REQUIRED` was verified through a live read-only production dry run; `RUNTIME_OWNER` passes automated regression tests but is not yet production-proven because the current production schema is consistently owned by `postgres`.
+
 | Evidence | Current result |
 | --- | --- |
 | Production application build | Passed; 94 routes generated |

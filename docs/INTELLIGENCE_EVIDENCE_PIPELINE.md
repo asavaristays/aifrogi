@@ -97,7 +97,9 @@ Rollback the application release immediately when any of these conditions occurs
 - tenant attribution is missing or cross-tenant evidence becomes possible;
 - negative feedback can create a replay case linked to another tenant or conversation;
 - schema or generated-client incompatibility prevents the current application from starting;
-- evidence collection changes the answer, authority decision or connector outcome rather than observing it.
+- a shadow comparison shows the evidence-enabled runtime changed answer text, disposition, permitted authority or connector outcome for the same input and version; the evidence layer must remain observational;
+- after at least 20 comparable governed turns for a persona, Safe Resolution Rate falls by more than 5 percentage points or refusal/escalation rate rises by more than 10 percentage points against that persona's approved pre-release baseline, without an approved change record explaining the shift;
+- before 20 comparable turns exist, any repeated unexplained behaviour shift in three or more reviewed conversations triggers release hold and manual comparison rather than a statistically unsupported percentage decision.
 
 Disable or patch the affected measurement path forward, without reverting the additive schema, when:
 
@@ -107,3 +109,5 @@ Disable or patch the affected measurement path forward, without reverting the ad
 - replay-case review metadata is incorrect but source evidence remains intact and tenant-bound.
 
 The additive columns and replay table may remain after an application rollback because the preceding release ignores them. Destructive down-migrations are prohibited during incident response. Restore the database only for proven data corruption that cannot be repaired transactionally, after explicit incident authority.
+
+Threshold alerts alone do not authorize rollback. The operator must confirm version comparability, tenant scope and absence of an approved persona/knowledge change. Zero-tolerance isolation, unauthorized-action and cross-tenant events bypass the sample threshold and require immediate containment.
