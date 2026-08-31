@@ -485,7 +485,7 @@ export async function buildWebsiteKnowledgeAnswer({
   if (resolved.intent === "GREETING") return direct(`Hello. I’m ${assistantName}. I can answer approved questions about ${businessName} and help with the next step. What would you like to explore?`);
   if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for ${businessName}. I answer from approved business knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on ${businessName} business enquiries, so I don’t provide general weather, news, sports, or unrelated information. Please ask me about this business’s approved services, products, availability, or next steps.`);
-  if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share only the minimum contact details needed for follow-up—never a password, OTP, or payment-card detail.`);
+  if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
   if (resolved.intent === "CONTACT_INFO") {
     if (organization) {
       const details = [

@@ -33,6 +33,15 @@ test("a short action follow-up inherits only the latest explicit business intent
   assert.equal(resolved.contextUsed, true);
 });
 
+test("callback and specific-date language routes into the correct governed journey", () => {
+  assert.equal(classifySovereignIntent("Please arrange a call tomorrow"), "HUMAN_REQUEST");
+  assert.equal(classifySovereignIntent("I need a callback"), "HUMAN_REQUEST");
+  const date = resolveSovereignQuestion("I want a specific date", ["What upcoming AI training can I book?"]);
+  assert.equal(date.intent, "CONTEXT_FOLLOW_UP");
+  assert.equal(date.resolvedQuestion, "What upcoming AI training can I book?");
+  assert.equal(date.contextUsed, true);
+});
+
 test("every category is registered under blueprint version 1.0", () => {
   const blueprints = listVersionedBotBlueprints();
   assert.equal(blueprints.length, 8);
