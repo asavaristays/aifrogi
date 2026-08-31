@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Icon } from "@/components/icons";
 import { OnboardingJourney } from "@/components/marketing/onboarding-journey";
-import { ClinicGPTPricingSection } from "@/components/marketing/clinicgpt-pricing-section";
+import { WhatsAppPricing } from "@/components/marketing/ai-bot-pricing";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { WhatsAppCostCalculator } from "@/components/marketing/whatsapp-cost-calculator";
@@ -35,8 +35,8 @@ export default function WhatsAppApiPage() {
       </section>
       <div id="onboarding"><OnboardingJourney /></div>
       <WhatsAppProductsShell eyebrow="AI Bot workflows on WhatsApp" />
+      <WhatsAppPricing />
       <WhatsAppCostCalculator />
-      <ClinicGPTPricingSection />
       <section className="bg-[var(--ink-950)] px-5 py-16 text-white sm:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr]">
           <div><p className="product-eyebrow text-[var(--gold-300)]">Meta connection controls</p><h2 className="mt-3 text-4xl font-semibold tracking-[-.04em]">Operational evidence, not vague trust claims.</h2></div>

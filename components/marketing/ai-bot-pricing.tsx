@@ -46,7 +46,7 @@ export function AiBotPricing() {
   </>;
 }
 
-function WhatsAppPricing() {
+export function WhatsAppPricing() {
   const standard = ["One WhatsApp number", "One connector: calendar, payment or CRM", "Answer, Clarify and Recommend authority", "Template and delivery monitoring", "Signed webhook security", "Human takeover", "Meta usage billed separately"];
   const premium = ["Calendar, CRM and payment together", "Full Act and Verify authority", "Live booking and payment actions", "Priority template review", "Dedicated monitoring", "Multi-number and multi-location ready", "Human takeover", "Meta usage billed separately"];
   return <section id="whatsapp-channel" className="bg-[#050505] px-5 py-16 text-white sm:px-8 sm:py-20"><div className="mx-auto max-w-7xl">
