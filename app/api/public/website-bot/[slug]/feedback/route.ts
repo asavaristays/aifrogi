@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { hashWebsiteVisitorValue, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
+import { encodeImprovementSignalReason, normalizeImprovementSignal } from "@/lib/improvement-signal";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
 
@@ -18,10 +19,12 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   if (!session) return NextResponse.json({ error: "Visitor session is invalid or closed." }, { status: 401, headers });
   const evidence = await db.sovereignAnswerEvidence.findFirst({ where: { id: payload.evidenceId, propertyId: session.propertyId, leadId: token.leadId }, select: { id: true } });
   if (!evidence) return NextResponse.json({ error: "This answer does not belong to the active conversation." }, { status: 404, headers });
+  const signal = payload.helpful ? null : normalizeImprovementSignal({ propertyId: session.propertyId, type: "NEGATIVE_FEEDBACK", text: payload.reason });
+  const storedReason = signal ? encodeImprovementSignalReason(signal, payload.reason) : payload.reason?.trim().slice(0, 1000) || null;
   const feedback = await db.sovereignAnswerFeedback.upsert({
     where: { evidenceId: evidence.id },
-    create: { propertyId: session.propertyId, evidenceId: evidence.id, leadId: token.leadId, helpful: payload.helpful, reason: payload.reason?.trim().slice(0, 1000) || null },
-    update: { helpful: payload.helpful, reason: payload.reason?.trim().slice(0, 1000) || null }
+    create: { propertyId: session.propertyId, evidenceId: evidence.id, leadId: token.leadId, helpful: payload.helpful, reason: storedReason },
+    update: { helpful: payload.helpful, reason: storedReason }
   });
   return NextResponse.json({ ok: true, helpful: feedback.helpful, message: feedback.helpful ? "Thank you. This helps us verify answer quality." : "Thank you. This answer is now part of the review dataset. You can request human help or explicitly flag an incorrect fact." }, { headers });
 }

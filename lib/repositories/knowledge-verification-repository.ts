@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { calculateCoverage, KB_FRAMEWORK_VERSION, KB_FRESHNESS_TARGET, KB_MINIMUM_COVERAGE, validateAtomicClaim } from "@/lib/knowledge-verification";
+import { runKnowledgePublicationGate } from "@/lib/knowledge-publication-gate";
 
 export async function expirePublishedClaims(propertyId?: string) {
   const db = getDb();
@@ -85,10 +86,15 @@ export async function reviewClaimPreview(input: { propertyId: string; previewId:
       return reviewed;
     });
   }
+  const regression = runKnowledgePublicationGate({ question: preview.entry.question, answer: preview.generatedAnswer, category: preview.entry.category, claimType: preview.entry.claimType, valueType: preview.entry.valueType, currency: preview.entry.currency, effectiveAt: preview.entry.effectiveAt, expiresAt: preview.entry.expiresAt, refreshDays: preview.entry.refreshDays });
+  if (!regression.passed) throw new Error(`Publication regression gate failed: ${regression.failures.join(", ")}`);
   return db.$transaction(async (tx) => {
+    const property = await tx.property.findUnique({ where: { id: input.propertyId }, select: { organizationId: true } });
+    if (!property?.organizationId) throw new Error("Knowledge workspace is not attached to an organization.");
     if (preview.entry.supersedesId) await tx.knowledgeEntry.update({ where: { id: preview.entry.supersedesId }, data: { status: "SUPERSEDED", pausedAt: new Date(), pauseReason: `Superseded by claim version ${preview.entry.version}.` } });
     const reviewed = await tx.knowledgePreview.update({ where: { id: preview.id }, data: { status: "APPROVED", approvedBy: input.actorEmail, approvedAt: new Date() } });
     await tx.knowledgeEntry.update({ where: { id: preview.entryId }, data: { status: "PUBLISHED", previewApprovedBy: input.actorEmail, previewApprovedAt: new Date(), publishedAt: new Date(), pausedAt: null, pauseReason: null } });
+    await tx.onboardingActivity.create({ data: { organizationId: property.organizationId, actorEmail: input.actorEmail, action: "KNOWLEDGE_PUBLICATION_GATE_PASSED", detail: JSON.stringify({ entryId: preview.entryId, previewId: preview.id, ...regression }) } });
     return reviewed;
   });
 }
@@ -117,8 +123,16 @@ export async function reconfirmClaim(input: { propertyId: string; entryId: strin
   if (!entry || !entry.previewApprovedAt) throw new Error("Preview approval is required before re-confirmation.");
   const openFlags = await db.knowledgeAnswerFlag.count({ where: { entryId: entry.id, status: { in: ["OPEN", "ACKNOWLEDGED"] } } });
   if (openFlags || entry.conflictStatus !== "CLEAR") throw new Error("Resolve open flags and conflicts before re-confirming this claim.");
+  const regression = runKnowledgePublicationGate({ question: entry.question, answer: entry.answer, category: entry.category, claimType: entry.claimType, valueType: entry.valueType, currency: entry.currency, effectiveAt: entry.effectiveAt, expiresAt: entry.expiresAt, refreshDays: entry.refreshDays });
+  if (!regression.passed) throw new Error(`Publication regression gate failed: ${regression.failures.join(", ")}`);
   const now = new Date();
-  return db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PUBLISHED", lastConfirmedAt: now, fieldApprovedBy: input.actorEmail, fieldApprovedAt: now, expiresAt: new Date(now.getTime() + entry.refreshDays * 86400000), pausedAt: null, pauseReason: null } });
+  return db.$transaction(async (tx) => {
+    const property = await tx.property.findUnique({ where: { id: input.propertyId }, select: { organizationId: true } });
+    if (!property?.organizationId) throw new Error("Knowledge workspace is not attached to an organization.");
+    const updated = await tx.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PUBLISHED", lastConfirmedAt: now, fieldApprovedBy: input.actorEmail, fieldApprovedAt: now, expiresAt: new Date(now.getTime() + entry.refreshDays * 86400000), pausedAt: null, pauseReason: null } });
+    await tx.onboardingActivity.create({ data: { organizationId: property.organizationId, actorEmail: input.actorEmail, action: "KNOWLEDGE_RECONFIRMATION_GATE_PASSED", detail: JSON.stringify({ entryId: entry.id, ...regression }) } });
+    return updated;
+  });
 }
 
 export async function flagKnowledgeAnswer(input: { propertyId: string; entryId?: string | null; evidenceId?: string | null; reporterType: string; reporterId?: string | null; reason: string }) {

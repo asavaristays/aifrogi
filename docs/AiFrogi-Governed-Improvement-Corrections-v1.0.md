@@ -21,12 +21,12 @@ AiFrogi improves through governed evidence, not silent self-training. Customer c
 
 ### P1 — complete during the first five-client pilot
 
-5. Automatically run affected regression packs before publishing corrected claims or persona versions.
-6. Make trigger-to-lifecycle routing explicit in product documentation and operations UI.
+5. **Implemented:** automatically run the atomic-claim, output-safety and complete Sovereign Common Suite before publishing a corrected claim. Publication is blocked on failure and passing evidence is stored with the release activity.
+6. **Implemented:** make trigger-to-lifecycle routing explicit in product documentation and the Knowledge operations UI, including containment state, priority, owner, deadline and safe next action.
 
 ### P2 — implement after meaningful real-client evidence exists
 
-7. Cluster semantically similar feedback, questions and gaps into suggested corrections. Suggestions remain drafts and require the complete approval lifecycle.
+7. **Foundation implemented; activation deferred:** negative feedback is normalized, stripped of common contact identifiers, fingerprinted within its tenant and stored as evidence for future clustering. Cross-tenant fingerprints, silent knowledge changes and automatic correction proposals are prohibited. Semantic clustering remains deferred until meaningful real-client evidence exists; suggestions must remain drafts and require the complete approval lifecycle.
 
 ## Trigger-to-lifecycle routing
 
@@ -70,6 +70,17 @@ AiFrogi improves through governed evidence, not silent self-training. Customer c
 - Exact knowledge-gap recurrence counting is implemented. Semantic clustering of differently worded feedback into a proposed correction is a later capability.
 - Rule 11 defaults to two unresolved clarification cycles. The circuit breaker then forces limitation, refusal, approval request or escalation and remains locked for that intent thread.
 - Claim-level containment preserves unaffected bot capabilities while disputed knowledge remains unavailable.
+- Feedback fingerprints are tenant-bound analytical metadata, not authority to change an answer. The original evidence remains the audit source.
+
+## Publication regression gate v1.0
+
+Every preview-approval and reconfirmation request now runs three release checks before the transaction may publish:
+
+1. Atomic claim validation for completeness, dates, value type and currency rules.
+2. Output claim validation for unsupported numbers, links, live availability and unverified completed actions.
+3. The complete 30-case Sovereign Common Suite, including all zero-tolerance gates.
+
+A failed check returns an explicit publication error and leaves the preview pending. A passing check is persisted as `KNOWLEDGE_PUBLICATION_GATE_PASSED` operational evidence with suite version, score, zero-tolerance status and affected scope.
 
 ## Acceptance evidence for P0
 
