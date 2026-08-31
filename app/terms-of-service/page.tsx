@@ -41,7 +41,7 @@ export default function TermsOfServicePage() {
 
       <LegalSection title="7. Trial, subscriptions and renewal">
         <p>The introductory trial lasts 15 days and is not a free-forever plan. At trial expiry, messaging, campaigns, automation, and other paid actions pause automatically until a paid plan is activated. Workspace data remains preserved subject to the retention and deletion terms. We may also restrict or suspend access for security threats, unlawful activity, material policy violations, non-payment, or conduct that risks the service or third-party platforms.</p>
-        <p>Subscriptions are billed in advance for the selected monthly or yearly period and renew until cancelled. Cancellation stops the next renewal; service normally remains available until the current paid period ends. The applicable order, quotation, or checkout summary identifies the plan, billing period, taxes, fair-use limits, and any agreed extras.</p>
+        <p>Subscriptions are billed in advance for the selected monthly or yearly period and renew until cancelled. Cancellation stops the next renewal; service normally remains available until the current paid period ends. The applicable order, quotation, or checkout summary identifies the plan, billing period, taxes, published usage allowances, and any agreed extras.</p>
       </LegalSection>
 
       <LegalSection title="8. Connector projects and third-party charges">
@@ -54,8 +54,8 @@ export default function TermsOfServicePage() {
         <p>A delay or failure caused by missing client information, unavailable credentials, rejected provider approval, incompatible third-party systems, or a client-requested scope change does not automatically create a refund entitlement. Contact us promptly so we can investigate and, where appropriate, pause unstarted work.</p>
       </LegalSection>
 
-      <LegalSection title="10. Fair use and plan changes">
-        <p>Introductory and standard plans are designed for the bot, administrator, knowledge, conversation, storage, and support limits stated at purchase. We may recommend or require a higher plan for materially higher or abusive usage. Any paid change or overage will be disclosed before it is charged, unless an existing order expressly authorizes usage-based billing.</p>
+      <LegalSection title="10. Usage allowances and plan changes">
+        <p>Current introductory-plan allowances are published on the pricing page and usage is visible inside the customer workspace. We may recommend or require a higher plan when an allowance is reached. No automatic overage fee will be charged without prior agreement, unless an existing order expressly authorizes usage-based billing.</p>
       </LegalSection>
 
       <LegalSection title="11. Liability and contact">

@@ -206,6 +206,23 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-08-31 - Trial and allowance consistency gate
+
+### Implemented
+- Standardized active website, onboarding, verification, documentation, video captions and guidebook material to the deliberate 15-day trial policy.
+- Replaced vague Starter fair-use wording with published Trial and Starter allowances that match the server-owned billing catalogue.
+- Stated that usage is visible and no automatic overage fee is charged without prior agreement.
+- Regenerated and visually verified the 29-page project guidebook.
+- Rebuilt the product-tour video with a readable current logo and a 15-day outro.
+
+### Verification evidence
+- Repository audit leaves no stale 30-day trial reference; the remaining 30-day text concerns data-deletion handling only.
+- Pricing regression test checks published allowances and rejects the former vague fair-use phrase.
+- Guidebook text extraction confirms 15-day wording and no 30-day trial wording.
+- Guidebook pages and product-video outro were rendered and visually inspected.
+
+---
+
 ## Template for the next entry
 
 ```markdown

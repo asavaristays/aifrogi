@@ -50,7 +50,7 @@ async function main() {
     const approvedEntry = await createKnowledgeEntry({
       propertyId: property.id,
       question,
-      answer: "The verification trial lasts 30 days.",
+      answer: "The verification trial lasts 15 days.",
       category: "QA verification",
       createdBy: actor
     });
@@ -89,7 +89,7 @@ async function main() {
     await reviewKnowledgeDocument({ propertyId: property.id, id: document.id, action: "APPROVE", actorEmail: actor, confirmConflict: true });
 
     const answerContext = await getApprovedKnowledgeContext(property.slug, `${runId} trial duration`);
-    assert(answerContext.includes("30 days"), "Approved answer was not available to retrieval.");
+    assert(answerContext.includes("15 days"), "Approved answer was not available to retrieval.");
     assert(!answerContext.includes("45 days"), "Conflicted answer leaked into approved retrieval.");
     const documentContext = await getApprovedKnowledgeContext(property.slug, `${runId} escalation desk`);
     assert(documentContext.includes("Escalation desk"), "Approved document was not available to retrieval.");

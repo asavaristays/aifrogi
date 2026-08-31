@@ -87,7 +87,7 @@ export function buildWhatsAppBotMenuOptions(configuration: WhatsAppBotConfigurat
   if (configuration.trialEnabled) {
     options.push({
       id: "menu_trial",
-      label: "30-Day Trial",
+      label: "15-Day Trial",
       description: "Explore a working automation trial",
       prompt: "I want information about the 15-day working trial."
     });

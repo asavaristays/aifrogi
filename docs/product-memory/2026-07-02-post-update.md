@@ -20,7 +20,7 @@ Technical complexity is progressively disclosed. Clients see readiness, outcomes
 
 - `https://lead.hotelradar.in/` is now a public LeadOS product experience instead of an automatic dashboard redirect.
 - The first viewport presents the actual product promise and a working-product visual, not a generic marketing hero.
-- Public sections explain the operating loop, guided dashboard, automation boundaries, trust model, and 30-day trial.
+- Public sections explain the operating loop, guided dashboard, automation boundaries, trust model, and trial (subsequently standardized to 15 days).
 - Pricing is shown as:
   - Starter: ₹1,650/month, ₹4,950 billed quarterly.
   - Growth: ₹3,550/month, ₹10,650 billed quarterly.

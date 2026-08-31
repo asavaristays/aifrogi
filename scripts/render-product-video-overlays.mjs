@@ -8,7 +8,7 @@ if (!outputDirectory || !rootDirectory) {
 }
 
 await mkdir(outputDirectory, { recursive: true });
-const logoPath = path.join(rootDirectory, "public/brand/aifrogi-logo-white.png");
+const logoPath = path.join(rootDirectory, "public/brand/aifrogi-logo-transparent.png");
 const logo = await sharp(logoPath).resize(520, 195, { fit: "contain" }).png().toBuffer();
 
 function svgDocument(body, background = "transparent") {
@@ -24,7 +24,7 @@ function svgDocument(body, background = "transparent") {
 async function renderTitleCard(fileName, headline, supporting) {
   const surface = sharp({ create: { width: 1920, height: 1080, channels: 4, background: "#211a2b" } });
   const text = svgDocument(`
-    <rect x="650" y="115" width="620" height="300" rx="12" fill="#ffffff"/>
+    <rect x="650" y="115" width="620" height="300" rx="12" fill="#050505"/>
     <text x="960" y="620" fill="#ffffff" font-size="64" font-weight="650" text-anchor="middle">${headline}</text>
     <text x="960" y="700" fill="#ffb4f7" font-size="30" font-weight="500" text-anchor="middle">${supporting}</text>
   `);
@@ -51,5 +51,5 @@ await Promise.all([
   renderLowerThird("knowledge.png", "GOVERNED AI", "Answers come from approved truth", "Review sources, close knowledge gaps and escalate uncertainty to a human."),
   renderLowerThird("analytics.png", "MEASURABLE OPERATIONS", "Know what is working", "Monitor response, delivery, read rate and the queue that still needs action."),
   renderLowerThird("team.png", "CONTROLLED ACCESS", "The right workspace for every role", "Private accounts and least-privilege access for every team member."),
-  renderTitleCard("outro.png", "One clear operating loop.", "Start your 30-day working trial at aifrogi.com")
+  renderTitleCard("outro.png", "One clear operating loop.", "Start your 15-day working trial at aifrogi.com")
 ]);

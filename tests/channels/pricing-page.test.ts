@@ -12,6 +12,9 @@ test("public pricing is AI Bot-first and contains the approved launch plans", ()
   assert.match(pricing, /₹499/);
   assert.match(pricing, /₹4,999/);
   assert.match(pricing, /Custom \/ Enterprise/);
+  assert.match(pricing, /1,000 AI replies/);
+  assert.match(pricing, /No surprise cap/);
+  assert.doesNotMatch(pricing, /Fair-use limits apply/);
   assert.doesNotMatch(page, /WhatsAppCostCalculator|IntegrationPricing/);
 });
 

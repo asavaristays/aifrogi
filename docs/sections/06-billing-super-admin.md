@@ -81,7 +81,7 @@ Payment provider remains `MANUAL` in this slice. AiFrogi can issue invoices and 
 
 ### 2026-07-05 Increment
 
-- The TRIAL plan is strictly limited to 30 days and automatically changes to `PAUSED` when it expires.
+- The TRIAL plan is strictly limited to 15 days and automatically changes to `PAUSED` when it expires.
 - Paused workspaces retain data and read access while messaging, campaigns, automation, and new team invitations are refused server-side.
 - Customer billing now shows plan state, trial days, allowances, usage, invoices, and paid-plan choices.
 - Plan allowances are enforced server-side for messages, campaigns, and team users.

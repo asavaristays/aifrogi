@@ -113,7 +113,7 @@ This memory is not a direction to copy AiSensy visually. It is a direction to un
    - AiFrogi should eventually include a visual automation builder.
    - For early version, use a guided template library:
      - AI audit intake
-     - 30-day trial intake
+     - trial intake (current policy: 15 days)
      - Missed reply follow-up
      - Human handoff
      - Lead qualification

@@ -6,7 +6,7 @@ Section 03 now has its second implementation layer beyond self-service registrat
 
 - Shared guidance rules live in `lib/onboarding-guidance.ts`.
 - Guidance outputs: title, description, action, owner (`You`, `AiFrogi`, or `Meta`), step, tone, ETA, and Super Admin support note.
-- Trial windows are calculated for 30-day trial organizations from `Organization.createdAt`.
+- Trial windows are calculated from `Organization.createdAt`; the current policy is 15 days.
 - Client onboarding shows a prominent `Today` action card before the checklist and form.
 - Client onboarding sidebar shows trial days left and elapsed progress.
 - Super Admin customer list shows next action, owner, ETA, trial status, and AiFrogi queue count.

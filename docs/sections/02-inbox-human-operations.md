@@ -99,7 +99,7 @@ The Inbox must make these states obvious:
 - Broadcast generated a reply.
 - Delivery failed due to payment, template, engagement limit, or recipient availability.
 - A conversation was moved to human follow-up.
-- A lead came from AI audit, 30-day trial, website assistant, campaign, or manual test.
+- A lead came from AI audit, 15-day trial, website assistant, campaign, or manual test.
 
 ## Visual Direction
 

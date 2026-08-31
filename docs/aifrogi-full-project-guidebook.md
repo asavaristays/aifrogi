@@ -33,7 +33,7 @@ These rules protect the brand and prevent confusion.
 - App site is [https://app.aifrogi.com](https://app.aifrogi.com).
 - Production VPS path remains `/var/www/lead-os-ai`.
 - Production PM2 process remains `lead-os-ai`.
-- Trial is not free forever. Trial is 30 days only, then paid actions pause automatically.
+- Trial is not free forever. Trial is 15 days only, then paid actions pause automatically.
 - Meta charges and AiFrogi platform fees must stay separate.
 - Never ask a customer for Facebook password, email password, OTP, permanent token, or app secret.
 - Do not use fake logos, fake testimonials, or unsupported enterprise/security claims.
@@ -73,7 +73,7 @@ This is the high-level customer journey AiFrogi should explain internally and pu
 flowchart TD
   A["Visitor reaches aifrogi.com"] --> B{"Choose path"}
 
-  B --> C["Start 30-day trial"]
+  B --> C["Start 15-day trial"]
   B --> D["Choose paid plan / request setup"]
   B --> E["Contact AiFrogi by mobile or support"]
 
@@ -86,7 +86,7 @@ flowchart TD
   H --> I["Workspace created in app.aifrogi.com"]
 
   I --> J{"Billing state"}
-  J --> K["Trial active for 30 days"]
+  J --> K["Trial active for 15 days"]
   J --> L["Paid plan active"]
   J --> M["Trial expired / unpaid"]
 
@@ -113,7 +113,7 @@ flowchart TD
 Plain-English version:
 
 1. Customer discovers AiFrogi.
-2. Customer starts a 30-day trial, selects paid setup, or contacts AiFrogi.
+2. Customer starts a 15-day trial, selects paid setup, or contacts AiFrogi.
 3. AiFrogi verifies email ownership and creates the workspace.
 4. Trial or paid entitlement controls what actions are allowed.
 5. Customer completes prerequisites.
@@ -123,18 +123,18 @@ Plain-English version:
 
 ### 4.2 Trial vs paid signup flow
 
-The product must be very clear here: trial is 30 days only, not free forever.
+The product must be very clear here: trial is 15 days only, not free forever.
 
 ```mermaid
 flowchart TD
   A["Signup intent"] --> B{"Trial or paid?"}
 
-  B --> C["30-day trial"]
+  B --> C["15-day trial"]
   C --> D["Register business"]
   D --> E["Verify owner email"]
   E --> F["Create workspace"]
   F --> G["Trial countdown starts"]
-  G --> H{"Within 30 days?"}
+  G --> H{"Within 15 days?"}
   H -->|Yes| I["Customer can onboard and test within plan limits"]
   H -->|No| J["Workspace becomes paused automatically"]
   J --> K["Data remains available"]
@@ -405,7 +405,7 @@ The public site should create confidence quickly. Most buyers will not read long
 - how onboarding works;
 - how pricing works;
 - why customer data is protected;
-- how to start a 30-day trial or contact by mobile.
+- how to start a 15-day trial or contact by mobile.
 
 ### 7.2 Brand, navigation, and design rules
 
@@ -693,7 +693,7 @@ AI should:
 
 Billing must be clear for customers:
 
-- trial is 30 days only;
+- trial is 15 days only;
 - after expiry, paid actions pause automatically;
 - data remains preserved;
 - Meta usage charges remain separate;
@@ -926,11 +926,11 @@ Paused trial workspaces must not be able to invite new users.
 
 ## 13. Trial, billing, and plan rules
 
-### 13.1 30-day trial rule
+### 13.1 15-day trial rule
 
-AiFrogi trial is 30 days only.
+AiFrogi trial is 15 days only.
 
-After 30 days:
+After 15 days:
 
 - trial automatically becomes paused;
 - customer data is preserved;

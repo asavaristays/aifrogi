@@ -48,7 +48,7 @@ Marketing trial CTA -> Business registration -> Email ownership verification -> 
 
 - A shared onboarding guidance engine classifies the current blocker, owner, next action, ETA, support note, and target step.
 - The authenticated onboarding screen now opens with a `Today` action card so the client sees the next move before forms and technical detail.
-- 30-day trial timing is calculated from workspace creation and shown in the onboarding sidebar.
+- 15-day trial timing is calculated from workspace creation and shown in the onboarding sidebar.
 - The first messaging-test readiness check now accepts the live `CONNECTED` webhook state.
 - Super Admin customer lists show next action, owner, ETA, trial status, and an AiFrogi-owned queue count.
 - Super Admin customer detail pages show the current blocker and support note before detailed configuration panels.
@@ -60,7 +60,7 @@ Marketing trial CTA -> Business registration -> Email ownership verification -> 
 - Approved-template count and errors are returned without exposing access tokens.
 - The first provider-accepted outbound or template message records final go-live proof.
 - Registration source, owner activation, blocker ownership, and time-to-live activity are measurable.
-- Trial terms are explicit at registration: 30 days only, followed by automatic pause of paid actions while data remains preserved.
+- Trial terms are explicit at registration: 15 days only, followed by automatic pause of paid actions while data remains preserved.
 
 Remaining increment: richer lifecycle email sequencing and aggregate drop-off reporting beyond the Super Admin registration/activation funnel.
 

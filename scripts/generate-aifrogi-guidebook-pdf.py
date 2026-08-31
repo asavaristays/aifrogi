@@ -334,7 +334,7 @@ def cover(c: canvas.Canvas):
     )
     pill(c, "Version 2026-07-05", 24 * mm, 38 * mm, 43 * mm, 8 * mm, BRAND_MAGENTA)
     pill(c, "Operated by webtechnosys", 71 * mm, 38 * mm, 54 * mm, 8 * mm, colors.HexColor("#4C3B62"))
-    pill(c, "30-day trial - not free forever", 129 * mm, 38 * mm, 62 * mm, 8 * mm, BRAND_GREEN, BRAND_DEEP)
+    pill(c, "15-day trial - not free forever", 129 * mm, 38 * mm, 62 * mm, 8 * mm, BRAND_GREEN, BRAND_DEEP)
     c.setFillColor(colors.white)
     c.setFont("Helvetica-Bold", 15)
     c.drawString(24 * mm, 25 * mm, "AiFrogi")
@@ -398,7 +398,7 @@ def make_pdf():
     add_cards_grid(
         c,
         [
-            ("Trial rule", "30 days only. After expiry, paid actions pause automatically while data remains preserved.", BRAND_GREEN),
+            ("Trial rule", "15 days only. After expiry, paid actions pause automatically while data remains preserved.", BRAND_GREEN),
             ("Meta charges", "Meta usage and AiFrogi platform fees remain separate in pricing and billing.", BRAND_AMBER),
             ("Security claim", "Use verified-for-covered-controls language. Never say fully secure or Meta endorsed.", BRAND_MAGENTA),
             ("Support access", "Customer data is not an open admin workspace. Access must be scoped, controlled, and auditable.", BRAND_BLUE),
@@ -474,7 +474,7 @@ def make_pdf():
         [
             Node("a", "Visitor reaches website", 0, 0, BRAND_DARK, BRAND_DARK, "white_box"),
             Node("b", "Choose path", 1, 0, BRAND_AMBER),
-            Node("c", "30-day trial", 2, 0, BRAND_GREEN),
+            Node("c", "15-day trial", 2, 0, BRAND_GREEN),
             Node("d", "Paid plan or setup", 2, 1, BRAND_BLUE, BRAND_BLUE, "white_box"),
             Node("e", "Business registration", 3, 0, CARD),
             Node("f", "Email verification", 4, 0, CARD),
@@ -501,7 +501,7 @@ def make_pdf():
             ("j", "k", None),
             ("k", "l", None),
             ("l", "m", None),
-            ("c", "n", "after 30 days"),
+            ("c", "n", "after 15 days"),
         ],
         7,
         3,
@@ -516,7 +516,7 @@ def make_pdf():
         [
             Node("intent", "Signup intent", 0, 1, BRAND_DARK, BRAND_DARK, "white_box"),
             Node("choice", "Trial or paid?", 1, 1, BRAND_AMBER),
-            Node("trial", "30-day trial", 2, 0, BRAND_GREEN),
+            Node("trial", "15-day trial", 2, 0, BRAND_GREEN),
             Node("paid", "Paid plan / setup", 2, 2, BRAND_BLUE, BRAND_BLUE, "white_box"),
             Node("reg", "Register + verify email", 3, 1, CARD),
             Node("workspace", "Workspace created", 4, 1, CARD),
@@ -545,7 +545,7 @@ def make_pdf():
     bullets(
         c,
         [
-            "Trial is not free forever; it is a 30-day evaluation window.",
+            "Trial is not free forever; it is a 15-day evaluation window.",
             "After expiry, messaging, campaigns, automation, and new team invitations are refused server-side.",
             "Customer data remains preserved so upgrade or renewal is clean.",
         ],
@@ -873,7 +873,7 @@ def make_pdf():
             ("Campaigns", "Approved template, consent proof, preview, test send, cost ceiling, send/schedule, analytics.", BRAND_GREEN),
             ("Workflows", "Automation jobs, queue health, due/retry/dead-letter states, safe manual demo actions.", BRAND_AMBER),
             ("Knowledge", "Documents, approved Q&A, conflicts, gaps, review actions, approved context for AI.", BRAND_PINK),
-            ("Billing", "30-day trial, plan, usage, invoices, pause state, paid plan choices, Meta fee separation.", BRAND_DARK),
+            ("Billing", "15-day trial, plan, usage, invoices, pause state, paid plan choices, Meta fee separation.", BRAND_DARK),
             ("Support", "Tickets and customer-controlled support access grants.", BRAND_BLUE),
             ("Settings", "Integrations, team roles, active sessions, session revocation, security controls.", BRAND_GREEN),
             ("Onboarding", "Prerequisites, owner labels, Meta status, templates, first test message, go-live proof.", BRAND_MAGENTA),
@@ -927,7 +927,7 @@ def make_pdf():
     add_cards_grid(
         c,
         [
-            ("Trial", "30 days only. Not free forever.", BRAND_GREEN),
+            ("Trial", "15 days only. Not free forever.", BRAND_GREEN),
             ("Pause", "After trial expiry, paid actions pause automatically.", BRAND_AMBER),
             ("Preserve", "Data remains preserved for upgrade/recovery.", BRAND_BLUE),
             ("Block", "Messaging, campaigns, automation, and new team invites are refused server-side.", BRAND_MAGENTA),
@@ -940,7 +940,7 @@ def make_pdf():
         39 * mm,
         cols=3,
     )
-    card(c, 20 * mm, 27 * mm, 250 * mm, 24 * mm, "Customer wording", "Your trial runs for 30 days. If it expires before upgrade, paid actions pause automatically, but your workspace data remains preserved.", accent=BRAND_GREEN)
+    card(c, 20 * mm, 27 * mm, 250 * mm, 24 * mm, "Customer wording", "Your trial runs for 15 days. If it expires before upgrade, paid actions pause automatically, but your workspace data remains preserved.", accent=BRAND_GREEN)
     c.showPage()
     page += 1
 
