@@ -139,6 +139,14 @@ Formal ISO, SOC 2 or equivalent certification is not claimed.
 
 ## 5. Current verification evidence
 
+### Deployment addendum — Intelligence Evidence Pipeline v1.0
+
+Release `30bd5d2` adds a live measurement mechanism for retrieval candidates, selected and inferred-used claims, near misses, failure classification, Safe Resolution and anonymized replay intake. The production schema check confirms nine named evidence columns and the tenant-bound replay table; the exact field map is maintained in `docs/INTELLIGENCE_EVIDENCE_PIPELINE.md`.
+
+This closes part of the former *measurement-mechanism* gap for Accuracy Engineering and Sovereign Intelligence. It does **not** raise the maturity bands yet: persona-level SRR, reviewed near-miss precision and replay-regression outcomes still require real-client volume and authorised labels.
+
+The encrypted backup was checksum/decrypt/`pg_restore` verified before the first migration attempt. The ownership incident and corrective preflight are recorded in `docs/postmortems/2026-08-31-evidence-migration-ownership.md`.
+
 | Evidence | Current result |
 | --- | --- |
 | Production application build | Passed; 94 routes generated |

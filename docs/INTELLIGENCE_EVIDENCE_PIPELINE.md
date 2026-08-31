@@ -32,6 +32,22 @@ The Intelligence Evidence Pipeline turns each governed conversation into measura
 - normalized failure classification;
 - Safe Resolution result.
 
+### Nine new evidence columns
+
+The production `9/9` schema check refers specifically to these new columns on `SovereignAnswerEvidence`:
+
+1. `personaCategory`
+2. `personaVersion`
+3. `retrievalCandidates`
+4. `retrievedClaimIds`
+5. `usedClaimIds`
+6. `nearMissClaimIds`
+7. `failureClassification`
+8. `safeResolution`
+9. `evidencePipelineVersion`
+
+Decision-versus-behaviour consistency existed before Pipeline v1.0. `SovereignReplayCase` is a separate new table, not one of the nine columns.
+
 ## Failure taxonomy
 
 - `RETRIEVAL_MISS`: relevant approved knowledge existed but was not selected.
@@ -72,3 +88,22 @@ After 3–5 clients provide sufficient reviewed evidence:
 - use retrieval-frequency changes as a proactive freshness signal.
 
 These controls require real labelled outcomes. They must not be presented as complete before the sample and review requirements are met.
+
+## Pipeline rollback and patch-forward policy
+
+Rollback the application release immediately when any of these conditions occurs:
+
+- evidence writes cause customer-answer requests to fail or materially increase runtime errors;
+- tenant attribution is missing or cross-tenant evidence becomes possible;
+- negative feedback can create a replay case linked to another tenant or conversation;
+- schema or generated-client incompatibility prevents the current application from starting;
+- evidence collection changes the answer, authority decision or connector outcome rather than observing it.
+
+Disable or patch the affected measurement path forward, without reverting the additive schema, when:
+
+- near-miss scoring produces excessive analytical false positives but customer answers remain governed;
+- used-claim inference is incomplete while selected claims and source evidence remain accurate;
+- persona SRR reporting is delayed, duplicated or temporarily unavailable;
+- replay-case review metadata is incorrect but source evidence remains intact and tenant-bound.
+
+The additive columns and replay table may remain after an application rollback because the preceding release ignores them. Destructive down-migrations are prohibited during incident response. Restore the database only for proven data corruption that cannot be repaired transactionally, after explicit incident authority.

@@ -278,6 +278,10 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 ### Verification evidence
 - New Intelligence Evidence Pipeline tests cover synonym retrieval, candidate-versus-used evidence, failure separation, safe-resolution rules and replay redaction.
 - Existing Rule 11 multi-turn and decision-consistency tests remain part of the regression run.
+- Production release `30bd5d2` is live; encrypted backup verification completed before migration, and the additive schema plus application privileges passed post-deployment checks.
+- The nine new evidence columns are explicitly reconciled in `docs/INTELLIGENCE_EVIDENCE_PIPELINE.md`.
+- Migration ownership root cause, recovery and rollback evidence are recorded in `docs/postmortems/2026-08-31-evidence-migration-ownership.md`.
+- A reusable ownership preflight now routes known production drift through an explicit owner path before Prisma attempts schema changes.
 
 ### Remaining limitation
 - Replay cases require authorised labels and real-client samples before they can become statistical recall or threshold-tuning evidence.
