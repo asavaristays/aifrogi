@@ -25,3 +25,12 @@ test("connector estimates and payment boundaries remain visible", () => {
   assert.match(terms, /Refunds and billing corrections/);
   assert.match(terms, /third-party charges/);
 });
+
+test("WhatsApp remains an optional separately priced channel", () => {
+  assert.match(pricing, /Add WhatsApp to your AI Bot/);
+  assert.match(pricing, /₹3,750\/qtr/);
+  assert.match(pricing, /₹25,500\/qtr/);
+  assert.match(pricing, /One-time setup — ₹4,500/);
+  assert.match(pricing, /\/whatsapp-api#calculator/);
+  assert.match(pricing, /Meta usage billed separately/);
+});

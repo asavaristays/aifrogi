@@ -223,6 +223,22 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-08-31 - Optional WhatsApp pricing layer
+
+### Implemented
+- Added Standard and Premium WhatsApp channel cards beneath the AI Bot plans.
+- Kept WhatsApp quarterly billing separate from the AI Bot monthly/yearly selector.
+- Added the shared ₹4,500 setup strip, WhatsApp-specific connector ranges and the Meta cost-calculator route.
+- Clarified that WhatsApp connector ranges cover limited channel-adapter scope while broader end-to-end integrations remain separately scoped.
+
+### Verification evidence
+- TypeScript passed.
+- Channel and commercial tests: 53/53 passed.
+- Production build: all 93 routes compiled.
+- Desktop and 390 px mobile browser QA passed without overflow or console errors.
+
+---
+
 ## Template for the next entry
 
 ```markdown
