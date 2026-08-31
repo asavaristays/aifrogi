@@ -1,0 +1,214 @@
+# AiFrogi Date-wise Product Progress
+
+Purpose: append-only product-development record for tracking what was designed, implemented, verified, deployed and still pending. Each entry must separate proven production evidence from planned or pilot-grade capability. Do not rewrite earlier results to make later progress appear stronger.
+
+## Status vocabulary
+
+- **Designed:** agreed architecture or documented rule; implementation may not exist.
+- **Implemented:** present in the application and covered by proportionate local checks.
+- **Deployed:** present in the identified production release.
+- **Production-evidenced:** exercised against the running production system with recorded results.
+- **Pilot-grade:** suitable for a small, monitored real-client rollout.
+- **Scale-grade:** supported by sustained real-client, load, recovery and operational evidence. AiFrogi has not reached this status yet.
+
+---
+
+## 2026-08-29 - Product consolidation and premium frontend
+
+### Direction locked
+
+- AiFrogi positioned as the AI Business Automation vertical of Webtechnosys.
+- Product separated into AI Business Bots and WhatsApp API automation.
+- Bot category, delivery channel and operating authority established as independent concepts.
+- Product portfolio established around BusinessGPT, HotelGPT, ClinicGPT, DineGPT, eduGPT, PropertyGPT, FlowCart and Custom Business Bot.
+- Website and application visual direction changed to black, white and Dark Antique Gold.
+
+### Product experience implemented
+
+- Common marketing header and footer structure.
+- AI Bot navigation and dedicated product pages.
+- Website widget modes for AI responding, human requested, human joined and conversation closed.
+- Human-contact and safety notices.
+- Mobile hero and navigation corrections.
+- AI operations inbox, feedback, handover and onboarding foundations.
+
+### Position at end of day
+
+- Strong visual and functional foundation.
+- Persona and intelligence rules required deeper engineering before real-client activation.
+
+---
+
+## 2026-08-30 - Sovereign Intelligence, persona sandboxes and release evidence
+
+### Sovereign Intelligence implemented
+
+- Constitution version 1.1 and category blueprint structure.
+- Approved-source answer governance.
+- Intent separation for business, identity, contact information, off-topic, sensitive and contextual follow-up questions.
+- Category-specific safety boundaries.
+- Bounded clarification and Rule 11 circuit breaker.
+- Safe fallback and human escalation.
+- Connector authority, idempotency and read-back rules.
+- Knowledge verification pipeline and blocker-based grading framework.
+- Answer feedback and flagging foundation.
+
+### Eight isolated demo personas implemented
+
+- BusinessGPT
+- ClinicGPT
+- HotelGPT
+- DineGPT
+- eduGPT
+- PropertyGPT
+- FlowCart
+- Custom Business Bot
+
+Each demo uses clearly synthetic knowledge and mock connectors. No demo transaction is represented as real.
+
+### Production defects discovered and corrected
+
+- Persona routing incorrectly treated some catalogue requests as order actions.
+- Some DineGPT and HotelGPT evidence dispositions could be mislabeled.
+- A third repeated customer request could restart clarification after escalation.
+- Previous action context could override an off-topic refusal.
+- Active customer task state now survives an off-topic interruption.
+- Training booking intent now selects the active training-booking link rather than the unrelated hotel booking-engine path.
+
+### Production evidence achieved
+
+- Critical eight-persona smoke matrix: **56/56 passed**.
+- Live Rule 11 multi-turn stress: **48/48 passed**.
+- Evidence-integrity classified sample at that point: **96 records, 0 decision-behaviour mismatches**.
+- Channel and website controls: **50/50 passed**.
+- Sovereign Intelligence suite: **41/41 passed**.
+
+### Release position
+
+- Controlled five-client canary became technically reasonable.
+- Results did not establish 100% real-world accuracy or enterprise certification.
+
+---
+
+## 2026-08-31 - Client readiness, branding and current product assessment
+
+### Deployed release
+
+- Production release: **`0926257`**.
+- Production service reported online and ready.
+- Health checks reported database, session configuration, public URL, Meta signature configuration and legacy inbound token as healthy.
+
+### Client onboarding readiness
+
+- Created a five-page client onboarding prerequisites PDF.
+- Guide covers business identity, selected persona, approved knowledge, active website links, brand photos, Google location, connector ownership, installation access, security boundaries, preview approval and final handover.
+- Added a PDF-icon download card to `/install-ai-bot`.
+- Published the downloadable guide at `/downloads/AiFrogi-Client-Onboarding-Prerequisites.pdf`.
+- Established the 15-day trial preparation and activation explanation.
+
+### Branding consolidation
+
+- Added current monochrome black-on-light and white-on-dark AiFrogi logo assets.
+- Updated website, application, onboarding and email-template references to use the appropriate monochrome asset.
+- Removed the obsolete coloured logo asset from the current source tree; it remains recoverable through Git history.
+
+### Fresh verification evidence
+
+- Channel and website controls: **50/50 passed**.
+- Sovereign Intelligence tests: **41/41 passed**.
+- TypeScript verification: **passed**.
+- Production build: **passed**.
+- Production Sovereign Answer Evidence records: **270 total**.
+- Independently classified evidence: **96 records**.
+- Classified decision-behaviour mismatches: **0**.
+- Legacy/unclassified evidence remains excluded from the consistency rate rather than being guessed retroactively.
+
+### Evidence-based ratings
+
+| Area | Rating | Current interpretation |
+|---|---:|---|
+| Frontend and product experience | **8.5/10** | Modern, responsive and commercially credible across marketing, bot pages, widget, onboarding and admin surfaces. |
+| Backend platform | **8.2/10** | Tenant workspaces, roles, lifecycle, evidence, knowledge, inbox, feedback, installation detection and demo connectors are functional. |
+| Sovereign Intelligence core | **8.4/10** | Strong governed foundation with category controls, bounded resolution, evidence consistency and action authority. |
+| Security foundation | **7.8/10** | Meaningful controls exist; formal certification and broader adversarial evidence remain incomplete. |
+| Reliability and observability | **7.5/10** | Safe failure and evidence mechanisms exist; sustained load, chaos and recovery history remain limited. |
+| Commercial pilot readiness | **8.0/10** | Suitable for five closely monitored clients. |
+| Enterprise-scale readiness | **6.8/10** | Real-client history, provider-specific connectors, SLO evidence and recovery drills are still required. |
+| **Overall product** | **8.1/10** | Credible controlled-pilot SaaS; not yet unattended scale-grade SaaS. |
+
+### What is working now
+
+- Eight governed AI Bot personas.
+- Website widget and tenant-specific standalone bot.
+- Approved knowledge retrieval and active-link handling.
+- Contact information, identity, contextual and off-topic routing.
+- Human handover, feedback and answer flagging.
+- AI operations inbox and Sovereign Intelligence evidence dashboard.
+- Business onboarding, knowledge input and preview foundations.
+- Website installation code, detection and Super Admin live/pause/delete lifecycle.
+- Synthetic demo connector journeys with idempotency and safe failure.
+- Fifteen-day trial foundation and client preparation material.
+
+### Current limitations - do not overclaim
+
+- Test-suite pass rates are not the same as real-world accuracy.
+- No promise of 100% answer accuracy.
+- No unrestricted automatic write actions through unverified client connectors.
+- No formal enterprise security certification yet.
+- No evidence yet for unattended onboarding of hundreds of clients.
+- Production metrics require a larger sample of real customer conversations.
+
+### Next fixed stage
+
+Do not add unrelated features before completing this sequence:
+
+1. Select one low-risk real client.
+2. Complete business-owner knowledge and preview-answer approval.
+3. Install the widget on staging or a controlled production page.
+4. Activate answer, qualification and lead-capture mode first.
+5. Keep material write actions behind human approval.
+6. Monitor every conversation for the first 48 hours.
+7. Review helpfulness, fallbacks, unresolved questions, handovers, loops and connector failures after seven days.
+8. Correct knowledge/persona gaps and rerun the same release gates.
+9. Repeat carefully for up to five pilot clients.
+10. Decide whether to expand only from recorded pilot evidence.
+
+### Commercial wording approved for the current stage
+
+> AiFrogi provides governed AI business conversations using approved knowledge, controlled actions, human handover and measurable evidence.
+
+### Current stage conclusion
+
+AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**. The next increase in rating must come primarily from real-client evidence, verified connectors, operational response and sustained reliability - not from additional presentation features.
+
+---
+
+## Template for the next entry
+
+```markdown
+## YYYY-MM-DD - Short milestone name
+
+### Implemented
+- 
+
+### Deployed
+- Release:
+
+### Verification evidence
+- Test/gate:
+- Production sample:
+
+### Defects discovered and corrected
+- 
+
+### Product rating change
+- Previous:
+- Current:
+- Evidence supporting the change:
+
+### Remaining limitations
+- 
+
+### Next fixed stage
+1. 
+```
