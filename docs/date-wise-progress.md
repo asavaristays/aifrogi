@@ -183,6 +183,29 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-08-31 - AI Bot pricing and commercial terms
+
+### Implemented
+- Replaced the public pricing page's WhatsApp-first plans with AI Bot pricing.
+- Added the 15-day free trial, ₹499 monthly Starter and ₹4,999 yearly Starter toggle.
+- Added Custom / Enterprise email and WhatsApp contact routes.
+- Added India/global estimates and an interactive calculator for Google Sheets, Google Calendar, e-commerce and PMS/channel-manager connectors.
+- Separated AiFrogi subscription, connector implementation, provider usage, taxes and optional monitoring costs.
+- Expanded terms for renewals, cancellation, connector milestones, client/provider dependencies, refunds, fair use and third-party fees.
+
+### Verification evidence
+- TypeScript: passed.
+- Channel and commercial tests: 52/52 passed.
+- Production build: 93 routes compiled using the webpack production builder.
+- Browser QA: desktop and 390 px mobile passed with no horizontal overflow or console errors; monthly/yearly and India/global controls worked.
+
+### Commercial guardrails
+- ₹499 is recorded as an introductory one-bot launch offer, not an unlimited enterprise entitlement.
+- Connector numbers are planning estimates pending scope and API-access review.
+- Provider/API usage remains separately billable where applicable.
+
+---
+
 ## Template for the next entry
 
 ```markdown
