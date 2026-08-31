@@ -69,9 +69,16 @@ export async function createKnowledgeEntry(input: { propertyId: string; question
   const answer = input.answer.trim();
   if (question.length < 4 || answer.length < 8) throw new Error("Add a clear question and answer.");
   const conflictSummary = await detectKnowledgeConflict(input.propertyId, question, answer);
-  const entry = await db.knowledgeEntry.create({ data: { propertyId: input.propertyId, question, answer, category: input.category.trim() || "General", createdBy: input.createdBy, status: conflictSummary ? "CONFLICT" : "DRAFT", conflictSummary } });
-  if (input.gapId) await db.knowledgeGap.updateMany({ where: { id: input.gapId, propertyId: input.propertyId }, data: { resolutionEntryId: entry.id, status: "RESOLVED" } });
-  return entry;
+  return db.$transaction(async (tx) => {
+    if (conflictSummary) {
+      const active = await tx.knowledgeEntry.findMany({ where: { propertyId: input.propertyId, status: { in: ["APPROVED", "PUBLISHED"] } }, select: { id: true, question: true } });
+      const disputedIds = active.filter((entry) => similarity(question, entry.question) >= 0.5).map((entry) => entry.id);
+      if (disputedIds.length) await tx.knowledgeEntry.updateMany({ where: { id: { in: disputedIds } }, data: { status: "PAUSED", conflictStatus: "UNRESOLVED", pausedAt: new Date(), pauseReason: "Claim family suppressed because a conflicting version requires authorised review." } });
+    }
+    const entry = await tx.knowledgeEntry.create({ data: { propertyId: input.propertyId, question, answer, category: input.category.trim() || "General", createdBy: input.createdBy, status: conflictSummary ? "CONFLICT" : "DRAFT", conflictStatus: conflictSummary ? "UNRESOLVED" : "CLEAR", conflictSummary } });
+    if (input.gapId) await tx.knowledgeGap.updateMany({ where: { id: input.gapId, propertyId: input.propertyId }, data: { resolutionEntryId: entry.id, status: "RESOLVED" } });
+    return entry;
+  });
 }
 
 export async function reviewKnowledgeEntry(input: { propertyId: string; id: string; action: "APPROVE" | "REJECT" | "DELETE"; actorEmail: string; confirmConflict?: boolean }) {

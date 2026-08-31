@@ -7,6 +7,7 @@ import { getPublishedClaimContext } from "@/lib/repositories/knowledge-verificat
 import { getBotPersonaForPropertySlug } from "@/lib/repositories/bot-profile-repository";
 import { sovereignConstitutionPrompt } from "@/lib/sovereign-intelligence/constitution";
 import { classifySovereignIntent, resolveSovereignQuestion, type SovereignDecision, type SovereignIntent } from "@/lib/sovereign-intelligence/decision";
+import { unavailableKnowledgeMessage } from "@/lib/knowledge-fallback";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
 import { getDb } from "@/lib/db";
@@ -508,6 +509,9 @@ export async function buildWebsiteKnowledgeAnswer({
   const knowledgeBase = persona?.kbGateVersion ? null : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
   const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
+  if (governed.blockedState) {
+    return safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));
+  }
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);

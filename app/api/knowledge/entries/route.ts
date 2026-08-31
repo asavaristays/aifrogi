@@ -3,10 +3,11 @@ import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access"
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
 import { createAtomicClaim, deleteUnpublishedClaim, fieldApproveClaim, generateClaimPreview, pauseClaim, reconfirmClaim, reviewClaimPreview } from "@/lib/repositories/knowledge-verification-repository";
+import { canPerformGovernedKnowledgeAction } from "@/lib/knowledge-authority";
 
 async function context() {
   const access = await getCurrentClientAccess();
-  if (!access || !canManageWorkspace(access.role)) return null;
+  if (!access || !canManageWorkspace(access.role) || !canPerformGovernedKnowledgeAction(access.role, "CREATE_CLAIM")) return null;
   const property = await getPropertyBySlug(await getCurrentWorkspaceSlug());
   return property ? { access, property } : null;
 }

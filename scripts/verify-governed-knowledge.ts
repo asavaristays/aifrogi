@@ -7,9 +7,10 @@ function assert(condition: unknown, message: string): asserts condition {
 
 async function main() {
   loadEnvConfig(process.cwd());
-  const [{ getDb }, repository, documentService] = await Promise.all([
+  const [{ getDb }, repository, verificationRepository, documentService] = await Promise.all([
     import("@/lib/db"),
     import("@/lib/repositories/knowledge-content-repository"),
+    import("@/lib/repositories/knowledge-verification-repository"),
     import("@/lib/services/knowledge-document-service")
   ]);
   const {
@@ -23,6 +24,7 @@ async function main() {
     reviewKnowledgeEntry
   } = repository;
   const { extractKnowledgeDocument } = documentService;
+  const { createAtomicClaim, fieldApproveClaim, flagKnowledgeAnswer, generateClaimPreview, getPublishedClaimContext, processKnowledgeFlagSla, reviewClaimPreview } = verificationRepository;
   const db = getDb();
   if (!db) throw new Error("DATABASE_URL is required.");
 
@@ -36,6 +38,8 @@ async function main() {
   const actor = "knowledge-qa@aifrogi.local";
   const createdEntryIds: string[] = [];
   const createdDocumentIds: string[] = [];
+  const createdFlagIds: string[] = [];
+  const createdFlagReferences: string[] = [];
   let gapId: string | null = null;
 
   try {
@@ -67,6 +71,39 @@ async function main() {
     createdEntryIds.push(conflictingEntry.id);
     assert(conflictingEntry.status === "CONFLICT" && conflictingEntry.conflictSummary, "A contradictory answer was not flagged.");
 
+    const atomicQuestion = `${runId} what is the governed cancellation window?`;
+    const atomicApproved = await createAtomicClaim({ propertyId: property.id, question: atomicQuestion, answer: "The governed cancellation window is 24 hours.", category: "QA verification", createdBy: actor });
+    createdEntryIds.push(atomicApproved.id);
+    await fieldApproveClaim({ propertyId: property.id, entryId: atomicApproved.id, actorEmail: actor });
+    const preview = await generateClaimPreview({ propertyId: property.id, entryId: atomicApproved.id });
+    await reviewClaimPreview({ propertyId: property.id, previewId: preview.id, actorEmail: actor, approve: true });
+    const atomicConflict = await createAtomicClaim({ propertyId: property.id, question: atomicQuestion, answer: "The governed cancellation window is 72 hours.", category: "QA verification", createdBy: actor });
+    createdEntryIds.push(atomicConflict.id);
+    assert(atomicConflict.status === "CONFLICT", "The atomic conflicting version was not blocked.");
+    const suppressedPrior = await db.knowledgeEntry.findUnique({ where: { id: atomicApproved.id } });
+    assert(suppressedPrior?.status === "PAUSED" && suppressedPrior.conflictStatus === "UNRESOLVED", "The previously published claim family was not suppressed.");
+    const suppressedContext = await getPublishedClaimContext(property.slug, atomicQuestion);
+    assert(suppressedContext.blockedState === "CONFLICT" && !suppressedContext.context.includes("24 hours"), "Disputed knowledge remained retrievable during conflict review.");
+
+    const flaggedQuestion = `${runId} what is the governed check-in time?`;
+    const flaggableClaim = await createAtomicClaim({ propertyId: property.id, question: flaggedQuestion, answer: "The governed check-in time is 2:00 PM.", category: "QA verification", createdBy: actor });
+    createdEntryIds.push(flaggableClaim.id);
+    await fieldApproveClaim({ propertyId: property.id, entryId: flaggableClaim.id, actorEmail: actor });
+    const flaggablePreview = await generateClaimPreview({ propertyId: property.id, entryId: flaggableClaim.id });
+    await reviewClaimPreview({ propertyId: property.id, previewId: flaggablePreview.id, actorEmail: actor, approve: true });
+    const flag = await flagKnowledgeAnswer({ propertyId: property.id, entryId: flaggableClaim.id, reporterType: "QA", reporterId: actor, reason: "Synthetic incorrect-fact flag for SLA verification." });
+    createdFlagIds.push(flag.id);
+    createdFlagReferences.push(`KBF-${flag.id}`);
+    const pausedFlaggable = await db.knowledgeEntry.findUnique({ where: { id: flaggableClaim.id } });
+    assert(pausedFlaggable?.status === "PAUSED", "Explicit incorrect-fact flag did not pause its cited claim.");
+    const immediateTicket = await db.supportTicket.findUnique({ where: { reference: `KBF-${flag.id}` } });
+    assert(immediateTicket?.priority === "HIGH", "Flag did not create an immediate high-priority operational notification.");
+    await db.knowledgeAnswerFlag.update({ where: { id: flag.id }, data: { acknowledgeDueAt: new Date(Date.now() - 7200000), resolveDueAt: new Date(Date.now() - 3600000) } });
+    const sla = await processKnowledgeFlagSla();
+    assert(sla.escalated >= 1, "Overdue knowledge flag was not escalated.");
+    const urgentTicket = await db.supportTicket.findUnique({ where: { reference: `KBF-${flag.id}` } });
+    assert(urgentTicket?.priority === "URGENT", "Overdue knowledge flag did not escalate its operational ticket.");
+
     const file = new NodeFile(
       [`${runId} service handbook\nEscalation desk is available for verified workspace requests.`],
       `${runId}-handbook.txt`,
@@ -89,7 +126,7 @@ async function main() {
     await reviewKnowledgeDocument({ propertyId: property.id, id: document.id, action: "APPROVE", actorEmail: actor, confirmConflict: true });
 
     const answerContext = await getApprovedKnowledgeContext(property.slug, `${runId} trial duration`);
-    assert(answerContext.includes("15 days"), "Approved answer was not available to retrieval.");
+    assert(!answerContext.includes("15 days"), "Older disputed answer remained available to retrieval.");
     assert(!answerContext.includes("45 days"), "Conflicted answer leaked into approved retrieval.");
     const documentContext = await getApprovedKnowledgeContext(property.slug, `${runId} escalation desk`);
     assert(documentContext.includes("Escalation desk"), "Approved document was not available to retrieval.");
@@ -99,6 +136,9 @@ async function main() {
     assert(summary.documents.some((item) => item.id === document.id), "Governance summary omitted the approved document.");
     console.log(`Governed knowledge verification passed for ${property.slug}.`);
   } finally {
+    if (createdFlagReferences.length) await db.supportTicket.deleteMany({ where: { reference: { in: createdFlagReferences } } });
+    if (createdFlagIds.length) await db.onboardingActivity.deleteMany({ where: { OR: createdFlagIds.map((id) => ({ detail: { contains: id } })) } });
+    if (createdFlagIds.length) await db.knowledgeAnswerFlag.deleteMany({ where: { id: { in: createdFlagIds } } });
     if (gapId) await db.knowledgeGap.deleteMany({ where: { id: gapId } });
     if (createdEntryIds.length) await db.knowledgeEntry.deleteMany({ where: { id: { in: createdEntryIds } } });
     if (createdDocumentIds.length) await db.knowledgeDocument.deleteMany({ where: { id: { in: createdDocumentIds } } });

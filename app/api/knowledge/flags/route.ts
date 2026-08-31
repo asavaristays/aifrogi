@@ -3,10 +3,11 @@ import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access"
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
 import { reviewAnswerFlag } from "@/lib/repositories/knowledge-verification-repository";
+import { canPerformGovernedKnowledgeAction } from "@/lib/knowledge-authority";
 
 export async function PATCH(request: Request) {
   const access = await getCurrentClientAccess();
-  if (!access || !canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
+  if (!access || !canManageWorkspace(access.role) || !canPerformGovernedKnowledgeAction(access.role, "REVIEW_FLAG")) return NextResponse.json({ error: "Client Owner or Admin authority is required to review a knowledge flag." }, { status: 403 });
   const property = await getPropertyBySlug(await getCurrentWorkspaceSlug());
   if (!property) return NextResponse.json({ error: "Workspace not found." }, { status: 404 });
   const payload = await request.json().catch(() => null) as { id?: string; action?: "ACKNOWLEDGE" | "RESOLVE"; resolution?: string } | null;
