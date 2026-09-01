@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   try {
     const member = await activateInvitation(payload?.token || "", payload?.password || "");
     if (member.registration && member.installation) {
-      const appUrl = (process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin).replace(/\/$/, "");
+      const appUrl = (process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === "production" ? "https://app.aifrogi.com" : new URL(request.url).origin)).replace(/\/$/, "");
       const { companyName, propertySlug, installationKey } = member.installation;
       const standaloneUrl = `${appUrl}/bot/${propertySlug}`;
       const script = `<script async src="${appUrl}/api/public/website-bot/${propertySlug}/install?key=${installationKey}"></script>`;
