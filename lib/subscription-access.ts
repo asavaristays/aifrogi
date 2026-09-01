@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { ensureOrganizationSubscription } from "@/lib/billing-super-admin";
 import { TRIAL_DAYS } from "@/lib/trial-policy";
+import { reconcileSubscriptionLifecycleForOrganization, SUSPENDED_DATA_RETENTION_DAYS } from "@/lib/subscription-lifecycle";
 
 export type SubscriptionAccessState = {
   planCode: string;
@@ -29,30 +30,9 @@ export async function getOrganizationSubscriptionAccess(
   });
   if (!subscription) return null;
 
-  const trialExpired = subscription.plan.code === "TRIAL"
-    && Boolean(subscription.trialEndsAt)
-    && subscription.trialEndsAt!.getTime() <= now.getTime();
-
-  if (trialExpired && subscription.status !== "PAUSED") {
-    subscription = await db.$transaction(async (tx) => {
-      const updated = await tx.subscription.update({
-        where: { id: subscription!.id },
-        data: { status: "PAUSED" }
-      });
-      await tx.platformAuditLog.create({
-        data: {
-          organizationId,
-          actorEmail: "system@aifrogi.com",
-          actorRole: "SYSTEM",
-          action: "TRIAL_AUTOMATICALLY_PAUSED",
-          targetType: "Subscription",
-          targetId: subscription!.id,
-          summary: `${TRIAL_DAYS}-day trial ended; paid actions paused while customer data remains available.`
-        }
-      });
-      return { ...updated, plan: subscription!.plan };
-    });
-  }
+  await reconcileSubscriptionLifecycleForOrganization(organizationId, now, false);
+  subscription = await db.subscription.findUnique({ where: { organizationId }, include: { plan: true } });
+  if (!subscription) return null;
 
   const paused = ["PAUSED", "SUSPENDED", "CANCELLED"].includes(subscription.status);
   const daysLeft = subscription.plan.code === "TRIAL" && subscription.trialEndsAt
@@ -68,7 +48,9 @@ export async function getOrganizationSubscriptionAccess(
     paused,
     canUsePaidActions: !paused,
     message: paused
-      ? `Your ${TRIAL_DAYS}-day trial has ended. Customer data is preserved, but messaging, campaigns, and automation are paused until a paid plan is activated.`
+      ? `Your AI Bot is suspended. Customer data is preserved for ${SUSPENDED_DATA_RETENTION_DAYS} days, but AI replies and automation remain paused until payment is verified.`
+      : subscription.status === "GRACE"
+        ? "Your plan is in a 3-day payment grace period. Service remains available temporarily; complete payment to avoid suspension."
       : subscription.plan.code === "TRIAL"
         ? `${daysLeft ?? 0} day${daysLeft === 1 ? "" : "s"} remain in your ${TRIAL_DAYS}-day trial.`
         : `${subscription.plan.name} is active.`

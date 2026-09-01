@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { runDueAutomationJobs } from "@/lib/automation-engine";
 import { processKnowledgeFlagSla } from "@/lib/repositories/knowledge-verification-repository";
+import { processSubscriptionLifecycleBatch } from "@/lib/subscription-lifecycle";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +17,10 @@ function authorized(request: Request) {
 
 export async function POST(request: Request) {
   if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const [result, knowledgeFlagSla] = await Promise.all([
+  const [result, knowledgeFlagSla, subscriptions] = await Promise.all([
     runDueAutomationJobs({ workerId: `cron-${Date.now()}`, take: 25, dryRun: false }),
-    processKnowledgeFlagSla()
+    processKnowledgeFlagSla(),
+    processSubscriptionLifecycleBatch()
   ]);
-  return NextResponse.json({ status: "ok", result, knowledgeFlagSla });
+  return NextResponse.json({ status: "ok", result, knowledgeFlagSla, subscriptions });
 }

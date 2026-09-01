@@ -337,6 +337,9 @@ export async function recordWebsiteBotInstallation(slug: string, installationKey
   const property = await db.property.findUnique({ where: { slug }, select: { organizationId: true, organization: { select: { botProfile: true } } } });
   const profile = property?.organization?.botProfile;
   if (!property?.organizationId || !profile || profile.installationKey !== installationKey || !profile.channels.includes("WEBSITE") || profile.status === "DELETED") return null;
+  const { getOrganizationSubscriptionAccess } = await import("@/lib/subscription-access");
+  const subscription = await getOrganizationSubscriptionAccess(property.organizationId);
+  if (subscription && !subscription.canUsePaidActions) return { status: "SUSPENDED" };
   if (!profile.installationDetectedAt || profile.status === "INSTALLATION_READY") {
     await db.$transaction([
       db.botProfile.update({ where: { id: profile.id }, data: { installationDetectedAt: new Date(), status: profile.status === "LIVE" || profile.status === "PAUSED" ? profile.status : "INSTALLATION_DETECTED" } }),

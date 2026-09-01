@@ -1,0 +1,2 @@
+export const SUBSCRIPTION_GRACE_DAYS = 3;
+export const SUSPENDED_DATA_RETENTION_DAYS = 30;

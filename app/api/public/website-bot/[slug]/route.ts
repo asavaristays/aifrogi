@@ -14,6 +14,7 @@ import { escalationTierFor, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliabil
 import { resolveDemoConnectorTurn } from "@/lib/demo-sandbox/service";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 import type { Prisma } from "@/generated/prisma/client";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -46,8 +47,11 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
   const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { id: true, name: true, isDemo: true, botProfile: true } } } });
-  const profile = property?.organization?.botProfile;
-  if (!property || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+  const organization = property?.organization;
+  const profile = organization?.botProfile;
+  if (!property || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+  const subscription = await getOrganizationSubscriptionAccess(organization.id);
+  if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
 
   const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);

@@ -41,9 +41,9 @@ async function main() {
     assert(trial?.plan.code === "TRIAL" && trial.status === "TRIALING", "Trial subscription was not created.");
     await db.subscription.update({ where: { organizationId }, data: { trialEndsAt: new Date(Date.now() - 1000) } });
     const expired = await subscriptionAccess.getOrganizationSubscriptionAccess(organizationId);
-    assert(expired?.paused && !expired.canUsePaidActions && expired.status === "PAUSED", "Expired trial did not pause automatically.");
-    const pauseAudit = await db.platformAuditLog.count({ where: { organizationId, action: "TRIAL_AUTOMATICALLY_PAUSED" } });
-    assert(pauseAudit === 1, "Automatic trial pause was not audited exactly once.");
+    assert(!expired?.paused && expired?.canUsePaidActions && expired.status === "GRACE", "Expired trial did not enter its 3-day grace period.");
+    const graceAudit = await db.platformAuditLog.count({ where: { organizationId, action: "SUBSCRIPTION_GRACE_STARTED" } });
+    assert(graceAudit === 1, "Automatic subscription grace was not audited exactly once.");
 
     await billing.updateOrganizationPlan({
       organizationId,

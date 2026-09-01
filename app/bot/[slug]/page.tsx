@@ -4,12 +4,13 @@ import { WebsiteBotDeliveryActions } from "@/components/website-bot/website-bot-
 import { WebsiteBotEmbed } from "@/components/website-bot/website-bot-embed";
 import { getDb } from "@/lib/db";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export const dynamic = "force-dynamic";
 
 async function loadBot(slug: string) {
   const db = getDb();
-  return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { name: true, isDemo: true, botProfile: { select: { status: true, channels: true, personaName: true } } } } } }) : null;
+  return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { id: true, name: true, isDemo: true, botProfile: { select: { status: true, channels: true, personaName: true } } } } } }) : null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -27,8 +28,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function StandaloneWebsiteBotPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const bot = await loadBot(slug);
-  const profile = bot?.organization?.botProfile;
-  if (!bot || !profile || !canServeWebsiteBot(profile.status, profile.channels)) notFound();
+  const organization = bot?.organization;
+  const profile = organization?.botProfile;
+  if (!bot || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) notFound();
+  const subscription = await getOrganizationSubscriptionAccess(organization.id);
+  if (subscription && !subscription.canUsePaidActions) notFound();
   const name = bot.organization?.name || bot.name;
 
   return <main className="min-h-dvh bg-[#050505] px-3 py-4 sm:px-6 sm:py-8">
