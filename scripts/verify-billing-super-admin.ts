@@ -20,7 +20,9 @@ async function main() {
 
   try {
     const plans = await billing.ensureBillingPlans();
-    assert(plans.length === 5, "Billing plan catalogue was not synchronized.");
+    assert(plans.length === billing.BILLING_PLAN_CATALOGUE.length, "Billing plan catalogue was not synchronized.");
+    assert(plans.some((plan) => plan.code === "AI_STARTER_MONTHLY" && plan.amountPaisa === 49900), "Monthly AI Bot plan pricing was not stored.");
+    assert(plans.some((plan) => plan.code === "AI_STARTER_YEARLY" && plan.amountPaisa === 499900), "Yearly AI Bot plan pricing was not stored.");
     assert(plans.some((plan) => plan.code === "GROWTH" && plan.amountPaisa > 0), "Growth plan pricing was not stored.");
 
     const organization = await db.organization.create({
