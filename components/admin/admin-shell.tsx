@@ -14,7 +14,7 @@ const navigation = [
   { label: "Bot demos", href: "/admin/demo-sandboxes", icon: "sparkles" as const },
   { label: "Billing", href: "/admin/billing", icon: "bar-chart-3" as const },
   { label: "Knowledge", href: "/admin/knowledge", icon: "file-text" as const },
-  { label: "Sovereign AI", href: "/admin/sovereign-intelligence", icon: "plug" as const },
+  { label: "Intelligence Operations", href: "/admin/sovereign-intelligence", icon: "plug" as const },
   { label: "Support", href: "/admin/support", icon: "help-circle" as const },
   { label: "Audit trail", href: "/admin/audit", icon: "refresh-cw" as const }
 ];

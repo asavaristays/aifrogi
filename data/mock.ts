@@ -6,6 +6,7 @@ export const navItems: NavItem[] = [
   { href: "/contacts", label: "Contacts", icon: "inbox", tone: "primary" },
   { href: "/campaigns", label: "Campaigns", icon: "megaphone", tone: "tertiary" },
   { href: "/knowledge", label: "Intelligence", icon: "file-text", tone: "secondary" },
+  { href: "/improve", label: "Improve My Bot", icon: "sparkles", tone: "tertiary" },
   { href: "/analytics", label: "Reports", icon: "bar-chart-3", tone: "secondary" },
   { href: "/setup", label: "Setup", icon: "plug", tone: "primary" },
   { href: "/billing", label: "Billing", icon: "bar-chart-3", tone: "neutral" },

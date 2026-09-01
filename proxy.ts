@@ -16,6 +16,7 @@ const protectedPrefixes = [
   "/campaigns",
   "/workflows",
   "/knowledge",
+  "/improve",
   "/analytics",
   "/whatsapp-bot",
   "/setup",

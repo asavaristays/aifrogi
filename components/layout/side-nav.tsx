@@ -14,7 +14,7 @@ import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
-  { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/campaigns", "/knowledge", "/analytics"] },
+  { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/campaigns", "/knowledge", "/improve", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
 
@@ -39,7 +39,7 @@ export function SideNav({
   const canManage = accessRole === "OWNER" || accessRole === "ADMIN";
   const allowedHrefs = new Set(canManage
     ? navItems.map((item) => item.href)
-    : ["/dashboard", "/whatsapp-bot", "/contacts", "/knowledge", "/support"]);
+    : ["/dashboard", "/whatsapp-bot", "/contacts", "/knowledge", "/improve", "/support"]);
 
   return (
     <>
