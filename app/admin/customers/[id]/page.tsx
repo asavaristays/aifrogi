@@ -21,8 +21,9 @@ import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AdminCustomerDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ onboarding?: string }> }) {
   const { id } = await params;
+  const requestedTrack = (await searchParams).onboarding;
   const [organization, billing, plans, flow, user, appointmentWorkspaces] = await Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id),
@@ -34,6 +35,10 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
   if (!organization) notFound();
   const onboarding = organization.onboarding;
   const trial = getTrialWindow(organization);
+  const channels = organization.botProfile?.channels || [];
+  const whatsappEnabled = channels.includes("WHATSAPP");
+  const websiteEnabled = channels.includes("WEBSITE") || !channels.length;
+  const activeTrack = requestedTrack === "whatsapp" ? "whatsapp" : "ai-bot";
   const canReadDocuments = await hasActiveSupportAccess(organization.id, "DOCUMENTS");
   if (user) {
     await logSupportDataAccess({
@@ -52,20 +57,43 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
       <Link href="/admin/customers" className="text-sm font-black text-[#8a6a16]">Back to customers</Link>
       <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
         <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Customer review</p><h1 className="mt-2 text-3xl font-black">{organization.name}</h1><p className="mt-2 text-sm text-[#68645c]">{organization.ownerName} · {organization.ownerEmail}</p></div>
-        <Badge tone={onboarding?.metaStatus === "LIVE" ? "secondary" : onboarding?.metaStatus === "REJECTED" ? "error" : "tertiary"}>{(onboarding?.metaStatus || "NOT STARTED").replaceAll("_", " ")}</Badge>
+        <Badge tone={activeTrack === "ai-bot" && organization.botProfile?.status === "LIVE" ? "secondary" : activeTrack === "whatsapp" && onboarding?.metaStatus === "LIVE" ? "secondary" : "tertiary"}>{activeTrack === "ai-bot" ? `AI BOT · ${(organization.botProfile?.status || "DRAFT").replaceAll("_", " ")}` : `WHATSAPP · ${whatsappEnabled ? (onboarding?.metaStatus || "NOT STARTED").replaceAll("_", " ") : "NOT ENABLED"}`}</Badge>
       </div>
 
       {trial.enabled ? <div className="mt-5"><Badge tone="primary">{trial.label}</Badge></div> : null}
-      {flow ? <div className="mt-7"><ProductFlowCenter flow={flow} mode="admin" /></div> : null}
 
-      <div className="mt-7 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-        <CustomerFlowActions
+      <nav aria-label="Customer onboarding tracks" className="mt-7 grid gap-3 sm:grid-cols-2">
+        <TrackLink href={`/admin/customers/${organization.id}?onboarding=ai-bot`} active={activeTrack === "ai-bot"} title="AI Bot Onboarding" copy="Persona, approved intelligence, connectors, installation and bot go-live" status={organization.botProfile?.status || "DRAFT"} />
+        <TrackLink href={`/admin/customers/${organization.id}?onboarding=whatsapp`} active={activeTrack === "whatsapp"} title="WhatsApp Onboarding" copy="Number, Meta approval, webhook, template and first-message proof" status={whatsappEnabled ? onboarding?.metaStatus || "NOT_STARTED" : "NOT_ENABLED"} />
+      </nav>
+
+      {activeTrack === "ai-bot" ? <section className="mt-7">
+        <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding only</p><h2 className="mt-2 text-xl font-black">Prepare and activate the governed AI Bot.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">This track does not require a WhatsApp number, Meta approval, templates or webhooks.</p></div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} />
+          <BotConnectorPlan organizationId={organization.id} connectors={organization.botConnectors} />
+          {websiteEnabled ? <div className="lg:col-span-2"><WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin /></div> : <Section title="Website installation"><p className="text-sm text-[#68645c]">Website delivery is not enabled for this bot. Add the Website channel in the bot profile when embed or standalone delivery is required.</p></Section>}
+          <Section title="Company and approved source details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Address" value={organization.businessAddress} /></Section>
+          <Section title="AI Bot readiness"><Detail label="Persona" value={organization.botProfile?.personaName} /><Detail label="Channel" value={channels.length ? channels.join(", ") : "Website"} /><Detail label="Lifecycle" value={organization.botProfile?.status || "DRAFT"} /><p className="mt-4 text-sm leading-6 text-[#68645c]">Approve business knowledge and preview answers before installation approval. Super Admin can make the bot live only after installation detection.</p></Section>
+        </div>
+      </section> : <section className="mt-7">
+        {!whatsappEnabled ? <div className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-6"><p className="product-eyebrow">WhatsApp not enabled</p><h2 className="mt-2 text-2xl font-black">This pilot is currently an AI Bot onboarding.</h2><p className="mt-3 max-w-3xl text-sm leading-6 text-[#68645c]">Meta, phone, webhook and template controls remain hidden until WHATSAPP is deliberately added to the bot channels.</p></div> : <>
+          {flow ? <ProductFlowCenter flow={flow} mode="admin" /> : null}
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <CustomerFlowActions
           organizationId={organization.id}
           metaBillingStatus={onboarding?.metaBillingStatus}
           templateStatus={onboarding?.templateStatus}
           firstMessageStatus={onboarding?.firstMessageStatus}
-        />
-        <AppointmentJourneyAdminControl organizationId={organization.id} workspaces={appointmentWorkspaces} />
+            />
+            <AppointmentJourneyAdminControl organizationId={organization.id} workspaces={appointmentWorkspaces} />
+            <Section title="WhatsApp readiness"><Detail label="Phone" value={onboarding?.displayPhoneNumber || onboarding?.phoneNumber} /><Detail label="Phone verification" value={onboarding?.phoneVerificationStatus} /><Detail label="Meta connection" value={onboarding?.facebookStatus} /><Detail label="API status" value={onboarding?.metaStatus} /><Detail label="Webhook" value={onboarding?.webhookStatus} /><Detail label="Credential" value={onboarding?.tokenStatus} /><Detail label="Template" value={onboarding?.templateStatus} /><Detail label="First message" value={onboarding?.firstMessageStatus} /></Section>
+          </div>
+        </>}
+      </section>}
+
+      <section className="mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Shared account operations</p><h2 className="mt-2 text-2xl font-black">Billing, documents and audit</h2>
+      <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
         {billing ? <BillingControls
           organizationId={organization.id}
           plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}
@@ -77,12 +105,8 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           initialPlan={organization.plan}
           initialConfiguration={organization.botConfiguration}
         />
-        <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} />
-        <BotConnectorPlan organizationId={organization.id} connectors={organization.botConnectors} />
-        <WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin />
         <div className="space-y-6">
           <Section title="Company details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Google Maps" value={onboarding?.googleMapsUrl} /><Detail label="Google Business Profile" value={onboarding?.googleBusinessProfileUrl} /><Detail label="Instagram" value={onboarding?.instagramUrl} /><Detail label="Approved photos" value={onboarding?.photoUrls?.length ? `${onboarding.photoUrls.length} supplied` : null} /><Detail label="GST / registration" value={onboarding?.registrationNumber || organization.gstNumber} /><Detail label="Address" value={organization.businessAddress} /></Section>
-          <Section title="WhatsApp health"><Detail label="Phone" value={onboarding?.displayPhoneNumber || onboarding?.phoneNumber} /><Detail label="Phone verification" value={onboarding?.phoneVerificationStatus} /><Detail label="Connection" value={onboarding?.facebookStatus} /><Detail label="API status" value={onboarding?.metaStatus} /><Detail label="Webhook" value={onboarding?.webhookStatus} /><Detail label="Credential" value={onboarding?.tokenStatus} /><Detail label="Quality rating" value={onboarding?.qualityRating} /></Section>
           {billing ? <Section title="Subscription and usage">
             <Detail label="Plan" value={billing.subscription.plan.name} />
             <Detail label="Status" value={billing.subscription.status} />
@@ -118,8 +142,13 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
         </Section> : null}
         <CustomerReviewActions organizationId={organization.id} kycStatus={onboarding?.kycStatus || "NOT_SUBMITTED"} organizationStatus={organization.status} />
       </div>
+      </section>
     </main>
   );
+}
+
+function TrackLink({ href, active, title, copy, status }: { href: string; active: boolean; title: string; copy: string; status: string }) {
+  return <Link href={href} aria-current={active ? "page" : undefined} className={`rounded-lg border p-5 transition ${active ? "border-[#8a6a16] bg-[#101010] text-white shadow-lg" : "border-black/8 bg-white hover:border-[#8a6a16]/50"}`}><div className="flex items-start justify-between gap-4"><div><strong className="text-lg">{title}</strong><p className={`mt-2 text-sm leading-6 ${active ? "text-white/60" : "text-[#68645c]"}`}>{copy}</p></div><Badge tone={status === "LIVE" ? "secondary" : "tertiary"}>{status.replaceAll("_", " ")}</Badge></div></Link>;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
