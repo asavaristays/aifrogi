@@ -18,6 +18,7 @@ export function SiteFooter() {
           <Link className="block hover:text-white" href="/resources">Resources</Link>
           <Link className="block hover:text-white" href="/install-ai-bot">How to install AI Bot</Link>
           <Link className="block hover:text-white" href="/pricing">Pricing</Link>
+          <a className="block hover:text-white" href="https://webtechnosys.com/founder/" target="_blank" rel="noreferrer">Founder</a>
         </nav>
 
         <nav aria-label="Footer legal menu" className="space-y-3 text-sm font-normal text-white/62">

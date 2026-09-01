@@ -27,7 +27,8 @@ const navItems = [
   },
   { label: "WhatsApp API", href: "/whatsapp-api" },
   { label: "How to Install", href: "/install-ai-bot" },
-  { label: "Pricing", href: "/pricing" }
+  { label: "Pricing", href: "/pricing" },
+  { label: "Founder", href: "https://webtechnosys.com/founder/", external: true }
 ];
 
 export function SiteHeader() {
@@ -42,7 +43,7 @@ export function SiteHeader() {
             <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125 sm:w-[190px]" />
           </Link>
 
-          <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 md:flex">
+          <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 lg:flex">
             {navItems.map((item) => (
               item.children ? (
                 <div key={item.href} className="group relative py-5">
@@ -60,19 +61,17 @@ export function SiteHeader() {
                   </div>
                 </div>
               ) : (
-                <Link key={item.href} href={item.href} className="transition hover:text-white">
-                  {item.label}
-                </Link>
+                item.external ? <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="transition hover:text-white">{item.label}</a> : <Link key={item.href} href={item.href} className="transition hover:text-white">{item.label}</Link>
               )
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center gap-3 lg:flex">
             <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
             <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 15-day trial</a>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-3 text-xs font-bold text-[var(--ink-600)] shadow-sm">
               Start trial
             </a>
@@ -90,7 +89,7 @@ export function SiteHeader() {
         </div>
 
         {menuOpen ? (
-          <div id="mobile-navigation" className="-mx-4 border-t border-white/10 bg-[var(--ink-950)] px-4 pb-5 shadow-[0_20px_45px_rgba(0,0,0,.45)] sm:-mx-8 sm:px-8 md:hidden">
+          <div id="mobile-navigation" className="-mx-4 border-t border-white/10 bg-[var(--ink-950)] px-4 pb-5 shadow-[0_20px_45px_rgba(0,0,0,.45)] sm:-mx-8 sm:px-8 lg:hidden">
             <nav aria-label="Mobile navigation" className="grid grid-cols-1 py-3">
               {navItems.map((item) => (
                 item.children ? (
@@ -111,14 +110,16 @@ export function SiteHeader() {
                     </div> : null}
                   </div>
                 ) : (
-                  <Link
+                  item.external ? <a
                     key={item.href}
                     href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
                     onClick={() => setMenuOpen(false)}
                     className="flex min-h-14 items-center border-b border-white/8 px-2 text-base font-semibold text-white/82 transition hover:bg-white/8 hover:text-white"
                   >
                     {item.label}
-                  </Link>
+                  </a> : <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="flex min-h-14 items-center border-b border-white/8 px-2 text-base font-semibold text-white/82 transition hover:bg-white/8 hover:text-white">{item.label}</Link>
                 )
               ))}
             </nav>
