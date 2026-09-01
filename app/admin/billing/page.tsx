@@ -20,7 +20,7 @@ export default async function AdminBillingPage() {
           <p className="product-eyebrow">Section 06</p>
           <h1 className="mt-2 text-3xl font-semibold">Billing and customer health</h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">
-            Server-owned plans, manual invoicing, usage limits, incidents, and audited operator intervention. Razorpay remains disconnected until pricing stabilizes.
+            Server-owned plans, verified Razorpay payments, invoices, usage limits, incidents, and audited operator intervention.
           </p>
         </div>
         <Badge tone={atRisk || openIncidents.length ? "tertiary" : "secondary"}>
@@ -42,7 +42,7 @@ export default async function AdminBillingPage() {
             <p className="product-eyebrow">Customer control</p>
             <h2 className="mt-1 text-xl font-semibold">Health, subscription and usage</h2>
           </div>
-          <Badge tone="neutral">Manual billing mode</Badge>
+          <Badge tone="neutral">Razorpay + manual reconciliation</Badge>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1180px] text-left text-sm">
@@ -79,7 +79,7 @@ export default async function AdminBillingPage() {
                     <td className="px-5 py-4"><Usage value={usage.aiReplies} limit={limits.aiReplies} /></td>
                     <td className="px-5 py-4"><Usage value={usage.campaigns} limit={limits.campaigns} /></td>
                     <td className="px-5 py-4">
-                      {latestInvoice ? <><InvoiceStatus value={latestInvoice.status} /><span className="mt-2 block text-xs text-[var(--text-muted)]">{formatMoney(latestInvoice.totalPaisa)}</span></> : <span className="text-xs text-[var(--text-muted)]">No invoice</span>}
+                      {latestInvoice ? <><InvoiceStatus value={latestInvoice.status} /><span className="mt-2 block text-xs text-[var(--text-muted)]">{formatMoney(latestInvoice.totalPaisa)}</span>{latestInvoice.paymentReference ? <span className="mt-1 block max-w-44 truncate text-[11px] text-[var(--text-muted)]" title={latestInvoice.paymentReference}>Razorpay: {latestInvoice.paymentReference}</span> : null}</> : <span className="text-xs text-[var(--text-muted)]">No invoice</span>}
                     </td>
                     <td className="px-5 py-4 text-right"><Link className="font-bold text-[#6d5310]" href={`/admin/customers/${organization.id}`}>Manage</Link></td>
                   </tr>
@@ -121,9 +121,9 @@ export default async function AdminBillingPage() {
 
         <div className="rounded-lg border border-black/7 bg-[#101010] p-6 text-white shadow-sm">
           <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#e2c66d]">Payment architecture</p>
-          <h2 className="mt-2 text-2xl font-semibold">Gateway-ready, provider-neutral.</h2>
+          <h2 className="mt-2 text-2xl font-semibold">Verified payment activation.</h2>
           <p className="mt-3 text-sm leading-6 text-white/65">
-            Subscription and invoice truth now belongs to AiFrogi. Manual payments work today; Razorpay can later reconcile the same records through authenticated webhooks.
+            Razorpay Checkout collects payment details. AiFrogi verifies the signed payment, activates the selected plan, records the invoice and keeps the gateway reference for reconciliation.
           </p>
           <div className="mt-6 space-y-3">
             {[

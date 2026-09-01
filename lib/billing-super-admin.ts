@@ -18,6 +18,26 @@ export type BillingHealth = {
 
 export const BILLING_PLAN_CATALOGUE = [
   {
+    code: "AI_STARTER_MONTHLY",
+    name: "AI Bot Starter Monthly",
+    description: "One governed AI Business Bot, billed monthly.",
+    billingInterval: "MONTHLY",
+    amountPaisa: 49900,
+    trialDays: 0,
+    sortOrder: 2,
+    limits: { contacts: 2000, messages: 5000, campaigns: 0, aiReplies: 1000, teamUsers: 3 }
+  },
+  {
+    code: "AI_STARTER_YEARLY",
+    name: "AI Bot Starter Yearly",
+    description: "One governed AI Business Bot, billed yearly with ₹989 savings.",
+    billingInterval: "YEARLY",
+    amountPaisa: 499900,
+    trialDays: 0,
+    sortOrder: 3,
+    limits: { contacts: 2000, messages: 5000, campaigns: 0, aiReplies: 1000, teamUsers: 3 }
+  },
+  {
     code: "TRIAL",
     name: "15-Day Trial",
     description: "Guided proof-of-value workspace before paid activation.",
@@ -85,6 +105,15 @@ function quarterEnd(start: Date) {
   return end;
 }
 
+function billingPeriodEnd(start: Date, interval: string) {
+  const end = new Date(start);
+  if (interval === "MONTHLY") end.setMonth(end.getMonth() + 1);
+  else if (interval === "YEARLY") end.setFullYear(end.getFullYear() + 1);
+  else if (interval === "QUARTERLY") end.setMonth(end.getMonth() + 3);
+  else return null;
+  return end;
+}
+
 function trialEnd(start: Date, days: number) {
   const end = new Date(start);
   end.setDate(end.getDate() + days);
@@ -145,7 +174,7 @@ export async function ensureOrganizationSubscription(organizationId: string, req
   const plan = plans.find((item) => item.code === planCode) || plans.find((item) => item.code === "TRIAL");
   if (!plan) return null;
   const now = new Date();
-  const periodEnd = plan.billingInterval === "QUARTERLY" ? quarterEnd(now) : plan.trialDays ? trialEnd(now, plan.trialDays) : null;
+  const periodEnd = billingPeriodEnd(now, plan.billingInterval) || (plan.trialDays ? trialEnd(now, plan.trialDays) : null);
 
   return db.subscription.upsert({
     where: { organizationId },
@@ -194,7 +223,7 @@ export async function updateOrganizationPlan(input: {
     return existing;
   }
   const now = new Date();
-  const currentPeriodEnd = plan.billingInterval === "QUARTERLY" ? quarterEnd(now) : plan.trialDays ? trialEnd(now, plan.trialDays) : null;
+  const currentPeriodEnd = billingPeriodEnd(now, plan.billingInterval) || (plan.trialDays ? trialEnd(now, plan.trialDays) : null);
 
   const [, subscription] = await db.$transaction([
     db.organization.update({ where: { id: input.organizationId }, data: { plan: plan.code } }),
@@ -290,6 +319,90 @@ export async function createManualInvoice(input: {
         targetId: invoice.id,
         summary: `${invoice.invoiceNumber} issued for ${formatMoney(totalPaisa)}`,
         metadata: { invoiceNumber, totalPaisa }
+      }
+    });
+    return invoice;
+  });
+}
+
+export async function activateRazorpaySubscription(input: {
+  organizationId: string;
+  actorEmail: string;
+  planCode: "AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY";
+  orderId: string;
+  paymentId: string;
+  amountPaisa: number;
+  currency: string;
+}) {
+  const db = getDb();
+  if (!db) throw new Error("Billing database is unavailable.");
+  const plans = await ensureBillingPlans();
+  const plan = plans.find((item) => item.code === input.planCode);
+  if (!plan || plan.amountPaisa !== input.amountPaisa || plan.currency !== input.currency) {
+    throw new Error("The verified payment does not match the selected plan.");
+  }
+  const existingInvoice = await db.billingInvoice.findFirst({
+    where: { organizationId: input.organizationId, paymentReference: input.paymentId }
+  });
+  if (existingInvoice) return existingInvoice;
+
+  const now = new Date();
+  const currentPeriodEnd = billingPeriodEnd(now, plan.billingInterval);
+  if (!currentPeriodEnd) throw new Error("Unsupported paid billing interval.");
+  const invoiceNumber = `AIF-${now.toISOString().slice(0, 10).replaceAll("-", "")}-${input.paymentId.slice(-8).toUpperCase()}`;
+
+  return db.$transaction(async (tx) => {
+    await tx.organization.update({ where: { id: input.organizationId }, data: { plan: plan.code } });
+    const subscription = await tx.subscription.upsert({
+      where: { organizationId: input.organizationId },
+      update: {
+        planId: plan.id,
+        status: "ACTIVE",
+        paymentProvider: "RAZORPAY",
+        externalSubscriptionId: input.orderId,
+        currentPeriodStart: now,
+        currentPeriodEnd,
+        trialEndsAt: null,
+        graceEndsAt: null,
+        cancelAtPeriodEnd: false
+      },
+      create: {
+        organizationId: input.organizationId,
+        planId: plan.id,
+        status: "ACTIVE",
+        paymentProvider: "RAZORPAY",
+        externalSubscriptionId: input.orderId,
+        currentPeriodStart: now,
+        currentPeriodEnd
+      }
+    });
+    const invoice = await tx.billingInvoice.create({
+      data: {
+        organizationId: input.organizationId,
+        subscriptionId: subscription.id,
+        invoiceNumber,
+        status: "PAID",
+        currency: input.currency,
+        periodStart: now,
+        periodEnd: currentPeriodEnd,
+        platformFeePaisa: input.amountPaisa,
+        totalPaisa: input.amountPaisa,
+        paidAt: now,
+        paymentReference: input.paymentId,
+        notes: `Razorpay order ${input.orderId}`,
+        createdBy: input.actorEmail
+      }
+    });
+    await tx.platformAuditLog.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        actorRole: "CLIENT_ADMIN",
+        action: "RAZORPAY_PLAN_ACTIVATED",
+        targetType: "BillingInvoice",
+        targetId: invoice.id,
+        summary: `${plan.name} activated after verified Razorpay payment`,
+        metadata: { planCode: plan.code, orderId: input.orderId, paymentId: input.paymentId, amountPaisa: input.amountPaisa }
       }
     });
     return invoice;
