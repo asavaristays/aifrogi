@@ -842,9 +842,9 @@ function LiveStep({ organization, onOpen }: { organization: CustomerOnboardingOr
   return (
     <div className="mx-auto max-w-xl py-8 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#25d366] text-3xl font-black text-[#063f3a]">✓</div>
-      <h2 className="mt-6 text-3xl font-black">{usesWhatsApp ? "Your WhatsApp workspace is live" : "Your AI Business Bot foundation is ready"}</h2>
-      <p className="mt-3 text-sm leading-6 text-[#68645c]">{usesWhatsApp ? `${organization?.onboarding?.displayPhoneNumber || organization?.name} is ready for inbound and outbound messaging.` : "Open Business Intelligence to approve sources, test grounded answers, and prepare the website widget."}</p>
-      <Button className="mt-7 px-5 py-3" onClick={onOpen}>{usesWhatsApp ? "Go to inbox" : "Open intelligence"}</Button>
+      <h2 className="mt-6 text-3xl font-black">{usesWhatsApp ? "Your WhatsApp workspace is live" : "Next: upload business knowledge"}</h2>
+      <p className="mt-3 text-sm leading-6 text-[#68645c]">{usesWhatsApp ? `${organization?.onboarding?.displayPhoneNumber || organization?.name} is ready for inbound and outbound messaging.` : "Add your website and approved files, review the extracted facts, then test customer answers before installation."}</p>
+      <Button className="mt-7 px-5 py-3" onClick={onOpen}>{usesWhatsApp ? "Go to inbox" : "Upload knowledge"}</Button>
     </div>
   );
 }
