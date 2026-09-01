@@ -11,15 +11,17 @@ type Ticket = {
   priority: string;
   status: string;
   description: string;
+  resolution?: string | null;
+  createdAt: string;
   updatedAt: string;
+  sla?: { acknowledgeDueAt: string; resolveDueAt: string; acknowledgmentOverdue: boolean; resolutionOverdue: boolean };
   messages: Array<{ id: string; authorEmail: string; authorRole: string; body: string; createdAt: string }>;
 };
 
 const resources = [
-  { title: "Connect WhatsApp", helper: "Business, phone, and Meta connection prerequisites", href: "/help/connect-whatsapp" },
-  { title: "Fix message delivery", helper: "Payment, template, recipient, and 24-hour window checks", href: "/help/resolve-message-delivery" },
-  { title: "Prepare a campaign", helper: "Consent, approved template, audience, cost, and test send", href: "/help/send-compliant-campaign" },
-  { title: "Govern AI answers", helper: "Knowledge, fallback, human handoff, and workflow readiness", href: "/help/govern-ai-answers" }
+  { title: "Install the AI Bot", helper: "Widget, iframe and standalone link guidance", href: "/help/install-ai-bot" },
+  { title: "Improve bot knowledge", helper: "Approved sources, preview approval and answer verification", href: "/help/govern-ai-answers" },
+  { title: "Check a connector", helper: "Calendar, Sheets, commerce and business-action readiness", href: "/integrations" }
 ];
 
 export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) {
@@ -31,6 +33,7 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [replies, setReplies] = useState<Record<string, string>>({});
   const openCount = useMemo(() => tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status)).length, [tickets]);
 
   async function createTicket() {
@@ -56,6 +59,15 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
     setSubject("");
     setDescription("");
     setNotice(`${payload.ticket.reference} was created. Support can now see your onboarding and integration context.`);
+  }
+
+  async function updateTicket(ticketId: string, body: Record<string, unknown>) {
+    setSaving(true); setError(""); setNotice("");
+    const response = await fetch("/api/support/tickets", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ticketId, ...body }) });
+    const payload = await response.json().catch(() => null); setSaving(false);
+    if (!response.ok) { setError(payload?.error || "We could not update the ticket."); return; }
+    setTickets((current) => current.map((ticket) => ticket.id === ticketId ? payload.ticket : ticket));
+    setReplies((current) => ({ ...current, [ticketId]: "" })); setNotice(`${payload.ticket.reference} was updated.`);
   }
 
   return (
@@ -92,7 +104,7 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
                 <summary className="cursor-pointer list-none">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <span><strong className="block text-sm">{ticket.subject}</strong><small className="mt-1 block text-[var(--text-muted)]">{ticket.reference} · {ticket.category.replaceAll("_", " ")}</small></span>
-                    <span className={`status-pill ${ticket.status === "RESOLVED" ? "status-success" : ticket.status === "WAITING_FOR_CUSTOMER" ? "status-warning" : "status-info"}`}>{ticket.status.replaceAll("_", " ")}</span>
+                    <span className={`status-pill ${["RESOLVED", "CLOSED"].includes(ticket.status) ? "status-success" : ticket.status === "WAITING_FOR_CLIENT" ? "status-warning" : "status-info"}`}>{ticket.status.replaceAll("_", " ")}</span>
                   </div>
                 </summary>
                 <div className="mt-4 space-y-3 border-t border-black/6 pt-4">
@@ -102,6 +114,10 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
                       <p className="mt-2 text-xs text-[var(--text-muted)]">{message.authorRole === "ADMIN" ? "AiFrogi Support" : "You"}</p>
                     </div>
                   ))}
+                  {ticket.resolution ? <div className="rounded-md border border-[#b9dfcf] bg-[#edf9f3] p-4"><strong className="text-sm">Resolution</strong><p className="mt-2 whitespace-pre-wrap text-sm leading-6">{ticket.resolution}</p></div> : null}
+                  {ticket.sla?.resolutionOverdue ? <p className="text-xs font-bold text-[#a8322d]">Resolution SLA requires attention.</p> : <p className="text-xs text-[var(--text-muted)]">Target resolution: {new Date(ticket.sla?.resolveDueAt || ticket.updatedAt).toLocaleString()}</p>}
+                  <label><span className="field-label">Reply</span><textarea className="product-input mt-2 min-h-24" value={replies[ticket.id] || ""} onChange={(event) => setReplies((current) => ({ ...current, [ticket.id]: event.target.value }))} placeholder="Add new information or evidence ID. Never send credentials." /></label>
+                  <div className="flex flex-wrap gap-2"><Button disabled={saving || !(replies[ticket.id] || "").trim()} onClick={() => updateTicket(ticket.id, { message: replies[ticket.id] })}>Send reply</Button>{ticket.status === "RESOLVED" ? <Button tone="surface" disabled={saving} onClick={() => updateTicket(ticket.id, { action: "CONFIRM_RESOLUTION" })}>Confirm and close</Button> : null}{ticket.status === "CLOSED" ? <Button tone="surface" disabled={saving} onClick={() => updateTicket(ticket.id, { action: "REOPEN" })}>Reopen</Button> : null}</div>
                 </div>
               </details>
             )) : <p className="rounded-lg border border-dashed border-black/10 p-5 text-sm text-[var(--text-muted)]">No support requests yet.</p>}
@@ -114,8 +130,8 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
         <h2 className="mt-2 text-xl font-bold">Create a support request</h2>
         <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">AiFrogi attaches your organization and connection context automatically. Never paste passwords, tokens, or OTPs.</p>
         <div className="mt-5 grid gap-4">
-          <label><span className="field-label">Category</span><select className="product-input mt-2" value={category} onChange={(event) => setCategory(event.target.value)}><option value="ONBOARDING">Onboarding</option><option value="WHATSAPP">WhatsApp connection</option><option value="BILLING">Billing and wallet</option><option value="CAMPAIGN">Campaign</option><option value="AUTOMATION">Automation</option><option value="ACCOUNT">Account access</option><option value="OTHER">Other</option></select></label>
-          <label><span className="field-label">Priority</span><select className="product-input mt-2" value={priority} onChange={(event) => setPriority(event.target.value)}><option value="NORMAL">Normal</option><option value="HIGH">High · work blocked</option><option value="URGENT">Urgent · live messaging stopped</option><option value="LOW">Low · question or improvement</option></select></label>
+          <label><span className="field-label">Category</span><select className="product-input mt-2" value={category} onChange={(event) => setCategory(event.target.value)}><option value="AI_BOT">AI Bot answer or behaviour</option><option value="KNOWLEDGE">Knowledge and content</option><option value="CONNECTOR">Connector or action</option><option value="ONBOARDING">Onboarding and installation</option><option value="BILLING">Billing and plan</option><option value="ACCOUNT">Account access</option><option value="WHATSAPP">Optional WhatsApp channel</option><option value="OTHER">Other</option></select></label>
+          <label><span className="field-label">Priority</span><select className="product-input mt-2" value={priority} onChange={(event) => setPriority(event.target.value)}><option value="NORMAL">Normal · response within 8 hours</option><option value="HIGH">High · business journey blocked</option><option value="URGENT">Urgent · live bot stopped or unsafe</option><option value="LOW">Low · question or improvement</option></select></label>
           <label><span className="field-label">Subject</span><input className="product-input mt-2" value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="Example: Marketing template failed" /></label>
           <label><span className="field-label">What happened?</span><textarea className="product-input mt-2 min-h-32 resize-y" value={description} onChange={(event) => setDescription(event.target.value)} placeholder="What were you doing, what did you expect, and what did AiFrogi show?" /></label>
         </div>

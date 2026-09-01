@@ -21,6 +21,7 @@ export default async function SupportPage() {
     const messages = (ticket as typeof ticket & { messages?: Array<{ id: string; authorEmail: string; authorRole: string; body: string; createdAt: Date }> }).messages || [];
     return {
       ...ticket,
+      createdAt: ticket.createdAt.toISOString(),
       updatedAt: ticket.updatedAt.toISOString(),
       messages: messages.map((message) => ({ ...message, createdAt: message.createdAt.toISOString() }))
     };

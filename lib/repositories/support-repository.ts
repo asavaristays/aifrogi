@@ -34,6 +34,12 @@ export async function getSupportTicket(id: string) {
   return db.supportTicket.findUnique({ where: { id }, include: ticketInclude });
 }
 
+export async function getSupportTicketByReference(reference: string) {
+  const db = getDb();
+  if (!db) return null;
+  return db.supportTicket.findUnique({ where: { reference }, include: ticketInclude });
+}
+
 export async function createSupportTicket(input: {
   organizationId: string;
   subject: string;
@@ -44,19 +50,34 @@ export async function createSupportTicket(input: {
 }) {
   const db = getDb();
   if (!db) return null;
-  return db.supportTicket.create({
-    data: {
-      ...input,
-      reference: createReference(),
-      messages: {
-        create: {
-          authorEmail: input.createdByEmail,
-          authorRole: "CUSTOMER",
-          body: input.description
+  return db.$transaction(async (tx) => {
+    const ticket = await tx.supportTicket.create({
+      data: {
+        ...input,
+        reference: createReference(),
+        messages: {
+          create: {
+            authorEmail: input.createdByEmail,
+            authorRole: "CUSTOMER",
+            body: input.description
+          }
         }
+      },
+      include: ticketInclude
+    });
+    await tx.platformAuditLog.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.createdByEmail,
+        actorRole: "CLIENT",
+        action: "SUPPORT_TICKET_CREATED",
+        targetType: "SupportTicket",
+        targetId: ticket.id,
+        summary: `${ticket.reference} created: ${ticket.subject}`,
+        metadata: { category: ticket.category, priority: ticket.priority }
       }
-    },
-    include: ticketInclude
+    });
+    return ticket;
   });
 }
 
@@ -68,13 +89,25 @@ export async function addSupportTicketMessage(input: {
 }) {
   const db = getDb();
   if (!db) return null;
-  await db.$transaction([
-    db.supportTicketMessage.create({ data: input }),
-    db.supportTicket.update({
+  await db.$transaction(async (tx) => {
+    const message = await tx.supportTicketMessage.create({ data: input });
+    const ticket = await tx.supportTicket.update({
       where: { id: input.ticketId },
-      data: { status: input.authorRole === "ADMIN" ? "WAITING_FOR_CUSTOMER" : "OPEN" }
-    })
-  ]);
+      data: { status: input.authorRole === "ADMIN" ? "WAITING_FOR_CLIENT" : "OPEN" }
+    });
+    await tx.platformAuditLog.create({
+      data: {
+        organizationId: ticket.organizationId,
+        actorEmail: input.authorEmail,
+        actorRole: input.authorRole,
+        action: "SUPPORT_TICKET_REPLY_ADDED",
+        targetType: "SupportTicket",
+        targetId: ticket.id,
+        summary: `${ticket.reference} received a ${input.authorRole.toLowerCase()} reply`,
+        metadata: { messageId: message.id }
+      }
+    });
+  });
   return getSupportTicket(input.ticketId);
 }
 
@@ -86,14 +119,17 @@ export async function updateSupportTicket(input: {
 }) {
   const db = getDb();
   if (!db) return null;
-  await db.supportTicket.update({
-    where: { id: input.ticketId },
-    data: {
-      status: input.status,
-      assignedToEmail: input.assignedToEmail,
-      resolution: input.resolution,
-      resolvedAt: input.status === "RESOLVED" ? new Date() : null
-    }
+  await db.$transaction(async (tx) => {
+    const ticket = await tx.supportTicket.update({
+      where: { id: input.ticketId },
+      data: {
+        status: input.status,
+        assignedToEmail: input.assignedToEmail,
+        resolution: input.resolution,
+        resolvedAt: input.status === "RESOLVED" ? new Date() : null
+      }
+    });
+    await tx.platformAuditLog.create({ data: { organizationId: ticket.organizationId, actorEmail: input.assignedToEmail || "system@aifrogi.com", actorRole: "SUPPORT", action: `SUPPORT_TICKET_${input.status}`, targetType: "SupportTicket", targetId: ticket.id, summary: `${ticket.reference} changed to ${input.status.replaceAll("_", " ")}`, metadata: { hasResolution: Boolean(input.resolution) } } });
   });
   return getSupportTicket(input.ticketId);
 }
