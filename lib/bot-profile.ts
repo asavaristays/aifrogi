@@ -24,6 +24,13 @@ export type BotProfileInput = {
   safeFallbackMessage: string;
 };
 
+export function normalizeCapabilitiesForCategory(
+  category: BotProfileInput["category"],
+  capabilities: BotProfileInput["capabilities"]
+) {
+  return [...new Set([...capabilities, ...requiredCapabilitiesForCategory(category)])];
+}
+
 function text(value: unknown, max = 500) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }

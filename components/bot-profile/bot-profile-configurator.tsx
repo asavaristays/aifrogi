@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { BOT_CAPABILITIES, BOT_CATEGORIES, BOT_CHANNELS, BOT_OPERATING_MODES, type BotProfileInput } from "@/lib/bot-profile";
+import { BOT_CAPABILITIES, BOT_CATEGORIES, BOT_CHANNELS, BOT_OPERATING_MODES, normalizeCapabilitiesForCategory, type BotProfileInput } from "@/lib/bot-profile";
 import { getBotBlueprint } from "@/lib/bot-blueprints";
 import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 
@@ -24,14 +24,16 @@ const setupPaths = [
 ] as const;
 
 function normalized(initial?: StoredProfile | null): BotProfileInput {
+  const category = BOT_CATEGORIES.includes(initial?.category as never) ? initial?.category as BotProfileInput["category"] : defaults.category;
+  const storedCapabilities = initial?.capabilities?.filter((item): item is BotProfileInput["capabilities"][number] => BOT_CAPABILITIES.includes(item as never)) || defaults.capabilities;
   return {
     ...defaults,
     humanHandoffEnabled: initial?.humanHandoffEnabled ?? defaults.humanHandoffEnabled,
     actionApprovalNeeded: initial?.actionApprovalNeeded ?? defaults.actionApprovalNeeded,
-    category: BOT_CATEGORIES.includes(initial?.category as never) ? initial?.category as BotProfileInput["category"] : defaults.category,
+    category,
     operatingMode: BOT_OPERATING_MODES.includes(initial?.operatingMode as never) ? initial?.operatingMode as BotProfileInput["operatingMode"] : defaults.operatingMode,
     channels: initial?.channels?.filter((item): item is BotProfileInput["channels"][number] => BOT_CHANNELS.includes(item as never)) || defaults.channels,
-    capabilities: initial?.capabilities?.filter((item): item is BotProfileInput["capabilities"][number] => BOT_CAPABILITIES.includes(item as never)) || defaults.capabilities,
+    capabilities: normalizeCapabilitiesForCategory(category, storedCapabilities),
     personaName: initial?.personaName?.trim() || defaults.personaName,
     businessObjective: initial?.businessObjective?.trim() || defaults.businessObjective,
     tone: initial?.tone?.trim() || defaults.tone,
@@ -63,7 +65,11 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
     setProfile((current) => ({ ...current, channels: current.channels.includes(channel) ? current.channels.filter((item) => item !== channel) : [...current.channels, channel] }));
   }
   function toggleCapability(capability: BotProfileInput["capabilities"][number]) {
-    setProfile((current) => ({ ...current, capabilities: current.capabilities.includes(capability) ? current.capabilities.filter((item) => item !== capability) : [...current.capabilities, capability] }));
+    setProfile((current) => {
+      const required = getBotPersonaPack(current.category).defaultCapabilities;
+      if (required.includes(capability)) return current;
+      return { ...current, capabilities: current.capabilities.includes(capability) ? current.capabilities.filter((item) => item !== capability) : [...current.capabilities, capability] };
+    });
   }
   async function save() {
     setSaving(true); setMessage("");
@@ -92,7 +98,7 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
       <label className="block"><span className="field-label">Operating mode</span><select disabled={!superAdminMode} className="product-input mt-2 disabled:cursor-default disabled:opacity-75" value={profile.operatingMode} onChange={(event) => setProfile((current) => ({ ...current, operatingMode: event.target.value as BotProfileInput["operatingMode"] }))}>{BOT_OPERATING_MODES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
     </div>
     <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} disabled={!superAdminMode} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#68645c]">{profile.channels.includes("WHATSAPP") ? "WhatsApp setup will request a business number and secure Meta authorization." : "Website-only setup does not require a WhatsApp number or Meta account."}</p></div>
-    <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={labels[item]} checked={profile.capabilities.includes(item)} disabled={!superAdminMode} onChange={() => toggleCapability(item)} />)}</div></div>
+    <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={`${labels[item]}${personaPack.defaultCapabilities.includes(item) ? " · required" : ""}`} checked={profile.capabilities.includes(item)} disabled={!superAdminMode || personaPack.defaultCapabilities.includes(item)} onChange={() => toggleCapability(item)} />)}</div><p className="mt-2 text-xs text-[#68645c]">Required capabilities are applied automatically from the selected governed persona.</p></div>
     <div className="mt-5 grid gap-2 sm:grid-cols-2"><Check label="Human takeover available" checked={profile.humanHandoffEnabled} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, humanHandoffEnabled: !current.humanHandoffEnabled }))} /><Check label="Approval before business actions" checked={profile.actionApprovalNeeded} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, actionApprovalNeeded: !current.actionApprovalNeeded }))} /></div>
     <div className="mt-7 rounded-lg border border-[#dfe5e2] bg-[#fbfcfb] p-5">
       <p className="product-eyebrow">Governed persona</p><h3 className="mt-2 text-lg font-black">Customer-facing identity and behavior</h3><p className="mt-2 text-xs leading-5 text-[#68645c]">Client Admin may maintain these fields after onboarding. Category, capabilities, channels, and authority remain controlled by AiFrogi SuperAdmin.</p>
