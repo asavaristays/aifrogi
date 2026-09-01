@@ -13,7 +13,7 @@ export function RecentLeads({ leads }: { leads: Lead[] }) {
 
       {leads.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-black/10 bg-[var(--surface-soft)] p-6 text-sm text-[var(--text-muted)]">
-          No live leads yet. New inquiries from WhatsApp, email, calls, AI bot, or manual entry will appear here.
+          No live enquiries yet. New customer conversations from your enabled channels will appear here.
         </div>
       ) : (
         <div className="space-y-3">

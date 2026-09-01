@@ -24,7 +24,8 @@ export default async function DashboardPage() {
     getKnowledgeWorkspaceSummary(propertySlug),
     getKnowledgeGovernanceSummary(propertySlug)
   ]);
-  const leads = filterWhatsAppLeads(allLeads);
+  const whatsappEnabled = organization?.botProfile?.channels.includes("WHATSAPP") ?? false;
+  const leads = whatsappEnabled ? filterWhatsAppLeads(allLeads) : allLeads.filter((lead) => /website|ai bot/i.test(lead.source));
   const metrics = buildWhatsAppMetrics(leads);
   const recent = [...leads].sort((a, b) => +new Date(b.updatedAtIso) - +new Date(a.updatedAtIso)).slice(0, 5);
   const connected = integration.status === "CONNECTED";
@@ -42,14 +43,16 @@ export default async function DashboardPage() {
   const attention: DashboardAttention[] = [];
   if (metrics.unanswered) attention.push({ title: `${metrics.unanswered} conversation${metrics.unanswered === 1 ? "" : "s"} waiting`, reason: "The customer's latest message has not received a reply.", action: "Reply now", href: "/whatsapp-bot", tone: "urgent", owner: "You" });
   if (humanResponse.overdue) attention.unshift({ title: `${humanResponse.overdue} human response SLA ${humanResponse.overdue === 1 ? "breach" : "breaches"}`, reason: `Oldest customer has waited ${humanResponse.oldestWaitingMinutes} minutes. ${humanResponse.fallbackEligible ? `${humanResponse.fallbackEligible} approved fallback candidate${humanResponse.fallbackEligible === 1 ? "" : "s"}.` : "Fallback sending remains disabled."}`, action: "Open response report", href: "/dashboard#human-response", tone: "urgent", owner: "You" });
-  if (failedPayment) attention.push({ title: "Meta billing blocked delivery", reason: `${failedPayment} message${failedPayment === 1 ? "" : "s"} failed because billing needs attention.`, action: "Check billing", href: "/setup", tone: "urgent", owner: "You" });
-  if (failedTemplate) attention.push({ title: "Use an approved template", reason: `${failedTemplate} outbound attempt${failedTemplate === 1 ? "" : "s"} occurred outside the active reply window.`, action: "Open campaigns", href: "/campaigns", tone: "waiting", owner: "AiFrogi" });
-  if (failedEngagement) attention.push({ title: "Campaign delivery was limited", reason: "Reduce frequency and use recent, opted-in contacts before retrying.", action: "Review audience", href: "/campaigns", tone: "waiting", owner: "Meta" });
-  if (failedRecipient) attention.push({ title: "A recipient could not receive WhatsApp", reason: "Validate the unavailable number before another attempt.", action: "Review contacts", href: "/contacts", tone: "waiting", owner: "You" });
-  if (!connected) attention.push({ title: "WhatsApp setup is incomplete", reason: "Messaging remains unavailable until the secure connection is complete.", action: "Resume setup", href: "/onboarding", tone: "urgent", owner: "You" });
+  if (whatsappEnabled && failedPayment) attention.push({ title: "Meta billing blocked delivery", reason: `${failedPayment} message${failedPayment === 1 ? "" : "s"} failed because billing needs attention.`, action: "Check billing", href: "/setup", tone: "urgent", owner: "You" });
+  if (whatsappEnabled && failedTemplate) attention.push({ title: "Use an approved template", reason: `${failedTemplate} outbound attempt${failedTemplate === 1 ? "" : "s"} occurred outside the active reply window.`, action: "Open campaigns", href: "/campaigns", tone: "waiting", owner: "AiFrogi" });
+  if (whatsappEnabled && failedEngagement) attention.push({ title: "Campaign delivery was limited", reason: "Reduce frequency and use recent, opted-in contacts before retrying.", action: "Review audience", href: "/campaigns", tone: "waiting", owner: "Meta" });
+  if (whatsappEnabled && failedRecipient) attention.push({ title: "A recipient could not receive WhatsApp", reason: "Validate the unavailable number before another attempt.", action: "Review contacts", href: "/contacts", tone: "waiting", owner: "You" });
+  if (whatsappEnabled && !connected) attention.push({ title: "WhatsApp setup is incomplete", reason: "Messaging remains unavailable until the secure connection is complete.", action: "Resume setup", href: "/onboarding", tone: "urgent", owner: "You" });
   if (!knowledge.pages.length) attention.push({ title: "Knowledge is not ready", reason: "Sync the approved business website before enabling grounded AI answers.", action: "Set up knowledge", href: "/knowledge", tone: "waiting", owner: "You" });
   if (!botReadiness.ready) attention.push({ title: `Bot readiness is ${botReadiness.percent}%`, reason: `${botReadiness.total - botReadiness.completed} governed onboarding gate${botReadiness.total - botReadiness.completed === 1 ? " remains" : "s remain"} before this bot is fully operational.`, action: "Review bot setup", href: "/onboarding", tone: "waiting", owner: "You" });
-  if (!attention.length) attention.push({ title: "Messaging is operating normally", reason: "No reply, billing, template, or connection blockers are visible.", action: "Open inbox", href: "/whatsapp-bot", tone: "ready", owner: "AiFrogi" });
+  if (!attention.length) attention.push(whatsappEnabled
+    ? { title: "Messaging is operating normally", reason: "No reply, billing, template, or connection blockers are visible.", action: "Open inbox", href: "/whatsapp-bot", tone: "ready", owner: "AiFrogi" }
+    : { title: "AI Bot is operating normally", reason: "No unanswered conversation or intelligence blocker is visible.", action: "Open inbox", href: "/whatsapp-bot", tone: "ready", owner: "AiFrogi" });
 
   const workspace = organization?.properties.find((property) => property.slug === propertySlug) || organization?.properties[0];
   const membership = organization?.members.find((member) => member.email.toLowerCase() === user?.username.toLowerCase());
@@ -64,6 +67,7 @@ export default async function DashboardPage() {
     workspaceName={workspace?.name || propertySlug}
     displayPhoneNumber={integration.displayPhoneNumber || organization?.onboarding?.displayPhoneNumber || ""}
     connected={connected}
+    whatsappEnabled={whatsappEnabled}
     metaStatus={metaStatus}
     accessRole={membership?.role || "AGENT"}
     knowledgeReady={knowledge.pages.length > 0 && knowledge.settings.status === "READY" && knowledge.settings.approvedForAi}
@@ -74,8 +78,7 @@ export default async function DashboardPage() {
     attention={attention}
     readiness={[
       { label: "Business", value: organization?.onboarding?.kycStatus === "APPROVED" || !organization ? "Verified" : "In review", ok: organization?.onboarding?.kycStatus === "APPROVED" || !organization },
-      { label: "Meta", value: metaStatus === "LIVE" ? "Live" : metaStatus.replaceAll("_", " "), ok: metaStatus === "LIVE" },
-      { label: "WhatsApp", value: connected ? "Connected" : "Needs setup", ok: connected },
+      ...(whatsappEnabled ? [{ label: "Meta", value: metaStatus === "LIVE" ? "Live" : metaStatus.replaceAll("_", " "), ok: metaStatus === "LIVE" }, { label: "WhatsApp", value: connected ? "Connected" : "Needs setup", ok: connected }] : []),
       { label: "Billing", value: failedPayment ? "Action required" : "No blocker", ok: !failedPayment },
       { label: "Knowledge", value: knowledge.pages.length ? `${knowledge.pages.length} pages` : "Needs setup", ok: knowledge.pages.length > 0 }
     ]}

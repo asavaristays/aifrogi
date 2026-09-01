@@ -27,6 +27,7 @@ export default async function DashboardPreviewPage({ searchParams }: { searchPar
   const connected = !disconnected;
 
   return <AppShell workspaces={[{ id: "preview", name: "AiFrogi Demo", slug: "hotelradar", status: connected ? "CONNECTED" : "NOT_CONFIGURED", displayPhoneNumber: connected ? "+91 70589 63898" : "" }]} currentWorkspaceSlug="hotelradar" accessRole="OWNER"><ClientDashboardView
+    whatsappEnabled
     ownerName="Manish Purohit"
     greeting="Good afternoon"
     todayLabel="Thursday, 2 July"

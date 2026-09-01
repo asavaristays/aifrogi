@@ -477,7 +477,7 @@ export function WhatsAppBotClient({
       <Card className="p-8">
         <h2 className="text-xl font-semibold">No conversations yet</h2>
         <p className="mt-2 text-sm text-[var(--text-muted)]">
-          Website bot and WhatsApp conversations will appear here automatically.
+          {whatsappEnabled ? "Website and WhatsApp conversations will appear here automatically." : "Website AI Bot conversations will appear here automatically."}
         </p>
       </Card>
     );
@@ -819,8 +819,9 @@ export function WhatsAppBotClient({
   const activeState = getConversationState(activeLead);
   const activeSource = getLeadSourceLabel(activeLead);
   const latestInbound = [...activeLead.transcript].reverse().find((message) => message.from === "guest");
-  const aiSuggestedReply =
-    activeSource === "AI audit"
+  const aiSuggestedReply = !whatsappEnabled
+    ? "Thanks for reaching out. Please share the business result you want to achieve and any important requirement. I’ll use approved Webtechnosys information and involve the team when judgment is required."
+    : activeSource === "AI audit"
       ? "Thanks for your interest in the AI audit. Please share your hotel name, website, city, and current booking channels. I will review visibility, conversion gaps, and WhatsApp follow-up opportunities."
       : activeSource === "Trial"
         ? "Thanks for your interest in the 15-day trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first."
@@ -1181,7 +1182,7 @@ export function WhatsAppBotClient({
             ) : null}
             {activeIsWebsite ? (
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-semibold text-[#1559b7]">Website replies are delivered to this visitor session, never through WhatsApp.</p>
+                <p className="text-xs font-semibold text-[#1559b7]">Replies are delivered securely to this website visitor session.</p>
                 <Button tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? "Conversation closed" : "Close conversation"}</Button>
               </div>
             ) : null}

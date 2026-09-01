@@ -14,7 +14,7 @@ import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
-  { label: "Grow", helper: "Campaigns and intelligence", hrefs: ["/campaigns", "/workflows", "/knowledge", "/analytics"] },
+  { label: "Grow", helper: "Automation and intelligence", hrefs: ["/campaigns", "/workflows", "/knowledge", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
 
@@ -121,7 +121,7 @@ export function SideNav({
 
         <div className="mt-2 shrink-0 border-t border-white/10 px-1.5 pt-3">
           <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className="text-white/45">Access</span><strong className="text-[var(--gold-300)]">{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
-          {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className={`h-2 w-2 rounded-full ${workspaces[0].status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d9902f]"}`} /><span className="text-white/58">{workspaces[0].status === "CONNECTED" ? "WhatsApp connected" : "Setup needs attention"}</span></div> : null}
+          {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className={`h-2 w-2 rounded-full ${enabledChannels.includes("WHATSAPP") ? workspaces[0].status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d9902f]" : "bg-[var(--success)]"}`} /><span className="text-white/58">{enabledChannels.includes("WHATSAPP") ? workspaces[0].status === "CONNECTED" ? "WhatsApp connected" : "Setup needs attention" : "AI Bot workspace"}</span></div> : null}
           <LogoutButton variant="sidebar" className="w-full rounded-md border border-white/12 !bg-white/5 px-2.5 py-2 text-xs font-bold tracking-normal text-white/78 hover:!bg-white/10 hover:text-white" />
         </div>
       </aside>
