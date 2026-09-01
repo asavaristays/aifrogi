@@ -26,9 +26,12 @@ export type BotProfileInput = {
 
 export function normalizeCapabilitiesForCategory(
   category: BotProfileInput["category"],
-  capabilities: BotProfileInput["capabilities"]
+  capabilities: readonly string[]
 ) {
-  return [...new Set([...capabilities, ...requiredCapabilitiesForCategory(category)])];
+  const supported = capabilities.filter((capability): capability is BotProfileInput["capabilities"][number] =>
+    BOT_CAPABILITIES.includes(capability as BotProfileInput["capabilities"][number])
+  );
+  return [...new Set([...supported, ...requiredCapabilitiesForCategory(category)])];
 }
 
 function text(value: unknown, max = 500) {

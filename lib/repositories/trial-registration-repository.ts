@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
+import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 
 export const SELF_SERVICE_REGISTRATION = "SELF_SERVICE_REGISTRATION";
 
@@ -28,6 +29,15 @@ export async function registerTrialOrganization(input: {
   const email = input.ownerEmail.trim().toLowerCase();
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const category = input.botCategory || "BUSINESS_AI";
+  const personaPack = getBotPersonaPack(category);
+  const governedProfile = {
+    category,
+    operatingMode: personaPack.defaultOperatingMode,
+    capabilities: personaPack.defaultCapabilities,
+    personaName: personaPack.defaultPersonaName,
+    tone: personaPack.tone
+  };
 
   return db.$transaction(async (tx) => {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${email}))`;
@@ -45,7 +55,7 @@ export async function registerTrialOrganization(input: {
         data: { name: input.companyName, industry: input.industry, website: input.website, country: input.country, timezone: input.timezone, ownerName: input.ownerName, ownerMobile: input.ownerMobile || null }
       });
       await tx.property.updateMany({ where: { organizationId: existing.organization.id }, data: { name: input.companyName, timezone: input.timezone } });
-      await tx.botProfile.upsert({ where: { organizationId: existing.organization.id }, update: { category: input.botCategory || "BUSINESS_AI" }, create: { organizationId: existing.organization.id, category: input.botCategory || "BUSINESS_AI", status: "DRAFT" } });
+      await tx.botProfile.upsert({ where: { organizationId: existing.organization.id }, update: governedProfile, create: { organizationId: existing.organization.id, ...governedProfile, status: "DRAFT" } });
       await tx.organizationMember.update({
         where: { id: existing.id },
         data: { name: input.ownerName, invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt, invitedAt: new Date() }
@@ -88,7 +98,7 @@ export async function registerTrialOrganization(input: {
           create: { name: input.companyName, slug, timezone: input.timezone }
         },
         botProfile: {
-          create: { category: input.botCategory || "BUSINESS_AI", status: "DRAFT" }
+          create: { ...governedProfile, status: "DRAFT" }
         },
         activities: {
           create: { actorEmail: email, action: "TRIAL_REGISTERED", detail: `Trial workspace reserved; source=${input.source || "direct"}; email verification required` }

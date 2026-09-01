@@ -405,7 +405,7 @@ model BotProfile {
   personaPackVersion   String           @default("1.0")
   operatingMode        BotOperatingMode @default(LEAD_CAPTURE)
   channels             ChannelKind[]    @default([WEBSITE])
-  capabilities         String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS"])
+  capabilities         String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"])
   humanHandoffEnabled  Boolean          @default(true)
   actionApprovalNeeded Boolean          @default(true)
   personaName          String?
