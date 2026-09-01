@@ -9,6 +9,7 @@ import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
 import { BotConnectorPlan, type BotConnectorView } from "@/components/bot-profile/bot-connector-plan";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
+import { LogoutButton } from "@/components/layout/logout-button";
 
 type DocumentRecord = {
   id: string;
@@ -411,9 +412,12 @@ export function CustomerOnboarding({
             priority
             className="h-auto w-[158px] grayscale contrast-125"
           />
-          <div className="text-right">
-            <p className="text-xs font-bold text-white/55">Signed in as</p>
-            <p className="mt-1 text-sm font-semibold">{accountEmail}</p>
+          <div className="flex items-center gap-3">
+            <div className="hidden text-right sm:block">
+              <p className="text-xs font-bold text-white/55">Signed in as</p>
+              <p className="mt-1 text-sm font-semibold">{accountEmail}</p>
+            </div>
+            <LogoutButton variant="sidebar" className="min-h-9 w-auto rounded-md border border-white/14 px-3 text-xs" />
           </div>
         </div>
       </header>

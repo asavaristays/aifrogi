@@ -7,6 +7,7 @@ import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import type { ClientAccessRole } from "@/lib/client-access";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { canOpenClientWorkspace } from "@/lib/workspace-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,7 +25,7 @@ export default async function ProductLayout({ children }: { children: React.Reac
   }
 
   const organization = await loadOnboardingForUser(user.username);
-  if (!organization || organization.onboarding?.lifecycleStatus !== "LIVE") {
+  if (!organization || !canOpenClientWorkspace(organization)) {
     redirect("/onboarding");
   }
 
