@@ -51,6 +51,7 @@ export default async function ProductLayout({ children }: { children: React.Reac
     workspaces={workspaces}
     currentWorkspaceSlug={selectedSlug}
     accessRole={accessRole}
+    enabledChannels={organization.botProfile?.channels || []}
     subscriptionAccess={subscriptionAccess ? {
       planCode: subscriptionAccess.planCode,
       status: subscriptionAccess.status,

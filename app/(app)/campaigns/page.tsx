@@ -10,11 +10,17 @@ import { CAMPAIGN_TEMPLATES, CONSENT_SOURCES } from "@/lib/campaign-compliance";
 import { filterWhatsAppLeads } from "@/lib/whatsapp-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
+import { getCurrentUser } from "@/lib/auth-server";
+import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function CampaignsPage() {
+  const user = await getCurrentUser();
+  const organization = user ? await loadOnboardingForUser(user.username) : null;
+  if (!organization?.botProfile?.channels.includes("WHATSAPP")) redirect("/dashboard");
   const propertySlug = await getCurrentWorkspaceSlug();
   const [allLeads, integration, testContacts, property] = await Promise.all([
     loadLeads(propertySlug),

@@ -220,13 +220,16 @@ function getConversationState(lead: Lead) {
 
 export function WhatsAppBotClient({
   integration,
-  leads
+  leads,
+  enabledChannels = []
 }: {
   integration: WhatsAppIntegration;
   leads: Lead[];
+  enabledChannels?: string[];
 }) {
   const router = useRouter();
   const validLeads = useMemo(() => leads.filter((lead) => Boolean(lead?.id && lead?.source && lead?.stage)), [leads]);
+  const whatsappEnabled = enabledChannels.includes("WHATSAPP");
   const [activeId, setActiveId] = useState(validLeads[0]?.id ?? "");
   const [draftMessage, setDraftMessage] = useState("");
   const [sendResult, setSendResult] = useState<string | null>(null);
@@ -441,22 +444,23 @@ export function WhatsAppBotClient({
       failed_delivery: (lead: Lead) => hasFailedDelivery(lead)
     } satisfies Record<InboxQueueKey, (lead: Lead) => boolean>;
 
-    return [
+    const definitions = [
       { key: "all" as const, label: "All", helper: "Every conversation", tone: "bg-[var(--secondary)]", matches: matches.all },
-      { key: "waiting" as const, label: "Waiting reply", helper: "Free reply window", tone: "bg-[#d4842f]", matches: matches.waiting },
+      { key: "waiting" as const, label: "Needs reply", helper: whatsappEnabled ? "Free reply window" : "Customer spoke last", tone: "bg-[#d4842f]", matches: matches.waiting },
       { key: "not_replied" as const, label: "Not replied", helper: "Customer spoke last", tone: "bg-[#f06f45]", matches: matches.not_replied },
-      { key: "ai_replied" as const, label: "AI replied", helper: "Review automation", tone: "bg-[#3d8be3]", matches: matches.ai_replied },
-      { key: "human_needed" as const, label: "Human needed", helper: "Manual attention", tone: "bg-[#8d4d10]", matches: matches.human_needed },
+      { key: "ai_replied" as const, label: "AI answered", helper: "Review grounded response", tone: "bg-[#3d8be3]", matches: matches.ai_replied },
+      { key: "human_needed" as const, label: "Human review", helper: "Judgment required", tone: "bg-[#8d4d10]", matches: matches.human_needed },
       { key: "campaign_replies" as const, label: "Campaign replies", helper: "Broadcast response", tone: "bg-[#8a6a16]", matches: matches.campaign_replies },
       { key: "trial_leads" as const, label: "Trial leads", helper: "15-day trial", tone: "bg-[#27aa78]", matches: matches.trial_leads },
       { key: "audit_leads" as const, label: "Audit leads", helper: "AI audit interest", tone: "bg-[#1b62a5]", matches: matches.audit_leads },
       { key: "resolved" as const, label: "Resolved", helper: "Closed work", tone: "bg-[#6b7280]", matches: matches.resolved },
       { key: "failed_delivery" as const, label: "Failed delivery", helper: "Needs diagnosis", tone: "bg-[#d9493f]", matches: matches.failed_delivery }
-    ].map((item) => ({
+    ];
+    return definitions.filter((item) => whatsappEnabled || !["campaign_replies", "failed_delivery"].includes(item.key)).map((item) => ({
       ...item,
       count: validLeads.filter(item.matches).length
     }));
-  }, [validLeads]);
+  }, [validLeads, whatsappEnabled]);
 
   const filteredLeads = useMemo(() => {
     const activeDefinition = queueDefinitions.find((item) => item.key === activeQueue) ?? queueDefinitions[0];
@@ -841,12 +845,12 @@ export function WhatsAppBotClient({
           <div className="p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-[var(--text)]">Inbox desk</p>
-                <p className="mt-1 text-xs text-[var(--text-muted)]">{validLeads.length} cross-channel conversations</p>
+                <p className="text-sm font-semibold text-[var(--text)]">{whatsappEnabled ? "Inbox desk" : "BusinessGPT conversations"}</p>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">{validLeads.length} {whatsappEnabled ? "cross-channel" : "website"} conversation{validLeads.length === 1 ? "" : "s"}</p>
               </div>
               <span className={`h-2.5 w-2.5 rounded-full ${integration.status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d98a2b]"}`} />
             </div>
-            <button
+            {whatsappEnabled ? <button
               type="button"
               className="mt-4 flex min-h-10 w-full items-center justify-center rounded-md bg-[var(--primary-strong)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--primary)]"
               onClick={() => {
@@ -856,13 +860,13 @@ export function WhatsAppBotClient({
                 setShowCompose(true);
               }}
             >
-              New message
-            </button>
+              New WhatsApp message
+            </button> : null}
             <div className="mt-4 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] p-3">
               <p className="text-xs font-medium text-[var(--text-muted)]">Automation</p>
               <div className="mt-2 flex items-center justify-between gap-3 text-sm text-[var(--text)]">
-                <span>{integration.aiModeEnabled ? "AI suggestions active" : "AI suggestions off"}</span>
-                <span className="text-xs font-semibold text-[var(--primary-strong)]">{integration.provider}</span>
+                <span>{integration.aiModeEnabled ? "Sovereign AI active" : "AI suggestions off"}</span>
+                <span className="text-xs font-semibold text-[var(--primary-strong)]">{whatsappEnabled ? integration.provider : "Approved knowledge"}</span>
               </div>
             </div>
           </div>
@@ -984,7 +988,7 @@ export function WhatsAppBotClient({
                 >
                   Human takeover
                 </Button>
-              <Button
+              {whatsappEnabled ? <Button
                 tone="surface"
                 className="rounded-md px-3 py-2 text-xs"
                   onClick={() => {
@@ -995,8 +999,8 @@ export function WhatsAppBotClient({
                   }}
                 >
                   Send template
-                </Button>
-              <Button
+                </Button> : null}
+              {whatsappEnabled ? <Button
                 tone="surface"
                 className="rounded-md px-3 py-2 text-xs"
                   onClick={() => {
@@ -1007,7 +1011,7 @@ export function WhatsAppBotClient({
                   }}
                 >
                   Broadcast
-                </Button>
+                </Button> : null}
               </div>
             </div>
           </div>
@@ -1106,12 +1110,16 @@ export function WhatsAppBotClient({
               }}
             />
             <div className="mb-3 flex flex-wrap gap-2">
-              {[
-                { label: "Ask for audit details", text: "Please share your hotel name, website, city, and current booking channels so we can prepare the AI audit." },
+              {(whatsappEnabled ? [
                 { label: "Trial intake", text: "Please share your business name, website, WhatsApp number, and the first workflow you want to improve during the trial." },
                 { label: "Book callback", text: "Please share a preferred time for a short callback. Our team will help map the right workflow and next step." },
                 { label: "Opt-out", text: "No problem. We will not send further campaign messages. You can message us anytime if you need help later." }
-              ].map((item) => (
+              ] : [
+                { label: "Clarify requirement", text: "Please share the result you want to achieve and any important requirement I should consider." },
+                { label: "Request contact", text: "Please share your preferred contact details and consent for the Webtechnosys team to follow up." },
+                { label: "Arrange callback", text: "Please share a preferred time for a short callback with a Webtechnosys specialist." },
+                { label: "Human handover", text: "I’m handing this conversation to the Webtechnosys team because it needs human judgment." }
+              ]).map((item) => (
                 <button
                   key={item.label}
                   type="button"
@@ -1160,13 +1168,13 @@ export function WhatsAppBotClient({
                 <Badge tone={integration.aiModeEnabled ? "primary" : "neutral"}>
                   {integration.aiModeEnabled ? "AI Mode On" : "AI Mode Off"}
                 </Badge>
-                <Badge tone="neutral">English only</Badge>
-                <Badge tone="neutral">{integration.provider}</Badge>
+                <Badge tone="neutral">Approved knowledge</Badge>
+                <Badge tone="neutral">{whatsappEnabled ? integration.provider : "Human-controlled"}</Badge>
                 {selectedAttachment ? <Badge tone="secondary">Attached: {selectedAttachment.name}</Badge> : null}
               </div>
               <span className="text-xs text-[#94a3b8]">Enter to send</span>
             </div>
-            {!activeFreeTextAllowed ? (
+            {whatsappEnabled && !activeFreeTextAllowed ? (
               <p className="mt-2 text-xs font-semibold text-[#b45309]">
                 The 24-hour reply window is closed. Use New Message and select an approved template.
               </p>
@@ -1262,7 +1270,7 @@ export function WhatsAppBotClient({
                 </button>
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
-                {(activeLead.tags.length ? activeLead.tags : ["WhatsApp", activeLead.intent]).slice(0, 4).map((tag) => (
+                {(activeLead.tags.length ? activeLead.tags : [activeIsWebsite ? "Website AI Bot" : "WhatsApp", activeLead.intent]).slice(0, 4).map((tag) => (
                   <span key={tag} className="rounded-full bg-[var(--secondary-soft)] px-3 py-1 text-xs font-semibold text-[var(--secondary)]">
                     {tag}
                   </span>

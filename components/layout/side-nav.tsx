@@ -10,6 +10,7 @@ import { useAppState } from "@/components/providers/app-state-provider";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { WorkspaceSwitcher, type WorkspaceOption } from "@/components/layout/workspace-switcher";
 import type { ClientAccessRole } from "@/lib/client-access";
+import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
@@ -23,12 +24,14 @@ export function SideNav({
   tone = "dark",
   workspaces = [],
   currentWorkspaceSlug = "",
-  accessRole = "AGENT"
+  accessRole = "AGENT",
+  enabledChannels = []
 }: {
   tone?: SideNavTone;
   workspaces?: WorkspaceOption[];
   currentWorkspaceSlug?: string;
   accessRole?: ClientAccessRole;
+  enabledChannels?: string[];
 } = {}) {
   const pathname = usePathname();
   const { sidebarOpen, setSidebarOpen } = useAppState();
@@ -86,7 +89,7 @@ export function SideNav({
               <p className="text-[11px] font-semibold text-[var(--gold-300)]">{group.label}</p>
               <p className="truncate text-[10px] text-white/35">{group.helper}</p>
             </div>
-            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href)).map((item) => {
+            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && isClientNavItemAvailable(item.href, enabledChannels)).map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link

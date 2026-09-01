@@ -10,19 +10,21 @@ export function AppShell({
   workspaces,
   currentWorkspaceSlug,
   accessRole,
-  subscriptionAccess
+  subscriptionAccess,
+  enabledChannels = []
 }: {
   children: React.ReactNode;
   workspaces: WorkspaceOption[];
   currentWorkspaceSlug: string;
   accessRole: ClientAccessRole;
+  enabledChannels?: string[];
   subscriptionAccess?: { planCode: string; status: string; daysLeft: number | null; paused: boolean; message: string } | null;
 }) {
   useAppState();
 
   return (
     <div className="min-h-screen bg-transparent">
-      <SideNav tone="light" workspaces={workspaces} currentWorkspaceSlug={currentWorkspaceSlug} accessRole={accessRole} />
+      <SideNav tone="light" workspaces={workspaces} currentWorkspaceSlug={currentWorkspaceSlug} accessRole={accessRole} enabledChannels={enabledChannels} />
       <main className="min-h-screen lg:pl-[236px]">
         {subscriptionAccess?.paused ? <div className="border-b border-[#e8c07b] bg-[#fff6e6] px-5 py-3 text-sm text-[#744714] sm:px-8"><strong>Workspace paused.</strong> {subscriptionAccess.message} <a href="/billing" className="ml-1 font-bold underline underline-offset-2">Choose a plan</a></div> : subscriptionAccess?.planCode === "TRIAL" && (subscriptionAccess.daysLeft ?? 99) <= 7 ? <div className="border-b border-[var(--gold-300)] bg-[var(--primary-soft)] px-5 py-3 text-sm text-[var(--gold-700)] sm:px-8"><strong>{subscriptionAccess.daysLeft} trial day{subscriptionAccess.daysLeft === 1 ? "" : "s"} left.</strong> After the 15-day trial, paid actions pause automatically. <a href="/billing" className="ml-1 font-bold underline underline-offset-2">View plans</a></div> : null}
         {children}
