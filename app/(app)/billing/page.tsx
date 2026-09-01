@@ -11,7 +11,8 @@ import { ActivatePlan } from "@/components/billing/activate-plan";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function BillingPage() {
+export default async function BillingPage({ searchParams }: { searchParams: Promise<{ plan?: string; checkout?: string }> }) {
+  const query = await searchParams;
   const access = await getCurrentClientAccess();
   if (!access) redirect("/login");
   if (!canManageWorkspace(access.role)) redirect("/dashboard");
@@ -35,7 +36,7 @@ export default async function BillingPage() {
       <section className={`border p-6 ${subscriptionAccess.paused ? "border-[#e7bb70] bg-[#fff6e7]" : "border-black/7 bg-white"}`}>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div><div className="flex flex-wrap items-center gap-2"><Badge tone={subscriptionAccess.paused ? "error" : "secondary"}>{subscriptionAccess.status}</Badge><span className="text-sm font-bold">{subscriptionAccess.planName}</span></div><h1 className="mt-4 text-3xl font-semibold">{subscriptionAccess.paused ? "Your workspace is paused." : subscriptionAccess.planCode === "TRIAL" ? `${subscriptionAccess.daysLeft} days remain.` : "Your plan is active."}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">{subscriptionAccess.message}</p></div>
-          <ActivatePlan activePlanCode={subscriptionAccess.planCode} />
+          <ActivatePlan activePlanCode={subscriptionAccess.planCode} initialPlanCode={query.plan} openOnLoad={query.checkout === "1"} />
         </div>
       </section>
 

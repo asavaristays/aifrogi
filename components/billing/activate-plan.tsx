@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type CheckoutResult = { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string };
@@ -35,12 +35,20 @@ function loadCheckout() {
   });
 }
 
-export function ActivatePlan({ activePlanCode }: { activePlanCode: string }) {
+export function ActivatePlan({ activePlanCode, initialPlanCode, openOnLoad = false }: { activePlanCode: string; initialPlanCode?: string; openOnLoad?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<"AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY">("AI_STARTER_MONTHLY");
+  const [selected, setSelected] = useState<"AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY">(initialPlanCode === "AI_STARTER_YEARLY" ? "AI_STARTER_YEARLY" : "AI_STARTER_MONTHLY");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const openedFromPricing = useRef(false);
+
+  useEffect(() => {
+    if (openOnLoad && !openedFromPricing.current) {
+      openedFromPricing.current = true;
+      setOpen(true);
+    }
+  }, [openOnLoad]);
 
   async function pay() {
     setBusy(true);

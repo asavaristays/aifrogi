@@ -20,7 +20,9 @@ export function RegisterClient() {
     setError("");
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(form.entries());
-    payload.source = new URLSearchParams(window.location.search).get("source") || "direct";
+    const query = new URLSearchParams(window.location.search);
+    const selectedPlan = query.get("plan") === "starter" ? `starter-${query.get("billing") === "yearly" ? "yearly" : "monthly"}` : "trial";
+    payload.source = `${query.get("source") || "direct"}:${selectedPlan}`;
     try {
       const response = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const result = await response.json().catch(() => null) as { error?: string; email?: string } | null;

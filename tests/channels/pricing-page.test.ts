@@ -13,6 +13,8 @@ test("public pricing is AI Bot-first and contains the approved launch plans", ()
   assert.match(pricing, /₹499/);
   assert.match(pricing, /₹4,999/);
   assert.match(pricing, /Pay ₹499 monthly or ₹4,999 yearly and save ₹989/);
+  assert.match(pricing, /Already have an account\? Pay securely/);
+  assert.match(pricing, /app\.aifrogi\.com\/billing\?checkout=1/);
   assert.match(pricing, /aria-pressed=\{!annual\}/);
   assert.match(pricing, /aria-pressed=\{annual\}/);
   assert.match(pricing, /Custom \/ Enterprise/);
