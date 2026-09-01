@@ -10,6 +10,10 @@ test("unfinished draft remains in onboarding", () => {
   assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "KYC_SUBMITTED" }, botProfile: { channels: ["WEBSITE"], status: "DRAFT" } }), false);
 });
 
+test("configured website persona can enter intelligence preparation", () => {
+  assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "KYC_SUBMITTED" }, botProfile: { channels: ["WEBSITE"], status: "CONFIGURED" } }), true);
+});
+
 test("live WhatsApp client can open its workspace", () => {
   assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "LIVE" }, botProfile: { channels: ["WHATSAPP"], status: "DRAFT" } }), true);
 });
