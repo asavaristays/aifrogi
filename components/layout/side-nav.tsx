@@ -14,7 +14,7 @@ import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/whatsapp-bot", "/contacts"] },
-  { label: "Grow", helper: "Automation and intelligence", hrefs: ["/campaigns", "/workflows", "/knowledge", "/analytics"] },
+  { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/campaigns", "/knowledge", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
 

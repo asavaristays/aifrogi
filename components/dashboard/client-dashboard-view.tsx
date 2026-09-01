@@ -213,8 +213,8 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
             <section className="soft-card rounded-lg p-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-medium text-[var(--text-muted)]">Automation</p>
-                  <h3 className="mt-0.5 text-base font-semibold">Running quietly</h3>
+                  <p className="text-[11px] font-medium text-[var(--text-muted)]">Approved bot activity</p>
+                  <h3 className="mt-0.5 text-base font-semibold">Managed by AiFrogi</h3>
                 </div>
                 <span className="rounded-full bg-[var(--primary-soft)] px-2 py-1 text-[10px] font-semibold text-[var(--primary-strong)]">AiFrogi</span>
               </div>
@@ -223,10 +223,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
                 <SystemTask label="Knowledge replies" active={props.knowledgeReady} />
                 <SystemTask label="Delivery monitoring" active={props.connected} />
               </div>
-              <Link href="/workflows" className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary-strong)]">
-                Manage workflows
-                <Icon name="arrow-right" className="h-3.5 w-3.5" />
-              </Link>
+              <p className="mt-4 text-[11px] leading-5 text-[var(--text-muted)]">Connector-based actions appear only after your business rules, approvals and test evidence are complete.</p>
             </section>
 
             <section className="rounded-lg border border-[#dbe8ff] bg-[var(--info-soft)] p-5">
