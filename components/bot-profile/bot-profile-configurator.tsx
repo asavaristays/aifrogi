@@ -47,9 +47,12 @@ function normalized(initial?: StoredProfile | null): BotProfileInput {
   };
 }
 
-export function BotProfileConfigurator({ initialProfile, organizationId, compact = false, onSaved }: { initialProfile?: StoredProfile | null; organizationId?: string; compact?: boolean; onSaved?: (organization: unknown) => void }) {
+export function BotProfileConfigurator({ initialProfile, organizationId, compact = false, websiteOnly = false, onSaved }: { initialProfile?: StoredProfile | null; organizationId?: string; compact?: boolean; websiteOnly?: boolean; onSaved?: (organization: unknown) => void }) {
   const router = useRouter();
-  const [profile, setProfile] = useState(() => normalized(initialProfile));
+  const [profile, setProfile] = useState(() => {
+    const value = normalized(initialProfile);
+    return websiteOnly ? { ...value, channels: ["WEBSITE"] as BotProfileInput["channels"] } : value;
+  });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const superAdminMode = Boolean(organizationId);
@@ -87,17 +90,17 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
 
   return <section className={`rounded-lg border border-black/6 bg-white shadow-sm ${compact ? "p-5" : "p-6 sm:p-8"}`}>
     <div><p className="product-eyebrow">Bot design</p><h2 className="mt-2 text-xl font-black">Choose how customers will use your bot</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Select the customer journey first. AiFrogi will show only the setup, intelligence, and connection inputs required for those channels.</p></div>
-    <div className="mt-6 grid gap-3 lg:grid-cols-3">
+    {!websiteOnly ? <div className="mt-6 grid gap-3 lg:grid-cols-3">
       {setupPaths.map((path) => {
         const selected = path.channels.length === profile.channels.length && path.channels.every((channel) => profile.channels.includes(channel));
         return <button key={path.key} type="button" disabled={!superAdminMode} onClick={() => setProfile((current) => ({ ...current, channels: [...path.channels] }))} className={`rounded-lg border p-4 text-left transition disabled:cursor-default ${selected ? "border-[#8a6a16] bg-[#f8f0d8] ring-1 ring-[#8a6a16]" : "border-black/8 bg-[#fbfcfb] hover:border-[#ded8cb]"}`}><span className="block text-sm font-black">{path.title}</span><span className="mt-2 block text-xs leading-5 text-[#68645c]">{path.helper}</span></button>;
       })}
-    </div>
+    </div> : <div className="mt-6 rounded-lg border border-[#ded8cb] bg-[#fbfaf7] p-4"><p className="text-sm font-black">Website AI Bot</p><p className="mt-1 text-xs leading-5 text-[#68645c]">Website widget, embed and standalone-link delivery are managed here. Optional messaging channels have their own onboarding workspace.</p></div>}
     <div className="mt-6 grid gap-5 lg:grid-cols-2">
       <label className="block"><span className="field-label">Bot category</span><select disabled={!superAdminMode} className="product-input mt-2 disabled:cursor-default disabled:opacity-75" value={profile.category} onChange={(event) => setCategory(event.target.value as BotProfileInput["category"])}>{BOT_CATEGORIES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
       <label className="block"><span className="field-label">Operating mode</span><select disabled={!superAdminMode} className="product-input mt-2 disabled:cursor-default disabled:opacity-75" value={profile.operatingMode} onChange={(event) => setProfile((current) => ({ ...current, operatingMode: event.target.value as BotProfileInput["operatingMode"] }))}>{BOT_OPERATING_MODES.map((item) => <option key={item} value={item}>{labels[item]}</option>)}</select></label>
     </div>
-    <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} disabled={!superAdminMode} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#68645c]">{profile.channels.includes("WHATSAPP") ? "WhatsApp setup will request a business number and secure Meta authorization." : "Website-only setup does not require a WhatsApp number or Meta account."}</p></div>
+    {!websiteOnly ? <div className="mt-5"><p className="field-label">Customer channels</p><div className="mt-2 grid gap-2 sm:grid-cols-2">{BOT_CHANNELS.map((item) => <Check key={item} label={labels[item]} checked={profile.channels.includes(item)} disabled={!superAdminMode} onChange={() => toggleChannel(item)} />)}</div><p className="mt-2 text-xs text-[#68645c]">Channel setup is enabled only for delivery surfaces approved for this customer.</p></div> : null}
     <div className="mt-5"><p className="field-label">Approved capabilities</p><div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{BOT_CAPABILITIES.map((item) => <Check key={item} label={`${labels[item]}${personaPack.defaultCapabilities.includes(item) ? " · required" : ""}`} checked={profile.capabilities.includes(item)} disabled={!superAdminMode || personaPack.defaultCapabilities.includes(item)} onChange={() => toggleCapability(item)} />)}</div><p className="mt-2 text-xs text-[#68645c]">Required capabilities are applied automatically from the selected governed persona.</p></div>
     <div className="mt-5 grid gap-2 sm:grid-cols-2"><Check label="Human takeover available" checked={profile.humanHandoffEnabled} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, humanHandoffEnabled: !current.humanHandoffEnabled }))} /><Check label="Approval before business actions" checked={profile.actionApprovalNeeded} disabled={!superAdminMode} onChange={() => setProfile((current) => ({ ...current, actionApprovalNeeded: !current.actionApprovalNeeded }))} /></div>
     <div className="mt-7 rounded-lg border border-[#dfe5e2] bg-[#fbfcfb] p-5">
