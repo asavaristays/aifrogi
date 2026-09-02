@@ -287,6 +287,31 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 - Replay cases require authorised labels and real-client samples before they can become statistical recall or threshold-tuning evidence.
 - No automatic prompt or knowledge mutation is permitted from feedback.
 
+## 2026-09-02 - Governed Excel onboarding import
+
+### Implemented
+- Added one tenant-bound XLSX import engine shared by customer self-serve onboarding and Super Admin assisted onboarding.
+- Added validation and preview before mutation, formula and credential rejection, template size limits, and explicit confirmation.
+- Imported business profile fields remain governed; structured FAQs are staged as atomic claims and are never auto-published.
+- Added Super Admin and customer workspace import interfaces and clarified the public installation page.
+- Reworked the downloadable onboarding workbook with separate Approved FAQs and Approved Sources sheets.
+
+### Verification evidence
+- TypeScript: passed.
+- Workbook parser tests: 3/3 passed, covering valid import, unchanged template examples, and credential rejection.
+- Production build: passed with 97 generated application routes.
+- Workbook rendered and visually inspected after export.
+
+### Remaining limitations
+- Arbitrary legacy XLS/XLSX knowledge files are not accepted; only the controlled onboarding template is supported.
+- Approved source references do not trigger crawling or publication. The customer or operator must upload/review source documents through Intelligence.
+
+### Next fixed stage
+1. Run the first real Webtechnosys workbook through preview and confirm the staged claims in Intelligence.
+2. Measure first-user completion time and correct any unclear field before onboarding the remaining pilots.
+
+---
+
 ## Template for the next entry
 
 ```markdown

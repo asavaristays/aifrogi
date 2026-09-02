@@ -16,6 +16,7 @@ import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
+import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -68,6 +69,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
       {activeTrack === "ai-bot" ? <section className="mt-7">
         <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding</p><h2 className="mt-2 text-xl font-black">Prepare and activate the governed AI Bot.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Review this customer&apos;s persona, approved knowledge, connectors, website installation and go-live evidence.</p></div>
         <div className="grid gap-6 lg:grid-cols-2">
+          <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} /></div>
           <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} websiteOnly={!whatsappEnabled} />
           <BotConnectorPlan organizationId={organization.id} connectors={organization.botConnectors} />
           {websiteEnabled ? <div className="lg:col-span-2"><WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin /></div> : <Section title="Website installation"><p className="text-sm text-[#68645c]">Website delivery is not enabled for this bot. Add the Website channel in the bot profile when embed or standalone delivery is required.</p></Section>}

@@ -12,7 +12,8 @@ export const metadata: Metadata = marketingMetadata({
 
 const selfServeSteps = [
   "Choose your AI Bot and start the 15-day trial.",
-  "Complete the online business information and approved knowledge.",
+  "Complete details online—or import the simple Excel template after sign-in.",
+  "Validate the workbook and stage its approved answers in Intelligence.",
   "Review the bot preview and confirm its answers.",
   "Copy the supplied website code or use the shareable bot link."
 ];
@@ -20,7 +21,8 @@ const selfServeSteps = [
 const assistedSteps = [
   "Download and complete one simple Excel file.",
   "Email it with approved brochures or documents to info@aifrogi.com.",
-  "AiFrogi prepares the bot and sends you a preview for approval.",
+  "AiFrogi imports it through the same governed validation and review process.",
+  "You approve the bot's real conversational answers before they go live.",
   "We provide the website code, WordPress code or shareable link."
 ];
 
@@ -29,7 +31,7 @@ export default function InstallAiBotPage() {
     <section className="relative overflow-hidden bg-[#050505] px-5 py-20 text-white sm:px-8 sm:py-28"><div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(226,198,109,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(226,198,109,.08)_1px,transparent_1px)] [background-size:76px_76px]" /><div className="relative mx-auto max-w-7xl text-center"><p className="product-eyebrow text-[#e2c66d]">Simple AI Bot onboarding</p><h1 className="mx-auto mt-5 max-w-5xl text-5xl font-semibold leading-[1.02] tracking-[-.05em] sm:text-7xl">Install yourself—or let AiFrogi assist you.</h1><p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/65">Choose one clear route. Both include approved knowledge, a bot preview and controlled go-live. No technical experience is required.</p></div></section>
 
     <section className="px-5 py-16 sm:px-8 sm:py-24"><div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-2">
-      <OnboardingPath eyebrow="Option 1 · Self-serve" title="Set up online" copy="Best when you want to create and install the bot yourself." steps={selfServeSteps} primary={{ label: "Start 15-day trial", href: "https://app.aifrogi.com/register?source=install-ai-bot" }} />
+      <OnboardingPath eyebrow="Option 1 · Self-serve" title="Set up online" copy="Best when you want to create and install the bot yourself. The Excel import is available inside your workspace after registration." steps={selfServeSteps} primary={{ label: "Start 15-day trial", href: "https://app.aifrogi.com/register?source=install-ai-bot" }} secondary={{ label: "Download Excel", href: "/downloads/AiFrogi-Simple-AI-Bot-Onboarding.xlsx" }} />
       <OnboardingPath featured eyebrow="Option 2 · AiFrogi assisted" title="Send one Excel file" copy="Best when you want our team to prepare the first bot for you." steps={assistedSteps} primary={{ label: "Download onboarding Excel", href: "/downloads/AiFrogi-Simple-AI-Bot-Onboarding.xlsx", download: true }} secondary={{ label: "Email completed file", href: "mailto:info@aifrogi.com?subject=Completed%20AI%20Bot%20Onboarding%20File" }} />
     </div></section>
 

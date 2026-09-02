@@ -52,7 +52,7 @@ Every source follows this lifecycle:
 
 An imported file or website is a **trust-source candidate**, not automatically trusted intelligence. Approval, provenance, review status, workspace ownership, and update time must remain visible.
 
-Supported now: official website pages, PDF, DOCX, TXT, Markdown, CSV, JSON, and manual approved answers. Native XLS/XLSX extraction must not be advertised until a maintained parser is security-reviewed and implemented; customers can export Excel workbooks to CSV in the interim.
+Supported now: official website pages, PDF, DOCX, TXT, Markdown, CSV, JSON, manual approved answers, and the controlled AiFrogi XLSX onboarding template. The XLSX path validates file type and size, rejects formulas and credential-like content, previews extracted fields, and stages FAQ claims for authorised review; it never publishes answers automatically. Arbitrary legacy XLS/XLSX knowledge files remain unsupported and should be exported to CSV or entered through the approved template.
 
 ## Bot persona
 

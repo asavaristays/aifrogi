@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
+import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import { BotConnectorPlan, type BotConnectorView } from "@/components/bot-profile/bot-connector-plan";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 import { LogoutButton } from "@/components/layout/logout-button";
@@ -481,6 +482,7 @@ export function CustomerOnboarding({
             onOpenWorkspace={() => router.push("/dashboard")}
           />
           <OnboardingReadiness organization={organization} />
+          <OnboardingWorkbookImport onImported={() => window.location.reload()} />
           {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
           {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
           {organization?.properties[0] ? <WebsiteBotInstallation slug={organization.properties[0].slug} profile={organization.botProfile} /> : null}
