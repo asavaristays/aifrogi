@@ -325,6 +325,7 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ### Remaining limitations
 - The revised report itself does not raise any maturity band. Production journeys must produce the missing evidence.
+- The permanent reporting standard is recorded in `docs/management-evidence-reporting-rule.md` and must govern future management assessments.
 
 ---
 
