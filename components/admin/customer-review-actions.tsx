@@ -38,7 +38,9 @@ export function CustomerReviewActions({ organizationId, kycStatus, organizationS
         <Button disabled={saving || kycStatus === "APPROVED"} onClick={() => run("APPROVE_KYC")}>Approve KYC</Button>
         <Button tone="danger" disabled={saving || !reason.trim()} onClick={() => run("REJECT_KYC")}>Request changes</Button>
         <Button tone="surface" disabled={saving} onClick={() => run(organizationStatus === "SUSPENDED" ? "ACTIVATE" : "SUSPEND")}>{organizationStatus === "SUSPENDED" ? "Reactivate" : "Suspend"}</Button>
+        <Button tone="danger" disabled={saving || !reason.trim() || organizationStatus === "REMOVED"} onClick={() => run("REMOVE_FROM_OPERATIONS")}>Remove from operations</Button>
       </div>
+      <p className="mt-3 text-xs leading-5 text-[#68645c]">Suspend blocks account operation temporarily. Remove retires the AI Bot and removes the customer from active operations while preserving an auditable record.</p>
     </section>
   );
 }

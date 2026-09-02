@@ -32,7 +32,7 @@ export function AdminShell({ userEmail, children }: { userEmail: string; childre
       <div className="flex min-h-full flex-col rounded-[30px] border border-white/8 bg-[#101010] p-4 shadow-[0_30px_80px_rgba(0,0,0,.28)] lg:h-full lg:min-h-0">
         <Link href="/admin" onClick={() => setOpen(false)} className="hidden px-3 pb-5 pt-2 lg:block"><Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[156px] grayscale contrast-125" /><span className="mt-2 block text-[9px] font-semibold uppercase tracking-[.22em] text-[#e2c66d]">Sovereign operations</span></Link>
 
-        <Link href="/admin/onboard" onClick={() => setOpen(false)} className="group flex min-h-12 items-center justify-between rounded-2xl bg-[#b28728] px-4 text-sm font-bold text-white shadow-[0_18px_40px_rgba(178,135,40,.24)] transition hover:-translate-y-0.5 hover:bg-[#d4af37] hover:text-[#101010]"><span className="flex items-center gap-3"><span className="grid h-7 w-7 place-items-center rounded-full bg-black/14"><Icon name="sparkles" /></span>Onboard client</span><Icon name="arrow-right" /></Link>
+        <Link href="/admin/onboard" onClick={() => setOpen(false)} className="group flex min-h-12 items-center justify-between rounded-2xl bg-[#b28728] px-4 text-sm font-bold text-white shadow-[0_18px_40px_rgba(178,135,40,.24)] transition hover:-translate-y-0.5 hover:bg-[#d4af37] hover:text-[#101010]"><span className="flex items-center gap-3"><span className="grid h-7 w-7 place-items-center rounded-full bg-black/14"><Icon name="sparkles" /></span>Bot onboarding</span><Icon name="arrow-right" /></Link>
 
         <nav aria-label="Super Admin navigation" className="mt-4 space-y-1">
           {navigation.map((item) => {

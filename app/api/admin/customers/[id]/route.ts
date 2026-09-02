@@ -58,8 +58,12 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     return NextResponse.json({ organization: updated });
   }
 
-  if (action === "SUSPEND" || action === "ACTIVATE") {
-    await updateOrganizationStatus(id, action === "SUSPEND" ? "SUSPENDED" : "ACTIVE");
+  if (action === "SUSPEND" || action === "ACTIVATE" || action === "REMOVE_FROM_OPERATIONS") {
+    if (action === "REMOVE_FROM_OPERATIONS" && !payload?.reason?.trim()) return NextResponse.json({ error: "Add a reason before removing a customer from active operations" }, { status: 400 });
+    if (action === "REMOVE_FROM_OPERATIONS" && organization.botProfile?.channels.includes("WEBSITE") && organization.botProfile.status !== "DELETED") {
+      await updateWebsiteBotLifecycle({ organizationId: id, actorEmail: user.username, action: "DELETE" });
+    }
+    await updateOrganizationStatus(id, action === "SUSPEND" ? "SUSPENDED" : action === "ACTIVATE" ? "ACTIVE" : "REMOVED");
     return NextResponse.json({ organization: await getOrganizationById(id) });
   }
 

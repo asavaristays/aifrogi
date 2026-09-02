@@ -15,8 +15,21 @@ test("retired demo screens cannot be opened from legacy URLs", () => {
     assert.match(source, /redirect\("\/admin"\)/);
   }
 });
-test("WhatsApp AI Bot has a dedicated non-demo operations page", () => {
+test("WhatsApp AI Bot has a dedicated non-demo enablement and operations page", () => {
   const source = readFileSync(resolve(process.cwd(), "app/admin/whatsapp-ai-bot/page.tsx"), "utf8");
   assert.match(source, /isDemo: false/);
-  assert.match(source, /channels: \{ has: "WHATSAPP" \}/);
+  assert.match(source, /Automated integration rail/);
+  assert.match(source, /Enable in bot profile/);
+  assert.match(source, /Authorise Meta/);
+});
+test("Super Admin onboarding separates self-serve and admin-assisted paths", () => {
+  const source = readFileSync(resolve(process.cwd(), "app/admin/onboard/page.tsx"), "utf8");
+  assert.match(source, /Option 1 · Self-serve/);
+  assert.match(source, /Option 2 · Admin-assisted/);
+});
+test("customer register exposes governed pause, suspend and remove controls", () => {
+  const source = readFileSync(resolve(process.cwd(), "components/admin/customer-lifecycle-actions.tsx"), "utf8");
+  assert.match(source, /Pause bot/);
+  assert.match(source, /Suspend/);
+  assert.match(source, /REMOVE_FROM_OPERATIONS/);
 });

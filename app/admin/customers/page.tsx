@@ -1,85 +1,25 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { CustomerLifecycleActions } from "@/components/admin/customer-lifecycle-actions";
 import { loadAdminOrganizations } from "@/lib/services/onboarding-service";
-import { getOnboardingGuidance, getTrialWindow } from "@/lib/onboarding-guidance";
+import { getOnboardingGuidance } from "@/lib/onboarding-guidance";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const date = (value?: Date | null) => value ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(value) : "Not scheduled";
+
 export default async function AdminCustomersPage() {
   const organizations = await loadAdminOrganizations();
-  const subscriptionStates = new Map((await Promise.all(organizations.map(async (organization) => [organization.id, await getOrganizationSubscriptionAccess(organization.id)] as const))));
-  const aiBotLive = organizations.filter((item) => item.botProfile?.status === "LIVE").length;
-  const whatsappEnabled = organizations.filter((item) => item.botProfile?.channels?.includes("WHATSAPP")).length;
-  const whatsappLive = organizations.filter((item) => item.botProfile?.channels?.includes("WHATSAPP") && item.onboarding?.metaStatus === "LIVE").length;
-  const needsAifrogi = organizations.filter((item) => getOnboardingGuidance(item).owner === "AiFrogi").length;
-  const paused = Array.from(subscriptionStates.values()).filter((state) => state?.paused).length;
+  const states = new Map(await Promise.all(organizations.map(async (organization) => [organization.id, await getOrganizationSubscriptionAccess(organization.id)] as const)));
+  const live = organizations.filter((item) => item.botProfile?.status === "LIVE").length;
+  const attention = organizations.filter((item) => item.status === "SUSPENDED" || item.status === "REMOVED" || states.get(item.id)?.paused).length;
+  const trials = Array.from(states.values()).filter((state) => state?.planCode === "TRIAL").length;
 
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Super Admin</p>
-          <h1 className="mt-2 text-3xl font-black">Customer onboarding</h1>
-          <p className="mt-2 text-sm text-[#68645c]">Operate AI Bot and WhatsApp onboarding as two separate delivery tracks.</p>
-        </div>
-        <Badge tone="secondary">{organizations.length} companies</Badge>
-      </div>
-
-      <section className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Metric label="Companies" value={organizations.length} />
-        <Metric label="AI Bots live" value={aiBotLive} />
-        <Metric label="WhatsApp enabled" value={whatsappEnabled} />
-        <Metric label="WhatsApp live" value={whatsappLive} />
-        <Metric label="AiFrogi queue" value={needsAifrogi} />
-        <Metric label="Trial paused" value={paused} />
-      </section>
-
-      <section className="mt-6 overflow-hidden rounded-lg border border-black/6 bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[1120px] border-collapse text-left text-sm">
-            <thead className="bg-[#f7faf8] text-xs uppercase tracking-[0.12em] text-[#68645c]">
-              <tr><th className="px-5 py-4">Company</th><th className="px-5 py-4">AI Bot</th><th className="px-5 py-4">WhatsApp</th><th className="px-5 py-4">Next action</th><th className="px-5 py-4">Trial</th><th className="px-5 py-4 text-right">Open onboarding</th></tr>
-            </thead>
-            <tbody className="divide-y divide-black/5">
-              {organizations.map((organization) => {
-                const guidance = getOnboardingGuidance(organization);
-                const trial = getTrialWindow(organization);
-                const hasWhatsApp = organization.botProfile?.channels?.includes("WHATSAPP") || false;
-                return (
-                  <tr key={organization.id}>
-                    <td className="px-5 py-4"><strong className="block">{organization.name}</strong><span className="mt-1 block text-xs text-[#68645c]">{organization.ownerEmail}</span></td>
-                    <td className="px-5 py-4"><strong className="block text-xs">{organization.botProfile?.personaName || "Not designed"}</strong><span className="mt-2 block"><Status value={organization.botProfile?.status || "DRAFT"} /></span></td>
-                    <td className="px-5 py-4">{hasWhatsApp ? <Status value={organization.onboarding?.metaStatus || "NOT_STARTED"} /> : <Badge tone="neutral">NOT ENABLED</Badge>}</td>
-                    <td className="px-5 py-4">
-                      <strong className="block">{guidance.action}</strong>
-                      <span className="mt-1 flex items-center gap-2 text-xs text-[#68645c]"><OwnerBadge owner={guidance.owner} /> {guidance.eta}</span>
-                    </td>
-                    <td className="px-5 py-4">{subscriptionStates.get(organization.id)?.paused ? <Badge tone="error">PAUSED</Badge> : trial.enabled ? trial.label : organization.plan}</td>
-                    <td className="px-5 py-4 text-right"><div className="flex justify-end gap-3"><Link className="font-black text-[#8a6a16]" href={`/admin/customers/${organization.id}?onboarding=ai-bot`}>AI Bot</Link>{hasWhatsApp ? <Link className="font-black text-[#8a6a16]" href={`/admin/customers/${organization.id}?onboarding=whatsapp`}>WhatsApp</Link> : null}</div></td>
-                  </tr>
-                );
-              })}
-              {!organizations.length ? <tr><td className="px-5 py-10 text-center text-[#68645c]" colSpan={6}>No customer organizations yet.</td></tr> : null}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: number }) {
-  return <div className="rounded-lg border border-black/6 bg-white p-5 shadow-sm"><p className="text-xs font-black uppercase tracking-[0.14em] text-[#68645c]">{label}</p><p className="mt-3 text-3xl font-black">{value}</p></div>;
-}
-
-function Status({ value }: { value: string }) {
-  const tone = value === "LIVE" || value === "APPROVED" ? "secondary" : value === "REJECTED" ? "error" : "tertiary";
-  return <Badge tone={tone}>{value.replaceAll("_", " ")}</Badge>;
-}
-
-function OwnerBadge({ owner }: { owner: string }) {
-  const tone = owner === "AiFrogi" ? "secondary" : owner === "Meta" ? "tertiary" : "neutral";
-  return <Badge tone={tone}>{owner}</Badge>;
+  return <main className="mx-auto max-w-[1500px] space-y-7 px-4 py-8 sm:px-8 lg:px-10">
+    <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"><div><p className="product-eyebrow">Customer operations</p><h1 className="mt-3 text-4xl font-semibold tracking-[-.05em] sm:text-5xl">Every client. One accountable view.</h1><p className="mt-4 max-w-2xl text-sm leading-6 text-[#68645c]">Installation, trial, renewal and service health remain visible without opening each workspace.</p></div><Link href="/admin/onboard" className="rounded-full bg-[#101010] px-6 py-3 text-sm font-bold text-white">Onboard client</Link></header>
+    <section className="grid overflow-hidden border border-white/70 bg-white sm:grid-cols-2 xl:grid-cols-4">{[["Total clients",organizations.length],["Bots live",live],["Trials active",trials],["Needs attention",attention]].map(([label,value], index) => <div key={label} className={`p-6 ${index ? "border-t border-black/6 sm:border-l sm:border-t-0" : ""}`}><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#777168]">{label}</p><strong className={`mt-3 block text-3xl ${label === "Needs attention" && Number(value) ? "text-[#b53b33]" : ""}`}>{value}</strong></div>)}</section>
+    <section className="overflow-hidden border border-white/70 bg-white"><div className="flex flex-col gap-2 border-b border-black/6 px-6 py-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="product-eyebrow">Live register</p><h2 className="mt-2 text-2xl font-semibold">Customer lifecycle</h2></div><span className="text-xs text-[#68645c]"><span className="mr-2 inline-block h-2 w-2 rounded-full bg-[#36a77a]" />Healthy <span className="ml-4 mr-2 inline-block h-2 w-2 rounded-full bg-[#cf4d43]" />Action required</span></div><div className="overflow-x-auto"><table className="w-full min-w-[1380px] border-collapse text-left text-sm"><thead className="bg-[#f5f2eb] text-[10px] uppercase tracking-[.13em] text-[#68645c]"><tr><th className="px-5 py-4">Customer</th><th className="px-5 py-4">Bot category</th><th className="px-5 py-4">Installed</th><th className="px-5 py-4">Trial / renewal</th><th className="px-5 py-4">Service health</th><th className="px-5 py-4">Next responsibility</th><th className="px-5 py-4">Operations</th></tr></thead><tbody className="divide-y divide-black/5">{organizations.map((organization) => { const state = states.get(organization.id); const guidance = getOnboardingGuidance(organization); const issue = organization.status === "SUSPENDED" || organization.status === "REMOVED" || Boolean(state?.paused); return <tr key={organization.id} className="align-top hover:bg-[#fbfaf7]"><td className="px-5 py-5"><Link href={`/admin/customers/${organization.id}?onboarding=ai-bot`} className="font-bold hover:text-[#8a6a16]">{organization.name}</Link><small className="mt-1 block text-[#68645c]">{organization.ownerEmail}</small></td><td className="px-5 py-5"><strong>{organization.botProfile?.personaName || organization.botProfile?.category || "Not selected"}</strong><small className="mt-1 block text-[#68645c]">{organization.botProfile?.status?.replaceAll("_", " ") || "DRAFT"}{organization.botProfile?.channels.includes("WHATSAPP") ? " · WhatsApp" : ""}</small></td><td className="px-5 py-5"><strong>{date(organization.botProfile?.installationDetectedAt)}</strong><small className="mt-1 block text-[#68645c]">Created {date(organization.createdAt)}</small></td><td className="px-5 py-5"><strong>{state?.planName || organization.plan}</strong><small className="mt-1 block text-[#68645c]">{state?.planCode === "TRIAL" ? `${state.daysLeft ?? 0} days left · ends ${date(state.trialEndsAt)}` : `Status · ${state?.status || "Pending"}`}</small></td><td className="px-5 py-5"><span className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${issue ? "bg-[#fff0ee] text-[#a6322a]" : "bg-[#eaf7f1] text-[#17694f]"}`}><span className={`h-2 w-2 rounded-full ${issue ? "bg-[#cf4d43]" : "bg-[#36a77a]"}`} />{issue ? organization.status === "REMOVED" ? "Removed" : "Action required" : "Operational"}</span></td><td className="px-5 py-5"><strong>{guidance.action}</strong><small className="mt-1 block text-[#68645c]">Owner: {guidance.owner} · {guidance.eta}</small></td><td className="px-5 py-4"><CustomerLifecycleActions organizationId={organization.id} organizationStatus={organization.status} botStatus={organization.botProfile?.status || "DRAFT"} /></td></tr>; })}{!organizations.length ? <tr><td colSpan={7} className="px-6 py-14 text-center text-[#68645c]">No customers yet. Start with Bot onboarding.</td></tr> : null}</tbody></table></div></section>
+    <p className="px-2 text-xs leading-5 text-[#777168]">Pause affects the AI Bot only. Suspend blocks the customer temporarily. Remove retires the bot and excludes the customer from active operations while retaining audit evidence.</p>
+  </main>;
 }
