@@ -331,6 +331,7 @@ export type OrganizationWhereInput = {
   supportTickets?: Prisma.SupportTicketListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
   invoices?: Prisma.BillingInvoiceListRelationFilter
+  billingAddons?: Prisma.BillingAddonListRelationFilter
   usageRecords?: Prisma.UsageRecordListRelationFilter
   incidents?: Prisma.PlatformIncidentListRelationFilter
   auditLogs?: Prisma.PlatformAuditLogListRelationFilter
@@ -373,6 +374,7 @@ export type OrganizationOrderByWithRelationInput = {
   supportTickets?: Prisma.SupportTicketOrderByRelationAggregateInput
   subscription?: Prisma.SubscriptionOrderByWithRelationInput
   invoices?: Prisma.BillingInvoiceOrderByRelationAggregateInput
+  billingAddons?: Prisma.BillingAddonOrderByRelationAggregateInput
   usageRecords?: Prisma.UsageRecordOrderByRelationAggregateInput
   incidents?: Prisma.PlatformIncidentOrderByRelationAggregateInput
   auditLogs?: Prisma.PlatformAuditLogOrderByRelationAggregateInput
@@ -418,6 +420,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   supportTickets?: Prisma.SupportTicketListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
   invoices?: Prisma.BillingInvoiceListRelationFilter
+  billingAddons?: Prisma.BillingAddonListRelationFilter
   usageRecords?: Prisma.UsageRecordListRelationFilter
   incidents?: Prisma.PlatformIncidentListRelationFilter
   auditLogs?: Prisma.PlatformAuditLogListRelationFilter
@@ -516,6 +519,7 @@ export type OrganizationCreateInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -558,6 +562,7 @@ export type OrganizationUncheckedCreateInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -600,6 +605,7 @@ export type OrganizationUpdateInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -642,6 +648,7 @@ export type OrganizationUncheckedUpdateInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -984,6 +991,20 @@ export type OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutSubscriptionInput, Prisma.OrganizationUpdateWithoutSubscriptionInput>, Prisma.OrganizationUncheckedUpdateWithoutSubscriptionInput>
 }
 
+export type OrganizationCreateNestedOneWithoutBillingAddonsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutBillingAddonsInput, Prisma.OrganizationUncheckedCreateWithoutBillingAddonsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutBillingAddonsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutBillingAddonsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutBillingAddonsInput, Prisma.OrganizationUncheckedCreateWithoutBillingAddonsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutBillingAddonsInput
+  upsert?: Prisma.OrganizationUpsertWithoutBillingAddonsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutBillingAddonsInput, Prisma.OrganizationUpdateWithoutBillingAddonsInput>, Prisma.OrganizationUncheckedUpdateWithoutBillingAddonsInput>
+}
+
 export type OrganizationCreateNestedOneWithoutInvoicesInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutInvoicesInput, Prisma.OrganizationUncheckedCreateWithoutInvoicesInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutInvoicesInput
@@ -1093,6 +1114,7 @@ export type OrganizationCreateWithoutPropertiesInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -1134,6 +1156,7 @@ export type OrganizationUncheckedCreateWithoutPropertiesInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1191,6 +1214,7 @@ export type OrganizationUpdateWithoutPropertiesInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -1232,6 +1256,7 @@ export type OrganizationUncheckedUpdateWithoutPropertiesInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1273,6 +1298,7 @@ export type OrganizationCreateWithoutDemoSandboxInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -1314,6 +1340,7 @@ export type OrganizationUncheckedCreateWithoutDemoSandboxInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1371,6 +1398,7 @@ export type OrganizationUpdateWithoutDemoSandboxInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -1412,6 +1440,7 @@ export type OrganizationUncheckedUpdateWithoutDemoSandboxInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1454,6 +1483,7 @@ export type OrganizationCreateWithoutUserSessionsInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -1495,6 +1525,7 @@ export type OrganizationUncheckedCreateWithoutUserSessionsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1552,6 +1583,7 @@ export type OrganizationUpdateWithoutUserSessionsInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -1593,6 +1625,7 @@ export type OrganizationUncheckedUpdateWithoutUserSessionsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1633,6 +1666,7 @@ export type OrganizationCreateWithoutBotConfigurationInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -1674,6 +1708,7 @@ export type OrganizationUncheckedCreateWithoutBotConfigurationInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1731,6 +1766,7 @@ export type OrganizationUpdateWithoutBotConfigurationInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -1772,6 +1808,7 @@ export type OrganizationUncheckedUpdateWithoutBotConfigurationInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1813,6 +1850,7 @@ export type OrganizationCreateWithoutBotProfileInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -1854,6 +1892,7 @@ export type OrganizationUncheckedCreateWithoutBotProfileInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1911,6 +1950,7 @@ export type OrganizationUpdateWithoutBotProfileInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -1952,6 +1992,7 @@ export type OrganizationUncheckedUpdateWithoutBotProfileInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1993,6 +2034,7 @@ export type OrganizationCreateWithoutBotConnectorsInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -2034,6 +2076,7 @@ export type OrganizationUncheckedCreateWithoutBotConnectorsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2091,6 +2134,7 @@ export type OrganizationUpdateWithoutBotConnectorsInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -2132,6 +2176,7 @@ export type OrganizationUncheckedUpdateWithoutBotConnectorsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2173,6 +2218,7 @@ export type OrganizationCreateWithoutMembersInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -2214,6 +2260,7 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2271,6 +2318,7 @@ export type OrganizationUpdateWithoutMembersInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -2312,6 +2360,7 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2353,6 +2402,7 @@ export type OrganizationCreateWithoutOnboardingInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -2394,6 +2444,7 @@ export type OrganizationUncheckedCreateWithoutOnboardingInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2451,6 +2502,7 @@ export type OrganizationUpdateWithoutOnboardingInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -2492,6 +2544,7 @@ export type OrganizationUncheckedUpdateWithoutOnboardingInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2533,6 +2586,7 @@ export type OrganizationCreateWithoutOnboardingCredentialInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -2574,6 +2628,7 @@ export type OrganizationUncheckedCreateWithoutOnboardingCredentialInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2631,6 +2686,7 @@ export type OrganizationUpdateWithoutOnboardingCredentialInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -2672,6 +2728,7 @@ export type OrganizationUncheckedUpdateWithoutOnboardingCredentialInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2713,6 +2770,7 @@ export type OrganizationCreateWithoutDocumentsInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -2754,6 +2812,7 @@ export type OrganizationUncheckedCreateWithoutDocumentsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2811,6 +2870,7 @@ export type OrganizationUpdateWithoutDocumentsInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -2852,6 +2912,7 @@ export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2893,6 +2954,7 @@ export type OrganizationCreateWithoutActivitiesInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -2934,6 +2996,7 @@ export type OrganizationUncheckedCreateWithoutActivitiesInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2991,6 +3054,7 @@ export type OrganizationUpdateWithoutActivitiesInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -3032,6 +3096,7 @@ export type OrganizationUncheckedUpdateWithoutActivitiesInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3073,6 +3138,7 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -3114,6 +3180,7 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3171,6 +3238,7 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -3211,6 +3279,191 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutBillingAddonsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutBillingAddonsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutBillingAddonsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutBillingAddonsInput, Prisma.OrganizationUncheckedCreateWithoutBillingAddonsInput>
+}
+
+export type OrganizationUpsertWithoutBillingAddonsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutBillingAddonsInput, Prisma.OrganizationUncheckedUpdateWithoutBillingAddonsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutBillingAddonsInput, Prisma.OrganizationUncheckedCreateWithoutBillingAddonsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutBillingAddonsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutBillingAddonsInput, Prisma.OrganizationUncheckedUpdateWithoutBillingAddonsInput>
+}
+
+export type OrganizationUpdateWithoutBillingAddonsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutBillingAddonsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3253,6 +3506,7 @@ export type OrganizationCreateWithoutInvoicesInput = {
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -3294,6 +3548,7 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3351,6 +3606,7 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -3392,6 +3648,7 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3434,6 +3691,7 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3475,6 +3733,7 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3532,6 +3791,7 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3573,6 +3833,7 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3614,6 +3875,7 @@ export type OrganizationCreateWithoutIncidentsInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3655,6 +3917,7 @@ export type OrganizationUncheckedCreateWithoutIncidentsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3712,6 +3975,7 @@ export type OrganizationUpdateWithoutIncidentsInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3753,6 +4017,7 @@ export type OrganizationUncheckedUpdateWithoutIncidentsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3794,6 +4059,7 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3835,6 +4101,7 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3892,6 +4159,7 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3933,6 +4201,7 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3973,6 +4242,7 @@ export type OrganizationCreateWithoutSupportTicketsInput = {
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
@@ -4014,6 +4284,7 @@ export type OrganizationUncheckedCreateWithoutSupportTicketsInput = {
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4071,6 +4342,7 @@ export type OrganizationUpdateWithoutSupportTicketsInput = {
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
@@ -4112,6 +4384,7 @@ export type OrganizationUncheckedUpdateWithoutSupportTicketsInput = {
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4131,6 +4404,7 @@ export type OrganizationCountOutputType = {
   activities: number
   supportTickets: number
   invoices: number
+  billingAddons: number
   usageRecords: number
   incidents: number
   auditLogs: number
@@ -4145,6 +4419,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   activities?: boolean | OrganizationCountOutputTypeCountActivitiesArgs
   supportTickets?: boolean | OrganizationCountOutputTypeCountSupportTicketsArgs
   invoices?: boolean | OrganizationCountOutputTypeCountInvoicesArgs
+  billingAddons?: boolean | OrganizationCountOutputTypeCountBillingAddonsArgs
   usageRecords?: boolean | OrganizationCountOutputTypeCountUsageRecordsArgs
   incidents?: boolean | OrganizationCountOutputTypeCountIncidentsArgs
   auditLogs?: boolean | OrganizationCountOutputTypeCountAuditLogsArgs
@@ -4213,6 +4488,13 @@ export type OrganizationCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountBillingAddonsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillingAddonWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountUsageRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UsageRecordWhereInput
 }
@@ -4275,6 +4557,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   supportTickets?: boolean | Prisma.Organization$supportTicketsArgs<ExtArgs>
   subscription?: boolean | Prisma.Organization$subscriptionArgs<ExtArgs>
   invoices?: boolean | Prisma.Organization$invoicesArgs<ExtArgs>
+  billingAddons?: boolean | Prisma.Organization$billingAddonsArgs<ExtArgs>
   usageRecords?: boolean | Prisma.Organization$usageRecordsArgs<ExtArgs>
   incidents?: boolean | Prisma.Organization$incidentsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
@@ -4372,6 +4655,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   supportTickets?: boolean | Prisma.Organization$supportTicketsArgs<ExtArgs>
   subscription?: boolean | Prisma.Organization$subscriptionArgs<ExtArgs>
   invoices?: boolean | Prisma.Organization$invoicesArgs<ExtArgs>
+  billingAddons?: boolean | Prisma.Organization$billingAddonsArgs<ExtArgs>
   usageRecords?: boolean | Prisma.Organization$usageRecordsArgs<ExtArgs>
   incidents?: boolean | Prisma.Organization$incidentsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
@@ -4397,6 +4681,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     supportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
     subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
     invoices: Prisma.$BillingInvoicePayload<ExtArgs>[]
+    billingAddons: Prisma.$BillingAddonPayload<ExtArgs>[]
     usageRecords: Prisma.$UsageRecordPayload<ExtArgs>[]
     incidents: Prisma.$PlatformIncidentPayload<ExtArgs>[]
     auditLogs: Prisma.$PlatformAuditLogPayload<ExtArgs>[]
@@ -4832,6 +5117,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   supportTickets<T extends Prisma.Organization$supportTicketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$supportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscription<T extends Prisma.Organization$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   invoices<T extends Prisma.Organization$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingInvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  billingAddons<T extends Prisma.Organization$billingAddonsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$billingAddonsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingAddonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   usageRecords<T extends Prisma.Organization$usageRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$usageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   incidents<T extends Prisma.Organization$incidentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$incidentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Organization$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5559,6 +5845,30 @@ export type Organization$invoicesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.BillingInvoiceScalarFieldEnum | Prisma.BillingInvoiceScalarFieldEnum[]
+}
+
+/**
+ * Organization.billingAddons
+ */
+export type Organization$billingAddonsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BillingAddon
+   */
+  select?: Prisma.BillingAddonSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BillingAddon
+   */
+  omit?: Prisma.BillingAddonOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillingAddonInclude<ExtArgs> | null
+  where?: Prisma.BillingAddonWhereInput
+  orderBy?: Prisma.BillingAddonOrderByWithRelationInput | Prisma.BillingAddonOrderByWithRelationInput[]
+  cursor?: Prisma.BillingAddonWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillingAddonScalarFieldEnum | Prisma.BillingAddonScalarFieldEnum[]
 }
 
 /**

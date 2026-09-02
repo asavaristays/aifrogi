@@ -37,6 +37,9 @@ export type SubscriptionMinAggregateOutputType = {
   currentPeriodEnd: Date | null
   cancelAtPeriodEnd: boolean | null
   graceEndsAt: Date | null
+  complimentaryEndsAt: Date | null
+  complimentaryReason: string | null
+  complimentaryGrantedBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +57,9 @@ export type SubscriptionMaxAggregateOutputType = {
   currentPeriodEnd: Date | null
   cancelAtPeriodEnd: boolean | null
   graceEndsAt: Date | null
+  complimentaryEndsAt: Date | null
+  complimentaryReason: string | null
+  complimentaryGrantedBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +77,9 @@ export type SubscriptionCountAggregateOutputType = {
   currentPeriodEnd: number
   cancelAtPeriodEnd: number
   graceEndsAt: number
+  complimentaryEndsAt: number
+  complimentaryReason: number
+  complimentaryGrantedBy: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +99,9 @@ export type SubscriptionMinAggregateInputType = {
   currentPeriodEnd?: true
   cancelAtPeriodEnd?: true
   graceEndsAt?: true
+  complimentaryEndsAt?: true
+  complimentaryReason?: true
+  complimentaryGrantedBy?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +119,9 @@ export type SubscriptionMaxAggregateInputType = {
   currentPeriodEnd?: true
   cancelAtPeriodEnd?: true
   graceEndsAt?: true
+  complimentaryEndsAt?: true
+  complimentaryReason?: true
+  complimentaryGrantedBy?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +139,9 @@ export type SubscriptionCountAggregateInputType = {
   currentPeriodEnd?: true
   cancelAtPeriodEnd?: true
   graceEndsAt?: true
+  complimentaryEndsAt?: true
+  complimentaryReason?: true
+  complimentaryGrantedBy?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +232,9 @@ export type SubscriptionGroupByOutputType = {
   currentPeriodEnd: Date | null
   cancelAtPeriodEnd: boolean
   graceEndsAt: Date | null
+  complimentaryEndsAt: Date | null
+  complimentaryReason: string | null
+  complimentaryGrantedBy: string | null
   createdAt: Date
   updatedAt: Date
   _count: SubscriptionCountAggregateOutputType | null
@@ -252,6 +273,9 @@ export type SubscriptionWhereInput = {
   currentPeriodEnd?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFilter<"Subscription"> | boolean
   graceEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  complimentaryEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  complimentaryReason?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  complimentaryGrantedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -272,6 +296,9 @@ export type SubscriptionOrderByWithRelationInput = {
   currentPeriodEnd?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelAtPeriodEnd?: Prisma.SortOrder
   graceEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  complimentaryEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  complimentaryReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  complimentaryGrantedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -295,6 +322,9 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   currentPeriodEnd?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFilter<"Subscription"> | boolean
   graceEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  complimentaryEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  complimentaryReason?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  complimentaryGrantedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -315,6 +345,9 @@ export type SubscriptionOrderByWithAggregationInput = {
   currentPeriodEnd?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelAtPeriodEnd?: Prisma.SortOrder
   graceEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  complimentaryEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  complimentaryReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  complimentaryGrantedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SubscriptionCountOrderByAggregateInput
@@ -338,6 +371,9 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   currentPeriodEnd?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolWithAggregatesFilter<"Subscription"> | boolean
   graceEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
+  complimentaryEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
+  complimentaryReason?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
+  complimentaryGrantedBy?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Subscription"> | Date | string
 }
@@ -353,6 +389,9 @@ export type SubscriptionCreateInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
@@ -373,6 +412,9 @@ export type SubscriptionUncheckedCreateInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutSubscriptionInput
@@ -389,6 +431,9 @@ export type SubscriptionUpdateInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -409,6 +454,9 @@ export type SubscriptionUncheckedUpdateInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutSubscriptionNestedInput
@@ -427,6 +475,9 @@ export type SubscriptionCreateManyInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -442,6 +493,9 @@ export type SubscriptionUpdateManyMutationInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -459,6 +513,9 @@ export type SubscriptionUncheckedUpdateManyInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -491,6 +548,9 @@ export type SubscriptionCountOrderByAggregateInput = {
   currentPeriodEnd?: Prisma.SortOrder
   cancelAtPeriodEnd?: Prisma.SortOrder
   graceEndsAt?: Prisma.SortOrder
+  complimentaryEndsAt?: Prisma.SortOrder
+  complimentaryReason?: Prisma.SortOrder
+  complimentaryGrantedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -508,6 +568,9 @@ export type SubscriptionMaxOrderByAggregateInput = {
   currentPeriodEnd?: Prisma.SortOrder
   cancelAtPeriodEnd?: Prisma.SortOrder
   graceEndsAt?: Prisma.SortOrder
+  complimentaryEndsAt?: Prisma.SortOrder
+  complimentaryReason?: Prisma.SortOrder
+  complimentaryGrantedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -525,6 +588,9 @@ export type SubscriptionMinOrderByAggregateInput = {
   currentPeriodEnd?: Prisma.SortOrder
   cancelAtPeriodEnd?: Prisma.SortOrder
   graceEndsAt?: Prisma.SortOrder
+  complimentaryEndsAt?: Prisma.SortOrder
+  complimentaryReason?: Prisma.SortOrder
+  complimentaryGrantedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -630,6 +696,9 @@ export type SubscriptionCreateWithoutOrganizationInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   plan: Prisma.BillingPlanCreateNestedOneWithoutSubscriptionsInput
@@ -648,6 +717,9 @@ export type SubscriptionUncheckedCreateWithoutOrganizationInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutSubscriptionInput
@@ -680,6 +752,9 @@ export type SubscriptionUpdateWithoutOrganizationInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.BillingPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
@@ -698,6 +773,9 @@ export type SubscriptionUncheckedUpdateWithoutOrganizationInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutSubscriptionNestedInput
@@ -714,6 +792,9 @@ export type SubscriptionCreateWithoutPlanInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
@@ -732,6 +813,9 @@ export type SubscriptionUncheckedCreateWithoutPlanInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutSubscriptionInput
@@ -779,6 +863,9 @@ export type SubscriptionScalarWhereInput = {
   currentPeriodEnd?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFilter<"Subscription"> | boolean
   graceEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  complimentaryEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
+  complimentaryReason?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  complimentaryGrantedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
 }
@@ -794,6 +881,9 @@ export type SubscriptionCreateWithoutInvoicesInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
@@ -813,6 +903,9 @@ export type SubscriptionUncheckedCreateWithoutInvoicesInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -844,6 +937,9 @@ export type SubscriptionUpdateWithoutInvoicesInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -863,6 +959,9 @@ export type SubscriptionUncheckedUpdateWithoutInvoicesInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -879,6 +978,9 @@ export type SubscriptionCreateManyPlanInput = {
   currentPeriodEnd?: Date | string | null
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: Date | string | null
+  complimentaryEndsAt?: Date | string | null
+  complimentaryReason?: string | null
+  complimentaryGrantedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -894,6 +996,9 @@ export type SubscriptionUpdateWithoutPlanInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -912,6 +1017,9 @@ export type SubscriptionUncheckedUpdateWithoutPlanInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutSubscriptionNestedInput
@@ -929,6 +1037,9 @@ export type SubscriptionUncheckedUpdateManyWithoutPlanInput = {
   currentPeriodEnd?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelAtPeriodEnd?: Prisma.BoolFieldUpdateOperationsInput | boolean
   graceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -977,6 +1088,9 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   currentPeriodEnd?: boolean
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: boolean
+  complimentaryEndsAt?: boolean
+  complimentaryReason?: boolean
+  complimentaryGrantedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -998,6 +1112,9 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   currentPeriodEnd?: boolean
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: boolean
+  complimentaryEndsAt?: boolean
+  complimentaryReason?: boolean
+  complimentaryGrantedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1017,6 +1134,9 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   currentPeriodEnd?: boolean
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: boolean
+  complimentaryEndsAt?: boolean
+  complimentaryReason?: boolean
+  complimentaryGrantedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1036,11 +1156,14 @@ export type SubscriptionSelectScalar = {
   currentPeriodEnd?: boolean
   cancelAtPeriodEnd?: boolean
   graceEndsAt?: boolean
+  complimentaryEndsAt?: boolean
+  complimentaryReason?: boolean
+  complimentaryGrantedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "planId" | "status" | "paymentProvider" | "externalSubscriptionId" | "startedAt" | "trialEndsAt" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "graceEndsAt" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "planId" | "status" | "paymentProvider" | "externalSubscriptionId" | "startedAt" | "trialEndsAt" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "graceEndsAt" | "complimentaryEndsAt" | "complimentaryReason" | "complimentaryGrantedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.BillingPlanDefaultArgs<ExtArgs>
@@ -1076,6 +1199,9 @@ export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     currentPeriodEnd: Date | null
     cancelAtPeriodEnd: boolean
     graceEndsAt: Date | null
+    complimentaryEndsAt: Date | null
+    complimentaryReason: string | null
+    complimentaryGrantedBy: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["subscription"]>
@@ -1516,6 +1642,9 @@ export interface SubscriptionFieldRefs {
   readonly currentPeriodEnd: Prisma.FieldRef<"Subscription", 'DateTime'>
   readonly cancelAtPeriodEnd: Prisma.FieldRef<"Subscription", 'Boolean'>
   readonly graceEndsAt: Prisma.FieldRef<"Subscription", 'DateTime'>
+  readonly complimentaryEndsAt: Prisma.FieldRef<"Subscription", 'DateTime'>
+  readonly complimentaryReason: Prisma.FieldRef<"Subscription", 'String'>
+  readonly complimentaryGrantedBy: Prisma.FieldRef<"Subscription", 'String'>
   readonly createdAt: Prisma.FieldRef<"Subscription", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Subscription", 'DateTime'>
 }
