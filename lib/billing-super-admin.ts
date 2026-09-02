@@ -669,10 +669,12 @@ export async function checkOrganizationEntitlement(
   const subscription = await ensureOrganizationSubscription(organizationId);
   if (!subscription) return { allowed: false, error: "Subscription is unavailable.", used: 0, limit: 0 };
   const limits = readLimits(subscription.plan.limits);
+  if (subscription.messageLimitOverride !== null) limits.messages = subscription.messageLimitOverride;
+  if (subscription.aiReplyLimitOverride !== null) limits.aiReplies = subscription.aiReplyLimitOverride;
   const usage = await getOrganizationUsage(organizationId, subscription.currentPeriodStart, subscription.currentPeriodEnd);
   const used = usage[metric];
   const limit = limits[metric];
-  const allowed = limit === 0 || used + Math.max(0, additional) <= limit;
+  const allowed = limit === 0 || used + Math.max(0, additional) <= limit || subscription.overageApproved;
   return {
     allowed,
     used,

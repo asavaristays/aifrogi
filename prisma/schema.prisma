@@ -998,6 +998,11 @@ model Subscription {
   complimentaryEndsAt    DateTime?
   complimentaryReason    String?          @db.Text
   complimentaryGrantedBy String?
+  messageLimitOverride    Int?
+  aiReplyLimitOverride    Int?
+  messageOveragePaisa     Int              @default(0)
+  aiReplyOveragePaisa     Int              @default(0)
+  overageApproved         Boolean          @default(false)
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
   invoices               BillingInvoice[]

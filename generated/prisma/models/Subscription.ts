@@ -20,8 +20,24 @@ export type SubscriptionModel = runtime.Types.Result.DefaultSelection<Prisma.$Su
 
 export type AggregateSubscription = {
   _count: SubscriptionCountAggregateOutputType | null
+  _avg: SubscriptionAvgAggregateOutputType | null
+  _sum: SubscriptionSumAggregateOutputType | null
   _min: SubscriptionMinAggregateOutputType | null
   _max: SubscriptionMaxAggregateOutputType | null
+}
+
+export type SubscriptionAvgAggregateOutputType = {
+  messageLimitOverride: number | null
+  aiReplyLimitOverride: number | null
+  messageOveragePaisa: number | null
+  aiReplyOveragePaisa: number | null
+}
+
+export type SubscriptionSumAggregateOutputType = {
+  messageLimitOverride: number | null
+  aiReplyLimitOverride: number | null
+  messageOveragePaisa: number | null
+  aiReplyOveragePaisa: number | null
 }
 
 export type SubscriptionMinAggregateOutputType = {
@@ -40,6 +56,11 @@ export type SubscriptionMinAggregateOutputType = {
   complimentaryEndsAt: Date | null
   complimentaryReason: string | null
   complimentaryGrantedBy: string | null
+  messageLimitOverride: number | null
+  aiReplyLimitOverride: number | null
+  messageOveragePaisa: number | null
+  aiReplyOveragePaisa: number | null
+  overageApproved: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +81,11 @@ export type SubscriptionMaxAggregateOutputType = {
   complimentaryEndsAt: Date | null
   complimentaryReason: string | null
   complimentaryGrantedBy: string | null
+  messageLimitOverride: number | null
+  aiReplyLimitOverride: number | null
+  messageOveragePaisa: number | null
+  aiReplyOveragePaisa: number | null
+  overageApproved: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,11 +106,30 @@ export type SubscriptionCountAggregateOutputType = {
   complimentaryEndsAt: number
   complimentaryReason: number
   complimentaryGrantedBy: number
+  messageLimitOverride: number
+  aiReplyLimitOverride: number
+  messageOveragePaisa: number
+  aiReplyOveragePaisa: number
+  overageApproved: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type SubscriptionAvgAggregateInputType = {
+  messageLimitOverride?: true
+  aiReplyLimitOverride?: true
+  messageOveragePaisa?: true
+  aiReplyOveragePaisa?: true
+}
+
+export type SubscriptionSumAggregateInputType = {
+  messageLimitOverride?: true
+  aiReplyLimitOverride?: true
+  messageOveragePaisa?: true
+  aiReplyOveragePaisa?: true
+}
 
 export type SubscriptionMinAggregateInputType = {
   id?: true
@@ -102,6 +147,11 @@ export type SubscriptionMinAggregateInputType = {
   complimentaryEndsAt?: true
   complimentaryReason?: true
   complimentaryGrantedBy?: true
+  messageLimitOverride?: true
+  aiReplyLimitOverride?: true
+  messageOveragePaisa?: true
+  aiReplyOveragePaisa?: true
+  overageApproved?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +172,11 @@ export type SubscriptionMaxAggregateInputType = {
   complimentaryEndsAt?: true
   complimentaryReason?: true
   complimentaryGrantedBy?: true
+  messageLimitOverride?: true
+  aiReplyLimitOverride?: true
+  messageOveragePaisa?: true
+  aiReplyOveragePaisa?: true
+  overageApproved?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +197,11 @@ export type SubscriptionCountAggregateInputType = {
   complimentaryEndsAt?: true
   complimentaryReason?: true
   complimentaryGrantedBy?: true
+  messageLimitOverride?: true
+  aiReplyLimitOverride?: true
+  messageOveragePaisa?: true
+  aiReplyOveragePaisa?: true
+  overageApproved?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -154,13 +214,13 @@ export type SubscriptionAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   where?: Prisma.SubscriptionWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-   * 
+   *
    * Determine the order of Subscriptions to fetch.
    */
   orderBy?: Prisma.SubscriptionOrderByWithRelationInput | Prisma.SubscriptionOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-   * 
+   *
    * Sets the start position
    */
   cursor?: Prisma.SubscriptionWhereUniqueInput
@@ -185,6 +245,18 @@ export type SubscriptionAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: SubscriptionAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: SubscriptionSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: SubscriptionMinAggregateInputType
@@ -215,6 +287,8 @@ export type SubscriptionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: SubscriptionCountAggregateInputType | true
+  _avg?: SubscriptionAvgAggregateInputType
+  _sum?: SubscriptionSumAggregateInputType
   _min?: SubscriptionMinAggregateInputType
   _max?: SubscriptionMaxAggregateInputType
 }
@@ -235,9 +309,16 @@ export type SubscriptionGroupByOutputType = {
   complimentaryEndsAt: Date | null
   complimentaryReason: string | null
   complimentaryGrantedBy: string | null
+  messageLimitOverride: number | null
+  aiReplyLimitOverride: number | null
+  messageOveragePaisa: number
+  aiReplyOveragePaisa: number
+  overageApproved: boolean
   createdAt: Date
   updatedAt: Date
   _count: SubscriptionCountAggregateOutputType | null
+  _avg: SubscriptionAvgAggregateOutputType | null
+  _sum: SubscriptionSumAggregateOutputType | null
   _min: SubscriptionMinAggregateOutputType | null
   _max: SubscriptionMaxAggregateOutputType | null
 }
@@ -276,6 +357,11 @@ export type SubscriptionWhereInput = {
   complimentaryEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   complimentaryReason?: Prisma.StringNullableFilter<"Subscription"> | string | null
   complimentaryGrantedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  messageLimitOverride?: Prisma.IntNullableFilter<"Subscription"> | number | null
+  aiReplyLimitOverride?: Prisma.IntNullableFilter<"Subscription"> | number | null
+  messageOveragePaisa?: Prisma.IntFilter<"Subscription"> | number
+  aiReplyOveragePaisa?: Prisma.IntFilter<"Subscription"> | number
+  overageApproved?: Prisma.BoolFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -299,6 +385,11 @@ export type SubscriptionOrderByWithRelationInput = {
   complimentaryEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   complimentaryReason?: Prisma.SortOrderInput | Prisma.SortOrder
   complimentaryGrantedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  messageLimitOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
+  overageApproved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -325,6 +416,11 @@ export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
   complimentaryEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   complimentaryReason?: Prisma.StringNullableFilter<"Subscription"> | string | null
   complimentaryGrantedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  messageLimitOverride?: Prisma.IntNullableFilter<"Subscription"> | number | null
+  aiReplyLimitOverride?: Prisma.IntNullableFilter<"Subscription"> | number | null
+  messageOveragePaisa?: Prisma.IntFilter<"Subscription"> | number
+  aiReplyOveragePaisa?: Prisma.IntFilter<"Subscription"> | number
+  overageApproved?: Prisma.BoolFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -348,11 +444,18 @@ export type SubscriptionOrderByWithAggregationInput = {
   complimentaryEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   complimentaryReason?: Prisma.SortOrderInput | Prisma.SortOrder
   complimentaryGrantedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  messageLimitOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
+  overageApproved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SubscriptionCountOrderByAggregateInput
+  _avg?: Prisma.SubscriptionAvgOrderByAggregateInput
   _max?: Prisma.SubscriptionMaxOrderByAggregateInput
   _min?: Prisma.SubscriptionMinOrderByAggregateInput
+  _sum?: Prisma.SubscriptionSumOrderByAggregateInput
 }
 
 export type SubscriptionScalarWhereWithAggregatesInput = {
@@ -374,6 +477,11 @@ export type SubscriptionScalarWhereWithAggregatesInput = {
   complimentaryEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
   complimentaryReason?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
   complimentaryGrantedBy?: Prisma.StringNullableWithAggregatesFilter<"Subscription"> | string | null
+  messageLimitOverride?: Prisma.IntNullableWithAggregatesFilter<"Subscription"> | number | null
+  aiReplyLimitOverride?: Prisma.IntNullableWithAggregatesFilter<"Subscription"> | number | null
+  messageOveragePaisa?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
+  aiReplyOveragePaisa?: Prisma.IntWithAggregatesFilter<"Subscription"> | number
+  overageApproved?: Prisma.BoolWithAggregatesFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Subscription"> | Date | string
 }
@@ -392,6 +500,11 @@ export type SubscriptionCreateInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
@@ -415,6 +528,11 @@ export type SubscriptionUncheckedCreateInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutSubscriptionInput
@@ -434,6 +552,11 @@ export type SubscriptionUpdateInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -457,6 +580,11 @@ export type SubscriptionUncheckedUpdateInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutSubscriptionNestedInput
@@ -478,6 +606,11 @@ export type SubscriptionCreateManyInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -496,6 +629,11 @@ export type SubscriptionUpdateManyMutationInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -516,6 +654,11 @@ export type SubscriptionUncheckedUpdateManyInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -551,8 +694,20 @@ export type SubscriptionCountOrderByAggregateInput = {
   complimentaryEndsAt?: Prisma.SortOrder
   complimentaryReason?: Prisma.SortOrder
   complimentaryGrantedBy?: Prisma.SortOrder
+  messageLimitOverride?: Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
+  overageApproved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type SubscriptionAvgOrderByAggregateInput = {
+  messageLimitOverride?: Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
 }
 
 export type SubscriptionMaxOrderByAggregateInput = {
@@ -571,6 +726,11 @@ export type SubscriptionMaxOrderByAggregateInput = {
   complimentaryEndsAt?: Prisma.SortOrder
   complimentaryReason?: Prisma.SortOrder
   complimentaryGrantedBy?: Prisma.SortOrder
+  messageLimitOverride?: Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
+  overageApproved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -591,8 +751,20 @@ export type SubscriptionMinOrderByAggregateInput = {
   complimentaryEndsAt?: Prisma.SortOrder
   complimentaryReason?: Prisma.SortOrder
   complimentaryGrantedBy?: Prisma.SortOrder
+  messageLimitOverride?: Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
+  overageApproved?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type SubscriptionSumOrderByAggregateInput = {
+  messageLimitOverride?: Prisma.SortOrder
+  aiReplyLimitOverride?: Prisma.SortOrder
+  messageOveragePaisa?: Prisma.SortOrder
+  aiReplyOveragePaisa?: Prisma.SortOrder
 }
 
 export type SubscriptionCreateNestedOneWithoutOrganizationInput = {
@@ -699,6 +871,11 @@ export type SubscriptionCreateWithoutOrganizationInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   plan: Prisma.BillingPlanCreateNestedOneWithoutSubscriptionsInput
@@ -720,6 +897,11 @@ export type SubscriptionUncheckedCreateWithoutOrganizationInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutSubscriptionInput
@@ -755,6 +937,11 @@ export type SubscriptionUpdateWithoutOrganizationInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   plan?: Prisma.BillingPlanUpdateOneRequiredWithoutSubscriptionsNestedInput
@@ -776,6 +963,11 @@ export type SubscriptionUncheckedUpdateWithoutOrganizationInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutSubscriptionNestedInput
@@ -795,6 +987,11 @@ export type SubscriptionCreateWithoutPlanInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
@@ -816,6 +1013,11 @@ export type SubscriptionUncheckedCreateWithoutPlanInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutSubscriptionInput
@@ -866,6 +1068,11 @@ export type SubscriptionScalarWhereInput = {
   complimentaryEndsAt?: Prisma.DateTimeNullableFilter<"Subscription"> | Date | string | null
   complimentaryReason?: Prisma.StringNullableFilter<"Subscription"> | string | null
   complimentaryGrantedBy?: Prisma.StringNullableFilter<"Subscription"> | string | null
+  messageLimitOverride?: Prisma.IntNullableFilter<"Subscription"> | number | null
+  aiReplyLimitOverride?: Prisma.IntNullableFilter<"Subscription"> | number | null
+  messageOveragePaisa?: Prisma.IntFilter<"Subscription"> | number
+  aiReplyOveragePaisa?: Prisma.IntFilter<"Subscription"> | number
+  overageApproved?: Prisma.BoolFilter<"Subscription"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Subscription"> | Date | string
 }
@@ -884,6 +1091,11 @@ export type SubscriptionCreateWithoutInvoicesInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutSubscriptionInput
@@ -906,6 +1118,11 @@ export type SubscriptionUncheckedCreateWithoutInvoicesInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -940,6 +1157,11 @@ export type SubscriptionUpdateWithoutInvoicesInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -962,6 +1184,11 @@ export type SubscriptionUncheckedUpdateWithoutInvoicesInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -981,6 +1208,11 @@ export type SubscriptionCreateManyPlanInput = {
   complimentaryEndsAt?: Date | string | null
   complimentaryReason?: string | null
   complimentaryGrantedBy?: string | null
+  messageLimitOverride?: number | null
+  aiReplyLimitOverride?: number | null
+  messageOveragePaisa?: number
+  aiReplyOveragePaisa?: number
+  overageApproved?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -999,6 +1231,11 @@ export type SubscriptionUpdateWithoutPlanInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutSubscriptionNestedInput
@@ -1020,6 +1257,11 @@ export type SubscriptionUncheckedUpdateWithoutPlanInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutSubscriptionNestedInput
@@ -1040,6 +1282,11 @@ export type SubscriptionUncheckedUpdateManyWithoutPlanInput = {
   complimentaryEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   complimentaryReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   complimentaryGrantedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  aiReplyLimitOverride?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  messageOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  aiReplyOveragePaisa?: Prisma.IntFieldUpdateOperationsInput | number
+  overageApproved?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1091,6 +1338,11 @@ export type SubscriptionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   complimentaryEndsAt?: boolean
   complimentaryReason?: boolean
   complimentaryGrantedBy?: boolean
+  messageLimitOverride?: boolean
+  aiReplyLimitOverride?: boolean
+  messageOveragePaisa?: boolean
+  aiReplyOveragePaisa?: boolean
+  overageApproved?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1115,6 +1367,11 @@ export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   complimentaryEndsAt?: boolean
   complimentaryReason?: boolean
   complimentaryGrantedBy?: boolean
+  messageLimitOverride?: boolean
+  aiReplyLimitOverride?: boolean
+  messageOveragePaisa?: boolean
+  aiReplyOveragePaisa?: boolean
+  overageApproved?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1137,6 +1394,11 @@ export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   complimentaryEndsAt?: boolean
   complimentaryReason?: boolean
   complimentaryGrantedBy?: boolean
+  messageLimitOverride?: boolean
+  aiReplyLimitOverride?: boolean
+  messageOveragePaisa?: boolean
+  aiReplyOveragePaisa?: boolean
+  overageApproved?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1159,11 +1421,16 @@ export type SubscriptionSelectScalar = {
   complimentaryEndsAt?: boolean
   complimentaryReason?: boolean
   complimentaryGrantedBy?: boolean
+  messageLimitOverride?: boolean
+  aiReplyLimitOverride?: boolean
+  messageOveragePaisa?: boolean
+  aiReplyOveragePaisa?: boolean
+  overageApproved?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "planId" | "status" | "paymentProvider" | "externalSubscriptionId" | "startedAt" | "trialEndsAt" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "graceEndsAt" | "complimentaryEndsAt" | "complimentaryReason" | "complimentaryGrantedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+export type SubscriptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "planId" | "status" | "paymentProvider" | "externalSubscriptionId" | "startedAt" | "trialEndsAt" | "currentPeriodStart" | "currentPeriodEnd" | "cancelAtPeriodEnd" | "graceEndsAt" | "complimentaryEndsAt" | "complimentaryReason" | "complimentaryGrantedBy" | "messageLimitOverride" | "aiReplyLimitOverride" | "messageOveragePaisa" | "aiReplyOveragePaisa" | "overageApproved" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
 export type SubscriptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   plan?: boolean | Prisma.BillingPlanDefaultArgs<ExtArgs>
@@ -1202,6 +1469,11 @@ export type $SubscriptionPayload<ExtArgs extends runtime.Types.Extensions.Intern
     complimentaryEndsAt: Date | null
     complimentaryReason: string | null
     complimentaryGrantedBy: string | null
+    messageLimitOverride: number | null
+    aiReplyLimitOverride: number | null
+    messageOveragePaisa: number
+    aiReplyOveragePaisa: number
+    overageApproved: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["subscription"]>
@@ -1645,6 +1917,11 @@ export interface SubscriptionFieldRefs {
   readonly complimentaryEndsAt: Prisma.FieldRef<"Subscription", 'DateTime'>
   readonly complimentaryReason: Prisma.FieldRef<"Subscription", 'String'>
   readonly complimentaryGrantedBy: Prisma.FieldRef<"Subscription", 'String'>
+  readonly messageLimitOverride: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly aiReplyLimitOverride: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly messageOveragePaisa: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly aiReplyOveragePaisa: Prisma.FieldRef<"Subscription", 'Int'>
+  readonly overageApproved: Prisma.FieldRef<"Subscription", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Subscription", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Subscription", 'DateTime'>
 }

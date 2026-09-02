@@ -909,6 +909,11 @@ export const SubscriptionScalarFieldEnum = {
   complimentaryEndsAt: 'complimentaryEndsAt',
   complimentaryReason: 'complimentaryReason',
   complimentaryGrantedBy: 'complimentaryGrantedBy',
+  messageLimitOverride: 'messageLimitOverride',
+  aiReplyLimitOverride: 'aiReplyLimitOverride',
+  messageOveragePaisa: 'messageOveragePaisa',
+  aiReplyOveragePaisa: 'aiReplyOveragePaisa',
+  overageApproved: 'overageApproved',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
