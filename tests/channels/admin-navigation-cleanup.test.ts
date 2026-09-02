@@ -26,6 +26,7 @@ test("Super Admin onboarding separates self-serve and admin-assisted paths", () 
   const source = readFileSync(resolve(process.cwd(), "app/admin/onboard/page.tsx"), "utf8");
   assert.match(source, /Option 1 · Self-serve/);
   assert.match(source, /Option 2 · Admin-assisted/);
+  assert.match(source, /!text-white hover:bg/);
 });
 test("customer register exposes governed pause, suspend and remove controls", () => {
   const source = readFileSync(resolve(process.cwd(), "components/admin/customer-lifecycle-actions.tsx"), "utf8");
