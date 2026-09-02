@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-server";
 import {
   createManualInvoice,
+  addConnectorBilling,
+  grantComplimentarySubscription,
   createPlatformIncident,
   markInvoicePaid,
   resolvePlatformIncident,
@@ -28,6 +30,23 @@ export async function PATCH(request: Request, context: { params: Promise<{ organ
       if (!planCode) return NextResponse.json({ error: "Select a billing plan" }, { status: 400 });
       const subscription = await updateOrganizationPlan({ organizationId, planCode, actorEmail: user.username });
       return NextResponse.json({ subscription });
+    }
+
+    if (action === "GRANT_COMPLIMENTARY") {
+      const planCode = String(payload?.planCode || "").trim().toUpperCase();
+      const reason = String(payload?.reason || "").trim();
+      const endsAt = new Date(String(payload?.endsAt || ""));
+      if (!planCode || !reason || Number.isNaN(endsAt.getTime())) return NextResponse.json({ error: "Plan, future expiry date and reason are required" }, { status: 400 });
+      const subscription = await grantComplimentarySubscription({ organizationId, planCode, endsAt, reason, actorEmail: user.username });
+      return NextResponse.json({ subscription });
+    }
+
+    if (action === "ADD_CONNECTOR") {
+      const category = String(payload?.category || "").trim().toUpperCase();
+      const name = String(payload?.name || "").trim();
+      if (!category || !name) return NextResponse.json({ error: "Connector category and name are required" }, { status: 400 });
+      const addon = await addConnectorBilling({ organizationId, category, name, setupFeePaisa: rupeesToPaisa(payload?.setupFeeRupees), recurringFeePaisa: rupeesToPaisa(payload?.recurringFeeRupees), billingInterval: String(payload?.billingInterval || "ONE_TIME").trim().toUpperCase(), externalFeeNote: String(payload?.externalFeeNote || "").trim() || null, notes: String(payload?.notes || "").trim() || null, actorEmail: user.username });
+      return NextResponse.json({ addon });
     }
 
     if (action === "CREATE_INVOICE") {

@@ -262,6 +262,32 @@ export async function updateOrganizationPlan(input: {
   return subscription;
 }
 
+export async function grantComplimentarySubscription(input: { organizationId: string; planCode: string; endsAt: Date; reason: string; actorEmail: string }) {
+  const db = getDb();
+  if (!db) return null;
+  if (input.endsAt <= new Date()) throw new Error("Complimentary expiry must be in the future.");
+  const plans = await ensureBillingPlans();
+  const plan = plans.find((item) => item.code === input.planCode.toUpperCase() && item.code !== "TRIAL");
+  if (!plan) throw new Error("Select a paid plan entitlement for complimentary access.");
+  const now = new Date();
+  return db.$transaction(async (tx) => {
+    await tx.organization.update({ where: { id: input.organizationId }, data: { plan: plan.code } });
+    const subscription = await tx.subscription.upsert({ where: { organizationId: input.organizationId }, update: { planId: plan.id, status: "COMPLIMENTARY", paymentProvider: "COMPLIMENTARY", currentPeriodStart: now, currentPeriodEnd: input.endsAt, trialEndsAt: null, graceEndsAt: null, complimentaryEndsAt: input.endsAt, complimentaryReason: input.reason, complimentaryGrantedBy: input.actorEmail }, create: { organizationId: input.organizationId, planId: plan.id, status: "COMPLIMENTARY", paymentProvider: "COMPLIMENTARY", currentPeriodStart: now, currentPeriodEnd: input.endsAt, complimentaryEndsAt: input.endsAt, complimentaryReason: input.reason, complimentaryGrantedBy: input.actorEmail } });
+    await tx.platformAuditLog.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, actorRole: "SUPER_ADMIN", action: "COMPLIMENTARY_ACCESS_GRANTED", targetType: "Subscription", targetId: subscription.id, summary: `Complimentary ${plan.name} granted until ${input.endsAt.toISOString().slice(0,10)}`, metadata: { planCode: plan.code, endsAt: input.endsAt.toISOString(), reason: input.reason } } });
+    return subscription;
+  });
+}
+
+export async function addConnectorBilling(input: { organizationId: string; category: string; name: string; setupFeePaisa: number; recurringFeePaisa: number; billingInterval: string; externalFeeNote?: string | null; notes?: string | null; actorEmail: string }) {
+  const db = getDb();
+  if (!db) return null;
+  return db.$transaction(async (tx) => {
+    const addon = await tx.billingAddon.create({ data: { organizationId: input.organizationId, category: input.category, name: input.name, setupFeePaisa: input.setupFeePaisa, recurringFeePaisa: input.recurringFeePaisa, billingInterval: input.billingInterval, externalFeeNote: input.externalFeeNote || null, notes: input.notes || null, createdBy: input.actorEmail } });
+    await tx.platformAuditLog.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, actorRole: "SUPER_ADMIN", action: "CONNECTOR_ADDON_CREATED", targetType: "BillingAddon", targetId: addon.id, summary: `${input.name} connector billing added`, metadata: { category: input.category, setupFeePaisa: input.setupFeePaisa, recurringFeePaisa: input.recurringFeePaisa, billingInterval: input.billingInterval } } });
+    return addon;
+  });
+}
+
 export async function createManualInvoice(input: {
   organizationId: string;
   actorEmail: string;
@@ -519,6 +545,7 @@ export async function getCustomerBillingDetail(organizationId: string) {
     include: {
       subscription: { include: { plan: true } },
       invoices: { orderBy: { createdAt: "desc" }, take: 10 },
+      billingAddons: { orderBy: { createdAt: "desc" } },
       incidents: { orderBy: { createdAt: "desc" }, take: 10 },
       auditLogs: { orderBy: { createdAt: "desc" }, take: 20 }
     }
@@ -541,10 +568,12 @@ export async function getBillingCommandCenter() {
   const organizations = await db.organization.findMany({
     include: {
       onboarding: true,
+      botProfile: true,
       subscription: { include: { plan: true } },
       invoices: { orderBy: { createdAt: "desc" }, take: 5 },
       incidents: { where: { status: { not: "RESOLVED" } }, orderBy: { createdAt: "desc" } },
-      supportTickets: { where: { status: { notIn: ["RESOLVED", "CLOSED"] } } }
+      supportTickets: { where: { status: { notIn: ["RESOLVED", "CLOSED"] } } },
+      billingAddons: { orderBy: { createdAt: "desc" } }
     },
     orderBy: { updatedAt: "desc" }
   });

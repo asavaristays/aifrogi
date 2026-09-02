@@ -36,7 +36,7 @@ export async function reconcileSubscriptionLifecycleForOrganization(organization
   if (!db) return { state: "UNAVAILABLE", deleted: false };
   let subscription = await db.subscription.findUnique({ where: { organizationId }, include: { plan: true, organization: { select: { id: true, name: true, ownerName: true, ownerEmail: true } } } });
   if (!subscription) return { state: "MISSING", deleted: false };
-  const expiry = subscription.plan.code === "TRIAL" ? subscription.trialEndsAt : subscription.currentPeriodEnd;
+  const expiry = subscription.status === "COMPLIMENTARY" ? subscription.complimentaryEndsAt : subscription.plan.code === "TRIAL" ? subscription.trialEndsAt : subscription.currentPeriodEnd;
   if (!expiry) return { state: subscription.status, deleted: false };
   const remainingMs = expiry.getTime() - now.getTime();
   const notice = (action: string, subject: string, heading: string, message: string, deadline?: Date | null) => sendNotifications ? notifyOnce({ organizationId, subscriptionId: subscription!.id, ownerEmail: subscription!.organization.ownerEmail, ownerName: subscription!.organization.ownerName, organizationName: subscription!.organization.name, action, subject, heading, message, deadline }) : Promise.resolve(false);
@@ -47,7 +47,7 @@ export async function reconcileSubscriptionLifecycleForOrganization(organization
     return { state: subscription.status, deleted: false };
   }
 
-  if (["TRIALING", "ACTIVE"].includes(subscription.status)) {
+  if (["TRIALING", "ACTIVE", "COMPLIMENTARY"].includes(subscription.status)) {
     const graceEndsAt = addDays(expiry, SUBSCRIPTION_GRACE_DAYS);
     subscription = await db.subscription.update({ where: { id: subscription.id }, data: { status: "GRACE", graceEndsAt }, include: { plan: true, organization: { select: { id: true, name: true, ownerName: true, ownerEmail: true } } } });
     await db.platformAuditLog.create({ data: { organizationId, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM", action: "SUBSCRIPTION_GRACE_STARTED", targetType: "Subscription", targetId: subscription.id, summary: `${subscription.plan.name} expired; 3-day grace period started and data remains preserved.`, metadata: { graceEndsAt: graceEndsAt.toISOString() } } });

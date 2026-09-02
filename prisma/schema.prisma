@@ -315,6 +315,7 @@ model Organization {
   supportTickets       SupportTicket[]
   subscription         Subscription?
   invoices             BillingInvoice[]
+  billingAddons        BillingAddon[]
   usageRecords         UsageRecord[]
   incidents            PlatformIncident[]
   auditLogs            PlatformAuditLog[]
@@ -994,12 +995,37 @@ model Subscription {
   currentPeriodEnd       DateTime?
   cancelAtPeriodEnd      Boolean          @default(false)
   graceEndsAt            DateTime?
+  complimentaryEndsAt    DateTime?
+  complimentaryReason    String?          @db.Text
+  complimentaryGrantedBy String?
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
   invoices               BillingInvoice[]
 
   @@index([status, currentPeriodEnd])
   @@index([planId])
+}
+
+model BillingAddon {
+  id                 String       @id @default(cuid())
+  organizationId     String
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category           String
+  name               String
+  setupFeePaisa      Int          @default(0)
+  recurringFeePaisa  Int          @default(0)
+  externalFeeNote    String?      @db.Text
+  billingInterval    String       @default("ONE_TIME")
+  provisioningStatus String       @default("REQUESTED")
+  paymentStatus      String       @default("UNBILLED")
+  activatedAt        DateTime?
+  notes              String?      @db.Text
+  createdBy          String
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([organizationId, provisioningStatus])
+  @@index([paymentStatus])
 }
 
 model BillingInvoice {

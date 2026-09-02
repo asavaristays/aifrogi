@@ -99,6 +99,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
           plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}
           initialPlan={billing.subscription.plan.code}
           invoices={billing.organization.invoices.map((invoice) => ({ id: invoice.id, invoiceNumber: invoice.invoiceNumber, status: invoice.status, totalPaisa: invoice.totalPaisa }))}
+          addons={billing.organization.billingAddons.map((addon) => ({ id: addon.id, name: addon.name, category: addon.category, provisioningStatus: addon.provisioningStatus, paymentStatus: addon.paymentStatus, setupFeePaisa: addon.setupFeePaisa, recurringFeePaisa: addon.recurringFeePaisa }))}
         /> : null}
         <BotSubscriptionConfig
           organizationId={organization.id}
