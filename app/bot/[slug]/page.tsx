@@ -5,6 +5,7 @@ import { WebsiteBotEmbed } from "@/components/website-bot/website-bot-embed";
 import { getDb } from "@/lib/db";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 
 export const dynamic = "force-dynamic";
 
@@ -34,11 +35,12 @@ export default async function StandaloneWebsiteBotPage({ params }: { params: Pro
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) notFound();
   const name = bot.organization?.name || bot.name;
+  const settings = await readKnowledgeSettings(slug);
 
   return <main className="min-h-dvh bg-[#050505] px-3 py-4 sm:px-6 sm:py-8">
     <div className="mx-auto flex min-h-[calc(100dvh-2rem)] max-w-[460px] flex-col gap-3 sm:min-h-[calc(100dvh-4rem)]">
       <WebsiteBotDeliveryActions botName={`${name} AI Assistant`} />
-      <div className="min-h-0 flex-1"><WebsiteBotEmbed slug={slug} demo={bot.organization?.isDemo === true} botName={profile.personaName || `${name} AI`} /></div>
+      <div className="min-h-0 flex-1"><WebsiteBotEmbed slug={slug} demo={bot.organization?.isDemo === true} botName={profile.personaName || `${name} AI`} welcomeMessage={settings.welcomeMessage} themeColor={settings.themeColor} logoUrl={settings.logoUrl} /></div>
     </div>
   </main>;
 }

@@ -35,6 +35,9 @@ export async function PATCH(request: Request) {
       autoRefreshHours: typeof payload?.autoRefreshHours === "number" ? payload.autoRefreshHours : undefined,
       customInstructions: typeof payload?.customInstructions === "string" ? payload.customInstructions : undefined,
       handoffTopics: Array.isArray(payload?.handoffTopics) ? payload.handoffTopics.map(String) : undefined,
+      welcomeMessage: typeof payload?.welcomeMessage === "string" ? payload.welcomeMessage : undefined,
+      themeColor: typeof payload?.themeColor === "string" ? payload.themeColor : undefined,
+      logoUrl: typeof payload?.logoUrl === "string" ? payload.logoUrl : undefined,
       status: typeof payload?.sourceUrl === "string" ? "DRAFT" : undefined
     });
     return NextResponse.json({ ok: true, settings });

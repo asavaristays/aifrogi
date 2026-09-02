@@ -42,6 +42,10 @@ export function KnowledgeWorkspace({
   const [entryCategory, setEntryCategory] = useState("General");
   const [entryGapId, setEntryGapId] = useState<string | undefined>();
   const [savingEntry, setSavingEntry] = useState(false);
+  const [welcomeMessage, setWelcomeMessage] = useState(initialSummary.settings.welcomeMessage);
+  const [themeColor, setThemeColor] = useState(initialSummary.settings.themeColor);
+  const [logoUrl, setLogoUrl] = useState(initialSummary.settings.logoUrl);
+  const [savingAppearance, setSavingAppearance] = useState(false);
 
   const groupedPages = useMemo(() => {
     const groups = new Map<string, KnowledgePageSummary[]>();
@@ -72,6 +76,18 @@ export function KnowledgeWorkspace({
     } finally {
       setSaving(false);
     }
+  }
+
+  async function saveAppearance() {
+    setSavingAppearance(true); setNotice(null);
+    try {
+      const response = await fetch("/api/knowledge", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ welcomeMessage, themeColor, logoUrl }) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Could not save bot appearance.");
+      setSummary((current) => ({ ...current, settings: payload.settings }));
+      setNotice("Bot name, colour and welcome message saved. You can change them anytime.");
+    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not save bot appearance."); }
+    finally { setSavingAppearance(false); }
   }
 
   async function syncWebsite() {
@@ -211,30 +227,33 @@ export function KnowledgeWorkspace({
     }
   }
 
-  const sourceReady = summary.settings.status === "READY" && summary.pages.length > 0;
-  // A connected source is not the same as approved, publishable intelligence.
-  // Never present a tenant as customer-ready until the governed KB gate passes.
-  const ready = Boolean(summary.verification?.ready);
   const publishedCount = summary.entries.filter((item) => ["PUBLISHED", "APPROVED"].includes(item.status)).length;
   const pendingCount = summary.entries.length - publishedCount;
+  const sourceReady = summary.settings.status === "READY" && summary.pages.length > 0;
+  const quickTrial = !summary.kbGateEnabled;
+  const ready = quickTrial ? sourceReady && publishedCount >= 5 : Boolean(summary.verification?.ready);
 
   return <div className="product-surface min-h-screen">
     <header className="border-b border-[var(--border)] bg-white px-5 py-4 sm:px-8">
       <div className="mx-auto flex max-w-[1500px] flex-col gap-3 pl-12 lg:pl-0 sm:flex-row sm:items-end sm:justify-between">
         <div><p className="product-eyebrow">Your bot’s intelligence</p><h1 className="mt-1 text-2xl font-semibold">Teach your AI Bot</h1><p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">Add your website or files, check what the bot will say, and approve it. Nothing is used in a live answer without your approval.</p></div>
-        <div className="flex items-center gap-2"><span className={`status-pill ${ready ? "status-success" : summary.settings.status === "ERROR" ? "status-error" : "status-warning"}`}>{ready ? "Ready for customers" : sourceReady ? "Source connected · approval required" : "Setup in progress"}</span></div>
+        <div className="flex items-center gap-2"><span className={`status-pill ${ready ? "status-success" : summary.settings.status === "ERROR" ? "status-error" : "status-warning"}`}>{ready ? quickTrial ? "Trial ready for testing" : "Ready for customers" : sourceReady ? quickTrial ? `${publishedCount}/5 essential answers ready` : "Source connected · approval required" : "Setup in progress"}</span></div>
       </div>
     </header>
 
     <main className="mx-auto max-w-[1500px] space-y-5 px-5 py-6 sm:px-8">
       <section className="overflow-hidden rounded-[28px] bg-[#080808] text-white shadow-[0_28px_80px_rgba(0,0,0,.18)]">
         <div className="grid lg:grid-cols-[1.08fr_.92fr]"><div className="p-6 sm:p-8"><p className="text-[11px] font-bold uppercase tracking-[.18em] text-[#e2c66d]">Start here</p><h2 className="mt-3 max-w-xl text-2xl font-semibold tracking-[-.03em] sm:text-3xl">Give your bot information it can safely use.</h2><p className="mt-3 max-w-xl text-sm leading-6 text-white/60">The easiest option is your public website. You can also upload current documents or type an important answer yourself.</p><div className="mt-7 flex flex-wrap gap-3"><a href="#upload-knowledge" className="inline-flex min-h-11 items-center rounded-full bg-[#b38a20] px-5 text-sm font-semibold text-white">Upload files</a><a href="#manual-answer-form" className="inline-flex min-h-11 items-center rounded-full border border-white/18 px-5 text-sm font-semibold text-white">Add one answer</a></div></div><div className="border-t border-white/10 bg-white/[.04] p-6 sm:p-8 lg:border-l lg:border-t-0"><label className="text-xs font-semibold text-white/75">Your public website</label><input className="mt-3 min-h-12 w-full rounded-xl border border-white/14 bg-black/40 px-4 text-sm text-white outline-none placeholder:text-white/30 focus:border-[#d3aa42]" value={sourceUrl} onChange={(event) => setSourceUrl(event.target.value)} disabled={!canManage} placeholder="https://yourbusiness.com" />{canManage ? <button onClick={connectWebsite} disabled={syncing || !sourceUrl.trim()} className="mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-white text-sm font-bold text-black disabled:opacity-45"><Icon name="sparkles" />{syncing ? "Reading your website..." : summary.pages.length ? "Update website knowledge" : "Use my website"}</button> : null}<p className="mt-3 text-xs leading-5 text-white/45">We read public pages only. No website password or admin access is required.</p></div></div>
-        <div className="grid border-t border-white/10 sm:grid-cols-3">{[[summary.pages.length > 0 || summary.documents.length > 0,"1","Add information",summary.pages.length || summary.documents.length ? "Source connected" : "Website or files"],[publishedCount > 0 && pendingCount === 0,"2","Review answers",pendingCount ? `${pendingCount} answer${pendingCount === 1 ? "" : "s"} awaiting approval` : publishedCount ? `${publishedCount} answer${publishedCount === 1 ? "" : "s"} live` : "No approved answers yet"],[Boolean(summary.verification?.ready),"3","Test and approve",summary.verification?.ready ? "Ready for customers" : `${summary.verification?.coverage.percentage || 0}% of required topics covered`]].map(([complete,number,title,copy]) => <div key={String(number)} className="flex items-start gap-3 border-white/10 p-5 sm:border-r last:border-r-0"><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${complete ? "bg-[#31c99a] text-black" : "bg-white/10 text-[#e2c66d]"}`}>{complete ? "✓" : number}</span><span><strong className="block text-sm">{title}</strong><small className="mt-1 block text-white/45">{copy}</small></span></div>)}</div>
+        <div className="grid border-t border-white/10 sm:grid-cols-3">{[[summary.pages.length > 0 || summary.documents.length > 0,"1","Connect website",summary.pages.length || summary.documents.length ? "Website ready" : "Enter the website"],[publishedCount >= (quickTrial ? 5 : 1) && pendingCount === 0,"2",quickTrial ? "Confirm essentials" : "Review answers",pendingCount ? `${pendingCount} awaiting approval` : `${publishedCount}/${quickTrial ? 5 : publishedCount || 1} answers ready`],[ready,"3",quickTrial ? "Test your trial bot" : "Test and approve",ready ? quickTrial ? "Ready now" : "Ready for customers" : quickTrial ? "Finish five essentials" : `${summary.verification?.coverage.percentage || 0}% of required topics covered`]].map(([complete,number,title,copy]) => <div key={String(number)} className="flex items-start gap-3 border-white/10 p-5 sm:border-r last:border-r-0"><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${complete ? "bg-[#31c99a] text-black" : "bg-white/10 text-[#e2c66d]"}`}>{complete ? "✓" : number}</span><span><strong className="block text-sm">{title}</strong><small className="mt-1 block text-white/45">{copy}</small></span></div>)}</div>
       </section>
 
       {notice ? <div className="rounded-xl border border-[#dbe8ff] bg-[var(--info-soft)] px-4 py-3 text-sm text-[#385d8e]">{notice}</div> : null}
 
-      {!ready && publishedCount > 0 && summary.verification?.coverage.missing.length ? <section className="rounded-2xl border border-[#e4cf8e] bg-[#fffaf0] p-5 sm:p-6"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="product-eyebrow">Your next action</p><h2 className="mt-1 text-xl font-semibold">Complete the required customer questions.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">Your {publishedCount} approved answer{publishedCount === 1 ? " is" : "s are"} live. To prepare this bot for launch, add correct answers for at least {Math.max(0, 8 - (summary.verification.coverage.covered || 0))} more required topic{Math.max(0, 8 - (summary.verification.coverage.covered || 0)) === 1 ? "" : "s"}.</p></div><span className="status-pill status-warning">{summary.verification.coverage.percentage}% complete</span></div><div className="mt-5 grid gap-2 md:grid-cols-2">{summary.verification.coverage.missing.map((requiredQuestion) => <div key={requiredQuestion} className="flex items-center justify-between gap-3 rounded-xl border border-[#eadcae] bg-white px-4 py-3"><span className="text-sm font-medium">{requiredQuestion}</span><button onClick={() => startRequiredAnswer(requiredQuestion)} className="shrink-0 rounded-full bg-[#101010] px-4 py-2 text-xs font-semibold text-white">Add answer</button></div>)}</div></section> : null}
+      {quickTrial ? <section className="rounded-2xl border border-[var(--border)] bg-white p-5 sm:p-6"><p className="product-eyebrow">Quick trial · appearance</p><div className="mt-2 grid gap-4 lg:grid-cols-[1fr_160px_1fr_auto] lg:items-end"><label><span className="field-label">Welcome message</span><input className="product-input mt-2" value={welcomeMessage} onChange={(event) => setWelcomeMessage(event.target.value)} placeholder="Hello. How can I help?" /></label><label><span className="field-label">Bot colour</span><div className="mt-2 flex min-h-11 items-center gap-2 rounded-md border border-[var(--border)] px-3"><input type="color" value={themeColor} onChange={(event) => setThemeColor(event.target.value)} className="h-7 w-9 cursor-pointer border-0 bg-transparent" /><span className="text-xs font-semibold">{themeColor}</span></div></label><label><span className="field-label">Logo URL (optional)</span><input className="product-input mt-2" value={logoUrl} onChange={(event) => setLogoUrl(event.target.value)} placeholder="https://yourwebsite.com/logo.png" /></label><button onClick={saveAppearance} disabled={savingAppearance} className="min-h-11 rounded-full bg-[#9a7411] px-5 text-sm font-semibold text-white disabled:opacity-50">{savingAppearance ? "Saving…" : "Save appearance"}</button></div></section> : null}
+
+      {quickTrial && ready ? <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6"><p className="product-eyebrow">Quick trial setup complete</p><div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-xl font-semibold">Your bot is ready to test.</h2><p className="mt-1 text-sm text-[var(--text-muted)]">Ask five real customer questions. Documents and additional fine-tuning can be added later.</p></div><a href="#test-your-bot" className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#101010] px-5 text-sm font-semibold text-white">Test my bot →</a></div></section> : null}
+
+      {!quickTrial && !ready && publishedCount > 0 && summary.verification?.coverage.missing.length ? <section className="rounded-2xl border border-[#e4cf8e] bg-[#fffaf0] p-5 sm:p-6"><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="product-eyebrow">Your next action</p><h2 className="mt-1 text-xl font-semibold">Complete the required customer questions.</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">Your {publishedCount} approved answer{publishedCount === 1 ? " is" : "s are"} live. To prepare this governed bot for full launch, add correct answers for at least {Math.max(0, 8 - (summary.verification.coverage.covered || 0))} more required topic{Math.max(0, 8 - (summary.verification.coverage.covered || 0)) === 1 ? "" : "s"}.</p></div><span className="status-pill status-warning">{summary.verification.coverage.percentage}% complete</span></div><div className="mt-5 grid gap-2 md:grid-cols-2">{summary.verification.coverage.missing.map((requiredQuestion) => <div key={requiredQuestion} className="flex items-center justify-between gap-3 rounded-xl border border-[#eadcae] bg-white px-4 py-3"><span className="text-sm font-medium">{requiredQuestion}</span><button onClick={() => startRequiredAnswer(requiredQuestion)} className="shrink-0 rounded-full bg-[#101010] px-4 py-2 text-xs font-semibold text-white">Add answer</button></div>)}</div></section> : null}
 
       <details className="group rounded-2xl border border-[var(--border)] bg-white"><summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4"><span><strong className="block text-sm">Readiness and safety checks</strong><small className="mt-1 block text-[var(--text-muted)]">Optional details for administrators</small></span><span className="text-[var(--primary-strong)] group-open:rotate-90">→</span></summary><section className="grid gap-3 border-t border-[var(--border)] p-4 sm:grid-cols-2 xl:grid-cols-4">
         <Metric label="Category coverage" value={`${summary.verification?.coverage.percentage || 0}%`} helper="80% required to go live" tone="blue" />
@@ -243,6 +262,7 @@ export function KnowledgeWorkspace({
         <Metric label="Preparation gate" value={summary.verification?.ready ? "Ready" : "Blocked"} helper={summary.kbGateEnabled ? "KB Gate 1.0 enforced" : "Legacy profile"} tone="amber" />
       </section></details>
 
+      <span id="test-your-bot" className="block scroll-mt-6" aria-hidden="true" />
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="space-y-5 [&>section:first-child]:hidden">
           <section className="soft-card rounded-lg p-5">

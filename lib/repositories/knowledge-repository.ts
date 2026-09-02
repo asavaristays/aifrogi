@@ -11,6 +11,9 @@ export type KnowledgeSettings = {
   autoRefreshHours: number;
   customInstructions: string;
   handoffTopics: string[];
+  welcomeMessage: string;
+  themeColor: string;
+  logoUrl: string;
   lastCrawledAt: string | null;
   pageCount: number;
   buckets: string[];
@@ -48,6 +51,9 @@ function defaults(propertySlug: string): KnowledgeSettings {
     autoRefreshHours: 6,
     customInstructions: "Answer the question first, remain concise, and ask no more than one useful follow-up question.",
     handoffTopics: DEFAULT_HANDOFF_TOPICS,
+    welcomeMessage: "Hello. How can I help with your business enquiry today?",
+    themeColor: "#8a6a16",
+    logoUrl: "",
     lastCrawledAt: null,
     pageCount: 0,
     buckets: [],
@@ -88,6 +94,9 @@ export async function writeKnowledgeSettings(
     handoffTopics: Array.isArray(input.handoffTopics)
       ? input.handoffTopics.map((value) => String(value).trim()).filter(Boolean).slice(0, 12)
       : current.handoffTopics,
+    welcomeMessage: String(input.welcomeMessage ?? current.welcomeMessage).trim().slice(0, 300) || current.welcomeMessage,
+    themeColor: /^#[0-9a-f]{6}$/i.test(String(input.themeColor || "")) ? String(input.themeColor) : current.themeColor,
+    logoUrl: String(input.logoUrl ?? current.logoUrl).trim().slice(0, 500),
     buckets: Array.isArray(input.buckets) ? [...new Set(input.buckets.map(String).filter(Boolean))].sort() : current.buckets,
     updatedAt: new Date().toISOString()
   };
@@ -96,4 +105,3 @@ export async function writeKnowledgeSettings(
   await writeFile(settingsPath(propertySlug), JSON.stringify(next, null, 2), "utf8");
   return next;
 }
-
