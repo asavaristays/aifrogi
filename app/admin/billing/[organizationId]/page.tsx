@@ -61,14 +61,10 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
       addons={organization.billingAddons.map((addon) => ({ id: addon.id, name: addon.name, category: addon.category, provisioningStatus: addon.provisioningStatus, paymentStatus: addon.paymentStatus, setupFeePaisa: addon.setupFeePaisa, recurringFeePaisa: addon.recurringFeePaisa }))}
     />
 
-    <div className="grid gap-6 xl:grid-cols-2">
+    <div>
       <Record title="Invoices and payments">
         {organization.invoices.map((invoice) => <div key={invoice.id} className="border-b border-black/6 py-4 last:border-0"><div className="flex items-start justify-between gap-4"><span><strong className="block text-sm">{invoice.invoiceNumber}</strong><small className="mt-1 block text-[#68645c]">{invoice.status.replaceAll("_", " ")} · {date(invoice.createdAt)}</small></span><strong>{formatMoney(invoice.totalPaisa)}</strong></div>{invoice.paymentReference ? <p className="mt-2 text-xs font-semibold text-[#17694f]">Payment reference: {invoice.paymentReference}</p> : null}</div>)}
         {!organization.invoices.length ? <p className="text-sm text-[#68645c]">No invoices issued.</p> : null}
-      </Record>
-      <Record title="Billing audit evidence">
-        {organization.auditLogs.map((log) => <div key={log.id} className="border-l-2 border-[#6d5310] py-1 pl-4"><strong className="block text-sm">{log.summary}</strong><small className="mt-1 block text-[#68645c]">{log.actorEmail} · {date(log.createdAt)}</small></div>)}
-        {!organization.auditLogs.length ? <p className="text-sm text-[#68645c]">No billing actions recorded.</p> : null}
       </Record>
     </div>
   </main>;

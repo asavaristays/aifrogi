@@ -26,6 +26,8 @@ test("customer billing opens a dedicated commercial record", () => {
     const controls = readFileSync(resolve(process.cwd(), "components/admin/billing-controls.tsx"), "utf8");
     assert.match(`${detail}\n${controls}`, new RegExp(label));
   }
+  assert.doesNotMatch(detail, /Billing audit evidence/);
+  assert.doesNotMatch(detail, /organization\.auditLogs/);
 });
 
 test("manual payment renewal is explicit and audited", () => {
