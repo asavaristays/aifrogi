@@ -235,7 +235,10 @@ export async function updateOrganizationPlan(input: {
         currentPeriodStart: now,
         currentPeriodEnd,
         trialEndsAt: plan.trialDays ? trialEnd(now, plan.trialDays) : null,
-        paymentProvider: "MANUAL"
+        paymentProvider: "MANUAL",
+        complimentaryEndsAt: null,
+        complimentaryReason: null,
+        complimentaryGrantedBy: null
       },
       create: {
         organizationId: input.organizationId,
@@ -440,6 +443,7 @@ export async function markInvoicePaid(input: {
   invoiceId: string;
   actorEmail: string;
   paymentReference: string;
+  renewSubscription?: boolean;
 }) {
   const db = getDb();
   if (!db) return null;
@@ -452,10 +456,18 @@ export async function markInvoicePaid(input: {
         paymentReference: input.paymentReference
       }
     });
-    await tx.subscription.updateMany({
-      where: { organizationId: input.organizationId },
-      data: { status: "ACTIVE", graceEndsAt: null }
-    });
+    if (input.renewSubscription) {
+      const subscription = await tx.subscription.findUnique({ where: { organizationId: input.organizationId }, include: { plan: true } });
+      if (!subscription) throw new Error("Subscription could not be renewed.");
+      const now = new Date();
+      const periodStart = subscription.currentPeriodEnd && subscription.currentPeriodEnd > now ? subscription.currentPeriodEnd : now;
+      const periodEnd = billingPeriodEnd(periodStart, subscription.plan.billingInterval);
+      if (!periodEnd) throw new Error("The selected plan does not support manual renewal.");
+      await tx.subscription.update({
+        where: { organizationId: input.organizationId },
+        data: { status: "ACTIVE", paymentProvider: "MANUAL", currentPeriodStart: periodStart, currentPeriodEnd: periodEnd, trialEndsAt: null, graceEndsAt: null, complimentaryEndsAt: null, complimentaryReason: null, complimentaryGrantedBy: null }
+      });
+    }
     await tx.platformAuditLog.create({
       data: {
         organizationId: input.organizationId,
@@ -464,8 +476,8 @@ export async function markInvoicePaid(input: {
         action: "INVOICE_MARKED_PAID",
         targetType: "BillingInvoice",
         targetId: invoice.id,
-        summary: `${invoice.invoiceNumber} marked paid`,
-        metadata: { paymentReference: input.paymentReference }
+        summary: `${invoice.invoiceNumber} marked paid${input.renewSubscription ? " and subscription renewed" : ""}`,
+        metadata: { paymentReference: input.paymentReference, renewSubscription: Boolean(input.renewSubscription) }
       }
     });
     return invoice;

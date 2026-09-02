@@ -17,6 +17,26 @@ test("complimentary grants require an expiry and reason", () => {
   assert.match(api, /future expiry date and reason are required/);
 });
 
+test("customer billing opens a dedicated commercial record", () => {
+  const register = readFileSync(resolve(process.cwd(), "app/admin/billing/page.tsx"), "utf8");
+  const detail = readFileSync(resolve(process.cwd(), "app/admin/billing/[organizationId]/page.tsx"), "utf8");
+  assert.match(register, /\/admin\/billing\/\$\{organization\.id\}/);
+  assert.doesNotMatch(register, /\/admin\/customers\/\$\{organization\.id\}#billing-operations/);
+  for (const label of ["Operator billing controls", "Complimentary access", "Confirm manual payment", "Connector add-on"]) {
+    const controls = readFileSync(resolve(process.cwd(), "components/admin/billing-controls.tsx"), "utf8");
+    assert.match(`${detail}\n${controls}`, new RegExp(label));
+  }
+});
+
+test("manual payment renewal is explicit and audited", () => {
+  const controls = readFileSync(resolve(process.cwd(), "components/admin/billing-controls.tsx"), "utf8");
+  const billing = readFileSync(resolve(process.cwd(), "lib/billing-super-admin.ts"), "utf8");
+  assert.match(controls, /renewSubscription/);
+  assert.match(controls, /Turn off for connector or service-only invoices/);
+  assert.match(billing, /subscription renewed/);
+  assert.match(billing, /renewSubscription: Boolean/);
+});
+
 test("connector billing uses frontend pricing categories", () => {
   const controls = readFileSync(resolve(process.cwd(), "components/admin/billing-controls.tsx"), "utf8");
   for (const category of ["Google Sheets / Calendar", "CRM", "E-commerce", "PMS / Channel Manager", "Custom API"]) assert.match(controls, new RegExp(category.replace("/", "\\/")));

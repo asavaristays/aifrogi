@@ -75,7 +75,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ organ
       if (!invoiceId || !paymentReference) {
         return NextResponse.json({ error: "Invoice and payment reference are required" }, { status: 400 });
       }
-      const invoice = await markInvoicePaid({ organizationId, invoiceId, actorEmail: user.username, paymentReference });
+      const invoice = await markInvoicePaid({ organizationId, invoiceId, actorEmail: user.username, paymentReference, renewSubscription: payload?.renewSubscription === true });
       return NextResponse.json({ invoice });
     }
 

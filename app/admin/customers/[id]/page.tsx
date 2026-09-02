@@ -4,13 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { CustomerReviewActions } from "@/components/admin/customer-review-actions";
 import { CustomerFlowActions } from "@/components/admin/customer-flow-actions";
 import { BotSubscriptionConfig } from "@/components/admin/bot-subscription-config";
-import { BillingControls } from "@/components/admin/billing-controls";
 import { ProductFlowCenter } from "@/components/setup/product-flow-center";
 import { getCurrentUser } from "@/lib/auth-server";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
 import { getTrialWindow } from "@/lib/onboarding-guidance";
 import { loadOrganizationProductFlow } from "@/lib/product-flow";
-import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
+import { formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-access";
 import { AppointmentJourneyAdminControl } from "@/components/admin/appointment-journey-admin-control";
 import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-service";
@@ -24,10 +23,9 @@ export const revalidate = 0;
 export default async function AdminCustomerDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ onboarding?: string }> }) {
   const { id } = await params;
   const requestedTrack = (await searchParams).onboarding;
-  const [organization, billing, plans, flow, user, appointmentWorkspaces] = await Promise.all([
+  const [organization, billing, flow, user, appointmentWorkspaces] = await Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id),
-    ensureBillingPlans(),
     loadOrganizationProductFlow(id),
     getCurrentUser(),
     getAppointmentJourneyAdminWorkspaces(id)
@@ -92,15 +90,9 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
         </>}
       </section>}
 
-      <section id="billing-operations" className="mt-8 scroll-mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Super Admin · customer account</p><h2 className="mt-2 text-2xl font-black">Billing operations, documents and audit</h2>
+      <section id="billing-operations" className="mt-8 scroll-mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Super Admin · customer account</p><h2 className="mt-2 text-2xl font-black">Account summary, documents and audit</h2>
       <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-        {billing ? <BillingControls
-          organizationId={organization.id}
-          plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}
-          initialPlan={billing.subscription.plan.code}
-          invoices={billing.organization.invoices.map((invoice) => ({ id: invoice.id, invoiceNumber: invoice.invoiceNumber, status: invoice.status, totalPaisa: invoice.totalPaisa }))}
-          addons={billing.organization.billingAddons.map((addon) => ({ id: addon.id, name: addon.name, category: addon.category, provisioningStatus: addon.provisioningStatus, paymentStatus: addon.paymentStatus, setupFeePaisa: addon.setupFeePaisa, recurringFeePaisa: addon.recurringFeePaisa }))}
-        /> : null}
+        {billing ? <section className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-6 lg:col-span-2"><p className="product-eyebrow">Commercial record</p><h3 className="mt-2 text-xl font-black">{billing.subscription.plan.name} · {billing.subscription.status.replaceAll("_", " ")}</h3><p className="mt-2 text-sm leading-6 text-[#68645c]">Plan changes, complimentary access, manual payments, invoices and connector charges are maintained in Billing Operations.</p><Link href={`/admin/billing/${organization.id}`} className="mt-4 inline-flex rounded-full bg-[#101010] px-5 py-2.5 text-sm font-bold text-white">Open billing record</Link></section> : null}
         {whatsappEnabled ? <BotSubscriptionConfig
           organizationId={organization.id}
           initialPlan={organization.plan}
