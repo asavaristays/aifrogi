@@ -341,6 +341,39 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-09-02 - Final pre-pilot launch audit
+
+### Implemented
+- Added a reusable read-only client readiness audit covering bot, KB, installation, connector, subscription, evidence and feedback state.
+- Added the omitted admin and onboarding suites to one 170-case core release gate.
+- Enabled production readiness monitoring every two minutes.
+
+### Verification evidence
+- Core tests: 170/170 passed.
+- TypeScript: passed; ESLint: zero errors.
+- Sitemap: 36/36 published URLs reachable.
+- Live browser: key desktop/mobile routes, mobile navigation, yearly pricing and connector-download contrast verified.
+- Production readiness, Nginx, resources, automation, encrypted-backup checksum and Meta webhook enforcement verified.
+
+### Defects discovered and corrected
+- Reconciled stale Super Admin wording tests with the approved onboarding/dashboard design.
+- Corrected category acceptance testing to apply governed required-capability normalization.
+- Closed the suite-completeness gap that allowed these tests to sit outside `verify:all`.
+
+### Remaining limitations
+- The new Webtechnosys workspace has zero published claims, zero coverage, no installation detection and no real conversation evidence; it is not authorised to go live.
+- The AiFrogi TLS certificate is valid through 30 September 2026, but automatic renewal of its manual wildcard lineage fails. A replacement automatic-renewal dry run passed and awaits explicit production certificate-change approval.
+- External alert webhook and dedicated live cross-tenant test identities remain unconfigured.
+
+### Next fixed stage
+1. Complete Webtechnosys KB approval and reach the governed launch gate.
+2. Run acceptance conversations and confirm widget installation detection.
+3. Repair the production certificate lineage before relying on unattended renewal.
+
+Full evidence: `docs/AiFrogi-Pre-Pilot-Launch-Audit-2026-09-02.md`.
+
+---
+
 ## Template for the next entry
 
 ```markdown

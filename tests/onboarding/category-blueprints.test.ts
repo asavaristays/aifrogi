@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { BOT_BLUEPRINTS } from "../../lib/bot-blueprints";
-import { parseBotProfile } from "../../lib/bot-profile";
+import { normalizeCapabilitiesForCategory, parseBotProfile, type BotProfileInput } from "../../lib/bot-profile";
 
 test("every commercial bot category has a complete intelligence blueprint", () => {
   for (const [category, blueprint] of Object.entries(BOT_BLUEPRINTS)) {
@@ -18,18 +18,19 @@ test("every commercial bot category has a complete intelligence blueprint", () =
 
 test("Restaurant, Real Estate, and Education profiles are accepted as governed categories", () => {
   for (const category of ["RESTAURANT", "REAL_ESTATE", "EDUCATION"]) {
+    const governedCategory = category as BotProfileInput["category"];
     const parsed = parseBotProfile({
       category,
       operatingMode: "LEAD_CAPTURE",
       channels: ["WEBSITE"],
-      capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS"],
+      capabilities: normalizeCapabilitiesForCategory(governedCategory, ["ANSWER_QUESTIONS", "CAPTURE_LEADS"]),
       humanHandoffEnabled: true,
       actionApprovalNeeded: true,
       personaName: `${category} Assistant`,
       businessObjective: "Answer approved questions, qualify the enquiry, and hand it to the responsible team.",
       languages: ["English"]
     });
-    assert.equal(parsed.value?.category, category);
+    assert.equal(parsed.value?.category, category, parsed.error);
   }
 });
 

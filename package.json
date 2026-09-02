@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:channels": "node --import tsx --test tests/channels/*.test.ts",
+    "test:core": "node --import tsx --test tests/channels/*.test.ts tests/sovereign-intelligence/*.test.ts tests/admin/*.test.ts tests/onboarding/*.test.ts tests/ai-operations/*.test.ts tests/onboarding-workbook.test.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
@@ -32,7 +33,7 @@
     "verify:sovereign": "node --import tsx --test tests/sovereign-intelligence/*.test.ts",
     "verify:flow": "tsx scripts/verify-product-flow.ts",
     "verify:launch": "tsx scripts/verify-commercial-launch.ts",
-    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run verify:sovereign"
+    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
   },
   "dependencies": {
     "@prisma/adapter-pg": "latest",

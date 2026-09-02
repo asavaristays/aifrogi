@@ -9,10 +9,11 @@ const onboard = readFileSync(resolve(process.cwd(), "components/admin/admin-onbo
 
 test("Super Admin uses icon sidebar and a first-class pilot onboarding action", () => {
   assert.match(shell, /Super Admin navigation/);
-  assert.match(shell, /Onboard client/);
+  assert.match(shell, /Bot onboarding/);
   assert.match(shell, /\/admin\/onboard/);
   assert.match(shell, /rounded-\[30px\]/);
-  assert.match(dashboard, /Five pilots\. One clear launch path\./);
+  assert.match(dashboard, /Command Center/);
+  assert.match(dashboard, /A client moves through four gates\./);
 });
 
 test("pilot onboarding starts AI Bot without silently enabling WhatsApp", () => {
