@@ -455,6 +455,17 @@ a[class~="bg-[var(--gold-600)]"]:hover,
 button[class~="bg-[#8a6a16]"]:hover,
 a[class~="bg-[#8a6a16]"]:hover { color: #fff; }
 
+/* Reusable high-contrast treatment for dark CTA links and buttons. */
+.dark-primary-action,
+.dark-primary-action:hover,
+.dark-primary-action:focus-visible,
+a[class~="bg-[#101010]"],
+button[class~="bg-[#101010]"],
+a[class~="bg-black"],
+button[class~="bg-black"] {
+  color: #fff !important;
+}
+
 /* Super Admin dark actions must stay readable after the global link inheritance rule. */
 .admin-premium-canvas a.text-white,
 .admin-premium-canvas button.text-white {
