@@ -34,3 +34,8 @@ test("customer register exposes governed pause, suspend and remove controls", ()
   assert.match(source, /Suspend/);
   assert.match(source, /REMOVE_FROM_OPERATIONS/);
 });
+test("all dark Super Admin actions retain readable white labels", () => {
+  const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
+  assert.match(css, /\.admin-premium-canvas a\.text-white/);
+  assert.match(css, /color: #fff !important/);
+});

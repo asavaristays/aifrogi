@@ -455,6 +455,17 @@ a[class~="bg-[var(--gold-600)]"]:hover,
 button[class~="bg-[#8a6a16]"]:hover,
 a[class~="bg-[#8a6a16]"]:hover { color: #fff; }
 
+/* Super Admin dark actions must stay readable after the global link inheritance rule. */
+.admin-premium-canvas a.text-white,
+.admin-premium-canvas button.text-white {
+  color: #fff !important;
+}
+
+.admin-premium-canvas a.text-white:hover,
+.admin-premium-canvas button.text-white:hover {
+  color: #fff !important;
+}
+
 @keyframes leados-pulse {
   0%, 100% { opacity: 0.45; transform: scaleX(0.72); }
   50% { opacity: 1; transform: scaleX(1); }
