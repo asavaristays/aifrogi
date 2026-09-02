@@ -312,6 +312,22 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-09-02 - Management reporting discipline correction
+
+### Implemented
+- Replaced mixed decimal ratings, completion percentages and evidence bands with one evidence-band reporting model.
+- Separated deployed implementation, automated verification, production proof and external assurance.
+- Added explicit evidence requirements for Super Admin, billing, support, delivery-surface parity and reference-bot validation.
+
+### Verification evidence
+- Management report: `docs/AiFrogi-Management-Product-Status-2026-09-02.md`.
+- Report retains the deployed release and automated test evidence without converting synthetic results into a real-world accuracy claim.
+
+### Remaining limitations
+- The revised report itself does not raise any maturity band. Production journeys must produce the missing evidence.
+
+---
+
 ## Template for the next entry
 
 ```markdown
