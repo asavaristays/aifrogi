@@ -329,6 +329,18 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ---
 
+## 2026-09-02 - Public bot connector guide
+
+### Implemented
+- Added a category-by-category connector guide to the AI Bot installation page.
+- Separated capabilities available before a connector from live actions that require a verified external system.
+- Added a secure setup warning so customers do not place API keys, passwords or OTPs in the onboarding workbook.
+
+### Verification evidence
+- Production build and public-page verification are required with the release.
+
+---
+
 ## Template for the next entry
 
 ```markdown
