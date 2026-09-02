@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { Icon } from "@/components/icons";
+import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import type { KnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 
 type KnowledgePageSummary = { url: string; title: string; bucket: string; crawledAt: string };
@@ -35,6 +36,7 @@ export function KnowledgeWorkspace({
   const [answer, setAnswer] = useState<{ text: string; mode: string; sources: string[] } | null>(null);
   const [testing, setTesting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadNotice, setUploadNotice] = useState<string | null>(null);
   const [entryQuestion, setEntryQuestion] = useState("");
   const [entryAnswer, setEntryAnswer] = useState("");
   const [entryCategory, setEntryCategory] = useState("General");
@@ -115,15 +117,16 @@ export function KnowledgeWorkspace({
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
-    setUploading(true); setNotice(null);
+    setUploading(true); setNotice(null); setUploadNotice(null);
     try {
       const response = await fetch("/api/knowledge/documents", { method: "POST", body: formData });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "Could not upload this document.");
       await refreshGovernance();
       form.reset();
-      setNotice(payload.stagedCount ? `${payload.stagedCount} atomic claim suggestion${payload.stagedCount === 1 ? "" : "s"} extracted. Review every claim; none is live yet.` : "Source uploaded, but no safe atomic claim structure was detected. Add its facts manually; the raw document will not be used by AI.");
-    } catch (error) { setNotice(error instanceof Error ? error.message : "Could not upload this document."); }
+      const message = payload.stagedCount ? `${payload.stagedCount} atomic claim suggestion${payload.stagedCount === 1 ? "" : "s"} extracted. Review every claim; none is live yet.` : "Source uploaded, but no safe atomic claim structure was detected. Add its facts manually; the raw document will not be used by AI.";
+      setUploadNotice(message); setNotice(message);
+    } catch (error) { const message = error instanceof Error ? error.message : "Could not upload this document."; setUploadNotice(message); setNotice(message); }
     finally { setUploading(false); }
   }
 
@@ -237,7 +240,10 @@ export function KnowledgeWorkspace({
       </div>
 
       <section className="grid items-start gap-5 xl:grid-cols-2">
-        <div id="upload-knowledge" className="soft-card overflow-hidden rounded-lg"><div className="border-b border-[var(--border)] px-5 py-4"><p className="product-eyebrow">Trusted source evidence</p><h2 className="mt-1 text-lg font-semibold">Upload business knowledge</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Use current service, pricing, policy, contact and operating information. Approval verifies the source; extracted facts still require review.</p></div>{canManage ? <form onSubmit={uploadDocument} className="flex flex-col gap-3 border-b border-[var(--border)] bg-[var(--surface-soft)] px-5 py-4 sm:flex-row sm:items-end"><label className="min-w-0 flex-1"><span className="field-label">PDF, DOCX, TXT, Markdown, CSV, or JSON</span><input name="file" type="file" required accept=".pdf,.docx,.txt,.md,.csv,.json" className="mt-2 block w-full text-xs file:mr-3 file:rounded-md file:border-0 file:bg-[var(--primary-soft)] file:px-3 file:py-2 file:font-semibold file:text-[var(--primary-strong)]" /></label><button disabled={uploading} className="min-h-9 rounded-md bg-[#101010] px-4 text-xs font-semibold text-white disabled:opacity-55">{uploading ? "Extracting..." : "Upload source"}</button></form> : null}<div className="divide-y divide-[var(--border)]">{summary.documents.length ? summary.documents.map((item) => <DocumentRow key={item.id} item={item} canManage={canManage} onReview={reviewDocument} />) : <EmptyState title="No source files uploaded" copy="Add policies, service guides, pricing sheets, contact details, FAQs, or operating information." />}</div></div>
+        <div className="space-y-5">
+          {canManage ? <OnboardingWorkbookImport onImported={() => window.location.reload()} /> : null}
+          <div id="upload-knowledge" className="soft-card overflow-hidden rounded-lg"><div className="border-b border-[var(--border)] px-5 py-4"><p className="product-eyebrow">Trusted source evidence</p><h2 className="mt-1 text-lg font-semibold">Upload supporting documents</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Use this for current service, pricing, policy, contact and operating documents. Use the Excel importer above for the completed AiFrogi onboarding workbook.</p></div>{canManage ? <form onSubmit={uploadDocument} className="flex flex-col gap-3 border-b border-[var(--border)] bg-[var(--surface-soft)] px-5 py-4"><div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="min-w-0 flex-1"><span className="field-label">PDF, DOCX, TXT, Markdown, CSV, or JSON</span><input name="file" type="file" required accept=".pdf,.docx,.txt,.md,.csv,.json" className="mt-2 block w-full text-xs file:mr-3 file:rounded-md file:border-0 file:bg-[var(--primary-soft)] file:px-3 file:py-2 file:font-semibold file:text-[var(--primary-strong)]" /></label><button disabled={uploading} className="min-h-9 rounded-md bg-[#101010] px-4 text-xs font-semibold text-white disabled:opacity-55">{uploading ? "Extracting..." : "Upload source"}</button></div>{uploadNotice ? <p role="status" className={`text-xs font-semibold ${/could not|must be|no readable|upload a /i.test(uploadNotice) ? "text-red-700" : "text-[#176b50]"}`}>{uploadNotice}</p> : null}</form> : null}<div className="divide-y divide-[var(--border)]">{summary.documents.length ? summary.documents.map((item) => <DocumentRow key={item.id} item={item} canManage={canManage} onReview={reviewDocument} />) : <EmptyState title="No source files uploaded" copy="Add supporting policies, service guides, pricing sheets, contact details, FAQs, or operating information." />}</div></div>
+        </div>
 
         <div id="manual-answer-form" className="soft-card rounded-lg p-5"><p className="product-eyebrow">Verified claims</p><h2 className="mt-1 text-lg font-semibold">Atomic business truth</h2><p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">Each fact passes validation, conflict review, named field approval and conversational preview before publication.</p>{canManage ? <form onSubmit={saveEntry} className="mt-5 space-y-3"><label className="block"><span className="field-label">Customer question</span><input className="product-input mt-2" value={entryQuestion} onChange={(event) => setEntryQuestion(event.target.value)} required /></label><label className="block"><span className="field-label">Exact approved answer</span><textarea className="product-input mt-2 min-h-28 resize-y" value={entryAnswer} onChange={(event) => setEntryAnswer(event.target.value)} required /></label><div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="flex-1"><span className="field-label">Knowledge domain</span><input className="product-input mt-2" value={entryCategory} onChange={(event) => setEntryCategory(event.target.value)} /></label><button disabled={savingEntry} className="min-h-11 rounded-md bg-[var(--primary-strong)] px-4 text-xs font-semibold text-white disabled:opacity-55">{savingEntry ? "Validating..." : "Validate claim"}</button></div>{entryGapId ? <p className="rounded-md bg-[var(--info-soft)] px-3 py-2 text-xs text-[#385d8e]">This claim will resolve the selected knowledge gap.</p> : null}</form> : null}<div className="mt-5 divide-y divide-[var(--border)] border-t border-[var(--border)]">{summary.entries.length ? summary.entries.map((item) => <EntryRow key={item.id} item={item} preview={(summary.previews || []).find((preview) => preview.entryId === item.id && preview.status === "PENDING")} canManage={canManage} onReview={reviewEntry} />) : <EmptyState title="No verified claims" copy="Create precise claims for pricing, policy, product, and operational questions." />}</div></div>
       </section>

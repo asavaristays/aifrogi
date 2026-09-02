@@ -27,7 +27,9 @@ export async function extractKnowledgeDocument(file: File) {
   let text = "";
 
   if (file.type === "application/pdf") {
-    const { default: parsePdf } = await import("pdf-parse");
+    // The package root executes its bundled test fixture when loaded through
+    // the ESM production runtime. Import the parser implementation directly.
+    const { default: parsePdf } = await import("pdf-parse/lib/pdf-parse.js");
     const parsed = await parsePdf(buffer, { max: 50 });
     text = parsed.text || "";
   } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
