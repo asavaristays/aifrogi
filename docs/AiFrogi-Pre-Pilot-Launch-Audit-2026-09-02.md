@@ -90,9 +90,9 @@ Install the generated widget on the approved Webtechnosys page or use the standa
 
 Before public traffic, test identity, services, project start, required information, pricing boundary, timeline boundary, support, contact, prohibited commitments, data handling, an irrelevant weather question, a contextual return after that interruption, and human handover.
 
-### B4 — TLS renewal
+### Closed — TLS renewal
 
-The live certificate is valid through 30 September 2026, but its current wildcard lineage uses manual DNS authentication with no renewal hook. The Certbot renewal dry run fails. A safe staging dry run for a replacement non-wildcard certificate covering `aifrogi.com`, `www.aifrogi.com` and `app.aifrogi.com` succeeded. Production replacement requires explicit infrastructure approval, a saved Nginx configuration, certificate installation, Nginx validation/reload and a second renewal dry run.
+The failing manual wildcard lineage was replaced, after explicit approval, by an automatically renewable certificate covering `aifrogi.com`, `www.aifrogi.com` and `app.aifrogi.com`. The origin serves the new certificate through 1 December 2026, Nginx validation passed, application readiness remained healthy, and the unattended Certbot renewal simulation succeeded. The obsolete manual renewal entry and original Nginx configuration remain in `/var/backups/aifrogi/tls-20260902` for recovery.
 
 ## 6. Important non-blocking gaps for the first pilot
 
@@ -134,6 +134,6 @@ This is governed improvement, not uncontrolled self-learning.
 
 **Conditional go:** continue Webtechnosys preparation immediately.  
 **No-go:** do not expose the bot to real client traffic until B1–B3 pass.  
-**Infrastructure hold:** repair B4 before relying on unattended certificate renewal.
+**Infrastructure:** automatic certificate renewal is verified and no longer blocks the pilot.
 
 After B1–B3 pass, start with a monitored website-only pilot and no unverified external write action.

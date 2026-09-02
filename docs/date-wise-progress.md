@@ -362,13 +362,13 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 ### Remaining limitations
 - The new Webtechnosys workspace has zero published claims, zero coverage, no installation detection and no real conversation evidence; it is not authorised to go live.
-- The AiFrogi TLS certificate is valid through 30 September 2026, but automatic renewal of its manual wildcard lineage fails. A replacement automatic-renewal dry run passed and awaits explicit production certificate-change approval.
+- The previous manual wildcard renewal failed; it was replaced with an automatically renewable certificate for all three live AiFrogi hostnames. Nginx, live origin serving and the renewal dry run passed. Recoverable configuration backups are retained under `/var/backups/aifrogi/tls-20260902`.
 - External alert webhook and dedicated live cross-tenant test identities remain unconfigured.
 
 ### Next fixed stage
 1. Complete Webtechnosys KB approval and reach the governed launch gate.
 2. Run acceptance conversations and confirm widget installation detection.
-3. Repair the production certificate lineage before relying on unattended renewal.
+3. Configure an external alert destination for readiness-state changes.
 
 Full evidence: `docs/AiFrogi-Pre-Pilot-Launch-Audit-2026-09-02.md`.
 
