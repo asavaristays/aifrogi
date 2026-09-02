@@ -92,7 +92,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
         </>}
       </section>}
 
-      <section className="mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Shared account operations</p><h2 className="mt-2 text-2xl font-black">Billing, documents and audit</h2>
+      <section id="billing-operations" className="mt-8 scroll-mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Super Admin · customer account</p><h2 className="mt-2 text-2xl font-black">Billing operations, documents and audit</h2>
       <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
         {billing ? <BillingControls
           organizationId={organization.id}

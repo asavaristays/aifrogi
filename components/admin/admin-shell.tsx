@@ -11,7 +11,7 @@ const navigation = [
   { label: "Command center", href: "/admin", icon: "grid" as const },
   { label: "Customers", href: "/admin/customers", icon: "inbox" as const },
   { label: "WhatsApp AI Bot", href: "/admin/whatsapp-ai-bot", icon: "smartphone" as const },
-  { label: "Billing", href: "/admin/billing", icon: "bar-chart-3" as const },
+  { label: "Billing Operations", href: "/admin/billing", icon: "bar-chart-3" as const },
   { label: "Message Matrix", href: "/admin/message-matrix", icon: "message-circle" as const },
   { label: "Knowledge", href: "/admin/knowledge", icon: "file-text" as const },
   { label: "Intelligence Operations", href: "/admin/sovereign-intelligence", icon: "plug" as const },
