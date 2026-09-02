@@ -155,7 +155,7 @@ export function KnowledgeWorkspace({
   async function reviewEntry(id: string, action: "FIELD_APPROVE" | "GENERATE_PREVIEW" | "PREVIEW_APPROVE" | "PREVIEW_REJECT" | "PAUSE" | "RECONFIRM" | "DELETE", previewId?: string, hasConflict = false) {
     const supersedesId = hasConflict && action === "FIELD_APPROVE" ? window.prompt("Enter the exact claim ID this new version supersedes. Conflicts cannot be bypassed.") || undefined : undefined;
     if (hasConflict && action === "FIELD_APPROVE" && !supersedesId) return;
-    const reason = action === "PREVIEW_REJECT" || action === "PAUSE" ? window.prompt("Add the correction or pause reason:") || undefined : undefined;
+    const reason = action === "PREVIEW_REJECT" ? window.prompt("What should be corrected in this answer?") || undefined : undefined;
     const response = await fetch("/api/knowledge/entries", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action, previewId, supersedesId, reason }) });
     const payload = await response.json();
     if (!response.ok) { setNotice(payload.error || "Could not update this answer."); return; }
