@@ -194,7 +194,9 @@ export function KnowledgeWorkspace({
   }
 
   const sourceReady = summary.settings.status === "READY" && summary.pages.length > 0;
-  const ready = summary.kbGateEnabled ? Boolean(summary.verification?.ready) : sourceReady;
+  // A connected source is not the same as approved, publishable intelligence.
+  // Never present a tenant as customer-ready until the governed KB gate passes.
+  const ready = Boolean(summary.verification?.ready);
 
   return <div className="product-surface min-h-screen">
     <header className="border-b border-[var(--border)] bg-white px-5 py-4 sm:px-8">
