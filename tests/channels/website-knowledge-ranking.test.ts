@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { BOT_ANSWER_CONSTITUTION, buildCustomerFacingIdentity, buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
+import { BOT_ANSWER_CONSTITUTION, buildCustomerFacingIdentity, buildRequestedContactDetails, buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
 import { classifySovereignIntent, resolveSovereignQuestion } from "../../lib/sovereign-intelligence/decision";
 import { RELIABILITY_FRAMEWORK_VERSION } from "../../lib/reliability/runtime";
 
@@ -105,6 +105,13 @@ test("contact information remains distinct from a human callback request", () =>
   assert.equal(classifyWebsiteQuestion("What is your contact number?"), "CONTACT_INFO");
   assert.equal(classifyWebsiteQuestion("Where are you based?"), "CONTACT_INFO");
   assert.equal(classifyWebsiteQuestion("Please contact me"), "HUMAN_REQUEST");
+});
+
+test("multi-field contact questions return every requested approved field", () => {
+  assert.deepEqual(buildRequestedContactDetails("What is your phone number and where are you located?", {
+    publicPhone: "+91-7410582898",
+    publicAddress: "Morjim, Goa"
+  }), ["Phone: +91-7410582898", "Address: Morjim, Goa"]);
 });
 
 test("context follow-up reuses the latest relevant question but skips weather", () => {

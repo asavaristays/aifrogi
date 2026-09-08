@@ -358,6 +358,17 @@ function questionTerms(value: string) {
 export type WebsiteQuestionIntent = SovereignIntent;
 export const classifyWebsiteQuestion = classifySovereignIntent;
 
+export function buildRequestedContactDetails(question: string, organization: { publicPhone?: string | null; publicEmail?: string | null; website?: string | null; publicAddress?: string | null; publicBusinessHours?: string | null }) {
+  const requested = [
+    /\b(phone|telephone|mobile|number)\b/i.test(question) && organization.publicPhone ? `Phone: ${organization.publicPhone}` : null,
+    /\bemail\b/i.test(question) && organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
+    /\bwebsite\b/i.test(question) && organization.website ? `Website: ${organization.website}` : null,
+    /\b(address|located|location|based)\b/i.test(question) && organization.publicAddress ? `Address: ${organization.publicAddress}` : null,
+    /\b(opening hours|business hours)\b/i.test(question) && organization.publicBusinessHours ? `Business hours: ${organization.publicBusinessHours}` : null
+  ].filter((value): value is string => Boolean(value));
+  return requested;
+}
+
 export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
   const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
@@ -570,14 +581,8 @@ export async function buildWebsiteKnowledgeAnswer({
       (/\bemail\b/i.test(question) && !organization.publicEmail) ||
       (/\b(address|located|location)\b/i.test(question) && !organization.publicAddress)
     );
-    if (organization && !governed.context && !requestedFieldMissing) {
-      const details = [
-        organization.publicPhone ? `Phone: ${organization.publicPhone}` : null,
-        organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
-        organization.website ? `Website: ${organization.website}` : null,
-        organization.publicAddress ? `Address: ${organization.publicAddress}` : null,
-        organization.publicBusinessHours ? `Business hours: ${organization.publicBusinessHours}` : null
-      ].filter(Boolean);
+    if (organization && !requestedFieldMissing) {
+      const details = buildRequestedContactDetails(question, organization);
       if (details.length) return {
         answer: `Here are the approved contact details for ${organization.name}:\n${details.join("\n")}`,
         sourceUrls: organization.website ? [organization.website] : [],
