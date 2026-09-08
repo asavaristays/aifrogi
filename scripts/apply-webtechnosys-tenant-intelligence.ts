@@ -40,6 +40,12 @@ async function main() {
   const expiresAt = new Date(now.getTime() + 90 * 86400000);
   const applied = await db.$transaction(async tx => {
     const results = [];
+    await tx.organization.update({ where: { id: organizationId }, data: {
+      website: "https://webtechnosys.com",
+      publicPhone: "+91-7410582898",
+      publicEmail: "info@webtechnosys.com",
+      publicAddress: "Goa: H.No 746 - TF, New Wada, Morjim, Goa 403512. Gurgaon: 656 Ground Floor, Sector 40, Mohyal Colony, near Trikona Park Barricade, Gurgaon, Haryana 122003."
+    } });
     for (const [question, answer, category] of claims) {
       const claimKey = normalizeClaimKey(category, question);
       const existing = await tx.knowledgeEntry.findFirst({ where: { propertyId: property.id, claimKey }, orderBy: { version: "desc" }, select: { id: true, version: true, answer: true, status: true } });
