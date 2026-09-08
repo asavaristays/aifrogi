@@ -16,6 +16,10 @@ Core Intelligence does not compensate for weak Tenant Bot Intelligence. A safe, 
 
 ## Required working discipline
 
+### Hard sequencing rule
+
+Do not develop, test or deploy Sovereign/Core Intelligence and Tenant Bot Intelligence in the same work batch. Every task must declare one layer before work begins and retain that boundary through acceptance and deployment. If work reveals a dependency or defect in the other layer, record it as a separate pending task and defer it until the active layer is completed. Do not combine their tests, success claims, deployment packages or progress reports.
+
 1. Evaluate every change from the client's customer perspective first.
 2. Confirm basic business answers before expanding architecture, tone work or test volume.
 3. Never present automated PASS counts as proof of answer quality without human review.
