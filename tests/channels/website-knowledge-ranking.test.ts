@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { buildWarmGreeting, classifyWebsiteQuestion, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
-import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
+import { buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
+import { classifySovereignIntent, resolveSovereignQuestion } from "../../lib/sovereign-intelligence/decision";
+import { RELIABILITY_FRAMEWORK_VERSION } from "../../lib/reliability/runtime";
 
 const source = readFileSync(resolve(process.cwd(), "lib/services/website-knowledge-service.ts"), "utf8");
 
@@ -51,6 +52,28 @@ test("greetings mirror the visitor warmly without exposing governance language",
   assert.match(answer, /hoping to achieve/i);
   assert.doesNotMatch(answer, /approved questions|knowledge base|policy/i);
   assert.equal((answer.match(/Webtechnosys AI Bot/g) || []).length, 1);
+});
+
+test("model failure serves the best selected published claim without inventing an answer", () => {
+  const answer = publishedClaimFallback({
+    context: "approved",
+    claimIds: ["training"],
+    candidates: [{ claimId: "training", claimKey: "training", score: 0.8, selected: true, status: "PUBLISHED", answer: "Our approved AI training programme is available for business teams." }],
+    nearMissClaimIds: [],
+    blockedState: null
+  }, {
+    frameworkVersion: RELIABILITY_FRAMEWORK_VERSION,
+    failureLayer: "MODEL",
+    failureCode: "MODEL_TIMEOUT",
+    latencyMs: 4500,
+    attemptCount: 2,
+    escalationTier: "TIER_2_AIFROGI_ASYNC",
+    degradedMode: true
+  }, resolveSovereignQuestion("I am interested in training"));
+  assert.equal(answer?.answer, "Our approved AI training programme is available for business teams.");
+  assert.equal(answer?.model, "APPROVED_CLAIM_FALLBACK");
+  assert.deepEqual(answer?.claimIds, ["training"]);
+  assert.equal(answer?.decision.disposition, "ANSWER");
 });
 
 test("ordinary sports-result wording remains outside the business bot domain", () => {

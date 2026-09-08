@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "../../lib/lead-qualification";
+import { readFileSync } from "node:fs";
 
 test("qualification stays idle for an ordinary knowledge question", () => {
   const result = qualifyLeadConversation({ messages: ["What services do you provide?"], enabled: true });
@@ -79,4 +80,13 @@ test("consented callback accepts only a plausible mobile number", () => {
   assert.equal(normalizeConsentedLeadPhone("+91 98765 43210"), "+91 98765 43210");
   assert.equal(normalizeConsentedLeadPhone("owner@example.com"), null);
   assert.equal(normalizeConsentedLeadPhone("call me 1234567"), null);
+});
+
+test("qualification scoring remains internal and a failed answer cannot ask the next sales question", () => {
+  const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
+  const route = readFileSync("app/api/public/website-bot/[slug]/route.ts", "utf8");
+  assert.doesNotMatch(widget, /Enquiry profile|qualification\.progress|qualification\.tier/);
+  assert.match(route, /qualification: qualification\.state \? \{ contactEligible:/);
+  assert.doesNotMatch(route, /qualification\.state\.score, tier:/);
+  assert.match(route, /qualification\.state && hasVerifiedAnswer/);
 });

@@ -132,7 +132,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     enabled: profile.capabilities.includes("CAPTURE_LEADS") && profile.capabilities.includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
   });
   const baseAnswer = safety.answer || result?.answer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : `I do not have enough approved ${businessName} information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.`);
-  const proposedAnswer = qualification.state ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
+  const hasVerifiedAnswer = result?.decision.disposition === "ANSWER" && Boolean(result.sources.length || result.claimIds.length || result.reliability.failureLayer === "NONE");
+  const proposedAnswer = qualification.state && hasVerifiedAnswer ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
     : fallbackDecision.intent === "OFF_TOPIC" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
@@ -172,7 +173,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
     answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length || result?.claimIds.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
     sources: result?.sources || [], knowledgeAsOf: result?.knowledgeAsOf || null,
-    confidence: reliability.failureLayer !== "NONE" ? 0.2 : result?.sources.length || result?.claimIds.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
+    confidence: result?.model === "APPROVED_CLAIM_FALLBACK" ? 0.98 : reliability.failureLayer !== "NONE" ? 0.2 : result?.sources.length || result?.claimIds.length ? 0.9 : safety.blocked || result ? 0.98 : 0.2,
     safetyClassification: safety.safetyClassification || (evidenceDecision.intent === "OFF_TOPIC" ? "BOUNDED_OFF_TOPIC" : "STANDARD"),
     permittedOperation: demoTurn?.status === "SUCCEEDED" ? "ACT" : evidenceDecision.disposition,
     actionPerformed: demoTurn?.status === "SUCCEEDED",
@@ -227,7 +228,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     });
   }
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: qualification.state ? { status: qualification.state.status, score: qualification.state.score, tier: qualification.state.tier, progress: qualification.state.progress, contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField, recommendedAction: qualification.state.recommendedAction } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
 }
 

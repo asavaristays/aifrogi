@@ -468,6 +468,36 @@ function extractOpenAiText(payload: Record<string, unknown>) {
   return parts.join("\n").trim();
 }
 
+export function publishedClaimFallback(
+  governed: Awaited<ReturnType<typeof getPublishedClaimContext>>,
+  reliability: ReliabilityEvidence,
+  decision: SovereignDecision
+): KnowledgeAnswer | null {
+  const claim = governed.candidates.find((candidate) => candidate.selected && candidate.answer.trim());
+  if (!claim) return null;
+  return {
+    answer: claim.answer.trim(),
+    sourceUrls: [],
+    sources: [],
+    knowledgeAsOf: new Date().toISOString(),
+    usedOpenAi: false,
+    model: "APPROVED_CLAIM_FALLBACK",
+    decision: {
+      ...decision,
+      disposition: "ANSWER",
+      reason: "The model was unavailable; served the highest-ranked current published claim verbatim."
+    },
+    claimIds: [claim.claimId],
+    retrieval: {
+      candidates: publicRetrievalCandidates(governed.candidates),
+      retrievedClaimIds: governed.claimIds,
+      usedClaimIds: [claim.claimId],
+      nearMissClaimIds: governed.nearMissClaimIds
+    },
+    reliability: { ...reliability, escalationTier: "TIER_0_SELF_RESOLVE", degradedMode: true }
+  };
+}
+
 export async function buildWebsiteKnowledgeAnswer({
   question,
   propertySlug,
@@ -560,7 +590,10 @@ export async function buildWebsiteKnowledgeAnswer({
     return failed;
   }
 
-  if (!apiKey) return safeFailure("INFRASTRUCTURE", "MODEL_CREDENTIAL_UNAVAILABLE", "I’m temporarily unable to generate a verified answer. Your question has been retained for asynchronous AiFrogi review, so you do not need to repeat it.");
+  if (!apiKey) {
+    const reliability: ReliabilityEvidence = { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "INFRASTRUCTURE", failureCode: "MODEL_CREDENTIAL_UNAVAILABLE", latencyMs: 0, attemptCount: 0, escalationTier: "TIER_2_AIFROGI_ASYNC", degradedMode: true };
+    return publishedClaimFallback(governed, reliability, resolved.decision) || safeFailure("INFRASTRUCTURE", "MODEL_CREDENTIAL_UNAVAILABLE", "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.");
+  }
 
   const menu = [
     "1. Business information and approved services",
@@ -592,14 +625,15 @@ export async function buildWebsiteKnowledgeAnswer({
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });
-    return safeFailure(reliable.evidence.failureLayer, reliable.error.code, "I’m temporarily unable to generate a verified answer. Your question has been retained for asynchronous AiFrogi review, so you do not need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
+    return publishedClaimFallback(governed, reliable.evidence, resolved.decision) || safeFailure(reliable.evidence.failureLayer, reliable.error.code, "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
   }
   const answer = reliable.value;
   const claimValidation = validateGeneratedClaims({ answer, approvedContext: context, connectorVerified: false });
   if (!claimValidation.valid) {
     console.error("Sovereign claim validation blocked an answer", { propertySlug, violations: claimValidation.violations });
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
-    return safeFailure("MODEL", "OUTPUT_CLAIM_VALIDATION_BLOCKED", "I could not validate that generated answer against the approved business knowledge, so I have withheld it and retained your question for asynchronous review.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
+    const reliability: ReliabilityEvidence = { ...reliable.evidence, failureLayer: "MODEL", failureCode: "OUTPUT_CLAIM_VALIDATION_BLOCKED", escalationTier: "TIER_2_AIFROGI_ASYNC", degradedMode: true };
+    return publishedClaimFallback(governed, reliability, resolved.decision) || safeFailure("MODEL", "OUTPUT_CLAIM_VALIDATION_BLOCKED", "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
   }
 
   return {
