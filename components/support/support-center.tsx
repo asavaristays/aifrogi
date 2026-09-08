@@ -71,33 +71,25 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    <div className="space-y-6">
+      <section className="flex flex-col gap-4 rounded-lg border border-black/6 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div>
+          <p className="product-eyebrow">Help centre</p>
+          <h2 className="mt-2 text-2xl font-bold">How can we help?</h2>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">Create a request, follow its progress, and reply in one place.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="status-pill status-info">{openCount} open</span>
+          <a href="#new-support-request" className="inline-flex min-h-11 items-center justify-center rounded-md bg-[#8a6a16] px-5 text-sm font-bold text-white">Create request</a>
+        </div>
+      </section>
+
+      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
       <div className="space-y-6">
         <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="product-eyebrow">Resolve it faster</p>
-              <h2 className="mt-2 text-xl font-bold">Start with the relevant guide</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Each guide takes you to the exact screen where the issue can be checked.</p>
-            </div>
-            <span className="status-pill status-info">{openCount} open</span>
-          </div>
-          <div className="mt-5 divide-y divide-black/6 border-y border-black/6">
-            {resources.map((resource) => (
-              <a key={resource.title} href={resource.href} className="group flex items-center justify-between gap-4 py-4">
-                <span>
-                  <strong className="block text-sm">{resource.title}</strong>
-                  <span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{resource.helper}</span>
-                </span>
-                <span className="text-lg text-[#6d5310] transition-transform group-hover:translate-x-1">→</span>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
           <p className="product-eyebrow">My requests</p>
-          <h2 className="mt-2 text-xl font-bold">Support history</h2>
+          <h2 className="mt-2 text-xl font-bold">Tickets</h2>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">Open a ticket to read the conversation or send an update.</p>
           <div className="mt-5 space-y-3">
             {tickets.length ? tickets.map((ticket) => (
               <details key={ticket.id} className="rounded-lg border border-black/7 bg-[#fbfcfc] p-4">
@@ -120,15 +112,28 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
                   <div className="flex flex-wrap gap-2"><Button disabled={saving || !(replies[ticket.id] || "").trim()} onClick={() => updateTicket(ticket.id, { message: replies[ticket.id] })}>Send reply</Button>{ticket.status === "RESOLVED" ? <Button tone="surface" disabled={saving} onClick={() => updateTicket(ticket.id, { action: "CONFIRM_RESOLUTION" })}>Confirm and close</Button> : null}{ticket.status === "CLOSED" ? <Button tone="surface" disabled={saving} onClick={() => updateTicket(ticket.id, { action: "REOPEN" })}>Reopen</Button> : null}</div>
                 </div>
               </details>
-            )) : <p className="rounded-lg border border-dashed border-black/10 p-5 text-sm text-[var(--text-muted)]">No support requests yet.</p>}
+            )) : <div className="rounded-lg border border-dashed border-black/10 px-5 py-10 text-center"><strong className="block text-sm">No support requests yet</strong><p className="mt-2 text-sm text-[var(--text-muted)]">When you need help, create a request and track every reply here.</p><a href="#new-support-request" className="mt-4 inline-flex text-sm font-bold text-[#6d5310]">Create your first request →</a></div>}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
+          <p className="product-eyebrow">Quick help</p>
+          <h2 className="mt-2 text-xl font-bold">Popular guides</h2>
+          <div className="mt-4 divide-y divide-black/6 border-y border-black/6">
+            {resources.map((resource) => (
+              <a key={resource.title} href={resource.href} className="group flex items-center justify-between gap-4 py-4">
+                <span><strong className="block text-sm">{resource.title}</strong><span className="mt-1 block text-xs leading-5 text-[var(--text-muted)]">{resource.helper}</span></span>
+                <span className="text-lg text-[#6d5310] transition-transform group-hover:translate-x-1">→</span>
+              </a>
+            ))}
           </div>
         </section>
       </div>
 
-      <section className="h-fit rounded-lg border border-black/6 bg-white p-6 shadow-sm xl:sticky xl:top-24">
-        <p className="product-eyebrow">Still blocked?</p>
-        <h2 className="mt-2 text-xl font-bold">Create a support request</h2>
-        <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">AiFrogi attaches your organization and connection context automatically. Never paste passwords, tokens, or OTPs.</p>
+      <section id="new-support-request" className="h-fit scroll-mt-24 rounded-lg border border-black/6 bg-white p-6 shadow-sm xl:sticky xl:top-24">
+        <p className="product-eyebrow">New ticket</p>
+        <h2 className="mt-2 text-xl font-bold">Create a request</h2>
+        <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Tell us what is blocking you. Your workspace is attached automatically.</p>
         <div className="mt-5 grid gap-4">
           <label><span className="field-label">Category</span><select className="product-input mt-2" value={category} onChange={(event) => setCategory(event.target.value)}><option value="AI_BOT">AI Bot answer or behaviour</option><option value="KNOWLEDGE">Knowledge and content</option><option value="CONNECTOR">Connector or action</option><option value="ONBOARDING">Onboarding and installation</option><option value="BILLING">Billing and plan</option><option value="ACCOUNT">Account access</option><option value="WHATSAPP">Optional WhatsApp channel</option><option value="OTHER">Other</option></select></label>
           <label><span className="field-label">Priority</span><select className="product-input mt-2" value={priority} onChange={(event) => setPriority(event.target.value)}><option value="NORMAL">Normal · response within 8 hours</option><option value="HIGH">High · business journey blocked</option><option value="URGENT">Urgent · live bot stopped or unsafe</option><option value="LOW">Low · question or improvement</option></select></label>
@@ -137,8 +142,10 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
         </div>
         {error ? <p className="mt-4 rounded-md bg-[#fff2f0] px-4 py-3 text-sm font-semibold text-[#a8322d]">{error}</p> : null}
         {notice ? <p className="mt-4 rounded-md bg-[#edf9f3] px-4 py-3 text-sm font-semibold text-[#146b58]">{notice}</p> : null}
-        <Button className="mt-5" onClick={createTicket} disabled={saving}>{saving ? "Creating request" : "Create request"}</Button>
+        <p className="mt-4 text-xs leading-5 text-[var(--text-muted)]">For your security, never include passwords, OTPs, API keys, tokens, or payment-card details.</p>
+        <Button className="mt-5 w-full" onClick={createTicket} disabled={saving}>{saving ? "Creating request" : "Submit request"}</Button>
       </section>
+      </div>
     </div>
   );
 }
