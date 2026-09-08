@@ -47,14 +47,14 @@ async function writeWorkbook(path, results, summary) {
   overview.getColumn(1).width = 24; overview.getColumn(2).width = 96;
   overview.getCell("A1").font = { bold: true, size: 16, color: { argb: "FF17211E" } };
   const review = workbook.addWorksheet("Answer Review", { views: [{ state: "frozen", ySplit: 1, showGridLines: false }] });
-  const headers = ["No.", "Area", "Case", "Question", "Bot answer", "Evidence ID", "Detected intent", "Disposition", "Factual accuracy", "Relevance / completeness", "Subject competence", "Tone", "Safety / authority", "Next-step quality", "Sales pressure", "Automated result", "Findings", "Human result", "Reviewer notes"];
-  const rows = results.map((row, index) => [index + 1, row.area, row.id, row.question, row.answer, row.answerEvidenceId, row.intentDetected, row.disposition, row.dimensions.factualAccuracy, row.dimensions.relevanceCompleteness, row.dimensions.subjectCompetence, row.dimensions.tone, row.dimensions.safetyAuthority, row.dimensions.nextStepQuality, row.dimensions.salesPressure, row.overall, row.findings.join(" | "), "", ""]);
+  const headers = ["No.", "Area", "Case", "100-review row", "Derived from", "Previous human result", "Review lesson", "Question", "Bot answer", "Evidence ID", "Detected intent", "Disposition", "Factual accuracy", "Relevance / completeness", "Subject competence", "Tone", "Safety / authority", "Next-step quality", "Sales pressure", "Automated result", "Findings", "Human result", "Reviewer notes"];
+  const rows = results.map((row, index) => [index + 1, row.area, row.id, row.sourceReviewNo || "", row.derivedFrom || "", row.previousResult || "", row.reviewLesson || "", row.question, row.answer, row.answerEvidenceId, row.intentDetected, row.disposition, row.dimensions.factualAccuracy, row.dimensions.relevanceCompleteness, row.dimensions.subjectCompetence, row.dimensions.tone, row.dimensions.safetyAuthority, row.dimensions.nextStepQuality, row.dimensions.salesPressure, row.overall, row.findings.join(" | "), "", ""]);
   review.addTable({ name: "PilotAnswerReview", ref: "A1", headerRow: true, style: { theme: "TableStyleMedium2", showRowStripes: true }, columns: headers.map(name => ({ name })), rows });
-  review.columns.forEach((column, index) => { column.width = [7, 20, 24, 42, 72, 28, 18, 16, 18, 23, 20, 14, 18, 18, 16, 18, 34, 18, 48][index]; });
+  review.columns.forEach((column, index) => { column.width = [7, 20, 24, 14, 14, 20, 48, 42, 72, 28, 18, 16, 18, 23, 20, 14, 18, 18, 16, 18, 34, 18, 48][index]; });
   review.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
   review.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF17211E" } };
   review.eachRow((row, rowNumber) => { row.alignment = { vertical: "top", wrapText: rowNumber > 1 }; if (rowNumber > 1) row.height = 58; });
-  review.dataValidations.add(`R2:R${results.length + 1}`, { type: "list", allowBlank: true, formulae: ['"Good,Incomplete,Wrong"'] });
+  review.dataValidations.add(`V2:V${results.length + 1}`, { type: "list", allowBlank: true, formulae: ['"Good,Incomplete,Wrong"'] });
   await workbook.xlsx.writeFile(path);
 }
 
@@ -67,8 +67,8 @@ const summary = { version: WEBTECHNOSYS_PILOT_VERSION, runId, baseUrl, slug, cre
 await mkdir("output/webtechnosys-pilot", { recursive: true });
 const root = `output/webtechnosys-pilot/${runId}`;
 await writeFile(`${root}.json`, JSON.stringify({ summary, results }, null, 2));
-const csvHeaders = ["No.", "Area", "Case", "Question", "Bot answer", "Evidence ID", "Factual accuracy", "Relevance / completeness", "Subject competence", "Tone", "Safety / authority", "Next-step quality", "Sales pressure", "Automated result", "Findings", "Human result", "Reviewer notes"];
-const csvRows = results.map((row, index) => [index + 1, row.area, row.id, row.question, row.answer, row.answerEvidenceId, ...Object.values(row.dimensions), row.overall, row.findings.join(" | "), "", ""]);
+const csvHeaders = ["No.", "Area", "Case", "100-review row", "Derived from", "Previous human result", "Review lesson", "Question", "Bot answer", "Evidence ID", "Factual accuracy", "Relevance / completeness", "Subject competence", "Tone", "Safety / authority", "Next-step quality", "Sales pressure", "Automated result", "Findings", "Human result", "Reviewer notes"];
+const csvRows = results.map((row, index) => [index + 1, row.area, row.id, row.sourceReviewNo || "", row.derivedFrom || "", row.previousResult || "", row.reviewLesson || "", row.question, row.answer, row.answerEvidenceId, ...Object.values(row.dimensions), row.overall, row.findings.join(" | "), "", ""]);
 await writeFile(`${root}.csv`, [csvHeaders, ...csvRows].map(row => row.map(csvCell).join(",")).join("\n"));
 await writeWorkbook(`${root}.xlsx`, results, summary);
 console.log(JSON.stringify({ summary, files: { json: `${root}.json`, csv: `${root}.csv`, xlsx: `${root}.xlsx` } }, null, 2));
