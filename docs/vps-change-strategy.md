@@ -45,6 +45,7 @@ The hotfix must remain isolated, tested and reversible. It still requires explic
 - Prefer focused tests during development and one final build per release batch.
 - Keep progress and the pending batch in the daily log so a new session does not need to rediscover completed work.
 - Summarize tool output and avoid reopening already verified files unless the relevant source changes.
+- Follow `docs/token-and-storage-optimization-strategy.md` for compact VPS inspection, bounded retention and the one-build/one-deploy/one-verification rule.
 
 ## 5. Pending-change ledger
 

@@ -1,0 +1,10 @@
+[Unit]
+Description=AiFrogi bounded storage maintenance
+After=local-fs.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/aifrogi-storage-maintenance.conf
+ExecStart=/usr/local/sbin/aifrogi-storage-maintenance --apply
+StandardOutput=append:/var/log/aifrogi-storage-maintenance.log
+StandardError=append:/var/log/aifrogi-storage-maintenance.log
