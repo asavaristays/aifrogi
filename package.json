@@ -37,6 +37,7 @@
     "verify:widget-load": "node scripts/load-test-widget.mjs",
     "verify:bot-family": "node scripts/run-bot-family-regression.mjs",
     "verify:webtechnosys-pilot": "node scripts/run-webtechnosys-pilot.mjs",
+    "apply:webtechnosys-intelligence": "node --import tsx scripts/apply-webtechnosys-tenant-intelligence.ts",
     "grant:bot-regression-credits": "node --import tsx scripts/grant-bot-regression-credits.ts",
     "verify:commercial-readiness": "npm run verify:routes && node --import tsx --test tests/commercial-readiness/*.test.ts",
     "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
