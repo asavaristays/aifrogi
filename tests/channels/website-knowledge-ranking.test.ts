@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { classifyWebsiteQuestion, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
+import { buildWarmGreeting, classifyWebsiteQuestion, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
 import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
 
 const source = readFileSync(resolve(process.cwd(), "lib/services/website-knowledge-service.ts"), "utf8");
@@ -42,6 +42,15 @@ test("website intent routing separates identity, off-topic, and business questio
   assert.equal(classifyWebsiteQuestion("Who are you?"), "IDENTITY");
   assert.equal(classifyWebsiteQuestion("What is the weather today?"), "OFF_TOPIC");
   assert.equal(classifyWebsiteQuestion("Do you have upcoming AI training?"), "BUSINESS");
+});
+
+test("greetings mirror the visitor warmly without exposing governance language", () => {
+  const answer = buildWarmGreeting("Good Morning", "Webtechnosys AI Bot");
+  assert.match(answer, /^Good morning!/);
+  assert.match(answer, /good to have you here/i);
+  assert.match(answer, /hoping to achieve/i);
+  assert.doesNotMatch(answer, /approved questions|knowledge base|policy/i);
+  assert.equal((answer.match(/Webtechnosys AI Bot/g) || []).length, 1);
 });
 
 test("ordinary sports-result wording remains outside the business bot domain", () => {
