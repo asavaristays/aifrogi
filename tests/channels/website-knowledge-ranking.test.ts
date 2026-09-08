@@ -116,21 +116,21 @@ test("multi-field contact questions return every requested approved field", () =
 
 test("context follow-up reuses the latest relevant question but skips weather", () => {
   const resolved = resolveWebsiteKnowledgeQuestion("You already have context", ["What is the weather today?", "Do you have upcoming training?"]);
-  assert.equal(resolved.retrievalQuestion, "Do you have upcoming training?");
-  assert.equal(resolved.priorQuestion, "Do you have upcoming training?");
+  assert.equal(resolved.retrievalQuestion, "Do you have upcoming training?\nFollow-up question: You already have context");
+  assert.equal(resolved.priorQuestion, resolved.retrievalQuestion);
 });
 
 test("short booking-link follow-up retains the prior training intent", () => {
   const resolved = resolveWebsiteKnowledgeQuestion("Give me the link to book", ["What upcoming AI training can I book?"]);
   assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
-  assert.equal(resolved.retrievalQuestion, "What upcoming AI training can I book?");
+  assert.equal(resolved.retrievalQuestion, "What upcoming AI training can I book?\nFollow-up question: Give me the link to book");
 });
 
 test("natural when-and-where pronoun follow-up retains the prior subject", () => {
   const resolved = resolveWebsiteKnowledgeQuestion("When and where is it?", ["I am interested in training"]);
   assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
-  assert.equal(resolved.retrievalQuestion, "I am interested in training");
-  assert.equal(resolved.priorQuestion, "I am interested in training");
+  assert.equal(resolved.retrievalQuestion, "I am interested in training\nFollow-up question: When and where is it?");
+  assert.equal(resolved.priorQuestion, resolved.retrievalQuestion);
 });
 
 test("crawler prioritizes sitemap inventory before legacy seeds", () => {
