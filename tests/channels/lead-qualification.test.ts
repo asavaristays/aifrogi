@@ -41,6 +41,13 @@ test("commercial intent starts bounded, one-question-at-a-time qualification", (
   assert.match(result.prompt || "", /When would/);
 });
 
+test("a direct quotation request makes consented callback capture immediately available", () => {
+  const result = qualifyLeadConversation({ messages: ["Please send a quotation for your service"], enabled: true });
+  assert.equal(result.state?.contactEligible, true);
+  assert.equal(result.state?.nextField, "contact");
+  assert.match(result.prompt || "", /name and mobile number/);
+});
+
 test("qualification accumulates facts and recommends priority follow-up", () => {
   const first = qualifyLeadConversation({ messages: ["Please build a website for my company"], enabled: true });
   const result = qualifyLeadConversation({

@@ -29,6 +29,12 @@ const explicitBuyingSignals = [
   /\b(?:ready\s+to\s+(?:buy|proceed|start)|send\s+(?:me|us)\s+(?:a\s+)?(?:payment|proposal|quotation|quote))\b/i
 ];
 
+const directContactSignals = [
+  /\b(?:quote|quotation|proposal|estimate)\b/i,
+  /\b(?:call|contact)\s+(?:me|us)\b/i,
+  /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i
+];
+
 export function hasExplicitBuyingSignal(messages: string[]) {
   return messages.some((message) => explicitBuyingSignals.some((pattern) => pattern.test(message)));
 }
@@ -112,8 +118,9 @@ export function qualifyLeadConversation(input: {
   const discoveryOrder: QualificationField[] = ["need", "timeline", "budget", "location", "decisionRole"];
   const order: QualificationField[] = [...discoveryOrder, "contact"];
   const nextDiscoveryField = discoveryOrder.find((field) => !facts[field] && (asked[field] || 0) < 2) || null;
-  const contactEligible = score >= 60 && Boolean(facts.need) && Boolean(facts.timeline || facts.budget);
-  const nextField = nextDiscoveryField || (!facts.contact && contactEligible && (asked.contact || 0) < 2 ? "contact" : null);
+  const directContactRequest = input.messages.some((message) => directContactSignals.some((pattern) => pattern.test(message)));
+  const contactEligible = directContactRequest || (score >= 60 && Boolean(facts.need) && Boolean(facts.timeline || facts.budget));
+  const nextField = !facts.contact && contactEligible && (asked.contact || 0) < 2 ? "contact" : nextDiscoveryField;
   if (nextField) asked[nextField] = (asked[nextField] || 0) + 1;
   const captured = order.filter((field) => Boolean(facts[field])).length;
   const state: LeadQualificationState = {

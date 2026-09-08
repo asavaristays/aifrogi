@@ -79,7 +79,7 @@ export async function resolveDemoConnectorTurn(input: { organizationId: string; 
   const action = matchDemoAction(input.category, conversation.join(" \n "));
   if (!action) return null;
   const missing = missingDemoActionRequirements(input.category, conversation);
-  if (missing.length) return { answer: `Before I use the demo connector, please provide ${missing.join(" and ")}. Use fictional details only.`, connectorKey: action.connectorKey, operation: action.operation, status: "CLARIFY" };
+  if (missing.length) return { answer: `Certainly. Please share ${missing.join(" and ")}, and I’ll guide you through the next step.`, connectorKey: action.connectorKey, operation: action.operation, status: "CLARIFY" };
   const forcedFailure = /\b(unavailable|offline|failure|fail|down)\b/.test(normalized);
   const idempotencyKey = createHash("sha256").update(`${input.sessionId}:${action.connectorKey}:${action.operation}:${normalized.replace(/\s+/g, " ").trim()}`).digest("hex");
   const status = forcedFailure ? "SAFE_FAILURE" : "SUCCEEDED";
@@ -87,4 +87,31 @@ export async function resolveDemoConnectorTurn(input: { organizationId: string; 
   const response = forcedFailure ? { demo: true, performed: false, reason: "SIMULATED_CONNECTOR_UNAVAILABLE" } : { demo: true, performed: true, ...action.response };
   await db.demoConnectorEvent.upsert({ where: { demoSandboxId_idempotencyKey: { demoSandboxId: sandbox.id, idempotencyKey } }, update: { status, response: response as Prisma.InputJsonValue }, create: { demoSandboxId: sandbox.id, connectorKey: action.connectorKey, operation: action.operation, idempotencyKey, status, request: { demo: true, question: input.question } as Prisma.InputJsonValue, response: response as Prisma.InputJsonValue } });
   return { answer, connectorKey: action.connectorKey, operation: action.operation, status };
+}
+
+const COMMON_DEMO_ANSWERS: Partial<Record<DemoFixture["category"], string>> = {
+  STAY: "We offer Garden Rooms and Sea View Suites, with dining and guest amenities. Share your travel dates and number of guests, and I’ll help you explore the suitable stay options.",
+  EDUCATION: "We offer Data Foundations, Digital Marketing and English Communication programmes. Tell me which programme interests you, and I’ll help with the relevant admission information.",
+  FLOWCART: "You can explore celebration cakes, cookie boxes and coffee gift sets. Tell me what you are looking for, and I’ll help with product and ordering details."
+};
+
+const DEMO_SCOPE_REDIRECTS: Record<DemoFixture["category"], string> = {
+  BUSINESS_AI: "We do not offer standalone training. We can help with website transformation, workflow automation and AI readiness consulting. I’ll be happy to explain any of these services.",
+  PINGBOOK: "Training is not a clinic service, but I’ll be happy to help with dental treatments, clinic hours or appointments.",
+  STAY: "Training is not a hotel service, but I’ll be happy to help with rooms, stay options and booking information.",
+  RESTAURANT: "Training is not a restaurant service, but I’ll be happy to help with the menu, dining information or reservations.",
+  EDUCATION: "I can help you explore our programmes, fees and admission process. Tell me the subject or programme you are interested in.",
+  REAL_ESTATE: "Training is not a property service, but I’ll be happy to help with listings, prices and site visits.",
+  FLOWCART: "Training is not something we offer, but I’ll be happy to help with our products and orders.",
+  CUSTOM: "Training is outside this workflow, but I’ll be happy to help with maintenance requests and their approval process."
+};
+
+export function resolveDemoCommonAnswer(category: DemoFixture["category"], question: string) {
+  const normalized = question.toLowerCase();
+  if (/\btraining\b/.test(normalized)) return DEMO_SCOPE_REDIRECTS[category];
+  if (/\bwhat (?:services|service|offerings) do you offer\b|\bwhat do you offer\b/.test(normalized)) return COMMON_DEMO_ANSWERS[category] || null;
+  if (category === "EDUCATION" && /\b(documents?|paperwork).*(?:need|required)|(?:need|required).*(documents?|paperwork)\b/.test(normalized)) {
+    return "Admission requirements usually include identity proof, a recent photograph and previous academic records. The exact list depends on the programme, so the admissions team should confirm it before submission.";
+  }
+  return null;
 }

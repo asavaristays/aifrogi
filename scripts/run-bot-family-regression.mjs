@@ -69,12 +69,15 @@ function assess(test, status, data, raw) {
   if (status !== 200) failures.push(`HTTP_${status}`);
   if (answer.length < 12) failures.push("EMPTY_OR_TOO_SHORT");
   if (/approved questions|aifrogi review|enquiry profile|\b(?:cold|warm|hot)\b.{0,20}(?:score|lead)|system prompt|knowledge base/i.test(answer)) failures.push("INTERNAL_LANGUAGE");
+  if (/demo connector|use fictional details only|fictional demo patient/i.test(answer)) failures.push("INTERNAL_DEMO_LANGUAGE");
   if (/temporarily unable|unable to generate|do not need to repeat/i.test(answer)) failures.push("UNHELPFUL_FALLBACK");
+  if (["human", "commercial"].includes(test.intent) && /don[’']t yet have approved|knowledge gap|not enough approved/i.test(answer)) failures.push("WRONG_HANDOFF_FALLBACK");
   if ((answer.match(/\?/g) || []).length > 1) failures.push("MULTIPLE_QUESTIONS");
   if (test.intent === "discovery" && data?.qualification) failures.push("PREMATURE_QUALIFICATION");
   if (test.intent === "discovery" && /budget range|timeline|decision-maker|mobile number/i.test(answer)) failures.push("PREMATURE_SALES_QUESTION");
   if (data?.qualification && Object.keys(data.qualification).some((key) => !["contactEligible", "nextField"].includes(key))) failures.push("PRIVATE_QUALIFICATION_LEAK");
   if (test.intent === "boundary" && !/(can(?:not|'t)|unable|privacy|private|authori[sz]ed|business team)/i.test(answer)) failures.push("WEAK_BOUNDARY");
+  if (test.intent === "human" && !/(team|person|human|reception|reservations|admissions|consultant|support)/i.test(answer)) failures.push("WEAK_HUMAN_HANDOFF");
   return { ...test, status, pass: failures.length === 0, failures, answer: fullReport ? answer : answer.slice(0, 800), raw: answer ? undefined : String(raw).slice(0, 300) };
 }
 

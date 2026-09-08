@@ -11,7 +11,7 @@ import { resolveSovereignQuestion } from "@/lib/sovereign-intelligence/decision"
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { CUSTOMER_SEMANTIC_REPEAT_THRESHOLD, governResolutionOutcome, semanticSimilarity } from "@/lib/sovereign-intelligence/resolution";
 import { escalationTierFor, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
-import { resolveDemoConnectorTurn } from "@/lib/demo-sandbox/service";
+import { resolveDemoCommonAnswer, resolveDemoConnectorTurn } from "@/lib/demo-sandbox/service";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 import type { Prisma } from "@/generated/prisma/client";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
@@ -59,7 +59,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
-  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { id: true, name: true, isDemo: true, botProfile: true } } } });
+  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { id: true, name: true, isDemo: true, publicPhone: true, botProfile: true } } } });
   const organization = property?.organization;
   const profile = organization?.botProfile;
   if (!property || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
@@ -109,22 +109,42 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     return NextResponse.json({ answer: "Your message has been saved in this conversation for the human team. AI replies are paused while they assist you.", grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_JOINED", handoffAvailable: handoffEnabled, messageAccepted: true }, { headers: responseHeaders });
     });
   }
+  const businessName = property.organization?.name || "the business";
   const categoryBoundary = evaluateCategoryHardBoundary(profile.category, message);
+  const demoCommonAnswer = property.organization?.isDemo ? resolveDemoCommonAnswer(profile.category, message) : null;
+  const directCommercialHandoff = /\b(?:quote|quotation|proposal|estimate)\b/i.test(message) || /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i.test(message);
+  const explorationOnly = /\b(?:only|just)\s+(?:exploring|browsing|looking)|\bnot\s+(?:decided|ready)\b/i.test(message);
   const demoTurn = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
-  let result = safety.blocked ? null : demoTurn ? {
+  let result = safety.blocked ? null : explorationOnly ? {
+    answer: `No problem. Take your time exploring ${businessName}. Ask me anything about the business whenever you’re ready.`, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "EXPLORATION_ACKNOWLEDGEMENT",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Low-intent exploration acknowledged without creating a knowledge gap or sales prompt." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : directCommercialHandoff ? {
+    answer: "Thank you for your enquiry. I can arrange for the right team member to discuss the requirement and prepare the next step with you.", sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "COMMERCIAL_HANDOFF",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Explicit commercial request routed to consented callback capture." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : demoCommonAnswer ? {
+    answer: demoCommonAnswer, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "AIFROGI_DEMO_COMMON_KNOWLEDGE",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Common vertical question answered from the isolated demo fixture." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : demoTurn ? {
     answer: demoTurn.answer, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "AIFROGI_DEMO_MOCK_CONNECTOR",
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: demoTurn.status === "SUCCEEDED" ? "ANSWER" as const : demoTurn.status === "CLARIFY" ? "CLARIFY" as const : "ESCALATE" as const, reason: `Isolated demo connector ${demoTurn.connectorKey}/${demoTurn.operation} returned ${demoTurn.status}.` },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: demoTurn.status === "SAFE_FAILURE" ? "CONNECTOR" as const : "NONE" as const, failureCode: demoTurn.status === "SAFE_FAILURE" ? "DEMO_CONNECTOR_UNAVAILABLE" : null, latencyMs: 0, attemptCount: demoTurn.status === "CLARIFY" ? 0 : 1, escalationTier: demoTurn.status === "SAFE_FAILURE" ? "TIER_1_BUSINESS_ASYNC" as const : "TIER_0_SELF_RESOLVE" as const, degradedMode: demoTurn.status === "SAFE_FAILURE" }
   } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer }).catch(() => null);
   if (explicitHumanRequest && !safety.blocked) result = {
-    answer: handoffEnabled ? "Your request is saved for the business team to review in this conversation. A human has not joined yet. Contact details are optional for in-chat help; share them with consent only if you want a callback." : "Human handover is not enabled for this bot. Please contact the business through its published contact details. No live connection has been made.",
+    answer: handoffEnabled
+      ? `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"} in this conversation.${organization.publicPhone ? ` You can also call ${organization.publicPhone}.` : " They will respond here as soon as possible."}`
+      : `Human handover is not enabled for this bot.${organization.publicPhone ? ` Please call ${organization.publicPhone}.` : " Please use the business’s published contact details."}`,
     sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "HANDOVER_CONTROL",
     decision: { ...fallbackDecision, disposition: "ESCALATE", reason: handoffEnabled ? "Explicit human request; persisted before acknowledgment." : "Human handover is disabled; no connection promised." },
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_1_BUSINESS_ASYNC", degradedMode: false }
   };
-  const businessName = property.organization?.name || "the business";
   const qualification = qualifyLeadConversation({
     messages: [...priorQuestions].reverse().concat(message),
     previousState: existingResolutionState,
