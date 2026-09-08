@@ -24,3 +24,13 @@ test("commercial intent can expose bounded qualification without failing sales p
   assert.equal(result.dimensions.salesPressure, "PASS");
   assert.equal(result.dimensions.nextStepQuality, "PASS");
 });
+
+test("commercial discovery question is a valid next step before contact capture", () => {
+  const result = evaluatePilotAnswer(
+    { intent: "commercial", expectedAny: ["bot"] },
+    200,
+    { answer: "We can build an AI bot for your company. When would you ideally like to start?", qualification: { nextField: "timeline", contactEligible: false } }
+  );
+  assert.equal(result.dimensions.nextStepQuality, "PASS");
+  assert.equal(result.dimensions.salesPressure, "PASS");
+});
