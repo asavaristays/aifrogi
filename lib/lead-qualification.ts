@@ -134,7 +134,15 @@ export function qualifyLeadConversation(input: {
 
 export function appendQualificationPrompt(answer: string, prompt: string | null) {
   if (!prompt || answer.includes(prompt)) return answer;
-  const withoutTrailingOffer = answer.trim().replace(/(?:\n\s*)?(?:Would|Do|Could|Can|May|Are|Is|What|When|Which|How|Shall)\b[^?\n]*\?\s*$/i, "").trim();
+  let withoutTrailingOffer = answer.trim();
+  const firstQuestion = withoutTrailingOffer.indexOf("?");
+  if (firstQuestion >= 0) {
+    const priorSentence = Math.max(withoutTrailingOffer.lastIndexOf(". ", firstQuestion), withoutTrailingOffer.lastIndexOf("! ", firstQuestion), withoutTrailingOffer.lastIndexOf("\n", firstQuestion));
+    const questionText = withoutTrailingOffer.slice(priorSentence + 1, firstQuestion + 1);
+    if (/\b(?:would|do|could|can|may|are|is|what|when|which|how|shall|please\s+share|let\s+me\s+know)\b/i.test(questionText)) {
+      withoutTrailingOffer = withoutTrailingOffer.slice(0, priorSentence + (priorSentence >= 0 ? 1 : 0)).trim();
+    }
+  }
   return `${withoutTrailingOffer}\n\n${prompt}`;
 }
 

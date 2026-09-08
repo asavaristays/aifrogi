@@ -42,10 +42,11 @@ const familyQuestions = {
   custom: ["What can a custom bot do?", "How are approval boundaries handled?", "Please send a proposal for a custom bot"]
 };
 
+const onlyCases = new Set((process.env.AIFROGI_TEST_ONLY || "").split(",").map((value) => value.trim()).filter(Boolean));
 const cases = bots.flatMap((bot) => [
   ...shared.map(([id, message, intent]) => ({ ...bot, id, message, intent })),
   ...(familyQuestions[bot.family] || []).map((message, index) => ({ ...bot, id: `family-${index + 1}`, message, intent: index === 2 && bot.family !== "commerce" ? "commercial" : "discovery" }))
-]).slice(0, maxCredits);
+]).filter((test) => !onlyCases.size || onlyCases.has(`${test.slug}:${test.id}`)).slice(0, maxCredits);
 
 function assess(test, status, data, raw) {
   const answer = typeof data?.answer === "string" ? data.answer.trim() : "";

@@ -107,6 +107,15 @@ test("qualification replaces a trailing generic offer so the visitor receives on
   assert.equal((answer.match(/\?/g) || []).length, 1);
 });
 
+test("qualification removes model discovery questions before adding its one governed question", () => {
+  const answer = appendQualificationPrompt(
+    "I can help arrange a consultation. Could you share your preferred service, location, budget and timeline? Also, may we contact you?",
+    "What outcome or service would you like help with?"
+  );
+  assert.equal(answer, "I can help arrange a consultation.\n\nWhat outcome or service would you like help with?");
+  assert.equal((answer.match(/\?/g) || []).length, 1);
+});
+
 test("consented callback accepts only a plausible mobile number", () => {
   assert.equal(normalizeConsentedLeadPhone("+91 98765 43210"), "+91 98765 43210");
   assert.equal(normalizeConsentedLeadPhone("owner@example.com"), null);
