@@ -7,6 +7,7 @@ const credits = Math.max(1, Math.min(Number(process.env.AIFROGI_TEST_CREDIT_GRAN
 const grantKey = process.env.AIFROGI_TEST_GRANT_KEY || "BOT_FAMILY_REGRESSION_2026_09";
 const actorEmail = process.env.AIFROGI_TEST_ACTOR || "system-regression@aifrogi.com";
 
+async function main() {
 if (!process.env.DATABASE_URL) {
   const apps = JSON.parse(execFileSync("pm2", ["jlist"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }));
   const app = apps.find((candidate: { name?: string; pm2_env?: { DATABASE_URL?: string } }) => candidate.name === "lead-os-ai");
@@ -28,7 +29,7 @@ try {
   });
   if (existing) {
     console.log(JSON.stringify({ status: "ALREADY_GRANTED", credits, grantKey, auditId: existing.id, transactionId: existing.targetId, createdAt: existing.createdAt }));
-    process.exit(0);
+    return;
   }
 
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -47,3 +48,9 @@ try {
 } finally {
   await db.$disconnect();
 }
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+});
