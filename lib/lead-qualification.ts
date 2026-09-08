@@ -13,6 +13,7 @@ export type LeadQualificationState = {
   asked: Partial<Record<QualificationField, number>>;
   nextField: QualificationField | null;
   progress: number;
+  contactEligible: boolean;
   recommendedAction: "CONTINUE_QUALIFICATION" | "REVIEW_LEAD" | "PRIORITY_FOLLOW_UP";
 };
 
@@ -98,8 +99,11 @@ export function qualifyLeadConversation(input: {
   const status: QualificationStatus = coreQualified && facts.contact ? "HANDOFF_READY" : coreQualified ? "QUALIFIED" : "COLLECTING";
   const tier = score >= 75 ? "HOT" : score >= 45 ? "WARM" : "COLD";
   const asked = { ...(previous?.asked || {}) };
-  const order: QualificationField[] = ["need", "timeline", "budget", "location", "decisionRole", "contact"];
-  const nextField = order.find((field) => !facts[field] && (asked[field] || 0) < 2) || null;
+  const discoveryOrder: QualificationField[] = ["need", "timeline", "budget", "location", "decisionRole"];
+  const order: QualificationField[] = [...discoveryOrder, "contact"];
+  const nextDiscoveryField = discoveryOrder.find((field) => !facts[field] && (asked[field] || 0) < 2) || null;
+  const contactEligible = score >= 60 && Boolean(facts.need) && Boolean(facts.timeline || facts.budget);
+  const nextField = nextDiscoveryField || (!facts.contact && contactEligible && (asked.contact || 0) < 2 ? "contact" : null);
   if (nextField) asked[nextField] = (asked[nextField] || 0) + 1;
   const captured = order.filter((field) => Boolean(facts[field])).length;
   const state: LeadQualificationState = {
@@ -112,6 +116,7 @@ export function qualifyLeadConversation(input: {
     asked,
     nextField,
     progress: Math.round((captured / order.length) * 100),
+    contactEligible,
     recommendedAction: status === "HANDOFF_READY" || tier === "HOT" ? "PRIORITY_FOLLOW_UP" : status === "QUALIFIED" ? "REVIEW_LEAD" : "CONTINUE_QUALIFICATION"
   };
   return { state, prompt: nextField ? questions[nextField] : null };

@@ -35,11 +35,34 @@ test("a missing field is asked at most twice to prevent qualification loops", ()
     qualification: {
       version: "1.0", status: "COLLECTING", active: true, score: 30, tier: "COLD",
       facts: { need: "AI Business Bot" }, asked: { timeline: 2 }, nextField: "timeline", progress: 17,
+      contactEligible: false,
       recommendedAction: "CONTINUE_QUALIFICATION"
     }
   };
   const result = qualifyLeadConversation({ messages: ["I need an AI bot", "not sure"], previousState: prior, enabled: true });
   assert.equal(result.state?.nextField, "budget");
+});
+
+test("mobile capture is withheld when discovery ends below the quality threshold", () => {
+  const result = qualifyLeadConversation({
+    messages: ["I need an AI bot"],
+    previousState: { qualification: { version: "1.0", status: "COLLECTING", active: true, score: 30, tier: "COLD", facts: { need: "AI Business Bot" }, asked: { timeline: 2, budget: 2, location: 2, decisionRole: 2 }, nextField: null, progress: 17, contactEligible: false, recommendedAction: "CONTINUE_QUALIFICATION" } },
+    enabled: true
+  });
+  assert.equal(result.state?.score, 30);
+  assert.equal(result.state?.contactEligible, false);
+  assert.equal(result.state?.nextField, null);
+  assert.equal(result.prompt, null);
+});
+
+test("mobile capture becomes the final step only after useful qualification", () => {
+  const result = qualifyLeadConversation({
+    messages: ["I need a website", "Timeline is next month", "Budget is INR 80,000", "Location: Pune", "I am the owner"],
+    enabled: true
+  });
+  assert.equal(result.state?.contactEligible, true);
+  assert.equal(result.state?.nextField, "contact");
+  assert.match(result.prompt || "", /mobile number/);
 });
 
 test("qualification is disabled when tenant capability is unavailable", () => {

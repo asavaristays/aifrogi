@@ -14,8 +14,9 @@ The capability runs only when the tenant has both `CAPTURE_LEADS` and `QUALIFY_L
 4. Capture need, timeline, budget, market and decision role, then ask for a consented callback name and mobile number as the final step.
 5. Stop asking any unanswered field after two attempts.
 6. Calculate a transparent 0–100 score and Cold, Warm or Hot tier.
-7. Persist the profile to the tenant-bound lead and visitor session.
-8. Recommend continued qualification, review or priority follow-up in Team Inbox.
+7. Display the highlighted callback form only after the lead reaches 60 points and has a business need plus timeline or budget evidence.
+8. Persist the profile to the tenant-bound lead and visitor session.
+9. Recommend continued qualification, review or priority follow-up in Team Inbox.
 
 Callback details require a name, explicit checkbox and plausible mobile number. The consent statement, time and supplied mobile remain visible to the business. A visitor may decline and continue with in-chat assistance, but the lead is not marked handoff-ready without the mobile number.
 
@@ -40,3 +41,7 @@ Warm begins at 45 and Hot at 75. A lead becomes Qualified when need, timeline an
 - The qualification state is versioned as `1.0`.
 - External actions remain unavailable in this version.
 - Pilot results must be used to tune questions and score thresholds; code completion is not conversion evidence.
+
+## Agentic completion gate
+
+Do not begin another agentic capability while this one has an unfinished decision rule, consent path, failure path, duplicate/loop control, client visibility, test, deployment verification or pilot measurement. New feature requests should be placed behind this gate until the current capability is complete or the product owner explicitly retires the gate after review.
