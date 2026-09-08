@@ -61,6 +61,12 @@ test("identity is human-readable and hides platform and governance terminology",
   assert.doesNotMatch(answer, /AiFrogi-powered|approved business knowledge|qualif|human judgment|governed/i);
 });
 
+test("identity does not repeat matching assistant and business names", () => {
+  const answer = buildCustomerFacingIdentity("Webtechnosys AI Agency", "Webtechnosys AI Agency");
+  assert.equal((answer.match(/Webtechnosys AI Agency/g) || []).length, 1);
+  assert.match(answer, /your online business assistant/i);
+});
+
 test("shared tone standard prevents repetitive selling while protecting precise boundaries", () => {
   assert.match(BOT_ANSWER_CONSTITUTION, /does not need a sales question/i);
   assert.match(BOT_ANSWER_CONSTITUTION, /genuine commercial intent/i);

@@ -118,6 +118,9 @@ export function buildWarmGreeting(question: string, assistantName: string) {
 }
 
 export function buildCustomerFacingIdentity(assistantName: string, businessName: string) {
+  if (assistantName.trim().localeCompare(businessName.trim(), undefined, { sensitivity: "accent" }) === 0) {
+    return `I’m ${assistantName}, your online business assistant. I can answer questions, help you explore the right option, and bring in the team when personal assistance is useful.`;
+  }
   return `I’m ${assistantName}, the online assistant for ${businessName}. I can answer questions about the business, help you explore the right option, and bring in the team when personal assistance is useful.`;
 }
 
