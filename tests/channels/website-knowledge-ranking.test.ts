@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
+import { BOT_ANSWER_CONSTITUTION, buildCustomerFacingIdentity, buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
 import { classifySovereignIntent, resolveSovereignQuestion } from "../../lib/sovereign-intelligence/decision";
 import { RELIABILITY_FRAMEWORK_VERSION } from "../../lib/reliability/runtime";
 
@@ -48,10 +48,24 @@ test("website intent routing separates identity, off-topic, and business questio
 test("greetings mirror the visitor warmly without exposing governance language", () => {
   const answer = buildWarmGreeting("Good Morning", "Webtechnosys AI Bot");
   assert.match(answer, /^Good morning!/);
-  assert.match(answer, /good to have you here/i);
-  assert.match(answer, /hoping to achieve/i);
+  assert.match(answer, /welcome/i);
+  assert.match(answer, /how can I help today/i);
   assert.doesNotMatch(answer, /approved questions|knowledge base|policy/i);
   assert.equal((answer.match(/Webtechnosys AI Bot/g) || []).length, 1);
+});
+
+test("identity is human-readable and hides platform and governance terminology", () => {
+  const answer = buildCustomerFacingIdentity("Webtechnosys AI Bot", "Webtechnosys");
+  assert.match(answer, /online assistant for Webtechnosys/i);
+  assert.match(answer, /bring in the team/i);
+  assert.doesNotMatch(answer, /AiFrogi-powered|approved business knowledge|qualif|human judgment|governed/i);
+});
+
+test("shared tone standard prevents repetitive selling while protecting precise boundaries", () => {
+  assert.match(BOT_ANSWER_CONSTITUTION, /does not need a sales question/i);
+  assert.match(BOT_ANSWER_CONSTITUTION, /genuine commercial intent/i);
+  assert.match(BOT_ANSWER_CONSTITUTION, /prefer calm precision/i);
+  assert.match(BOT_ANSWER_CONSTITUTION, /never expose internal governance/i);
 });
 
 test("model failure serves the best selected published claim without inventing an answer", () => {
