@@ -1032,6 +1032,11 @@ export function WhatsAppBotClient({
             </div>
           </div>
 
+          {activeIsWebsite ? <section className="border-b border-[var(--border)] bg-white px-5 py-4" aria-label="Lead qualification summary">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.16em] text-[var(--text-muted)]">Agentic lead qualification</p><h3 className="mt-1 text-base font-semibold text-[var(--text)]">{activeLead.score >= 75 ? "Priority follow-up recommended" : activeLead.score >= 45 ? "Qualification in progress" : "Early enquiry"}</h3></div><div className="flex items-center gap-2"><span className={`status-pill ${activeLead.score >= 75 ? "status-warning" : "status-info"}`}>{activeLead.score}/100 · {activeLead.score >= 75 ? "Hot" : activeLead.score >= 45 ? "Warm" : "Cold"}</span>{activeLead.stage.toLowerCase() === "qualified" ? <span className="status-pill status-success">Qualified</span> : null}</div></div>
+            <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-5">{[["Need",activeLead.intent],["Market",activeLead.stay],["Timeline",activeLead.party],["Budget",activeLead.budget],["Consented contact",activeLead.websiteSession?.consentedAt ? activeLead.websiteSession.contactValue || "Provided" : "Not provided"]].map(([label,value])=><div key={label} className="rounded-md bg-[var(--surface-soft)] px-3 py-2"><dt className="text-[10px] font-bold uppercase tracking-[.14em] text-[var(--text-muted)]">{label}</dt><dd className="mt-1 break-words font-semibold text-[var(--text)]">{value}</dd></div>)}</dl>
+          </section> : null}
+
           <div className="border-b border-[var(--border)] bg-[var(--info-soft)] px-5 py-3">
             <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div>

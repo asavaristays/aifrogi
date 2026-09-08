@@ -10,8 +10,9 @@ test("public website bot requires a lifecycle-approved website profile", () => {
 });
 
 test("contact details are persisted only with explicit consent", () => {
-  assert.match(source, /payload\?\.consent && payload\.contact/);
-  assert.match(source, /payload\?\.consent && payload\.name/);
+  assert.match(source, /payload\?\.consent \? normalizeConsentedLeadPhone\(payload\.contact\)/);
+  assert.match(source, /payload\?\.consent \? String\(payload\.name/);
+  assert.match(source, /!consentedName \|\| !consentedContact/);
   assert.match(source, /consentText:/);
   assert.match(source, /consentedAt:/);
 });

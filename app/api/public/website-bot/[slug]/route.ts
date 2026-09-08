@@ -18,6 +18,7 @@ import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { ensureWebsiteHandover, websiteConversationState } from "@/lib/website-handover";
 import { withWebsiteTurnLock } from "@/lib/website-turn-lock";
 import { persistWebsiteTurn } from "@/lib/website-persistence";
+import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "@/lib/lead-qualification";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -70,6 +71,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
+  const consentedContact = payload?.consent ? normalizeConsentedLeadPhone(payload.contact) : null;
+  const consentedName = payload?.consent ? String(payload.name || "").trim().slice(0, 100) : "";
+  if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });
 
   const priorToken = payload?.visitorToken ? verifyWebsiteVisitorToken(payload.visitorToken, slug) : null;
   let existingResolutionState: unknown = null;
@@ -121,7 +125,14 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_1_BUSINESS_ASYNC", degradedMode: false }
   };
   const businessName = property.organization?.name || "the business";
-  const proposedAnswer = safety.answer || result?.answer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : `I do not have enough approved ${businessName} information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.`);
+  const qualification = qualifyLeadConversation({
+    messages: [...priorQuestions].reverse().concat(message),
+    previousState: existingResolutionState,
+    contact: consentedContact || undefined,
+    enabled: profile.capabilities.includes("CAPTURE_LEADS") && profile.capabilities.includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
+  });
+  const baseAnswer = safety.answer || result?.answer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : `I do not have enough approved ${businessName} information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.`);
+  const proposedAnswer = qualification.state ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
     : fallbackDecision.intent === "OFF_TOPIC" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
@@ -147,7 +158,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const persistenceDb = getDb()!;
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,
-    phone: payload?.consent && payload.contact ? String(payload.contact).slice(0, 120) : undefined,
+    phone: consentedContact || undefined,
     profileName: payload?.consent && payload.name ? String(payload.name).slice(0, 100) : "Website visitor",
     message: safety.storageText, aiReply: answer, propertySlug: slug
   }).catch(() => null);
@@ -178,24 +189,45 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
   const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
-  const consented = Boolean(payload?.consent && payload.contact);
+  const consented = Boolean(consentedContact);
   const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
-  const sessionResolutionState = (preserveActiveState ? existingResolutionState : resolution.state) as Prisma.InputJsonValue;
+  const baseResolutionState = preserveActiveState ? existingResolutionState : resolution.state;
+  const sessionResolutionState = {
+    ...((baseResolutionState && typeof baseResolutionState === "object" && !Array.isArray(baseResolutionState)) ? baseResolutionState : {}),
+    ...(qualification.state ? { qualification: qualification.state } : {})
+  } as Prisma.InputJsonValue;
   await persistenceDb.websiteVisitorSession.upsert({
     where: { leadId: captured.lead.id },
     create: {
       propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
-      status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", resolutionState: resolution.state, expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
-      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
+      status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", resolutionState: sessionResolutionState, expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
+      ...(consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     },
     update: {
       capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: sessionResolutionState,
       expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
-      ...(consented ? { contactName: String(payload?.name || "").trim().slice(0, 100) || null, contactValue: String(payload?.contact || "").trim().slice(0, 120), consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
+      ...(consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     }
   });
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  if (qualification.state) {
+    const facts = qualification.state.facts;
+    await persistenceDb.lead.update({
+      where: { id: captured.lead.id },
+      data: {
+        score: qualification.state.score,
+        intent: facts.need || captured.lead.intent,
+        stayLabel: facts.location ? `Market: ${facts.location}` : captured.lead.stay,
+        partyLabel: facts.timeline ? `Timeline: ${facts.timeline}` : captured.lead.party,
+        budgetLabel: facts.budget ? `Budget: ${facts.budget}` : captured.lead.budget,
+        isHighPriority: qualification.state.tier === "HOT",
+        stage: ["QUALIFIED", "HANDOFF_READY"].includes(qualification.state.status) ? "QUALIFIED" : undefined,
+        lastActivityAt: new Date()
+      }
+    });
+  }
+
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: qualification.state ? { status: qualification.state.status, score: qualification.state.score, tier: qualification.state.tier, progress: qualification.state.progress, nextField: qualification.state.nextField, recommendedAction: qualification.state.recommendedAction } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
 }
 

@@ -15,6 +15,7 @@ export default defineConfig([
     "generated/**",
     "scripts/**",
     "tests/**",
+    "dump/**",
     "node_modules/**",
     "tsconfig.tsbuildinfo",
   ]),
