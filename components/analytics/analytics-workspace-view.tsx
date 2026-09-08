@@ -34,7 +34,7 @@ export function AnalyticsWorkspaceView({ metrics, operations, outcomes, period }
       <TopBar title="Reports" subtitle="Website-bot conversations, qualified leads, follow-up actions, and verified outcomes" />
       <div className="mx-auto max-w-[1480px] space-y-6 px-5 py-7 sm:px-7 lg:px-9">
         <nav className="flex gap-1 overflow-x-auto" aria-label="Report period">
-          {[["today", "Today"], ["7d", "7 days"], ["30d", "30 days"], ["all", "All time"]].map(([value, label]) => <Link key={value} href={`/analytics?period=${value}`} className={`rounded-full px-4 py-2 text-xs font-semibold ${period.period === value ? "bg-[#17211e] text-white" : "border border-black/8 bg-white text-[var(--text-muted)]"}`}>{label}</Link>)}
+          {[["today", "Today"], ["7d", "7 days"], ["30d", "30 days"], ["all", "All time"]].map(([value, label]) => <Link key={value} href={`/analytics?period=${value}`} aria-current={period.period === value ? "page" : undefined} className={`rounded-full px-4 py-2 text-xs font-semibold ${period.period === value ? "bg-[#17211e] !text-white" : "border border-black/8 bg-white text-[var(--text-muted)]"}`}>{label}</Link>)}
         </nav>
         <Card className="overflow-hidden border border-black/6 shadow-[0_16px_38px_-32px_rgba(17,39,32,0.5)]">
           <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_340px]">
