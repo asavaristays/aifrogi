@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 import { BOT_ANSWER_CONSTITUTION, buildCustomerFacingIdentity, buildRequestedContactDetails, buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
 import { classifySovereignIntent, resolveSovereignQuestion } from "../../lib/sovereign-intelligence/decision";
 import { RELIABILITY_FRAMEWORK_VERSION } from "../../lib/reliability/runtime";
+import { scoreRetrievalCandidate } from "../../lib/sovereign-intelligence/evidence-pipeline";
 
 const source = readFileSync(resolve(process.cwd(), "lib/services/website-knowledge-service.ts"), "utf8");
 
@@ -131,6 +132,13 @@ test("natural when-and-where pronoun follow-up retains the prior subject", () =>
   assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
   assert.equal(resolved.retrievalQuestion, "I am interested in training\nFollow-up question: When and where is it?");
   assert.equal(resolved.priorQuestion, resolved.retrievalQuestion);
+});
+
+test("when-and-where follow-up ranks a complete schedule claim above a bare link", () => {
+  const question = "I am interested in training\nFollow-up question: When and where is it?";
+  const complete = scoreRetrievalCandidate(question, { question: "When is the AI Tool Universe Bootcamp?", answer: "Saturday cohorts in September and October. Venue details are shared after confirmation.", category: "Training schedule" });
+  const linkOnly = scoreRetrievalCandidate(question, { question: "Training booking link", answer: "https://example.test/training", category: "Training" });
+  assert.ok(complete > linkOnly);
 });
 
 test("crawler prioritizes sitemap inventory before legacy seeds", () => {

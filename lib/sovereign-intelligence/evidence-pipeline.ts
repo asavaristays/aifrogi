@@ -25,8 +25,11 @@ const aliases: Record<string, string[]> = {
 const stopWords = new Set(["and", "are", "available", "can", "for", "from", "has", "have", "how", "into", "online", "our", "the", "this", "use", "what", "when", "where", "with", "your"]);
 
 export function retrievalTerms(value: string) {
-  const base = value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !stopWords.has(term));
+  const normalized = value.toLowerCase();
+  const base = normalized.split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !stopWords.has(term));
   const expanded = new Set(base);
+  if (/\bwhen\b/.test(normalized)) for (const term of ["schedule", "date", "time", "cohort"]) expanded.add(term);
+  if (/\bwhere\b/.test(normalized)) for (const term of ["venue", "location", "address"]) expanded.add(term);
   for (const term of base) for (const alias of aliases[term] || []) expanded.add(alias);
   return [...expanded];
 }
