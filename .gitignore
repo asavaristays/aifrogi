@@ -4,6 +4,7 @@ node_modules/
 out/
 dist/
 coverage/
+dump/
 output/acceptance/
 output/pdf/
 *.tsbuildinfo
