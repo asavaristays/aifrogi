@@ -13,20 +13,20 @@ export default function PrivacyPolicyPage() {
     <LegalPage
       eyebrow="Privacy policy"
       title="Your data, handled responsibly."
-      summary="This policy explains how AiFrogi, operated by webtechnosys, collects, uses, stores, and protects information when businesses use the platform and its WhatsApp Business integrations."
+      summary="This policy explains how AiFrogi, operated by webtechnosys, collects, uses, stores, and protects information when businesses use the website AI Bot platform."
     >
       <LegalSection title="1. Information we collect">
         <p>We may collect account details, business contact information, workspace settings, support correspondence, and technical information needed to operate and secure the service.</p>
-        <p>When a business connects WhatsApp Business, AiFrogi may process phone numbers, profile names, message content, attachments, message timestamps, delivery status, and conversation history on that business&apos;s behalf.</p>
+        <p>When a business enables its website AI Bot, AiFrogi may process visitor details supplied with consent, message content, attachments, timestamps, response status, and conversation history on that business&apos;s behalf.</p>
       </LegalSection>
 
       <LegalSection title="2. How we use information">
-        <p>We use information to provide the AiFrogi service, deliver and receive WhatsApp messages, display conversation history, support users, monitor service reliability, prevent abuse, and meet legal obligations.</p>
+        <p>We use information to provide the AiFrogi service, deliver website AI Bot responses, display conversation history, support users, monitor service reliability, prevent abuse, and meet legal obligations.</p>
         <p>AiFrogi does not sell personal information or use customer message content for unrelated advertising.</p>
       </LegalSection>
 
-      <LegalSection title="3. Service providers and Meta">
-        <p>AiFrogi uses infrastructure and service providers necessary to operate the platform. WhatsApp messages are also processed by Meta Platforms and WhatsApp under their applicable terms and privacy policies.</p>
+      <LegalSection title="3. Service providers">
+        <p>AiFrogi uses infrastructure, AI, email, hosting, and other service providers necessary to operate the platform under their applicable terms and privacy policies.</p>
         <p>We disclose information only when required to provide the service, comply with law, protect users, or respond to a valid legal request.</p>
       </LegalSection>
 
@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
       </LegalSection>
 
       <LegalSection title="5. Your choices and rights">
-        <p>You may request access, correction, export, restriction, or deletion of personal information, subject to applicable law. Business customers are responsible for obtaining appropriate consent before messaging contacts through WhatsApp.</p>
+        <p>You may request access, correction, export, restriction, or deletion of personal information, subject to applicable law. Business customers are responsible for obtaining appropriate consent before collecting visitor details or initiating follow-up.</p>
       </LegalSection>
 
       <LegalSection title="6. Contact us">

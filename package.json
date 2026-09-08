@@ -33,6 +33,9 @@
     "verify:sovereign": "node --import tsx --test tests/sovereign-intelligence/*.test.ts",
     "verify:flow": "tsx scripts/verify-product-flow.ts",
     "verify:launch": "tsx scripts/verify-commercial-launch.ts",
+    "verify:routes": "node scripts/verify-canonical-routes.mjs",
+    "verify:widget-load": "node scripts/load-test-widget.mjs",
+    "verify:commercial-readiness": "npm run verify:routes && node --import tsx --test tests/commercial-readiness/*.test.ts",
     "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
   },
   "dependencies": {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BillingControls } from "@/components/admin/billing-controls";
 import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
+import { CreditHistoryTable } from "@/components/billing/credit-history-table";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -60,6 +61,8 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
       invoices={organization.invoices.map((invoice) => ({ id: invoice.id, invoiceNumber: invoice.invoiceNumber, status: invoice.status, totalPaisa: invoice.totalPaisa }))}
       addons={organization.billingAddons.map((addon) => ({ id: addon.id, name: addon.name, category: addon.category, provisioningStatus: addon.provisioningStatus, paymentStatus: addon.paymentStatus, setupFeePaisa: addon.setupFeePaisa, recurringFeePaisa: addon.recurringFeePaisa }))}
     />
+
+    <section><p className="product-eyebrow">Credit and usage history</p><h2 className="mt-2 text-2xl font-semibold">Allocations, usage and payments</h2><p className="mb-4 mt-2 text-sm text-[#68645c]">The current usage position and every verified pack or governed free-credit grant are retained for review.</p><CreditHistoryTable entries={organization.aiCreditTransactions} included={limits.aiReplies} used={usage.aiReplies} extraUsed={billing.aiCredits.used} remaining={billing.aiCredits.remaining} /></section>
 
     <div>
       <Record title="Invoices and payments">

@@ -38,7 +38,7 @@ export default async function SupportPage() {
   }));
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <TopBar title="Support" subtitle="Guided help for onboarding, messaging, billing, campaigns, and automation" notificationCount={tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status)).length} />
+      <TopBar title="Support" subtitle="Guided help for widget onboarding, website conversations, billing, and automation" notificationCount={tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status)).length} />
       <main className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         <SupportAccessPanel initialGrants={serializedGrants} initialEvents={serializedEvents} canManage={Boolean(access && canManageWorkspace(access.role))} />
         <SupportCenter initialTickets={serializedTickets} />

@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
 const CALLBACK_PATH = "/api/appointment-journey/google/oauth/callback";
 const SCOPES = [
@@ -185,13 +185,14 @@ export async function refreshGoogleAppointmentAccessToken(refreshToken: string) 
   return payload.access_token;
 }
 
-async function googleJson<T>(input: {
+export async function googleJson<T>(input: {
   url: string;
   accessToken: string;
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
 }) {
   const response = await fetch(input.url, {
+    signal: AbortSignal.timeout(15000),
     method: input.method || "GET",
     headers: {
       Authorization: `Bearer ${input.accessToken}`,
@@ -202,7 +203,7 @@ async function googleJson<T>(input: {
   });
   const payload = await response.json().catch(() => null) as (T & { error?: { message?: string } }) | null;
   if (!response.ok) {
-    throw new Error(payload?.error?.message || `Google API request failed with status ${response.status}.`);
+    throw Object.assign(new Error(payload?.error?.message || `Google API request failed with status ${response.status}.`), { status: response.status });
   }
   return payload as T;
 }
@@ -419,7 +420,7 @@ export async function getGoogleAppointmentAvailableSlots(input: {
   const now = input.now || new Date();
   const timeMax = new Date(now.getTime() + 8 * 24 * 60 * 60 * 1000);
   const payload = await googleJson<{
-    calendars?: Record<string, { busy?: GoogleBusyPeriod[] }>;
+    calendars?: Record<string, { busy?: GoogleBusyPeriod[]; errors?: unknown[] }>;
   }>({
     url: "https://www.googleapis.com/calendar/v3/freeBusy",
     accessToken: input.accessToken,
@@ -431,12 +432,18 @@ export async function getGoogleAppointmentAvailableSlots(input: {
       items: [{ id: input.calendarId }]
     }
   });
+  const calendar = payload?.calendars?.[input.calendarId];
+  if (!calendar || (calendar.errors?.length ?? 0) > 0 || !Array.isArray(calendar.busy) ||
+    calendar.busy.some(period => !period || !Number.isFinite(Date.parse(period.start)) ||
+      !Number.isFinite(Date.parse(period.end)) || Date.parse(period.end) <= Date.parse(period.start))) {
+    throw new Error("Google Calendar availability could not be verified. No slots can be offered.");
+  }
   return computeAppointmentSlots({
     now,
     timeZone: input.timeZone,
     durationMin: input.durationMin,
     workingHours: input.workingHours,
-    busy: payload.calendars?.[input.calendarId]?.busy || [],
+    busy: calendar.busy,
     days: 7,
     limit: 10
   });
@@ -454,22 +461,38 @@ export async function createGoogleAppointmentEvent(input: {
   slotStart: Date;
   slotEnd: Date;
   status: "HOLD" | "CONFIRMED";
+  // Existing reservations must be read back, never blindly recreated.
+  existingEventId?: string | null;
 }) {
-  const event = await googleJson<{ id?: string }>({
-    url: `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(input.calendarId)}/events`,
+  const id = input.existingEventId || createHash("sha256").update(JSON.stringify([input.calendarId, input.bookingId])).digest("hex");
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(input.calendarId)}/events`;
+  const summary = `${input.status === "HOLD" ? "Hold" : "Appointment"}: ${input.customerName} - ${input.serviceName}`;
+  if (!input.existingEventId) try { await googleJson<{ id?: string }>({
+    url,
     accessToken: input.accessToken,
     method: "POST",
     body: {
-      summary: `${input.status === "HOLD" ? "Hold" : "Appointment"}: ${input.customerName} - ${input.serviceName}`,
+      id,
+      summary,
       description: `Appointment Journey booking ${input.bookingId}\nCustomer phone: ${input.customerPhone}\nWorkspace: ${input.tenantName}`,
       start: { dateTime: input.slotStart.toISOString(), timeZone: input.timeZone },
       end: { dateTime: input.slotEnd.toISOString(), timeZone: input.timeZone },
       transparency: "opaque",
       extendedProperties: { private: { appointmentBookingId: input.bookingId } }
     }
-  });
-  if (!event.id) throw new Error("Google Calendar event was created without an ID.");
-  return event.id;
+  }); } catch (error) {
+    // Never blindly repeat a write after a transport failure. A later retry
+    // uses the same ID; an existing event must pass read-back below.
+    if ((error as { status?: number }).status !== 409) throw error;
+  }
+  const event = await googleJson<{ id?: string; status?: string; summary?: string; start?: {dateTime?: string}; end?: {dateTime?: string}; extendedProperties?: {private?: {appointmentBookingId?: string}} }>({url: `${url}/${encodeURIComponent(id)}`, accessToken: input.accessToken});
+  if (!event || event.id !== id || event.status !== "confirmed" || event.summary !== summary ||
+    event.extendedProperties?.private?.appointmentBookingId !== input.bookingId ||
+    Date.parse(event.start?.dateTime || "") !== input.slotStart.getTime() ||
+    Date.parse(event.end?.dateTime || "") !== input.slotEnd.getTime()) {
+    throw new Error("Google Calendar booking read-back did not match. Confirmation withheld.");
+  }
+  return id;
 }
 
 export async function deleteGoogleAppointmentEvent(input: {
@@ -501,7 +524,7 @@ export async function appendAppointmentBookingToSheet(input: {
   };
 }) {
   await googleJson({
-    url: `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(input.sheetId)}/values/Bookings!A:J:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,
+    url: `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(input.sheetId)}/values/Bookings!A:J:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
     accessToken: input.accessToken,
     method: "POST",
     body: {

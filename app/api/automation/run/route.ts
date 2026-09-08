@@ -4,6 +4,7 @@ import { runDueAutomationJobs } from "@/lib/automation-engine";
 import { processKnowledgeFlagSla } from "@/lib/repositories/knowledge-verification-repository";
 import { processSubscriptionLifecycleBatch } from "@/lib/subscription-lifecycle";
 import { importSupportEmailReplies } from "@/lib/support-email-sync";
+import { queueWebsiteHandoverNotifications } from "@/lib/website-handover-notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -18,11 +19,12 @@ function authorized(request: Request) {
 
 export async function POST(request: Request) {
   if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const websiteHandover = await queueWebsiteHandoverNotifications();
   const [result, knowledgeFlagSla, subscriptions, supportEmailReplies] = await Promise.all([
     runDueAutomationJobs({ workerId: `cron-${Date.now()}`, take: 25, dryRun: false }),
     processKnowledgeFlagSla(),
     processSubscriptionLifecycleBatch(),
     importSupportEmailReplies()
   ]);
-  return NextResponse.json({ status: "ok", result, knowledgeFlagSla, subscriptions, supportEmailReplies });
+  return NextResponse.json({ status: "ok", result, knowledgeFlagSla, subscriptions, supportEmailReplies, websiteHandover });
 }

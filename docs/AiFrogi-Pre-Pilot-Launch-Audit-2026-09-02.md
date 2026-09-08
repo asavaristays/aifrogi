@@ -5,6 +5,8 @@ Audited production release: `a9c9562`
 Reference workspace: Webtechnosys AI Agency  
 Decision: **Platform ready for controlled preparation; reference bot not yet authorised to go live.**
 
+Normative launch requirements are defined separately in `docs/AiFrogi-Webtechnosys-Pilot-Launch-Governance-v1.md`. That specification describes target state and must not be cited as evidence that the current workspace has achieved any requirement.
+
 ## 1. Decision boundary
 
 Two decisions must remain separate:
@@ -76,6 +78,22 @@ Current production state:
 
 The earlier six-claim Webtechnosys evidence belonged to the retired workspace. It must not be reused as proof for this newly onboarded workspace.
 
+### Why the published count changed from 6 to 0
+
+This was a deliberate operational deletion followed by creation of a new workspace, not an unexplained same-workspace regression and not a side effect of the evidence migration. The available production evidence does **not** establish who authorised the deletion or why it was requested.
+
+- The former tenant (`webtechnosys`, id `cmtdi5wml0000mkkxo68lzwo7`) was explicitly deleted on 1 September 2026 at `12:33:31Z`. The protected tenant-operation log records the exact slug, tenant id, executing actor and deletion time; it does not contain an approval reference, requesting identity or reason.
+- A checksum-protected encrypted database backup was created at `12:33:18Z`, before deletion. It is a recovery point, not evidence that the retired claims remain valid for the replacement tenant.
+- The replacement tenant (`webtechnosys-ai-agency-e5da22`, id `cmtiniha1000c7ykxuvo6cqqq`) was created at `12:36:22Z`, approximately three minutes later. This is a distinct organization and property.
+- The replacement currently contains zero onboarding documents, zero knowledge documents and zero knowledge entries. Recovery is therefore **re-import, review and re-approval**, not merely clicking Publish again.
+- The additive evidence migration changed only `SovereignAnswerEvidence` and created `SovereignReplayCase`; it did not alter or delete `Organization`, `Property`, `KnowledgeDocument` or `KnowledgeEntry` records. Its verified incident record also states that no data loss occurred.
+
+The old six claims are historical evidence of the retired tenant only. They may be inspected from the protected pre-deletion backup if an authorised recovery audit is needed, but they must not be restored directly into production or counted toward the new tenant's readiness without fresh client approval.
+
+### Attribution and rationale gap
+
+No deletion instruction is attributed to the client or founder in this report. Until a separate approval record is found, the authorising party and business rationale remain **unverified**. The timing is consistent with a clean-slate re-onboarding sequence, but that is an inference from the deletion and subsequent workspace creation—not proof of why the deletion was approved. Future destructive tenant operations must require and retain a change-request or approval identifier alongside the actor and reason before execution.
+
 ## 5. Go-live blockers
 
 ### B1 — Approved knowledge
@@ -137,3 +155,5 @@ This is governed improvement, not uncontrolled self-learning.
 **Infrastructure:** automatic certificate renewal is verified and no longer blocks the pilot.
 
 After B1–B3 pass, start with a monitored website-only pilot and no unverified external write action.
+
+No decimal readiness rating is issued for this audit cycle. Platform health and client-bot readiness are reported separately, and a new rating may be considered only after the replacement Webtechnosys tenant passes B1–B3 and produces retained acceptance evidence.

@@ -15,6 +15,9 @@ import { resolveDemoConnectorTurn } from "@/lib/demo-sandbox/service";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 import type { Prisma } from "@/generated/prisma/client";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { ensureWebsiteHandover, websiteConversationState } from "@/lib/website-handover";
+import { withWebsiteTurnLock } from "@/lib/website-turn-lock";
+import { persistWebsiteTurn } from "@/lib/website-persistence";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -43,6 +46,15 @@ function rateLimited(request: Request, tenantKey: string, limit = 12) {
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
+  const payload = await request.clone().json().catch(() => null);
+  const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
+  if (!sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400 });
+  try { return await withWebsiteTurnLock(`${slug}:${hashWebsiteVisitorValue(sessionId)}`, () => handleVisitorTurn(request, context)); }
+  catch { return NextResponse.json({ error: "Conversation update could not complete. Please retry shortly." }, { status: 503, headers: responseHeaders }); }
+}
+
+async function handleVisitorTurn(request: Request, context: { params: Promise<{ slug: string }> }) {
+  const { slug } = await context.params;
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
@@ -61,13 +73,19 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
   const priorToken = payload?.visitorToken ? verifyWebsiteVisitorToken(payload.visitorToken, slug) : null;
   let existingResolutionState: unknown = null;
+  let lastAssistantAnswer = "";
+  let sessionStatus = "AI_READY";
   if (payload?.visitorToken && (!priorToken || priorToken.sessionId !== sessionId)) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
   if (payload?.visitorToken) {
-    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true, resolutionState: true } });
+    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true, resolutionState: true, status: true } });
     if (!activeSession) return NextResponse.json({ error: "Visitor session is invalid, closed, or expired." }, { status: 401, headers: responseHeaders });
     existingResolutionState = activeSession.resolutionState;
-    const latestEvidence = await db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id, sessionIdHash: hashWebsiteVisitorValue(sessionId) }, orderBy: { createdAt: "desc" }, select: { circuitBreaker: true, circuitBreakerReason: true, question: true, resolvedQuestion: true } });
-    if (latestEvidence?.circuitBreaker && semanticSimilarity(latestEvidence.question, message) >= CUSTOMER_SEMANTIC_REPEAT_THRESHOLD) {
+    sessionStatus = activeSession.status;
+    if (sessionStatus === "CLOSED") return NextResponse.json({ error: "This conversation is closed.", conversationState: "CLOSED" }, { status: 410, headers: responseHeaders });
+    const latestEvidence = await db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id, sessionIdHash: hashWebsiteVisitorValue(sessionId) }, orderBy: { createdAt: "desc" }, select: { circuitBreaker: true, circuitBreakerReason: true, question: true, resolvedQuestion: true, answer: true } });
+    lastAssistantAnswer = latestEvidence?.answer || "";
+    const explicitlyResumed = existingResolutionState && typeof existingResolutionState === "object" && !Array.isArray(existingResolutionState) && "aiResumedAt" in existingResolutionState && typeof existingResolutionState.aiResumedAt === "string";
+    if (!explicitlyResumed && latestEvidence?.circuitBreaker && semanticSimilarity(latestEvidence.question, message) >= CUSTOMER_SEMANTIC_REPEAT_THRESHOLD) {
       existingResolutionState = { ...((existingResolutionState && typeof existingResolutionState === "object" && !Array.isArray(existingResolutionState)) ? existingResolutionState : {}), version: "1.1", status: "ESCALATED", circuitBreakerTriggered: true, circuitBreakerReason: latestEvidence.circuitBreakerReason || "CUSTOMER_REPEAT", resolvedQuestion: latestEvidence.resolvedQuestion, lastCustomerText: latestEvidence.question };
     }
   }
@@ -76,15 +94,32 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     where: { leadId: priorToken.leadId, sender: "GUEST" }, orderBy: [{ sentAt: "desc" }, { id: "desc" }], take: 6, select: { body: true }
   })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
-  const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION);
+  const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
+  const explicitHumanRequest = Boolean(payload?.requestHuman || fallbackDecision.intent === "HUMAN_REQUEST");
+  const handoffEnabled = profile.humanHandoffEnabled === true;
+  // A human-owned conversation must not call the model or generate competing advice.
+  if (sessionStatus === "HUMAN_JOINED" && priorToken) {
+    return persistWebsiteTurn(async () => {
+    const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, message: safety.storageText, propertySlug: slug }).catch(() => null);
+    if (!captured?.lead || captured.lead.id !== priorToken.leadId || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Your message could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
+    return NextResponse.json({ answer: "Your message has been saved in this conversation for the human team. AI replies are paused while they assist you.", grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_JOINED", handoffAvailable: handoffEnabled, messageAccepted: true }, { headers: responseHeaders });
+    });
+  }
   const categoryBoundary = evaluateCategoryHardBoundary(profile.category, message);
-  const demoTurn = !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
-  const result = safety.blocked ? null : demoTurn ? {
+  const demoTurn = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
+  let result = safety.blocked ? null : demoTurn ? {
     answer: demoTurn.answer, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "AIFROGI_DEMO_MOCK_CONNECTOR",
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: demoTurn.status === "SUCCEEDED" ? "ANSWER" as const : demoTurn.status === "CLARIFY" ? "CLARIFY" as const : "ESCALATE" as const, reason: `Isolated demo connector ${demoTurn.connectorKey}/${demoTurn.operation} returned ${demoTurn.status}.` },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: demoTurn.status === "SAFE_FAILURE" ? "CONNECTOR" as const : "NONE" as const, failureCode: demoTurn.status === "SAFE_FAILURE" ? "DEMO_CONNECTOR_UNAVAILABLE" : null, latencyMs: 0, attemptCount: demoTurn.status === "CLARIFY" ? 0 : 1, escalationTier: demoTurn.status === "SAFE_FAILURE" ? "TIER_1_BUSINESS_ASYNC" as const : "TIER_0_SELF_RESOLVE" as const, degradedMode: demoTurn.status === "SAFE_FAILURE" }
-  } : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions }).catch(() => null);
+  } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer }).catch(() => null);
+  if (explicitHumanRequest && !safety.blocked) result = {
+    answer: handoffEnabled ? "Your request is saved for the business team to review in this conversation. A human has not joined yet. Contact details are optional for in-chat help; share them with consent only if you want a callback." : "Human handover is not enabled for this bot. Please contact the business through its published contact details. No live connection has been made.",
+    sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "HANDOVER_CONTROL",
+    decision: { ...fallbackDecision, disposition: "ESCALATE", reason: handoffEnabled ? "Explicit human request; persisted before acknowledgment." : "Human handover is disabled; no connection promised." },
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_1_BUSINESS_ASYNC", degradedMode: false }
+  };
   const businessName = property.organization?.name || "the business";
   const proposedAnswer = safety.answer || result?.answer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : `I do not have enough approved ${businessName} information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.`);
   const proposedDecision = result?.decision || (safety.blocked
@@ -99,7 +134,17 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   });
   const answer = resolution.answer;
   const evidenceDecision = resolution.decision;
+  // Evidence describes the response actually served, not a discarded model answer.
+  // Keep retrieval candidates for diagnosis, but never attribute their use to a breaker reply.
+  if (answer !== proposedAnswer && result) {
+    result = { ...result, answer, decision: evidenceDecision, sources: [], sourceUrls: [], claimIds: [], usedOpenAi: false, model: "BOUNDED_RESOLUTION",
+      retrieval: { ...result.retrieval, usedClaimIds: [] },
+      reliability: { ...result.reliability, failureLayer: "CONVERSATION_STATE", failureCode: resolution.state.circuitBreakerReason || "RESOLUTION_OVERRIDE", escalationTier: "TIER_1_BUSINESS_ASYNC" }
+    };
+  }
   const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "INFRASTRUCTURE" as const, failureCode: safety.blocked ? null : "UNATTRIBUTED_RUNTIME_FAILURE", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
+  return persistWebsiteTurn(async () => {
+  const persistenceDb = getDb()!;
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,
     phone: payload?.consent && payload.contact ? String(payload.contact).slice(0, 120) : undefined,
@@ -108,6 +153,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
+  if ((explicitHumanRequest || evidenceDecision.disposition === "ESCALATE") && handoffEnabled) {
+    try { await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes }); }
+    catch { return NextResponse.json({ error: "Your human-help request could not be saved. Please retry." }, { status: 503, headers: responseHeaders }); }
+  }
   const evidence = await recordSovereignAnswerEvidence({
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
     answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length || result?.claimIds.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
@@ -126,12 +175,13 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     retrieval: result?.retrieval || { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     reliability
   }).catch(() => null);
-  const humanRequested = Boolean(payload?.requestHuman || priorToken?.humanRequested || evidenceDecision.disposition === "ESCALATE");
+  if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
+  const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
   const consented = Boolean(payload?.consent && payload.contact);
   const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
   const sessionResolutionState = (preserveActiveState ? existingResolutionState : resolution.state) as Prisma.InputJsonValue;
-  await db.websiteVisitorSession.upsert({
+  await persistenceDb.websiteVisitorSession.upsert({
     where: { leadId: captured.lead.id },
     create: {
       propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
@@ -145,7 +195,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     }
   });
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: true, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
@@ -159,6 +210,8 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   if (!session || session.revokedAt) return NextResponse.json({ messages: [], conversationState: "CLOSED" }, { status: 410, headers: responseHeaders });
   const afterValue = new URL(request.url).searchParams.get("after") || "";
   const afterDate = afterValue ? new Date(afterValue) : null;
+  const afterId = new URL(request.url).searchParams.get("afterId") || "";
+  if (afterId && (!afterDate || !/^[a-zA-Z0-9_-]{1,100}$/.test(afterId))) return NextResponse.json({ error: "Invalid reply cursor." }, { status: 400, headers: responseHeaders });
   if (afterDate && Number.isNaN(afterDate.getTime())) return NextResponse.json({ error: "Invalid reply cursor." }, { status: 400, headers: responseHeaders });
   const lead = await db.lead.findFirst({
     where: { id: token.leadId, property: { slug } },
@@ -166,23 +219,25 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
       stage: true,
       tags: { select: { value: true } },
       messages: {
-        where: { sender: "AGENT", ...(afterDate ? { sentAt: { gt: afterDate } } : {}) },
+        where: { sender: "AGENT", ...(afterDate ? afterId ? { OR: [{ sentAt: { gt: afterDate } }, { sentAt: afterDate, id: { gt: afterId } }] } : { sentAt: { gt: afterDate } } : {}) },
         orderBy: [{ sentAt: "asc" }, { id: "asc" }],
-        take: 50,
+        take: 51,
         select: { id: true, body: true, sentAt: true }
       }
     }
   });
   if (!lead) return NextResponse.json({ error: "Conversation was not found." }, { status: 404, headers: responseHeaders });
   const closed = ["BOOKED", "WON", "LOST"].includes(lead.stage) || lead.tags.some((tag) => ["resolved", "closed"].includes(tag.value.toLowerCase()));
-  if (closed) return NextResponse.json({ messages: [], conversationState: "CLOSED" }, { headers: responseHeaders });
-  const messageIds = lead.messages.map((message) => message.id);
+  const hasMore = lead.messages.length > 50;
+  const page = lead.messages.slice(0, 50);
+  const messageIds = page.map((message) => message.id);
   if (messageIds.length) await Promise.all([
     db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, deliveryStatus: null }, data: { deliveryStatus: "DELIVERED", statusUpdatedAt: new Date() } }),
-    db.websiteVisitorSession.update({ where: { id: session.id }, data: { status: "HUMAN_JOINED", lastDeliveredAt: new Date() } })
+    db.websiteVisitorSession.update({ where: { id: session.id }, data: { lastDeliveredAt: new Date() } })
   ]);
-  const conversationState = lead.messages.length ? "HUMAN_JOINED" : token.humanRequested ? "HUMAN_REQUESTED" : "AI_READY";
-  return NextResponse.json({ messages: lead.messages.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString() })), conversationState }, { headers: responseHeaders });
+  // Fetching historical replies must never undo an explicit owner/admin AI resume.
+  const conversationState = websiteConversationState(session.status, closed, false);
+  return NextResponse.json({ messages: page.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString() })), conversationState, hasMore }, { headers: responseHeaders });
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ slug: string }> }) {

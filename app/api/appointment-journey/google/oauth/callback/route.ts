@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth-server";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import {
   createAppointmentGoogleResources,
   exchangeGoogleAppointmentCode,
@@ -13,6 +15,8 @@ import {
 export const dynamic = "force-dynamic";
 
 function html(title: string, body: string, status = 200) {
+  const escape = (value: string) => value.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+  title = escape(title); body = escape(body);
   return new NextResponse(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;margin:48px;line-height:1.5;color:#172033}a{color:#0b66c3}</style></head><body><h1>${title}</h1><p>${body}</p></body></html>`, {
     status,
     headers: { "Content-Type": "text/html; charset=utf-8" }
@@ -20,7 +24,11 @@ function html(title: string, body: string, status = 200) {
 }
 
 function redirectWithStatus(requestUrl: string, returnTo: string, status: string, detail?: string) {
-  const url = new URL(returnTo, new URL(requestUrl).origin);
+  // The reverse proxy exposes an internal localhost request URL. Use the
+  // configured OAuth callback origin, never forwarded/client-supplied hosts.
+  const origin = new URL(process.env.GOOGLE_APPOINTMENT_REDIRECT_URI || "https://app.aifrogi.com").origin;
+  const url = new URL(returnTo, origin);
+  if (url.origin !== origin) throw new Error("Invalid Google return destination");
   url.searchParams.set("appointment_google", status);
   if (detail) url.searchParams.set("appointment_google_detail", detail.slice(0, 160));
   return NextResponse.redirect(url.toString());
@@ -41,9 +49,14 @@ export async function GET(request: Request) {
 
   try {
     const parsedState = parseGoogleAppointmentOAuthState(state);
-    const token = await exchangeGoogleAppointmentCode(code);
     const tenant = await getAppointmentTenantOAuthContext(parsedState.tenantId);
     if (!tenant) return html("Google connection failed", "Appointment tenant was not found.", 404);
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin") {
+      const access = await resolveClientWorkspaceAccess({ propertySlug: tenant.property.slug, requireManage: true, requireActiveSubscription: false });
+      if (!access.ok) return html("Google connection denied", "Sign in with permission to manage this workspace and reconnect Google.", access.status);
+    }
+    const token = await exchangeGoogleAppointmentCode(code);
 
     let resources: { calendarId: string; sheetId: string };
     try {

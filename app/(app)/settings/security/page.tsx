@@ -28,7 +28,7 @@ export default function SettingsSecurityPage() {
           <Card className="p-6">
             <h3 className="text-lg font-extrabold">Integration Approval</h3>
             <p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">
-              Owner approval is required before WhatsApp, email, AI bot, or call capture sources are activated.
+              Owner approval is required before the website AI Bot, email, or call capture sources are activated.
             </p>
           </Card>
           <Card className="p-6">

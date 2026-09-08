@@ -35,7 +35,7 @@ export function TopBar({
         </div>
 
         <div className="flex flex-wrap items-center gap-3 lg:justify-end">
-          <Link href="/whatsapp-bot" className="relative inline-flex min-h-9 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-xs font-semibold shadow-sm transition hover:bg-[var(--surface-soft)]" aria-label={unreadCount > 0 ? `${unreadCount} items need attention` : "Open inbox"}>
+          <Link href="/team-inbox" className="relative inline-flex min-h-9 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-xs font-semibold shadow-sm transition hover:bg-[var(--surface-soft)]" aria-label={unreadCount > 0 ? `${unreadCount} items need attention` : "Open inbox"}>
             <Icon name="bell" className="h-4 w-4" />
             <span>{unreadCount > 0 ? "Attention" : "Inbox"}</span>
             {unreadCount > 0 ? <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--error)] px-1 text-[10px] font-bold text-white">{unreadLabel}</span> : null}

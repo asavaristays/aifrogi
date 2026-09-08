@@ -37,10 +37,6 @@ export function LiveStatus() {
         <div><h2 className="font-bold">AiFrogi web application and API</h2><p className="mt-1 text-sm text-[var(--text-muted)]">Live reachability check from this page.</p></div>
         <div className="shrink-0 text-right"><p className="flex items-center justify-end gap-2 text-sm font-bold"><span className={`h-2.5 w-2.5 rounded-full ${color}`} />{label}</p>{checkedAt ? <p className="mt-1 text-[10px] text-[var(--text-muted)]">Checked {checkedAt}</p> : null}</div>
       </div>
-      <div className="flex items-center justify-between gap-5 border-t border-black/10 py-6">
-        <div><h2 className="font-bold">WhatsApp Business Platform</h2><p className="mt-1 text-sm text-[var(--text-muted)]">Operated independently by Meta.</p></div>
-        <a href="https://metastatus.com/" target="_blank" rel="noreferrer" className="shrink-0 text-sm font-bold text-[#6d5310]">Meta status ↗</a>
-      </div>
     </div>
   );
 }

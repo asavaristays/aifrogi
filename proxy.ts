@@ -55,7 +55,6 @@ const publicApiPrefixes = [
   "/api/auth/password-reset",
   "/api/automation/run",
   // Machine ingress authenticates with its dedicated bearer token in the route.
-  "/api/integrations/whatsapp/inbound",
   "/api/integrations/whatsapp/webhook",
   "/api/appointment-journey/google/oauth/callback",
   "/api/appointment-journey/webhook/aifrogi",
@@ -65,6 +64,7 @@ const publicApiPrefixes = [
   "/api/flowcart/orders",
   "/api/flowcart/webhook/aifrogi",
   "/api/flowcart/webhook/razorpay",
+  "/api/billing/webhook/razorpay",
   "/api/public/whatsapp-bot",
   "/api/public/website-bot",
   "/api/health/live",

@@ -67,7 +67,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
             <h1 className="mt-0.5 text-[22px] font-semibold leading-tight text-[var(--text)]">Today</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/whatsapp-bot" className="inline-flex min-h-9 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-xs font-semibold text-[var(--text)] transition hover:bg-[var(--surface-soft)]">
+            <Link href="/team-inbox" className="inline-flex min-h-9 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-xs font-semibold text-[var(--text)] transition hover:bg-[var(--surface-soft)]">
               <Icon name="message-circle" className="h-4 w-4" />
               Inbox
             </Link>
@@ -144,7 +144,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
             <section id="human-response" className="soft-card overflow-hidden rounded-lg">
               <SectionHeader eyebrow="Human response SLA" title="Team response report" status={props.humanResponse.overdue ? `${props.humanResponse.overdue} overdue` : `${props.humanResponse.waiting} waiting`} warning={props.humanResponse.overdue > 0} />
               <div className="grid grid-cols-2 border-b border-[var(--border)] sm:grid-cols-4">{[["SLA", `${props.humanResponse.slaMinutes}m`], ["Reminder", String(props.humanResponse.reminder)], ["Overdue", String(props.humanResponse.overdue)], ["Fallback candidates", String(props.humanResponse.fallbackEligible)]].map(([label, value]) => <div key={label} className="border-r border-[var(--border)] p-4 last:border-r-0"><small className="block text-[10px] text-[var(--text-muted)]">{label}</small><strong className="mt-1 block text-lg">{value}</strong></div>)}</div>
-              <div className="divide-y divide-[var(--border)]">{props.humanResponse.items.slice(0, 5).map((item) => <Link key={item.leadId} href="/whatsapp-bot" className="grid gap-2 px-5 py-4 sm:grid-cols-[1fr_110px_100px] sm:items-center"><span><strong className="block text-sm">{item.name}</strong><small className="mt-1 block truncate text-[11px] text-[var(--text-muted)]">{item.latestMessage}</small></span><span className={`status-pill ${item.state === "OVERDUE" ? "status-error" : item.state === "REMINDER" ? "status-warning" : "status-info"}`}>{item.state.toLowerCase()}</span><strong className="text-xs sm:text-right">{item.waitingMinutes}m waiting</strong></Link>)}{!props.humanResponse.items.length ? <div className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">No customer is waiting for a team response.</div> : null}</div>
+              <div className="divide-y divide-[var(--border)]">{props.humanResponse.items.slice(0, 5).map((item) => <Link key={item.leadId} href="/team-inbox" className="grid gap-2 px-5 py-4 sm:grid-cols-[1fr_110px_100px] sm:items-center"><span><strong className="block text-sm">{item.name}</strong><small className="mt-1 block truncate text-[11px] text-[var(--text-muted)]">{item.latestMessage}</small></span><span className={`status-pill ${item.state === "OVERDUE" ? "status-error" : item.state === "REMINDER" ? "status-warning" : "status-info"}`}>{item.state.toLowerCase()}</span><strong className="text-xs sm:text-right">{item.waitingMinutes}m waiting</strong></Link>)}{!props.humanResponse.items.length ? <div className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">No customer is waiting for a team response.</div> : null}</div>
               <div className="border-t border-[var(--border)] bg-[var(--surface-soft)] px-5 py-3 text-[11px] leading-5 text-[var(--text-muted)]">Fallback candidates are reported only. No customer message is sent automatically in this release.</div>
             </section>
             <section className="soft-card overflow-hidden rounded-lg">
@@ -167,7 +167,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
                   <p className="text-[11px] font-medium text-[var(--text-muted)]">Live activity</p>
                   <h3 className="mt-0.5 text-base font-semibold">Recent conversations</h3>
                 </div>
-                <Link href="/whatsapp-bot" className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary-strong)]">
+                <Link href="/team-inbox" className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary-strong)]">
                   View inbox
                   <Icon name="arrow-right" className="h-3.5 w-3.5" />
                 </Link>
@@ -345,7 +345,7 @@ function ConversationRow({ lead }: { lead: Lead }) {
   const needsReply = message?.from === "guest";
 
   return (
-    <Link href="/whatsapp-bot" className="grid gap-3 px-5 py-3.5 transition hover:bg-[var(--surface-soft)] sm:grid-cols-[36px_minmax(0,1fr)_112px] sm:items-center">
+    <Link href="/team-inbox" className="grid gap-3 px-5 py-3.5 transition hover:bg-[var(--surface-soft)] sm:grid-cols-[36px_minmax(0,1fr)_112px] sm:items-center">
       <span className="flex h-9 w-9 items-center justify-center rounded-md bg-[var(--secondary-soft)] text-xs font-semibold text-[var(--secondary)]">{lead.initials}</span>
       <span className="min-w-0">
         <span className="flex items-center gap-2">

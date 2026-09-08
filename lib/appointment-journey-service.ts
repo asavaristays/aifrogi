@@ -1,9 +1,9 @@
 import { Prisma } from "../generated/prisma/client";
 import { getDb } from "@/lib/db";
+import { synchronizeAppointmentSheet } from "@/lib/appointment-sheet-sync";
 import { decryptSecretValue, encryptSecretValue } from "@/lib/field-encryption";
 import type { AppointmentInboundEvent } from "@/lib/appointment-journey-contract";
 import {
-  appendAppointmentBookingToSheet,
   createGoogleAppointmentEvent,
   deleteGoogleAppointmentEvent,
   getGoogleAppointmentAvailableSlots,
@@ -268,9 +268,7 @@ export async function setAppointmentJourneyEnabled(input: {
     }
   });
   if (!property) return { error: "Workspace not found for this customer.", status: 404 as const };
-  if (input.enabled && property.whatsappIntegration?.status !== "CONNECTED") {
-    return { error: "Connect and validate the workspace WhatsApp API before enabling Appointment Journey.", status: 409 as const };
-  }
+  // Calendar/Sheets setup is channel-neutral; channel activation is separate.
 
   await db.$transaction(async (tx) => {
     const existing = property.appointmentTenants[0] || null;
@@ -701,17 +699,20 @@ async function synchronizeBookingToGoogle(bookingId: string) {
     include: { service: true, tenant: true }
   });
   if (!booking || !booking.service) throw new Error("Appointment booking could not be loaded for Google synchronization.");
+  if (booking.tenant.status !== "GOOGLE_READY" || booking.status === "CANCELLED") throw new Error("Appointment execution is not enabled for this reservation.");
   if (!booking.tenant.calendarId || !booking.tenant.sheetId) throw new Error("Google Calendar or Sheet is not configured for this tenant.");
 
   const accessToken = await getAppointmentGoogleAccessToken(booking.tenant.googleRefreshTokenEnc);
   let eventId = booking.gcalEventId;
   try {
-    if (!eventId) {
+    // A persisted ID is a reference, not proof of a current provider booking.
+    // Verify stored events too; a missing/moved/cancelled event must fail closed.
       eventId = await createGoogleAppointmentEvent({
         accessToken,
         calendarId: booking.tenant.calendarId,
         timeZone: booking.tenant.timezone,
         bookingId: booking.id,
+        existingEventId: eventId,
         tenantName: booking.tenant.name,
         serviceName: booking.service.name,
         customerName: booking.customerName,
@@ -720,7 +721,6 @@ async function synchronizeBookingToGoogle(bookingId: string) {
         slotEnd: booking.slotEnd,
         status: booking.paymentStatus === "PENDING" ? "HOLD" : "CONFIRMED"
       });
-    }
   } catch (error) {
     await db.appointmentBooking.update({ where: { id: booking.id }, data: { status: "CALENDAR_ERROR" } });
     await markGoogleRuntimeError(booking.tenantId, error);
@@ -737,41 +737,11 @@ async function synchronizeBookingToGoogle(bookingId: string) {
   });
 
   try {
-    const previousSync = await db.appointmentSheetSyncState.findUnique({
-      where: { tenantId_tabName: { tenantId: booking.tenantId, tabName: "Bookings" } }
-    });
-    if (previousSync?.cursor !== updated.id || previousSync.lastError) {
-      await appendAppointmentBookingToSheet({
-        accessToken,
-        sheetId: booking.tenant.sheetId,
-        booking: {
-          id: updated.id,
-          createdAt: updated.createdAt,
-          customerName: updated.customerName,
-          customerPhone: updated.customerPhone,
-          serviceName: updated.service?.name || "Appointment",
-          slotStart: updated.slotStart,
-          slotEnd: updated.slotEnd,
-          status: updated.status,
-          paymentStatus: updated.paymentStatus,
-          gcalEventId: updated.gcalEventId
-        }
-      });
-    }
-    await db.$transaction([
-      db.appointmentTenant.update({ where: { id: booking.tenantId }, data: { lastSyncedAt: new Date() } }),
-      db.appointmentSheetSyncState.upsert({
-        where: { tenantId_tabName: { tenantId: booking.tenantId, tabName: "Bookings" } },
-        update: { lastSyncedAt: new Date(), lastError: null, cursor: updated.id },
-        create: { tenantId: booking.tenantId, tabName: "Bookings", lastSyncedAt: new Date(), cursor: updated.id }
-      })
-    ]);
-  } catch (error) {
-    await db.appointmentSheetSyncState.upsert({
-      where: { tenantId_tabName: { tenantId: booking.tenantId, tabName: "Bookings" } },
-      update: { lastError: error instanceof Error ? error.message.slice(0, 1000) : "Sheet append failed." },
-      create: { tenantId: booking.tenantId, tabName: "Bookings", lastError: error instanceof Error ? error.message.slice(0, 1000) : "Sheet append failed." }
-    });
+    await synchronizeAppointmentSheet(updated.id, accessToken);
+  } catch {
+    // Calendar success is distinct from Sheets synchronization. Per-booking
+    // pending/error evidence remains available for operator reconciliation.
+    await markGoogleRuntimeError(booking.tenantId, new Error("SHEETS_RECONCILIATION_REQUIRED"));
   }
   return updated;
 }
@@ -804,22 +774,7 @@ async function cancelLatestAppointmentBooking(input: { tenantId: string; custome
     include: { service: true }
   });
   try {
-    await appendAppointmentBookingToSheet({
-      accessToken,
-      sheetId: booking.tenant.sheetId,
-      booking: {
-        id: cancelled.id,
-        createdAt: cancelled.createdAt,
-        customerName: cancelled.customerName,
-        customerPhone: cancelled.customerPhone,
-        serviceName: cancelled.service?.name || "Appointment",
-        slotStart: cancelled.slotStart,
-        slotEnd: cancelled.slotEnd,
-        status: cancelled.status,
-        paymentStatus: cancelled.paymentStatus,
-        gcalEventId: cancelled.gcalEventId
-      }
-    });
+    await synchronizeAppointmentSheet(cancelled.id, accessToken);
   } catch (error) {
     await markGoogleRuntimeError(booking.tenantId, error);
   }

@@ -90,6 +90,7 @@ export const ModelName = {
   BillingAddon: 'BillingAddon',
   BillingInvoice: 'BillingInvoice',
   UsageRecord: 'UsageRecord',
+  AiCreditTransaction: 'AiCreditTransaction',
   PlatformIncident: 'PlatformIncident',
   PlatformAuditLog: 'PlatformAuditLog',
   AutomationJob: 'AutomationJob',
@@ -985,6 +986,24 @@ export const UsageRecordScalarFieldEnum = {
 } as const
 
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
+
+
+export const AiCreditTransactionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  kind: 'kind',
+  credits: 'credits',
+  packCode: 'packCode',
+  amountPaisa: 'amountPaisa',
+  currency: 'currency',
+  expiresAt: 'expiresAt',
+  paymentReference: 'paymentReference',
+  reason: 'reason',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type AiCreditTransactionScalarFieldEnum = (typeof AiCreditTransactionScalarFieldEnum)[keyof typeof AiCreditTransactionScalarFieldEnum]
 
 
 export const PlatformIncidentScalarFieldEnum = {

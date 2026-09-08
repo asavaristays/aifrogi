@@ -357,6 +357,8 @@ export async function captureIncomingAiBotMessage(input: {
       });
       if (replied) {
         updated = replied;
+      } else {
+        return { error: "Reply could not be stored", lead: null as Lead | null, status: 503, created: false };
       }
     }
 

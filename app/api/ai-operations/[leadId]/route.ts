@@ -21,7 +21,7 @@ export async function POST(request: Request, route: { params: Promise<{ leadId: 
   if ("error" in current) return current.error;
   const payload = await request.json().catch(() => null) as Record<string, unknown> | null;
   try {
-    const operation = await createLeadOperation({ propertyId: current.access.propertyId, leadId, actorEmail: current.access.user.username, ...payload });
+    const operation = await createLeadOperation({ ...payload, propertyId: current.access.propertyId, leadId, actorEmail: current.access.user.username });
     return NextResponse.json({ operation }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not create this action." }, { status: 400 });
@@ -34,7 +34,7 @@ export async function PATCH(request: Request, route: { params: Promise<{ leadId:
   if ("error" in current) return current.error;
   const payload = await request.json().catch(() => null) as Record<string, unknown> | null;
   try {
-    const operation = await updateLeadOperation({ propertyId: current.access.propertyId, leadId, operationId: String(payload?.operationId || ""), ...payload });
+    const operation = await updateLeadOperation({ ...payload, propertyId: current.access.propertyId, leadId, operationId: String(payload?.operationId || "") });
     return NextResponse.json({ operation });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update this action." }, { status: 400 });

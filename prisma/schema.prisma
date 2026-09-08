@@ -317,6 +317,7 @@ model Organization {
   invoices             BillingInvoice[]
   billingAddons        BillingAddon[]
   usageRecords         UsageRecord[]
+  aiCreditTransactions AiCreditTransaction[]
   incidents            PlatformIncident[]
   auditLogs            PlatformAuditLog[]
   userSessions         UserSession[]
@@ -1078,6 +1079,25 @@ model UsageRecord {
   createdAt      DateTime     @default(now())
 
   @@index([organizationId, metric, periodStart])
+}
+
+model AiCreditTransaction {
+  id               String       @id @default(cuid())
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  kind             String
+  credits          Int
+  packCode         String?
+  amountPaisa      Int          @default(0)
+  currency         String       @default("INR")
+  expiresAt        DateTime?
+  paymentReference String?      @unique
+  reason           String?      @db.Text
+  createdBy        String
+  createdAt        DateTime     @default(now())
+
+  @@index([organizationId, expiresAt])
+  @@index([organizationId, kind, createdAt])
 }
 
 model PlatformIncident {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "@/app/globals.css";
 import { AppStateProvider } from "@/components/providers/app-state-provider";
 import { siteUrl, socialImage } from "@/lib/seo";
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: "AiFrogi | Intelligent AI Bot for Business",
   description: "AiFrogi is an intelligent AI business bot that helps teams answer customers, automate follow-ups, manage workflows, and turn conversations into next actions across supported channels.",
-  keywords: ["AI business bot", "intelligent business automation", "customer conversation AI", "AI workflow automation", "business chatbot", "WhatsApp automation"],
+  keywords: ["AI business bot", "intelligent business automation", "customer conversation AI", "AI workflow automation", "website chatbot", "AI website widget"],
   applicationName: "AiFrogi",
   authors: [{ name: "webtechnosys", url: "https://webtechnosys.com" }],
   creator: "webtechnosys",
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const googleAnalyticsId = "G-5QQ0RTF35N";
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -78,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         applicationSubCategory: "AI business automation",
         operatingSystem: "Web",
         description: "An intelligent AI business bot for customer conversations, workflow automation, follow-ups, knowledge-guided answers, and human-assisted operations across supported channels.",
-        featureList: ["AI-guided customer conversations", "Workflow automation", "Knowledge-guided answers", "Human handover", "WhatsApp integration"],
+        featureList: ["AI-guided website conversations", "Workflow automation", "Knowledge-guided answers", "Human handover", "Website widget installation"],
         provider: { "@id": "https://aifrogi.com/#organization" },
         offers: { "@type": "Offer", price: 0, priceCurrency: "INR", url: "https://aifrogi.com/pricing" }
       }
@@ -88,6 +90,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" />
+        <Script id="aifrogi-google-analytics" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${googleAnalyticsId}');`}
+        </Script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
         <a className="skip-link" href="#main-content">Skip to main content</a>
         <div id="main-content" tabIndex={-1}>

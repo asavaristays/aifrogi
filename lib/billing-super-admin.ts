@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { getActiveAiCreditTotal, getAiCreditSummary } from "@/lib/ai-credits";
 import { Prisma } from "../generated/prisma/client";
 import { TRIAL_DAYS } from "@/lib/trial-policy";
 
@@ -556,7 +557,8 @@ export async function getCustomerBillingDetail(organizationId: string) {
     where: { id: organizationId },
     include: {
       subscription: { include: { plan: true } },
-      invoices: { orderBy: { createdAt: "desc" }, take: 10 },
+      aiCreditTransactions: { orderBy: { createdAt: "desc" } },
+      invoices: { orderBy: { createdAt: "desc" } },
       billingAddons: { orderBy: { createdAt: "desc" } },
       incidents: { orderBy: { createdAt: "desc" }, take: 10 },
       auditLogs: { orderBy: { createdAt: "desc" }, take: 20 }
@@ -564,11 +566,15 @@ export async function getCustomerBillingDetail(organizationId: string) {
   });
   if (!organization?.subscription) return null;
   const usage = await getOrganizationUsage(organizationId, organization.subscription.currentPeriodStart, organization.subscription.currentPeriodEnd);
+  const limits = readLimits(organization.subscription.plan.limits);
+  if (organization.subscription.aiReplyLimitOverride !== null) limits.aiReplies = organization.subscription.aiReplyLimitOverride;
+  const aiCredits = await getAiCreditSummary({ organizationId, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies });
   return {
     organization,
     subscription: organization.subscription,
-    limits: readLimits(organization.subscription.plan.limits),
-    usage
+    limits,
+    usage,
+    aiCredits
   };
 }
 
@@ -582,7 +588,8 @@ export async function getBillingCommandCenter() {
       onboarding: true,
       botProfile: true,
       subscription: { include: { plan: true } },
-      invoices: { orderBy: { createdAt: "desc" }, take: 5 },
+      invoices: { orderBy: { createdAt: "desc" } },
+      aiCreditTransactions: { orderBy: { createdAt: "desc" } },
       incidents: { where: { status: { not: "RESOLVED" } }, orderBy: { createdAt: "desc" } },
       supportTickets: { where: { status: { notIn: ["RESOLVED", "CLOSED"] } } },
       billingAddons: { orderBy: { createdAt: "desc" } }
@@ -685,13 +692,14 @@ export async function checkOrganizationEntitlement(
   if (subscription.aiReplyLimitOverride !== null) limits.aiReplies = subscription.aiReplyLimitOverride;
   const usage = await getOrganizationUsage(organizationId, subscription.currentPeriodStart, subscription.currentPeriodEnd);
   const used = usage[metric];
-  const limit = limits[metric];
+  const purchasedOrGrantedCredits = metric === "aiReplies" ? await getActiveAiCreditTotal(organizationId) : 0;
+  const limit = limits[metric] + purchasedOrGrantedCredits;
   const allowed = limit === 0 || used + Math.max(0, additional) <= limit || subscription.overageApproved;
   return {
     allowed,
     used,
     limit,
-    error: allowed ? null : `${metric} allowance reached (${used}/${limit}). Choose a higher plan before continuing.`
+    error: allowed ? null : `${metric} allowance reached (${used}/${limit}). Buy AI reply credits or choose a higher plan before continuing.`
   };
 }
 

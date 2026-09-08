@@ -4,6 +4,8 @@ node_modules/
 out/
 dist/
 coverage/
+output/acceptance/
+output/pdf/
 *.tsbuildinfo
 
 # Local environment and credentials
@@ -21,6 +23,13 @@ public/media/*
 public/uploads/
 uploads/
 *.log
+
+# One-off VPS deployment and credential-maintenance utilities
+scripts/deploy-*.mjs
+scripts/promote-*.mjs
+scripts/rollback-*.mjs
+scripts/*-vps.*
+scripts/repair-production-env.mjs
 
 # Contact and campaign exports
 goa-hotel-villa-contact-crawl.csv

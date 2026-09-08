@@ -35,7 +35,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
   const onboarding = organization.onboarding;
   const trial = getTrialWindow(organization);
   const channels = organization.botProfile?.channels || [];
-  const whatsappEnabled = channels.includes("WHATSAPP");
+  const whatsappEnabled = false;
   const websiteEnabled = channels.includes("WEBSITE") || !channels.length;
   const activeTrack = requestedTrack === "whatsapp" && whatsappEnabled ? "whatsapp" : "ai-bot";
   const canReadDocuments = await hasActiveSupportAccess(organization.id, "DOCUMENTS");
@@ -70,7 +70,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
         <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding</p><h2 className="mt-2 text-xl font-black">Prepare and activate the governed AI Bot.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Review this customer&apos;s persona, approved knowledge, connectors, website installation and go-live evidence.</p></div>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} /></div>
-          <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} websiteOnly={!whatsappEnabled} />
+          <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} websiteOnly />
           <BotConnectorPlan organizationId={organization.id} connectors={organization.botConnectors} />
           {websiteEnabled ? <div className="lg:col-span-2"><WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin /></div> : <Section title="Website installation"><p className="text-sm text-[#68645c]">Website delivery is not enabled for this bot. Add the Website channel in the bot profile when embed or standalone delivery is required.</p></Section>}
           <Section title="Company and approved source details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Address" value={organization.businessAddress} /></Section>

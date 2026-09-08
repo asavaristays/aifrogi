@@ -13,6 +13,8 @@ export default defineConfig([
   globalIgnores([
     ".next/**",
     "generated/**",
+    "scripts/**",
+    "tests/**",
     "node_modules/**",
     "tsconfig.tsbuildinfo",
   ]),

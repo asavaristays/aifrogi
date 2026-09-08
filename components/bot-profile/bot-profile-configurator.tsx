@@ -12,15 +12,13 @@ type StoredProfile = { category?: string; operatingMode?: string; channels?: str
 const labels: Record<string, string> = {
   BUSINESS_AI: "BusinessGPT", PINGBOOK: "ClinicGPT Appointment Bot", FLOWCART: "FlowCart Commerce Bot", STAY: "HotelGPT", RESTAURANT: "DineGPT", REAL_ESTATE: "PropertyGPT", EDUCATION: "eduGPT Education Bot", CUSTOM: "Custom Business Bot",
   ANSWER_ONLY: "Answer questions only", LEAD_CAPTURE: "Capture and qualify leads", APPROVED_ACTIONS: "Perform approved actions", HUMAN_APPROVAL: "Human approval required",
-  WEBSITE: "Website Bot", WHATSAPP: "WhatsApp Bot", ANSWER_QUESTIONS: "Answer service questions", CAPTURE_LEADS: "Capture leads", QUALIFY_LEADS: "Qualify requirements", BOOK_APPOINTMENTS: "Book appointments", CREATE_ORDERS: "Create orders"
+  WEBSITE: "Website Bot", ANSWER_QUESTIONS: "Answer service questions", CAPTURE_LEADS: "Capture leads", QUALIFY_LEADS: "Qualify requirements", BOOK_APPOINTMENTS: "Book appointments", CREATE_ORDERS: "Create orders"
 };
 
 const defaults: BotProfileInput = { category: "BUSINESS_AI", operatingMode: "LEAD_CAPTURE", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"], humanHandoffEnabled: true, actionApprovalNeeded: true, personaName: "Business Assistant", businessObjective: "Answer approved business questions, qualify genuine enquiries, and arrange human follow-up when required.", tone: "Professional, clear and helpful", languages: ["English"], prohibitedClaims: ["Do not invent prices, availability, guarantees, certifications, or commercial commitments"], escalationTriggers: ["Complaint", "Billing dispute", "Legal question", "Sensitive personal data", "Low-confidence commercial answer"], responseSlaMinutes: 60, reminderPercent: 50, fallbackEnabled: false, safeFallbackMessage: "Thank you for waiting. Our team has your request and will respond as soon as possible. No booking, price, availability, or commercial commitment is confirmed by this message." };
 
 const setupPaths = [
-  { key: "website", title: "AI Website Bot", helper: "Use approved business intelligence on your website and capture consented enquiries.", channels: ["WEBSITE"] as BotProfileInput["channels"] },
-  { key: "whatsapp", title: "WhatsApp Bot", helper: "Run customer conversations through a securely connected WhatsApp Business number.", channels: ["WHATSAPP"] as BotProfileInput["channels"] },
-  { key: "both", title: "Website + WhatsApp", helper: "One business bot and intelligence layer operating across both customer channels.", channels: ["WEBSITE", "WHATSAPP"] as BotProfileInput["channels"] }
+  { key: "website", title: "AI Website Bot", helper: "Use approved business intelligence on your website and capture consented enquiries.", channels: ["WEBSITE"] as BotProfileInput["channels"] }
 ] as const;
 
 function normalized(initial?: StoredProfile | null): BotProfileInput {
@@ -47,7 +45,7 @@ function normalized(initial?: StoredProfile | null): BotProfileInput {
   };
 }
 
-export function BotProfileConfigurator({ initialProfile, organizationId, compact = false, websiteOnly = false, onSaved }: { initialProfile?: StoredProfile | null; organizationId?: string; compact?: boolean; websiteOnly?: boolean; onSaved?: (organization: unknown) => void }) {
+export function BotProfileConfigurator({ initialProfile, organizationId, compact = false, websiteOnly = true, onSaved }: { initialProfile?: StoredProfile | null; organizationId?: string; compact?: boolean; websiteOnly?: boolean; onSaved?: (organization: unknown) => void }) {
   const router = useRouter();
   const [profile, setProfile] = useState(() => {
     const value = normalized(initialProfile);
@@ -81,7 +79,7 @@ export function BotProfileConfigurator({ initialProfile, organizationId, compact
     });
     const payload = await response.json().catch(() => null);
     setSaving(false);
-    setMessage(response.ok ? "Bot profile saved" : payload?.error || "Bot profile could not be saved");
+    setMessage(response.ok ? payload?.warning || "Bot profile saved" : payload?.error || "Bot profile could not be saved");
     if (response.ok) {
       onSaved?.(payload.organization);
       router.refresh();

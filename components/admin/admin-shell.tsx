@@ -10,9 +10,9 @@ import { AdminLogoutButton } from "@/components/admin/admin-logout-button";
 const navigation = [
   { label: "Command center", href: "/admin", icon: "grid" as const },
   { label: "Customers", href: "/admin/customers", icon: "inbox" as const },
-  { label: "WhatsApp AI Bot", href: "/admin/whatsapp-ai-bot", icon: "smartphone" as const },
   { label: "Billing Operations", href: "/admin/billing", icon: "bar-chart-3" as const },
   { label: "Message Matrix", href: "/admin/message-matrix", icon: "message-circle" as const },
+  { label: "Capacity Advisor", href: "/admin/capacity", icon: "bar-chart-3" as const },
   { label: "Knowledge", href: "/admin/knowledge", icon: "file-text" as const },
   { label: "Intelligence Operations", href: "/admin/sovereign-intelligence", icon: "plug" as const },
   { label: "Support", href: "/admin/support", icon: "help-circle" as const },
@@ -20,7 +20,7 @@ const navigation = [
 ];
 
 export function AdminShell({ userEmail, children }: { userEmail: string; children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const [open, setOpen] = useState(false);
 
   return <div className="min-h-screen bg-[#efede7] text-[#101010] lg:pl-[280px]">

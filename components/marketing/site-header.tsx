@@ -15,17 +15,16 @@ const navItems = [
     href: "/solutions",
     children: [
       { label: "All AI Bots", href: "/solutions", copy: "Choose intelligence by business outcome" },
+      { label: "Experience AiFrogi", href: "/experience", copy: "Watch the 45-second interactive story" },
       { label: "HotelGPT", href: "/solutions/hotelgpt", copy: "Hospitality and guest intelligence" },
       { label: "ClinicGPT", href: "/solutions/clinicgpt", copy: "Appointments and confirmations" },
       { label: "DineGPT", href: "/solutions/dinegpt", copy: "Dining and reservation intelligence" },
       { label: "eduGPT", href: "/solutions/edugpt", copy: "Admissions and student enquiry intelligence" },
       { label: "PropertyGPT", href: "/solutions/propertygpt", copy: "Discovery, qualification and visits" },
       { label: "BusinessGPT", href: "/solutions/businessgpt", copy: "Services, leads and support" },
-      { label: "FlowCart", href: "/solutions/flowcart", copy: "Commerce, orders and payments" },
       { label: "Custom Business Bot", href: "/solutions/custom-business-bot", copy: "A governed workflow built for you" }
     ]
   },
-  { label: "WhatsApp API", href: "/whatsapp-api" },
   { label: "How to Install", href: "/install-ai-bot" },
   { label: "Pricing", href: "/pricing" },
   { label: "Founder", href: "https://webtechnosys.com/founder/", external: true }

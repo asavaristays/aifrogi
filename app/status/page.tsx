@@ -19,8 +19,8 @@ export default function StatusPage() {
       <section className="px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.7fr_1.3fr]"><div><p className="product-eyebrow">Live check</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">Service availability now.</h2><p className="mt-4 text-sm leading-6 text-[var(--text-muted)]">This is a current reachability check, not a historical uptime report or contractual SLA.</p></div><LiveStatus /></div></section>
 
       <section className="border-y border-black/8 bg-[#fbfaf7] px-5 py-20 sm:px-8"><div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.7fr_1.3fr]"><div><p className="product-eyebrow">Support commitment</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">The urgent issue reaches the right queue.</h2></div><div className="border-y border-black/10">{[
-        ["Critical", "Live messaging or account access is stopped."],
-        ["High", "A campaign, workflow, payment, or integration is blocking active work."],
+        ["Critical", "The website widget or account access is stopped."],
+        ["High", "A workflow, payment, or integration is blocking active work."],
         ["Normal", "Configuration, guidance, reporting, or a non-blocking question."]
       ].map(([priority, copy]) => <div key={priority} className="grid gap-2 border-b border-black/10 py-5 last:border-b-0 sm:grid-cols-[100px_1fr]"><strong>{priority}</strong><p className="text-sm text-[var(--text-muted)]">{copy}</p></div>)}<p className="border-t border-black/10 py-5 text-xs leading-5 text-[var(--text-muted)]">Support hours and response targets are confirmed in the customer&apos;s plan or service agreement. AiFrogi does not publish a universal response-time guarantee that may not apply to every plan.</p></div></div></section>
 

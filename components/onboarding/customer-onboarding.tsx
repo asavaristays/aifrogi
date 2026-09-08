@@ -172,7 +172,7 @@ export function CustomerOnboarding({
   const metaSessionRef = useRef<MetaSession | null>(null);
   const metaSubmittingRef = useRef(false);
   const metaConfigured = Boolean(metaAppId && metaConfigId);
-  const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
+  const usesWhatsApp = false;
   const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
   const websiteReady = Boolean(usesWebsite && organization?.botProfile?.status === "CONFIGURED" && organization.botProfile.personaName && organization.botProfile.businessObjective && organization.botProfile.escalationTriggers?.length && organization?.onboarding?.kycStatus === "APPROVED");
   const visibleSteps = useMemo(() => usesWhatsApp ? allSteps.map((step, index) => ({ ...step, number: index + 1 })) : [
@@ -346,7 +346,7 @@ export function CustomerOnboarding({
 
   async function continueBusiness() {
     const updated = await request("PATCH", { step: 2, ...businessForm });
-    if (updated) setActiveStep(updated.botProfile?.channels?.includes("WHATSAPP") ? 3 : 6);
+    if (updated) setActiveStep(6);
   }
 
   async function continuePhone() {
@@ -483,7 +483,7 @@ export function CustomerOnboarding({
           />
           <OnboardingReadiness organization={organization} />
           <OnboardingWorkbookImport onImported={() => window.location.reload()} />
-          {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
+          {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
           {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
           {organization?.properties[0] ? <WebsiteBotInstallation slug={organization.properties[0].slug} profile={organization.botProfile} /> : null}
           {usesWhatsApp ? <TechProviderGuide /> : null}
@@ -546,7 +546,7 @@ export function CustomerOnboarding({
 
 function OnboardingReadiness({ organization }: { organization: CustomerOnboardingOrganization | null }) {
   const onboarding = organization?.onboarding;
-  const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
+  const usesWhatsApp = false;
   const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
   const commonItems = [
     { label: "Business owner details", owner: "You", ready: Boolean(organization?.ownerName && organization?.ownerMobile), helper: "Company name, owner, mobile, address, and website" },
@@ -844,7 +844,7 @@ function StatusStep({ onboarding, pending, rejected, live, onRefresh, saving }: 
 }
 
 function LiveStep({ organization, onOpen }: { organization: CustomerOnboardingOrganization | null; onOpen: () => void }) {
-  const usesWhatsApp = organization?.botProfile?.channels?.includes("WHATSAPP") ?? false;
+  const usesWhatsApp = false;
   return (
     <div className="mx-auto max-w-xl py-8 text-center">
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#25d366] text-3xl font-black text-[#063f3a]">✓</div>

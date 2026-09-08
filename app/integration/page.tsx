@@ -9,7 +9,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
   title: "AI Business Bot Integrations | AiFrogi",
-  description: "Connect AiFrogi with Shopify, WooCommerce, Razorpay, Stripe, HubSpot, Zoho, Google Sheets, calendars, WhatsApp, and your business systems.",
+  description: "Connect AiFrogi with Shopify, WooCommerce, Razorpay, Stripe, HubSpot, Zoho, Google Sheets, calendars, and your business systems.",
   path: "/integration"
 });
 
@@ -31,7 +31,7 @@ export default function IntegrationPage() {
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_.82fr] lg:items-center">
           <div>
             <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Integration</p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-6xl">WhatsApp connected to the tools that complete the job.</h1>
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-6xl">Your AI Bot connected to the tools that complete the job.</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Recover purchases, collect payments, update orders, and sync leads through official APIs and verified webhooks.</p>
             <a href="#catalog" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b28728]">Explore integrations <Icon name="arrow-right" /></a>
           </div>
@@ -49,7 +49,7 @@ export default function IntegrationPage() {
       <section className="border-b border-black/8 px-5 py-16 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <p className="product-eyebrow">One connected journey</p>
-          <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-[-.03em] sm:text-4xl">From business event to the right WhatsApp action.</h2>
+          <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-[-.03em] sm:text-4xl">From business event to the right governed action.</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-4">
             <JourneyStep number="01" title="Connect" copy="Approve access through the provider’s secure connection flow." />
             <JourneyStep number="02" title="Choose events" copy="Select the order, payment, lead, or booking changes that matter." />

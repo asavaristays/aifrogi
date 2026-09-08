@@ -8,12 +8,12 @@ import { botProducts, getBotProduct } from "@/lib/bot-products";
 import { marketingMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
-  return botProducts.map(({ slug }) => ({ slug }));
+  return botProducts.filter(({ slug }) => slug !== "flowcart").map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const product = getBotProduct((await params).slug);
-  if (!product) return {};
+  if (!product || product.slug === "flowcart") return {};
   return marketingMetadata({
     title: `${product.name} | ${product.category} AI Business Bot | AiFrogi`,
     description: product.description,
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BotProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const product = getBotProduct((await params).slug);
-  if (!product) notFound();
+  if (!product || product.slug === "flowcart") notFound();
   const registerUrl = `https://app.aifrogi.com/register?source=${product.slug}`;
 
   return (

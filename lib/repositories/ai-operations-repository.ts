@@ -11,10 +11,12 @@ function clean(value: unknown, max: number) {
 export async function listLeadOperations(propertyId: string, leadId: string) {
   const db = getDb();
   if (!db) return [];
-  return db.aiOperation.findMany({
+  const operations = await db.aiOperation.findMany({
     where: { propertyId, leadId },
     orderBy: [{ status: "asc" }, { createdAt: "desc" }]
   });
+  const notifications = await db.automationJob.findMany({ where: { propertyId, triggerRef: { in: operations.map(item => item.id) }, actionType: "WEBSITE_HANDOVER_EMAIL" }, orderBy: { createdAt: "desc" }, select: { triggerRef: true, triggerType: true, status: true, attemptCount: true, maxAttempts: true, nextRunAt: true, result: true }, take: 100 });
+  return operations.map(operation => ({ ...operation, notifications: notifications.filter(job => job.triggerRef === operation.id).map(job => ({ event: job.triggerType, status: job.status, attemptCount: job.attemptCount, maxAttempts: job.maxAttempts, nextRunAt: job.nextRunAt, receiptVerified: false })) }));
 }
 
 export async function createLeadOperation(input: {

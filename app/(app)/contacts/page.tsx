@@ -3,7 +3,6 @@ import { TopBar } from "@/components/layout/top-bar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { loadLeads } from "@/lib/services/lead-service";
-import { filterWhatsAppLeads } from "@/lib/whatsapp-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 
 export const dynamic = "force-dynamic";
@@ -11,19 +10,19 @@ export const revalidate = 0;
 
 export default async function ContactsPage() {
   const propertySlug = await getCurrentWorkspaceSlug();
-  const contacts = filterWhatsAppLeads(await loadLeads(propertySlug));
+  const contacts = (await loadLeads(propertySlug)).filter((lead) => Boolean(lead.websiteSession) || /website|ai bot/i.test(lead.source));
 
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#f1fbf5_0%,#ffffff_50%,#eef8f5_100%)]">
-      <TopBar title="Contacts" subtitle="People who have interacted with your WhatsApp Business number" />
+      <TopBar title="Contacts" subtitle="People who have interacted with your website AI Bot" />
       <div className="px-4 py-6 sm:px-6 lg:px-8">
         <Card className="overflow-hidden border border-black/5 p-0 shadow-[0_20px_60px_rgba(15,61,53,0.08)]">
           <div className="flex flex-col gap-3 border-b border-black/5 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">WhatsApp audience</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#8a6a16]">Website audience</p>
               <h2 className="mt-2 text-2xl font-black">{contacts.length} contacts</h2>
             </div>
-            <Link href="/whatsapp-bot" className="rounded-2xl bg-[#8a6a16] px-4 py-3 text-sm font-black text-white">
+            <Link href="/team-inbox" className="rounded-2xl bg-[#8a6a16] px-4 py-3 text-sm font-black text-white">
               Start conversation
             </Link>
           </div>
@@ -48,7 +47,7 @@ export default async function ContactsPage() {
                           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#dcfce7] text-sm font-black text-[#8a6a16]">{contact.initials}</span>
                           <div>
                             <p className="text-sm font-black">{contact.name}</p>
-                            <p className="mt-1 text-xs text-[var(--text-muted)]">{contact.intent || "WhatsApp contact"}</p>
+                            <p className="mt-1 text-xs text-[var(--text-muted)]">{contact.intent || "Website contact"}</p>
                           </div>
                         </div>
                       </td>
@@ -63,7 +62,7 @@ export default async function ContactsPage() {
             </div>
           ) : (
             <div className="p-10 text-center text-sm text-[var(--text-muted)]">
-              No WhatsApp contacts yet. Contacts are created automatically from inbound messages.
+              No website contacts yet. Contacts are created automatically from AI Bot conversations.
             </div>
           )}
         </Card>

@@ -372,6 +372,16 @@ AiFrogi is beyond prototype stage and is a **credible pilot-grade SaaS product**
 
 Full evidence: `docs/AiFrogi-Pre-Pilot-Launch-Audit-2026-09-02.md`.
 
+### Webtechnosys 6-to-0 knowledge forensic closure
+
+- Confirmed from the protected production operation log that the former `webtechnosys` tenant was deliberately deleted at `2026-09-01T12:33:31Z`. The log identifies the executing actor but does not prove the requesting or authorising party, approval reference or business reason; those fields remain unverified and must not be attributed to the client or founder.
+- Confirmed that an encrypted checksum-protected database backup was created before deletion at `2026-09-01T12:33:18Z`.
+- Confirmed that the replacement workspace was created at `2026-09-01T12:36:22Z` with a different organization and property identity.
+- Read-only production inspection found zero onboarding documents, zero knowledge documents and zero knowledge entries in the replacement workspace. Its path is re-import, governed review and re-approval—not a simple republish.
+- Ruled out the earlier evidence-pipeline migration as the cause: that migration was additive and did not touch knowledge or tenant tables.
+- Recorded the clean-slate explanation only as a timing-based inference, not an established deletion rationale, and added a requirement for future destructive operations to retain an approval/change-request identifier and reason.
+- Explicitly withheld a combined decimal readiness rating until the replacement workspace passes its knowledge, installation and controlled-acceptance gates.
+
 ---
 
 ## Template for the next entry
@@ -403,3 +413,83 @@ Full evidence: `docs/AiFrogi-Pre-Pilot-Launch-Audit-2026-09-02.md`.
 ### Next fixed stage
 1. 
 ```
+
+## 5 September 2026 — Bucket 1 acceptance closed
+
+- Deployed `bucket1-accepted-20260905`; readiness passed and rollback retained.
+- 215/215 local core tests, TypeScript and VPS build passed. These include 21 manifest-gated isolated handler tests, also 21/21 on VPS staging.
+- Ten synthetic production chat turns passed: training/yes/link, weather interruption and return, exact support phone, bounded clarification exit and topic recovery. Evidence IDs recorded for all ten; not organic customer accuracy data.
+- Fixed publication-state bypass, stale grounding metadata on circuit replacement, clarification evidence labelling and successful responses without an evidence record.
+- Full case mapping, limitations and rollback: `AiFrogi-Bucket-1-Acceptance-2026-09-05.md`.
+- No rating change or 95% claim. Bucket 2 human handover is the next engineering scope; WhatsApp remains deferred.
+
+## 5 September 2026 — Bucket 2 implementation batch 1
+
+- Deployed `bucket2-handover-batch1-20260905`: durable tenant-scoped handover requests, consent boundaries, existing human-ownership protection, operator authorization/assignment audit, final-reply read access and widget/standalone polling.
+- 231/231 core tests and TypeScript passed; 37/37 focused VPS tests and production build passed. Public readiness and both bot pages passed; unauthenticated operator POST rejected (401).
+- Bucket 2 remains open. Mail retries/receipt, SLA escalation, reconnect/pagination, takeover concurrency and supervised live handover are not certified. See `AiFrogi-Bucket-2-Progress-2026-09-05.md` before continuing.
+
+## 5 September 2026 — Bucket 2 implementation batch 2
+
+- Deployed `bucket2-handover-batch2-20260905`; 250/250 local core, TypeScript, 56/56 VPS focused tests and production build passed. Rollback retained at `/var/backups/aifrogi/bucket2-batch2-20260905.Ar3erC`.
+- Added cross-process conversation exclusion, controlled AI resume, notification retry/lease fencing, overdue reconciliation and visible email failure state. No schema migration or tenant reset.
+- User confirmed receipt of the single labelled test email to info@webtechnosys.com.
+- Live labelled QA conversation proved request → client inbox → operator reply → standalone visitor delivery → AI paused → explicitly authorised resume → approved support-phone answer.
+- QA closure was blocked by browser approval review and remains unexecuted. Embedded/reconnect/read acknowledgment, partial-write recovery, live concurrency, scheduled mail/SLA and immediate operator-state refresh remain open. Bucket 2 is not accepted yet; no accuracy rating increase.
+
+## 5 September 2026 — Bucket 3 Part A foundation
+
+- Saved the A/B/C implementation plan; reused eight existing synthetic fixture packs.
+- Added 80 fixed journey specifications (10 per persona) and nine foundation/coverage tests. Full core 261/261 and TypeScript passed.
+- No runtime behaviour changes, live demo creation or deployment. The 80 journeys await actual runtime execution in Part B; Part C is release acceptance. See `AiFrogi-Bucket-3-ABC-Plan-2026-09-05.md`.
+
+## 5 September 2026 — Bucket 2 controlled-pilot acceptance
+
+- Supersedes prior open checkpoints. Final release `bucket2-handover-final-20260905`, readiness `2026-09-05T18:23:28.227Z`; rollback `/var/backups/aifrogi/bucket2-final-20260905.2gcWex`.
+- 252/252 local core, TypeScript, 58/58 focused VPS tests, 21/21 Bucket 1 manifest and production build passed.
+- Chrome verified embedded human reply, same-tab reconnect without duplicate reply, visible read acknowledgment and closure retaining final reply. Earlier standalone QA closure confirmed in user inbox.
+- Actual DB probes verified rollback/commit, concurrent advisory exclusion/reacquisition, and rollback-only overdue/request reconciliation with recipient dry-run. Scheduled first-QA notification independently confirmed SMTP acceptance.
+- Atomic persistence now covers transcript, handover, evidence and session. Post-deployment support/training/yes smoke passed with evidence.
+- All 15 Bucket 2 cases mapped in `AiFrogi-Bucket-2-Acceptance-2026-09-05.md`. Accepted only for controlled-pilot scope; SMTP at-least-once, manually repeated chat messages after lost successful responses, bounded same-tab cache and scale testing remain explicit limits. No 95% accuracy or score increase claimed. Bucket 3 is next; WhatsApp deferred.
+# 2026-09-06 — Bucket 3 B1 persona acceptance
+
+BusinessGPT, HotelGPT, ClinicGPT and DineGPT: 40/40 isolated HTTP journeys; full local core suite 301/301 and TypeScript pass. Found and fixed shared topic recovery for services/rooms/treatments/cuisine. VPS staged focused regression: 75/75. See `AiFrogi-Bucket-3-B1-Acceptance-2026-09-06.md` for limitations and deployment evidence. Remaining four personas and Part C are not closed. No accuracy rating inferred from synthetic tests.
+# 2026-09-06 — Bucket 3 B2
+
+Remaining four personas: 40/40 isolated journeys; combined eight-persona matrix 80/80, including VPS staging. Core regression 341/341 and TypeScript pass. Fixed topic recovery for programmes/properties/workflows. Acceptance and release evidence: `AiFrogi-Bucket-3-B2-Acceptance-2026-09-06.md`. Part C is next; no real-world accuracy score inferred.
+# 2026-09-06 — Bucket 3 Part C closed
+
+Final closed-manifest80/80 locally and VPS staging; prior Bucket1 completeness21/21; prior Bucket1/2 VPS regressions58/58; core341/341; TypeScript pass. Verified current release/source fingerprint and retained rollback. No new runtime deployment necessary after B2. Scope and limitations: `AiFrogi-Bucket-3-Final-Acceptance-2026-09-06.md`. Next Bucket4 connectors, Bucket5 reviewed accuracy; no95% claim.
+# 2026-09-06 — Bucket 4 A deployed
+
+Google availability now fails closed on incomplete/error results; Sheets booking text uses RAW.8/8 isolated provider tests, core349/349, TypeScript and VPS build pass. Live release bucket4-a-20260906 healthy. Plan/evidence: `AiFrogi-Bucket-4-Plan-and-Progress-2026-09-06.md`. Booking retry/read-back/authorization integration remain Part B; live Google certification Part C requires a designated test account and authorization. No provider writes performed.
+# 2026-09-06 — Bucket4 B1 safeguards deployed
+
+## 6 September 2026 — 45-second presentation completed
+
+Published `experience-reel-20260906`: guided pointer, visual clicks and button state changes; shorter customer-first copy, simulated action journeys, music without narration. Final core466/466 and TypeScript passed; production build, health and public content verified. See `2026-09-06-experience-reel.md` for scope and evidence limitations.
+
+## 6 September 2026 — Mobile product experience published
+
+Public `/experience`: eight-chapter, 60-second interactive story with silent-by-default playback, device narration option, swipe/chapter controls, simulated booking, eight category demos, onboarding, connectors, safeguards, pricing and contact. Homepage/menu entry added. Core 460/460 passed; staged build and public destinations checked. Final release `experience-controls-20260906`; see `2026-09-06-mobile-experience.md` for backups and explicit limits. No new real-world accuracy rating or compliance claim.
+
+## 6 September 2026 — Team Inbox design and specific connector checklists
+
+Deployed `inbox-design-20260906` at 04:52 UTC. Responsive inbox section switching, readable touch controls, human-help counts and compact options; retained access/reply safeguards. Seven separate connector PDFs linked from pricing with shared pricing data. TypeScript and 456/456 core tests passed; public health, pricing, seven PDFs and anonymous login gates checked. No background push or browser interaction acceptance claimed. See `2026-09-06-inbox-design-connector-guides.md` for scope and rollback evidence.
+
+Stable Calendar event IDs, creation read-back,15s Google JSON timeout, OAuth callback permission recheck and HTML escaping. Focused16/16, core357/357, TypeScript and appointment verifier pass. Release bucket4-b1-20260906 healthy. Bucket4 remains open: Sheets reconciliation, OAuth replay/binding, action authority wiring and existing-event reconciliation, followed by live certification. See Bucket4 plan.
+# 2026-09-06 — AI Bot setup separation verified live
+
+## 6 September 2026 — Bucket 5C prepared, awaiting human pilot
+
+Prepared `2026-09-06-bucket-5C-private-pilot.md`: fixed 24-conversation bank, three testers, per-answer review register, stop conditions and owner/Operations sign-off. Scripted human exercises remain SYNTHETIC; they are not organic real-client accuracy evidence. No tests are marked executed and no traffic/access settings changed. Next: name testers/reviewer, capture current tenant readiness and agree the testing window.
+
+Deployed bucket4-setup-20260906 with rollback. Core360/360; VPS setup3/3 and build pass. New Google-only client screen verified; Webtechnosys preparation succeeded, zero bookings/resources. Live consent blocked: OAuth client ID/secret absent from runtime; no secrets disclosed. Need Google Cloud application credentials before PartC live tests; Bucket4 not closed.
+
+## 6 September 2026 — Bucket 5A measurement tooling closed
+
+Release `bucket5a-closed-20260906`; public readiness healthy at `2026-09-06T01:46:16.068Z`. TypeScript and 408/408 local core tests passed; 17/17 authenticated staging and 17/17 public live acceptance passed with clean shutdown and QA session revocation. Reviewer screen, append-only assessments, latest-review reporting, tenant isolation and signed-feedback persistence verified. Synthetic demo QA only; no real accuracy certification. Rollback `/var/backups/aifrogi/bucket5a-closed-20260906.B1tqgb`. Full evidence and limits: `2026-09-06-bucket-5A-closure-check.md`. Next 5B governed corrections, followed by 5C human pilot evidence. Bucket 4 remains separately tracked.
+
+## 6 September 2026 — Bucket 5B correction safeguards closed
+
+Release `bucket5b-corrections-20260906`, public health ok at `2026-09-06T02:04:57.596Z`. TypeScript and 420/420 core tests passed. 16/16 rollback-only correction lifecycle cases plus 17/17 authenticated measurement/feedback regression passed before and after deployment. Three deployed source files matched. Gaps remain open until publish; stale/paused previews rejected; superseded knowledge cannot be silently revived or deleted. No real client claims changed. Evidence and explicit test limitations: `2026-09-06-bucket-5B-corrections.md`. Next 5C human pilot; no accuracy rating increase.

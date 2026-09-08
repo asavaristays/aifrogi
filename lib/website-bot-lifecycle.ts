@@ -3,11 +3,12 @@ export type WebsiteBotStatus = typeof WEBSITE_BOT_STATUSES[number];
 export type WebsiteBotLifecycleAction = "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE";
 
 export function canServeWebsiteBot(status: string, channels: readonly string[]) {
-  return channels.includes("WEBSITE") && ["CONFIGURED", "LIVE"].includes(status);
+  return channels.includes("WEBSITE") && status === "LIVE";
 }
 
 export function nextWebsiteBotStatus(status: string, action: WebsiteBotLifecycleAction, installationDetected: boolean): WebsiteBotStatus {
   if (action === "MAKE_LIVE") {
+    if (status === "DELETED") throw new Error("Restore the bot before requesting approval.");
     if (!installationDetected) throw new Error("Install the code on the customer website before making the bot live.");
     return "LIVE";
   }

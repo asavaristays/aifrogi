@@ -166,6 +166,7 @@ async function main() {
 
   const originalFetch = globalThis.fetch;
   const googleCalls: Array<{ url: string; method: string; body: string }> = [];
+  let verifiedEvent: any;
   globalThis.fetch = async (input, init) => {
     const url = String(input);
     const method = init?.method || "GET";
@@ -186,12 +187,14 @@ async function main() {
       return new Response(JSON.stringify({ calendars: { "calendar-verify": { busy: [] } } }), { status: 200 });
     }
     if (url.endsWith("/calendars/calendar-verify/events") && method === "POST") {
-      return new Response(JSON.stringify({ id: "event-verify" }), { status: 200 });
+      verifiedEvent = { ...JSON.parse(String(init?.body)), status: "confirmed" };
+      return Response.json({ id: verifiedEvent.id });
     }
+    if (verifiedEvent && url.endsWith(`/events/${verifiedEvent.id}`) && method === "GET") return Response.json(verifiedEvent);
     if (url.includes("/values/Bookings!A:J:append")) {
       return new Response(JSON.stringify({ updates: { updatedRows: 1 } }), { status: 200 });
     }
-    if (url.endsWith("/events/event-verify") && method === "DELETE") {
+    if (verifiedEvent && url.endsWith(`/events/${verifiedEvent.id}`) && method === "DELETE") {
       return new Response(null, { status: 204 });
     }
     return new Response(JSON.stringify({ error: { message: `Unexpected verifier URL: ${url}` } }), { status: 500 });
@@ -239,7 +242,7 @@ async function main() {
       slotEnd: new Date("2026-07-06T04:00:00.000Z"),
       status: "CONFIRMED"
     });
-    assert(eventId === "event-verify", "Google Calendar event creation failed verification.");
+    assert(eventId === verifiedEvent.id, "Google Calendar event creation failed verification.");
     await google.appendAppointmentBookingToSheet({
       accessToken: refreshed,
       sheetId: resources.sheetId,

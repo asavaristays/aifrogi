@@ -10,7 +10,7 @@ const registerUrl = "https://app.aifrogi.com/register?source=clinicgpt";
 
 export const metadata: Metadata = marketingMetadata({
   title: "ClinicGPT | AI Appointment Automation for Clinics | AiFrogi",
-  description: "ClinicGPT helps clinics automate booking, confirmations, reminders, payments, cancellations, and reviews with AI workflows, calendars, and optional WhatsApp messaging.",
+  description: "ClinicGPT helps clinics automate booking, confirmations, reminders, payments, cancellations, and reviews with website AI workflows and calendars.",
   path: "/solutions/clinicgpt"
 });
 
@@ -18,7 +18,7 @@ const roleFlow = [
   {
     owner: "Super Admin",
     title: "Enable ClinicGPT",
-    copy: "Turn on the appointment product for a client account, validate WhatsApp readiness, template status, product validity, and service subscription access.",
+    copy: "Turn on the appointment product for a client account, validate website readiness, product validity, calendar authority, and service subscription access.",
     icon: "settings" as const
   },
   {
@@ -29,23 +29,23 @@ const roleFlow = [
   },
   {
     owner: "Customer",
-    title: "Book on WhatsApp",
+    title: "Book on the website",
     copy: "Customer selects service, shares details, receives slot confirmation, payment link when required, and approved reminders.",
     icon: "message-circle" as const
   }
 ];
 
 const journey = [
-  ["1", "Customer sends enquiry", "WhatsApp"],
+  ["1", "Customer sends enquiry", "Website AI Bot"],
   ["2", "ClinicGPT collects service and preferred slot", "Automation"],
   ["3", "Availability is checked", "Google Calendar"],
   ["4", "Payment link is shared if required", "Razorpay"],
-  ["5", "Appointment is confirmed", "WhatsApp template"],
+  ["5", "Appointment is confirmed", "Verified website response"],
   ["6", "Record is saved for operations", "Calendar + Sheet"]
 ];
 
 const prototypeEvents = [
-  ["12:04", "WhatsApp enquiry received", "Cleaning appointment for tomorrow evening", "message-circle" as const],
+  ["12:04", "Website enquiry received", "Cleaning appointment for tomorrow evening", "message-circle" as const],
   ["12:05", "Slot held", "Tue, 6:30 PM locked for 10 minutes", "grid" as const],
   ["12:06", "Confirmation sent", "Approved template delivered to customer", "bell" as const],
   ["12:07", "Payment captured", "Booking fee paid through Razorpay link", "link" as const],
@@ -56,7 +56,7 @@ const syncStates = [
   ["Calendar", "Event created", "6:30 PM · Dental cleaning"],
   ["Sheet", "Row added", "Paid · Confirmed · Review queued"],
   ["Dashboard", "Status updated", "Confirmed appointment"],
-  ["WhatsApp", "Thread active", "Customer has receipt"]
+  ["Website AI Bot", "Thread active", "Customer has receipt"]
 ] as const;
 
 const faqs = [
@@ -70,7 +70,7 @@ const faqs = [
   },
   {
     question: "How does a booking happen?",
-    answer: "The customer asks on WhatsApp, ClinicGPT collects the service and preferred time, checks availability, holds a slot, sends confirmation, and updates the business records."
+    answer: "The customer asks through the website AI Bot, ClinicGPT collects the service and preferred time, checks availability, holds a slot, confirms the verified result, and updates the business records."
   },
   {
     question: "Can it collect payment?",
@@ -94,7 +94,7 @@ const faqs = [
   },
   {
     question: "How is ClinicGPT priced?",
-    answer: "ClinicGPT has a one-time setup fee of Rs. 4,500 for Meta, Razorpay, and Google onboarding. The platform fee is Rs. 1,250 per month, paid quarterly at Rs. 3,750. Meta message fees are charged separately as used."
+    answer: "ClinicGPT pricing depends on the approved appointment workflow, calendar connection, payment requirements, and number of locations. AiFrogi confirms the scope before implementation."
   },
   {
     question: "Is there a trial or refund window?",
@@ -102,15 +102,7 @@ const faqs = [
   },
   {
     question: "How fast can a clinic go live?",
-    answer: "Most clinics can go live in 2-3 working days after Meta, Google, Razorpay, and required business access are ready."
-  },
-  {
-    question: "How much do 500 Meta messages cost?",
-    answer: "As a planning estimate for India, 500 utility messages such as confirmations or reminders can often stay under Rs. 100 at current utility-rate ranges, while 500 marketing messages can be around Rs. 430 to Rs. 500. The actual bill depends on Meta/BSP rates, message category, recipient country, taxes, and any provider fees."
-  },
-  {
-    question: "Why is the Meta fee separate?",
-    answer: "Meta charges per delivered WhatsApp message and rates can change by category and country. Keeping it separate makes the monthly platform fee predictable while message usage remains transparent."
+    answer: "Most clinics can go live after their approved knowledge, calendar access, service rules, and required business access are ready and verified."
   }
 ];
 
@@ -151,7 +143,7 @@ export default function ClinicGPTPage() {
                 One workflow, three users.
               </h2>
               <p className="mt-5 text-base leading-7 text-[var(--text-muted)]">
-                Super Admin enables the product, client admin configures the operating rules, and the customer books from WhatsApp without learning a new app.
+                Super Admin enables the product, client admin configures the operating rules, and the customer books through the business website without learning a new app.
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
@@ -185,8 +177,8 @@ export default function ClinicGPTPage() {
 
       <section className="border-t border-black/8 bg-white px-5 py-10 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div><p className="product-eyebrow">Pricing and Meta usage</p><p className="mt-2 text-lg font-semibold">Pricing estimates now live with WhatsApp API costs and onboarding.</p></div>
-          <Link href="/whatsapp-api#clinicgpt-pricing" className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--gold-700)]">View ClinicGPT pricing <Icon name="arrow-right" /></Link>
+          <div><p className="product-eyebrow">ClinicGPT pricing</p><p className="mt-2 text-lg font-semibold">Start with the website AI Bot and add only the verified connectors your clinic needs.</p></div>
+          <Link href="/pricing" className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--gold-700)]">View AI Bot pricing <Icon name="arrow-right" /></Link>
         </div>
       </section>
 
@@ -250,7 +242,7 @@ function RealtimePrototype() {
                 <div className="flex items-center gap-3">
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-[#178665] text-xs font-black text-white">WA</span>
                   <div>
-                    <p className="text-sm font-black">WhatsApp booking</p>
+                    <p className="text-sm font-black">Website booking</p>
                     <p className="text-[11px] font-semibold text-[var(--text-muted)]">Customer: Aisha Rao</p>
                   </div>
                 </div>

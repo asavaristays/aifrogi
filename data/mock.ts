@@ -2,9 +2,8 @@ import type { NavItem, QuickAction } from "@/types";
 
 export const navItems: NavItem[] = [
   { href: "/dashboard", label: "Today", icon: "grid", tone: "primary" },
-  { href: "/whatsapp-bot", label: "AI Operations", icon: "message-circle", tone: "secondary" },
+  { href: "/team-inbox", label: "Team Inbox", icon: "message-circle", tone: "secondary" },
   { href: "/contacts", label: "Contacts", icon: "inbox", tone: "primary" },
-  { href: "/campaigns", label: "Campaigns", icon: "megaphone", tone: "tertiary" },
   { href: "/knowledge", label: "Intelligence", icon: "file-text", tone: "secondary" },
   { href: "/improve", label: "Improve My Bot", icon: "sparkles", tone: "tertiary" },
   { href: "/analytics", label: "Reports", icon: "bar-chart-3", tone: "secondary" },

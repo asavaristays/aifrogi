@@ -1,0 +1,5 @@
+{
+  "product": "AiFrogi AI Bot",
+  "retiredPrefixes": ["/whatsapp-api", "/whatsapp-bot", "/campaigns", "/api/integrations/whatsapp", "/api/public/whatsapp-bot", "/api/campaigns", "/admin/whatsapp-ai-bot", "/preview/dashboard", "/preview/inbox", "/preview/knowledge", "/product-tour"],
+  "requiredPrefixes": ["/dashboard", "/team-inbox", "/knowledge", "/setup", "/billing", "/admin", "/admin/billing", "/admin/message-matrix", "/api/billing/checkout", "/api/billing/credits", "/api/public/website-bot", "/bot", "/embed"]
+}

@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { getBillingCommandCenter, usagePercent } from "@/lib/billing-super-admin";
+import { getAiCreditSummary, recommendFreeAiCredits } from "@/lib/ai-credits";
 
 export async function getMessageMatrix() {
   const db = getDb();
@@ -8,12 +9,14 @@ export async function getMessageMatrix() {
   return Promise.all(customers.map(async ({ organization, subscription, usage, limits }) => {
     const period = subscription ? { gte: subscription.currentPeriodStart, ...(subscription.currentPeriodEnd ? { lt: subscription.currentPeriodEnd } : {}) } : undefined;
     const evidenceWhere = { property: { organizationId: organization.id }, ...(period ? { createdAt: period } : {}) };
-    const [decisions, safe, escalated, helpful, negative] = await Promise.all([
+    const [decisions, safe, escalated, helpful, negative, aiCredits, recentFreeGrant] = await Promise.all([
       db.sovereignAnswerEvidence.count({ where: evidenceWhere }),
       db.sovereignAnswerEvidence.count({ where: { ...evidenceWhere, safeResolution: true } }),
       db.sovereignAnswerEvidence.count({ where: { ...evidenceWhere, escalationTier: { not: "TIER_0_SELF_RESOLVE" } } }),
       db.sovereignAnswerFeedback.count({ where: { property: { organizationId: organization.id }, helpful: true, ...(period ? { createdAt: period } : {}) } }),
-      db.sovereignAnswerFeedback.count({ where: { property: { organizationId: organization.id }, helpful: false, ...(period ? { createdAt: period } : {}) } })
+      db.sovereignAnswerFeedback.count({ where: { property: { organizationId: organization.id }, helpful: false, ...(period ? { createdAt: period } : {}) } }),
+      getAiCreditSummary({ organizationId: organization.id, includedCredits: subscription?.aiReplyLimitOverride ?? limits.aiReplies, usedAiReplies: usage.aiReplies }),
+      db.aiCreditTransaction.findFirst({ where: { organizationId: organization.id, kind: "FREE_GRANT", createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } }, select: { id: true } })
     ]);
     const messageLimit = subscription?.messageLimitOverride ?? limits.messages;
     const aiReplyLimit = subscription?.aiReplyLimitOverride ?? limits.aiReplies;
@@ -21,7 +24,8 @@ export async function getMessageMatrix() {
     const extraAiReplies = Math.max(0, usage.aiReplies - aiReplyLimit);
     const projectedOveragePaisa = subscription?.overageApproved ? extraMessages * (subscription.messageOveragePaisa || 0) + extraAiReplies * (subscription.aiReplyOveragePaisa || 0) : 0;
     const feedback = helpful + negative;
-    return { organization, subscription, usage, messageLimit, aiReplyLimit, messagePercent: usagePercent(usage.messages, messageLimit), aiReplyPercent: usagePercent(usage.aiReplies, aiReplyLimit), decisions, safeResolutionRate: decisions ? Math.round((safe / decisions) * 100) : null, helpfulRate: feedback ? Math.round((helpful / feedback) * 100) : null, negative, escalated, projectedOveragePaisa, restriction: subscription?.overageApproved ? "APPROVED_OVERAGE" : usage.messages >= messageLimit || usage.aiReplies >= aiReplyLimit ? "HARD_STOP" : "WITHIN_LIMIT" };
+    const freeCreditRecommendation = recommendFreeAiCredits({ planCode: subscription?.plan.code || "", usedAiReplies: usage.aiReplies, includedCredits: aiReplyLimit, remainingExtraCredits: aiCredits.remaining, recentFreeGrant: Boolean(recentFreeGrant) });
+    return { organization, subscription, usage, aiCredits, freeCreditRecommendation, messageLimit, aiReplyLimit: aiReplyLimit + aiCredits.granted, messagePercent: usagePercent(usage.messages, messageLimit), aiReplyPercent: usagePercent(usage.aiReplies, aiReplyLimit + aiCredits.granted), decisions, safeResolutionRate: decisions ? Math.round((safe / decisions) * 100) : null, helpfulRate: feedback ? Math.round((helpful / feedback) * 100) : null, negative, escalated, projectedOveragePaisa, restriction: subscription?.overageApproved ? "APPROVED_OVERAGE" : usage.messages >= messageLimit || usage.aiReplies >= aiReplyLimit + aiCredits.granted ? "HARD_STOP" : "WITHIN_LIMIT" };
   }));
 }
 

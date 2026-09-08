@@ -45,25 +45,23 @@ export function AppointmentJourneyAdminControl({
         <div>
           <p className="product-eyebrow">Product access</p>
           <h2 className="mt-2 text-lg font-black">Appointment Journey</h2>
-          <p className="mt-2 text-sm leading-6 text-[#68645c]">Enable the product after the workspace WhatsApp API is connected. The client can then connect Google from Settings.</p>
+          <p className="mt-2 text-sm leading-6 text-[#68645c]">Prepare Google Calendar and Sheets independently for this workspace. Live booking actions require separate verification.</p>
         </div>
       </div>
 
       <div className="mt-5 divide-y divide-black/5 border-y border-black/5">
         {workspaces.map((workspace) => {
           const enabled = workspace.appointmentStatus !== "DISABLED";
-          const whatsappReady = workspace.whatsappStatus === "CONNECTED";
           return (
             <div key={workspace.propertyId} className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <strong className="truncate text-sm">{workspace.propertyName}</strong>
-                  <Badge tone={whatsappReady ? "secondary" : "error"}>WhatsApp {whatsappReady ? "connected" : "not connected"}</Badge>
                   <Badge tone={workspace.googleReady ? "secondary" : enabled ? "primary" : "neutral"}>
                     {workspace.googleReady ? "Google ready" : enabled ? "Awaiting Google" : "Disabled"}
                   </Badge>
                 </div>
-                <p className="mt-1 text-xs text-[#68645c]">{workspace.propertySlug}{workspace.whatsappNumber ? ` · ${workspace.whatsappNumber}` : ""}</p>
+                <p className="mt-1 text-xs text-[#68645c]">{workspace.propertySlug}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 {enabled && !workspace.googleReady && workspace.tenantId ? (
@@ -77,8 +75,7 @@ export function AppointmentJourneyAdminControl({
                 <Button
                   tone={enabled ? "danger" : "primary"}
                   iconLeft={enabled ? <PowerOff className="size-4" aria-hidden="true" /> : <Power className="size-4" aria-hidden="true" />}
-                  disabled={savingId === workspace.propertyId || (!enabled && !whatsappReady)}
-                  title={!enabled && !whatsappReady ? "Connect WhatsApp before enabling Appointment Journey" : undefined}
+                  disabled={savingId === workspace.propertyId}
                   onClick={() => update(workspace, !enabled)}
                 >
                   {savingId === workspace.propertyId ? "Saving..." : enabled ? "Disable" : "Enable"}

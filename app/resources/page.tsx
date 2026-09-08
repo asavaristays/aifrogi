@@ -7,7 +7,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
   title: "AI Business Bot Guides & Resources | AiFrogi",
-  description: "Practical resources for AI business automation, customer conversations, knowledge-guided replies, workflow design, supported channels including WhatsApp, security, and support.",
+  description: "Practical resources for website AI business automation, customer conversations, approved knowledge, security, and support.",
   path: "/resources"
 });
 
@@ -21,8 +21,8 @@ const securityProofs = [
     copy: "Platform admin and workspace owner/admin sign-in requires password verification plus an email OTP before a session is created."
   },
   {
-    title: "Signed Meta webhooks",
-    copy: "Production Meta webhook traffic is verified with the app secret. Unsigned or forged webhook requests are rejected."
+    title: "Signed visitor sessions",
+    copy: "Website conversations use tenant-bound visitor capabilities; a guessed browser session cannot read private transcripts."
   },
   {
     title: "Boundary verifier",
@@ -32,8 +32,8 @@ const securityProofs = [
 
 const trustResources = [
   { title: "Support standards", copy: "Published response targets, priority definitions, and customer-controlled access boundaries.", href: "/help/support-response-standards" },
-  { title: "Security guide", copy: "Plain-English explanation of workspace boundaries, support access, OTP, signed webhooks, and safe AI.", href: "/help/protect-whatsapp-customer-data" },
-  { title: "Data security", copy: "How support access, OTP, Meta webhook signatures, credentials, and workspace boundaries are protected.", href: "/security" },
+  { title: "Security guide", copy: "Plain-English explanation of workspace boundaries, support access, OTP, signed sessions, and safe AI.", href: "/security" },
+  { title: "Data security", copy: "How support access, privileged login, credentials, and workspace boundaries are protected.", href: "/security" },
   { title: "Privacy policy", copy: "What information is collected, why it is used, and how it is protected.", href: "/privacy-policy" },
   { title: "Terms of service", copy: "Platform responsibilities, acceptable use, billing, and service boundaries.", href: "/terms-of-service" },
   { title: "Data deletion", copy: "How to request removal of customer or account information.", href: "/data-deletion" }
@@ -49,7 +49,7 @@ export default function ResourcesPage() {
         <div className="relative mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Resources</p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-.04em] sm:text-6xl">Practical guides. Clear answers.</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Set up WhatsApp, run compliant campaigns, control AI, protect access, and resolve issues without unnecessary reading.</p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Set up your website AI Bot, govern its knowledge, protect access, and resolve issues without unnecessary reading.</p>
           <a href="#guides" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b28728]">Browse guides <Icon name="arrow-right" /></a>
         </div>
       </section>
@@ -59,9 +59,9 @@ export default function ResourcesPage() {
           <div>
             <p className="product-eyebrow">Security proof</p>
             <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">Not just policy text. Controls customers can understand.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">AiFrogi is built for customer data boundaries: support access is customer-controlled, privileged users complete OTP, Meta webhooks are signed, and sensitive routes are checked with repeatable verifier tests.</p>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">AiFrogi is built for customer data boundaries: support access is customer-controlled, privileged users complete OTP, visitor sessions are signed, and sensitive routes are checked with repeatable verifier tests.</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/help/protect-whatsapp-customer-data" className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b28728]">Read security guide <Icon name="arrow-right" /></Link>
+              <Link href="/security" className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b28728]">Read security guide <Icon name="arrow-right" /></Link>
               <Link href="/security" className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-black/10 px-5 text-sm font-bold text-[#101010] transition hover:-translate-y-0.5 hover:border-[#8a6a16]/35 hover:bg-[#f8f0d8]">Open security center</Link>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl"><p className="product-eyebrow">Help guides</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Start with the task in front of you.</h2></div>
           <div className="mt-10 grid gap-x-10 md:grid-cols-2">
-            {helpArticles.map((article) => <Link key={article.slug} href={`/help/${article.slug}`} className="group border-t border-black/10 py-6"><div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-[.1em] text-[#6d5310]">{article.category} · {article.minutes} min</span><Icon name="arrow-right" className="text-[#8a6a16] transition-transform group-hover:translate-x-1" /></div><h3 className="mt-4 text-xl font-semibold transition group-hover:text-[#6d5310]">{article.title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)]">{article.summary}</p></Link>)}
+            {helpArticles.filter((article) => !/whatsapp|meta/i.test(`${article.slug} ${article.title} ${article.summary}`)).map((article) => <Link key={article.slug} href={`/help/${article.slug}`} className="group border-t border-black/10 py-6"><div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-[.1em] text-[#6d5310]">{article.category} · {article.minutes} min</span><Icon name="arrow-right" className="text-[#8a6a16] transition-transform group-hover:translate-x-1" /></div><h3 className="mt-4 text-xl font-semibold transition group-hover:text-[#6d5310]">{article.title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)]">{article.summary}</p></Link>)}
           </div>
         </div>
       </section>

@@ -333,6 +333,7 @@ export type OrganizationWhereInput = {
   invoices?: Prisma.BillingInvoiceListRelationFilter
   billingAddons?: Prisma.BillingAddonListRelationFilter
   usageRecords?: Prisma.UsageRecordListRelationFilter
+  aiCreditTransactions?: Prisma.AiCreditTransactionListRelationFilter
   incidents?: Prisma.PlatformIncidentListRelationFilter
   auditLogs?: Prisma.PlatformAuditLogListRelationFilter
   userSessions?: Prisma.UserSessionListRelationFilter
@@ -376,6 +377,7 @@ export type OrganizationOrderByWithRelationInput = {
   invoices?: Prisma.BillingInvoiceOrderByRelationAggregateInput
   billingAddons?: Prisma.BillingAddonOrderByRelationAggregateInput
   usageRecords?: Prisma.UsageRecordOrderByRelationAggregateInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionOrderByRelationAggregateInput
   incidents?: Prisma.PlatformIncidentOrderByRelationAggregateInput
   auditLogs?: Prisma.PlatformAuditLogOrderByRelationAggregateInput
   userSessions?: Prisma.UserSessionOrderByRelationAggregateInput
@@ -422,6 +424,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   invoices?: Prisma.BillingInvoiceListRelationFilter
   billingAddons?: Prisma.BillingAddonListRelationFilter
   usageRecords?: Prisma.UsageRecordListRelationFilter
+  aiCreditTransactions?: Prisma.AiCreditTransactionListRelationFilter
   incidents?: Prisma.PlatformIncidentListRelationFilter
   auditLogs?: Prisma.PlatformAuditLogListRelationFilter
   userSessions?: Prisma.UserSessionListRelationFilter
@@ -521,6 +524,7 @@ export type OrganizationCreateInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -564,6 +568,7 @@ export type OrganizationUncheckedCreateInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -607,6 +612,7 @@ export type OrganizationUpdateInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -650,6 +656,7 @@ export type OrganizationUncheckedUpdateInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1033,6 +1040,20 @@ export type OrganizationUpdateOneRequiredWithoutUsageRecordsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutUsageRecordsInput, Prisma.OrganizationUpdateWithoutUsageRecordsInput>, Prisma.OrganizationUncheckedUpdateWithoutUsageRecordsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutAiCreditTransactionsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAiCreditTransactionsInput, Prisma.OrganizationUncheckedCreateWithoutAiCreditTransactionsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAiCreditTransactionsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAiCreditTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAiCreditTransactionsInput, Prisma.OrganizationUncheckedCreateWithoutAiCreditTransactionsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAiCreditTransactionsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAiCreditTransactionsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAiCreditTransactionsInput, Prisma.OrganizationUpdateWithoutAiCreditTransactionsInput>, Prisma.OrganizationUncheckedUpdateWithoutAiCreditTransactionsInput>
+}
+
 export type OrganizationCreateNestedOneWithoutIncidentsInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutIncidentsInput, Prisma.OrganizationUncheckedCreateWithoutIncidentsInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutIncidentsInput
@@ -1116,6 +1137,7 @@ export type OrganizationCreateWithoutPropertiesInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -1158,6 +1180,7 @@ export type OrganizationUncheckedCreateWithoutPropertiesInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1216,6 +1239,7 @@ export type OrganizationUpdateWithoutPropertiesInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -1258,6 +1282,7 @@ export type OrganizationUncheckedUpdateWithoutPropertiesInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1300,6 +1325,7 @@ export type OrganizationCreateWithoutDemoSandboxInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -1342,6 +1368,7 @@ export type OrganizationUncheckedCreateWithoutDemoSandboxInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1400,6 +1427,7 @@ export type OrganizationUpdateWithoutDemoSandboxInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -1442,6 +1470,7 @@ export type OrganizationUncheckedUpdateWithoutDemoSandboxInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1485,6 +1514,7 @@ export type OrganizationCreateWithoutUserSessionsInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
 }
@@ -1527,6 +1557,7 @@ export type OrganizationUncheckedCreateWithoutUserSessionsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1585,6 +1616,7 @@ export type OrganizationUpdateWithoutUserSessionsInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
 }
@@ -1627,6 +1659,7 @@ export type OrganizationUncheckedUpdateWithoutUserSessionsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1668,6 +1701,7 @@ export type OrganizationCreateWithoutBotConfigurationInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -1710,6 +1744,7 @@ export type OrganizationUncheckedCreateWithoutBotConfigurationInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1768,6 +1803,7 @@ export type OrganizationUpdateWithoutBotConfigurationInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -1810,6 +1846,7 @@ export type OrganizationUncheckedUpdateWithoutBotConfigurationInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1852,6 +1889,7 @@ export type OrganizationCreateWithoutBotProfileInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -1894,6 +1932,7 @@ export type OrganizationUncheckedCreateWithoutBotProfileInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1952,6 +1991,7 @@ export type OrganizationUpdateWithoutBotProfileInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -1994,6 +2034,7 @@ export type OrganizationUncheckedUpdateWithoutBotProfileInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2036,6 +2077,7 @@ export type OrganizationCreateWithoutBotConnectorsInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -2078,6 +2120,7 @@ export type OrganizationUncheckedCreateWithoutBotConnectorsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2136,6 +2179,7 @@ export type OrganizationUpdateWithoutBotConnectorsInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -2178,6 +2222,7 @@ export type OrganizationUncheckedUpdateWithoutBotConnectorsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2220,6 +2265,7 @@ export type OrganizationCreateWithoutMembersInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -2262,6 +2308,7 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2320,6 +2367,7 @@ export type OrganizationUpdateWithoutMembersInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -2362,6 +2410,7 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2404,6 +2453,7 @@ export type OrganizationCreateWithoutOnboardingInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -2446,6 +2496,7 @@ export type OrganizationUncheckedCreateWithoutOnboardingInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2504,6 +2555,7 @@ export type OrganizationUpdateWithoutOnboardingInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -2546,6 +2598,7 @@ export type OrganizationUncheckedUpdateWithoutOnboardingInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2588,6 +2641,7 @@ export type OrganizationCreateWithoutOnboardingCredentialInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -2630,6 +2684,7 @@ export type OrganizationUncheckedCreateWithoutOnboardingCredentialInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2688,6 +2743,7 @@ export type OrganizationUpdateWithoutOnboardingCredentialInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -2730,6 +2786,7 @@ export type OrganizationUncheckedUpdateWithoutOnboardingCredentialInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2772,6 +2829,7 @@ export type OrganizationCreateWithoutDocumentsInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -2814,6 +2872,7 @@ export type OrganizationUncheckedCreateWithoutDocumentsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2872,6 +2931,7 @@ export type OrganizationUpdateWithoutDocumentsInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -2914,6 +2974,7 @@ export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2956,6 +3017,7 @@ export type OrganizationCreateWithoutActivitiesInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -2998,6 +3060,7 @@ export type OrganizationUncheckedCreateWithoutActivitiesInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3056,6 +3119,7 @@ export type OrganizationUpdateWithoutActivitiesInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3098,6 +3162,7 @@ export type OrganizationUncheckedUpdateWithoutActivitiesInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3140,6 +3205,7 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3182,6 +3248,7 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3240,6 +3307,7 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3282,6 +3350,7 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3324,6 +3393,7 @@ export type OrganizationCreateWithoutBillingAddonsInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3366,6 +3436,7 @@ export type OrganizationUncheckedCreateWithoutBillingAddonsInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3424,6 +3495,7 @@ export type OrganizationUpdateWithoutBillingAddonsInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3466,6 +3538,7 @@ export type OrganizationUncheckedUpdateWithoutBillingAddonsInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3508,6 +3581,7 @@ export type OrganizationCreateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3550,6 +3624,7 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3608,6 +3683,7 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3650,6 +3726,7 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3692,6 +3769,7 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -3734,6 +3812,7 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3792,6 +3871,7 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -3834,6 +3914,195 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAiCreditTransactionsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAiCreditTransactionsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAiCreditTransactionsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAiCreditTransactionsInput, Prisma.OrganizationUncheckedCreateWithoutAiCreditTransactionsInput>
+}
+
+export type OrganizationUpsertWithoutAiCreditTransactionsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAiCreditTransactionsInput, Prisma.OrganizationUncheckedUpdateWithoutAiCreditTransactionsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAiCreditTransactionsInput, Prisma.OrganizationUncheckedCreateWithoutAiCreditTransactionsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAiCreditTransactionsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAiCreditTransactionsInput, Prisma.OrganizationUncheckedUpdateWithoutAiCreditTransactionsInput>
+}
+
+export type OrganizationUpdateWithoutAiCreditTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAiCreditTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3877,6 +4146,7 @@ export type OrganizationCreateWithoutIncidentsInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
 }
@@ -3919,6 +4189,7 @@ export type OrganizationUncheckedCreateWithoutIncidentsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -3977,6 +4248,7 @@ export type OrganizationUpdateWithoutIncidentsInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
 }
@@ -4019,6 +4291,7 @@ export type OrganizationUncheckedUpdateWithoutIncidentsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -4061,6 +4334,7 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
 }
@@ -4103,6 +4377,7 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -4161,6 +4436,7 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
 }
@@ -4203,6 +4479,7 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -4244,6 +4521,7 @@ export type OrganizationCreateWithoutSupportTicketsInput = {
   invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
@@ -4286,6 +4564,7 @@ export type OrganizationUncheckedCreateWithoutSupportTicketsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
   billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
   usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
   incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
   userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4344,6 +4623,7 @@ export type OrganizationUpdateWithoutSupportTicketsInput = {
   invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
@@ -4386,6 +4666,7 @@ export type OrganizationUncheckedUpdateWithoutSupportTicketsInput = {
   invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
   billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
   usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
   incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
   auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
   userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4406,6 +4687,7 @@ export type OrganizationCountOutputType = {
   invoices: number
   billingAddons: number
   usageRecords: number
+  aiCreditTransactions: number
   incidents: number
   auditLogs: number
   userSessions: number
@@ -4421,6 +4703,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   invoices?: boolean | OrganizationCountOutputTypeCountInvoicesArgs
   billingAddons?: boolean | OrganizationCountOutputTypeCountBillingAddonsArgs
   usageRecords?: boolean | OrganizationCountOutputTypeCountUsageRecordsArgs
+  aiCreditTransactions?: boolean | OrganizationCountOutputTypeCountAiCreditTransactionsArgs
   incidents?: boolean | OrganizationCountOutputTypeCountIncidentsArgs
   auditLogs?: boolean | OrganizationCountOutputTypeCountAuditLogsArgs
   userSessions?: boolean | OrganizationCountOutputTypeCountUserSessionsArgs
@@ -4502,6 +4785,13 @@ export type OrganizationCountOutputTypeCountUsageRecordsArgs<ExtArgs extends run
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountAiCreditTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiCreditTransactionWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountIncidentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PlatformIncidentWhereInput
 }
@@ -4559,6 +4849,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   invoices?: boolean | Prisma.Organization$invoicesArgs<ExtArgs>
   billingAddons?: boolean | Prisma.Organization$billingAddonsArgs<ExtArgs>
   usageRecords?: boolean | Prisma.Organization$usageRecordsArgs<ExtArgs>
+  aiCreditTransactions?: boolean | Prisma.Organization$aiCreditTransactionsArgs<ExtArgs>
   incidents?: boolean | Prisma.Organization$incidentsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
   userSessions?: boolean | Prisma.Organization$userSessionsArgs<ExtArgs>
@@ -4657,6 +4948,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   invoices?: boolean | Prisma.Organization$invoicesArgs<ExtArgs>
   billingAddons?: boolean | Prisma.Organization$billingAddonsArgs<ExtArgs>
   usageRecords?: boolean | Prisma.Organization$usageRecordsArgs<ExtArgs>
+  aiCreditTransactions?: boolean | Prisma.Organization$aiCreditTransactionsArgs<ExtArgs>
   incidents?: boolean | Prisma.Organization$incidentsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Organization$auditLogsArgs<ExtArgs>
   userSessions?: boolean | Prisma.Organization$userSessionsArgs<ExtArgs>
@@ -4683,6 +4975,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     invoices: Prisma.$BillingInvoicePayload<ExtArgs>[]
     billingAddons: Prisma.$BillingAddonPayload<ExtArgs>[]
     usageRecords: Prisma.$UsageRecordPayload<ExtArgs>[]
+    aiCreditTransactions: Prisma.$AiCreditTransactionPayload<ExtArgs>[]
     incidents: Prisma.$PlatformIncidentPayload<ExtArgs>[]
     auditLogs: Prisma.$PlatformAuditLogPayload<ExtArgs>[]
     userSessions: Prisma.$UserSessionPayload<ExtArgs>[]
@@ -5119,6 +5412,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   invoices<T extends Prisma.Organization$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingInvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   billingAddons<T extends Prisma.Organization$billingAddonsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$billingAddonsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingAddonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   usageRecords<T extends Prisma.Organization$usageRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$usageRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsageRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiCreditTransactions<T extends Prisma.Organization$aiCreditTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$aiCreditTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiCreditTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   incidents<T extends Prisma.Organization$incidentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$incidentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Organization$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userSessions<T extends Prisma.Organization$userSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$userSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5893,6 +6187,30 @@ export type Organization$usageRecordsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.UsageRecordScalarFieldEnum | Prisma.UsageRecordScalarFieldEnum[]
+}
+
+/**
+ * Organization.aiCreditTransactions
+ */
+export type Organization$aiCreditTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiCreditTransaction
+   */
+  select?: Prisma.AiCreditTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiCreditTransaction
+   */
+  omit?: Prisma.AiCreditTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiCreditTransactionInclude<ExtArgs> | null
+  where?: Prisma.AiCreditTransactionWhereInput
+  orderBy?: Prisma.AiCreditTransactionOrderByWithRelationInput | Prisma.AiCreditTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.AiCreditTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiCreditTransactionScalarFieldEnum | Prisma.AiCreditTransactionScalarFieldEnum[]
 }
 
 /**

@@ -23,13 +23,20 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   if (/\b(you already (have|know)|already have context|as i said|as mentioned|previous question|earlier question|use the context|same question|tell me more about (it|that))\b/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/^(give|send|share|show|open|provide|what about|how about|and|i want|i need)\b.{0,45}\b(link|url|details|price|cost|specific date|date|time|slot|booking|book|register|registration|it|that|this)( please)?$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/\b(weather|temperature|forecast|rain today|cricket (score|match)|football (score|match)|who won( the)? (game|match)|stock price|share price|election result|horoscope|recipe|movie showtime)\b/.test(normalized)) return "OFF_TOPIC";
-  if (/\b(webtechnosys|service|website|web design|development|software|application|mobile app|ai|automation|bot|whatsapp|hotel|hospitality|channel manager|training|course|bootcamp|seo|marketing|integration|pricing|price|cost|quote|demo|consultation|build|project)\b/.test(normalized)) return "BUSINESS";
+  // Recognise ordinary plural and vertical vocabulary when recovering a topic.
+  // This only routes retrieval; it does not confer factual or action authority.
+  if (/\b(services?|website|web design|development|software|application|mobile app|ai|automation|bot|whatsapp|hotel|hospitality|channel manager|training|courses?|programmes?|programs?|workflows?|bootcamp|seo|marketing|integration|pricing|price|cost|quote|demo|consultation|build|project|appointment|booking|reservation|table|menu|cuisine|treatments?|rooms?|admission|counselling|propert(?:y|ies)|site visit|products?|order|catalogue|maintenance)\b/.test(normalized)) return "BUSINESS";
   return "UNKNOWN";
 }
 
-export function resolveSovereignQuestion(question: string, priorQuestions: string[] = [], blueprintVersion = "1.0"): SovereignDecision {
+export function resolveSovereignQuestion(question: string, priorQuestions: string[] = [], blueprintVersion = "1.0", lastAssistantAnswer = ""): SovereignDecision {
+  if (/^(yes|yes please|sure|ok|okay|please do|go ahead)[.!\s]*$/i.test(question.trim())) {
+    const offer = lastAssistantAnswer.match(/(?:would you like|do you want|shall i|can i help)[^?]*\?/i)?.[0];
+    const prior = priorQuestions.find((candidate) => ["BUSINESS", "CONTACT_INFO", "CONTEXT_FOLLOW_UP"].includes(classifySovereignIntent(candidate)));
+    return { constitutionVersion: SOVEREIGN_CONSTITUTION_VERSION, blueprintVersion, intent: "CONTEXT_FOLLOW_UP", disposition: offer && prior ? "ANSWER" : "CLARIFY", resolvedQuestion: offer && prior ? `${prior}\nCustomer accepted this informational follow-up: ${offer}\nProvide only approved information or the approved next-step link; this is not authorisation for a booking, payment or callback.` : question.trim(), contextUsed: Boolean(offer && prior), reason: offer && prior ? "Short affirmative resolved from the last assistant offer and tenant session history; no action authority granted." : "Short affirmative has no clear pending offer; clarification required." };
+  }
   const intent = classifySovereignIntent(question);
   if (intent !== "CONTEXT_FOLLOW_UP") return { constitutionVersion: SOVEREIGN_CONSTITUTION_VERSION, blueprintVersion, intent, disposition: intent === "OFF_TOPIC" ? "REFUSE" : intent === "HUMAN_REQUEST" || intent === "SENSITIVE" ? "ESCALATE" : "ANSWER", resolvedQuestion: question.trim(), contextUsed: false, reason: `Current message classified as ${intent}.` };
-  const priorQuestion = priorQuestions.find((candidate) => classifySovereignIntent(candidate) === "BUSINESS")?.trim();
+  const priorQuestion = priorQuestions.find((candidate) => ["BUSINESS", "CONTACT_INFO"].includes(classifySovereignIntent(candidate)))?.trim();
   return { constitutionVersion: SOVEREIGN_CONSTITUTION_VERSION, blueprintVersion, intent, disposition: priorQuestion ? "ANSWER" : "CLARIFY", resolvedQuestion: priorQuestion || question.trim(), contextUsed: Boolean(priorQuestion), reason: priorQuestion ? "Resolved from latest relevant business question; unrelated messages excluded." : "No relevant prior business question was available." };
 }

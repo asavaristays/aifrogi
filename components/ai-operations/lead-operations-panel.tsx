@@ -12,6 +12,7 @@ type Operation = {
   dueAt: string | null;
   outcomeType: string | null;
   outcomeEvidence: string | null;
+  notifications?: Array<{ event: string; status: string; attemptCount: number; maxAttempts: number }>;
 };
 
 const kinds = ["FOLLOW_UP", "HUMAN_REVIEW", "APPOINTMENT", "QUOTE", "ORDER", "ESCALATION", "NOTE"];
@@ -21,7 +22,7 @@ function label(value: string) {
   return value.toLowerCase().replaceAll("_", " ").replace(/^./, (character) => character.toUpperCase());
 }
 
-export function LeadOperationsPanel({ leadId }: { leadId: string }) {
+export function LeadOperationsPanel({ leadId, revision = 0 }: { leadId: string; revision?: number }) {
   const [operations, setOperations] = useState<Operation[]>([]);
   const [title, setTitle] = useState("");
   const [kind, setKind] = useState("FOLLOW_UP");
@@ -37,7 +38,12 @@ export function LeadOperationsPanel({ leadId }: { leadId: string }) {
     if (response.ok) setOperations(payload?.operations || []);
   }, [leadId]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    const refresh = () => { void load().catch(() => setError("Could not refresh actions. Please retry.")); };
+    refresh();
+    const timer = window.setInterval(refresh, 10000);
+    return () => window.clearInterval(timer);
+  }, [load, revision]);
 
   async function create() {
     if (!title.trim()) return;
@@ -83,6 +89,7 @@ export function LeadOperationsPanel({ leadId }: { leadId: string }) {
     {error ? <p className="mt-3 text-xs font-semibold text-[var(--error)]">{error}</p> : null}
     <div className="mt-4 space-y-2">
       {operations.slice(0, 8).map((operation) => <article key={operation.id} className="rounded-md border border-[var(--border)] bg-[var(--surface-soft)] p-3">
+        {operation.notifications?.map((notice, index) => <p key={`${notice.event}-${index}`} className={`mb-2 text-xs ${notice.status === "DEAD" || notice.status === "RETRY" ? "text-red-700" : "text-[var(--text-muted)]"}`}>{notice.event === "OVERDUE" ? "Overdue alert" : "Email notification"}: {notice.status === "SUCCEEDED" ? "Processed — SMTP acceptance is not inbox receipt" : `${label(notice.status)} · attempt ${notice.attemptCount}/${notice.maxAttempts}`}</p>)}
         <div className="flex items-start justify-between gap-3"><div><strong className="text-sm">{operation.title}</strong><p className="mt-1 text-[11px] text-[var(--text-muted)]">{label(operation.kind)}{operation.assignedTo ? ` · ${operation.assignedTo}` : ""}{operation.dueAt ? ` · ${new Date(operation.dueAt).toLocaleString("en-IN")}` : ""}</p></div><span className={`status-pill ${operation.status === "COMPLETED" ? "status-success" : "status-warning"}`}>{label(operation.status)}</span></div>
         {operation.outcomeType ? <p className="mt-2 text-xs font-semibold text-[#16794a]">Outcome: {label(operation.outcomeType)}</p> : null}
         {operation.status !== "COMPLETED" ? <select aria-label={`Complete ${operation.title}`} className="product-input mt-3" defaultValue="" disabled={saving} onChange={(event) => event.target.value && void complete(operation, event.target.value)}><option value="">Record verified outcome…</option>{outcomes.map((item) => <option key={item} value={item}>{label(item)}</option>)}</select> : null}

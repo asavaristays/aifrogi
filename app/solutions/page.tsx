@@ -32,7 +32,7 @@ export default function SolutionsPage() {
         <div className="mx-auto max-w-7xl">
           <p className="product-eyebrow">Sovereign bot categories</p>
           <h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-.035em] sm:text-5xl">Dedicated intelligence for every business job.</h2>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--text-muted)]">Each bot has its own outcome, approved knowledge and operating authority. Website and WhatsApp remain channels—not separate intelligence.</p>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--text-muted)]">Each bot has its own outcome, approved knowledge and operating authority, delivered through the website experience.</p>
           <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               ...botProducts,

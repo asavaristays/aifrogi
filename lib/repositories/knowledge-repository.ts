@@ -1,7 +1,9 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
+import { defaultWidgetMenu, normalizeWidgetMenu, type WidgetMenuConfig } from "@/lib/widget-menu";
 
 export type KnowledgeSyncStatus = "DRAFT" | "SYNCING" | "READY" | "ERROR";
+export type WidgetTheme = "dark" | "light" | "system";
 
 export type KnowledgeSettings = {
   propertySlug: string;
@@ -13,7 +15,9 @@ export type KnowledgeSettings = {
   handoffTopics: string[];
   welcomeMessage: string;
   themeColor: string;
+  widgetTheme?: WidgetTheme;
   logoUrl: string;
+  widgetMenu?: WidgetMenuConfig;
   lastCrawledAt: string | null;
   pageCount: number;
   buckets: string[];
@@ -21,7 +25,6 @@ export type KnowledgeSettings = {
   updatedAt: string;
 };
 
-const DEFAULT_SOURCE_URL = "https://website.hotelradar.in";
 const DEFAULT_HANDOFF_TOPICS = ["Billing disputes", "Complaints", "Legal questions", "Sensitive personal data"];
 
 function runtimeDir() {
@@ -45,7 +48,7 @@ function normalizeUrl(value: string) {
 function defaults(propertySlug: string): KnowledgeSettings {
   return {
     propertySlug,
-    sourceUrl: (process.env.WEBSITE_KB_BASE_URL || DEFAULT_SOURCE_URL).replace(/\/+$/, ""),
+    sourceUrl: "",
     status: "DRAFT",
     approvedForAi: true,
     autoRefreshHours: 6,
@@ -53,7 +56,9 @@ function defaults(propertySlug: string): KnowledgeSettings {
     handoffTopics: DEFAULT_HANDOFF_TOPICS,
     welcomeMessage: "Hello. How can I help with your business enquiry today?",
     themeColor: "#8a6a16",
+    widgetTheme: "dark",
     logoUrl: "",
+    widgetMenu: defaultWidgetMenu(propertySlug),
     lastCrawledAt: null,
     pageCount: 0,
     buckets: [],
@@ -72,7 +77,8 @@ export async function readKnowledgeSettings(propertySlug: string) {
       propertySlug,
       sourceUrl: normalizeUrl(parsed.sourceUrl || fallback.sourceUrl),
       handoffTopics: Array.isArray(parsed.handoffTopics) ? parsed.handoffTopics.filter(Boolean) : fallback.handoffTopics,
-      buckets: Array.isArray(parsed.buckets) ? parsed.buckets.filter(Boolean) : []
+      buckets: Array.isArray(parsed.buckets) ? parsed.buckets.filter(Boolean) : [],
+      widgetMenu: normalizeWidgetMenu(parsed.widgetMenu, fallback.widgetMenu || defaultWidgetMenu(propertySlug))
     } satisfies KnowledgeSettings;
   } catch {
     return fallback;
@@ -84,6 +90,10 @@ export async function writeKnowledgeSettings(
   input: Partial<Omit<KnowledgeSettings, "propertySlug" | "updatedAt">>
 ) {
   const current = await readKnowledgeSettings(propertySlug);
+  if (input.logoUrl?.trim()) {
+    const logo = new URL(input.logoUrl.trim());
+    if (logo.protocol !== "https:" || logo.username || logo.password) throw new Error("Use a public HTTPS logo URL without credentials.");
+  }
   const next: KnowledgeSettings = {
     ...current,
     ...input,
@@ -96,7 +106,9 @@ export async function writeKnowledgeSettings(
       : current.handoffTopics,
     welcomeMessage: String(input.welcomeMessage ?? current.welcomeMessage).trim().slice(0, 300) || current.welcomeMessage,
     themeColor: /^#[0-9a-f]{6}$/i.test(String(input.themeColor || "")) ? String(input.themeColor) : current.themeColor,
+    widgetTheme: ["dark", "light", "system"].includes(String(input.widgetTheme)) ? input.widgetTheme as WidgetTheme : current.widgetTheme || "dark",
     logoUrl: String(input.logoUrl ?? current.logoUrl).trim().slice(0, 500),
+    widgetMenu: input.widgetMenu === undefined ? current.widgetMenu : normalizeWidgetMenu(input.widgetMenu, current.widgetMenu || defaultWidgetMenu(propertySlug)),
     buckets: Array.isArray(input.buckets) ? [...new Set(input.buckets.map(String).filter(Boolean))].sort() : current.buckets,
     updatedAt: new Date().toISOString()
   };

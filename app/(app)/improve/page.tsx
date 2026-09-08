@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {PilotMeasurementPanel} from '@/components/analytics/pilot-measurement-panel';
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/layout/top-bar";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
@@ -24,6 +25,7 @@ export default async function ImproveMyBotPage() {
     {report.gaps.length ? <ReviewSection eyebrow="Missing information" title="Questions your bot could not answer" copy="Frequently asked questions rise to the top automatically.">{report.gaps.map((gap) => <ReviewRow key={gap.id} title={gap.question} detail={`Asked ${gap.occurrenceCount} time${gap.occurrenceCount === 1 ? "" : "s"}.`} badge="Knowledge gap" href="/knowledge#manual-answer-form" action="Answer this question" />)}</ReviewSection> : null}
 
     <section className="rounded-[24px] border border-[var(--border)] bg-white p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="product-eyebrow">Need AiFrogi?</p><h2 className="mt-2 text-xl font-semibold">Request intelligence review</h2><p className="mt-2 text-sm text-[var(--text-muted)]">Use Support when the information is already correct but the bot misunderstood intent, retrieval or handover.</p></div><Link href="/support" className="inline-flex min-h-11 items-center justify-center rounded-full border border-black/12 px-5 text-sm font-bold">Open support</Link></div></section>
+    <PilotMeasurementPanel propertyId={access.propertyId}/>
   </main></div>;
 }
 

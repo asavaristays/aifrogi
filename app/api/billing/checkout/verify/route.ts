@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentClientAccess, canManageWorkspace } from "@/lib/client-access";
 import { activateRazorpaySubscription, ensureBillingPlans } from "@/lib/billing-super-admin";
 import { fetchRazorpayOrder, fetchVerifiedRazorpayPayment, verifyRazorpayCheckoutSignature } from "@/lib/razorpay-billing";
+import { notifyBillingEvent } from "@/lib/services/billing-notification";
 
 const CLIENT_PLAN_CODES = new Set(["AI_STARTER_MONTHLY", "AI_STARTER_YEARLY"]);
 
@@ -25,7 +26,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Payment is not captured or does not match the selected plan." }, { status: 400 });
     }
     const invoice = await activateRazorpaySubscription({ organizationId: access.organization.id, actorEmail: access.user.username, planCode, orderId, paymentId, amountPaisa: payment.amount, currency: payment.currency });
-    return NextResponse.json({ ok: true, invoiceId: invoice.id });
+    const notification = await notifyBillingEvent({ organizationId: access.organization.id, targetId: invoice.id, actorEmail: access.user.username, event: "PLAN_ACTIVATED", description: plan.name, value: `₹${(payment.amount / 100).toLocaleString("en-IN")} paid`, reference: paymentId, validity: invoice.periodEnd });
+    return NextResponse.json({ ok: true, invoiceId: invoice.id, activatedImmediately: true, notification });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Payment verification failed." }, { status: 502 });
   }

@@ -1,7 +1,9 @@
 import { getDb } from "@/lib/db";
+import { trialEssentialCoverage, hasSafeKnowledge } from "@/lib/trial-readiness";
 import { scoreRetrievalCandidate, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
-import { calculateCoverage, KB_FRAMEWORK_VERSION, KB_FRESHNESS_TARGET, KB_MINIMUM_COVERAGE, validateAtomicClaim } from "@/lib/knowledge-verification";
+import { calculateCoverage, KB_FRAMEWORK_VERSION, KB_MINIMUM_COVERAGE, validateAtomicClaim } from "@/lib/knowledge-verification";
 import { runKnowledgePublicationGate } from "@/lib/knowledge-publication-gate";
+import { assertCorrectionPublishable } from '@/lib/knowledge-correction-gate';
 
 export async function expirePublishedClaims(propertyId?: string) {
   const db = getDb();
@@ -17,10 +19,12 @@ export async function createAtomicClaim(input: { propertyId: string; question: s
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const validation = validateAtomicClaim(input);
-  const latest = await db.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: validation.claimKey }, orderBy: { version: "desc" } });
-  const existingConflict = await db.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: validation.claimKey, status: { in: ["PUBLISHED", "FIELD_APPROVED", "PREVIEW_PENDING", "APPROVED"] }, answer: { not: input.answer.trim() } } });
-  const conflictSummary = existingConflict ? `Conflicts with active claim version ${existingConflict.version}. Resolve by explicitly superseding that version.` : null;
+  if(input.documentId && !await db.knowledgeDocument.findFirst({where:{id:input.documentId,propertyId:input.propertyId},select:{id:true}}))throw new Error('Source document does not belong to this workspace.');
+  if(input.gapId && !await db.knowledgeGap.findFirst({where:{id:input.gapId,propertyId:input.propertyId},select:{id:true}}))throw new Error('Knowledge gap does not belong to this workspace.');
   return db.$transaction(async (tx) => {
+  const latest = await tx.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: validation.claimKey }, orderBy: { version: "desc" } });
+  const existingConflict = await tx.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: validation.claimKey, status: { in: ["PUBLISHED", "FIELD_APPROVED", "PREVIEW_PENDING", "APPROVED"] }, answer: { not: input.answer.trim() } } });
+  const conflictSummary = existingConflict ? `Conflicts with active claim version ${existingConflict.version}. Resolve by explicitly superseding that version.` : null;
     if (conflictSummary) {
       await tx.knowledgeEntry.updateMany({
         where: { propertyId: input.propertyId, claimKey: validation.claimKey, status: { in: ["PUBLISHED", "APPROVED", "FIELD_APPROVED", "PREVIEW_PENDING"] } },
@@ -34,9 +38,9 @@ export async function createAtomicClaim(input: { propertyId: string; question: s
       version: (latest?.version || 0) + 1, validationStatus: validation.valid ? "VALID" : "INVALID", validationErrors: validation.errors,
       conflictStatus: conflictSummary ? "UNRESOLVED" : "CLEAR", conflictSummary, status: validation.valid ? (conflictSummary ? "CONFLICT" : "VALIDATED") : "INVALID"
     } });
-    if (input.gapId) await tx.knowledgeGap.updateMany({ where: { id: input.gapId, propertyId: input.propertyId }, data: { resolutionEntryId: entry.id, status: "RESOLVED" } });
+    if (input.gapId) await tx.knowledgeGap.updateMany({ where: { id: input.gapId, propertyId: input.propertyId }, data: { resolutionEntryId: entry.id, status: "OPEN" } });
     return entry;
-  });
+  },{isolationLevel:'Serializable'});
 }
 
 export async function stageDocumentAtomicClaims(input: { propertyId: string; documentId: string; createdBy: string; claims: Array<{ question: string; answer: string; category: string; claimType: string; valueType: string; currency: string | null; refreshDays: number }> }) {
@@ -56,11 +60,14 @@ export async function fieldApproveClaim(input: { propertyId: string; entryId: st
   if (!db) throw new Error("Database unavailable.");
   const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!entry) throw new Error("Knowledge claim not found.");
+  if(!['VALIDATED','CONFLICT','PAUSED','EXPIRED'].includes(entry.status))throw new Error('Only a draft or paused claim can receive field approval.');
   if (entry.validationStatus !== "VALID") throw new Error(`Automated verification failed: ${entry.validationErrors.join(", ")}`);
   if (entry.conflictStatus === "UNRESOLVED" && !input.supersedesId) throw new Error("Unresolved conflicts cannot be bypassed. Select the version this claim supersedes.");
   if (input.supersedesId) {
+    if(input.supersedesId===entry.id||!entry.claimKey)throw new Error('Select an earlier version of this claim, not itself.');
     const prior = await db.knowledgeEntry.findFirst({ where: { id: input.supersedesId, propertyId: input.propertyId, claimKey: entry.claimKey || undefined } });
     if (!prior) throw new Error("The superseded claim must belong to the same workspace and claim key.");
+    if(prior.version>=entry.version)throw new Error('Only an earlier claim version can be superseded.');
   }
   return db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "FIELD_APPROVED", fieldApprovedBy: input.actorEmail, fieldApprovedAt: new Date(), lastConfirmedAt: new Date(), supersedesId: input.supersedesId || null, conflictStatus: "CLEAR", conflictSummary: null } });
 }
@@ -68,36 +75,47 @@ export async function fieldApproveClaim(input: { propertyId: string; entryId: st
 export async function generateClaimPreview(input: { propertyId: string; entryId: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
-  const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
+  return db.$transaction(async tx=>{
+  const entry = await tx.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!entry || entry.status !== "FIELD_APPROVED") throw new Error("Field-level approval is required before preview generation.");
-  const preview = await db.knowledgePreview.create({ data: { propertyId: entry.propertyId, entryId: entry.id, question: entry.question, generatedAnswer: entry.answer } });
-  await db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PREVIEW_PENDING" } });
+  await tx.knowledgePreview.updateMany({where:{entryId:entry.id,status:'PENDING'},data:{status:'REJECTED',rejectedReason:'Replaced by a new preview.'}});
+  const preview = await tx.knowledgePreview.create({ data: { propertyId: entry.propertyId, entryId: entry.id, question: entry.question, generatedAnswer: entry.answer } });
+  await tx.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PREVIEW_PENDING" } });
   return preview;
+  },{isolationLevel:'Serializable'});
 }
 
 export async function reviewClaimPreview(input: { propertyId: string; previewId: string; actorEmail: string; approve: boolean; reason?: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
-  const preview = await db.knowledgePreview.findFirst({ where: { id: input.previewId, propertyId: input.propertyId }, include: { entry: true } });
+  return db.$transaction(async (tx) => {
+  const preview = await tx.knowledgePreview.findFirst({ where: { id: input.previewId, propertyId: input.propertyId, entry:{propertyId:input.propertyId} }, include: { entry: true } });
   if (!preview || preview.status !== "PENDING") throw new Error("Pending preview not found.");
   if (!input.approve) {
-    return db.$transaction(async (tx) => {
+    if(preview.entry.status!=='PREVIEW_PENDING')throw new Error('Claim is no longer awaiting preview review.');
       const reviewed = await tx.knowledgePreview.update({ where: { id: preview.id }, data: { status: "REJECTED", rejectedReason: input.reason?.slice(0, 1000) || "Client requested correction." } });
       await tx.knowledgeEntry.update({ where: { id: preview.entryId }, data: { status: "VALIDATED", previewApprovedBy: null, previewApprovedAt: null } });
       return reviewed;
-    });
   }
+  const openFlags=await tx.knowledgeAnswerFlag.count({where:{entryId:preview.entryId,propertyId:input.propertyId,status:{in:['OPEN','ACKNOWLEDGED']}}});
+  assertCorrectionPublishable({...preview.entry,previewQuestion:preview.question,previewAnswer:preview.generatedAnswer,openFlags});
   const regression = runKnowledgePublicationGate({ question: preview.entry.question, answer: preview.generatedAnswer, category: preview.entry.category, claimType: preview.entry.claimType, valueType: preview.entry.valueType, currency: preview.entry.currency, effectiveAt: preview.entry.effectiveAt, expiresAt: preview.entry.expiresAt, refreshDays: preview.entry.refreshDays });
   if (!regression.passed) throw new Error(`Publication regression gate failed: ${regression.failures.join(", ")}`);
-  return db.$transaction(async (tx) => {
     const property = await tx.property.findUnique({ where: { id: input.propertyId }, select: { organizationId: true } });
     if (!property?.organizationId) throw new Error("Knowledge workspace is not attached to an organization.");
-    if (preview.entry.supersedesId) await tx.knowledgeEntry.update({ where: { id: preview.entry.supersedesId }, data: { status: "SUPERSEDED", pausedAt: new Date(), pauseReason: `Superseded by claim version ${preview.entry.version}.` } });
+    if (preview.entry.supersedesId) {
+      const prior=await tx.knowledgeEntry.findFirst({where:{id:preview.entry.supersedesId,propertyId:input.propertyId,claimKey:preview.entry.claimKey}});
+      if(!prior||prior.id===preview.entryId||prior.version>=preview.entry.version)throw new Error('Superseded version is invalid.');
+      await tx.knowledgeEntry.update({ where: { id: prior.id }, data: { status: "SUPERSEDED", conflictStatus:'CLEAR', pausedAt: new Date(), pauseReason: `Superseded by claim version ${preview.entry.version}.` } });
+    }
+    const competing=await tx.knowledgeEntry.count({where:{propertyId:input.propertyId,claimKey:preview.entry.claimKey,id:{not:preview.entryId},OR:[{status:'PUBLISHED'},{conflictStatus:'UNRESOLVED',status:{notIn:['SUPERSEDED','REJECTED']}}]}});
+    if(competing)throw new Error('Another active or unresolved version exists. Resolve the claim family before publishing.');
     const reviewed = await tx.knowledgePreview.update({ where: { id: preview.id }, data: { status: "APPROVED", approvedBy: input.actorEmail, approvedAt: new Date() } });
     await tx.knowledgeEntry.update({ where: { id: preview.entryId }, data: { status: "PUBLISHED", previewApprovedBy: input.actorEmail, previewApprovedAt: new Date(), publishedAt: new Date(), pausedAt: null, pauseReason: null } });
+    await tx.knowledgeGap.updateMany({where:{propertyId:input.propertyId,resolutionEntryId:preview.entryId,status:'OPEN'},data:{status:'RESOLVED'}});
     await tx.onboardingActivity.create({ data: { organizationId: property.organizationId, actorEmail: input.actorEmail, action: "KNOWLEDGE_PUBLICATION_GATE_PASSED", detail: JSON.stringify({ entryId: preview.entryId, previewId: preview.id, ...regression }) } });
     return reviewed;
-  });
+  },{isolationLevel:'Serializable'});
 }
 
 export async function pauseClaim(input: { propertyId: string; entryId: string; actorEmail: string; reason: string }) {
@@ -113,7 +131,7 @@ export async function deleteUnpublishedClaim(input: { propertyId: string; entryI
   if (!db) throw new Error("Database unavailable.");
   const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!entry) throw new Error("Knowledge claim not found.");
-  if (["PUBLISHED", "APPROVED"].includes(entry.status)) throw new Error("Published knowledge must be paused and superseded; it cannot be silently deleted.");
+  if (entry.publishedAt || entry.previewApprovedAt || ["PUBLISHED", "APPROVED", "SUPERSEDED"].includes(entry.status)) throw new Error("Previously approved knowledge must be retained for audit; pause or supersede it instead.");
   return db.knowledgeEntry.delete({ where: { id: entry.id } });
 }
 
@@ -122,6 +140,7 @@ export async function reconfirmClaim(input: { propertyId: string; entryId: strin
   if (!db) throw new Error("Database unavailable.");
   const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!entry || !entry.previewApprovedAt) throw new Error("Preview approval is required before re-confirmation.");
+  if(entry.status==='SUPERSEDED'||await db.knowledgeEntry.count({where:{propertyId:input.propertyId,supersedesId:entry.id,status:'PUBLISHED'}}))throw new Error('A superseded version cannot be reconfirmed. Create and approve a new version.');
   const openFlags = await db.knowledgeAnswerFlag.count({ where: { entryId: entry.id, status: { in: ["OPEN", "ACKNOWLEDGED"] } } });
   if (openFlags || entry.conflictStatus !== "CLEAR") throw new Error("Resolve open flags and conflicts before re-confirming this claim.");
   const regression = runKnowledgePublicationGate({ question: entry.question, answer: entry.answer, category: entry.category, claimType: entry.claimType, valueType: entry.valueType, currency: entry.currency, effectiveAt: entry.effectiveAt, expiresAt: entry.expiresAt, refreshDays: entry.refreshDays });
@@ -193,7 +212,7 @@ export async function reviewAnswerFlag(input: { propertyId: string; flagId: stri
 
 export async function getKnowledgeVerificationReadiness(propertyId: string, category: string) {
   const db = getDb();
-  if (!db) return { frameworkVersion: KB_FRAMEWORK_VERSION, coverage: calculateCoverage(category, []), published: 0, fresh: 0, freshnessRate: 0, conflicts: 0, unsigned: 0, openFlags: 0, previewPending: 0, ready: false };
+  if (!db) return { frameworkVersion: KB_FRAMEWORK_VERSION, essentials: trialEssentialCoverage([]), trialReady: false, coverage: calculateCoverage(category, []), published: 0, fresh: 0, freshnessRate: 0, conflicts: 0, unsigned: 0, openFlags: 0, previewPending: 0, ready: false };
   await expirePublishedClaims(propertyId);
   const [claims, conflicts, unsigned, openFlags, previewPending] = await Promise.all([
     db.knowledgeEntry.findMany({ where: { propertyId, status: "PUBLISHED" }, select: { question: true, answer: true, category: true, expiresAt: true } }),
@@ -205,7 +224,9 @@ export async function getKnowledgeVerificationReadiness(propertyId: string, cate
   const fresh = claims.filter((claim) => !claim.expiresAt || claim.expiresAt > new Date()).length;
   const freshnessRate = claims.length ? Math.round((fresh / claims.length) * 100) : 0;
   const coverage = calculateCoverage(category, claims);
-  return { frameworkVersion: KB_FRAMEWORK_VERSION, coverage, published: claims.length, fresh, freshnessRate, conflicts, unsigned, openFlags, previewPending, ready: coverage.percentage >= KB_MINIMUM_COVERAGE && freshnessRate >= KB_FRESHNESS_TARGET && conflicts === 0 && unsigned === 0 && openFlags === 0 && previewPending === 0 };
+  const essentials = trialEssentialCoverage(claims);
+  const safe = hasSafeKnowledge({ freshnessRate, conflicts, unsigned, openFlags, previewPending });
+  return { frameworkVersion: KB_FRAMEWORK_VERSION, essentials, trialReady: safe && essentials.missing.length === 0, coverage, published: claims.length, fresh, freshnessRate, conflicts, unsigned, openFlags, previewPending, ready: coverage.percentage >= KB_MINIMUM_COVERAGE && safe };
 }
 
 export async function getPublishedClaimContext(propertySlug: string, question: string) {
@@ -215,7 +236,8 @@ export async function getPublishedClaimContext(propertySlug: string, question: s
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
   if (!property) return empty;
   await expirePublishedClaims(property.id);
-  const claims = await db.knowledgeEntry.findMany({ where: { propertyId: property.id, status: { in: ["PUBLISHED", "APPROVED"] }, conflictStatus: { not: "UNRESOLVED" }, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] }, take: 100 });
+  // Approval is an intermediate workflow state, not permission to serve a fact.
+  const claims = await db.knowledgeEntry.findMany({ where: { propertyId: property.id, status: "PUBLISHED", conflictStatus: { not: "UNRESOLVED" }, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] }, take: 100 });
   const scored = claims.map((claim) => ({ claim, score: scoreRetrievalCandidate(question, claim) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score);
   const ranked = scored.filter((item) => item.score >= 0.12).slice(0, 8);
   const selectedIds = new Set(ranked.map(({ claim }) => claim.id));

@@ -182,6 +182,14 @@ export const helpArticles: HelpArticle[] = [
   }
 ];
 
+const deferredProductPattern = /\b(?:whatsapp|meta)\b/i;
+
+export function isWebsiteOnlyHelpArticle(article: HelpArticle) {
+  return !deferredProductPattern.test(JSON.stringify(article));
+}
+
+export const websiteHelpArticles = helpArticles.filter(isWebsiteOnlyHelpArticle);
+
 export function getHelpArticle(slug: string) {
   return helpArticles.find((article) => article.slug === slug) ?? null;
 }

@@ -4,7 +4,7 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
   title: "Terms of Service | AiFrogi",
-  description: "Terms governing AiFrogi AI business bot accounts, customer data, intelligent automation, supported channels including WhatsApp, acceptable use, service operation, and billing.",
+  description: "Terms governing AiFrogi AI business bot accounts, customer data, intelligent automation, acceptable use, service operation, and billing.",
   path: "/terms-of-service"
 });
 
@@ -24,7 +24,7 @@ export default function TermsOfServicePage() {
       </LegalSection>
 
       <LegalSection title="3. Acceptable use and connected channels">
-        <p>You must follow applicable law and the terms of every connected provider. Where WhatsApp is enabled, this includes Meta and WhatsApp Business terms, commerce policies, template rules, opt-in requirements, and messaging limits. You may not use the service for spam, deception, unlawful content, unsafe automated decisions, or unauthorized access.</p>
+        <p>You must follow applicable law and the terms of every connected provider. You may not use the service for spam, deception, unlawful content, unsafe automated decisions, or unauthorized access.</p>
       </LegalSection>
 
       <LegalSection title="4. Customer data">
@@ -32,7 +32,7 @@ export default function TermsOfServicePage() {
       </LegalSection>
 
       <LegalSection title="5. Service operation">
-        <p>We aim to provide a reliable service, but availability can be affected by maintenance, networks, AI-model providers, connected APIs, Meta or WhatsApp changes, and other third-party outages. Features may change as the platform develops. AiFrogi may refuse, pause, clarify, or hand a conversation to a human when evidence or authority is insufficient.</p>
+        <p>We aim to provide a reliable service, but availability can be affected by maintenance, networks, AI-model providers, connected APIs, and other third-party outages. Features may change as the platform develops. AiFrogi may refuse, pause, clarify, or hand a conversation to a human when evidence or authority is insufficient.</p>
       </LegalSection>
 
       <LegalSection title="6. Intellectual property">
@@ -40,13 +40,13 @@ export default function TermsOfServicePage() {
       </LegalSection>
 
       <LegalSection title="7. Trial, subscriptions and renewal">
-        <p>The introductory trial lasts 15 days and is not a free-forever plan. At trial expiry, messaging, campaigns, automation, and other paid actions pause automatically until a paid plan is activated. Workspace data remains preserved subject to the retention and deletion terms. We may also restrict or suspend access for security threats, unlawful activity, material policy violations, non-payment, or conduct that risks the service or third-party platforms.</p>
+        <p>The introductory trial lasts 15 days and is not a free-forever plan. At trial expiry, widget responses, automation, and other paid actions pause automatically until a paid plan is activated. Workspace data remains preserved subject to the retention and deletion terms. We may also restrict or suspend access for security threats, unlawful activity, material policy violations, non-payment, or conduct that risks the service or third-party platforms.</p>
         <p>Subscriptions are billed in advance for the selected monthly or yearly period and renew until cancelled. Cancellation stops the next renewal; service normally remains available until the current paid period ends. The applicable order, quotation, or checkout summary identifies the plan, billing period, taxes, published usage allowances, and any agreed extras.</p>
       </LegalSection>
 
       <LegalSection title="8. Connector projects and third-party charges">
         <p>Connector prices shown on the website are planning estimates. Final fees depend on the agreed scope, provider API access, data readiness, security requirements, testing, and custom development. A project may be divided into paid milestones. Client or provider delays may change delivery dates.</p>
-        <p>AI-model usage, Meta messages, PMS or channel-manager subscriptions, commerce services, payment gateways, Google Workspace or other provider fees are not included unless the order expressly says otherwise. Provider pricing and availability can change independently of AiFrogi.</p>
+        <p>AI-model usage, PMS or channel-manager subscriptions, commerce services, payment gateways, Google Workspace or other provider fees are not included unless the order expressly says otherwise. Provider pricing and availability can change independently of AiFrogi.</p>
       </LegalSection>
 
       <LegalSection title="9. Refunds and billing corrections">

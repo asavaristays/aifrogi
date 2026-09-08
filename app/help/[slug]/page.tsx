@@ -3,22 +3,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
-import { getHelpArticle, helpArticles } from "@/lib/help-center";
+import { getHelpArticle, isWebsiteOnlyHelpArticle, websiteHelpArticles } from "@/lib/help-center";
 import { marketingMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
-  return helpArticles.map((article) => ({ slug: article.slug }));
+  return websiteHelpArticles.map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const slug = (await params).slug;
   const article = getHelpArticle(slug);
-  return article ? marketingMetadata({ title: `${article.title} | AiFrogi Help`, description: article.summary, path: `/help/${slug}` }) : {};
+  return article && isWebsiteOnlyHelpArticle(article) ? marketingMetadata({ title: `${article.title} | AiFrogi Help`, description: article.summary, path: `/help/${slug}` }) : {};
 }
 
 export default async function HelpArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const article = getHelpArticle((await params).slug);
-  if (!article) notFound();
+  if (!article || !isWebsiteOnlyHelpArticle(article)) notFound();
   return <main className="min-h-screen bg-white text-[var(--text)]">
     <SiteHeader />
     <header className="bg-[#101010] px-5 py-14 text-white sm:px-8 sm:py-20"><div className="mx-auto max-w-7xl"><Link href="/resources" className="text-xs font-bold uppercase tracking-[.12em] text-[#e2c66d]">← All resources</Link><p className="mt-8 text-sm font-semibold text-white/55">{article.category} · {article.minutes} minutes</p><h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight tracking-[-.04em] sm:text-5xl">{article.title}</h1><p className="mt-5 max-w-3xl text-lg leading-8 text-white/62">{article.summary}</p></div></header>

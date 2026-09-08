@@ -1,16 +1,15 @@
 import type { MetadataRoute } from "next";
-import { helpArticles } from "@/lib/help-center";
+import { websiteHelpArticles } from "@/lib/help-center";
 import { botProducts } from "@/lib/bot-products";
 import { siteUrl } from "@/lib/seo";
 
 const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], number]> = [
   ["/", "weekly", 1],
+  ["/experience", "monthly", 0.8],
   ["/about", "monthly", 0.7],
   ["/solutions", "monthly", 0.9],
   ["/solutions/clinicgpt", "monthly", 0.9],
-  ["/solutions/flowcart", "monthly", 0.9],
   ["/pricing", "weekly", 0.9],
-  ["/whatsapp-api", "monthly", 0.9],
   ["/integration", "monthly", 0.8],
   ["/install-ai-bot", "monthly", 0.9],
   ["/resources", "weekly", 0.7],
@@ -18,7 +17,6 @@ const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], nu
   ["/security", "monthly", 0.6],
   ["/security-compliance", "monthly", 0.7],
   ["/status", "weekly", 0.6],
-  ["/product-tour", "monthly", 0.6],
   ["/privacy-policy", "yearly", 0.3],
   ["/terms-of-service", "yearly", 0.3],
   ["/data-deletion", "yearly", 0.3],
@@ -31,12 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency,
     priority
   }));
-  const guides = helpArticles.map((article) => ({
+  const guides = websiteHelpArticles.map((article) => ({
     url: new URL(`/help/${article.slug}`, siteUrl).toString(),
     changeFrequency: "monthly" as const,
     priority: 0.6
   }));
-  const productPages = botProducts.map((product) => ({
+  const productPages = botProducts.filter((product) => product.slug !== "flowcart").map((product) => ({
     url: new URL(`/solutions/${product.slug}`, siteUrl).toString(),
     changeFrequency: "monthly" as const,
     priority: 0.8

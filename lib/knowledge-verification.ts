@@ -51,19 +51,21 @@ export function validateAtomicClaim(input: AtomicClaimInput) {
 }
 
 function terms(value: string) {
-  const stop = new Set(["what", "which", "when", "where", "does", "each", "your", "available", "about", "with", "have", "this", "that"]);
-  return new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !stop.has(term)));
+  const stop = new Set(["what", "which", "when", "where", "does", "each", "your", "available", "about", "with", "have", "this", "that", "how", "can", "the", "you", "for", "are", "and", "our", "from", "into"]);
+  const aliases: Record<string, string> = { services: "service", products: "product", courses: "course", contacted: "contact", contacting: "contact", phone: "contact", email: "contact", telephone: "contact", team: "", provide: "", offered: "", provides: "", bookings: "booking", book: "booking", rates: "price", prices: "price", cost: "price", fees: "price" };
+  return new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !stop.has(term)).map((term) => aliases[term] ?? term).filter(Boolean));
 }
 
 export function claimCoversQuestion(claim: { question: string; answer: string; category: string }, expectedQuestion: string) {
   const expected = terms(expectedQuestion);
   const content = terms(`${claim.question} ${claim.answer} ${claim.category}`);
   if (!expected.size) return false;
-  return [...expected].filter((term) => content.has(term)).length / expected.size >= 0.34;
+  return [...expected].filter((term) => content.has(term)).length / expected.size >= 0.6;
 }
 
 export function calculateCoverage(category: string, claims: Array<{ question: string; answer: string; category: string }>) {
-  const bank = CATEGORY_QUESTION_BANK[category] || CATEGORY_QUESTION_BANK.CUSTOM;
+  const aliases: Record<string, string> = { PINGBOOK: "APPOINTMENTS", STAY: "HOSPITALITY", FLOWCART: "COMMERCE" };
+  const bank = CATEGORY_QUESTION_BANK[aliases[category] || category] || CATEGORY_QUESTION_BANK.CUSTOM;
   const covered = bank.filter((question) => claims.some((claim) => claimCoversQuestion(claim, question)));
   const missing = bank.filter((question) => !covered.includes(question));
   const percentage = bank.length ? Math.round((covered.length / bank.length) * 100) : 0;

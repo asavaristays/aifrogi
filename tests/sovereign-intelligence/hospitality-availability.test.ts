@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {hospitalityDates,hotelAvailability,diningAvailability,hospitalityChoiceValid,addNights} from '../../lib/demo-sandbox/hospitality-availability';
+const now=new Date('2026-09-06T00:00:00Z');
+test('hospitality dates include seven future days including Sunday',()=>{assert.deepEqual(hospitalityDates(now),['2026-09-07','2026-09-08','2026-09-09','2026-09-10','2026-09-11','2026-09-12','2026-09-13']);});
+test('hotel excludes occupied room nights across entire stay',()=>{assert.equal(hotelAvailability('2026-09-10',3,2,now).length,0);assert.deepEqual(hotelAvailability('2026-09-11',1,2,now).map(r=>r.id),['suite']);});
+test('hotel prices and capacity are derived from selected stay',()=>{const rooms=hotelAvailability('2026-09-07',2,3,now);assert.equal(rooms.length,1);assert.equal(rooms[0].total,17000);assert.equal(rooms[0].id,'suite');});
+test('hotel invalid lengths, dates, and guest counts fail closed',()=>{for(const n of [0,4,-1,1.5])assert.deepEqual(hotelAvailability('2026-09-07',n,2,now),[]);assert.deepEqual(hotelAvailability('2020-01-01',1,2,now),[]);assert.deepEqual(hotelAvailability('2026-09-07',1,5,now),[]);});
+test('dining reserves 90 minute intervals without overlap',()=>{assert.deepEqual(diningAvailability('2026-09-07',6,now).map(s=>s.time),['19:00']);assert.ok(diningAvailability('2026-09-07',2,now).some(s=>s.time==='21:30'));});
+test('dining oversize parties and invented times are refused',()=>{assert.deepEqual(diningAvailability('2026-09-07',8,now),[]);assert.equal(hospitalityChoiceValid('dine','2026-09-07',1,6,'20:30',now),false);});
+test('availability deterministic and confirmation validates choices',()=>{assert.deepEqual(hotelAvailability('2026-09-07',1,2,now),hotelAvailability('2026-09-07',1,2,now));assert.equal(hospitalityChoiceValid('hotel','2026-09-11',1,2,'garden',now),false);assert.equal(hospitalityChoiceValid('hotel','2026-09-11',1,2,'suite',now),true);});
+test('checkout handles month boundaries',()=>assert.equal(addNights('2026-09-30',2),'2026-10-02'));

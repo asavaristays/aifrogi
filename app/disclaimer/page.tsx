@@ -4,10 +4,15 @@ import { marketingMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = marketingMetadata({
   title: "AI Business Bot Platform Disclaimer | AiFrogi",
-  description: "Understand AiFrogi, webtechnosys, AI assistance, customer responsibilities, supported channels including WhatsApp, approvals, delivery, policy, and usage-charge boundaries.",
+  description: "Understand AiFrogi AI assistance, customer responsibilities, approvals, delivery, and service boundaries.",
   path: "/disclaimer"
 });
 
 export default function DisclaimerPage() {
-  return <LegalPage eyebrow="Platform disclaimer" title="Clear boundaries. No hidden promises." summary="AiFrogi simplifies WhatsApp operations, but Meta controls the underlying platform, approvals, quality rules, message delivery, and usage charges."><LegalSection title="Meta and WhatsApp"><p>AiFrogi is operated by webtechnosys, whose Meta access verification has been confirmed for the WhatsApp Business Platform setup flow. This supports secure onboarding and platform integration; it does not mean Meta endorses AiFrogi, guarantees account approval, or waives WhatsApp policies and charges.</p></LegalSection><LegalSection title="Approvals and delivery"><p>Business verification, display names, message templates, quality ratings, messaging limits, and account reviews are decided by Meta. AiFrogi can guide, monitor, and help correct issues, but cannot guarantee approval or delivery.</p></LegalSection><LegalSection title="Pricing and wallet"><p>AiFrogi subscription fees are separate from Meta message charges, taxes, AI usage beyond the plan allowance, and custom implementation work. Customers must maintain an eligible payment method or wallet for chargeable WhatsApp messages.</p></LegalSection><LegalSection title="AI assistance"><p>AI-generated replies and recommendations may be incomplete. AiFrogi uses approved knowledge and configured safeguards, but customers should review high-impact commercial, legal, financial, or sensitive responses and keep human handoff enabled.</p></LegalSection><LegalSection title="Customer responsibility"><p>Customers are responsible for lawful contact collection, valid WhatsApp opt-in, message content, audience selection, user access, and compliance with applicable law and Meta policies.</p></LegalSection></LegalPage>;
+  return <LegalPage eyebrow="Platform disclaimer" title="Clear boundaries. No hidden promises." summary="AiFrogi provides a governed website AI Bot using approved business knowledge and explicit human authority.">
+    <LegalSection title="AI assistance"><p>AI-generated replies and recommendations may be incomplete. Customers should review high-impact commercial, legal, financial, medical, or sensitive responses and keep human handover enabled.</p></LegalSection>
+    <LegalSection title="Approved truth"><p>AiFrogi uses approved knowledge and configured safeguards. A configured connector or workflow is not proof that an external action completed; verified completion requires retained provider evidence.</p></LegalSection>
+    <LegalSection title="Customer responsibility"><p>Customers are responsible for accurate business information, lawful visitor-data collection, user access, approved content, and compliance with applicable law.</p></LegalSection>
+    <LegalSection title="Provider boundaries"><p>Hosting, AI, email, payment, calendar, and other connected providers operate independently. AiFrogi cannot guarantee their availability, approval decisions, pricing, or delivery.</p></LegalSection>
+  </LegalPage>;
 }

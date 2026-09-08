@@ -423,6 +423,7 @@ export const ModelName = {
   BillingAddon: 'BillingAddon',
   BillingInvoice: 'BillingInvoice',
   UsageRecord: 'UsageRecord',
+  AiCreditTransaction: 'AiCreditTransaction',
   PlatformIncident: 'PlatformIncident',
   PlatformAuditLog: 'PlatformAuditLog',
   AutomationJob: 'AutomationJob',
@@ -464,7 +465,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgePreview" | "knowledgeAnswerFlag" | "knowledgeGap" | "organization" | "demoSandbox" | "demoConnectorEvent" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "botConnectorConfiguration" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "sovereignAnswerEvidence" | "sovereignAnswerFeedback" | "sovereignReplayCase" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingAddon" | "billingInvoice" | "usageRecord" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
+    modelProps: "property" | "knowledgeDocument" | "knowledgeEntry" | "knowledgePreview" | "knowledgeAnswerFlag" | "knowledgeGap" | "organization" | "demoSandbox" | "demoConnectorEvent" | "userSession" | "whatsAppBotConfiguration" | "botProfile" | "botConnectorConfiguration" | "organizationMember" | "onboardingProfile" | "onboardingCredential" | "onboardingDocument" | "onboardingActivity" | "lead" | "websiteVisitorSession" | "sovereignAnswerEvidence" | "sovereignAnswerFeedback" | "sovereignReplayCase" | "leadTag" | "leadMessage" | "channelConnection" | "participant" | "conversation" | "conversationParticipant" | "message" | "aiOperation" | "metricDaily" | "campaign" | "campaignRecipient" | "billingPlan" | "subscription" | "billingAddon" | "billingInvoice" | "usageRecord" | "aiCreditTransaction" | "platformIncident" | "platformAuditLog" | "automationJob" | "supportTicket" | "supportTicketMessage" | "asset" | "leadAssetShare" | "whatsAppIntegration" | "appointmentTenant" | "appointmentService" | "appointmentBooking" | "appointmentSession" | "appointmentMessageLog" | "appointmentPayment" | "appointmentJob" | "appointmentSheetSyncState" | "commerceTenant" | "commerceProduct" | "commerceProductVariant" | "commerceAddon" | "commerceCustomer" | "commerceOrder" | "commerceOrderItem" | "commercePayment" | "commerceFlowSession" | "commerceConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3354,6 +3355,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AiCreditTransaction: {
+      payload: Prisma.$AiCreditTransactionPayload<ExtArgs>
+      fields: Prisma.AiCreditTransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiCreditTransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiCreditTransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.AiCreditTransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiCreditTransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>
+        }
+        findMany: {
+          args: Prisma.AiCreditTransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>[]
+        }
+        create: {
+          args: Prisma.AiCreditTransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>
+        }
+        createMany: {
+          args: Prisma.AiCreditTransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiCreditTransactionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>[]
+        }
+        delete: {
+          args: Prisma.AiCreditTransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>
+        }
+        update: {
+          args: Prisma.AiCreditTransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AiCreditTransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiCreditTransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiCreditTransactionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AiCreditTransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiCreditTransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.AiCreditTransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiCreditTransaction>
+        }
+        groupBy: {
+          args: Prisma.AiCreditTransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiCreditTransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiCreditTransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiCreditTransactionCountAggregateOutputType> | number
+        }
+      }
+    }
     PlatformIncident: {
       payload: Prisma.$PlatformIncidentPayload<ExtArgs>
       fields: Prisma.PlatformIncidentFieldRefs
@@ -6170,6 +6245,24 @@ export const UsageRecordScalarFieldEnum = {
 export type UsageRecordScalarFieldEnum = (typeof UsageRecordScalarFieldEnum)[keyof typeof UsageRecordScalarFieldEnum]
 
 
+export const AiCreditTransactionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  kind: 'kind',
+  credits: 'credits',
+  packCode: 'packCode',
+  amountPaisa: 'amountPaisa',
+  currency: 'currency',
+  expiresAt: 'expiresAt',
+  paymentReference: 'paymentReference',
+  reason: 'reason',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type AiCreditTransactionScalarFieldEnum = (typeof AiCreditTransactionScalarFieldEnum)[keyof typeof AiCreditTransactionScalarFieldEnum]
+
+
 export const PlatformIncidentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -7109,6 +7202,7 @@ export type GlobalOmitConfig = {
   billingAddon?: Prisma.BillingAddonOmit
   billingInvoice?: Prisma.BillingInvoiceOmit
   usageRecord?: Prisma.UsageRecordOmit
+  aiCreditTransaction?: Prisma.AiCreditTransactionOmit
   platformIncident?: Prisma.PlatformIncidentOmit
   platformAuditLog?: Prisma.PlatformAuditLogOmit
   automationJob?: Prisma.AutomationJobOmit

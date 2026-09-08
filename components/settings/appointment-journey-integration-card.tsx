@@ -31,11 +31,11 @@ export function AppointmentJourneyIntegrationCard({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-xl font-extrabold">Appointment Journey</h3>
+            <h3 className="text-xl font-extrabold">Google Calendar &amp; Sheets</h3>
             <Badge tone={statusTone(tenant.status)}>{statusLabel(tenant.status)}</Badge>
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">
-            WhatsApp appointment automation stores booking truth in AiFrogi, then mirrors confirmed operations into the connected Google Calendar and Sheet for this client workspace.
+            Connect this workspace’s Google account for appointment availability and booking records. Connecting resources does not certify or activate autonomous booking actions; those require separate verification.
           </p>
         </div>
         <a

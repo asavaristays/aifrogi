@@ -20,9 +20,9 @@ type Journey = {
 const journeys: Record<string, Journey> = {
   BusinessGPT: {
     initials: "BG", status: "Business assistant online", task: "Qualify a business enquiry",
-    customer: "We want to automate customer enquiries and follow-up.", assistant: "Which customer channels should the first workflow support?", answer: "Website and WhatsApp.",
+    customer: "We want to automate customer enquiries and follow-up.", assistant: "Where should the first workflow support customers?", answer: "Our website.",
     choiceLabel: "Recommended starting outcome", choices: ["Answer", "Qualify", "Automate"], selected: 1,
-    confirmation: "Consultation request verified", outcome: "Qualified automation lead", outcomeDetail: "Website + WhatsApp · Ref BG-1042",
+    confirmation: "Consultation request verified", outcome: "Qualified automation lead", outcomeDetail: "Website widget · Ref BG-1042",
     followUps: [["Brief recorded", "Team has full context"], ["Specialist notified", "Human handover ready"]], proof: "Grounded in approved services, qualification rules and commercial boundaries."
   },
   HotelGPT: {

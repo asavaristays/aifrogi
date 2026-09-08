@@ -1,13 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-test("Super Admin navigation removes demos and appointments and separates WhatsApp AI Bot", () => {
+test("Super Admin navigation removes demos, appointments, and the deferred messaging product", () => {
   const shell = readFileSync(resolve(process.cwd(), "components/admin/admin-shell.tsx"), "utf8");
   assert.doesNotMatch(shell, /label: "Bot demos"/);
   assert.doesNotMatch(shell, /label: "Appointments"/);
-  assert.match(shell, /label: "WhatsApp AI Bot"/);
+  assert.doesNotMatch(shell, /WhatsApp AI Bot/);
 });
 test("retired demo screens cannot be opened from legacy URLs", () => {
   for (const path of ["app/admin/demo-sandboxes/page.tsx", "app/admin/pingbook-demo/page.tsx"]) {
@@ -15,12 +15,8 @@ test("retired demo screens cannot be opened from legacy URLs", () => {
     assert.match(source, /redirect\("\/admin"\)/);
   }
 });
-test("WhatsApp AI Bot has a dedicated non-demo enablement and operations page", () => {
-  const source = readFileSync(resolve(process.cwd(), "app/admin/whatsapp-ai-bot/page.tsx"), "utf8");
-  assert.match(source, /isDemo: false/);
-  assert.match(source, /Automated integration rail/);
-  assert.match(source, /Enable in bot profile/);
-  assert.match(source, /Authorise Meta/);
+test("deferred messaging operations are absent from the main application", () => {
+  assert.equal(existsSync(resolve(process.cwd(), "app/admin/whatsapp-ai-bot/page.tsx")), false);
 });
 test("Super Admin onboarding separates self-serve and admin-assisted paths", () => {
   const source = readFileSync(resolve(process.cwd(), "app/admin/onboard/page.tsx"), "utf8");

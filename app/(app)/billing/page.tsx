@@ -7,6 +7,8 @@ import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access"
 import { BILLING_PLAN_CATALOGUE, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { ActivatePlan } from "@/components/billing/activate-plan";
+import { BuyAiCredits } from "@/components/billing/buy-ai-credits";
+import { CreditHistoryTable } from "@/components/billing/credit-history-table";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -25,7 +27,6 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   const usage = [
     ["Contacts", billing.usage.contacts, billing.limits.contacts],
     ["Messages", billing.usage.messages, billing.limits.messages],
-    ["Campaigns", billing.usage.campaigns, billing.limits.campaigns],
     ["AI replies", billing.usage.aiReplies, billing.limits.aiReplies],
     ["Team users", billing.usage.teamUsers, billing.limits.teamUsers]
   ] as const;
@@ -44,6 +45,10 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
         <Card className="p-6"><p className="product-eyebrow">Current period</p><h2 className="mt-2 text-2xl font-semibold">Usage remains visible when paused.</h2><div className="mt-6 space-y-5">{usage.map(([label, value, limit]) => { const percent = usagePercent(value, limit); return <div key={label}><div className="flex items-center justify-between gap-4 text-sm"><strong>{label}</strong><span className="text-[var(--text-muted)]">{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-black/7"><div className={`h-full rounded-full ${percent >= 90 ? "bg-[#c84b42]" : "bg-[#8a6a16]"}`} style={{ width: `${Math.min(100, percent)}%` }} /></div></div>; })}</div></Card>
         <Card className="p-6"><p className="product-eyebrow">Plan choices</p><h2 className="mt-2 text-2xl font-semibold">Continue after the trial.</h2><div className="mt-5 divide-y divide-black/7">{BILLING_PLAN_CATALOGUE.filter((plan) => ["AI_STARTER_MONTHLY", "AI_STARTER_YEARLY", "CUSTOM"].includes(plan.code)).map((plan) => <div key={plan.code} className="flex items-start justify-between gap-4 py-4"><div><strong>{plan.name}</strong><p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{plan.description}</p></div><span className="shrink-0 text-sm font-bold">{plan.amountPaisa ? `${formatMoney(plan.amountPaisa)} / ${plan.billingInterval === "YEARLY" ? "year" : "month"}` : "Contact us"}</span></div>)}</div><Link href="https://aifrogi.com/pricing" className="mt-5 inline-flex text-sm font-bold text-[#6d5310]">Compare full pricing →</Link></Card>
       </section>
+
+      <Card className="p-6"><div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="product-eyebrow">AI reply credits</p><h2 className="mt-2 text-2xl font-semibold">{billing.aiCredits.remaining.toLocaleString("en-IN")} extra credits available</h2><div className="mt-4 flex flex-wrap gap-3 text-sm"><span className="rounded-full bg-[#f4ecd5] px-3 py-1.5"><strong>{billing.aiCredits.purchasedRemaining.toLocaleString("en-IN")}</strong> purchased</span><span className="rounded-full bg-[#eaf7f1] px-3 py-1.5"><strong>{billing.aiCredits.promotionalRemaining.toLocaleString("en-IN")}</strong> promotional</span><span className="rounded-full bg-black/5 px-3 py-1.5"><strong>{billing.aiCredits.used.toLocaleString("en-IN")}</strong> extra used</span></div><p className="mt-3 text-sm text-[var(--text-muted)]">Included plan replies are used first, followed by promotional and purchased credits. The bot stops safely when all allowances are exhausted.</p></div><BuyAiCredits /></div></Card>
+
+      <section><p className="product-eyebrow">Credit and usage history</p><h2 className="mt-2 text-2xl font-semibold">Every allocation and payment.</h2><p className="mb-4 mt-2 text-sm text-[var(--text-muted)]">Verified purchases and Super Admin grants appear immediately in this account.</p><CreditHistoryTable entries={billing.organization.aiCreditTransactions} included={billing.limits.aiReplies} used={billing.usage.aiReplies} extraUsed={billing.aiCredits.used} remaining={billing.aiCredits.remaining} /></section>
 
       <section><p className="product-eyebrow">Payments and invoices</p><div className="mt-4 overflow-hidden border border-black/7 bg-white"><div className="divide-y divide-black/7">{billing.organization.invoices.map((invoice) => <div key={invoice.id} className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"><div><strong className="text-sm">{invoice.invoiceNumber}</strong><p className="mt-1 text-xs text-[var(--text-muted)]">{invoice.status.replaceAll("_", " ")} · {new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(invoice.createdAt)}{invoice.paymentReference ? ` · Payment ${invoice.paymentReference}` : ""}</p></div><strong>{formatMoney(invoice.totalPaisa)}</strong></div>)}{!billing.organization.invoices.length ? <p className="px-5 py-10 text-sm text-[var(--text-muted)]">No payments or invoices have been recorded.</p> : null}</div></div></section>
     </div>

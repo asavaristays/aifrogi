@@ -6,6 +6,7 @@ import { writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository"
 import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
 import { getDb } from "@/lib/db";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 
 export async function GET() {
   const access = await getCurrentClientAccess();
@@ -18,7 +19,9 @@ export async function GET() {
   const rawCategory = property?.organization?.botProfile?.category || "BUSINESS_AI";
   const category = rawCategory === "PINGBOOK" ? "APPOINTMENTS" : rawCategory === "STAY" ? "HOSPITALITY" : rawCategory;
   const verification = governance.propertyId ? await getKnowledgeVerificationReadiness(governance.propertyId, category) : null;
-  return NextResponse.json({ ...summary, ...governance, verification, kbGateEnabled: Boolean(property?.organization?.botProfile?.kbGateVersion), propertySlug, canManage: canManageWorkspace(access.role) });
+  const workspace = db ? await db.property.findUnique({ where: { slug: propertySlug }, select: { organizationId: true } }) : null;
+  const subscription = workspace?.organizationId ? await getOrganizationSubscriptionAccess(workspace.organizationId) : null;
+  return NextResponse.json({ ...summary, ...governance, verification, isTrial: subscription?.planCode === "TRIAL", kbGateEnabled: true, propertySlug, canManage: canManageWorkspace(access.role) });
 }
 
 export async function PATCH(request: Request) {
@@ -37,6 +40,7 @@ export async function PATCH(request: Request) {
       handoffTopics: Array.isArray(payload?.handoffTopics) ? payload.handoffTopics.map(String) : undefined,
       welcomeMessage: typeof payload?.welcomeMessage === "string" ? payload.welcomeMessage : undefined,
       themeColor: typeof payload?.themeColor === "string" ? payload.themeColor : undefined,
+      widgetTheme: ["dark", "light", "system"].includes(String(payload?.widgetTheme)) ? payload?.widgetTheme as "dark" | "light" | "system" : undefined,
       logoUrl: typeof payload?.logoUrl === "string" ? payload.logoUrl : undefined,
       status: typeof payload?.sourceUrl === "string" ? "DRAFT" : undefined
     });

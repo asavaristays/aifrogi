@@ -6,7 +6,7 @@ import { useState, type FormEvent } from "react";
 
 const industries = ["Hospitality", "Travel", "Retail", "Healthcare", "Education", "Real estate", "Professional services", "Other"];
 const botOptions = [
-  ["BUSINESS_AI", "BusinessGPT — services, leads and support"], ["STAY", "HotelGPT — stays and guest enquiries"], ["PINGBOOK", "ClinicGPT — appointments and confirmations"], ["RESTAURANT", "DineGPT — dining and reservations"], ["EDUCATION", "eduGPT — admissions and student enquiries"], ["REAL_ESTATE", "PropertyGPT — discovery and site visits"], ["FLOWCART", "FlowCart — products, orders and payments"], ["CUSTOM", "Custom Business Bot — configured workflow"]
+  ["BUSINESS_AI", "BusinessGPT — services, leads and support"], ["STAY", "HotelGPT — stays and guest enquiries"], ["PINGBOOK", "ClinicGPT — appointments and confirmations"], ["RESTAURANT", "DineGPT — dining and reservations"], ["EDUCATION", "eduGPT — admissions and student enquiries"], ["REAL_ESTATE", "PropertyGPT — discovery and site visits"], ["CUSTOM", "Custom Business Bot — configured workflow"]
 ];
 
 export function RegisterClient() {
@@ -57,7 +57,7 @@ export function RegisterClient() {
             <FlowRow number="2" title="Prepare business intelligence" copy="Approve trusted sources, persona, customer journey and human handover rules." />
             <FlowRow number="3" title="Install and verify" copy="Copy JavaScript, iFrame or WordPress code; AiFrogi detects it before Super Admin enables live traffic." />
           </div>
-          <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>15 days only:</strong> after the trial, messaging, campaigns, and automation pause automatically until a paid plan is activated. Your data remains preserved. No Facebook password, email password, permanent token, or OTP is requested.</p>
+          <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>15 days only:</strong> after the trial, widget responses and automation pause automatically until a paid plan is activated. Your data remains preserved. No email password, permanent token, or OTP is requested.</p>
         </section>
 
         <section className="order-1 rounded-lg border border-[#ded8cb] bg-white p-6 shadow-[0_18px_55px_rgba(16,16,16,0.08)] sm:p-8 lg:order-2">
@@ -73,7 +73,7 @@ export function RegisterClient() {
             <>
               <p className="text-sm font-semibold text-[#8a6a16]">Business registration</p>
               <h2 className="mt-2 text-2xl font-semibold">Tell us who owns this workspace</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Business verification details and Meta connection come after secure account activation.</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Business verification and website installation details come after secure account activation.</p>
               <form className="mt-7 grid gap-4 sm:grid-cols-2" onSubmit={submit}>
                 <Field label="Company name"><input name="companyName" className="product-input mt-2" autoComplete="organization" required /></Field>
                 <Field label="Owner name"><input name="ownerName" className="product-input mt-2" autoComplete="name" required /></Field>

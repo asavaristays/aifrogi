@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 type Profile = { status?: string | null; installationKey?: string | null; installationDetectedAt?: string | Date | null; liveAt?: string | Date | null; channels?: string[] };
 
-export function WebsiteBotInstallation({ organizationId, slug, profile, superAdmin = false }: { organizationId?: string; slug: string; profile?: Profile | null; superAdmin?: boolean }) {
+export function WebsiteBotInstallation({ organizationId, slug, profile, superAdmin = false, sectionId }: { organizationId?: string; slug: string; profile?: Profile | null; superAdmin?: boolean; sectionId?: string }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
@@ -16,23 +16,23 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
   const standalone = `${base}/bot/${slug}`;
   const status = profile.status || "DRAFT";
   const detected = Boolean(profile.installationDetectedAt);
-  const live = status === "LIVE" || status === "CONFIGURED";
-  const statusLabel = status === "CONFIGURED" ? "LIVE" : status.replaceAll("_", " ");
+  const live = status === "LIVE";
+  const statusLabel = status === "CONFIGURED" ? "APPROVAL REQUIRED" : status.replaceAll("_", " ");
 
   async function copy(value: string, label: string) {
     await navigator.clipboard.writeText(value);
     setMessage(`${label} copied.`);
   }
-  async function act(action: "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE") {
+  async function act(action: "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE" | "RESEND_LIVE_EMAIL") {
     if (!organizationId) return;
     setSaving(true); setMessage("");
     const response = await fetch(`/api/admin/customers/${organizationId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
     const payload = await response.json().catch(() => null);
-    setSaving(false); setMessage(response.ok ? "Website Bot status updated." : payload?.error || "Status could not be updated.");
+    setSaving(false); setMessage(response.ok ? payload?.notification?.message || "Website Bot status updated." : payload?.error || "Status could not be updated.");
     if (response.ok) router.refresh();
   }
 
-  return <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm sm:p-8">
+  return <section id={sectionId} className="scroll-mt-6 rounded-lg border border-black/6 bg-white p-6 shadow-sm sm:p-8">
     <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">Website installation</p><h2 className="mt-2 text-xl font-black">Install and activate the AI Bot</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-[#68645c]">Add one approved code option to the customer website. AiFrogi detects the first load, but the bot remains unavailable until Super Admin confirms the installation and makes it live.</p></div><span className={`status-pill ${live ? "status-success" : status === "PAUSED" || status === "DELETED" ? "status-error" : detected ? "status-warning" : "status-info"}`}>{statusLabel}</span></div>
     <div className="mt-6 grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
       <CodeCard title="JavaScript" helper="Recommended for HTML, React, Shopify and most websites." value={script} onCopy={() => copy(script, "JavaScript")} disabled={!profile.installationKey} />
@@ -43,8 +43,10 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
     <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-black/7 bg-black/7 sm:grid-cols-4">{[
       ["1", "Code generated", Boolean(profile.installationKey)], ["2", "Installed on website", detected], ["3", "Super Admin approved", live], ["4", "AI Bot live", live]
     ].map(([number, label, complete]) => <div key={String(number)} className="bg-[#fbfcfb] p-4"><span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-black ${complete ? "bg-[#dff2ea] text-[#16794a]" : "bg-[#eeeae0] text-[#68645c]"}`}>{complete ? "✓" : number}</span><p className="mt-3 text-sm font-semibold">{label}</p></div>)}</div>
-    {superAdmin ? <div className="mt-6 flex flex-wrap gap-3">{status === "INSTALLATION_DETECTED" || status === "PAUSED" ? <Action disabled={saving || !detected} onClick={() => act("MAKE_LIVE")}>Make Bot Live</Action> : null}{live ? <Action disabled={saving} onClick={() => act("PAUSE")}>Pause Bot</Action> : null}{status !== "DELETED" ? <Action danger disabled={saving} onClick={() => act("DELETE")}>Delete Bot</Action> : <Action disabled={saving} onClick={() => act("RESTORE")}>Restore Bot</Action>}</div> : <p className="mt-5 rounded-lg border border-[#ded8cb] bg-[#f8f0d8] p-4 text-sm leading-6 text-[#5f4a18]">After installation is detected, AiFrogi Super Admin performs the final safety check and enables the green <strong>Bot Live</strong> state. Refresh this page after approval.</p>}
-    {message ? <p className={`mt-4 text-sm font-semibold ${message.includes("could not") || message.includes("required") ? "text-[#a3342b]" : "text-[#16794a]"}`}>{message}</p> : null}
+    {superAdmin ? <div className="mt-6 flex flex-wrap gap-3">{status === "INSTALLATION_DETECTED" || status === "PAUSED" ? <Action disabled={saving || !detected} onClick={() => act("MAKE_LIVE")}>Make Bot Live</Action> : null}{live ? <Action disabled={saving} onClick={() => act("PAUSE")}>Pause Bot</Action> : null}{status !== "DELETED" ? <Action danger disabled={saving} onClick={() => act("DELETE")}>Delete Bot</Action> : <Action disabled={saving} onClick={() => act("RESTORE")}>Restore Bot</Action>}</div> : <p className="mt-5 rounded-lg border border-[#ded8cb] bg-[#f8f0d8] p-4 text-sm leading-6 text-[#5f4a18]">These embed options remain available after installation. AiFrogi detects valid website loads automatically; installation status appears above when the code is active.</p>}
+    {superAdmin && status === "CONFIGURED" ? <Action disabled={saving || !detected} onClick={() => act("MAKE_LIVE")}>Review and make live</Action> : null}
+    {superAdmin && live ? <div className="mt-3"><Action disabled={saving} onClick={() => act("RESEND_LIVE_EMAIL")}>Retry live email</Action></div> : null}
+    {message ? <p role="status" className={`mt-4 text-sm font-semibold ${message.includes("could not") || message.includes("required") ? "text-[#a3342b]" : "text-[#16794a]"}`}>{message}</p> : null}
   </section>;
 }
 

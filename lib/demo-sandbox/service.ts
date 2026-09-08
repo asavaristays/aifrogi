@@ -10,16 +10,18 @@ function actionMode(category: DemoFixture["category"]) {
   return ["PINGBOOK", "FLOWCART"].includes(category) ? "APPROVED_ACTIONS" as const : category === "CUSTOM" ? "HUMAN_APPROVAL" as const : "LEAD_CAPTURE" as const;
 }
 
-export async function provisionDemoSandboxes(actorEmail = SYSTEM_ACTOR) {
+export async function provisionDemoSandboxes(actorEmail = SYSTEM_ACTOR, freshShowcase = false) {
   const db = getDb();
   if (!db) throw new Error("Database is unavailable.");
   const results: Array<{ slug: string; organizationId: string }> = [];
-  for (const fixture of listDemoFixtures()) {
+  const fixtures = listDemoFixtures().map(f => freshShowcase ? { ...f, slug: f.slug.replace('demo-', 'showcase-') } : f);
+  if (freshShowcase && await db.organization.count({ where: { OR: [{ slug: { in: fixtures.map(f => f.slug) } }, { demoKey: { startsWith: 'SHOWCASE:' } }] } })) throw new Error('Showcase already exists; no existing workspaces will be overwritten.');
+  for (const fixture of fixtures) {
     const pack = getBotPersonaPack(fixture.category);
     const organization = await db.organization.upsert({
       where: { slug: fixture.slug },
       update: { name: fixture.businessName, industry: fixture.industry, status: "ACTIVE", plan: "DEMO", isDemo: true, demoKey: fixture.category, ownerName: "AiFrogi Demo Team", ownerEmail: SYSTEM_ACTOR },
-      create: { name: fixture.businessName, slug: fixture.slug, industry: fixture.industry, status: "ACTIVE", plan: "DEMO", isDemo: true, demoKey: fixture.category, ownerName: "AiFrogi Demo Team", ownerEmail: SYSTEM_ACTOR }
+      create: { name: fixture.businessName, slug: fixture.slug, industry: fixture.industry, status: "ACTIVE", plan: "DEMO", isDemo: true, demoKey: freshShowcase ? `SHOWCASE:${fixture.category}` : fixture.category, ownerName: "AiFrogi Demo Team", ownerEmail: SYSTEM_ACTOR }
     });
     const property = await db.property.upsert({ where: { slug: fixture.slug }, update: { organizationId: organization.id, name: fixture.businessName }, create: { organizationId: organization.id, slug: fixture.slug, name: fixture.businessName } });
     await db.onboardingProfile.upsert({ where: { organizationId: organization.id }, update: { lifecycleStatus: "DEMO_READY", currentStep: 6, progressPercent: 100, businessCategory: fixture.industry, kycStatus: "DEMO_SYNTHETIC", completedAt: new Date() }, create: { organizationId: organization.id, lifecycleStatus: "DEMO_READY", currentStep: 6, progressPercent: 100, businessCategory: fixture.industry, kycStatus: "DEMO_SYNTHETIC", completedAt: new Date() } });

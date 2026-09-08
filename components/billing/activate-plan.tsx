@@ -35,6 +35,12 @@ function loadCheckout() {
   });
 }
 
+async function readCheckoutResponse(response: Response) {
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) throw new Error("Payment service returned an unexpected response. Please refresh and try again, or contact support.");
+  return response.json() as Promise<{ error?: string; keyId?: string; orderId?: string; amount?: number; currency?: string; planName?: string; ownerName?: string; ownerEmail?: string }>;
+}
+
 export function ActivatePlan({ activePlanCode, initialPlanCode, openOnLoad = false }: { activePlanCode: string; initialPlanCode?: string; openOnLoad?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -56,7 +62,7 @@ export function ActivatePlan({ activePlanCode, initialPlanCode, openOnLoad = fal
     try {
       await loadCheckout();
       const orderResponse = await fetch("/api/billing/checkout/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ planCode: selected }) });
-      const order = await orderResponse.json() as { error?: string; keyId?: string; orderId?: string; amount?: number; currency?: string; planName?: string; ownerName?: string; ownerEmail?: string };
+      const order = await readCheckoutResponse(orderResponse);
       if (!orderResponse.ok || !order.keyId || !order.orderId || !order.amount || !order.currency) throw new Error(order.error || "Checkout could not be started.");
       if (!window.Razorpay) throw new Error("Secure checkout is unavailable.");
 
@@ -72,7 +78,7 @@ export function ActivatePlan({ activePlanCode, initialPlanCode, openOnLoad = fal
         modal: { ondismiss: () => setBusy(false) },
         handler: async (result: CheckoutResult) => {
           const verifyResponse = await fetch("/api/billing/checkout/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ planCode: selected, ...result }) });
-          const verified = await verifyResponse.json() as { error?: string };
+          const verified = await readCheckoutResponse(verifyResponse);
           if (!verifyResponse.ok) {
             setError(verified.error || "Payment was received but activation requires review. Please contact support.");
             setBusy(false);

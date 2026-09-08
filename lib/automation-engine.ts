@@ -5,6 +5,10 @@ import { finalizeCampaignRun, recordCampaignRecipientResult } from "@/lib/reposi
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { DEFAULT_PAID_PLAN, TRIAL_DAYS } from "@/lib/trial-policy";
+import { deliverWebsiteHandoverNotification, WEBSITE_HANDOVER_EMAIL } from "@/lib/website-handover-notifications";
+import { deliverQueuedBillingNotification } from "@/lib/services/billing-notification";
+
+const BILLING_NOTIFICATION_EMAIL = "BILLING_NOTIFICATION_EMAIL";
 
 export const AUTOMATION_JOB_STATUS = {
   QUEUED: "QUEUED",
@@ -179,8 +183,8 @@ export async function failAutomationJob(job: AutomationJob, error: unknown) {
   const now = new Date();
   const shouldDeadLetter = job.attemptCount >= job.maxAttempts;
 
-  return db.automationJob.update({
-    where: { id: job.id },
+  const update = await db.automationJob.updateMany({
+    where: { id: job.id, ...(job.actionType === WEBSITE_HANDOVER_EMAIL ? { status: AUTOMATION_JOB_STATUS.RUNNING, attemptCount: job.attemptCount, lockedBy: job.lockedBy } : {}) },
     data: shouldDeadLetter
       ? {
           status: AUTOMATION_JOB_STATUS.DEAD,
@@ -200,6 +204,11 @@ export async function failAutomationJob(job: AutomationJob, error: unknown) {
           lockedBy: null
         }
   });
+  if (shouldDeadLetter && job.actionType === BILLING_NOTIFICATION_EMAIL) {
+    const property = await db.property.findUnique({ where: { id: job.propertyId }, select: { organizationId: true } });
+    if (property?.organizationId) await db.platformIncident.create({ data: { organizationId: property.organizationId, severity: "HIGH", status: "OPEN", category: "BILLING_NOTIFICATION", title: "Billing confirmation email exhausted retries", description: message, ownerEmail: "info@aifrogi.com" } });
+  }
+  return update;
 }
 
 export async function cancelAutomationJob(jobId: string, reason: string) {
@@ -219,6 +228,23 @@ export async function cancelAutomationJob(jobId: string, reason: string) {
 }
 
 export async function executeAutomationJob(job: AutomationJob, options: { dryRun?: boolean } = {}) {
+  if (job.actionType === BILLING_NOTIFICATION_EMAIL) {
+    const payload = job.payload && typeof job.payload === "object" && !Array.isArray(job.payload) ? job.payload as Record<string, unknown> : {};
+    if (options.dryRun) return completeAutomationJob(job.id, { dryRun: true, notification: "billing" });
+    const result = await deliverQueuedBillingNotification(payload);
+    return completeAutomationJob(job.id, { delivered: true, ...result });
+  }
+  if (job.actionType === WEBSITE_HANDOVER_EMAIL) {
+    if (options.dryRun) return deliverWebsiteHandoverNotification(job, true);
+    const db = getDb();
+    if (!db) throw new Error("Handover worker database unavailable");
+    const ownership = { id: job.id, status: AUTOMATION_JOB_STATUS.RUNNING, attemptCount: job.attemptCount, lockedBy: job.lockedBy };
+    // A queued batch may wait longer than its original lease. Never send as a stale worker.
+    const renewed = await db.automationJob.updateMany({ where: { ...ownership, leaseExpiresAt: { gt: new Date() } }, data: { leaseExpiresAt: new Date(Date.now() + 120000) } });
+    if (!renewed.count) return null;
+    const result = await deliverWebsiteHandoverNotification(job);
+    return db.automationJob.updateMany({ where: ownership, data: { status: AUTOMATION_JOB_STATUS.SUCCEEDED, result, completedAt: new Date(), leaseExpiresAt: null, lockedAt: null, lockedBy: null, lastError: null } });
+  }
   if (job.actionType === AUTOMATION_ACTION_TYPE.FAIL_VERIFICATION) {
     throw new Error("Verification failure requested by automation test.");
   }
@@ -385,7 +411,7 @@ async function executeScheduledWhatsAppCampaign(job: AutomationJob, options: { d
 export async function runDueAutomationJobs(input: RunAutomationJobsInput) {
   const claimed = await claimDueAutomationJobs({
     ...input,
-    excludeActionTypes: input.dryRun ? [AUTOMATION_ACTION_TYPE.WHATSAPP_TEMPLATE_CAMPAIGN] : input.excludeActionTypes
+    excludeActionTypes: input.dryRun ? [AUTOMATION_ACTION_TYPE.WHATSAPP_TEMPLATE_CAMPAIGN, WEBSITE_HANDOVER_EMAIL] : input.excludeActionTypes
   });
   const completed: string[] = [];
   const failed: string[] = [];

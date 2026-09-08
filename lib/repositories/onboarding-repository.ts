@@ -297,12 +297,18 @@ export async function updateWebsiteBotLifecycle(input: {
   if (!db) return null;
   const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
   if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured Website Bot is required.");
-  if (input.action === "MAKE_LIVE" && profile.kbGateVersion) {
+  if (input.action === "MAKE_LIVE") {
+    const { getOrganizationSubscriptionAccess } = await import("@/lib/subscription-access");
+    const subscription = await getOrganizationSubscriptionAccess(input.organizationId);
+    if (!subscription?.canUsePaidActions) throw new Error("An active trial or subscription is required.");
+    const organization = await db.organization.findUnique({ where: { id: input.organizationId }, select: { status: true } });
+    if (!organization || ["SUSPENDED", "REMOVED"].includes(organization.status)) throw new Error("Reactivate the customer before making the bot live.");
     const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true } });
     if (!property) throw new Error("A business workspace is required before this bot can go live.");
     const category = profile.category === "PINGBOOK" ? "APPOINTMENTS" : profile.category === "STAY" ? "HOSPITALITY" : profile.category;
     const readiness = await getKnowledgeVerificationReadiness(property.id, category);
-    if (!readiness.ready) {
+    if (!(subscription.planCode === "TRIAL" ? readiness.trialReady : readiness.ready)) {
+      if (subscription.planCode === "TRIAL" && readiness.essentials.missing.length) throw new Error(`Approve the missing trial topics: ${readiness.essentials.missing.join(", ")}.`);
       throw new Error(`Product preparation is incomplete. KB coverage ${readiness.coverage.percentage}% (minimum ${profile.kbCoverageMinimum}%), freshness ${readiness.freshnessRate}% (minimum 95%), conflicts ${readiness.conflicts}, unsigned claims ${readiness.unsigned}, pending previews ${readiness.previewPending}, open answer flags ${readiness.openFlags}.`);
     }
     if (profile.operatingMode === "APPROVED_ACTIONS" || profile.operatingMode === "HUMAN_APPROVAL") {

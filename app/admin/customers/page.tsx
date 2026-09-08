@@ -10,7 +10,10 @@ export const revalidate = 0;
 const date = (value?: Date | null) => value ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(value) : "Not scheduled";
 
 export default async function AdminCustomersPage() {
-  const organizations = await loadAdminOrganizations();
+  const organizations = (await loadAdminOrganizations()).map((organization) => ({
+    ...organization,
+    botProfile: organization.botProfile ? { ...organization.botProfile, channels: ["WEBSITE"] as string[] } : organization.botProfile
+  }));
   const states = new Map(await Promise.all(organizations.map(async (organization) => [organization.id, await getOrganizationSubscriptionAccess(organization.id)] as const)));
   const live = organizations.filter((item) => item.botProfile?.status === "LIVE").length;
   const attention = organizations.filter((item) => item.status === "SUSPENDED" || item.status === "REMOVED" || states.get(item.id)?.paused).length;

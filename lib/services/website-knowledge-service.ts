@@ -1,6 +1,5 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
-import { buildWhatsAppBotMenuOptions, type WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { recordKnowledgeGap } from "@/lib/repositories/knowledge-content-repository";
 import { getPublishedClaimContext } from "@/lib/repositories/knowledge-verification-repository";
@@ -11,6 +10,7 @@ import { unavailableKnowledgeMessage } from "@/lib/knowledge-fallback";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
 import { getDb } from "@/lib/db";
+import { approvedOfferLinks } from "@/lib/sovereign-intelligence/offer-continuation";
 import { executeReliableModel, escalationTierFor, modelHttpError, type ReliabilityEvidence, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
 import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
@@ -333,8 +333,8 @@ function questionTerms(value: string) {
 export type WebsiteQuestionIntent = SovereignIntent;
 export const classifyWebsiteQuestion = classifySovereignIntent;
 
-export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = []) {
-  const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION);
+export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
+  const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
 }
 
@@ -456,13 +456,16 @@ export async function buildWebsiteKnowledgeAnswer({
   question,
   propertySlug,
   configuration,
-  priorQuestions = []
+  priorQuestions = [],
+  lastAssistantAnswer = ""
 }: {
   question: string;
   propertySlug: string;
-  configuration: WhatsAppBotConfiguration;
+  configuration?: unknown;
   priorQuestions?: string[];
+  lastAssistantAnswer?: string;
 }): Promise<KnowledgeAnswer | null> {
+  void configuration;
   if (!question.trim()) return null;
 
   const apiKey = process.env.OPENAI_API_KEY?.trim();
@@ -475,7 +478,7 @@ export async function buildWebsiteKnowledgeAnswer({
   ]);
   if (!settings.approvedForAi) return null;
 
-  const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions);
+  const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions, lastAssistantAnswer);
   const organization = business?.organization;
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
@@ -491,8 +494,28 @@ export async function buildWebsiteKnowledgeAnswer({
   if (resolved.intent === "IDENTITY") return direct(`I’m ${assistantName}, an AiFrogi-powered business assistant for ${businessName}. I answer from approved business knowledge, help qualify requirements, and involve the team when human judgment is needed.`);
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m focused on ${businessName} business enquiries, so I don’t provide general weather, news, sports, or unrelated information. Please ask me about this business’s approved services, products, availability, or next steps.`);
   if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
+  const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
+  if (governed.blockedState) {
+    const failed = safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));
+    failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
+    return failed;
+  }
+  const offeredLinks = approvedOfferLinks({ question, lastAssistantAnswer, contextUsed: resolved.decision.contextUsed, candidates: governed.candidates });
+  if (offeredLinks.length) {
+    const claimIds = [...new Set(offeredLinks.map((item) => item.claimId))];
+    const response = direct(`Yes—please use the approved link below to view the available details and continue:\n${[...new Set(offeredLinks.map((item) => item.url))].join("\n")}\nNo booking or payment has been made in this chat.`, { ...resolved.decision, disposition: "ANSWER", reason: "Accepted offer resolved to a currently published link; no transaction performed." });
+    response.claimIds = claimIds;
+    response.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: governed.claimIds, usedClaimIds: claimIds, nearMissClaimIds: governed.nearMissClaimIds };
+    return response;
+  }
   if (resolved.intent === "CONTACT_INFO") {
-    if (organization) {
+    // Published knowledge must not be hidden by a partial business profile.
+    const requestedFieldMissing = organization && (
+      (/\b(phone|telephone|mobile|number)\b/i.test(question) && !organization.publicPhone) ||
+      (/\bemail\b/i.test(question) && !organization.publicEmail) ||
+      (/\b(address|located|location)\b/i.test(question) && !organization.publicAddress)
+    );
+    if (organization && !governed.context && !requestedFieldMissing) {
       const details = [
         organization.publicPhone ? `Phone: ${organization.publicPhone}` : null,
         organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
@@ -513,12 +536,6 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const knowledgeBase = persona?.kbGateVersion ? null : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
-  const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
-  if (governed.blockedState) {
-    const failed = safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));
-    failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
-    return failed;
-  }
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   if (!context.trim()) {
     await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
@@ -529,9 +546,11 @@ export async function buildWebsiteKnowledgeAnswer({
 
   if (!apiKey) return safeFailure("INFRASTRUCTURE", "MODEL_CREDENTIAL_UNAVAILABLE", "I’m temporarily unable to generate a verified answer. Your question has been retained for asynchronous AiFrogi review, so you do not need to repeat it.");
 
-  const menu = buildWhatsAppBotMenuOptions(configuration)
-    .map((option, index) => `${index + 1}. ${option.label}: ${option.description}`)
-    .join("\n");
+  const menu = [
+    "1. Business information and approved services",
+    "2. Customer enquiry qualification",
+    "3. Website-bot assistance and human handover"
+  ].join("\n");
 
   const primaryModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
   const fallbackModel = process.env.OPENAI_FALLBACK_MODEL?.trim();

@@ -1,15 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isClientNavItemAvailable } from "@/lib/client-navigation";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
-test("Campaigns is hidden for an AI Bot-only workspace", () => {
-  assert.equal(isClientNavItemAvailable("/campaigns", ["WEBSITE"]), false);
+test("campaign navigation is retired from the website-only workspace", () => {
+  const navigation = readFileSync(resolve(process.cwd(), "data/mock.ts"), "utf8");
+  assert.doesNotMatch(navigation, /\/campaigns/);
 });
 
-test("Campaigns is available when WhatsApp is enabled", () => {
-  assert.equal(isClientNavItemAvailable("/campaigns", ["WEBSITE", "WHATSAPP"]), true);
-});
-
-test("AI Bot navigation remains available without WhatsApp", () => {
-  assert.equal(isClientNavItemAvailable("/knowledge", ["WEBSITE"]), true);
+test("AI Bot navigation retains the knowledge workspace", () => {
+  const navigation = readFileSync(resolve(process.cwd(), "data/mock.ts"), "utf8");
+  assert.match(navigation, /\/knowledge/);
 });

@@ -5,17 +5,17 @@ import { Icon } from "@/components/icons";
 
 const features = [
   {
-    id: "broadcast",
-    label: "Broadcasts",
-    icon: "megaphone" as const,
-    screen: "Campaign studio",
-    title: "Broadcast messages at the right moment",
-    description: "Segment opted-in audiences, use approved templates, schedule delivery, and see replies without leaving the campaign.",
+    id: "engage",
+    label: "Website engagement",
+    icon: "message-circle" as const,
+    screen: "Widget conversations",
+    title: "Help website visitors at the right moment",
+    description: "Answer from approved knowledge, qualify intent, and show every handover clearly to the team.",
     metric: "8,940",
-    metricLabel: "recipients ready",
-    accent: "91.8% delivered",
-    steps: ["Choose audience", "Approve template", "Schedule & monitor"],
-    activity: [["Monsoon stay offer", "Scheduled · 6:30 PM"], ["VIP repeat guests", "2,140 contacts"], ["Template quality", "High"]]
+    metricLabel: "visitor questions answered",
+    accent: "91.8% resolved",
+    steps: ["Understand intent", "Answer safely", "Route when needed"],
+    activity: [["Pricing questions", "Answered"], ["High-intent visitors", "32 qualified"], ["Knowledge quality", "High"]]
   },
   {
     id: "chatbot",
@@ -36,7 +36,7 @@ const features = [
     icon: "grid" as const,
     screen: "Commerce automation",
     title: "Move customers from catalogue to confirmed order",
-    description: "Share products, recover incomplete checkouts, confirm orders, and keep delivery updates inside WhatsApp.",
+    description: "Share products, recover incomplete checkouts, confirm orders, and keep delivery updates inside the website assistant.",
     metric: "₹1.84L",
     metricLabel: "revenue recovered",
     accent: "74 orders this week",
@@ -51,7 +51,7 @@ const features = [
     title: "Bring warm buyers back with useful context",
     description: "Create consent-aware segments from clicks, replies, purchases, and drop-offs—then personalize the next message.",
     metric: "3.2×",
-    metricLabel: "return on campaign spend",
+    metricLabel: "visitor conversion lift",
     accent: "21.6% conversion",
     steps: ["Build segment", "Personalize offer", "Measure revenue"],
     activity: [["Clicked, no purchase", "842 contacts"], ["Repeat-buyer segment", "Ready"], ["Suppression rules", "Active"]]
@@ -87,7 +87,7 @@ const features = [
     label: "Forms & surveys",
     icon: "file-text" as const,
     screen: "Conversational forms",
-    title: "Collect structured answers inside WhatsApp",
+    title: "Collect structured answers inside the website widget",
     description: "Turn lead forms, surveys, registrations, and feedback into guided conversations with validated fields and clean exports.",
     metric: "1,248",
     metricLabel: "responses captured",
@@ -111,7 +111,7 @@ const features = [
 ] as const;
 
 export function FeatureShowcase() {
-  const [activeId, setActiveId] = useState<(typeof features)[number]["id"]>("broadcast");
+  const [activeId, setActiveId] = useState<(typeof features)[number]["id"]>("engage");
   const active = features.find((feature) => feature.id === activeId) ?? features[0];
 
   return (

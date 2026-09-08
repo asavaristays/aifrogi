@@ -12,7 +12,7 @@ const registerUrl = "https://app.aifrogi.com/register?source=homepage";
 
 export const metadata: Metadata = marketingMetadata({
   title: "Intelligent AI Bot for Business | AiFrogi",
-  description: "Give your business an intelligent AI bot that answers customers, drives follow-ups, automates workflows, and keeps your team in control. WhatsApp is one supported channel.",
+  description: "Give your business an intelligent AI bot that answers customers, drives follow-ups, automates workflows, and keeps your team in control.",
   path: "/"
 });
 
@@ -35,6 +35,8 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl">
           <SovereignHero registerUrl={registerUrl} />
 
+          <Link href="/experience" className="my-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-[#e8cb7b]/35 bg-white/[.04] px-6 py-5"><span><span className="block text-sm text-[#e8cb7b]">Experience AiFrogi · 45 seconds</span><span className="mt-1 block text-lg font-semibold text-white">Meet your next team member.</span></span><span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#e8cb7b] px-5 text-sm font-semibold text-[#17140a]">Watch. Explore. Try. <Icon name="arrow-right" /></span></Link>
+
           <IntegrationLogoStrip />
 
           <FeatureShowcase />
@@ -52,13 +54,13 @@ export default function HomePage() {
 
           <div className="border-white/14 lg:border-x lg:px-12">
             <p className="text-xl font-medium leading-8 tracking-[-.02em] text-white sm:text-2xl sm:leading-9">AiFrogi is the AI Business Automation vertical of Webtechnosys, created to help businesses manage customer conversations with greater speed, intelligence and control.</p>
-            <p className="mt-7 text-base leading-8 text-white/64">Our portfolio brings together two focused solutions—intelligent AI Bots and WhatsApp API automation. Each bot is trained on the business’s approved knowledge, aligned with its customer journey and connected to the required channels and systems. It can answer enquiries, qualify opportunities, support business actions and involve the human team whenever judgment is required.</p>
+            <p className="mt-7 text-base leading-8 text-white/64">Our intelligent AI Bots are trained on the business’s approved knowledge, aligned with its customer journey and connected to the required systems. They can answer enquiries, qualify opportunities, support business actions and involve the human team whenever judgment is required.</p>
             <p className="mt-7 text-lg font-medium leading-8 text-[var(--gold-100)]">With built-in security controls, approved access and responsible human handover, AiFrogi keeps business intelligence and customer data under the organisation’s control.</p>
           </div>
 
           <div className="flex flex-col justify-between gap-10">
             <div className="border-t border-white/14 pt-5"><span className="font-mono text-xs text-[var(--gold-300)]">01</span><h3 className="mt-3 text-xl font-semibold">Intelligent AI Bots</h3><p className="mt-2 text-sm leading-6 text-white/48">Knowledge-led automation designed around the business outcome.</p></div>
-            <div className="border-t border-white/14 pt-5"><span className="font-mono text-xs text-[var(--gold-300)]">02</span><h3 className="mt-3 text-xl font-semibold">WhatsApp API</h3><p className="mt-2 text-sm leading-6 text-white/48">A governed customer channel connected to the same business intelligence.</p></div>
+            <div className="border-t border-white/14 pt-5"><span className="font-mono text-xs text-[var(--gold-300)]">02</span><h3 className="mt-3 text-xl font-semibold">Website delivery</h3><p className="mt-2 text-sm leading-6 text-white/48">A governed website assistant connected to approved business intelligence.</p></div>
             <div className="border-t border-white/14 pt-5"><span className="font-mono text-xs text-[var(--gold-300)]">03</span><h3 className="mt-3 text-xl font-semibold">Sovereign by design</h3><p className="mt-2 text-sm leading-6 text-white/48">Approved knowledge, controlled access and accountable human authority.</p></div>
           </div>
         </div>

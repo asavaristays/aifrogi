@@ -15,14 +15,9 @@ const sections = [
     description: "Review the 15-day trial, plan status, allowances, usage and invoices."
   },
   {
-    title: "WhatsApp API",
-    href: "/settings/integrations",
-    description: "Manage the Meta Cloud API number, permanent token, webhook verification and AI reply mode."
-  },
-  {
     title: "Team access",
     href: "/settings/users",
-    description: "Control who can view conversations, reply to contacts and launch campaigns."
+    description: "Control who can view website conversations, reply to contacts and manage the workspace."
   },
   {
     title: "Security",
@@ -34,10 +29,10 @@ const sections = [
 export default function SettingsPage() {
   return (
     <div className="product-surface min-h-screen">
-      <TopBar title="Settings" subtitle="Workspace access, WhatsApp connection, and security" />
+      <TopBar title="Settings" subtitle="Workspace access, AI Bot controls, and security" />
       <div className="mx-auto max-w-[1500px] space-y-6 px-5 py-6 sm:px-8">
         <section className="border-b border-[var(--border)] pb-5"><p className="product-eyebrow">Client administration</p><h2 className="mt-2 text-2xl font-semibold">Workspace controls</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">Each team member uses a personal password. Technical credentials remain protected inside AiFrogi and are never shown to workspace users.</p></section>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {sections.map((section) => (
             <Card key={section.href} className="rounded-lg p-5 shadow-[var(--shadow-card)]">
               <h3 className="text-lg font-semibold">{section.title}</h3>

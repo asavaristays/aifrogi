@@ -23,6 +23,13 @@ export async function getOrganizationSubscriptionAccess(
   const db = getDb();
   if (!db) return null;
 
+  // Isolated synthetic demos have no paid entitlement or trial expiry. This
+  // applies only to server-marked demo workspaces with mock-only connectors.
+  const demo = await db.organization.findUnique({where:{id:organizationId},select:{isDemo:true,demoSandbox:{select:{status:true}},botConnectors:{select:{provider:true}}}});
+  if (demo?.isDemo && demo.demoSandbox?.status === 'READY' && demo.botConnectors.length > 0 && demo.botConnectors.every(c=>c.provider === 'AIFROGI_DEMO_MOCK')) {
+    return {planCode:'DEMO',planName:'Synthetic demo',status:'ACTIVE',trialEndsAt:null,daysLeft:null,paused:false,canUsePaidActions:true,message:'Synthetic demonstration only; no real transactions.'};
+  }
+
   await ensureOrganizationSubscription(organizationId);
   let subscription = await db.subscription.findUnique({
     where: { organizationId },

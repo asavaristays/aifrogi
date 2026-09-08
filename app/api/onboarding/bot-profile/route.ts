@@ -11,7 +11,7 @@ export async function PATCH(request: Request) {
   if (role !== "OWNER" && role !== "ADMIN") return NextResponse.json({ error: "Client Admin access required" }, { status: 403 });
   const payload = await request.json().catch(() => null);
   const governedCapabilities = normalizeCapabilitiesForCategory(organization.botProfile.category, organization.botProfile.capabilities);
-  const parsed = parseBotProfile({ ...organization.botProfile, ...(payload && typeof payload === "object" ? payload : {}), category: organization.botProfile.category, operatingMode: organization.botProfile.operatingMode, channels: organization.botProfile.channels, capabilities: governedCapabilities, humanHandoffEnabled: organization.botProfile.humanHandoffEnabled, actionApprovalNeeded: organization.botProfile.actionApprovalNeeded });
+  const parsed = parseBotProfile({ ...organization.botProfile, ...(payload && typeof payload === "object" ? payload : {}), category: organization.botProfile.category, operatingMode: organization.botProfile.operatingMode, channels: ["WEBSITE"], capabilities: governedCapabilities, humanHandoffEnabled: organization.botProfile.humanHandoffEnabled, actionApprovalNeeded: organization.botProfile.actionApprovalNeeded });
   if (!parsed.value) return NextResponse.json({ error: parsed.error }, { status: 400 });
   const updated = await saveOrganizationBotProfile({ organizationId: organization.id, actorEmail: user.username, profile: parsed.value });
   return NextResponse.json({ organization: updated });

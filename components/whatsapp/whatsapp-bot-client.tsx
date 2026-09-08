@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Asset, Lead, LeadInput, WhatsAppIntegration } from "@/types";
 import { LeadOperationsPanel } from "@/components/ai-operations/lead-operations-panel";
+import teamStyles from "@/components/lead-inbox/team-inbox.module.css";
 
 type QuickActionKind = "photos" | "payment" | "quote" | null;
 type TimelineMessage = Lead["transcript"][number];
@@ -221,13 +222,16 @@ function getConversationState(lead: Lead) {
 export function WhatsAppBotClient({
   integration,
   leads,
-  enabledChannels = []
+  enabledChannels = [],
+  teamMode = false
 }: {
   integration: WhatsAppIntegration;
   leads: Lead[];
   enabledChannels?: string[];
+  teamMode?: boolean;
 }) {
   const router = useRouter();
+  const [teamView, setTeamView] = useState("conversations");
   const validLeads = useMemo(() => leads.filter((lead) => Boolean(lead?.id && lead?.source && lead?.stage)), [leads]);
   const whatsappEnabled = enabledChannels.includes("WHATSAPP");
   const [activeId, setActiveId] = useState(validLeads[0]?.id ?? "");
@@ -256,6 +260,7 @@ export function WhatsAppBotClient({
   const [composeResult, setComposeResult] = useState<string | null>(null);
   const [activeQueue, setActiveQueue] = useState<InboxQueueKey>("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [operationRevision, setOperationRevision] = useState(0);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const messageInputRef = useRef<HTMLInputElement | null>(null);
   const latestLeadId = useMemo(() => {
@@ -632,19 +637,24 @@ export function WhatsAppBotClient({
     router.refresh();
   }
 
-  async function closeWebsiteConversation() {
+  async function closeWebsiteConversation(resume = false) {
     if (!activeIsWebsite || isSending) return;
     setIsSending(true);
     setSendResult(null);
+    try {
     const response = await fetch(`/api/leads/${activeLead.id}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "CLOSE_WEBSITE_CONVERSATION" })
+      body: JSON.stringify({ action: resume ? "RESUME_WEBSITE_AI" : "CLOSE_WEBSITE_CONVERSATION" })
     });
     const result = await response.json();
-    setSendResult(response.ok ? "Website conversation closed; the visitor capability can no longer read messages." : result.error ?? "Could not close conversation");
+    setSendResult(response.ok ? resume ? "AI resumed by authorised operator." : "Website conversation closed. Final replies remain readable until the visitor session expires; new messages are blocked." : result.error ?? "Could not update conversation");
+    if (response.ok) setOperationRevision(value => value + 1);
     setIsSending(false);
     router.refresh();
+    } catch {
+      setSendResult("Connection interrupted. Refresh to check the saved conversation state before retrying.");
+    } finally { setIsSending(false); }
   }
 
   function openQuickAction(kind: Exclude<QuickActionKind, null>) {
@@ -828,8 +838,9 @@ export function WhatsAppBotClient({
         : "Thanks for reaching out. Please share your business name, website, current tools, and the result you want to achieve so we can guide the next step.";
 
   return (
-    <div className="overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]">
-      <nav className="sticky top-0 z-20 flex gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2 lg:hidden" aria-label="Inbox mobile sections">
+    <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView}>
+      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}].map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
+      <nav className={`${teamMode ? "hidden" : "flex lg:hidden"} sticky top-0 z-20 gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2`} aria-label="Inbox mobile sections">
         {[
           { href: "#inbox-queues", label: "Queues" },
           { href: "#inbox-conversations", label: "Chats" },
@@ -846,10 +857,10 @@ export function WhatsAppBotClient({
           <div className="p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-[var(--text)]">{whatsappEnabled ? "Inbox desk" : "BusinessGPT conversations"}</p>
+                <p className="text-sm font-semibold text-[var(--text)]">{whatsappEnabled ? "Inbox desk" : "Website conversations"}</p>
                 <p className="mt-1 text-xs text-[var(--text-muted)]">{validLeads.length} {whatsappEnabled ? "cross-channel" : "website"} conversation{validLeads.length === 1 ? "" : "s"}</p>
               </div>
-              <span className={`h-2.5 w-2.5 rounded-full ${integration.status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d98a2b]"}`} />
+              {whatsappEnabled && <span className={`h-2.5 w-2.5 rounded-full ${integration.status === "CONNECTED" ? "bg-[var(--success)]" : "bg-[#d98a2b]"}`} />}
             </div>
             {whatsappEnabled ? <button
               type="button"
@@ -863,13 +874,13 @@ export function WhatsAppBotClient({
             >
               New WhatsApp message
             </button> : null}
-            <div className="mt-4 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] p-3">
+            {whatsappEnabled && <div className="mt-4 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] p-3">
               <p className="text-xs font-medium text-[var(--text-muted)]">Automation</p>
               <div className="mt-2 flex items-center justify-between gap-3 text-sm text-[var(--text)]">
                 <span>{integration.aiModeEnabled ? "Sovereign AI active" : "AI suggestions off"}</span>
                 <span className="text-xs font-semibold text-[var(--primary-strong)]">{whatsappEnabled ? integration.provider : "Approved knowledge"}</span>
               </div>
-            </div>
+            </div>}
           </div>
 
           <div className="border-t border-[var(--border)] p-3">
@@ -884,7 +895,8 @@ export function WhatsAppBotClient({
                       ? "border-[#ded8cb] bg-[var(--primary-soft)] text-[var(--text)] shadow-[inset_3px_0_0_var(--primary)]"
                       : "border-transparent text-[#68645c] hover:bg-[var(--surface-soft)] hover:text-[var(--text)]"
                   }`}
-                  onClick={() => setActiveQueue(item.key)}
+                  aria-pressed={activeQueue === item.key}
+                  onClick={() => {setActiveQueue(item.key); if(teamMode)setTeamView("conversations");}}
                 >
                   <span className={`h-2.5 w-2.5 rounded-full ${item.tone}`} />
                   <span className="min-w-0 flex-1">
@@ -910,6 +922,7 @@ export function WhatsAppBotClient({
             <input
               className="mt-4 w-full rounded-md border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2.5 text-sm outline-none placeholder:text-[#9d95a7] focus:border-[var(--primary)] focus:bg-white"
               placeholder="Search contact, phone, intent"
+              aria-label="Search conversations"
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
             />
@@ -926,7 +939,9 @@ export function WhatsAppBotClient({
                   onClick={() => {
                     setHasManualSelection(true);
                     setActiveId(lead.id);
+                    if(teamMode)setTeamView("reply");
                   }}
+                  aria-pressed={activeLead.id === lead.id}
                   className={`relative flex w-full gap-3 rounded-md border px-3 py-3 text-left transition ${
                     activeLead.id === lead.id
                       ? "border-[#ded8cb] bg-white shadow-[var(--shadow-card)]"
@@ -1117,9 +1132,9 @@ export function WhatsAppBotClient({
                 { label: "Opt-out", text: "No problem. We will not send further campaign messages. You can message us anytime if you need help later." }
               ] : [
                 { label: "Clarify requirement", text: "Please share the result you want to achieve and any important requirement I should consider." },
-                { label: "Request contact", text: "Please share your preferred contact details and consent for the Webtechnosys team to follow up." },
-                { label: "Arrange callback", text: "Please share a preferred time for a short callback with a Webtechnosys specialist." },
-                { label: "Human handover", text: "I’m handing this conversation to the Webtechnosys team because it needs human judgment." }
+                { label: "Request contact", text: "Please share your preferred contact details and consent for our team to follow up." },
+                { label: "Arrange callback", text: "Please share a preferred time for a short callback with our team." },
+                { label: "Human handover", text: "I’m handing this conversation to our team because it needs human judgment." }
               ]).map((item) => (
                 <button
                   key={item.label}
@@ -1146,6 +1161,7 @@ export function WhatsAppBotClient({
                 ref={messageInputRef}
                 className="min-w-0 flex-1 border-0 bg-transparent px-2 py-2 text-sm outline-none placeholder:text-[#94a3b8]"
                 placeholder="Type a message..."
+                aria-label="Reply to this visitor"
                 value={draftMessage}
                 onChange={(event) => setDraftMessage(event.target.value)}
                 onKeyDown={(event) => {
@@ -1166,9 +1182,9 @@ export function WhatsAppBotClient({
             </div>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2 text-xs text-[#64748b]">
-                <Badge tone={integration.aiModeEnabled ? "primary" : "neutral"}>
+                {whatsappEnabled && <Badge tone={integration.aiModeEnabled ? "primary" : "neutral"}>
                   {integration.aiModeEnabled ? "AI Mode On" : "AI Mode Off"}
-                </Badge>
+                </Badge>}
                 <Badge tone="neutral">Approved knowledge</Badge>
                 <Badge tone="neutral">{whatsappEnabled ? integration.provider : "Human-controlled"}</Badge>
                 {selectedAttachment ? <Badge tone="secondary">Attached: {selectedAttachment.name}</Badge> : null}
@@ -1184,6 +1200,7 @@ export function WhatsAppBotClient({
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs font-semibold text-[#1559b7]">Replies are delivered securely to this website visitor session.</p>
                 <Button tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? "Conversation closed" : "Close conversation"}</Button>
+                <Button tone="surface" type="button" disabled={isSending} onClick={() => void closeWebsiteConversation(true)}>Resume AI · Owner/Admin</Button>
               </div>
             ) : null}
             {selectedAttachment ? (
@@ -1291,7 +1308,7 @@ export function WhatsAppBotClient({
               </div>
             </div>
 
-            <LeadOperationsPanel leadId={activeLead.id} />
+            <LeadOperationsPanel leadId={activeLead.id} revision={operationRevision} />
 
             <div className="space-y-2">
               <Button

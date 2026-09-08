@@ -32,7 +32,7 @@ export type SovereignResolutionState = {
 };
 
 function normalize(value: string) {
-  return value.toLowerCase().replace(/https?:\/\/\S+/g, " url ").replace(/[^a-z0-9₹$%\s]/g, " ").replace(/\s+/g, " ").trim();
+  return value.toLowerCase().replace(/[^\p{L}\p{N}₹$%\s]/gu, " ").replace(/\s+/g, " ").trim();
 }
 
 function fingerprint(value: string) {
@@ -92,9 +92,9 @@ function explicitFacts(question: string, consentedFacts: Record<string, string> 
 
 function circuitBreakerAnswer(reason: string) {
   if (reason === "REDUNDANT_SLOT_REQUEST") return "I have retained the information already provided and will not ask for it again. I need the business team to continue from the saved details because I do not have enough verified information for the next step.";
-  if (reason === "CUSTOMER_REPEAT") return "I can see that this request is still unresolved, so I will not repeat the same answer or question. I’m preserving the details already provided and requesting Webtechnosys team assistance for the next step.";
-  if (reason === "DUPLICATE_RESPONSE") return "I do not have enough new approved information to improve that answer, so I will not repeat it. I’m preserving the current context and requesting Webtechnosys team assistance.";
-  return "I have reached the safe clarification limit without enough verified information to resolve this confidently. I’m preserving what you already provided and requesting Webtechnosys team assistance.";
+  if (reason === "CUSTOMER_REPEAT") return "This request is still unresolved, so I will not repeat the same answer or question. Human assistance is needed for the next step. Please use the human-contact option.";
+  if (reason === "DUPLICATE_RESPONSE") return "I do not have enough new approved information to improve that answer, so I will not repeat it. Please use the human-contact option for further assistance.";
+  return "I have reached the safe clarification limit without enough verified information to resolve this confidently. Please use the human-contact option to continue with the business team.";
 }
 
 export function governResolutionOutcome(input: {
@@ -123,7 +123,7 @@ export function governResolutionOutcome(input: {
   const redundantSlot = unresolved && continuesIntent ? requestedKnownSlot(input.answer, previous?.collectedFacts || {}) : null;
   const clarifyCount = unresolved ? (continuesIntent ? previous!.clarifyCount : 0) + 1 : 0;
   const maxClarifyCycles = Math.max(0, input.maxClarifyCycles ?? previous?.maxClarifyCycles ?? DEFAULT_MAX_CLARIFY_CYCLES);
-  const breakerReason = redundantSlot ? "REDUNDANT_SLOT_REQUEST" : repeatedCustomer ? "CUSTOMER_REPEAT" : repeatedAnswer ? "DUPLICATE_RESPONSE" : clarifyCount >= maxClarifyCycles && unresolved ? "CLARIFY_LIMIT" : null;
+  const breakerReason = redundantSlot ? "REDUNDANT_SLOT_REQUEST" : repeatedCustomer && unresolved ? "CUSTOMER_REPEAT" : repeatedAnswer ? "DUPLICATE_RESPONSE" : clarifyCount >= maxClarifyCycles && unresolved ? "CLARIFY_LIMIT" : null;
   const circuitBreakerTriggered = Boolean(breakerReason);
   const decision: SovereignDecision = circuitBreakerTriggered
     ? { ...input.decision, disposition: "ESCALATE", reason: `Bounded Resolution circuit breaker: ${breakerReason}.` }

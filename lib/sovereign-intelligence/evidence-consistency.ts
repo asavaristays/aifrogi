@@ -9,7 +9,7 @@ export function evaluateDecisionBehaviourConsistency(input: { disposition: Sover
   else if (input.circuitBreaker || input.resolutionState === "ESCALATED") observed = "ESCALATE";
   else if (input.resolutionState === "REFUSED" || /i.m focused on .* so i don.t provide|outside (my|the) business scope/.test(text)) observed = "REFUSE";
   else if (input.failureLayer && input.failureLayer !== "NONE" && /withheld|could not validate|temporarily unavailable|do not have enough approved/.test(text)) observed = "FALLBACK";
-  else if (input.resolutionState === "ACTIVE" && /please provide|which|what|when|before i use/.test(text)) observed = "CLARIFY";
+  else if (input.resolutionState === "ACTIVE" && /please (?:provide|restate|clarify)|which|what|when|before i use/.test(text)) observed = "CLARIFY";
   else observed = "ANSWER";
   const compatible: Record<ObservedBehavior, SovereignDisposition[]> = { ANSWER: ["ANSWER"], CLARIFY: ["CLARIFY"], REFUSE: ["REFUSE"], ESCALATE: ["ESCALATE"], FALLBACK: ["FALLBACK"], ACT: ["ANSWER"] };
   const consistent = compatible[observed].includes(input.disposition);
