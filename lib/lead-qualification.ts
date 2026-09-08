@@ -124,7 +124,8 @@ export function qualifyLeadConversation(input: {
 
 export function appendQualificationPrompt(answer: string, prompt: string | null) {
   if (!prompt || answer.includes(prompt)) return answer;
-  return `${answer.trim()}\n\n${prompt}`;
+  const withoutTrailingOffer = answer.trim().replace(/(?:\n\s*)?(?:Would|Do|Could|Can|May|Are|Is|What|When|Which|How|Shall)\b[^?\n]*\?\s*$/i, "").trim();
+  return `${withoutTrailingOffer}\n\n${prompt}`;
 }
 
 export function normalizeConsentedLeadPhone(value: unknown) {

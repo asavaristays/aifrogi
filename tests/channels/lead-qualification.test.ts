@@ -76,6 +76,12 @@ test("prompt is appended only once", () => {
   assert.equal(appendQualificationPrompt(answer, "What is your timeline?"), answer);
 });
 
+test("qualification replaces a trailing generic offer so the visitor receives one question", () => {
+  const answer = appendQualificationPrompt("AI training is available for business teams.\n\nWould you like the booking link?", "When would you like to begin?");
+  assert.equal(answer, "AI training is available for business teams.\n\nWhen would you like to begin?");
+  assert.equal((answer.match(/\?/g) || []).length, 1);
+});
+
 test("consented callback accepts only a plausible mobile number", () => {
   assert.equal(normalizeConsentedLeadPhone("+91 98765 43210"), "+91 98765 43210");
   assert.equal(normalizeConsentedLeadPhone("owner@example.com"), null);
