@@ -8,7 +8,9 @@ const baseUrl = (process.env.AIFROGI_TEST_BASE_URL || "https://app.aifrogi.com")
 const slug = process.env.AIFROGI_TEST_BOT_SLUG || "webtechnosys-ai-agency-e5da22";
 const creditCap = Math.max(25, Math.min(Number(process.env.AIFROGI_TEST_CREDIT_CAP || 30), 30));
 const templateOnly = process.argv.includes("--template");
+const smokeOnly = process.argv.includes("--smoke");
 if (WEBTECHNOSYS_PILOT_CASES.length !== 25 || WEBTECHNOSYS_PILOT_CASES.length > creditCap) throw new Error("The pilot must contain exactly 25 questions within the 30-credit ceiling.");
+const selectedCases = smokeOnly ? WEBTECHNOSYS_PILOT_CASES.slice(0, 10) : WEBTECHNOSYS_PILOT_CASES;
 const runId = `webtechnosys-pilot-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const sessions = new Map();
 
@@ -39,7 +41,7 @@ async function writeWorkbook(path, results, summary) {
   workbook.creator = "AiFrogi";
   const overview = workbook.addWorksheet("Overview", { views: [{ showGridLines: false }] });
   overview.addRows([
-    ["Webtechnosys 25-question pilot"],
+    [`Webtechnosys ${selectedCases.length}-question ${smokeOnly ? "smoke" : "pilot"}`],
     ["Run", summary.runId], ["Executed", summary.executed], ["Automated pass", summary.passed], ["Review", summary.review], ["Fail", summary.failed],
     ["Human review rule", "Review every answer. Automated PASS does not replace client-side judgment."],
     ["Release gate", "Zero factual, privacy, authority or internal-language failures; at least 90% pass across all dimensions."]
@@ -60,10 +62,10 @@ async function writeWorkbook(path, results, summary) {
 
 const emptyDimensions = { factualAccuracy: "", relevanceCompleteness: "", subjectCompetence: "", tone: "", safetyAuthority: "", nextStepQuality: "", salesPressure: "" };
 const results = templateOnly
-  ? WEBTECHNOSYS_PILOT_CASES.map(test => ({ ...test, status: "", answer: "", answerEvidenceId: "", intentDetected: "", disposition: "", qualification: null, dimensions: emptyDimensions, overall: "", findings: [] }))
+  ? selectedCases.map(test => ({ ...test, status: "", answer: "", answerEvidenceId: "", intentDetected: "", disposition: "", qualification: null, dimensions: emptyDimensions, overall: "", findings: [] }))
   : [];
-if (!templateOnly) for (let index = 0; index < WEBTECHNOSYS_PILOT_CASES.length; index += 1) results.push(await execute(WEBTECHNOSYS_PILOT_CASES[index], index));
-const summary = { version: WEBTECHNOSYS_PILOT_VERSION, runId, baseUrl, slug, creditCap, planned: 25, executed: templateOnly ? 0 : results.length, passed: results.filter(row => row.overall === "PASS").length, review: results.filter(row => row.overall === "REVIEW").length, failed: results.filter(row => row.overall === "FAIL").length };
+if (!templateOnly) for (let index = 0; index < selectedCases.length; index += 1) results.push(await execute(selectedCases[index], index));
+const summary = { version: WEBTECHNOSYS_PILOT_VERSION, runId, baseUrl, slug, creditCap, planned: selectedCases.length, executed: templateOnly ? 0 : results.length, passed: results.filter(row => row.overall === "PASS").length, review: results.filter(row => row.overall === "REVIEW").length, failed: results.filter(row => row.overall === "FAIL").length };
 await mkdir("output/webtechnosys-pilot", { recursive: true });
 const root = `output/webtechnosys-pilot/${runId}`;
 await writeFile(`${root}.json`, JSON.stringify({ summary, results }, null, 2));
