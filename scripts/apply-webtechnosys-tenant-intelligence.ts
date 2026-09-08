@@ -2,6 +2,13 @@
 
 import { getDb } from "@/lib/db";
 import { normalizeClaimKey } from "@/lib/knowledge-verification";
+import { execFileSync } from "node:child_process";
+
+if (!process.env.DATABASE_URL) {
+  const apps = JSON.parse(execFileSync("pm2", ["jlist"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }));
+  const app = apps.find((candidate: { name?: string; pm2_env?: { DATABASE_URL?: string } }) => candidate.name === "lead-os-ai");
+  if (app?.pm2_env?.DATABASE_URL) process.env.DATABASE_URL = app.pm2_env.DATABASE_URL;
+}
 
 const propertySlug = "webtechnosys-ai-agency-e5da22";
 const actor = "founder-authorized@aifrogi.com";
