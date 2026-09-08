@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { Prisma } from "../../generated/prisma/client";
 
 const ticketInclude = {
   organization: {
@@ -55,6 +56,8 @@ export async function createSupportTicket(input: {
       data: {
         ...input,
         reference: createReference(),
+        lastActivityBy: "CUSTOMER",
+        lastClientViewedAt: new Date(),
         messages: {
           create: {
             authorEmail: input.createdByEmail,
@@ -93,7 +96,11 @@ export async function addSupportTicketMessage(input: {
     const message = await tx.supportTicketMessage.create({ data: input });
     const ticket = await tx.supportTicket.update({
       where: { id: input.ticketId },
-      data: { status: input.authorRole === "ADMIN" ? "WAITING_FOR_CLIENT" : "OPEN" }
+      data: {
+        status: input.authorRole === "ADMIN" ? "WAITING_FOR_CLIENT" : "OPEN",
+        lastActivityBy: input.authorRole === "ADMIN" ? "ADMIN" : "CUSTOMER",
+        ...(input.authorRole === "ADMIN" ? { lastAdminViewedAt: new Date() } : { lastClientViewedAt: new Date() })
+      }
     });
     await tx.platformAuditLog.create({
       data: {
@@ -116,6 +123,7 @@ export async function updateSupportTicket(input: {
   status: string;
   assignedToEmail?: string | null;
   resolution?: string | null;
+  actorRole?: "ADMIN" | "CUSTOMER";
 }) {
   const db = getDb();
   if (!db) return null;
@@ -126,10 +134,24 @@ export async function updateSupportTicket(input: {
         status: input.status,
         assignedToEmail: input.assignedToEmail,
         resolution: input.resolution,
-        resolvedAt: input.status === "RESOLVED" ? new Date() : null
+        resolvedAt: input.status === "RESOLVED" ? new Date() : null,
+        lastActivityBy: input.actorRole || "ADMIN",
+        ...(input.actorRole === "CUSTOMER" ? { lastClientViewedAt: new Date() } : { lastAdminViewedAt: new Date() })
       }
     });
     await tx.platformAuditLog.create({ data: { organizationId: ticket.organizationId, actorEmail: input.assignedToEmail || "system@aifrogi.com", actorRole: "SUPPORT", action: `SUPPORT_TICKET_${input.status}`, targetType: "SupportTicket", targetId: ticket.id, summary: `${ticket.reference} changed to ${input.status.replaceAll("_", " ")}`, metadata: { hasResolution: Boolean(input.resolution) } } });
   });
   return getSupportTicket(input.ticketId);
+}
+
+export async function markSupportTicketViewed(input: { ticketId?: string; organizationId?: string; viewer: "ADMIN" | "CLIENT" }) {
+  const db = getDb();
+  if (!db || (!input.ticketId && !input.organizationId)) return;
+  if (input.ticketId) {
+    if (input.viewer === "ADMIN") await db.$executeRaw(Prisma.sql`UPDATE "SupportTicket" SET "lastAdminViewedAt" = NOW() WHERE "id" = ${input.ticketId}`);
+    else await db.$executeRaw(Prisma.sql`UPDATE "SupportTicket" SET "lastClientViewedAt" = NOW() WHERE "id" = ${input.ticketId}`);
+    return;
+  }
+  if (input.viewer === "ADMIN") await db.$executeRaw(Prisma.sql`UPDATE "SupportTicket" SET "lastAdminViewedAt" = NOW() WHERE "organizationId" = ${input.organizationId}`);
+  else await db.$executeRaw(Prisma.sql`UPDATE "SupportTicket" SET "lastClientViewedAt" = NOW() WHERE "organizationId" = ${input.organizationId}`);
 }

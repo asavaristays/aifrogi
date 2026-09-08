@@ -69,7 +69,7 @@ export async function PATCH(request: Request) {
   if (user.role !== "admin") {
     const nextStatus = action === "CONFIRM_RESOLUTION" && ticket.status === "RESOLVED" ? "CLOSED" : action === "REOPEN" && ["RESOLVED", "CLOSED"].includes(ticket.status) ? "OPEN" : null;
     if (!nextStatus) return NextResponse.json({ error: "Add a reply, confirm the resolution, or reopen the ticket." }, { status: 400 });
-    const updated = await updateSupportTicket({ ticketId, status: nextStatus, assignedToEmail: ticket.assignedToEmail, resolution: ticket.resolution });
+    const updated = await updateSupportTicket({ ticketId, status: nextStatus, assignedToEmail: ticket.assignedToEmail, resolution: ticket.resolution, actorRole: "CUSTOMER" });
     if (!updated) return NextResponse.json({ error: "Support service unavailable" }, { status: 503 });
     await notify({ to: supportEmail, reference: ticket.reference, subject: ticket.subject, heading: nextStatus === "CLOSED" ? "Customer confirmed resolution" : "Customer reopened ticket", body: `${ticket.organization.name} changed the ticket to ${nextStatus.replaceAll("_", " ")}.` });
     return NextResponse.json({ ticket: serialize(updated) });
@@ -83,7 +83,7 @@ export async function PATCH(request: Request) {
     if (Object.values(fields).some((value) => !value)) return NextResponse.json({ error: "Cause, action taken, verification evidence, and prevention are required to resolve a ticket." }, { status: 400 });
     resolution = structuredResolution(fields);
   }
-  const updated = await updateSupportTicket({ ticketId, status, assignedToEmail: clean(payload?.assignedToEmail || user.username, 180), resolution });
+  const updated = await updateSupportTicket({ ticketId, status, assignedToEmail: clean(payload?.assignedToEmail || user.username, 180), resolution, actorRole: "ADMIN" });
   if (!updated) return NextResponse.json({ error: "Support service unavailable" }, { status: 503 });
   await notify({ to: ticket.organization.ownerEmail, reference: ticket.reference, subject: ticket.subject, heading: status === "RESOLVED" ? "Resolution ready for confirmation" : `Support status: ${status.replaceAll("_", " ")}`, body: resolution || `Your request is now ${status.replaceAll("_", " ").toLowerCase()}.` });
   return NextResponse.json({ ticket: serialize(updated) });

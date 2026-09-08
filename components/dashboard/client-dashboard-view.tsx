@@ -3,6 +3,7 @@ import { Icon } from "@/components/icons";
 import type { Lead } from "@/types";
 import type { BotReadinessCheck } from "@/lib/bot-readiness";
 import type { HumanResponseItem } from "@/lib/human-response-sla";
+import type { ClientSupportUpdate } from "@/lib/support-notifications";
 
 export type DashboardAttention = {
   title: string;
@@ -31,6 +32,7 @@ export type ClientDashboardViewProps = {
   botCategory: string;
   botReadiness: { checks: BotReadinessCheck[]; completed: number; total: number; percent: number; ready: boolean };
   humanResponse: { slaMinutes: number; reminderPercent: number; waiting: number; reminder: number; overdue: number; fallbackEligible: number; oldestWaitingMinutes: number; items: HumanResponseItem[] };
+  supportUpdates: ClientSupportUpdate[];
   attention: DashboardAttention[];
   readiness: DashboardReadiness[];
   recent: Lead[];
@@ -141,6 +143,12 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
 
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0 space-y-5">
+            {props.supportUpdates.length ? <section className="overflow-hidden rounded-lg border border-[#dbe8ff] bg-white shadow-[var(--shadow-card)]">
+              <SectionHeader eyebrow="Support response" title="AiFrogi Support needs your attention" status={`${props.supportUpdates.length} active`} warning />
+              <div className="divide-y divide-[var(--border)]">
+                {props.supportUpdates.slice(0, 3).map((ticket) => <Link key={ticket.id} href={`/support#ticket-${ticket.id}`} className="grid gap-3 px-5 py-4 hover:bg-[var(--info-soft)] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"><span className="min-w-0"><span className="flex flex-wrap items-center gap-2"><strong className="text-sm">{ticket.subject}</strong><small className="status-pill status-info">{ticket.status.replaceAll("_", " ")}</small></span><span className="mt-1 block truncate text-xs text-[var(--text-muted)]">{ticket.reference} · {ticket.summary}</span></span><span className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--info)]">{ticket.action}<Icon name="arrow-right" className="h-3.5 w-3.5" /></span></Link>)}
+              </div>
+            </section> : null}
             <section id="human-response" className="soft-card overflow-hidden rounded-lg">
               <SectionHeader eyebrow="Human response SLA" title="Team response report" status={props.humanResponse.overdue ? `${props.humanResponse.overdue} overdue` : `${props.humanResponse.waiting} waiting`} warning={props.humanResponse.overdue > 0} />
               <div className="grid grid-cols-2 border-b border-[var(--border)] sm:grid-cols-4">{[["SLA", `${props.humanResponse.slaMinutes}m`], ["Reminder", String(props.humanResponse.reminder)], ["Overdue", String(props.humanResponse.overdue)], ["Fallback candidates", String(props.humanResponse.fallbackEligible)]].map(([label, value]) => <div key={label} className="border-r border-[var(--border)] p-4 last:border-r-0"><small className="block text-[10px] text-[var(--text-muted)]">{label}</small><strong className="mt-1 block text-lg">{value}</strong></div>)}</div>

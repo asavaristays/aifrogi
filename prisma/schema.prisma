@@ -1185,6 +1185,9 @@ model SupportTicket {
   assignedToEmail String?
   resolution      String?                @db.Text
   resolvedAt      DateTime?
+  lastActivityBy  String                 @default("CUSTOMER")
+  lastClientViewedAt DateTime?
+  lastAdminViewedAt  DateTime?
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
   messages        SupportTicketMessage[]

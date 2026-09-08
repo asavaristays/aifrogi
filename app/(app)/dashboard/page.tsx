@@ -11,6 +11,7 @@ import { evaluateBotReadiness } from "@/lib/bot-readiness";
 import { buildHumanResponseReport } from "@/lib/human-response-sla";
 import { getDb } from "@/lib/db";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { getClientSupportUpdates } from "@/lib/support-notifications";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,7 +23,7 @@ export default async function DashboardPage() {
   const workspaceProperty = organization?.properties.find(property => property.slug === propertySlug) || organization?.properties[0];
   const [allLeads, tickets, knowledge, governance, subscription, testActivity, answerEvidence] = await Promise.all([
     loadLeads(propertySlug),
-    organization ? listSupportTickets({ organizationId: organization.id }) : Promise.resolve([]),
+    organization ? listSupportTickets({ organizationId: organization.id, includeMessages: true }) : Promise.resolve([]),
     getKnowledgeWorkspaceSummary(propertySlug),
     getKnowledgeGovernanceSummary(propertySlug),
     organization ? getOrganizationSubscriptionAccess(organization.id) : Promise.resolve(null),
@@ -34,6 +35,7 @@ export default async function DashboardPage() {
   const recent = [...leads].sort((a, b) => +new Date(b.updatedAtIso) - +new Date(a.updatedAtIso)).slice(0, 5);
   const connected = organization?.botProfile?.status === "LIVE";
   const openTickets = tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status));
+  const supportUpdates = getClientSupportUpdates(tickets);
   const botReadiness = evaluateBotReadiness({ profile: organization?.botProfile, connectors: organization?.botConnectors || [], appearanceConfigured: Boolean(organization?.botProfile?.personaName && knowledge.settings.welcomeMessage && knowledge.settings.themeColor), approvedKnowledgeCount: governance.entries.filter((item) => item.status === "APPROVED").length + governance.documents.filter((item) => item.status === "APPROVED").length, websitePageCount: knowledge.pages.length, testComplete: Boolean(testActivity || answerEvidence), installationComplete: Boolean(organization?.botProfile?.installationDetectedAt || organization?.botProfile?.status === "LIVE") });
   const humanResponse = buildHumanResponseReport({ leads: allLeads, slaMinutes: organization?.botProfile?.responseSlaMinutes, reminderPercent: organization?.botProfile?.reminderPercent, fallbackEnabled: organization?.botProfile?.fallbackEnabled });
 
@@ -65,6 +67,7 @@ export default async function DashboardPage() {
     botCategory={organization?.botProfile?.category || "BUSINESS_AI"}
     botReadiness={botReadiness}
     humanResponse={humanResponse}
+    supportUpdates={supportUpdates}
     attention={attention}
     readiness={[
       { label: "Website bot", value: organization?.botProfile?.status === "LIVE" ? "Live" : "Needs setup", ok: organization?.botProfile?.status === "LIVE" },

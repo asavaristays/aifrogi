@@ -4,7 +4,7 @@ import { SupportCenter } from "@/components/support/support-center";
 import { getCurrentUser } from "@/lib/auth-server";
 import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
 import { getOrganizationForMember } from "@/lib/repositories/onboarding-repository";
-import { listSupportTickets } from "@/lib/repositories/support-repository";
+import { listSupportTickets, markSupportTicketViewed } from "@/lib/repositories/support-repository";
 import { listSupportAccessEvents, listSupportAccessGrants } from "@/lib/support-access";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +36,7 @@ export default async function SupportPage() {
     ...event,
     createdAt: event.createdAt.toISOString()
   }));
+  if (organization) await markSupportTicketViewed({ organizationId: organization.id, viewer: "CLIENT" });
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <TopBar title="Support" subtitle="Guided help for widget onboarding, website conversations, billing, and automation" notificationCount={tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status)).length} />

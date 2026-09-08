@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Ticket = {
@@ -35,6 +35,11 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
   const [error, setError] = useState("");
   const [replies, setReplies] = useState<Record<string, string>>({});
   const openCount = useMemo(() => tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status)).length, [tickets]);
+
+  useEffect(() => {
+    const target = window.location.hash ? document.querySelector(window.location.hash) : null;
+    if (target instanceof HTMLDetailsElement) target.open = true;
+  }, []);
 
   async function createTicket() {
     setError("");
@@ -92,7 +97,7 @@ export function SupportCenter({ initialTickets }: { initialTickets: Ticket[] }) 
           <p className="mt-2 text-sm text-[var(--text-muted)]">Open a ticket to read the conversation or send an update.</p>
           <div className="mt-5 space-y-3">
             {tickets.length ? tickets.map((ticket) => (
-              <details key={ticket.id} className="rounded-lg border border-black/7 bg-[#fbfcfc] p-4">
+              <details id={`ticket-${ticket.id}`} key={ticket.id} className="scroll-mt-24 rounded-lg border border-black/7 bg-[#fbfcfc] p-4">
                 <summary className="cursor-pointer list-none">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <span><strong className="block text-sm">{ticket.subject}</strong><small className="mt-1 block text-[var(--text-muted)]">{ticket.reference} · {ticket.category.replaceAll("_", " ")}</small></span>
