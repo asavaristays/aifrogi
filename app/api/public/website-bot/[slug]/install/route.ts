@@ -23,7 +23,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       themeColor: settings.themeColor,
       widgetTheme: settings.widgetTheme || "dark",
       logoUrl: settings.logoUrl,
-      welcomeMessage: settings.welcomeMessage
+      welcomeMessage: settings.welcomeMessage,
+      welcomeCardImageUrl: settings.welcomeCardImageUrl,
+      welcomeCardTitle: settings.welcomeCardTitle,
+      welcomeCardText: settings.welcomeCardText
     }
   }, { headers });
 }

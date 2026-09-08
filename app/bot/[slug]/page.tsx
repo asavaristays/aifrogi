@@ -43,7 +43,7 @@ export default async function StandaloneWebsiteBotPage({ params }: { params: Pro
   return <main className={premium ? shell.standalone : "min-h-dvh bg-[#050505] px-3 py-4 sm:px-6 sm:py-8"}>
     <div className={premium ? shell.frame : "mx-auto flex min-h-[calc(100dvh-2rem)] max-w-[460px] flex-col gap-3 sm:min-h-[calc(100dvh-4rem)]"}>
       <WebsiteBotDeliveryActions botName={premium ? "Webtechnosys AI Bot" : `${name} AI Assistant`} />
-      <div className="min-h-0 flex-1"><WebsiteBotEmbed slug={slug} demo={bot.organization?.isDemo === true} botName={profile.personaName || `${name} AI`} welcomeMessage={settings.welcomeMessage} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme} logoUrl={settings.logoUrl} menu={settings.widgetMenu} /></div>
+      <div className="min-h-0 flex-1"><WebsiteBotEmbed slug={slug} demo={bot.organization?.isDemo === true} botName={profile.personaName || `${name} AI`} welcomeMessage={settings.welcomeMessage} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme} logoUrl={settings.logoUrl} welcomeCardImageUrl={settings.welcomeCardImageUrl} welcomeCardTitle={settings.welcomeCardTitle} welcomeCardText={settings.welcomeCardText} menu={settings.widgetMenu} /></div>
     </div>
   </main>;
 }

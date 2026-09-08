@@ -42,6 +42,9 @@ export async function PATCH(request: Request) {
       themeColor: typeof payload?.themeColor === "string" ? payload.themeColor : undefined,
       widgetTheme: ["dark", "light", "system"].includes(String(payload?.widgetTheme)) ? payload?.widgetTheme as "dark" | "light" | "system" : undefined,
       logoUrl: typeof payload?.logoUrl === "string" ? payload.logoUrl : undefined,
+      welcomeCardImageUrl: typeof payload?.welcomeCardImageUrl === "string" ? payload.welcomeCardImageUrl : undefined,
+      welcomeCardTitle: typeof payload?.welcomeCardTitle === "string" ? payload.welcomeCardTitle : undefined,
+      welcomeCardText: typeof payload?.welcomeCardText === "string" ? payload.welcomeCardText : undefined,
       status: typeof payload?.sourceUrl === "string" ? "DRAFT" : undefined
     });
     return NextResponse.json({ ok: true, settings });

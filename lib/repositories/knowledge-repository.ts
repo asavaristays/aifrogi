@@ -17,6 +17,9 @@ export type KnowledgeSettings = {
   themeColor: string;
   widgetTheme?: WidgetTheme;
   logoUrl: string;
+  welcomeCardImageUrl: string;
+  welcomeCardTitle: string;
+  welcomeCardText: string;
   widgetMenu?: WidgetMenuConfig;
   lastCrawledAt: string | null;
   pageCount: number;
@@ -58,6 +61,9 @@ function defaults(propertySlug: string): KnowledgeSettings {
     themeColor: "#8a6a16",
     widgetTheme: "dark",
     logoUrl: "",
+    welcomeCardImageUrl: "",
+    welcomeCardTitle: "",
+    welcomeCardText: "",
     widgetMenu: defaultWidgetMenu(propertySlug),
     lastCrawledAt: null,
     pageCount: 0,
@@ -94,6 +100,10 @@ export async function writeKnowledgeSettings(
     const logo = new URL(input.logoUrl.trim());
     if (logo.protocol !== "https:" || logo.username || logo.password) throw new Error("Use a public HTTPS logo URL without credentials.");
   }
+  if (input.welcomeCardImageUrl?.trim()) {
+    const image = new URL(input.welcomeCardImageUrl.trim());
+    if (image.protocol !== "https:" || image.username || image.password) throw new Error("Use a public HTTPS welcome-card image URL without credentials.");
+  }
   const next: KnowledgeSettings = {
     ...current,
     ...input,
@@ -108,6 +118,9 @@ export async function writeKnowledgeSettings(
     themeColor: /^#[0-9a-f]{6}$/i.test(String(input.themeColor || "")) ? String(input.themeColor) : current.themeColor,
     widgetTheme: ["dark", "light", "system"].includes(String(input.widgetTheme)) ? input.widgetTheme as WidgetTheme : current.widgetTheme || "dark",
     logoUrl: String(input.logoUrl ?? current.logoUrl).trim().slice(0, 500),
+    welcomeCardImageUrl: String(input.welcomeCardImageUrl ?? current.welcomeCardImageUrl).trim().slice(0, 500),
+    welcomeCardTitle: String(input.welcomeCardTitle ?? current.welcomeCardTitle).trim().slice(0, 80),
+    welcomeCardText: String(input.welcomeCardText ?? current.welcomeCardText).trim().slice(0, 240),
     widgetMenu: input.widgetMenu === undefined ? current.widgetMenu : normalizeWidgetMenu(input.widgetMenu, current.widgetMenu || defaultWidgetMenu(propertySlug)),
     buckets: Array.isArray(input.buckets) ? [...new Set(input.buckets.map(String).filter(Boolean))].sort() : current.buckets,
     updatedAt: new Date().toISOString()

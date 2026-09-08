@@ -71,3 +71,30 @@ test("widget theme flows from Setup to embedded and standalone bots", () => {
   assert.match(standalone, /widgetTheme=\{settings\.widgetTheme\}/);
   assert.match(widget, /data-widget-theme=\{widgetTheme\}/);
 });
+
+test("client sidebar keeps Team Inbox visible for daily operations", () => {
+  const navigation = readFileSync("data/mock.ts", "utf8");
+  const sidebar = readFileSync("components/layout/side-nav.tsx", "utf8");
+  assert.match(navigation, /href: "\/team-inbox", label: "Team Inbox"/);
+  assert.match(sidebar, /hrefs: \["\/dashboard", "\/team-inbox", "\/contacts"\]/);
+  assert.match(sidebar, /\["\/dashboard", "\/team-inbox", "\/contacts", "\/knowledge"/);
+});
+
+test("optional welcome highlight flows from Setup to every website widget", () => {
+  const appearance = readFileSync("components/setup/bot-appearance-settings.tsx", "utf8");
+  const repository = readFileSync("lib/repositories/knowledge-repository.ts", "utf8");
+  const api = readFileSync("app/api/knowledge/route.ts", "utf8");
+  const embedPage = readFileSync("app/embed/[slug]/page.tsx", "utf8");
+  const standalone = readFileSync("app/bot/[slug]/page.tsx", "utf8");
+  const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
+  for (const field of ["welcomeCardImageUrl", "welcomeCardTitle", "welcomeCardText"]) {
+    assert.match(appearance, new RegExp(field));
+    assert.match(repository, new RegExp(field));
+    assert.match(api, new RegExp(field));
+    assert.match(embedPage, new RegExp(field));
+    assert.match(standalone, new RegExp(field));
+    assert.match(widget, new RegExp(field));
+  }
+  assert.match(repository, /public HTTPS welcome-card image URL/);
+  assert.match(appearance, /1200 × 630 px/);
+});

@@ -18,5 +18,5 @@ export default async function WebsiteBotEmbedPage({ params, searchParams }: { pa
     return null;
   }
   const settings = await readKnowledgeSettings(slug);
-  return <WebsiteBotEmbed slug={slug} botName={profile.personaName || `${property?.organization?.name || "Business"} AI`} welcomeMessage={settings.welcomeMessage} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme} logoUrl={settings.logoUrl} dismissible={mode === "launcher"} menu={settings.widgetMenu} />;
+  return <WebsiteBotEmbed slug={slug} botName={profile.personaName || `${property?.organization?.name || "Business"} AI`} welcomeMessage={settings.welcomeMessage} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme} logoUrl={settings.logoUrl} welcomeCardImageUrl={settings.welcomeCardImageUrl} welcomeCardTitle={settings.welcomeCardTitle} welcomeCardText={settings.welcomeCardText} dismissible={mode === "launcher"} menu={settings.widgetMenu} />;
 }
