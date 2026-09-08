@@ -7,6 +7,7 @@ import { WEBTECHNOSYS_PILOT_CASES, WEBTECHNOSYS_PILOT_VERSION, evaluatePilotAnsw
 const baseUrl = (process.env.AIFROGI_TEST_BASE_URL || "https://app.aifrogi.com").replace(/\/$/, "");
 const slug = process.env.AIFROGI_TEST_BOT_SLUG || "webtechnosys-ai-agency-e5da22";
 const creditCap = Math.max(25, Math.min(Number(process.env.AIFROGI_TEST_CREDIT_CAP || 30), 30));
+const templateOnly = process.argv.includes("--template");
 if (WEBTECHNOSYS_PILOT_CASES.length !== 25 || WEBTECHNOSYS_PILOT_CASES.length > creditCap) throw new Error("The pilot must contain exactly 25 questions within the 30-credit ceiling.");
 const runId = `webtechnosys-pilot-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const sessions = new Map();
@@ -57,9 +58,12 @@ async function writeWorkbook(path, results, summary) {
   await workbook.xlsx.writeFile(path);
 }
 
-const results = [];
-for (let index = 0; index < WEBTECHNOSYS_PILOT_CASES.length; index += 1) results.push(await execute(WEBTECHNOSYS_PILOT_CASES[index], index));
-const summary = { version: WEBTECHNOSYS_PILOT_VERSION, runId, baseUrl, slug, creditCap, planned: 25, executed: results.length, passed: results.filter(row => row.overall === "PASS").length, review: results.filter(row => row.overall === "REVIEW").length, failed: results.filter(row => row.overall === "FAIL").length };
+const emptyDimensions = { factualAccuracy: "", relevanceCompleteness: "", subjectCompetence: "", tone: "", safetyAuthority: "", nextStepQuality: "", salesPressure: "" };
+const results = templateOnly
+  ? WEBTECHNOSYS_PILOT_CASES.map(test => ({ ...test, status: "", answer: "", answerEvidenceId: "", intentDetected: "", disposition: "", qualification: null, dimensions: emptyDimensions, overall: "", findings: [] }))
+  : [];
+if (!templateOnly) for (let index = 0; index < WEBTECHNOSYS_PILOT_CASES.length; index += 1) results.push(await execute(WEBTECHNOSYS_PILOT_CASES[index], index));
+const summary = { version: WEBTECHNOSYS_PILOT_VERSION, runId, baseUrl, slug, creditCap, planned: 25, executed: templateOnly ? 0 : results.length, passed: results.filter(row => row.overall === "PASS").length, review: results.filter(row => row.overall === "REVIEW").length, failed: results.filter(row => row.overall === "FAIL").length };
 await mkdir("output/webtechnosys-pilot", { recursive: true });
 const root = `output/webtechnosys-pilot/${runId}`;
 await writeFile(`${root}.json`, JSON.stringify({ summary, results }, null, 2));
@@ -68,4 +72,4 @@ const csvRows = results.map((row, index) => [index + 1, row.area, row.id, row.qu
 await writeFile(`${root}.csv`, [csvHeaders, ...csvRows].map(row => row.map(csvCell).join(",")).join("\n"));
 await writeWorkbook(`${root}.xlsx`, results, summary);
 console.log(JSON.stringify({ summary, files: { json: `${root}.json`, csv: `${root}.csv`, xlsx: `${root}.xlsx` } }, null, 2));
-process.exitCode = summary.failed ? 1 : 0;
+process.exitCode = !templateOnly && summary.failed ? 1 : 0;
