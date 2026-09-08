@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:channels": "node --import tsx --test tests/channels/*.test.ts",
-    "test:core": "node --import tsx --test tests/channels/*.test.ts tests/sovereign-intelligence/*.test.ts tests/admin/*.test.ts tests/onboarding/*.test.ts tests/ai-operations/*.test.ts tests/onboarding-workbook.test.ts",
+    "test:channels": "node --import tsx --test tests/channels/*.test.ts tests/channels/*.test.mjs",
+    "test:core": "node --import tsx --test tests/channels/*.test.ts tests/channels/*.test.mjs tests/sovereign-intelligence/*.test.ts tests/admin/*.test.ts tests/onboarding/*.test.ts tests/ai-operations/*.test.ts tests/onboarding-workbook.test.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
@@ -36,6 +36,7 @@
     "verify:routes": "node scripts/verify-canonical-routes.mjs",
     "verify:widget-load": "node scripts/load-test-widget.mjs",
     "verify:bot-family": "node scripts/run-bot-family-regression.mjs",
+    "verify:webtechnosys-pilot": "node scripts/run-webtechnosys-pilot.mjs",
     "grant:bot-regression-credits": "node --import tsx scripts/grant-bot-regression-credits.ts",
     "verify:commercial-readiness": "npm run verify:routes && node --import tsx --test tests/commercial-readiness/*.test.ts",
     "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
