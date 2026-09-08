@@ -20,4 +20,5 @@ This file contains only changes that are complete locally but not yet deployed t
 - Begin timeline, budget and other discovery only after an explicit commercial action such as a quotation, proposal, hiring, implementation or booking request.
 - Add a reusable regression runner for Webtechnosys plus eight showcase bot families, capped at 1,000 replies, with bounded concurrency, systemic/privacy early-stop and failure-only evidence.
 - Add `npm run verify:bot-family`; default execution is 90 representative tests and can be expanded without changing code while never exceeding the 1,000-credit ceiling.
+- Add an idempotent, audited 1,000-credit QA grant command with 30-day expiry; repeated execution cannot duplicate the grant.
 - Validation: 133/133 channel tests, TypeScript, script syntax, whitespace checks and a 75-route production webpack build.
