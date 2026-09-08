@@ -126,6 +126,13 @@ test("short booking-link follow-up retains the prior training intent", () => {
   assert.equal(resolved.retrievalQuestion, "What upcoming AI training can I book?");
 });
 
+test("natural when-and-where pronoun follow-up retains the prior subject", () => {
+  const resolved = resolveWebsiteKnowledgeQuestion("When and where is it?", ["I am interested in training"]);
+  assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
+  assert.equal(resolved.retrievalQuestion, "I am interested in training");
+  assert.equal(resolved.priorQuestion, "I am interested in training");
+});
+
 test("crawler prioritizes sitemap inventory before legacy seeds", () => {
   assert.match(source, /baseUrl, \.\.\.priorityUrls, \.\.\.sitemapUrls, \.\.\.homepageLinks, \.\.\.seedUrls/);
   assert.match(source, /MAX_DISCOVERY_URLS = 120/);
