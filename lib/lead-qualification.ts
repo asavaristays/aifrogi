@@ -17,10 +17,21 @@ export type LeadQualificationState = {
   recommendedAction: "CONTINUE_QUALIFICATION" | "REVIEW_LEAD" | "PRIORITY_FOLLOW_UP";
 };
 
-const activationTerms = [
-  "quote", "quotation", "price", "pricing", "cost", "project", "proposal", "consultation",
-  "interested", "need", "want", "looking for", "hire", "start", "book", "demo", "callback"
+// Qualification must never interrupt ordinary discovery. It begins only when the
+// visitor asks for a concrete commercial action, not when they merely express
+// interest, ask a question, or mention a service/project.
+const explicitBuyingSignals = [
+  /\b(?:quote|quotation|proposal|estimate)\b/i,
+  /\b(?:hire|engage)\s+(?:you|your\s+(?:team|company|agency)|an?\s+(?:agency|consultant|trainer))\b/i,
+  /\b(?:build|create|develop|implement|set\s*up|deploy)\b[^.!?\n]{0,60}\b(?:for\s+(?:me|us|my|our)|my\s+(?:business|company|team)|our\s+(?:business|company|team))\b/i,
+  /\b(?:book|schedule|arrange)\b[^.!?\n]{0,45}\b(?:consultation|discovery\s+call|training|workshop|appointment|meeting|demo)\b/i,
+  /\b(?:price|pricing|cost|budget)\b[^.!?\n]{0,50}\b(?:for|of|to\s+(?:build|implement|set\s*up|deploy))\b/i,
+  /\b(?:ready\s+to\s+(?:buy|proceed|start)|send\s+(?:me|us)\s+(?:a\s+)?(?:payment|proposal|quotation|quote))\b/i
 ];
+
+export function hasExplicitBuyingSignal(messages: string[]) {
+  return messages.some((message) => explicitBuyingSignals.some((pattern) => pattern.test(message)));
+}
 
 const needPatterns: Array<[RegExp, string]> = [
   [/\b(ai bot|chatbot|business bot|customer support bot)\b/i, "AI Business Bot"],
@@ -88,8 +99,7 @@ export function qualifyLeadConversation(input: {
   enabled: boolean;
 }) {
   const previous = previousQualification(input.previousState);
-  const joined = input.messages.join(" ").toLowerCase();
-  const active = input.enabled && Boolean(previous?.active || activationTerms.some((term) => joined.includes(term)));
+  const active = input.enabled && Boolean(previous?.active || hasExplicitBuyingSignal(input.messages));
   if (!active) return { state: null, prompt: null };
 
   const facts = extractFacts(input.messages, previous?.facts || {}, input.contact);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "../../lib/lead-qualification";
+import { appendQualificationPrompt, hasExplicitBuyingSignal, normalizeConsentedLeadPhone, qualifyLeadConversation } from "../../lib/lead-qualification";
 import { readFileSync } from "node:fs";
 
 test("qualification stays idle for an ordinary knowledge question", () => {
@@ -9,17 +9,42 @@ test("qualification stays idle for an ordinary knowledge question", () => {
   assert.equal(result.prompt, null);
 });
 
+test("interest and product discovery never trigger sales qualification", () => {
+  for (const message of [
+    "I am interested in training",
+    "What training do you offer?",
+    "I want to know about AI bots",
+    "I need information about website development",
+    "Can I see a demo?"
+  ]) {
+    assert.equal(hasExplicitBuyingSignal([message]), false, message);
+    const result = qualifyLeadConversation({ messages: [message], enabled: true });
+    assert.equal(result.state, null, message);
+    assert.equal(result.prompt, null, message);
+  }
+});
+
+test("explicit commercial actions activate qualification", () => {
+  for (const message of [
+    "Please send a quotation for an AI bot",
+    "We want to hire your agency",
+    "Please build an AI bot for our company",
+    "I want to book training for our team",
+    "What is the cost for website development?"
+  ]) assert.equal(hasExplicitBuyingSignal([message]), true, message);
+});
+
 test("commercial intent starts bounded, one-question-at-a-time qualification", () => {
-  const result = qualifyLeadConversation({ messages: ["I need an AI bot for my company"], enabled: true });
+  const result = qualifyLeadConversation({ messages: ["Please build an AI bot for my company"], enabled: true });
   assert.equal(result.state?.facts.need, "AI Business Bot");
   assert.equal(result.state?.nextField, "timeline");
   assert.match(result.prompt || "", /When would/);
 });
 
 test("qualification accumulates facts and recommends priority follow-up", () => {
-  const first = qualifyLeadConversation({ messages: ["I need a website"], enabled: true });
+  const first = qualifyLeadConversation({ messages: ["Please build a website for my company"], enabled: true });
   const result = qualifyLeadConversation({
-    messages: ["I need a website", "Timeline is next month", "Budget is INR 80,000", "Location: Pune", "I am the owner"],
+    messages: ["Please build a website for my company", "Timeline is next month", "Budget is INR 80,000", "Location: Pune", "I am the owner"],
     previousState: { qualification: first.state },
     contact: "owner@example.com",
     enabled: true
@@ -58,7 +83,7 @@ test("mobile capture is withheld when discovery ends below the quality threshold
 
 test("mobile capture becomes the final step only after useful qualification", () => {
   const result = qualifyLeadConversation({
-    messages: ["I need a website", "Timeline is next month", "Budget is INR 80,000", "Location: Pune", "I am the owner"],
+    messages: ["Please build a website for my company", "Timeline is next month", "Budget is INR 80,000", "Location: Pune", "I am the owner"],
     enabled: true
   });
   assert.equal(result.state?.contactEligible, true);

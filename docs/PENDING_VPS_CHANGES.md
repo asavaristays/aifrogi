@@ -13,3 +13,11 @@ This file contains only changes that are complete locally but not yet deployed t
 - When the model is unavailable or its output is rejected, serve the highest-ranked matching published claim verbatim; otherwise use a plain business-team fallback without exposing AiFrogi internals.
 - Preserve approved-knowledge grounding, safety boundaries and model-call volume.
 - Validation: focused lint, TypeScript, 131/131 channel tests, whitespace checks and a 75-route production build.
+
+## Bot-family qualification and regression gate
+
+- Prevent ordinary discovery phrases such as “interested”, “want”, “need”, “project”, “start” and “demo” from activating sales qualification.
+- Begin timeline, budget and other discovery only after an explicit commercial action such as a quotation, proposal, hiring, implementation or booking request.
+- Add a reusable regression runner for Webtechnosys plus eight showcase bot families, capped at 1,000 replies, with bounded concurrency, systemic/privacy early-stop and failure-only evidence.
+- Add `npm run verify:bot-family`; default execution is 90 representative tests and can be expanded without changing code while never exceeding the 1,000-credit ceiling.
+- Validation: 133/133 channel tests, TypeScript, script syntax, whitespace checks and a 75-route production webpack build.
