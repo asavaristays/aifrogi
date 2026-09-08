@@ -1,5 +1,7 @@
 import { TopBar } from "@/components/layout/top-bar";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import type { ReportPeriod } from "@/lib/website-reporting";
 
 export type AnalyticsWorkspaceMetrics = {
   contacts: number;
@@ -13,40 +15,44 @@ export type AnalyticsWorkspaceMetrics = {
 };
 
 type OperationsReport = { open: number; overdue: number; completed: number; verifiedOutcomes: number; valuePaisa: number; byOutcome: Array<{ outcomeType: string | null; _count: { _all: number } }> };
+type WebsiteOutcomes = { qualified: number; captured: number; qualificationRate: number; captureRate: number };
 
-export function AnalyticsWorkspaceView({ metrics, operations }: { metrics: AnalyticsWorkspaceMetrics; operations?: OperationsReport | null }) {
+export function AnalyticsWorkspaceView({ metrics, operations, outcomes, period }: { metrics: AnalyticsWorkspaceMetrics; operations?: OperationsReport | null; outcomes: WebsiteOutcomes; period: { period: ReportPeriod; label: string } }) {
   const answered = Math.max(metrics.contacts - metrics.unanswered, 0);
   const answerRate = metrics.contacts ? Math.round((answered / metrics.contacts) * 100) : 0;
   const replyScore = metrics.unanswered ? Math.max(18, Math.round((answered / Math.max(metrics.contacts, 1)) * 100)) : 100;
   const direction = metrics.unanswered
-    ? "Reply to waiting conversations before sending a new campaign."
-    : metrics.deliveryRate < 80
-      ? "Review delivery before scaling broadcast volume."
-      : metrics.readRate < 50
-        ? "Improve template copy and audience quality before scaling."
-        : "Workspace is stable. You can plan the next campaign.";
+    ? "Reply to waiting website conversations first."
+    : outcomes.qualified
+      ? `Follow up with ${outcomes.qualified} qualified lead${outcomes.qualified === 1 ? "" : "s"}.`
+      : metrics.contacts
+        ? "Review visitor questions and strengthen bot intelligence."
+        : "No website-bot conversation was recorded in this period.";
 
   return (
     <div className="min-h-screen bg-[#f6f7f6]">
-      <TopBar title="Reports" subtitle="Cross-channel conversations, operational actions, verified outcomes, and measurable business value" />
+      <TopBar title="Reports" subtitle="Website-bot conversations, qualified leads, follow-up actions, and verified outcomes" />
       <div className="mx-auto max-w-[1480px] space-y-6 px-5 py-7 sm:px-7 lg:px-9">
+        <nav className="flex gap-1 overflow-x-auto" aria-label="Report period">
+          {[["today", "Today"], ["7d", "7 days"], ["30d", "30 days"], ["all", "All time"]].map(([value, label]) => <Link key={value} href={`/analytics?period=${value}`} className={`rounded-full px-4 py-2 text-xs font-semibold ${period.period === value ? "bg-[#17211e] text-white" : "border border-black/8 bg-white text-[var(--text-muted)]"}`}>{label}</Link>)}
+        </nav>
         <Card className="overflow-hidden border border-black/6 shadow-[0_16px_38px_-32px_rgba(17,39,32,0.5)]">
           <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_340px]">
             <section className="p-6 sm:p-7">
               <p className="product-eyebrow">Direction</p>
               <h2 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight text-[#17211e]">{direction}</h2>
               <div className="mt-7 grid gap-4 md:grid-cols-3">
-                <SignalCard title="Reply health" value={replyScore + "%"} helper={`${metrics.unanswered} waiting`} score={replyScore} tone="red" />
-                <SignalCard title="Delivery health" value={metrics.deliveryRate + "%"} helper={`${metrics.failed} failed events`} score={metrics.deliveryRate} tone="green" />
-                <SignalCard title="Audience signal" value={metrics.readRate + "%"} helper="Read rate" score={metrics.readRate} tone="blue" />
+                <SignalCard title="Response coverage" value={replyScore + "%"} helper={`${metrics.unanswered} waiting`} score={replyScore} tone="red" />
+                <SignalCard title="Qualified leads" value={String(outcomes.qualified)} helper={`${outcomes.qualificationRate}% of conversations`} score={outcomes.qualificationRate} tone="green" />
+                <SignalCard title="Contact capture" value={String(outcomes.captured)} helper={`${outcomes.captureRate}% consented`} score={outcomes.captureRate} tone="blue" />
               </div>
             </section>
             <aside className="border-t border-black/6 bg-[#17211e] p-6 text-white lg:border-l lg:border-t-0">
-              <p className="text-sm font-semibold text-white/62">Today&apos;s operating picture</p>
+              <p className="text-sm font-semibold text-white/62">{period.label} operating picture</p>
               <div className="mt-6 space-y-5">
-                <SummaryMetric label="Inbound" value={metrics.incoming} total={Math.max(metrics.incoming + metrics.outgoing, 1)} color="#52d28f" />
-                <SummaryMetric label="Outbound" value={metrics.outgoing} total={Math.max(metrics.incoming + metrics.outgoing, 1)} color="#7db7ff" />
-                <SummaryMetric label="Answered contacts" value={answered} total={Math.max(metrics.contacts, 1)} color="#f2b75d" />
+                <SummaryMetric label="Visitor messages" value={metrics.incoming} total={Math.max(metrics.incoming + metrics.outgoing, 1)} color="#52d28f" />
+                <SummaryMetric label="Bot / team replies" value={metrics.outgoing} total={Math.max(metrics.incoming + metrics.outgoing, 1)} color="#7db7ff" />
+                <SummaryMetric label="Conversations" value={metrics.contacts} total={Math.max(metrics.contacts, 1)} color="#f2b75d" />
               </div>
             </aside>
           </div>
@@ -73,11 +79,13 @@ export function AnalyticsWorkspaceView({ metrics, operations }: { metrics: Analy
 
           <Card className="border border-black/6 p-6 shadow-[0_16px_38px_-32px_rgba(17,39,32,0.5)]">
             <p className="product-eyebrow">Recommended next action</p>
-            <h3 className="mt-2 text-xl font-semibold">{metrics.unanswered ? "Open inbox" : "Prepare next audience"}</h3>
+            <h3 className="mt-2 text-xl font-semibold">{metrics.unanswered ? "Open Team Inbox" : outcomes.qualified ? "Follow qualified leads" : "Improve bot intelligence"}</h3>
             <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
               {metrics.unanswered
-                ? "Reply backlog should be cleared before campaign activity so no active lead is left cold."
-                : "The queue is clear. Use campaign history and read rate to pick the next focused test batch."}
+                ? "Reply to the waiting website conversation so no active lead is left unattended."
+                : outcomes.qualified
+                  ? "Review qualified conversations in Team Inbox and complete the approved follow-up."
+                  : "Review real visitor questions and intelligence gaps before changing the bot."}
             </p>
           </Card>
         </section>

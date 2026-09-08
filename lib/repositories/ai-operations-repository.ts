@@ -82,15 +82,17 @@ export async function updateLeadOperation(input: {
   } });
 }
 
-export async function getAiOperationsReport(propertyId: string) {
+export async function getAiOperationsReport(propertyId: string, since: Date | null = null) {
   const db = getDb();
   if (!db) return { open: 0, overdue: 0, completed: 0, verifiedOutcomes: 0, valuePaisa: 0, byOutcome: [] as Array<{ outcomeType: string | null; _count: { _all: number }; _sum: { outcomeValuePaisa: number | null } }> };
   const now = new Date();
+  const createdInPeriod = since ? { createdAt: { gte: since } } : {};
+  const completedInPeriod = since ? { completedAt: { gte: since } } : {};
   const [open, overdue, completed, outcomes] = await Promise.all([
-    db.aiOperation.count({ where: { propertyId, status: { in: ["OPEN", "IN_PROGRESS", "BLOCKED"] } } }),
-    db.aiOperation.count({ where: { propertyId, status: { in: ["OPEN", "IN_PROGRESS", "BLOCKED"] }, dueAt: { lt: now } } }),
-    db.aiOperation.count({ where: { propertyId, status: "COMPLETED" } }),
-    db.aiOperation.groupBy({ by: ["outcomeType"], where: { propertyId, outcomeType: { not: null } }, _count: { _all: true }, _sum: { outcomeValuePaisa: true } })
+    db.aiOperation.count({ where: { propertyId, status: { in: ["OPEN", "IN_PROGRESS", "BLOCKED"] }, ...createdInPeriod } }),
+    db.aiOperation.count({ where: { propertyId, status: { in: ["OPEN", "IN_PROGRESS", "BLOCKED"] }, dueAt: { lt: now }, ...createdInPeriod } }),
+    db.aiOperation.count({ where: { propertyId, status: "COMPLETED", ...completedInPeriod } }),
+    db.aiOperation.groupBy({ by: ["outcomeType"], where: { propertyId, status: "COMPLETED", outcomeType: { not: null }, ...completedInPeriod }, _count: { _all: true }, _sum: { outcomeValuePaisa: true } })
   ]);
   return {
     open,

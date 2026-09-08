@@ -7,7 +7,6 @@ export function TopBar({
   subtitle,
   actions,
   notificationCount = 0,
-  notificationMode: _notificationMode = "pill",
   tone = "dark"
 }: {
   title: string;

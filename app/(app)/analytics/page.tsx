@@ -4,15 +4,18 @@ import { buildWhatsAppMetrics } from "@/lib/whatsapp-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getAiOperationsReport } from "@/lib/repositories/ai-operations-repository";
+import { resolveReportPeriod, websiteLeadsForPeriod, websiteOutcomeSummary } from "@/lib/website-reporting";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function AnalyticsPage() {
-  const [propertySlug, access] = await Promise.all([getCurrentWorkspaceSlug(), resolveClientWorkspaceAccess()]);
-  const leads = await loadLeads(propertySlug);
+export default async function AnalyticsPage({ searchParams }: { searchParams: Promise<{ period?: string }> }) {
+  const [propertySlug, access, query] = await Promise.all([getCurrentWorkspaceSlug(), resolveClientWorkspaceAccess(), searchParams]);
+  const period = resolveReportPeriod(query.period);
+  const leads = websiteLeadsForPeriod(await loadLeads(propertySlug), period.since);
   const metrics = buildWhatsAppMetrics(leads);
-  const operations = access.ok ? await getAiOperationsReport(access.propertyId) : null;
+  const outcomes = websiteOutcomeSummary(leads);
+  const operations = access.ok ? await getAiOperationsReport(access.propertyId, period.since) : null;
 
-  return <AnalyticsWorkspaceView metrics={metrics} operations={operations} />;
+  return <AnalyticsWorkspaceView metrics={metrics} operations={operations} outcomes={outcomes} period={period} />;
 }

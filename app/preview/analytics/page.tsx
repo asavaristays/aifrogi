@@ -8,6 +8,8 @@ export default function PreviewAnalyticsPage() {
 
   return (
     <AnalyticsWorkspaceView
+      period={{ period: "7d", label: "Last 7 days" }}
+      outcomes={{ qualified: 6, captured: 4, qualificationRate: 24, captureRate: 16 }}
       metrics={{
         contacts: 25,
         incoming: 28,
