@@ -12,6 +12,7 @@ import { buildHumanResponseReport } from "@/lib/human-response-sla";
 import { getDb } from "@/lib/db";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { getClientSupportUpdates } from "@/lib/support-notifications";
+import { dateLabelForTimeZone, greetingForTimeZone } from "@/lib/greeting";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -48,9 +49,9 @@ export default async function DashboardPage() {
 
   const workspace = workspaceProperty;
   const membership = organization?.members.find((member) => member.email.toLowerCase() === user?.username.toLowerCase());
-  const indiaHour = Number(new Intl.DateTimeFormat("en-IN", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(new Date()));
-  const greeting = indiaHour < 12 ? "Good morning" : indiaHour < 17 ? "Good afternoon" : "Good evening";
-  const todayLabel = new Intl.DateTimeFormat("en-IN", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Kolkata" }).format(new Date());
+  const workspaceTimeZone = organization?.timezone || "Asia/Kolkata";
+  const greeting = greetingForTimeZone(workspaceTimeZone);
+  const todayLabel = dateLabelForTimeZone(workspaceTimeZone);
   return <ClientDashboardView
     ownerName={organization?.ownerName || user?.label || "Operator"}
     greeting={greeting}

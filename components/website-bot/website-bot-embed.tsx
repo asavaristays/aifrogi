@@ -113,7 +113,8 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
     setMenuOpen(false); setHumanHelpDraft(false);
     setText(""); setWaiting(true); setMessages((current) => [...current, { role: "visitor", text: message }]);
     try {
-    const response = await fetch(`/api/public/website-bot/${encodeURIComponent(slug)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message, sessionId, visitorToken: visitorToken || undefined, ...(contactReady ? { name: contactName.trim(), contact: contactValue.trim(), consent: true } : {}) }) });
+    const visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const response = await fetch(`/api/public/website-bot/${encodeURIComponent(slug)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message, sessionId, visitorToken: visitorToken || undefined, visitorTimeZone, ...(contactReady ? { name: contactName.trim(), contact: contactValue.trim(), consent: true } : {}) }) });
     const payload = await response.json().catch(() => null) as { answer?: string; error?: string; visitorToken?: string; answerEvidenceId?: string | null; conversationState?: string; handoffAvailable?: boolean; qualification?: Qualification | null } | null;
     if (payload?.visitorToken) setVisitorToken(payload.visitorToken);
     if (payload?.conversationState) setConversationState(payload.conversationState);

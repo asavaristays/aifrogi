@@ -15,7 +15,7 @@ export type SovereignDecision = {
 
 export function classifySovereignIntent(question: string): SovereignIntent {
   const normalized = question.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
-  if (/^(hi|hello|hey|good morning|good afternoon|good evening|namaste)( there)?$/.test(normalized)) return "GREETING";
+  if (/^(hi|hello|hey|good morning|good afternoon|good evening|good night|namaste)( there)?$/.test(normalized)) return "GREETING";
   if (/\b(who are you|what are you|your name|are you (a |an )?(bot|ai)|introduce yourself)\b/.test(normalized)) return "IDENTITY";
   if (/\b(human|real person|team member|agent|call me|contact me|talk to someone|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
   if (/\b(contact (details|information|number)|phone number|mobile number|telephone( number)?|email( address)?|office address|business address|share (your )?address|where (are|r) (you|u) based|where (is|s) (the )?(office|business|company)|location|opening hours|business hours|website address)\b/.test(normalized)) return "CONTACT_INFO";

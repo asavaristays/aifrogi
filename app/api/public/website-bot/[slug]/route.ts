@@ -59,7 +59,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
-  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, organization: { select: { id: true, name: true, isDemo: true, publicPhone: true, botProfile: true } } } });
+  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, timezone: true, organization: { select: { id: true, name: true, isDemo: true, publicPhone: true, botProfile: true } } } });
   const organization = property?.organization;
   const profile = organization?.botProfile;
   if (!property || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
@@ -67,7 +67,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
 
-  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string } | null;
+  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
@@ -135,7 +135,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: demoTurn.status === "SUCCEEDED" ? "ANSWER" as const : demoTurn.status === "CLARIFY" ? "CLARIFY" as const : "ESCALATE" as const, reason: `Isolated demo connector ${demoTurn.connectorKey}/${demoTurn.operation} returned ${demoTurn.status}.` },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: demoTurn.status === "SAFE_FAILURE" ? "CONNECTOR" as const : "NONE" as const, failureCode: demoTurn.status === "SAFE_FAILURE" ? "DEMO_CONNECTOR_UNAVAILABLE" : null, latencyMs: 0, attemptCount: demoTurn.status === "CLARIFY" ? 0 : 1, escalationTier: demoTurn.status === "SAFE_FAILURE" ? "TIER_1_BUSINESS_ASYNC" as const : "TIER_0_SELF_RESOLVE" as const, degradedMode: demoTurn.status === "SAFE_FAILURE" }
-  } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer }).catch(() => null);
+  } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer, visitorTimeZone: payload?.visitorTimeZone || property.timezone }).catch(() => null);
   if (explicitHumanRequest && !safety.blocked) result = {
     answer: handoffEnabled
       ? `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"} in this conversation.${organization.publicPhone ? ` You can also call ${organization.publicPhone}.` : " They will respond here as soon as possible."}`

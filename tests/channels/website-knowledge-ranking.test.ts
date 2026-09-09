@@ -47,12 +47,17 @@ test("website intent routing separates identity, off-topic, and business questio
 });
 
 test("greetings mirror the visitor warmly without exposing governance language", () => {
-  const answer = buildWarmGreeting("Good Morning", "Webtechnosys AI Bot");
+  const answer = buildWarmGreeting("Good Morning", "Webtechnosys AI Bot", "Asia/Kolkata", new Date("2026-09-08T03:30:00.000Z"));
   assert.match(answer, /^Good morning!/);
   assert.match(answer, /welcome/i);
   assert.match(answer, /how can I help today/i);
   assert.doesNotMatch(answer, /approved questions|knowledge base|policy/i);
   assert.equal((answer.match(/Webtechnosys AI Bot/g) || []).length, 1);
+});
+
+test("greetings follow the visitor timezone and never open with good night", () => {
+  assert.match(buildWarmGreeting("Hi", "Business Bot", "America/New_York", new Date("2026-09-08T16:00:00.000Z")), /^Good afternoon!/);
+  assert.match(buildWarmGreeting("Good night", "Business Bot", "Asia/Kolkata", new Date("2026-09-08T13:30:00.000Z")), /^Good evening!/);
 });
 
 test("identity is human-readable and hides platform and governance terminology", () => {

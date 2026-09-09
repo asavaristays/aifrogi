@@ -15,6 +15,7 @@ import { executeReliableModel, escalationTierFor, modelHttpError, type Reliabili
 import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 import { inferUsedClaimIds, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
+import { greetingForTimeZone, validTimeZone } from "@/lib/greeting";
 
 export type KnowledgePage = {
   url: string;
@@ -103,17 +104,8 @@ export const BOT_ANSWER_CONSTITUTION = [
   "Use only the languages enabled in the governed workspace persona."
 ].join("\n");
 
-export function buildWarmGreeting(question: string, assistantName: string) {
-  const normalized = question.trim().toLowerCase();
-  const greeting = /\bgood\s+morning\b/.test(normalized)
-    ? "Good morning"
-    : /\bgood\s+afternoon\b/.test(normalized)
-      ? "Good afternoon"
-      : /\bgood\s+evening\b/.test(normalized)
-        ? "Good evening"
-        : /\bnamaste\b/.test(normalized)
-          ? "Namaste"
-          : "Hello";
+export function buildWarmGreeting(question: string, assistantName: string, timeZone = "Asia/Kolkata", now = new Date()) {
+  const greeting = /\bnamaste\b/i.test(question) ? "Namaste" : greetingForTimeZone(timeZone, now);
   return `${greeting}! Welcome—I'm ${assistantName}. How can I help today?`;
 }
 
@@ -523,13 +515,15 @@ export async function buildWebsiteKnowledgeAnswer({
   propertySlug,
   configuration,
   priorQuestions = [],
-  lastAssistantAnswer = ""
+  lastAssistantAnswer = "",
+  visitorTimeZone
 }: {
   question: string;
   propertySlug: string;
   configuration?: unknown;
   priorQuestions?: string[];
   lastAssistantAnswer?: string;
+  visitorTimeZone?: string;
 }): Promise<KnowledgeAnswer | null> {
   void configuration;
   if (!question.trim()) return null;
@@ -540,7 +534,7 @@ export async function buildWebsiteKnowledgeAnswer({
   const [settings, persona, business] = await Promise.all([
     readKnowledgeSettings(propertySlug),
     getBotPersonaForPropertySlug(propertySlug),
-    db ? db.property.findUnique({ where: { slug: propertySlug }, select: { organization: { select: { name: true, website: true, publicPhone: true, publicEmail: true, publicAddress: true, publicBusinessHours: true, updatedAt: true } } } }) : null
+    db ? db.property.findUnique({ where: { slug: propertySlug }, select: { timezone: true, organization: { select: { name: true, website: true, publicPhone: true, publicEmail: true, publicAddress: true, publicBusinessHours: true, updatedAt: true } } } }) : null
   ]);
   if (!settings.approvedForAi) return null;
 
@@ -556,7 +550,7 @@ export async function buildWebsiteKnowledgeAnswer({
   });
   const categoryBoundary = persona ? evaluateCategoryHardBoundary(persona.category, question) : null;
   if (categoryBoundary) return direct(categoryBoundary.answer, { ...resolved.decision, intent: "SENSITIVE", disposition: "ESCALATE", reason: `Hard category boundary ${categoryBoundary.code}.` });
-  if (resolved.intent === "GREETING") return direct(buildWarmGreeting(question, assistantName));
+  if (resolved.intent === "GREETING") return direct(buildWarmGreeting(question, assistantName, validTimeZone(visitorTimeZone, business?.timezone || "Asia/Kolkata")));
   if (resolved.intent === "IDENTITY") return direct(buildCustomerFacingIdentity(assistantName, businessName));
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m here to help with ${businessName}. Ask me about its services, products, availability, or how to get started.`);
   if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
