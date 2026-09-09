@@ -75,9 +75,18 @@ test("accepted support offers become persisted, consent-aware handovers", () => 
   assert.match(source, /acceptedHumanOffer\(message, lastAssistantAnswer\)/);
   assert.match(source, /Your callback request has been saved/);
   assert.match(source, /humanResponseWindow\(profile\.responseSlaMinutes\)/);
-  assert.match(source, /\(explicitHumanRequest \|\| assistedFallback\) && handoffEnabled && !consentedContact/);
-  assert.match(source, /I can alert the team to reply here, or you may share your name and mobile number below for a callback/);
-  assert.match(widget, /requestHuman: conversationState === "HUMAN_REQUESTED"/);
+  assert.match(source, /\(explicitHumanRequest \|\| assistedFallback\) && !consentedContact/);
+  assert.match(source, /Please share your name and mobile number below for a callback/);
+  assert.match(source, /You can also call \$\{organization\.publicPhone\}/);
+  assert.match(widget, /requestHuman: true/);
+});
+
+test("a missing verified answer always becomes a lead and human route", () => {
+  assert.match(source, /verifiedResultAnswer = explicitHumanRequest \|\| result\?\.decision\.disposition === "ANSWER"/);
+  assert.match(source, /explicitHumanRequest \|\| assistedFallback \|\| evidenceDecision\.disposition === "ESCALATE"/);
+  assert.match(source, /captureIncomingAiBotMessage\([\s\S]*phone: consentedContact/);
+  assert.match(source, /ensureWebsiteHandover/);
+  assert.match(source, /conversationState: humanRequested \? "HUMAN_REQUESTED" : "AI_READY"/);
 });
 
 test("widget connects helpful feedback to the returned evidence id", () => {
