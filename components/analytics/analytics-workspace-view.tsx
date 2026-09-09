@@ -1,7 +1,7 @@
 import { TopBar } from "@/components/layout/top-bar";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import type { ReportPeriod } from "@/lib/website-reporting";
+import type { ReportPeriod, WebsiteMonthlyReportRow } from "@/lib/website-reporting";
 
 export type AnalyticsWorkspaceMetrics = {
   contacts: number;
@@ -17,7 +17,7 @@ export type AnalyticsWorkspaceMetrics = {
 type OperationsReport = { open: number; overdue: number; completed: number; verifiedOutcomes: number; valuePaisa: number; byOutcome: Array<{ outcomeType: string | null; _count: { _all: number } }> };
 type WebsiteOutcomes = { qualified: number; captured: number; qualificationRate: number; captureRate: number };
 
-export function AnalyticsWorkspaceView({ metrics, operations, outcomes, period }: { metrics: AnalyticsWorkspaceMetrics; operations?: OperationsReport | null; outcomes: WebsiteOutcomes; period: { period: ReportPeriod; label: string } }) {
+export function AnalyticsWorkspaceView({ metrics, operations, outcomes, period, monthly }: { metrics: AnalyticsWorkspaceMetrics; operations?: OperationsReport | null; outcomes: WebsiteOutcomes; period: { period: ReportPeriod; label: string }; monthly?: WebsiteMonthlyReportRow[] }) {
   const answered = Math.max(metrics.contacts - metrics.unanswered, 0);
   const answerRate = metrics.contacts ? Math.round((answered / metrics.contacts) * 100) : 0;
   const replyScore = metrics.unanswered ? Math.max(18, Math.round((answered / Math.max(metrics.contacts, 1)) * 100)) : 100;
@@ -33,9 +33,12 @@ export function AnalyticsWorkspaceView({ metrics, operations, outcomes, period }
     <div className="min-h-screen bg-[#f6f7f6]">
       <TopBar title="Reports" subtitle="Website-bot conversations, qualified leads, follow-up actions, and verified outcomes" />
       <div className="mx-auto max-w-[1480px] space-y-6 px-5 py-7 sm:px-7 lg:px-9">
-        <nav className="flex gap-1 overflow-x-auto" aria-label="Report period">
-          {[["today", "Today"], ["7d", "7 days"], ["30d", "30 days"], ["all", "All time"]].map(([value, label]) => <Link key={value} href={`/analytics?period=${value}`} aria-current={period.period === value ? "page" : undefined} className={`rounded-full px-4 py-2 text-xs font-semibold ${period.period === value ? "bg-[#17211e] !text-white" : "border border-black/8 bg-white text-[var(--text-muted)]"}`}>{label}</Link>)}
-        </nav>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <nav className="flex gap-1 overflow-x-auto" aria-label="Report period">
+            {[["today", "Today"], ["7d", "7 days"], ["30d", "30 days"], ["all", "All time"]].map(([value, label]) => <Link key={value} href={`/analytics?period=${value}`} aria-current={period.period === value ? "page" : undefined} className={`rounded-full px-4 py-2 text-xs font-semibold ${period.period === value ? "bg-[#17211e] !text-white" : "border border-black/8 bg-white text-[var(--text-muted)]"}`}>{label}</Link>)}
+          </nav>
+          <a href={`/api/reports/website/pdf?period=${period.period}`} download className="inline-flex min-h-10 items-center justify-center rounded-md bg-[#8a6a16] px-4 text-sm font-semibold text-white">↓ Download PDF</a>
+        </div>
         <Card className="overflow-hidden border border-black/6 shadow-[0_16px_38px_-32px_rgba(17,39,32,0.5)]">
           <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_340px]">
             <section className="p-6 sm:p-7">
@@ -97,6 +100,20 @@ export function AnalyticsWorkspaceView({ metrics, operations, outcomes, period }
           <MiniMetric label="Verified outcomes" value={String(operations.verifiedOutcomes)} />
           <MiniMetric label="Recorded value" value={new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(operations.valuePaisa / 100)} />
         </section> : null}
+
+        {monthly?.length ? <Card className="overflow-hidden border border-black/6 shadow-[0_16px_38px_-32px_rgba(17,39,32,0.5)]">
+          <div className="border-b border-black/6 p-6">
+            <p className="product-eyebrow">Monthly history</p>
+            <h2 className="mt-2 text-2xl font-semibold">Website-bot performance by month</h2>
+            <p className="mt-2 text-sm text-[var(--text-muted)]">A real-data operating record for the latest 12 calendar months.</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[820px] text-left text-sm">
+              <thead className="bg-[#17211e] text-white"><tr>{["Month", "Conversations", "Visitor messages", "Bot / team replies", "Qualified leads", "Contacts captured", "Answer rate"].map((label) => <th key={label} scope="col" className="px-5 py-3 font-semibold">{label}</th>)}</tr></thead>
+              <tbody>{monthly.map((row) => <tr key={row.key} className="border-t border-black/6 even:bg-[#f8faf9]"><th scope="row" className="whitespace-nowrap px-5 py-3 font-semibold text-[#17211e]">{row.label}</th><td className="px-5 py-3">{row.conversations}</td><td className="px-5 py-3">{row.incoming}</td><td className="px-5 py-3">{row.outgoing}</td><td className="px-5 py-3">{row.qualified}</td><td className="px-5 py-3">{row.captured}</td><td className="px-5 py-3 font-semibold">{row.answerRate}%</td></tr>)}</tbody>
+            </table>
+          </div>
+        </Card> : null}
       </div>
     </div>
   );

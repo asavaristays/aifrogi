@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import type { Lead } from "../../types";
-import { resolveReportPeriod, websiteLeadsForPeriod, websiteOutcomeSummary } from "../../lib/website-reporting";
+import { resolveReportPeriod, websiteLeadsForPeriod, websiteMonthlyReport, websiteOutcomeSummary } from "../../lib/website-reporting";
+import { createSimplePdf } from "../../lib/pdf-report";
 
 function lead(overrides: Partial<Lead> = {}): Lead {
   return {
@@ -28,4 +29,24 @@ test("website report excludes non-website and out-of-period activity", () => {
 test("qualification and contact capture are calculated from stored lead state", () => {
   const summary = websiteOutcomeSummary([lead(), lead({ id: "low", score: 20, websiteSession: null })]);
   assert.deepEqual(summary, { qualified: 1, captured: 1, qualificationRate: 50, captureRate: 50 });
+});
+
+test("monthly report uses calendar months and message activity", () => {
+  const rows = websiteMonthlyReport([
+    lead({
+      transcript: [
+        { id: "m1", from: "guest", text: "Pricing?", time: "", sentAtIso: "2026-09-08T04:00:00.000Z" },
+        { id: "m2", from: "ai", text: "Here is our pricing.", time: "", sentAtIso: "2026-09-08T04:01:00.000Z" }
+      ]
+    })
+  ], new Date("2026-09-09T04:00:00.000Z"), 2);
+  assert.deepEqual(rows[0], { key: "2026-09", label: "Sept 2026", conversations: 1, incoming: 1, outgoing: 1, qualified: 1, captured: 1, answerRate: 100 });
+  assert.equal(rows[1].key, "2026-08");
+  assert.equal(rows[1].conversations, 0);
+});
+
+test("PDF report output is a valid downloadable PDF envelope", () => {
+  const pdf = createSimplePdf([[{ text: "AiFrogi report", x: 45, y: 795, size: 18, bold: true }]]);
+  assert.equal(pdf.subarray(0, 8).toString(), "%PDF-1.4");
+  assert.match(pdf.toString(), /startxref\n\d+\n%%EOF$/);
 });
