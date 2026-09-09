@@ -174,10 +174,9 @@ export function CustomerOnboarding({
   const metaConfigured = Boolean(metaAppId && metaConfigId);
   const usesWhatsApp = false;
   const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
-  const websiteReady = Boolean(usesWebsite && organization?.botProfile?.status === "CONFIGURED" && organization.botProfile.personaName && organization.botProfile.businessObjective && organization.botProfile.escalationTriggers?.length && organization?.onboarding?.kycStatus === "APPROVED");
+  const websiteReady = Boolean(usesWebsite && organization?.botProfile?.status === "CONFIGURED" && organization.botProfile.personaName && organization.botProfile.businessObjective && organization.botProfile.escalationTriggers?.length);
   const visibleSteps = useMemo(() => usesWhatsApp ? allSteps.map((step, index) => ({ ...step, number: index + 1 })) : [
     { ...allSteps[0], number: 1 },
-    { ...allSteps[1], number: 2 },
     { title: "Go live", helper: "Review intelligence and open your AI workspace", number: 6 }
   ], [usesWhatsApp]);
 
@@ -216,10 +215,9 @@ export function CustomerOnboarding({
   const whatsappProgress = organization?.onboarding?.progressPercent || (organization ? 20 : 5);
   const websiteProgress = [
     Boolean(organization),
-    Boolean(organization?.ownerMobile && organization?.businessAddress && organization?.website),
-    organization?.onboarding?.kycStatus === "APPROVED",
+    Boolean(organization?.ownerMobile && organization?.website),
     organization?.botProfile?.status === "CONFIGURED"
-  ].filter(Boolean).length * 25;
+  ].filter(Boolean).length * (100 / 3);
   const progress = usesWhatsApp ? whatsappProgress : websiteProgress;
   const live = usesWhatsApp ? organization?.onboarding?.metaStatus === "LIVE" : websiteReady;
   const rejected = organization?.onboarding?.metaStatus === "REJECTED";
@@ -231,7 +229,7 @@ export function CustomerOnboarding({
     const onboarding = organization?.onboarding;
     return [
       Boolean(organization),
-      Boolean(onboarding && onboarding.kycStatus !== "NOT_SUBMITTED"),
+      false,
       Boolean(onboarding?.phoneNumber),
       onboarding?.facebookStatus === "CONNECTED",
       live,
@@ -240,7 +238,7 @@ export function CustomerOnboarding({
   }, [organization, live]);
 
   useEffect(() => {
-    if (!usesWhatsApp && activeStep >= 3 && activeStep <= 5) setActiveStep(6);
+    if (!usesWhatsApp && activeStep >= 2 && activeStep <= 5) setActiveStep(6);
   }, [activeStep, usesWhatsApp]);
 
   const completeMetaConnection = useCallback(async () => {
@@ -341,7 +339,7 @@ export function CustomerOnboarding({
       ...(organization ? { step: 1 } : {}),
       ...organizationForm
     });
-    if (updated) setActiveStep(2);
+    if (updated) setActiveStep(6);
   }
 
   async function continueBusiness() {
@@ -442,7 +440,7 @@ export function CustomerOnboarding({
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
                 <div className="h-full rounded-full bg-[var(--gold-600)]" style={{ width: `${trial.percentElapsed}%` }} />
               </div>
-              <p className="mt-3 text-xs leading-5 text-[#68645c]">Use this window to finish activation, test messaging, and prove the first workflow.</p>
+              <p className="mt-3 text-xs leading-5 text-[#68645c]">Use this window to complete setup, test customer answers, and install the website bot.</p>
             </div>
           ) : null}
           <nav className="mt-6 hidden space-y-1 lg:block" aria-label="Onboarding steps">
@@ -549,8 +547,7 @@ function OnboardingReadiness({ organization }: { organization: CustomerOnboardin
   const usesWhatsApp = false;
   const usesWebsite = organization?.botProfile?.channels?.includes("WEBSITE") ?? true;
   const commonItems = [
-    { label: "Business owner details", owner: "You", ready: Boolean(organization?.ownerName && organization?.ownerMobile), helper: "Company name, owner, mobile, address, and website" },
-    { label: "Business proof", owner: "You", ready: onboarding?.kycStatus === "APPROVED", helper: onboarding?.kycStatus === "SUBMITTED" ? "Submitted; AiFrogi review is in progress" : "Registration or GST document and legal business details" }
+    { label: "Business basics", owner: "You", ready: Boolean(organization?.ownerName && organization?.ownerMobile && organization.website), helper: "Company name, accountable owner, contact details, and website" }
   ];
   const websiteItems = usesWebsite ? [
     { label: "Bot purpose and authority", owner: "You", ready: organization?.botProfile?.status === "CONFIGURED", helper: "Business job, approved capabilities, human handoff, and action approval" },
@@ -681,7 +678,6 @@ function OrganizationStep({ value, onChange }: { value: OrganizationForm; onChan
       <Field label="Website" value={value.website} onChange={(website) => onChange({ ...value, website })} placeholder="https://example.com" />
       <Field label="Country" value={value.country} onChange={(country) => onChange({ ...value, country })} />
       <Field label="Time zone" value={value.timezone} onChange={(timezone) => onChange({ ...value, timezone })} />
-      <Field label="GST number" value={value.gstNumber} onChange={(gstNumber) => onChange({ ...value, gstNumber })} optional />
       <Field label="Owner name" required value={value.ownerName} onChange={(ownerName) => onChange({ ...value, ownerName })} />
       <Field label="Mobile" required value={value.ownerMobile} onChange={(ownerMobile) => onChange({ ...value, ownerMobile })} inputMode="tel" />
       <label className="md:col-span-2">

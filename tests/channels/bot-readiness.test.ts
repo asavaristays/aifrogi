@@ -56,6 +56,12 @@ test("Today is website-bot focused and contains no business-verification gate", 
   const view = readFileSync(resolve(process.cwd(), "components/dashboard/client-dashboard-view.tsx"), "utf8");
   assert.doesNotMatch(page, /businessVerified|Business verification|kycStatus|href:\s*"\/onboarding"|\/whatsapp-bot/);
   assert.doesNotMatch(view, /\/whatsapp-bot/);
-  assert.match(page, /Usage matrix/);
-  assert.match(page, /Hard-stop protected/);
+  assert.doesNotMatch(page, /Usage matrix|Hard-stop protected/);
+});
+
+test("client settings and intelligence expose only current website-bot actions", () => {
+  const settings = readFileSync(resolve(process.cwd(), "app/(app)/settings/page.tsx"), "utf8");
+  const knowledge = readFileSync(resolve(process.cwd(), "components/knowledge/knowledge-workspace.tsx"), "utf8");
+  assert.doesNotMatch(settings, /WhatsApp API|\/settings\/integrations|\/onboarding|\/billing/);
+  assert.doesNotMatch(knowledge, /Governed improvement routing|Correction queue|Unanswered customer questions/);
 });

@@ -73,8 +73,7 @@ export default async function DashboardPage() {
     readiness={[
       { label: "Website bot", value: organization?.botProfile?.status === "LIVE" ? "Live" : "Needs setup", ok: organization?.botProfile?.status === "LIVE" },
       { label: "Plan", value: subscription?.canUsePaidActions ? subscription.planName : "Action required", ok: Boolean(subscription?.canUsePaidActions) },
-      { label: "Intelligence", value: knowledge.pages.length ? `${knowledge.pages.length} pages` : "Needs setup", ok: knowledge.pages.length > 0 },
-      { label: "Usage matrix", value: organization?.subscription ? organization.subscription.overageApproved ? "Approved overage" : "Hard-stop protected" : "Unavailable", ok: Boolean(organization?.subscription) }
+      { label: "Intelligence", value: knowledge.pages.length ? `${knowledge.pages.length} pages` : "Needs setup", ok: knowledge.pages.length > 0 }
     ]}
     recent={recent}
     metrics={metrics}

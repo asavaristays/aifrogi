@@ -117,16 +117,41 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
     };
   }
 
-  if (!organization.ownerMobile || !organization.businessAddress || !organization.website) {
+  if (!organization.ownerMobile || !organization.website) {
     return {
       title: "Complete company basics",
-      description: "Add the mobile number, business address, and website before verification. These details reduce review back-and-forth.",
+      description: "Add the owner mobile number and business website so the private workspace has an accountable contact and a source to teach from.",
       action: "Update organization",
       owner: "You",
       step: 1,
       tone: "urgent",
       eta: "3 minutes",
-      supportNote: "Business profile is incomplete."
+      supportNote: "Owner contact or website is incomplete."
+    };
+  }
+
+  if (!usesWhatsApp) {
+    if (organization.botProfile?.status !== "CONFIGURED") {
+      return {
+        title: "Design your AI Business Bot",
+        description: "Set the bot's business purpose, customer-facing identity and human handover rules before adding intelligence.",
+        action: "Configure AI Bot",
+        owner: "You",
+        step: 6,
+        tone: "urgent",
+        eta: "3 minutes",
+        supportNote: "A Website AI Bot does not require business verification, a WhatsApp number or a Meta account."
+      };
+    }
+    return {
+      title: "Build approved business intelligence",
+      description: "Your Website AI Bot profile is ready. Add and approve business sources, test safe answers, and then publish the widget.",
+      action: "Open intelligence",
+      owner: "You",
+      step: 6,
+      tone: "ready",
+      eta: "Ready now",
+      supportNote: "The next proof is a grounded answer and consented lead captured from your website."
     };
   }
 
@@ -166,31 +191,6 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
       tone: "waiting",
       eta: "Same business day",
       supportNote: "Super Admin KYC review is pending."
-    };
-  }
-
-  if (!usesWhatsApp) {
-    if (organization.botProfile?.status !== "CONFIGURED") {
-      return {
-        title: "Design your AI Business Bot",
-        description: "Choose the bot's business job, website channel, approved capabilities, and human authority before adding intelligence.",
-        action: "Configure AI Bot",
-        owner: "You",
-        step: 2,
-        tone: "urgent",
-        eta: "3 minutes",
-        supportNote: "Website AI Bot setup does not require a WhatsApp number or Meta account."
-      };
-    }
-    return {
-      title: "Build approved business intelligence",
-      description: "Your Website AI Bot profile is ready. Add and approve business sources, test safe answers, and then publish the widget.",
-      action: "Open intelligence",
-      owner: "You",
-      step: 6,
-      tone: "ready",
-      eta: "Ready now",
-      supportNote: "The next proof is a grounded answer and consented lead captured from your website."
     };
   }
 

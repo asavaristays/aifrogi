@@ -46,6 +46,18 @@ test("unconfigured website bot asks for bot design instead of Meta setup", () =>
     botProfile: { channels: ["WEBSITE"], status: "DRAFT" }
   });
 
-  assert.equal(guidance.step, 2);
+  assert.equal(guidance.step, 6);
   assert.equal(guidance.title, "Design your AI Business Bot");
+});
+
+test("website AI Bot is never blocked by legacy KYC review", () => {
+  const guidance = getOnboardingGuidance({
+    ...verifiedBusiness,
+    onboarding: { ...verifiedBusiness.onboarding, lifecycleStatus: "KYC_SUBMITTED", kycStatus: "SUBMITTED" },
+    botProfile: { channels: ["WEBSITE"], status: "CONFIGURED" }
+  });
+
+  assert.equal(guidance.step, 6);
+  assert.equal(guidance.title, "Build approved business intelligence");
+  assert.doesNotMatch(`${guidance.title} ${guidance.description} ${guidance.supportNote}`, /KYC|verification review/i);
 });
