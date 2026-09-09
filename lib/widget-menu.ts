@@ -1,6 +1,6 @@
 export const WIDGET_MENU_ICONS = ["sparkles", "training", "film", "grid", "phone", "link", "mail", "chat"] as const;
 export type WidgetMenuIcon = typeof WIDGET_MENU_ICONS[number];
-export type WidgetMenuAction = "LINK" | "CHAT" | "CALL" | "EMAIL" | "SUBMENU";
+export type WidgetMenuAction = "LINK" | "CHAT" | "FLOW" | "CALL" | "EMAIL" | "SUBMENU";
 export type WidgetMenuItem = { id: string; label: string; action: WidgetMenuAction; value?: string; icon: WidgetMenuIcon; featured?: boolean; children?: WidgetMenuItem[] };
 export type WidgetMenuConfig = { enabled: boolean; heading: string; items: WidgetMenuItem[] };
 
@@ -27,7 +27,7 @@ export function defaultWidgetMenu(propertySlug: string): WidgetMenuConfig {
 function cleanItem(raw: unknown, depth = 0): WidgetMenuItem | null {
   if (!raw || typeof raw !== "object") return null;
   const item = raw as Partial<WidgetMenuItem>;
-  const action = ["LINK", "CHAT", "CALL", "EMAIL", "SUBMENU"].includes(String(item.action)) ? item.action as WidgetMenuAction : "LINK";
+  const action = ["LINK", "CHAT", "FLOW", "CALL", "EMAIL", "SUBMENU"].includes(String(item.action)) ? item.action as WidgetMenuAction : "LINK";
   const label = String(item.label || "").trim().slice(0, 54);
   if (!label || (depth > 0 && action === "SUBMENU")) return null;
   const icon = WIDGET_MENU_ICONS.includes(item.icon as WidgetMenuIcon) ? item.icon as WidgetMenuIcon : "link";
@@ -42,6 +42,7 @@ function cleanItem(raw: unknown, depth = 0): WidgetMenuItem | null {
     if (!/^\+?\d{7,15}$/.test(value)) throw new Error("Enter a valid menu phone number.");
   }
   if (action === "EMAIL" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) throw new Error("Enter a valid menu email address.");
+  if (action === "FLOW" && value.length < 8) throw new Error("A flow menu option needs a valid opening question.");
   const children = action === "SUBMENU" ? (Array.isArray(item.children) ? item.children : []).slice(0, 8).map(child => cleanItem(child, 1)).filter(Boolean) as WidgetMenuItem[] : undefined;
   if (action === "SUBMENU" && !children?.length) throw new Error("Each submenu needs at least one option.");
   return { id: String(item.id || crypto.randomUUID()).replace(/[^a-z0-9_-]/gi, "").slice(0, 50) || crypto.randomUUID(), label, action, icon, featured: item.featured === true, ...(value ? { value } : {}), ...(children ? { children } : {}) };

@@ -6,7 +6,7 @@ This ledger prevents bot-by-bot rework and duplicate fixes. It records the share
 
 ## Boundary
 
-Tenant Intelligence owns the individual client's verified business understanding: identity, services, pricing rules, policies, hours, locations, contact details, subject context, approved website/PDF/Excel/manual knowledge, trained answers and tenant-specific golden questions.
+Tenant Intelligence owns the individual client's verified business understanding and configured customer journeys: identity, services, pricing rules, policies, hours, locations, contact details, subject context, approved website/PDF/Excel/manual knowledge, trained answers, per-bot flows and tenant-specific golden questions.
 
 A missing or wrong client fact is fixed only in that tenant's approved knowledge. A subject-wide vocabulary or required-topic defect belongs to the vertical/persona layer. A behavior defect affecting multiple tenants belongs in `CORE_INTELLIGENCE_LEDGER.md` as a separate batch.
 
@@ -36,6 +36,8 @@ A missing or wrong client fact is fixed only in that tenant's approved knowledge
 | `TI-008` | Required business-fact coverage gate | `PILOT_EVIDENCE` | Per vertical and tenant | onboarding/readiness checks | Essential identity, contact, offering and policy coverage exists; factory-level automation needs evidence from two real bots. |
 | `TI-009` | Tenant smoke and golden question sets | `PILOT_EVIDENCE` | Per tenant | pilot scripts and reviewed workbooks | Webtechnosys sets exist. Automated pass is not acceptance without human review. |
 | `TI-010` | Repeatable Tenant Intelligence Factory | `PLANNED` | Future tenants | Phase 2 of `AIFROGI_EXECUTION_ROADMAP.md` | Begin only after evidence from two real bots; must eliminate engineering edits to code or production data. |
+| `TI-011` | Per-bot Flow Intelligence templates and Main Menu publishing | `LOCAL` | Per tenant bot | `/flow-intelligence`, tenant settings, website widget Main Menu | Four governed templates implement answer-first → human chat → consented callback. Focused tests passed 24/24 and the 77-page production build passed; awaiting deployment. |
+| `TI-012` | Human-owned conversation recovery | `LOCAL` | Per tenant bot conversation | website widget and handover runtime | AI remains paused in a human-owned session; visitor may deliberately start a separate AI conversation. Awaiting deployment. |
 
 ## Tenant readiness register
 

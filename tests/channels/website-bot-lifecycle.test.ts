@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { canServeWebsiteBot, nextWebsiteBotStatus } from "../../lib/website-bot-lifecycle";
+import { acceptedHumanOffer, humanResponseWindow } from "../../lib/website-handover";
 
 test("only explicitly approved live website bots may serve visitors", () => {
   assert.equal(canServeWebsiteBot("CONFIGURED", ["WEBSITE"]), false);
@@ -62,6 +63,17 @@ test("a human-owned visitor can deliberately start a separate AI conversation", 
   assert.match(widget, /setConversationState\("AI_READY"\)/);
   assert.match(widget, /Message the business team…/);
   assert.match(widget, /payload\?\.messageAccepted/);
+});
+
+test("support offer acceptance and SLA wording are deterministic", () => {
+  assert.equal(acceptedHumanOffer("yes", "Would you like to schedule a discovery session for a detailed estimate?"), true);
+  assert.equal(acceptedHumanOffer("yes please", "Would you like the support team to contact you?"), true);
+  assert.equal(acceptedHumanOffer("yes", "Would you like more pricing details?"), false);
+  assert.equal(acceptedHumanOffer("tell me more", "Would you like to schedule a call?"), false);
+  assert.equal(humanResponseWindow(30), "within 30 minutes during business hours");
+  assert.equal(humanResponseWindow(60), "within 1 hour during business hours");
+  assert.equal(humanResponseWindow(90), "within 2 hours during business hours");
+  assert.equal(humanResponseWindow(null), "as soon as possible during business hours");
 });
 
 test("workspace menu configuration flows through Setup and public bot surfaces", () => {

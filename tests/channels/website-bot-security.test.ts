@@ -70,6 +70,16 @@ test("answer feedback is tenant, visitor, and evidence bound", () => {
   assert.match(feedbackSource, /business team can review this answer/);
 });
 
+test("accepted support offers become persisted, consent-aware handovers", () => {
+  const widget = readFileSync(resolve(process.cwd(), "components/website-bot/website-bot-embed.tsx"), "utf8");
+  assert.match(source, /acceptedHumanOffer\(message, lastAssistantAnswer\)/);
+  assert.match(source, /Your callback request has been saved/);
+  assert.match(source, /humanResponseWindow\(profile\.responseSlaMinutes\)/);
+  assert.match(source, /\(explicitHumanRequest \|\| assistedFallback\) && handoffEnabled && !consentedContact/);
+  assert.match(source, /I can alert the team to reply here, or you may share your name and mobile number below for a callback/);
+  assert.match(widget, /requestHuman: conversationState === "HUMAN_REQUESTED"/);
+});
+
 test("widget connects helpful feedback to the returned evidence id", () => {
   const widgetSource = readFileSync(resolve(process.cwd(), "components/website-bot/website-bot-embed.tsx"), "utf8");
   assert.match(widgetSource, /answerEvidenceId/);

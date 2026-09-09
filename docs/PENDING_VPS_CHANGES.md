@@ -11,11 +11,15 @@ This file contains only changes that are complete locally but not yet deployed t
 - Added **Good night** to greeting intent so it receives a warm time-appropriate response rather than business retrieval.
 - Targeted greeting and answer-behaviour tests passed 24/24; TypeScript, targeted ESLint (no errors), and the 76-route webpack build passed.
 
-## `CI-007` Core Intelligence extension — human-handover session recovery
+## `TI-011` + `TI-012` Tenant Intelligence — Flow Intelligence and conclusive handover
 
+- Added a per-bot **Tenant Intelligence → Flow Intelligence** workspace with four governed templates: service advice, pricing, booking and customer support.
+- Client Owner/Admin can create, edit, save, approve/publish, pause and delete a flow. Publishing versions it and connects it to that bot's Main Menu; a full six-option menu blocks publication explicitly rather than dropping an item.
+- Every flow follows one controlled path: Main Menu trigger → approved tenant answer → human chat if unresolved → consented callback capture.
+- Unresolved answers now state the limitation professionally and expose consented name/mobile capture while offering an in-chat team response. No unsupported answer is presented as fact.
 - Human ownership remains fail-safe: AI does not answer inside a conversation after the business team has joined.
 - The widget now explains that state and labels the composer **Message the business team…** instead of implying the AI will respond.
 - Added **Start a new AI chat**, which deliberately creates a separate visitor session, clears the old capability from browser storage and restores the bot welcome state.
 - Team-bound messages remain visible without adding the same automated “message saved” bubble after every turn.
-- The change applies to every current and future website bot; no tenant facts or knowledge were changed.
-- Widget lifecycle tests passed 10/10; TypeScript, targeted ESLint with no errors and the clean 76-route webpack production build passed.
+- The implementation remains tenant-bound; Core Intelligence and client facts were not changed in this package.
+- Focused Tenant Flow, handover, widget lifecycle and security tests passed 24/24; TypeScript and the clean 77-page webpack production build passed.

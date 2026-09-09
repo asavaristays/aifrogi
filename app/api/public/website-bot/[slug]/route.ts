@@ -15,7 +15,7 @@ import { resolveDemoCommonAnswer, resolveDemoConnectorTurn } from "@/lib/demo-sa
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 import type { Prisma } from "@/generated/prisma/client";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
-import { ensureWebsiteHandover, websiteConversationState } from "@/lib/website-handover";
+import { acceptedHumanOffer, ensureWebsiteHandover, humanResponseWindow, websiteConversationState } from "@/lib/website-handover";
 import { withWebsiteTurnLock } from "@/lib/website-turn-lock";
 import { persistWebsiteTurn } from "@/lib/website-persistence";
 import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "@/lib/lead-qualification";
@@ -102,7 +102,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
   const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
-  const explicitHumanRequest = Boolean(payload?.requestHuman || fallbackDecision.intent === "HUMAN_REQUEST");
+  const acceptedCallbackOffer = acceptedHumanOffer(message, lastAssistantAnswer);
+  const explicitHumanRequest = Boolean(payload?.requestHuman || fallbackDecision.intent === "HUMAN_REQUEST" || acceptedCallbackOffer);
   const handoffEnabled = profile.humanHandoffEnabled === true;
   // A human-owned conversation must not call the model or generate competing advice.
   if (sessionStatus === "HUMAN_JOINED" && priorToken) {
@@ -141,7 +142,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer, visitorTimeZone: payload?.visitorTimeZone || property.timezone }).catch(() => null);
   if (explicitHumanRequest && !safety.blocked) result = {
     answer: handoffEnabled
-      ? `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"} in this conversation.${organization.publicPhone ? ` You can also call ${organization.publicPhone}.` : " They will respond here as soon as possible."}`
+      ? consentedContact
+        ? `Thank you. Your callback request has been saved for the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. They will contact you ${humanResponseWindow(profile.responseSlaMinutes)}.`
+        : `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. They will respond here ${humanResponseWindow(profile.responseSlaMinutes)}. If you prefer a callback, share your name and mobile number using the consent fields below.${organization.publicPhone ? ` For immediate assistance, you may also call ${organization.publicPhone}.` : ""}`
       : `Human handover is not enabled for this bot.${organization.publicPhone ? ` Please call ${organization.publicPhone}.` : " Please use the business’s published contact details."}`,
     sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "HANDOVER_CONTROL",
     decision: { ...fallbackDecision, disposition: "ESCALATE", reason: handoffEnabled ? "Explicit human request; persisted before acknowledgment." : "Human handover is disabled; no connection promised." },
@@ -154,12 +157,13 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     contact: consentedContact || undefined,
     enabled: profile.capabilities.includes("CAPTURE_LEADS") && profile.capabilities.includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
   });
-  const baseAnswer = safety.answer || result?.answer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : `I do not have enough approved ${businessName} information to answer that confidently. I can arrange a conversation with the team if you share your preferred contact details.`);
+  const baseAnswer = safety.answer || result?.answer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : `I don’t have enough verified ${businessName} information to answer that accurately. I can alert the team to reply here, or you may share your name and mobile number below for a callback.`);
   const hasVerifiedAnswer = result?.decision.disposition === "ANSWER" && Boolean(result.sources.length || result.claimIds.length || result.reliability.failureLayer === "NONE");
   const proposedAnswer = qualification.state && hasVerifiedAnswer ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
     : fallbackDecision.intent === "OFF_TOPIC" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
+  const assistedFallback = !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && proposedDecision.disposition !== "ANSWER";
   const resolution = governResolutionOutcome({
     question: message,
     answer: proposedAnswer,
@@ -251,7 +255,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     });
   }
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && handoffEnabled && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
 }
 

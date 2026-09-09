@@ -5,6 +5,19 @@ export function websiteHandoverOperationId(propertyId: string, leadId: string) {
   return `website-handover-${createHash("sha256").update(`${propertyId}:${leadId}`).digest("hex").slice(0, 32)}`;
 }
 
+export function acceptedHumanOffer(question: string, lastAssistantAnswer: string) {
+  if (!/^(yes|yes please|sure|ok|okay|please do|go ahead)[.!\s]*$/i.test(question.trim())) return false;
+  return /\b(schedule|arrange|book)\b[^?\n]{0,70}\b(discovery|consultation|call|meeting)\b|\b(call(?:back)?|human|support|business)\b[^?\n]{0,55}\b(contact|connect|help|assist|speak|talk|respond)\b/i.test(lastAssistantAnswer);
+}
+
+export function humanResponseWindow(minutesInput: number | null | undefined) {
+  const minutes = Number(minutesInput);
+  if (!Number.isFinite(minutes) || minutes <= 0) return "as soon as possible during business hours";
+  if (minutes < 60) return `within ${Math.round(minutes)} minutes during business hours`;
+  const hours = Math.ceil(minutes / 60);
+  return `within ${hours} ${hours === 1 ? "hour" : "hours"} during business hours`;
+}
+
 /** One request per visitor conversation. Repeated requests never reset its SLA. */
 export async function ensureWebsiteHandover(input: { propertyId: string; leadId: string; responseSlaMinutes?: number | null }) {
   const db = getDb();

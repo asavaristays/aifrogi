@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { defaultWidgetMenu, normalizeWidgetMenu, type WidgetMenuConfig } from "@/lib/widget-menu";
+import { normalizeTenantFlow, type TenantFlowDefinition } from "@/lib/tenant-flow-intelligence";
 
 export type KnowledgeSyncStatus = "DRAFT" | "SYNCING" | "READY" | "ERROR";
 export type WidgetTheme = "dark" | "light" | "system";
@@ -21,6 +22,7 @@ export type KnowledgeSettings = {
   welcomeCardTitle: string;
   welcomeCardText: string;
   widgetMenu?: WidgetMenuConfig;
+  tenantFlows?: TenantFlowDefinition[];
   lastCrawledAt: string | null;
   pageCount: number;
   buckets: string[];
@@ -65,6 +67,7 @@ function defaults(propertySlug: string): KnowledgeSettings {
     welcomeCardTitle: "",
     welcomeCardText: "",
     widgetMenu: defaultWidgetMenu(propertySlug),
+    tenantFlows: [],
     lastCrawledAt: null,
     pageCount: 0,
     buckets: [],
@@ -84,7 +87,8 @@ export async function readKnowledgeSettings(propertySlug: string) {
       sourceUrl: normalizeUrl(parsed.sourceUrl || fallback.sourceUrl),
       handoffTopics: Array.isArray(parsed.handoffTopics) ? parsed.handoffTopics.filter(Boolean) : fallback.handoffTopics,
       buckets: Array.isArray(parsed.buckets) ? parsed.buckets.filter(Boolean) : [],
-      widgetMenu: normalizeWidgetMenu(parsed.widgetMenu, fallback.widgetMenu || defaultWidgetMenu(propertySlug))
+      widgetMenu: normalizeWidgetMenu(parsed.widgetMenu, fallback.widgetMenu || defaultWidgetMenu(propertySlug)),
+      tenantFlows: Array.isArray(parsed.tenantFlows) ? parsed.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[] : []
     } satisfies KnowledgeSettings;
   } catch {
     return fallback;
@@ -122,6 +126,7 @@ export async function writeKnowledgeSettings(
     welcomeCardTitle: String(input.welcomeCardTitle ?? current.welcomeCardTitle).trim().slice(0, 80),
     welcomeCardText: String(input.welcomeCardText ?? current.welcomeCardText).trim().slice(0, 240),
     widgetMenu: input.widgetMenu === undefined ? current.widgetMenu : normalizeWidgetMenu(input.widgetMenu, current.widgetMenu || defaultWidgetMenu(propertySlug)),
+    tenantFlows: input.tenantFlows === undefined ? current.tenantFlows : input.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[],
     buckets: Array.isArray(input.buckets) ? [...new Set(input.buckets.map(String).filter(Boolean))].sort() : current.buckets,
     updatedAt: new Date().toISOString()
   };
