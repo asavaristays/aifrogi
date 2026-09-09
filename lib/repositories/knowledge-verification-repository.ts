@@ -62,14 +62,16 @@ export async function fieldApproveClaim(input: { propertyId: string; entryId: st
   if (!entry) throw new Error("Knowledge claim not found.");
   if(!['VALIDATED','CONFLICT','PAUSED','EXPIRED'].includes(entry.status))throw new Error('Only a draft or paused claim can receive field approval.');
   if (entry.validationStatus !== "VALID") throw new Error(`Automated verification failed: ${entry.validationErrors.join(", ")}`);
-  if (entry.conflictStatus === "UNRESOLVED" && !input.supersedesId) throw new Error("Unresolved conflicts cannot be bypassed. Select the version this claim supersedes.");
-  if (input.supersedesId) {
-    if(input.supersedesId===entry.id||!entry.claimKey)throw new Error('Select an earlier version of this claim, not itself.');
-    const prior = await db.knowledgeEntry.findFirst({ where: { id: input.supersedesId, propertyId: input.propertyId, claimKey: entry.claimKey || undefined } });
+  const activePublished = entry.claimKey ? await db.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: entry.claimKey, status: "PUBLISHED", id: { not: entry.id } }, orderBy: { version: "desc" } }) : null;
+  const supersedesId = input.supersedesId ?? activePublished?.id ?? entry.supersedesId ?? null;
+  if (entry.conflictStatus === "UNRESOLVED" && !supersedesId) throw new Error("Unresolved conflicts cannot be bypassed. Select the version this claim supersedes.");
+  if (supersedesId) {
+    if(supersedesId===entry.id||!entry.claimKey)throw new Error('Select an earlier version of this claim, not itself.');
+    const prior = await db.knowledgeEntry.findFirst({ where: { id: supersedesId, propertyId: input.propertyId, claimKey: entry.claimKey || undefined } });
     if (!prior) throw new Error("The superseded claim must belong to the same workspace and claim key.");
     if(prior.version>=entry.version)throw new Error('Only an earlier claim version can be superseded.');
   }
-  return db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "FIELD_APPROVED", fieldApprovedBy: input.actorEmail, fieldApprovedAt: new Date(), lastConfirmedAt: new Date(), supersedesId: input.supersedesId ?? entry.supersedesId, conflictStatus: "CLEAR", conflictSummary: null } });
+  return db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "FIELD_APPROVED", fieldApprovedBy: input.actorEmail, fieldApprovedAt: new Date(), lastConfirmedAt: new Date(), supersedesId, conflictStatus: "CLEAR", conflictSummary: null } });
 }
 
 export async function generateClaimPreview(input: { propertyId: string; entryId: string }) {
@@ -103,13 +105,22 @@ export async function reviewClaimPreview(input: { propertyId: string; previewId:
   if (!regression.passed) throw new Error(`Publication regression gate failed: ${regression.failures.join(", ")}`);
     const property = await tx.property.findUnique({ where: { id: input.propertyId }, select: { organizationId: true } });
     if (!property?.organizationId) throw new Error("Knowledge workspace is not attached to an organization.");
-    if (preview.entry.supersedesId) {
-      const prior=await tx.knowledgeEntry.findFirst({where:{id:preview.entry.supersedesId,propertyId:input.propertyId,claimKey:preview.entry.claimKey}});
+    const activePublished = preview.entry.claimKey ? await tx.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: preview.entry.claimKey, status: "PUBLISHED", id: { not: preview.entryId } }, orderBy: { version: "desc" } }) : null;
+    const supersedesId = activePublished?.id || preview.entry.supersedesId || null;
+    if (supersedesId) {
+      const prior=await tx.knowledgeEntry.findFirst({where:{id:supersedesId,propertyId:input.propertyId,claimKey:preview.entry.claimKey}});
       if(!prior||prior.id===preview.entryId||prior.version>=preview.entry.version)throw new Error('Superseded version is invalid.');
       await tx.knowledgeEntry.update({ where: { id: prior.id }, data: { status: "SUPERSEDED", conflictStatus:'CLEAR', pausedAt: new Date(), pauseReason: `Superseded by claim version ${preview.entry.version}.` } });
+      if (preview.entry.supersedesId !== supersedesId) await tx.knowledgeEntry.update({ where: { id: preview.entryId }, data: { supersedesId } });
     }
     const competing=await tx.knowledgeEntry.count({where:{propertyId:input.propertyId,claimKey:preview.entry.claimKey,id:{not:preview.entryId},OR:[{status:'PUBLISHED'},{conflictStatus:'UNRESOLVED',status:{notIn:['SUPERSEDED','REJECTED']}}]}});
     if(competing)throw new Error('Another active or unresolved version exists. Resolve the claim family before publishing.');
+    const staleSiblings = await tx.knowledgeEntry.findMany({ where: { propertyId: input.propertyId, claimKey: preview.entry.claimKey, id: { not: preview.entryId }, status: { in: ["VALIDATED", "FIELD_APPROVED", "PREVIEW_PENDING", "CONFLICT", "INVALID"] } }, select: { id: true } });
+    const staleIds = staleSiblings.map((item) => item.id);
+    if (staleIds.length) {
+      await tx.knowledgePreview.updateMany({ where: { entryId: { in: staleIds }, status: "PENDING" }, data: { status: "REJECTED", rejectedReason: `Replaced by approved claim version ${preview.entry.version}.` } });
+      await tx.knowledgeEntry.updateMany({ where: { id: { in: staleIds } }, data: { status: "SUPERSEDED", conflictStatus: "CLEAR", pausedAt: new Date(), pauseReason: `Replaced by approved claim version ${preview.entry.version}.` } });
+    }
     const reviewed = await tx.knowledgePreview.update({ where: { id: preview.id }, data: { status: "APPROVED", approvedBy: input.actorEmail, approvedAt: new Date() } });
     await tx.knowledgeEntry.update({ where: { id: preview.entryId }, data: { status: "PUBLISHED", previewApprovedBy: input.actorEmail, previewApprovedAt: new Date(), publishedAt: new Date(), pausedAt: null, pauseReason: null } });
     await tx.knowledgeGap.updateMany({where:{propertyId:input.propertyId,resolutionEntryId:preview.entryId,status:'OPEN'},data:{status:'RESOLVED'}});
@@ -155,11 +166,12 @@ export async function editKnowledgeClaim(input: { propertyId: string; entryId: s
     }
 
     const latest = await tx.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: current.claimKey }, orderBy: { version: "desc" } });
+    const activePublished = current.claimKey ? await tx.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: current.claimKey, status: "PUBLISHED" }, orderBy: { version: "desc" } }) : null;
     const entry = await tx.knowledgeEntry.create({ data: {
       propertyId: current.propertyId, documentId: current.documentId, question: input.question.trim(), answer: input.answer.trim(), category: input.category.trim() || "General",
       createdBy: input.actorEmail, claimKey: current.claimKey || validation.claimKey, claimType: current.claimType, valueType: current.valueType, currency: current.currency,
       effectiveAt: new Date(), expiresAt: new Date(Date.now() + current.refreshDays * 86400000), refreshDays: current.refreshDays,
-      reliability: current.reliability, authorityLevel: current.authorityLevel, version: (latest?.version || current.version) + 1, supersedesId: current.id,
+      reliability: current.reliability, authorityLevel: current.authorityLevel, version: (latest?.version || current.version) + 1, supersedesId: activePublished?.id || current.id,
       validationStatus: "VALID", validationErrors: [], conflictStatus: "CLEAR", status: "VALIDATED"
     } });
     return { entry, createdVersion: true, liveVersionRetained: true };
