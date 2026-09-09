@@ -53,6 +53,17 @@ test("only launcher-mode embeds expose the minimize control", () => {
   assert.match(shell, /\.dismiss svg \{[^}]*display: block;[^}]*transform: none;/);
 });
 
+test("a human-owned visitor can deliberately start a separate AI conversation", () => {
+  const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
+  assert.match(widget, /conversationState === "HUMAN_JOINED"[\s\S]*Start a new AI chat/);
+  assert.match(widget, /sessionStorage\.removeItem\(`aifrogi-visitor:\$\{slug\}`\)/);
+  assert.match(widget, /setSessionId\(crypto\.randomUUID\(\)\.replaceAll\("-", ""\)\)/);
+  assert.match(widget, /setVisitorToken\(""\)/);
+  assert.match(widget, /setConversationState\("AI_READY"\)/);
+  assert.match(widget, /Message the business team…/);
+  assert.match(widget, /payload\?\.messageAccepted/);
+});
+
 test("workspace menu configuration flows through Setup and public bot surfaces", () => {
   const setup = readFileSync("app/(app)/setup/page.tsx", "utf8");
   const embedPage = readFileSync("app/embed/[slug]/page.tsx", "utf8");
