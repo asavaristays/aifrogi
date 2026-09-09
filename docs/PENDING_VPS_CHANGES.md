@@ -10,9 +10,3 @@ This file contains only changes that are complete locally but not yet deployed t
 - Shared greeting boundaries are morning before 12:00, afternoon from 12:00–16:59, and evening from 17:00 onward; **Good night** is never used as an opening greeting.
 - Added **Good night** to greeting intent so it receives a warm time-appropriate response rather than business retrieval.
 - Targeted greeting and answer-behaviour tests passed 24/24; TypeScript, targeted ESLint (no errors), and the 76-route webpack build passed.
-
-## Billing — remove duplicated operational metrics
-
-- Removed Contacts, Messages and Team users from Client Billing because they duplicate Today/Reports and do not explain the bot's billable availability.
-- Retained the effective AI reply balance, plan/credit composition, purchase action, allocation history and payment records.
-- Targeted ESLint and TypeScript passed.
