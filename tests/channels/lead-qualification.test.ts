@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { appendQualificationPrompt, hasExplicitBuyingSignal, normalizeConsentedLeadPhone, qualifyLeadConversation } from "../../lib/lead-qualification";
+import { appendQualificationPrompt, hasExplicitBuyingSignal, hasSustainedCommercialInterest, normalizeConsentedLeadPhone, qualifyLeadConversation } from "../../lib/lead-qualification";
 import { readFileSync } from "node:fs";
 
 test("qualification stays idle for an ordinary knowledge question", () => {
@@ -9,7 +9,7 @@ test("qualification stays idle for an ordinary knowledge question", () => {
   assert.equal(result.prompt, null);
 });
 
-test("interest and product discovery never trigger sales qualification", () => {
+test("one interest or product-discovery turn does not trigger sales qualification", () => {
   for (const message of [
     "I am interested in training",
     "What training do you offer?",
@@ -22,6 +22,23 @@ test("interest and product discovery never trigger sales qualification", () => {
     assert.equal(result.state, null, message);
     assert.equal(result.prompt, null, message);
   }
+});
+
+test("two relevant interest turns offer one private callback after answering", () => {
+  const messages = ["I am interested in training", "Please share the training programme details"];
+  assert.equal(hasSustainedCommercialInterest(messages), true);
+  const result = qualifyLeadConversation({ messages, enabled: true });
+  assert.equal(result.state?.facts.need, "AI training");
+  assert.equal(result.state?.contactEligible, true);
+  assert.equal(result.state?.nextField, "contact");
+  assert.match(result.prompt || "", /kept private/i);
+  assert.match(result.prompt || "", /mobile number/i);
+});
+
+test("repeated ordinary knowledge questions do not become commercial intent", () => {
+  const messages = ["What services do you provide?", "Where is your office?"];
+  assert.equal(hasSustainedCommercialInterest(messages), false);
+  assert.equal(qualifyLeadConversation({ messages, enabled: true }).state, null);
 });
 
 test("explicit commercial actions activate qualification", () => {
@@ -133,7 +150,7 @@ test("qualification scoring remains internal and a failed answer cannot ask the 
   const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
   const route = readFileSync("app/api/public/website-bot/[slug]/route.ts", "utf8");
   assert.doesNotMatch(widget, /Enquiry profile|qualification\.progress|qualification\.tier/);
-  assert.match(route, /qualification: qualification\.state \? \{ contactEligible:/);
+  assert.match(route, /qualification\.state \? \{ contactEligible: qualification\.state\.contactEligible/);
   assert.doesNotMatch(route, /qualification\.state\.score, tier:/);
   assert.match(route, /qualification\.state && hasVerifiedAnswer/);
 });

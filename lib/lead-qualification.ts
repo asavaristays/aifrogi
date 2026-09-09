@@ -35,6 +35,19 @@ const directContactSignals = [
   /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i
 ];
 
+// Interest alone must not interrupt the first useful answer. When the visitor
+// continues the same commercial/service discussion across two turns, however,
+// that sustained intent is enough to offer a consented callback once.
+const commercialInterestSignals = [
+  /\b(?:interested|need|want|looking for|considering|exploring)\b[^.!?\n]{0,70}\b(?:training|workshop|course|website|seo|automation|ai bot|chatbot|business bot|video|film|booking|consultation|service|solution|programme|program)\b/i,
+  /\b(?:training|workshop|course|website|seo|automation|ai bot|chatbot|business bot|video|film|booking|consultation|service|solution|programme|program)\b[^.!?\n]{0,70}\b(?:details|options|available|offer|provide|process|duration|batch|session|demo)\b/i,
+  /\b(?:share|send|tell|explain|show)\b[^.!?\n]{0,60}\b(?:details|options|programme|program|training|course|service|demo)\b/i
+];
+
+export function hasSustainedCommercialInterest(messages: string[]) {
+  return messages.filter((message) => commercialInterestSignals.some((pattern) => pattern.test(message))).length >= 2;
+}
+
 export function hasExplicitBuyingSignal(messages: string[]) {
   return messages.some((message) => explicitBuyingSignals.some((pattern) => pattern.test(message)));
 }
@@ -55,7 +68,7 @@ const questions: Record<QualificationField, string> = {
   budget: "Do you have an approximate budget range? You may say ‘not decided’.",
   location: "Which city or market is this project for?",
   decisionRole: "Are you the decision-maker, or are other team members involved?",
-  contact: "To connect you with the business team, please share your name and mobile number using the consent fields below."
+  contact: "If you’d like the business team to help you further, please share your name and mobile number below. Your details will be kept private and used only for this enquiry."
 };
 
 function clean(value: string) {
@@ -105,7 +118,8 @@ export function qualifyLeadConversation(input: {
   enabled: boolean;
 }) {
   const previous = previousQualification(input.previousState);
-  const active = input.enabled && Boolean(previous?.active || hasExplicitBuyingSignal(input.messages));
+  const sustainedInterest = hasSustainedCommercialInterest(input.messages);
+  const active = input.enabled && Boolean(previous?.active || hasExplicitBuyingSignal(input.messages) || sustainedInterest);
   if (!active) return { state: null, prompt: null };
 
   const facts = extractFacts(input.messages, previous?.facts || {}, input.contact);
@@ -119,7 +133,7 @@ export function qualifyLeadConversation(input: {
   const order: QualificationField[] = [...discoveryOrder, "contact"];
   const nextDiscoveryField = discoveryOrder.find((field) => !facts[field] && (asked[field] || 0) < 2) || null;
   const directContactRequest = input.messages.some((message) => directContactSignals.some((pattern) => pattern.test(message)));
-  const contactEligible = directContactRequest || (score >= 60 && Boolean(facts.need) && Boolean(facts.timeline || facts.budget));
+  const contactEligible = directContactRequest || sustainedInterest || (score >= 60 && Boolean(facts.need) && Boolean(facts.timeline || facts.budget));
   const nextField = !facts.contact && contactEligible && (asked.contact || 0) < 2 ? "contact" : nextDiscoveryField;
   if (nextField) asked[nextField] = (asked[nextField] || 0) + 1;
   const captured = order.filter((field) => Boolean(facts[field])).length;
