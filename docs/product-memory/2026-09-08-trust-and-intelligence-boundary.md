@@ -2,6 +2,8 @@
 
 This is a permanent working rule for future AiFrogi decisions.
 
+The authoritative delivery order is `docs/AIFROGI_EXECUTION_ROADMAP.md`. Read it at the start of each work session and do not begin work outside its active phase without recording and approving a roadmap change first.
+
 ## Never confuse the two intelligence systems
 
 ### Sovereign / Core Intelligence
