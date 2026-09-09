@@ -11,6 +11,7 @@ export type CapacitySignals = {
 };
 
 const percent = (value: number, total: number) => total > 0 ? Math.round(value / total * 1000) / 10 : 0;
+const gigabytes = (bytes: number) => Math.round(bytes / 1024 / 1024 / 1024 * 10) / 10;
 
 export function evaluateCapacity(signals: CapacitySignals) {
   const red = signals.botPercent >= 100 || signals.replyPercent >= 100 || (signals.memoryPercent ?? 0) >= 90 || (signals.diskPercent ?? 0) >= 90 || (signals.errorPercent ?? 0) >= 5 || (signals.oldestJobMinutes ?? 0) >= 30;
@@ -31,8 +32,16 @@ function hostSnapshot() {
   try {
     const totalMemory = os.totalmem(), freeMemory = os.freemem(), disk = statfsSync(process.cwd());
     const diskTotal = Number(disk.blocks) * Number(disk.bsize), diskFree = Number(disk.bavail) * Number(disk.bsize);
-    return { cpuCores: os.cpus().length, load1m: Math.round(os.loadavg()[0] * 100) / 100, memoryPercent: percent(totalMemory - freeMemory, totalMemory), diskPercent: percent(diskTotal - diskFree, diskTotal) };
-  } catch { return { cpuCores: null, load1m: null, memoryPercent: null, diskPercent: null }; }
+    return {
+      cpuCores: os.cpus().length,
+      load1m: Math.round(os.loadavg()[0] * 100) / 100,
+      memoryPercent: percent(totalMemory - freeMemory, totalMemory),
+      diskPercent: percent(diskTotal - diskFree, diskTotal),
+      diskTotalGb: gigabytes(diskTotal),
+      diskUsedGb: gigabytes(diskTotal - diskFree),
+      diskFreeGb: gigabytes(diskFree)
+    };
+  } catch { return { cpuCores: null, load1m: null, memoryPercent: null, diskPercent: null, diskTotalGb: null, diskUsedGb: null, diskFreeGb: null }; }
 }
 
 export async function getCapacitySnapshot() {

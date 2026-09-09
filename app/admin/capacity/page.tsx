@@ -18,7 +18,8 @@ export default async function CapacityPage() {
     ["Answer error rate", value(snapshot.errorPercent, "%"), "Seven-day evidence"],
     ["Queue depth", value(snapshot.queueDepth), `Oldest due: ${value(snapshot.oldestJobMinutes, " min")}`],
     ["VPS memory", value(snapshot.host.memoryPercent, "%"), `${value(snapshot.host.cpuCores)} CPU cores · load ${value(snapshot.host.load1m)}`],
-    ["VPS disk", value(snapshot.host.diskPercent, "%"), "Current application filesystem"],
+    ["VPS disk", value(snapshot.host.diskPercent, "%"), `${value(snapshot.host.diskUsedGb, " GB")} used of ${value(snapshot.host.diskTotalGb, " GB")}`],
+    ["Storage available", value(snapshot.host.diskFreeGb, " GB"), snapshot.host.diskPercent !== null && snapshot.host.diskPercent < 75 ? "Healthy headroom; no storage upgrade recommended" : "Run bounded cleanup before adding storage"],
     ["Seven-day replies", value(snapshot.replies7d), "Traffic baseline"]
   ];
   return <main className="mx-auto max-w-[1400px] space-y-7 px-4 py-8 sm:px-8 lg:px-10">
