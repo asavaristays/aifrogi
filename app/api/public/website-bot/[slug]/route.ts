@@ -19,6 +19,7 @@ import { ensureWebsiteHandover, websiteConversationState } from "@/lib/website-h
 import { withWebsiteTurnLock } from "@/lib/website-turn-lock";
 import { persistWebsiteTurn } from "@/lib/website-persistence";
 import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "@/lib/lead-qualification";
+import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -66,6 +67,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const tenantConfiguration = { ...configuration, welcomeMessage: `Welcome to ${organization.name}. How can I help with your business enquiry today?` };
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
+  const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
+  if (!replyEntitlement.allowed) return NextResponse.json({ error: "This AI Bot has used its available reply credits. The business account owner can add credits or activate a plan in Billing." }, { status: 402, headers: responseHeaders });
 
   const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);

@@ -43,3 +43,15 @@ test("connector billing uses frontend pricing categories", () => {
   const controls = readFileSync(resolve(process.cwd(), "components/admin/billing-controls.tsx"), "utf8");
   for (const category of ["Google Sheets / Calendar", "CRM", "E-commerce", "PMS / Channel Manager", "Custom API"]) assert.match(controls, new RegExp(category.replace("/", "\\/")));
 });
+
+test("client and Super Admin billing show the effective AI credit balance", () => {
+  const client = readFileSync(resolve(process.cwd(), "app/(app)/billing/page.tsx"), "utf8");
+  const register = readFileSync(resolve(process.cwd(), "app/admin/billing/page.tsx"), "utf8");
+  const detail = readFileSync(resolve(process.cwd(), "app/admin/billing/[organizationId]/page.tsx"), "utf8");
+  const websiteBot = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]/route.ts"), "utf8");
+  assert.match(client, /Bot replies are active/);
+  assert.match(client, /plan replies \+.*purchased or free credits/);
+  assert.match(register, /AI credits/);
+  assert.match(detail, /replies\.total/);
+  assert.match(websiteBot, /checkOrganizationEntitlement\(organization\.id, "aiReplies", 1\)/);
+});

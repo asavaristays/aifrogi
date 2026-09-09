@@ -9,6 +9,7 @@ import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { ActivatePlan } from "@/components/billing/activate-plan";
 import { BuyAiCredits } from "@/components/billing/buy-ai-credits";
 import { CreditHistoryTable } from "@/components/billing/credit-history-table";
+import { aiReplyAllowancePosition } from "@/lib/ai-credits";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -27,9 +28,9 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   const usage = [
     ["Contacts", billing.usage.contacts, billing.limits.contacts],
     ["Messages", billing.usage.messages, billing.limits.messages],
-    ["AI replies", billing.usage.aiReplies, billing.limits.aiReplies],
     ["Team users", billing.usage.teamUsers, billing.limits.teamUsers]
   ] as const;
+  const replies = aiReplyAllowancePosition({ included: billing.limits.aiReplies, added: billing.aiCredits.granted, used: billing.usage.aiReplies });
 
   return <div className="product-surface min-h-screen">
     <TopBar title="Billing and usage" subtitle="Trial, plan allowances, invoices, and renewal" />
@@ -42,7 +43,27 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.15fr_.85fr]">
-        <Card className="p-6"><p className="product-eyebrow">Current period</p><h2 className="mt-2 text-2xl font-semibold">Usage remains visible when paused.</h2><div className="mt-6 space-y-5">{usage.map(([label, value, limit]) => { const percent = usagePercent(value, limit); return <div key={label}><div className="flex items-center justify-between gap-4 text-sm"><strong>{label}</strong><span className="text-[var(--text-muted)]">{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-black/7"><div className={`h-full rounded-full ${percent >= 90 ? "bg-[#c84b42]" : "bg-[#8a6a16]"}`} style={{ width: `${Math.min(100, percent)}%` }} /></div></div>; })}</div></Card>
+        <Card className="p-6">
+          <p className="product-eyebrow">Current period</p>
+          <h2 className="mt-2 text-2xl font-semibold">Your available usage.</h2>
+          <div className="mt-6 space-y-5">
+            <div>
+              <div className="flex items-start justify-between gap-4 text-sm">
+                <span><strong className="block">AI replies</strong><small className={replies.available ? "text-[#17694f]" : "text-[#b53b33]"}>{replies.available ? "Bot replies are active" : "Credits exhausted · add credits to resume"}</small></span>
+                <span className="text-right text-[var(--text-muted)]"><strong className="block text-[#17211e]">{replies.remaining.toLocaleString("en-IN")} remaining</strong>{replies.used.toLocaleString("en-IN")} used of {replies.total.toLocaleString("en-IN")}</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/7"><div className={`h-full rounded-full ${replies.available ? "bg-[#17694f]" : "bg-[#c84b42]"}`} style={{ width: `${replies.percent}%` }} /></div>
+              <p className="mt-2 text-xs text-[var(--text-muted)]">{replies.included.toLocaleString("en-IN")} plan replies + {replies.added.toLocaleString("en-IN")} purchased or free credits. New credits increase this balance immediately.</p>
+            </div>
+            {usage.map(([label, value, limit]) => {
+              const percent = usagePercent(value, limit);
+              return <div key={label}>
+                <div className="flex items-center justify-between gap-4 text-sm"><strong>{label}</strong><span className="text-[var(--text-muted)]">{value.toLocaleString("en-IN")} / {limit.toLocaleString("en-IN")}</span></div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/7"><div className={`h-full rounded-full ${percent >= 90 ? "bg-[#c84b42]" : "bg-[#8a6a16]"}`} style={{ width: `${Math.min(100, percent)}%` }} /></div>
+              </div>;
+            })}
+          </div>
+        </Card>
         <Card className="p-6"><p className="product-eyebrow">Plan choices</p><h2 className="mt-2 text-2xl font-semibold">Continue after the trial.</h2><div className="mt-5 divide-y divide-black/7">{BILLING_PLAN_CATALOGUE.filter((plan) => ["AI_STARTER_MONTHLY", "AI_STARTER_YEARLY", "CUSTOM"].includes(plan.code)).map((plan) => <div key={plan.code} className="flex items-start justify-between gap-4 py-4"><div><strong>{plan.name}</strong><p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{plan.description}</p></div><span className="shrink-0 text-sm font-bold">{plan.amountPaisa ? `${formatMoney(plan.amountPaisa)} / ${plan.billingInterval === "YEARLY" ? "year" : "month"}` : "Contact us"}</span></div>)}</div><Link href="https://aifrogi.com/pricing" className="mt-5 inline-flex text-sm font-bold text-[#6d5310]">Compare full pricing →</Link></Card>
       </section>
 

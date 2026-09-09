@@ -3,6 +3,7 @@ import { createHmac } from "node:crypto";
 import test from "node:test";
 import { verifyRazorpayCheckoutSignature } from "../../lib/razorpay-billing";
 import { BILLING_PLAN_CATALOGUE } from "../../lib/billing-super-admin";
+import { aiReplyAllowancePosition } from "../../lib/ai-credits";
 
 test("AI Bot paid plans match the public monthly and yearly pricing", () => {
   const monthly = BILLING_PLAN_CATALOGUE.find((plan) => plan.code === "AI_STARTER_MONTHLY");
@@ -30,4 +31,17 @@ test("Razorpay checkout signature accepts the signed order-payment pair and reje
     if (previousId === undefined) delete process.env.RAZORPAY_KEY_ID; else process.env.RAZORPAY_KEY_ID = previousId;
     if (previousSecret === undefined) delete process.env.RAZORPAY_KEY_SECRET; else process.env.RAZORPAY_KEY_SECRET = previousSecret;
   }
+});
+
+test("granted credits immediately expand the truthful AI reply allowance", () => {
+  assert.deepEqual(aiReplyAllowancePosition({ included: 100, added: 1_000, used: 267 }), {
+    included: 100,
+    added: 1_000,
+    used: 267,
+    total: 1_100,
+    remaining: 833,
+    percent: 24,
+    available: true
+  });
+  assert.equal(aiReplyAllowancePosition({ included: 100, added: 0, used: 100 }).available, false);
 });

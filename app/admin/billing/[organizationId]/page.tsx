@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BillingControls } from "@/components/admin/billing-controls";
 import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 import { CreditHistoryTable } from "@/components/billing/credit-history-table";
+import { aiReplyAllowancePosition } from "@/lib/ai-credits";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -23,6 +24,7 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
   const outstanding = organization.invoices
     .filter((invoice) => !["PAID", "VOID"].includes(invoice.status))
     .reduce((sum, invoice) => sum + invoice.totalPaisa, 0);
+  const replies = aiReplyAllowancePosition({ included: limits.aiReplies, added: billing.aiCredits.granted, used: usage.aiReplies });
 
   return <main className="mx-auto max-w-[1500px] space-y-7 px-4 py-8 sm:px-8 lg:px-10">
     <header className="flex flex-col gap-5 border-b border-black/8 pb-7 sm:flex-row sm:items-end sm:justify-between">
@@ -48,7 +50,7 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
       <p className="product-eyebrow">Allowance position</p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Allowance label="Messages" value={usage.messages} limit={limits.messages} />
-        <Allowance label="AI replies" value={usage.aiReplies} limit={limits.aiReplies} />
+        <Allowance label="AI replies" value={usage.aiReplies} limit={replies.total} helper={`${replies.remaining.toLocaleString("en-IN")} remaining · ${replies.included.toLocaleString("en-IN")} plan + ${replies.added.toLocaleString("en-IN")} added`} />
         <Allowance label="Contacts" value={usage.contacts} limit={limits.contacts} />
         <Allowance label="Team users" value={usage.teamUsers} limit={limits.teamUsers} />
       </div>
@@ -77,9 +79,9 @@ function Metric({ label, value, alert = false }: { label: string; value: string;
   return <div className="border-t border-black/6 p-5 first:border-0 sm:border-l sm:border-t-0"><p className="text-[10px] font-bold uppercase tracking-[.13em] text-[#777168]">{label}</p><strong className={`mt-3 block text-lg ${alert ? "text-[#b53b33]" : ""}`}>{value}</strong></div>;
 }
 
-function Allowance({ label, value, limit }: { label: string; value: number; limit: number }) {
+function Allowance({ label, value, limit, helper }: { label: string; value: number; limit: number; helper?: string }) {
   const percent = usagePercent(value, limit);
-  return <div className="rounded-2xl bg-[#f7f4ed] p-4"><div className="flex justify-between gap-3 text-sm"><span>{label}</span><strong>{value.toLocaleString("en-IN")} / {limit ? limit.toLocaleString("en-IN") : "Unlimited"}</strong></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-black/8"><div className="h-full rounded-full bg-[#8a6a16]" style={{ width: `${Math.min(percent, 100)}%` }} /></div></div>;
+  return <div className="rounded-2xl bg-[#f7f4ed] p-4"><div className="flex justify-between gap-3 text-sm"><span>{label}</span><strong>{value.toLocaleString("en-IN")} / {limit ? limit.toLocaleString("en-IN") : "Unlimited"}</strong></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-black/8"><div className={`h-full rounded-full ${percent >= 100 ? "bg-[#c84b42]" : "bg-[#8a6a16]"}`} style={{ width: `${Math.min(percent, 100)}%` }} /></div>{helper ? <p className="mt-2 text-xs leading-5 text-[#68645c]">{helper}</p> : null}</div>;
 }
 
 function Record({ title, children }: { title: string; children: React.ReactNode }) {

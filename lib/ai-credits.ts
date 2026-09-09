@@ -1,6 +1,23 @@
 import { getDb } from "@/lib/db";
 import { findAiCreditPack, type AiCreditPackCode } from "@/lib/ai-credit-catalog";
 
+export function aiReplyAllowancePosition(input: { included: number; added: number; used: number }) {
+  const included = Math.max(0, input.included);
+  const added = Math.max(0, input.added);
+  const used = Math.max(0, input.used);
+  const total = included + added;
+  const remaining = Math.max(0, total - used);
+  return {
+    included,
+    added,
+    used,
+    total,
+    remaining,
+    percent: total ? Math.min(100, Math.round((used / total) * 100)) : 0,
+    available: total === 0 || remaining > 0
+  };
+}
+
 export async function getActiveAiCreditTotal(organizationId: string, now = new Date()) {
   const db = getDb();
   if (!db) return 0;

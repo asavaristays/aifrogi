@@ -603,6 +603,7 @@ export async function getBillingCommandCenter() {
     const usage = subscription
       ? await getOrganizationUsage(organization.id, subscription.currentPeriodStart, subscription.currentPeriodEnd)
       : emptyUsage();
+    const aiCredits = await getAiCreditSummary({ organizationId: organization.id, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies });
     const failedMessages = await db.leadMessage.count({
       where: { lead: { property: { organizationId: organization.id } }, deliveryStatus: { startsWith: "failed" } }
     });
@@ -618,9 +619,9 @@ export async function getBillingCommandCenter() {
       failedMessages,
       deadJobs,
       usage,
-      limits
+      limits: { ...limits, aiReplies: limits.aiReplies + aiCredits.granted }
     });
-    return { organization, subscription, limits, usage, health, failedMessages, deadJobs };
+    return { organization, subscription, limits, usage, aiCredits, health, failedMessages, deadJobs };
   }));
 
   const [incidents, auditLogs] = await Promise.all([
