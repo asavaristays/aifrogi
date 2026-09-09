@@ -43,9 +43,14 @@ test("JavaScript delivery uses a responsive launcher and trusted minimize messag
 test("only launcher-mode embeds expose the minimize control", () => {
   const embedPage = readFileSync("app/embed/[slug]/page.tsx", "utf8");
   const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
+  const shell = readFileSync("components/website-bot/webtechnosys-shell.module.css", "utf8");
   assert.match(embedPage, /dismissible=\{mode === "launcher"\}/);
-  assert.match(widget, /aria-label="Minimize AI Bot"/);
+  assert.match(widget, /aria-label="Close AI Bot"/);
+  assert.match(widget, /<X aria-hidden="true"/);
   assert.match(widget, /window\.parent\.postMessage\(\{ type: "AIFROGI_WIDGET_CLOSE", slug \}, "\*"\)/);
+  assert.match(shell, /\.identity \{[^}]*min-width: 0;[^}]*flex: 1 1 auto;/);
+  assert.match(shell, /\.dismiss \{[^}]*padding: 0;[^}]*line-height: 0;/);
+  assert.match(shell, /\.dismiss svg \{[^}]*display: block;[^}]*transform: none;/);
 });
 
 test("workspace menu configuration flows through Setup and public bot surfaces", () => {
