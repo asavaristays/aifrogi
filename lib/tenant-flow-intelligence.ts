@@ -1,7 +1,7 @@
 export type TenantFlowTemplateKey = "SERVICE_ADVISOR" | "PRICING_ENQUIRY" | "BOOKING_REQUEST" | "SUPPORT_HANDOVER";
 export type TenantFlowStatus = "DRAFT" | "PUBLISHED" | "PAUSED";
 export type TenantFlowNodeType = "MENU_TRIGGER" | "TENANT_ANSWER" | "MESSAGE" | "CONDITION" | "CAPTURE_CONTACT" | "HUMAN_HANDOVER" | "END";
-export type TenantFlowNode = { id: string; type: TenantFlowNodeType; label: string; instruction?: string; nextId?: string; alternateNextId?: string };
+export type TenantFlowNode = { id: string; type: TenantFlowNodeType; label: string; instruction?: string; nextId?: string; alternateNextId?: string; x?: number; y?: number };
 export type TenantFlowDefinition = { id: string; name: string; templateKey: TenantFlowTemplateKey; status: TenantFlowStatus; version: number; menuLabel: string; openingQuestion: string; fallbackMode: "HUMAN_OR_CALLBACK"; steps: TenantFlowNode[]; createdAt: string; updatedAt: string; publishedAt?: string };
 
 export const TENANT_FLOW_NODE_TYPES: Array<{ value: TenantFlowNodeType; label: string; description: string }> = [
@@ -28,12 +28,12 @@ export function newTenantFlow(templateKey: TenantFlowTemplateKey): TenantFlowDef
   const now = new Date().toISOString();
   const trigger = id(), answer = id(), condition = id(), end = id(), handover = id(), callbackNode = id();
   return { id: crypto.randomUUID(), name: template.name, templateKey: template.key, status: "DRAFT", version: 1, menuLabel: template.menuLabel, openingQuestion: template.openingQuestion, fallbackMode: "HUMAN_OR_CALLBACK", createdAt: now, updatedAt: now, steps: [
-    { id: trigger, type: "MENU_TRIGGER", label: "Visitor chooses this menu option", nextId: answer },
-    { id: answer, type: "TENANT_ANSWER", label: "Answer from approved Intelligence", instruction: template.openingQuestion, nextId: condition },
-    { id: condition, type: "CONDITION", label: "Was the visitor answered accurately?", instruction: "Verified answer available", nextId: end, alternateNextId: handover },
-    { id: end, type: "END", label: "Continue natural conversation" },
-    { id: handover, type: "HUMAN_HANDOVER", label: "Offer a reply from the business team", nextId: callbackNode },
-    { id: callbackNode, type: "CAPTURE_CONTACT", label: "Or request a consented callback" }
+    { id: trigger, type: "MENU_TRIGGER", label: "Visitor chooses this menu option", nextId: answer, x: 50, y: 250 },
+    { id: answer, type: "TENANT_ANSWER", label: "Answer from approved Intelligence", instruction: template.openingQuestion, nextId: condition, x: 330, y: 250 },
+    { id: condition, type: "CONDITION", label: "Was the visitor answered accurately?", instruction: "Verified answer available", nextId: end, alternateNextId: handover, x: 610, y: 250 },
+    { id: end, type: "END", label: "Continue natural conversation", x: 890, y: 100 },
+    { id: handover, type: "HUMAN_HANDOVER", label: "Offer a reply from the business team", nextId: callbackNode, x: 890, y: 390 },
+    { id: callbackNode, type: "CAPTURE_CONTACT", label: "Or request a consented callback", x: 1170, y: 390 }
   ] };
 }
 
@@ -47,7 +47,9 @@ function cleanNode(raw: unknown): TenantFlowNode | null {
   if (!label) return null;
   const nextId = String(node.nextId || "").replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
   const alternateNextId = String(node.alternateNextId || "").replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
-  return { id: nodeId, type: migratedType as TenantFlowNodeType, label, ...(String(node.instruction || "").trim() ? { instruction: String(node.instruction).trim().slice(0, 600) } : {}), ...(nextId ? { nextId } : {}), ...(alternateNextId ? { alternateNextId } : {}) };
+  const x = Math.max(20, Math.min(1800, Number(node.x ?? 40)));
+  const y = Math.max(20, Math.min(1000, Number(node.y ?? 40)));
+  return { id: nodeId, type: migratedType as TenantFlowNodeType, label, x, y, ...(String(node.instruction || "").trim() ? { instruction: String(node.instruction).trim().slice(0, 600) } : {}), ...(nextId ? { nextId } : {}), ...(alternateNextId ? { alternateNextId } : {}) };
 }
 
 export function validateTenantFlow(flow: TenantFlowDefinition) {

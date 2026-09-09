@@ -15,6 +15,7 @@ test("every governed flow template answers before offering human or callback hel
 test("clients can define connected nodes while invalid branches block publishing", () => {
   const flow = newTenantFlow("SUPPORT_HANDOVER");
   assert.deepEqual(validateTenantFlow(flow), []);
+  assert.ok(flow.steps.every(node => typeof node.x === "number" && typeof node.y === "number"));
   const condition = flow.steps.find(node => node.type === "CONDITION")!;
   assert.match(validateTenantFlow({ ...flow, steps: flow.steps.map(node => node.id === condition.id ? { ...node, alternateNextId: undefined } : node) })[0], /both Yes and No/);
 });

@@ -34,7 +34,7 @@ export function SideNav({
   enabledChannels?: string[];
 } = {}) {
   const pathname = usePathname();
-  const { sidebarOpen, setSidebarOpen } = useAppState();
+  const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useAppState();
   const isLight = tone === "light";
   const canManage = accessRole === "OWNER" || accessRole === "ADMIN";
   const allowedHrefs = new Set(canManage
@@ -68,24 +68,27 @@ export function SideNav({
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-[236px] flex-col px-3.5 py-4 transition-transform duration-150 ease-out will-change-transform",
+          "fixed inset-y-0 left-0 z-40 flex flex-col py-4 transition-[width,transform] duration-200 ease-out will-change-transform",
+          sidebarCollapsed ? "w-[72px] px-2" : "w-[236px] px-3.5",
           "border-r border-black bg-[var(--ink-900)] text-white",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         <div className="mb-4 border-b border-white/10 px-2 pb-4 pt-1">
           <div className="flex min-h-11 items-center">
-            <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[176px] grayscale contrast-125" />
+            {sidebarCollapsed ? <Image src="/brand/aifrogi-favicon-512.png" alt="AiFrogi" width={40} height={40} priority className="size-10 rounded-lg" /> : <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[176px] grayscale contrast-125" />}
           </div>
-          {workspaces.length ? <WorkspaceSwitcher workspaces={workspaces} currentSlug={currentWorkspaceSlug} /> : null}
+          {!sidebarCollapsed && workspaces.length ? <WorkspaceSwitcher workspaces={workspaces} currentSlug={currentWorkspaceSlug} /> : null}
         </div>
+
+        <button type="button" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="mb-3 hidden min-h-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white lg:flex" aria-label={sidebarCollapsed ? "Expand navigation" : "Collapse navigation"} title={sidebarCollapsed ? "Expand menu" : "Collapse menu"}><Icon name={sidebarCollapsed ? "arrow-right" : "menu"} /></button>
 
         <nav className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navGroups.map((group) => <section
             key={group.label}
             className="mb-5"
           >
-            <div className="mb-1.5 flex items-baseline justify-between gap-2 px-2.5">
+            <div className={`mb-1.5 items-baseline justify-between gap-2 px-2.5 ${sidebarCollapsed ? "hidden" : "flex"}`}>
               <p className="text-[11px] font-semibold text-[var(--gold-300)]">{group.label}</p>
               <p className="truncate text-[10px] text-white/35">{group.helper}</p>
             </div>
@@ -113,13 +116,13 @@ export function SideNav({
                 >
                   <Icon name={item.icon as never} className="h-4 w-4" />
                 </span>
-                <span>{item.label}</span>
+                {!sidebarCollapsed ? <span>{item.label}</span> : null}
               </Link>
             );
           })}</div></section>)}
         </nav>
 
-        <div className="mt-2 shrink-0 border-t border-white/10 px-1.5 pt-3">
+        <div className={`mt-2 shrink-0 border-t border-white/10 px-1.5 pt-3 ${sidebarCollapsed ? "hidden" : "block"}`}>
           <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className="text-white/45">Access</span><strong className="text-[var(--gold-300)]">{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
           {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className="h-2 w-2 rounded-full bg-[var(--success)]" /><span className="text-white/58">AI Bot workspace</span></div> : null}
           <LogoutButton variant="sidebar" className="w-full rounded-md border border-white/12 !bg-white/5 px-2.5 py-2 text-xs font-bold tracking-normal text-white/78 hover:!bg-white/10 hover:text-white" />
