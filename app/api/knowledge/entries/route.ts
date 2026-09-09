@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
-import { createAtomicClaim, deleteUnpublishedClaim, fieldApproveClaim, generateClaimPreview, pauseClaim, reconfirmClaim, reviewClaimPreview } from "@/lib/repositories/knowledge-verification-repository";
+import { createAtomicClaim, deleteUnpublishedClaim, editKnowledgeClaim, fieldApproveClaim, generateClaimPreview, pauseClaim, reconfirmClaim, retireKnowledgeClaim, reviewClaimPreview } from "@/lib/repositories/knowledge-verification-repository";
 import { canPerformGovernedKnowledgeAction } from "@/lib/knowledge-authority";
 
 async function context() {
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   const current = await context();
   if (!current) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
-  const payload = await request.json().catch(() => null) as { id?: string; previewId?: string; action?: "FIELD_APPROVE" | "GENERATE_PREVIEW" | "PREVIEW_APPROVE" | "PREVIEW_REJECT" | "PAUSE" | "RECONFIRM" | "DELETE"; supersedesId?: string; reason?: string } | null;
+  const payload = await request.json().catch(() => null) as { id?: string; previewId?: string; action?: "FIELD_APPROVE" | "GENERATE_PREVIEW" | "PREVIEW_APPROVE" | "PREVIEW_REJECT" | "PAUSE" | "RECONFIRM" | "EDIT" | "DELETE" | "RETIRE"; supersedesId?: string; reason?: string; question?: string; answer?: string; category?: string } | null;
   try {
     const base = { propertyId: current.property.id, actorEmail: current.access.user.username };
     let result: unknown;
@@ -34,7 +34,9 @@ export async function PATCH(request: Request) {
     else if (payload?.action === "PREVIEW_APPROVE" || payload?.action === "PREVIEW_REJECT") result = await reviewClaimPreview({ ...base, previewId: payload.previewId || "", approve: payload.action === "PREVIEW_APPROVE", reason: payload.reason });
     else if (payload?.action === "PAUSE") result = await pauseClaim({ ...base, entryId: payload.id || "", reason: payload.reason || "Paused by Client Admin for review." });
     else if (payload?.action === "RECONFIRM") result = await reconfirmClaim({ ...base, entryId: payload.id || "" });
+    else if (payload?.action === "EDIT") result = await editKnowledgeClaim({ ...base, entryId: payload.id || "", question: payload.question || "", answer: payload.answer || "", category: payload.category || "General" });
     else if (payload?.action === "DELETE") result = await deleteUnpublishedClaim({ propertyId: current.property.id, entryId: payload.id || "" });
+    else if (payload?.action === "RETIRE") result = await retireKnowledgeClaim({ ...base, entryId: payload.id || "" });
     else throw new Error("Select a valid knowledge verification action.");
     return NextResponse.json({ ok: true, result });
   } catch (error) {

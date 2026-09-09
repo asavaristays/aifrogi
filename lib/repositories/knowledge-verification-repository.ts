@@ -126,12 +126,67 @@ export async function pauseClaim(input: { propertyId: string; entryId: string; a
   return { paused: true, actorEmail: input.actorEmail };
 }
 
+export async function editKnowledgeClaim(input: { propertyId: string; entryId: string; question: string; answer: string; category: string; actorEmail: string }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const current = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
+  if (!current) throw new Error("Knowledge claim not found.");
+  if (current.status === "SUPERSEDED") throw new Error("A superseded answer cannot be edited. Edit the current version instead.");
+  const validation = validateAtomicClaim({ question: input.question, answer: input.answer, category: input.category });
+  if (!validation.valid) throw new Error(`Please correct: ${validation.errors.join(", ")}`);
+  const wasApproved = Boolean(current.fieldApprovedAt || current.previewApprovedAt || current.publishedAt || ["FIELD_APPROVED", "PREVIEW_PENDING", "PUBLISHED", "APPROVED"].includes(current.status));
+
+  return db.$transaction(async (tx) => {
+    await tx.knowledgePreview.updateMany({
+      where: { entryId: current.id, status: "PENDING" },
+      data: { status: "REJECTED", rejectedReason: "Answer edited by Client Admin." }
+    });
+    if (!wasApproved) {
+      const entry = await tx.knowledgeEntry.update({
+        where: { id: current.id },
+        data: {
+          question: input.question.trim(), answer: input.answer.trim(), category: input.category.trim() || "General",
+          claimKey: validation.claimKey, validationStatus: "VALID", validationErrors: [], status: "VALIDATED",
+          conflictStatus: "CLEAR", conflictSummary: null, fieldApprovedBy: null, fieldApprovedAt: null,
+          previewApprovedBy: null, previewApprovedAt: null, pausedAt: null, pauseReason: null
+        }
+      });
+      return { entry, createdVersion: false, liveVersionRetained: false };
+    }
+
+    const latest = await tx.knowledgeEntry.findFirst({ where: { propertyId: input.propertyId, claimKey: current.claimKey }, orderBy: { version: "desc" } });
+    const entry = await tx.knowledgeEntry.create({ data: {
+      propertyId: current.propertyId, documentId: current.documentId, question: input.question.trim(), answer: input.answer.trim(), category: input.category.trim() || "General",
+      createdBy: input.actorEmail, claimKey: current.claimKey || validation.claimKey, claimType: current.claimType, valueType: current.valueType, currency: current.currency,
+      effectiveAt: new Date(), expiresAt: new Date(Date.now() + current.refreshDays * 86400000), refreshDays: current.refreshDays,
+      reliability: current.reliability, authorityLevel: current.authorityLevel, version: (latest?.version || current.version) + 1, supersedesId: current.id,
+      validationStatus: "VALID", validationErrors: [], conflictStatus: "CLEAR", status: "VALIDATED"
+    } });
+    return { entry, createdVersion: true, liveVersionRetained: true };
+  }, { isolationLevel: "Serializable" });
+}
+
+export async function retireKnowledgeClaim(input: { propertyId: string; entryId: string; actorEmail: string }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
+  if (!entry) throw new Error("Knowledge claim not found.");
+  if (entry.status === "SUPERSEDED") return { retired: true, retainedForAudit: true };
+  const retainedForAudit = Boolean(entry.fieldApprovedAt || entry.previewApprovedAt || entry.publishedAt || ["FIELD_APPROVED", "PREVIEW_PENDING", "PUBLISHED", "APPROVED", "SUPERSEDED"].includes(entry.status));
+  if (!retainedForAudit) {
+    await deleteUnpublishedClaim({ propertyId: input.propertyId, entryId: entry.id });
+    return { retired: true, retainedForAudit: false };
+  }
+  await db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PAUSED", pausedAt: new Date(), pauseReason: "Removed from bot use by Client Admin; audit history retained." } });
+  return { retired: true, retainedForAudit: true, actorEmail: input.actorEmail };
+}
+
 export async function deleteUnpublishedClaim(input: { propertyId: string; entryId: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!entry) throw new Error("Knowledge claim not found.");
-  if (entry.publishedAt || entry.previewApprovedAt || ["PUBLISHED", "APPROVED", "SUPERSEDED"].includes(entry.status)) throw new Error("Previously approved knowledge must be retained for audit; pause or supersede it instead.");
+  if (entry.fieldApprovedAt || entry.publishedAt || entry.previewApprovedAt || ["FIELD_APPROVED", "PREVIEW_PENDING", "PUBLISHED", "APPROVED", "SUPERSEDED"].includes(entry.status)) throw new Error("Previously approved knowledge must be retained for audit; pause or supersede it instead.");
   return db.knowledgeEntry.delete({ where: { id: entry.id } });
 }
 
