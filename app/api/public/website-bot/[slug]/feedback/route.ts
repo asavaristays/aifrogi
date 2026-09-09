@@ -57,5 +57,5 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     }
     return saved;
   });
-  return NextResponse.json({ ok: true, helpful: feedback.helpful, message: feedback.helpful ? "Thank you. This helps us verify answer quality." : "Thank you. This answer is now part of the review dataset. You can request human help or explicitly flag an incorrect fact." }, { headers });
+  return NextResponse.json({ ok: true, helpful: feedback.helpful, message: feedback.helpful ? "Thank you. Your feedback helps us improve." : "Thank you. The business team can review this answer. You may request human help if you still need assistance." }, { headers });
 }

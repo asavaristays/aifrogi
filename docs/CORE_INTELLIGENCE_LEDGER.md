@@ -36,6 +36,7 @@ Core Intelligence must never contain a client's prices, services, address, phone
 | `CI-009` | Versioned persona/category policy packs | `LIVE` | Supported bot families | `lib/bot-persona-packs.ts`, category policy and registry | Vertical rules are shared by category; tenant facts remain separate. |
 | `CI-010` | Visitor-timezone-aware first greeting | `LOCAL` | Every website bot and client Today dashboard | `lib/greeting.ts`, website bot API/embed, dashboard | 24/24 focused tests, TypeScript and production build passed. Awaiting VPS deployment under commit `749a56f`. |
 | `CI-011` | Shared and vertical regression gates | `PILOT_EVIDENCE` | Core or persona changes | test suites and bot-family regression scripts | Automated passes screen defects but do not replace human answer acceptance. |
+| `CI-012` | Self-contained business-request routing and visitor-safe feedback | `LOCAL` | Every website bot | `lib/sovereign-intelligence/decision.ts`, public website-bot feedback API | Direct requests such as “share training program details” reach tenant retrieval without requiring prior context; off-topic lookalikes and genuine follow-ups remain separated. Focused tests 47/47, TypeScript, ESLint and 76-route production build passed. Awaiting VPS deployment. |
 
 ## Duplicate-prevention gate
 

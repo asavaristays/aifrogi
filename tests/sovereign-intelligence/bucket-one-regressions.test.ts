@@ -5,7 +5,7 @@ import { resolveSovereignQuestion } from "../../lib/sovereign-intelligence/decis
 
 test("contact follow-up survives unrelated weather interruption", () => {
   const result = resolveSovereignQuestion("You already have context", ["What is the weather today?", "What is your phone number?"]);
-  assert.equal(result.resolvedQuestion, "What is your phone number?");
+  assert.equal(result.resolvedQuestion, "What is your phone number?\nFollow-up question: You already have context");
   assert.equal(result.contextUsed, true);
 });
 

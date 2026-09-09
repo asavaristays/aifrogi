@@ -132,6 +132,13 @@ test("short booking-link follow-up retains the prior training intent", () => {
   assert.equal(resolved.retrievalQuestion, "What upcoming AI training can I book?\nFollow-up question: Give me the link to book");
 });
 
+test("direct training-detail request reaches business retrieval without history", () => {
+  const resolved = resolveWebsiteKnowledgeQuestion("share training program details", []);
+  assert.equal(resolved.intent, "BUSINESS");
+  assert.equal(resolved.retrievalQuestion, "share training program details");
+  assert.equal(resolved.priorQuestion, null);
+});
+
 test("natural when-and-where pronoun follow-up retains the prior subject", () => {
   const resolved = resolveWebsiteKnowledgeQuestion("When and where is it?", ["I am interested in training"]);
   assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");

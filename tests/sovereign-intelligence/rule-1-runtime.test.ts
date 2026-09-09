@@ -21,7 +21,7 @@ test("adversarial intent pack produces governed dispositions", () => {
 
 test("off-topic interruption cannot contaminate a relevant contextual follow-up", () => {
   const decision = resolveSovereignQuestion("You already have context", ["What is the weather?", "Tell me about AI training"]);
-  assert.equal(decision.resolvedQuestion, "Tell me about AI training");
+  assert.equal(decision.resolvedQuestion, "Tell me about AI training\nFollow-up question: You already have context");
   assert.equal(decision.contextUsed, true);
   assert.equal(decision.disposition, "ANSWER");
 });
@@ -29,8 +29,37 @@ test("off-topic interruption cannot contaminate a relevant contextual follow-up"
 test("a short action follow-up inherits only the latest explicit business intent", () => {
   const resolved = resolveSovereignQuestion("Give me the link to book", ["What is the weather?", "What upcoming AI training can I book?"]);
   assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
-  assert.equal(resolved.resolvedQuestion, "What upcoming AI training can I book?");
+  assert.equal(resolved.resolvedQuestion, "What upcoming AI training can I book?\nFollow-up question: Give me the link to book");
   assert.equal(resolved.contextUsed, true);
+});
+
+test("self-contained imperative business questions do not require prior context", () => {
+  for (const question of [
+    "Share training program details",
+    "Please provide your service details",
+    "Explain your AI automation services",
+    "Show the hotel technology products",
+    "Share your pricing and package details"
+  ]) {
+    const resolved = resolveSovereignQuestion(question, []);
+    assert.equal(resolved.intent, "BUSINESS", question);
+    assert.equal(resolved.disposition, "ANSWER", question);
+    assert.equal(resolved.contextUsed, false, question);
+    assert.equal(resolved.resolvedQuestion, question, question);
+  }
+});
+
+test("off-topic subjects cannot masquerade as contextual detail requests", () => {
+  assert.equal(classifySovereignIntent("Share today's weather details"), "OFF_TOPIC");
+  assert.equal(classifySovereignIntent("Provide the cricket match details"), "OFF_TOPIC");
+  assert.equal(classifySovereignIntent("Share the stock price"), "OFF_TOPIC");
+});
+
+test("genuinely contextual requests still inherit the previous business subject", () => {
+  const resolved = resolveSovereignQuestion("Give me the link to book", ["What upcoming AI training can I book?"]);
+  assert.equal(resolved.intent, "CONTEXT_FOLLOW_UP");
+  assert.equal(resolved.contextUsed, true);
+  assert.match(resolved.resolvedQuestion, /upcoming AI training/);
 });
 
 test("callback and specific-date language routes into the correct governed journey", () => {
@@ -38,7 +67,7 @@ test("callback and specific-date language routes into the correct governed journ
   assert.equal(classifySovereignIntent("I need a callback"), "HUMAN_REQUEST");
   const date = resolveSovereignQuestion("I want a specific date", ["What upcoming AI training can I book?"]);
   assert.equal(date.intent, "CONTEXT_FOLLOW_UP");
-  assert.equal(date.resolvedQuestion, "What upcoming AI training can I book?");
+  assert.equal(date.resolvedQuestion, "What upcoming AI training can I book?\nFollow-up question: I want a specific date");
   assert.equal(date.contextUsed, true);
 });
 

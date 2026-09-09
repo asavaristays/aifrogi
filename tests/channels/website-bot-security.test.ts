@@ -66,6 +66,8 @@ test("answer feedback is tenant, visitor, and evidence bound", () => {
   assert.match(feedbackSource, /anonymizeReplayText/);
   assert.match(feedbackSource, /safeResolution: false/);
   assert.doesNotMatch(feedbackSource, /flagKnowledgeAnswer/);
+  assert.doesNotMatch(feedbackSource, /review dataset|explicitly flag an incorrect fact/);
+  assert.match(feedbackSource, /business team can review this answer/);
 });
 
 test("widget connects helpful feedback to the returned evidence id", () => {
