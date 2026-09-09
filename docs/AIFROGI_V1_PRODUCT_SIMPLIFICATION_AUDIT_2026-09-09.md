@@ -4,7 +4,7 @@ Status date: 9 September 2026
 Scope: website-bot client workspace, Super Admin workspace, public product surfaces and repository routes.
 Decision rule: remove or hide unsupported and duplicated UI; retain data, audit history and dormant implementation until dependency checks prove code deletion is safe.
 
-Implementation status: all three approved UI-cleanup batches are complete locally. Production deployment remains pending under `PS-001`.
+Implementation status: all three approved UI-cleanup batches are deployed in production release `product-simplification-20260909`.
 
 ## Executive decision
 
