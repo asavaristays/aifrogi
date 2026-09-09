@@ -13,7 +13,7 @@ import type { ClientAccessRole } from "@/lib/client-access";
 import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
-  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/team-inbox", "/contacts"] },
+  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/contacts", "/team-inbox"] },
   { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/knowledge", "/improve", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
