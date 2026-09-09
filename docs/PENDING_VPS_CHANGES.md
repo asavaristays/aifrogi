@@ -2,7 +2,7 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
-## Core Intelligence — timezone-aware first greeting
+## `CI-010` Core Intelligence — timezone-aware first greeting
 
 - All website bots now send the visitor browser's IANA timezone with each message and generate the first greeting using that local time.
 - Invalid or unavailable visitor timezones fall back safely to the bot owner's configured business timezone.

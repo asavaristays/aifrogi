@@ -26,6 +26,13 @@ AiFrogi must let a normal business create a trustworthy website AI bot that:
 7. Work in batches of no more than three related changes, with one build, one reversible VPS deployment and one changed-journey verification.
 8. `docs/PENDING_VPS_CHANGES.md` is the only undeployed-change queue. A blank queue means local committed product source and production are aligned for tracked packages.
 
+## Intelligence capability ledgers
+
+- `CORE_INTELLIGENCE_LEDGER.md` is the authoritative register for shared behavior inherited by every bot.
+- `TENANT_INTELLIGENCE_LEDGER.md` is the authoritative register for tenant knowledge capabilities and each client's readiness evidence.
+- Search and update the appropriate ledger before implementing or deploying intelligence work. An existing capability must be extended under its current ID instead of being rebuilt under a new name.
+- A daily log records chronology; these ledgers record current capability ownership and prevent duplication.
+
 ## Current proven baseline
 
 - Webtechnosys is the first accepted reference bot.
@@ -145,7 +152,7 @@ Priority: **before broad paid onboarding**
 
 At the start of each work session:
 
-1. Read this roadmap, the intelligence boundary, today’s daily log and the pending VPS ledger.
+1. Read this roadmap, the intelligence boundary, both intelligence ledgers, today’s daily log and the pending VPS ledger.
 2. State the active phase, product area and intelligence layer.
 3. Choose one measurable outcome and no more than three related changes.
 4. Put unrelated requests into the roadmap backlog; do not silently change direction.

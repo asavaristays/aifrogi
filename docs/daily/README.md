@@ -5,6 +5,8 @@ Purpose: Keep one evidence-based, append-only record for each day on which proje
 
 ## Operating rule
 
+Before intelligence work, read [`../CORE_INTELLIGENCE_LEDGER.md`](../CORE_INTELLIGENCE_LEDGER.md) and [`../TENANT_INTELLIGENCE_LEDGER.md`](../TENANT_INTELLIGENCE_LEDGER.md). Every intelligence entry must reference its existing `CI-*`, `TI-*` or `TEN-*` identifier so daily chronology does not become a second capability backlog.
+
 1. Create one file named `YYYY-MM-DD.md` when the first project task begins that day.
 2. Append each completed work item on the same day; do not rewrite earlier evidence.
 3. Separate discussion, implementation, verification and deployment.
