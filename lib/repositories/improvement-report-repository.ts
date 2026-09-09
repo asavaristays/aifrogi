@@ -3,14 +3,19 @@ import { getDb } from "@/lib/db";
 export async function getClientImprovementReport(propertyId: string) {
   const db = getDb();
   if (!db) return { negativeFeedback: [], flags: [], gaps: [], pendingReplayCases: 0, helpful: 0, feedbackTotal: 0 };
-  const [negativeFeedback, flags, gaps, pendingReplayCases, helpful, feedbackTotal] = await Promise.all([
-    db.sovereignAnswerFeedback.findMany({ where: { propertyId, helpful: false }, include: { evidence: { select: { question: true, answer: true, failureClassification: true, createdAt: true, replayCase: { select: { status: true } } } } }, orderBy: { createdAt: "desc" }, take: 30 }),
+  const [negativeFeedbackRaw, flags, gaps, pendingReplayCases, helpful, feedbackTotal] = await Promise.all([
+    db.sovereignAnswerFeedback.findMany({ where: { propertyId, helpful: false }, include: { evidence: { select: { question: true, resolvedQuestion: true, answer: true, failureClassification: true, createdAt: true, replayCase: { select: { status: true, expectedClaimIds: true, anonymizedPriorTurns: true } } } } }, orderBy: { createdAt: "desc" }, take: 60 }),
     db.knowledgeAnswerFlag.findMany({ where: { propertyId, status: { not: "RESOLVED" } }, include: { entry: { select: { question: true, answer: true } } }, orderBy: { createdAt: "desc" }, take: 30 }),
-    db.knowledgeGap.findMany({ where: { propertyId, status: "OPEN" }, orderBy: [{ occurrenceCount: "desc" }, { lastAskedAt: "desc" }], take: 30 }),
+    db.knowledgeGap.findMany({ where: { propertyId, status: { in: ["OPEN", "RESOLVED"] } }, include: { resolutionEntry: { select: { id: true, answer: true, category: true, status: true } } }, orderBy: [{ occurrenceCount: "desc" }, { lastAskedAt: "desc" }], take: 30 }),
     db.sovereignReplayCase.count({ where: { propertyId, status: "PENDING_REVIEW" } }),
     db.sovereignAnswerFeedback.count({ where: { propertyId, helpful: true } }),
     db.sovereignAnswerFeedback.count({ where: { propertyId } })
   ]);
+  const negativeVisible = negativeFeedbackRaw.filter((item) => item.evidence.replayCase?.status !== "DISMISSED").slice(0, 30);
+  const resolutionIds = [...new Set(negativeVisible.flatMap((item) => item.evidence.replayCase?.expectedClaimIds.slice(0, 1) || []))];
+  const resolutionEntries = resolutionIds.length ? await db.knowledgeEntry.findMany({ where: { propertyId, id: { in: resolutionIds }, status: { not: "SUPERSEDED" } }, select: { id: true, answer: true, category: true, status: true } }) : [];
+  const entryById = new Map(resolutionEntries.map((entry) => [entry.id, entry]));
+  const negativeFeedback = negativeVisible.map((item) => ({ ...item, resolutionEntry: entryById.get(item.evidence.replayCase?.expectedClaimIds[0] || "") || null }));
   return { negativeFeedback, flags, gaps, pendingReplayCases, helpful, feedbackTotal };
 }
 
