@@ -69,7 +69,7 @@ export async function fieldApproveClaim(input: { propertyId: string; entryId: st
     if (!prior) throw new Error("The superseded claim must belong to the same workspace and claim key.");
     if(prior.version>=entry.version)throw new Error('Only an earlier claim version can be superseded.');
   }
-  return db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "FIELD_APPROVED", fieldApprovedBy: input.actorEmail, fieldApprovedAt: new Date(), lastConfirmedAt: new Date(), supersedesId: input.supersedesId || null, conflictStatus: "CLEAR", conflictSummary: null } });
+  return db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "FIELD_APPROVED", fieldApprovedBy: input.actorEmail, fieldApprovedAt: new Date(), lastConfirmedAt: new Date(), supersedesId: input.supersedesId ?? entry.supersedesId, conflictStatus: "CLEAR", conflictSummary: null } });
 }
 
 export async function generateClaimPreview(input: { propertyId: string; entryId: string }) {
@@ -179,6 +179,14 @@ export async function retireKnowledgeClaim(input: { propertyId: string; entryId:
   }
   await db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PAUSED", pausedAt: new Date(), pauseReason: "Removed from bot use by Client Admin; audit history retained." } });
   return { retired: true, retainedForAudit: true, actorEmail: input.actorEmail };
+}
+
+export async function editAndApproveKnowledgeClaim(input: { propertyId: string; entryId: string; question: string; answer: string; category: string; actorEmail: string }) {
+  const edited = await editKnowledgeClaim(input);
+  await fieldApproveClaim({ propertyId: input.propertyId, entryId: edited.entry.id, actorEmail: input.actorEmail });
+  const preview = await generateClaimPreview({ propertyId: input.propertyId, entryId: edited.entry.id });
+  await reviewClaimPreview({ propertyId: input.propertyId, previewId: preview.id, actorEmail: input.actorEmail, approve: true });
+  return { entryId: edited.entry.id, approved: true, createdVersion: edited.createdVersion };
 }
 
 export async function deleteUnpublishedClaim(input: { propertyId: string; entryId: string }) {
