@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
-import { newTenantFlow, normalizeTenantFlow, TENANT_FLOW_TEMPLATES, type TenantFlowDefinition, type TenantFlowTemplateKey } from "@/lib/tenant-flow-intelligence";
+import { newTenantFlow, normalizeTenantFlow, TENANT_FLOW_TEMPLATES, validateTenantFlow, type TenantFlowDefinition, type TenantFlowTemplateKey } from "@/lib/tenant-flow-intelligence";
 import { defaultWidgetMenu } from "@/lib/widget-menu";
 
 export async function GET() {
@@ -40,6 +40,8 @@ export async function POST(request: Request) {
     if (payload?.action === "publish") {
       const current = flows.find(item => item.id === payload.id);
       if (!current) throw new Error("Flow was not found.");
+      const validationErrors = validateTenantFlow(current);
+      if (validationErrors.length) throw new Error(validationErrors[0]);
       const published = { ...current, status: "PUBLISHED" as const, version: current.version + 1, updatedAt: new Date().toISOString(), publishedAt: new Date().toISOString() };
       flows = flows.map(item => item.id === current.id ? published : item);
       const menuItem = { id: `flow-${current.id}`.slice(0, 50), label: current.menuLabel, action: "FLOW" as const, value: current.openingQuestion, icon: "chat" as const };

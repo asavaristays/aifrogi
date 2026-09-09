@@ -22,7 +22,8 @@ type IconName =
   | "phone"
   | "settings"
   | "triangle-alert"
-  | "help-circle";
+  | "help-circle"
+  | "git-branch";
 
 const paths: Record<IconName, ReactElement> = {
   grid: (
@@ -162,6 +163,15 @@ const paths: Record<IconName, ReactElement> = {
       <circle cx="12" cy="12" r="9" />
       <path d="M9.8 9a2.4 2.4 0 1 1 3.5 2.1c-.8.45-1.3.95-1.3 1.9" />
       <path d="M12 17h.01" />
+    </>
+  ),
+  "git-branch": (
+    <>
+      <circle cx="6" cy="5" r="2" />
+      <circle cx="18" cy="7" r="2" />
+      <circle cx="6" cy="19" r="2" />
+      <path d="M6 7v10" />
+      <path d="M8 9h4a6 6 0 0 0 6-6v2" />
     </>
   )
 };
