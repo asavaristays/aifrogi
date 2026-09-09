@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,17 +9,10 @@ import { Icon } from "@/components/icons";
 import { cn, currency } from "@/lib/utils";
 import type { GoogleSheetLeadCapture } from "@/lib/services/google-sheet-lead-capture-service";
 
-type ManualLeadFormState = {
-  guestName: string;
-  phone: string;
-  destination: string;
-  notes: string;
-};
-
 type LeadRailMode = "form" | "detail";
-type IntentFilter = "all" | "manual" | "whatsapp" | "ai";
+type IntentFilter = "all" | "manual" | "ai";
 type StatusFilter = "all" | "new" | "active" | "closed";
-type ManualLeadIntent = "Manual" | "WhatsApp" | "AI";
+type ManualLeadIntent = "Manual" | "AI";
 type ManualLeadStatus = "NEW" | "ACTIVE" | "CLOSED";
 
 type ManualLeadRow = {
@@ -40,21 +32,14 @@ type ManualLeadRow = {
   timeline: Array<{ title: string; text: string; time: string }>;
 };
 
-const defaultLeadForm: ManualLeadFormState = {
-  guestName: "",
-  phone: "",
-  destination: "",
-  notes: ""
-};
-
 function normalize(value: string) {
   return String(value || "").trim().toLowerCase();
 }
 
 function deriveIntent(capture: GoogleSheetLeadCapture): ManualLeadIntent {
   const source = `${capture.channel} ${capture.source}`.toLowerCase();
-  if (source.includes("whatsapp")) return "WhatsApp";
   if (source.includes("ai") || source.includes("web")) return "AI";
+  if (source.includes("whatsapp")) return "AI";
   return "Manual";
 }
 
@@ -176,8 +161,6 @@ function statusTone(status: ManualLeadStatus) {
 
 function intentTone(intent: ManualLeadIntent) {
   switch (intent) {
-    case "WhatsApp":
-      return "secondary" as const;
     case "AI":
       return "primary" as const;
     default:
@@ -203,31 +186,6 @@ function searchFields(row: ManualLeadRow) {
   return [row.guestName, row.phone, row.destination, row.channel, row.source, row.status, row.notes, row.conversationId]
     .join(" ")
     .toLowerCase();
-}
-
-function StatCard({
-  label,
-  value,
-  helper,
-  tone
-}: {
-  label: string;
-  value: string;
-  helper: string;
-  tone: "primary" | "secondary" | "tertiary";
-}) {
-  return (
-    <div className="rounded-[20px] border border-black/5 bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(247,248,255,0.92)_100%)] p-4 shadow-[0_18px_55px_rgba(24,18,72,0.06)]">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--text-muted)]">{label}</p>
-        <Badge tone={tone} className="px-2 py-0.5 text-[10px] tracking-[0.12em]">
-          {label}
-        </Badge>
-      </div>
-      <p className="mt-3 text-2xl font-black tracking-tight text-[var(--text)]">{value}</p>
-      <p className="mt-2 text-[13px] text-[var(--text-muted)]">{helper}</p>
-    </div>
-  );
 }
 
 function PillButton({
@@ -284,9 +242,9 @@ function ManualLeadTable({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--primary)]">Center workspace</p>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-[var(--text)] sm:text-3xl">Manual lead table</h2>
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-[var(--text)] sm:text-3xl">Lead table</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
-              All manual, AI, and WhatsApp captured leads appear in one shared table, using the same AiFrogi visual system as the WhatsApp dashboard.
+              Website AI Bot leads and retained manual records appear in one customer-owned table.
             </p>
           </div>
           <div className="rounded-full border border-black/5 bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--text-muted)]">
@@ -306,7 +264,7 @@ function ManualLeadTable({
           </label>
 
           <div className="flex flex-wrap gap-2">
-            {(["all", "manual", "whatsapp", "ai"] as IntentFilter[]).map((intent) => (
+            {(["all", "manual", "ai"] as IntentFilter[]).map((intent) => (
               <PillButton key={intent} active={intentFilter === intent} onClick={() => onIntentFilterChange(intent)}>
                 {intent === "all" ? "All intents" : intent}
               </PillButton>
@@ -604,7 +562,7 @@ function ManualLeadDetailPanel({
             className="ml-auto rounded-full px-2.5 py-1.5 text-[10px] font-black uppercase tracking-[0.14em]"
             onClick={onBackToForm}
           >
-            Add Lead
+            Close detail
           </Button>
           </div>
         </div>
@@ -613,119 +571,13 @@ function ManualLeadDetailPanel({
   );
 }
 
-function LeadFormPanel({
-  formState,
-  isSaving,
-  errorMessage,
-  successMessage,
-  onFieldChange,
-  onSubmit,
-  onViewDetail
-}: {
-  formState: ManualLeadFormState;
-  isSaving: boolean;
-  errorMessage: string | null;
-  successMessage: string | null;
-  onFieldChange: <K extends keyof ManualLeadFormState>(key: K, value: ManualLeadFormState[K]) => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onViewDetail: () => void;
-}) {
-  return (
-    <Card className="border border-black/5 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,249,255,0.96)_100%)] p-6 shadow-[0_20px_60px_rgba(24,18,72,0.08)]">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <h3 className="text-2xl font-black tracking-tight text-[var(--text)]">Add lead</h3>
-          <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-            Same strict 3-field intake used across manual, AI-bot, and WhatsApp-bot.
-          </p>
-        </div>
-        <Badge tone="secondary" className="text-[10px] tracking-[0.12em]">Manual</Badge>
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button
-          tone="ghost"
-          className="rounded-full px-2.5 py-1.5 text-[10px] font-black uppercase tracking-[0.14em]"
-          onClick={onViewDetail}
-          type="button"
-        >
-          Lead Detail
-        </Button>
-      </div>
-
-      <form className="mt-6 space-y-4" onSubmit={onSubmit}>
-        <label className="block space-y-2">
-          <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--text-muted)]">Guest Name</span>
-          <input
-            value={formState.guestName}
-            onChange={(event) => onFieldChange("guestName", event.target.value)}
-            className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none ring-0 transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)]"
-            placeholder="Enter guest name"
-            required
-          />
-        </label>
-
-        <label className="block space-y-2">
-          <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--text-muted)]">Phone</span>
-          <input
-            value={formState.phone}
-            onChange={(event) => onFieldChange("phone", event.target.value)}
-            className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none ring-0 transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)]"
-            placeholder="+91 98XXXXXXXX"
-            required
-          />
-        </label>
-
-        <label className="block space-y-2">
-          <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--text-muted)]">Destination</span>
-          <input
-            value={formState.destination}
-            onChange={(event) => onFieldChange("destination", event.target.value)}
-            className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none ring-0 transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)]"
-            placeholder="Jawai, Coorg, Jodhpur..."
-            required
-          />
-        </label>
-
-        <label className="block space-y-2">
-          <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--text-muted)]">Notes (optional)</span>
-          <textarea
-            value={formState.notes}
-            onChange={(event) => onFieldChange("notes", event.target.value)}
-            className="min-h-[120px] w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none ring-0 transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)]"
-            placeholder="Any context from the call, walk-in, or referral"
-          />
-        </label>
-
-        {errorMessage ? (
-          <div className="rounded-2xl border border-[var(--error)]/15 bg-white px-4 py-3 text-sm text-[var(--error)]">{errorMessage}</div>
-        ) : null}
-        {successMessage ? (
-          <div className="rounded-2xl border border-[var(--secondary)]/15 bg-white px-4 py-3 text-sm text-[var(--secondary)]">
-            {successMessage}
-          </div>
-        ) : null}
-
-        <Button className="w-full justify-center rounded-2xl py-2.5 text-[10px] shadow-lg shadow-[rgba(79,70,229,0.18)]" disabled={isSaving} type="submit">
-          {isSaving ? "Saving lead..." : "Save To Shared Sheet"}
-        </Button>
-      </form>
-    </Card>
-  );
-}
-
 export function ManualLeadsWorkspace({ captures }: { captures: GoogleSheetLeadCapture[] }) {
-  const router = useRouter();
   const [query, setQuery] = useState("");
   const [intentFilter, setIntentFilter] = useState<IntentFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [railMode, setRailMode] = useState<LeadRailMode>("form");
   const [selectedLeadId, setSelectedLeadId] = useState("");
   const [rows, setRows] = useState<ManualLeadRow[]>(() => captures.map((capture, index) => toLeadRow(capture, index)));
-  const [formState, setFormState] = useState<ManualLeadFormState>(defaultLeadForm);
-  const [isSaving, setIsSaving] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [activityNote, setActivityNote] = useState("Select a lead to inspect the live timeline.");
 
   useEffect(() => {
@@ -734,20 +586,11 @@ export function ManualLeadsWorkspace({ captures }: { captures: GoogleSheetLeadCa
 
   const metrics = useMemo(() => {
     const total = rows.length;
-    const closed = rows.filter((row) => row.status === "CLOSED").length;
-    const conversionRate = total > 0 ? Math.round((closed / total) * 100) : 0;
-    const revenue = rows.reduce((sum, row) => sum + row.value, 0);
     return {
       total,
-      closed,
-      conversionRate,
-      revenue,
       newCount: statusCount(rows, "NEW"),
       activeCount: statusCount(rows, "ACTIVE"),
-      closedCount: statusCount(rows, "CLOSED"),
-      manualCount: rows.filter((row) => row.intent === "Manual").length,
-      whatsappCount: rows.filter((row) => row.intent === "WhatsApp").length,
-      aiCount: rows.filter((row) => row.intent === "AI").length
+      closedCount: statusCount(rows, "CLOSED")
     };
   }, [rows]);
 
@@ -767,45 +610,6 @@ export function ManualLeadsWorkspace({ captures }: { captures: GoogleSheetLeadCa
       setActivityNote("Select a lead to inspect the live timeline.");
     }
   }, [railMode, rows, selectedLeadId]);
-
-  function updateField<K extends keyof ManualLeadFormState>(key: K, value: ManualLeadFormState[K]) {
-    setFormState((current) => ({ ...current, [key]: value }));
-  }
-
-  async function submitLead(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSaving(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    try {
-      const response = await fetch("/api/manual-leads/capture", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        cache: "no-store",
-        body: JSON.stringify(formState)
-      });
-
-      const payload = await response.json();
-
-      if (!response.ok) {
-        setErrorMessage(payload.error ?? "Could not save lead");
-        return;
-      }
-
-      setSuccessMessage(`${formState.guestName.trim() || "Lead"} was saved to the shared Google Sheet.`);
-      setFormState(defaultLeadForm);
-      setRailMode("form");
-      setActivityNote("Lead saved to the shared sheet.");
-      router.refresh();
-    } catch {
-      setErrorMessage("Network error while saving lead");
-    } finally {
-      setIsSaving(false);
-    }
-  }
 
   function updateLeadRow(leadId: string, updater: (row: ManualLeadRow) => ManualLeadRow | null) {
     setRows((current) => {
@@ -879,13 +683,7 @@ export function ManualLeadsWorkspace({ captures }: { captures: GoogleSheetLeadCa
           href="/manual-leads"
           className="inline-flex items-center rounded-full border border-[var(--primary)]/15 bg-[var(--primary)]/10 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-black shadow-sm"
         >
-          Manual Leads
-        </Link>
-        <Link
-          href="/whatsapp-bot"
-          className="inline-flex items-center rounded-full border border-black/5 bg-white px-2.5 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-black/70 transition hover:border-black/10 hover:bg-black/5 hover:text-black"
-        >
-          WhatsApp Bot
+          Leads
         </Link>
         <Link
           href="/ai-bot"
@@ -903,7 +701,7 @@ export function ManualLeadsWorkspace({ captures }: { captures: GoogleSheetLeadCa
         <span className="rounded-full border border-black/5 bg-white px-3 py-1.5 shadow-sm">
           {selectedLead ? `Selected: ${selectedLead.guestName}` : "No lead selected"}
         </span>
-        <span className="rounded-full border border-black/5 bg-white px-2 py-1 shadow-sm text-[10px]">Manual leads workspace</span>
+        <span className="rounded-full border border-black/5 bg-white px-2 py-1 shadow-sm text-[10px]">Customer lead workspace</span>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_360px]">
@@ -937,23 +735,11 @@ export function ManualLeadsWorkspace({ captures }: { captures: GoogleSheetLeadCa
             }}
           />
         ) : (
-          <LeadFormPanel
-            formState={formState}
-            isSaving={isSaving}
-            errorMessage={errorMessage}
-            successMessage={successMessage}
-            onFieldChange={updateField}
-            onSubmit={submitLead}
-            onViewDetail={() => {
-              if (selectedLeadId) {
-                setRailMode("detail");
-              } else if (filteredRows[0]) {
-                setSelectedLeadId(filteredRows[0].id);
-                setRailMode("detail");
-                setActivityNote(`Selected ${filteredRows[0].guestName} for live action.`);
-              }
-            }}
-          />
+          <Card className="border border-black/5 bg-white p-6 shadow-[0_20px_60px_rgba(24,18,72,0.08)]">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--primary)]">Lead detail</p>
+            <h3 className="mt-2 text-2xl font-black tracking-tight text-[var(--text)]">Select a captured lead</h3>
+            <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">Choose a row to review its context and follow-up actions. New leads are created by the website AI Bot only.</p>
+          </Card>
         )}
       </div>
 

@@ -1,8 +1,10 @@
 # AiFrogi v1 product simplification audit
 
 Status date: 9 September 2026  
-Scope: read-only review of the current website-bot client workspace, Super Admin workspace, public product surfaces and repository routes.  
+Scope: website-bot client workspace, Super Admin workspace, public product surfaces and repository routes.
 Decision rule: remove or hide unsupported and duplicated UI; retain data, audit history and dormant implementation until dependency checks prove code deletion is safe.
+
+Implementation status: all three approved UI-cleanup batches are complete locally. Production deployment remains pending under `PS-001`.
 
 ## Executive decision
 
@@ -77,4 +79,4 @@ Acceptance: a visitor or pilot client cannot reasonably conclude that WhatsApp, 
 
 ## Scope boundary
 
-This audit recommends UI removal/hiding only. It does not authorize implementation or VPS deployment. Core Intelligence `CI-010` remains a separate pending batch and must not be combined with this product simplification work.
+This cleanup changes UI routing and presentation only; historical records and dormant server modules remain preserved. Core Intelligence `CI-010` remains a separate pending batch and must not be combined with this product simplification work.

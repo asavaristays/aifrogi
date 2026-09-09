@@ -13,7 +13,6 @@ export function SiteFooter() {
         <nav aria-label="Footer product menu" className="space-y-3 text-sm font-normal text-white/62">
           <p className="text-[10px] font-normal uppercase tracking-[.16em] text-[#e2c66d]">Menu</p>
           <Link className="block hover:text-white" href="/solutions">AI Bot</Link>
-          <Link className="block hover:text-white" href="/integration">Integration</Link>
           <Link className="block hover:text-white" href="/resources">Resources</Link>
           <Link className="block hover:text-white" href="/install-ai-bot">How to install AI Bot</Link>
           <Link className="block hover:text-white" href="/pricing">Pricing</Link>

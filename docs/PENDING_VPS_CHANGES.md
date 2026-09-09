@@ -2,6 +2,19 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
+## `PS-001` Website-bot v1 product simplification
+
+- Client Settings now contains only Team access and Security; duplicate Setup/Billing and deferred WhatsApp surfaces are removed.
+- Website onboarding no longer asks for KYC, GST, business proof or WhatsApp setup, and its readiness calculation follows the website-bot journey.
+- Client Intelligence and Today no longer repeat Improve My Bot or Billing controls.
+- Super Admin customer review no longer exposes KYC/GST/business-document actions.
+- Message Matrix is removed from navigation and redirects to Billing; immediate, audited free-credit grants are available inside each customer Billing record.
+- Contracted connector/add-on controls and columns are hidden while existing database records remain intact.
+- Leads no longer exposes WhatsApp wording/filter/navigation; existing records remain available.
+- The public Integration page redirects to Solutions, its footer link is removed, and deferred WhatsApp support category is hidden.
+- Focused cleanup tests pass 28/28; TypeScript and targeted ESLint pass without errors.
+- Deployment rule: deploy separately from `CI-010`.
+
 ## `CI-010` Core Intelligence — timezone-aware first greeting
 
 - All website bots now send the visitor browser's IANA timezone with each message and generate the first greeting using that local time.

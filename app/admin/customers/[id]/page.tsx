@@ -5,12 +5,10 @@ import { CustomerReviewActions } from "@/components/admin/customer-review-action
 import { CustomerFlowActions } from "@/components/admin/customer-flow-actions";
 import { BotSubscriptionConfig } from "@/components/admin/bot-subscription-config";
 import { ProductFlowCenter } from "@/components/setup/product-flow-center";
-import { getCurrentUser } from "@/lib/auth-server";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
 import { getTrialWindow } from "@/lib/onboarding-guidance";
 import { loadOrganizationProductFlow } from "@/lib/product-flow";
 import { formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
-import { hasActiveSupportAccess, logSupportDataAccess } from "@/lib/support-access";
 import { AppointmentJourneyAdminControl } from "@/components/admin/appointment-journey-admin-control";
 import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-service";
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
@@ -24,11 +22,10 @@ export const revalidate = 0;
 export default async function AdminCustomerDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ onboarding?: string }> }) {
   const { id } = await params;
   const requestedTrack = (await searchParams).onboarding;
-  const [organization, billing, flow, user, appointmentWorkspaces] = await Promise.all([
+  const [organization, billing, flow, appointmentWorkspaces] = await Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id),
     loadOrganizationProductFlow(id),
-    getCurrentUser(),
     getAppointmentJourneyAdminWorkspaces(id)
   ]);
   if (!organization) notFound();
@@ -38,18 +35,6 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
   const whatsappEnabled = false;
   const websiteEnabled = channels.includes("WEBSITE") || !channels.length;
   const activeTrack = requestedTrack === "whatsapp" && whatsappEnabled ? "whatsapp" : "ai-bot";
-  const canReadDocuments = await hasActiveSupportAccess(organization.id, "DOCUMENTS");
-  if (user) {
-    await logSupportDataAccess({
-      organizationId: organization.id,
-      actorEmail: user.username,
-      scope: "DOCUMENTS",
-      targetType: "ORGANIZATION",
-      targetId: organization.id,
-      granted: canReadDocuments,
-      summary: canReadDocuments ? "Support viewed customer document links." : "Support document links hidden because customer access was not granted."
-    });
-  }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
@@ -101,7 +86,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
           initialConfiguration={organization.botConfiguration}
         /> : null}
         <div className="space-y-6">
-          <Section title="Company details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Google Maps" value={onboarding?.googleMapsUrl} /><Detail label="Google Business Profile" value={onboarding?.googleBusinessProfileUrl} /><Detail label="Instagram" value={onboarding?.instagramUrl} /><Detail label="Approved photos" value={onboarding?.photoUrls?.length ? `${onboarding.photoUrls.length} supplied` : null} /><Detail label="GST / registration" value={onboarding?.registrationNumber || organization.gstNumber} /><Detail label="Address" value={organization.businessAddress} /></Section>
+          <Section title="Company details"><Detail label="Business name" value={organization.name} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Google Maps" value={onboarding?.googleMapsUrl} /><Detail label="Google Business Profile" value={onboarding?.googleBusinessProfileUrl} /><Detail label="Instagram" value={onboarding?.instagramUrl} /><Detail label="Approved photos" value={onboarding?.photoUrls?.length ? `${onboarding.photoUrls.length} supplied` : null} /><Detail label="Address" value={organization.businessAddress} /></Section>
           {billing ? <Section title="Subscription and usage">
             <Detail label="Plan" value={billing.subscription.plan.name} />
             <Detail label="Status" value={billing.subscription.status} />
@@ -111,11 +96,6 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
             {whatsappEnabled ? <UsageDetail label="Campaigns" value={billing.usage.campaigns} limit={billing.limits.campaigns} /> : null}
             <UsageDetail label="Team users" value={billing.usage.teamUsers} limit={billing.limits.teamUsers} />
           </Section> : null}
-          <Section title="Business documents">
-            <p className="mb-3 text-xs leading-5 text-[#68645c]">{canReadDocuments ? "Customer granted document access. Opening a document is logged." : "Document metadata is visible for operations. File contents are locked until the customer grants document access."}</p>
-            {organization.documents.map((document) => canReadDocuments ? <a key={document.id} href={`/api/onboarding/documents/${document.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-between border-b border-black/5 py-3 text-sm font-semibold"><span>{document.type.replaceAll("_", " ")}</span><span className="text-[#8a6a16]">Open</span></a> : <div key={document.id} className="flex items-center justify-between border-b border-black/5 py-3 text-sm"><span><strong className="block">{document.type.replaceAll("_", " ")}</strong><small className="text-[#68645c]">{document.fileName} · {(document.sizeBytes / 1024).toFixed(1)} KB</small></span><span className="status-pill status-success">Locked</span></div>)}
-            {!organization.documents.length ? <p className="text-sm text-[#68645c]">No documents uploaded.</p> : null}
-          </Section>
         </div>
         <Section title="Activity timeline">
           <div className="space-y-4">
@@ -135,7 +115,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
             {!billing.organization.auditLogs.length ? <p className="text-sm text-[#68645c]">No billing actions recorded.</p> : null}
           </div>
         </Section> : null}
-        <CustomerReviewActions organizationId={organization.id} kycStatus={onboarding?.kycStatus || "NOT_SUBMITTED"} organizationStatus={organization.status} />
+        <CustomerReviewActions organizationId={organization.id} organizationStatus={organization.status} />
       </div>
       </section>
     </main>

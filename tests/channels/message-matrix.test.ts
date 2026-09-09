@@ -4,10 +4,13 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { recommendFreeAiCredits } from "../../lib/ai-credits";
 
-test("Super Admin exposes a dedicated Message Matrix", () => {
+test("Super Admin consolidates Message Matrix controls into Billing", () => {
   const shell=readFileSync(resolve(process.cwd(),"components/admin/admin-shell.tsx"),"utf8");
   const page=readFileSync(resolve(process.cwd(),"app/admin/message-matrix/page.tsx"),"utf8");
-  assert.match(shell,/Message Matrix/); assert.match(page,/Safe resolution/); assert.match(page,/Helpful/); assert.match(page,/Projected charge/);
+  const billing=readFileSync(resolve(process.cwd(),"app/admin/billing\/[organizationId]\/page.tsx"),"utf8");
+  assert.doesNotMatch(shell,/Message Matrix/);
+  assert.match(page,/redirect\("\/admin\/billing"\)/);
+  assert.match(billing,/FreeCreditGrant/);
 });
 test("message limits default to hard stop and require approved overage",()=>{
   const policy=readFileSync(resolve(process.cwd(),"lib/message-matrix.ts"),"utf8");
@@ -40,7 +43,7 @@ test("Super Admin Today shows credit usage and separate remaining balances",()=>
   assert.match(today,/AI replies used/);
   assert.match(today,/Purchased left/);
   assert.match(today,/Promotional left/);
-  assert.match(today,/\/admin\/message-matrix/);
+  assert.match(today,/href="\/admin\/billing"/);
 });
 
 test("credit allocation is immediate and history is shared by client and Super Admin Billing",()=>{

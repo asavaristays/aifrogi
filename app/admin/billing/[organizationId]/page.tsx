@@ -4,6 +4,7 @@ import { BillingControls } from "@/components/admin/billing-controls";
 import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
 import { CreditHistoryTable } from "@/components/billing/credit-history-table";
 import { aiReplyAllowancePosition } from "@/lib/ai-credits";
+import { FreeCreditGrant } from "@/components/admin/free-credit-grant";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -37,13 +38,12 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
       <Link href={`/admin/customers/${organization.id}?onboarding=ai-bot`} className="rounded-full border border-black/10 bg-white px-5 py-2.5 text-sm font-bold">Open customer review</Link>
     </header>
 
-    <section className="grid overflow-hidden border border-white/70 bg-white sm:grid-cols-2 xl:grid-cols-6">
+    <section className="grid overflow-hidden border border-white/70 bg-white sm:grid-cols-2 xl:grid-cols-5">
       <Metric label="Plan" value={subscription.plan.name} />
       <Metric label="Status" value={subscription.status.replaceAll("_", " ")} />
       <Metric label="Payment" value={subscription.paymentProvider || "Manual"} />
       <Metric label="Renewal / expiry" value={date(expiry)} />
       <Metric label="Outstanding" value={formatMoney(outstanding)} alert={outstanding > 0} />
-      <Metric label="Add-ons" value={String(organization.billingAddons.length)} />
     </section>
 
     <section className="rounded-[26px] border border-white/70 bg-white p-6">
@@ -61,8 +61,9 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
       plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}
       initialPlan={subscription.plan.code}
       invoices={organization.invoices.map((invoice) => ({ id: invoice.id, invoiceNumber: invoice.invoiceNumber, status: invoice.status, totalPaisa: invoice.totalPaisa }))}
-      addons={organization.billingAddons.map((addon) => ({ id: addon.id, name: addon.name, category: addon.category, provisioningStatus: addon.provisioningStatus, paymentStatus: addon.paymentStatus, setupFeePaisa: addon.setupFeePaisa, recurringFeePaisa: addon.recurringFeePaisa }))}
     />
+
+    <FreeCreditGrant organizationId={organization.id} />
 
     <section><p className="product-eyebrow">Credit and usage history</p><h2 className="mt-2 text-2xl font-semibold">Allocations, usage and payments</h2><p className="mb-4 mt-2 text-sm text-[#68645c]">The current usage position and every verified pack or governed free-credit grant are retained for review.</p><CreditHistoryTable entries={organization.aiCreditTransactions} included={limits.aiReplies} used={usage.aiReplies} extraUsed={billing.aiCredits.used} remaining={billing.aiCredits.remaining} /></section>
 

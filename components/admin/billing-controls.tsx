@@ -16,20 +16,17 @@ type InvoiceOption = {
   status: string;
   totalPaisa: number;
 };
-type AddonOption = { id: string; name: string; category: string; provisioningStatus: string; paymentStatus: string; setupFeePaisa: number; recurringFeePaisa: number };
 
 export function BillingControls({
   organizationId,
   plans,
   initialPlan,
   invoices
-  ,addons
 }: {
   organizationId: string;
   plans: PlanOption[];
   initialPlan: string;
   invoices: InvoiceOption[];
-  addons: AddonOption[];
 }) {
   const router = useRouter();
   const [planCode, setPlanCode] = useState(initialPlan);
@@ -46,12 +43,6 @@ export function BillingControls({
   const [complimentaryEndsAt, setComplimentaryEndsAt] = useState("");
   const [complimentaryReason, setComplimentaryReason] = useState("");
   const [complimentaryPlanCode, setComplimentaryPlanCode] = useState(() => plans.find((plan) => plan.code !== "TRIAL")?.code || "");
-  const [connectorCategory, setConnectorCategory] = useState("GOOGLE_SHEETS_CALENDAR");
-  const [connectorName, setConnectorName] = useState("");
-  const [setupFeeRupees, setSetupFeeRupees] = useState("");
-  const [recurringFeeRupees, setRecurringFeeRupees] = useState("");
-  const [connectorInterval, setConnectorInterval] = useState("ONE_TIME");
-  const [externalFeeNote, setExternalFeeNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -113,14 +104,13 @@ export function BillingControls({
             {invoices.filter((invoice) => invoice.status !== "PAID").map((invoice) => <option key={invoice.id} value={invoice.id}>{invoice.invoiceNumber}</option>)}
           </select>
           <input className="product-input mt-2" placeholder="UTR / payment reference" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value)} />
-          <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-[#68645c]"><input type="checkbox" checked={renewSubscription} onChange={(event) => setRenewSubscription(event.target.checked)} className="mt-1 size-4 accent-[#8a6a16]" /><span>Renew the selected subscription period with this payment. Turn off for connector or service-only invoices.</span></label>
+          <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-[#68645c]"><input type="checkbox" checked={renewSubscription} onChange={(event) => setRenewSubscription(event.target.checked)} className="mt-1 size-4 accent-[#8a6a16]" /><span>Renew the selected subscription period with this payment. Turn off for a one-time service invoice.</span></label>
           <Button tone="secondary" className="mt-3 w-full" disabled={saving || !invoiceId || !paymentReference.trim()} onClick={() => run({ action: "MARK_INVOICE_PAID", invoiceId, paymentReference, renewSubscription }, renewSubscription ? "Payment recorded and subscription renewed." : "Payment recorded without changing the subscription.")}>Mark paid</Button>
         </div>
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
+      <div className="mt-6 grid gap-6">
         <div className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="field-label text-[#6d5310]">Complimentary access</p><p className="mt-2 text-xs leading-5 text-[#68645c]">Grant paid-plan entitlements without collecting payment. Expiry and reason are mandatory and audited.</p><select className="product-input mt-3" value={complimentaryPlanCode} onChange={(event) => setComplimentaryPlanCode(event.target.value)}>{plans.filter((plan) => plan.code !== "TRIAL").map((plan) => <option key={plan.code} value={plan.code}>{plan.name}</option>)}</select><input className="product-input mt-2" type="date" value={complimentaryEndsAt} onChange={(event) => setComplimentaryEndsAt(event.target.value)} /><textarea className="product-input mt-2 min-h-20" placeholder="Business reason and approval reference" value={complimentaryReason} onChange={(event) => setComplimentaryReason(event.target.value)} /><Button className="mt-3 w-full" disabled={saving || !complimentaryPlanCode || !complimentaryEndsAt || !complimentaryReason.trim()} onClick={() => run({ action: "GRANT_COMPLIMENTARY", planCode: complimentaryPlanCode, endsAt: complimentaryEndsAt, reason: complimentaryReason }, "Complimentary access granted.")}>Grant complimentary access</Button></div>
-        <div className="rounded-lg border border-black/6 bg-[#fbfcfb] p-5"><p className="field-label">Connector add-on</p><div className="mt-3 grid gap-2 sm:grid-cols-2"><select className="product-input" value={connectorCategory} onChange={(event) => setConnectorCategory(event.target.value)}><option value="GOOGLE_SHEETS_CALENDAR">Google Sheets / Calendar</option><option value="CRM">CRM</option><option value="ECOMMERCE">E-commerce</option><option value="PMS_CHANNEL_MANAGER">PMS / Channel Manager</option><option value="CUSTOM_API">Custom API</option></select><input className="product-input" placeholder="Connector name" value={connectorName} onChange={(event) => setConnectorName(event.target.value)} /><input className="product-input" inputMode="decimal" placeholder="One-time setup ₹" value={setupFeeRupees} onChange={(event) => setSetupFeeRupees(event.target.value)} /><input className="product-input" inputMode="decimal" placeholder="Recurring ₹" value={recurringFeeRupees} onChange={(event) => setRecurringFeeRupees(event.target.value)} /><select className="product-input" value={connectorInterval} onChange={(event) => setConnectorInterval(event.target.value)}><option value="ONE_TIME">One time</option><option value="MONTHLY">Monthly</option><option value="YEARLY">Yearly</option></select><input className="product-input" placeholder="External/API fees" value={externalFeeNote} onChange={(event) => setExternalFeeNote(event.target.value)} /></div><Button className="mt-3 w-full" disabled={saving || !connectorName.trim()} onClick={() => run({ action: "ADD_CONNECTOR", category: connectorCategory, name: connectorName, setupFeeRupees, recurringFeeRupees, billingInterval: connectorInterval, externalFeeNote }, "Connector billing added.")}>Add connector charge</Button>{addons.length ? <div className="mt-4 divide-y divide-black/6">{addons.map((addon) => <div key={addon.id} className="flex items-center justify-between gap-3 py-3 text-xs"><span><strong className="block">{addon.name}</strong><small className="text-[#68645c]">{addon.category.replaceAll("_", " ")} · {addon.provisioningStatus}</small></span><span className="font-bold">₹{((addon.setupFeePaisa + addon.recurringFeePaisa) / 100).toLocaleString("en-IN")}</span></div>)}</div> : null}</div>
       </div>
 
       {notice ? <p className="mt-4 text-sm font-semibold text-[#6d5310]">{notice}</p> : null}

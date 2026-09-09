@@ -11,7 +11,6 @@ const navigation = [
   { label: "Command center", href: "/admin", icon: "grid" as const },
   { label: "Customers", href: "/admin/customers", icon: "inbox" as const },
   { label: "Billing Operations", href: "/admin/billing", icon: "bar-chart-3" as const },
-  { label: "Message Matrix", href: "/admin/message-matrix", icon: "message-circle" as const },
   { label: "Capacity Advisor", href: "/admin/capacity", icon: "bar-chart-3" as const },
   { label: "Knowledge", href: "/admin/knowledge", icon: "file-text" as const },
   { label: "Intelligence Operations", href: "/admin/sovereign-intelligence", icon: "plug" as const },
