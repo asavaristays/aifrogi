@@ -9,8 +9,8 @@ export type PlatformHealth = {
     database: "ok" | "unavailable";
     sessionSecret: "ok" | "misconfigured";
     publicUrl: "ok" | "misconfigured";
-    metaWebhookSignature: "ok" | "not_enforced";
-    legacyInboundToken: "ok" | "not_configured";
+    webhookSecurity: "ok" | "not_enforced";
+    inboundCompatibility: "ok" | "not_configured";
   };
 };
 
@@ -36,15 +36,15 @@ export async function getPlatformReadiness(): Promise<PlatformHealth> {
   const publicUrl = /^https:\/\/app\.aifrogi\.com\/?$/i.test(process.env.PUBLIC_BASE_URL?.trim() || "")
     ? "ok"
     : "misconfigured";
-  const metaWebhookSignature = process.env.META_APP_SECRET?.trim() || process.env.FACEBOOK_APP_SECRET?.trim()
+  const webhookSecurity = process.env.META_APP_SECRET?.trim() || process.env.FACEBOOK_APP_SECRET?.trim()
     ? "ok"
     : "not_enforced";
-  const legacyInboundToken = process.env.LEADOS_WHATSAPP_INBOUND_TOKEN?.trim() ||
+  const inboundCompatibility = process.env.LEADOS_WHATSAPP_INBOUND_TOKEN?.trim() ||
     process.env.LEADOS_AI_BOT_WEBHOOK_TOKEN?.trim() ||
     process.env.AI_BOT_AGENT_REPLY_TOKEN?.trim()
     ? "ok"
     : "not_configured";
-  const checks = { database, sessionSecret, publicUrl, metaWebhookSignature, legacyInboundToken } as const;
+  const checks = { database, sessionSecret, publicUrl, webhookSecurity, inboundCompatibility } as const;
   const status = Object.values(checks).every((check) => check === "ok") ? "ok" : "degraded";
 
   return {
