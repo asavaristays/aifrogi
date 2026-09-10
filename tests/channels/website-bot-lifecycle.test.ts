@@ -21,6 +21,8 @@ test("Super Admin review exposes explicit approval and correction paths", () => 
   const installation = readFileSync("components/website-bot/website-bot-installation.tsx", "utf8");
   const route = readFileSync("app/api/admin/customers/[id]/route.ts", "utf8");
   assert.match(installation, /Approve and Make Bot Live/);
+  assert.match(installation, /approvalAvailable = detected/);
+  assert.match(installation, /"INSTALLATION_READY", "INSTALLATION_DETECTED", "PAUSED"/);
   assert.match(installation, /Not Approved · Request Correction/);
   assert.match(route, /DECLINE_BOT_APPROVAL/);
   assert.match(route, /correction-required email/);

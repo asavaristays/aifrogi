@@ -253,10 +253,14 @@ export async function saveOrganizationBotProfile(input: {
 }) {
   const db = getDb();
   if (!db) return null;
-  const existing = await db.botProfile.findUnique({ where: { organizationId: input.organizationId }, select: { installationKey: true, status: true } });
+  const existing = await db.botProfile.findUnique({ where: { organizationId: input.organizationId }, select: { installationKey: true, installationDetectedAt: true, status: true } });
   const installationKey = existing?.installationKey || randomBytes(24).toString("base64url");
   const retainedStatuses = new Set(["INSTALLATION_DETECTED", "LIVE", "PAUSED"]);
-  const status = existing?.status && retainedStatuses.has(existing.status) ? existing.status : "INSTALLATION_READY";
+  const status = existing?.status && retainedStatuses.has(existing.status)
+    ? existing.status
+    : existing?.installationDetectedAt
+      ? "INSTALLATION_DETECTED"
+      : "INSTALLATION_READY";
   const personaPack = getBotPersonaPack(input.profile.category);
   const actionMode = input.profile.operatingMode === "APPROVED_ACTIONS" || input.profile.operatingMode === "HUMAN_APPROVAL";
   const leadMode = input.profile.operatingMode !== "ANSWER_ONLY";
