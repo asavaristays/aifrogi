@@ -2,15 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { CustomerReviewActions } from "@/components/admin/customer-review-actions";
-import { CustomerFlowActions } from "@/components/admin/customer-flow-actions";
-import { BotSubscriptionConfig } from "@/components/admin/bot-subscription-config";
-import { ProductFlowCenter } from "@/components/setup/product-flow-center";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
 import { getTrialWindow } from "@/lib/onboarding-guidance";
-import { loadOrganizationProductFlow } from "@/lib/product-flow";
 import { formatMoney, getCustomerBillingDetail, usagePercent } from "@/lib/billing-super-admin";
-import { AppointmentJourneyAdminControl } from "@/components/admin/appointment-journey-admin-control";
-import { getAppointmentJourneyAdminWorkspaces } from "@/lib/appointment-journey-service";
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
@@ -19,39 +13,31 @@ import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-wor
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function AdminCustomerDetailPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ onboarding?: string }> }) {
+export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const requestedTrack = (await searchParams).onboarding;
-  const [organization, billing, flow, appointmentWorkspaces] = await Promise.all([
+  const [organization, billing] = await Promise.all([
     getOrganizationById(id),
-    getCustomerBillingDetail(id),
-    loadOrganizationProductFlow(id),
-    getAppointmentJourneyAdminWorkspaces(id)
+    getCustomerBillingDetail(id)
   ]);
   if (!organization) notFound();
   const onboarding = organization.onboarding;
   const trial = getTrialWindow(organization);
   const channels = organization.botProfile?.channels || [];
-  const whatsappEnabled = false;
   const websiteEnabled = channels.includes("WEBSITE") || !channels.length;
-  const activeTrack = requestedTrack === "whatsapp" && whatsappEnabled ? "whatsapp" : "ai-bot";
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
       <Link href="/admin/customers" className="text-sm font-black text-[#8a6a16]">Back to customers</Link>
       <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
         <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Customer review</p><h1 className="mt-2 text-3xl font-black">{organization.name}</h1><p className="mt-2 text-sm text-[#68645c]">{organization.ownerName} · {organization.ownerEmail}</p></div>
-        <Badge tone={activeTrack === "ai-bot" && organization.botProfile?.status === "LIVE" ? "secondary" : activeTrack === "whatsapp" && onboarding?.metaStatus === "LIVE" ? "secondary" : "tertiary"}>{activeTrack === "ai-bot" ? `AI BOT · ${(organization.botProfile?.status || "DRAFT").replaceAll("_", " ")}` : `WHATSAPP · ${whatsappEnabled ? (onboarding?.metaStatus || "NOT STARTED").replaceAll("_", " ") : "NOT ENABLED"}`}</Badge>
+        <Badge tone={organization.botProfile?.status === "LIVE" ? "secondary" : "tertiary"}>AI BOT · {(organization.botProfile?.status || "DRAFT").replaceAll("_", " ")}</Badge>
       </div>
 
       {trial.enabled ? <div className="mt-5"><Badge tone="primary">{trial.label}</Badge></div> : null}
 
-      <nav aria-label="Customer onboarding tracks" className={`mt-7 grid gap-3 ${whatsappEnabled ? "sm:grid-cols-2" : "sm:grid-cols-1"}`}>
-        <TrackLink href={`/admin/customers/${organization.id}?onboarding=ai-bot`} active={activeTrack === "ai-bot"} title="AI Bot Onboarding" copy="Persona, approved intelligence, connectors, installation and bot go-live" status={organization.botProfile?.status || "DRAFT"} />
-        {whatsappEnabled ? <TrackLink href={`/admin/customers/${organization.id}?onboarding=whatsapp`} active={activeTrack === "whatsapp"} title="WhatsApp Onboarding" copy="Number, Meta approval, webhook, template and first-message proof" status={onboarding?.metaStatus || "NOT_STARTED"} /> : null}
-      </nav>
+      <nav aria-label="Customer onboarding" className="mt-7 grid gap-3"><TrackLink href={`/admin/customers/${organization.id}`} active title="AI Bot Onboarding" copy="Persona, approved intelligence, connectors, installation and bot go-live" status={organization.botProfile?.status || "DRAFT"} /></nav>
 
-      {activeTrack === "ai-bot" ? <section className="mt-7">
+      <section className="mt-7">
         <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding</p><h2 className="mt-2 text-xl font-black">Prepare and activate the governed AI Bot.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Review this customer&apos;s persona, approved knowledge, connectors, website installation and go-live evidence.</p></div>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} /></div>
@@ -61,30 +47,11 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
           <Section title="Company and approved source details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Address" value={organization.businessAddress} /></Section>
           <Section title="AI Bot readiness"><Detail label="Persona" value={organization.botProfile?.personaName} /><Detail label="Channel" value={channels.length ? channels.join(", ") : "Website"} /><Detail label="Lifecycle" value={organization.botProfile?.status || "DRAFT"} /><p className="mt-4 text-sm leading-6 text-[#68645c]">Approve business knowledge and preview answers before installation approval. Super Admin can make the bot live only after installation detection.</p></Section>
         </div>
-      </section> : <section className="mt-7">
-        {!whatsappEnabled ? <div className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-6"><p className="product-eyebrow">WhatsApp not enabled</p><h2 className="mt-2 text-2xl font-black">This pilot is currently an AI Bot onboarding.</h2><p className="mt-3 max-w-3xl text-sm leading-6 text-[#68645c]">Meta, phone, webhook and template controls remain hidden until WHATSAPP is deliberately added to the bot channels.</p></div> : <>
-          {flow ? <ProductFlowCenter flow={flow} mode="admin" /> : null}
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            <CustomerFlowActions
-          organizationId={organization.id}
-          metaBillingStatus={onboarding?.metaBillingStatus}
-          templateStatus={onboarding?.templateStatus}
-          firstMessageStatus={onboarding?.firstMessageStatus}
-            />
-            <AppointmentJourneyAdminControl organizationId={organization.id} workspaces={appointmentWorkspaces} />
-            <Section title="WhatsApp readiness"><Detail label="Phone" value={onboarding?.displayPhoneNumber || onboarding?.phoneNumber} /><Detail label="Phone verification" value={onboarding?.phoneVerificationStatus} /><Detail label="Meta connection" value={onboarding?.facebookStatus} /><Detail label="API status" value={onboarding?.metaStatus} /><Detail label="Webhook" value={onboarding?.webhookStatus} /><Detail label="Credential" value={onboarding?.tokenStatus} /><Detail label="Template" value={onboarding?.templateStatus} /><Detail label="First message" value={onboarding?.firstMessageStatus} /></Section>
-          </div>
-        </>}
-      </section>}
+      </section>
 
       <section id="billing-operations" className="mt-8 scroll-mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Super Admin · customer account</p><h2 className="mt-2 text-2xl font-black">Account summary, documents and audit</h2>
       <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
         {billing ? <section className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-6 lg:col-span-2"><p className="product-eyebrow">Commercial record</p><h3 className="mt-2 text-xl font-black">{billing.subscription.plan.name} · {billing.subscription.status.replaceAll("_", " ")}</h3><p className="mt-2 text-sm leading-6 text-[#68645c]">Plan changes, complimentary access, manual payments, invoices and connector charges are maintained in Billing Operations.</p><Link href={`/admin/billing/${organization.id}`} className="mt-4 inline-flex rounded-full bg-[#101010] px-5 py-2.5 text-sm font-bold text-white">Open billing record</Link></section> : null}
-        {whatsappEnabled ? <BotSubscriptionConfig
-          organizationId={organization.id}
-          initialPlan={organization.plan}
-          initialConfiguration={organization.botConfiguration}
-        /> : null}
         <div className="space-y-6">
           <Section title="Company details"><Detail label="Business name" value={organization.name} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Google Maps" value={onboarding?.googleMapsUrl} /><Detail label="Google Business Profile" value={onboarding?.googleBusinessProfileUrl} /><Detail label="Instagram" value={onboarding?.instagramUrl} /><Detail label="Approved photos" value={onboarding?.photoUrls?.length ? `${onboarding.photoUrls.length} supplied` : null} /><Detail label="Address" value={organization.businessAddress} /></Section>
           {billing ? <Section title="Subscription and usage">
@@ -93,7 +60,6 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
             <Detail label="Payment mode" value={billing.subscription.paymentProvider} />
             <UsageDetail label="Messages" value={billing.usage.messages} limit={billing.limits.messages} />
             <UsageDetail label="AI replies" value={billing.usage.aiReplies} limit={billing.limits.aiReplies} />
-            {whatsappEnabled ? <UsageDetail label="Campaigns" value={billing.usage.campaigns} limit={billing.limits.campaigns} /> : null}
             <UsageDetail label="Team users" value={billing.usage.teamUsers} limit={billing.limits.teamUsers} />
           </Section> : null}
         </div>
@@ -105,7 +71,7 @@ export default async function AdminCustomerDetailPage({ params, searchParams }: 
         </Section>
         {billing ? <Section title="Invoices">
           <div className="space-y-3">
-            {billing.organization.invoices.map((invoice) => <div key={invoice.id} className="rounded-md border border-black/6 bg-[#fbfcfb] p-4"><div className="flex items-start justify-between gap-3"><div><strong className="text-sm">{invoice.invoiceNumber}</strong><p className="mt-1 text-xs text-[#68645c]">{invoice.status.replaceAll("_", " ")}</p></div><strong>{formatMoney(invoice.totalPaisa)}</strong></div><p className="mt-2 text-xs text-[#68645c]">Platform {formatMoney(invoice.platformFeePaisa)}{whatsappEnabled ? ` · Meta ${formatMoney(invoice.metaChargesPaisa)}` : ""} · AI {formatMoney(invoice.aiOveragePaisa)} · Tax {formatMoney(invoice.taxPaisa)}</p>{invoice.paymentReference ? <p className="mt-2 break-all text-xs font-semibold text-[#6d5310]">Razorpay payment: {invoice.paymentReference}</p> : null}{invoice.notes ? <p className="mt-1 break-all text-[11px] text-[#68645c]">{invoice.notes}</p> : null}</div>)}
+            {billing.organization.invoices.map((invoice) => <div key={invoice.id} className="rounded-md border border-black/6 bg-[#fbfcfb] p-4"><div className="flex items-start justify-between gap-3"><div><strong className="text-sm">{invoice.invoiceNumber}</strong><p className="mt-1 text-xs text-[#68645c]">{invoice.status.replaceAll("_", " ")}</p></div><strong>{formatMoney(invoice.totalPaisa)}</strong></div><p className="mt-2 text-xs text-[#68645c]">Platform {formatMoney(invoice.platformFeePaisa)} · AI {formatMoney(invoice.aiOveragePaisa)} · Tax {formatMoney(invoice.taxPaisa)}</p>{invoice.paymentReference ? <p className="mt-2 break-all text-xs font-semibold text-[#6d5310]">Razorpay payment: {invoice.paymentReference}</p> : null}{invoice.notes ? <p className="mt-1 break-all text-[11px] text-[#68645c]">{invoice.notes}</p> : null}</div>)}
             {!billing.organization.invoices.length ? <p className="text-sm text-[#68645c]">No invoices issued.</p> : null}
           </div>
         </Section> : null}

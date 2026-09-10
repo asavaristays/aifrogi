@@ -38,7 +38,7 @@ export function FlowCartPricingCalculator() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase text-[#f4b85a]">Quick calculator</p>
-          <h3 className="mt-2 text-2xl font-black">Estimate a WhatsApp commerce launch.</h3>
+          <h3 className="mt-2 text-2xl font-black">Estimate an AI commerce launch.</h3>
         </div>
         <p className="rounded-md bg-white/10 px-3 py-2 text-xs font-black text-white/72">Before GST/provider fees</p>
       </div>

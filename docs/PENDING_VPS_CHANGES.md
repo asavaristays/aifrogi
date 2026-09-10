@@ -2,6 +2,13 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
+## `UX-006` Beta AI Bot-only product boundary
+
+- Rebuilt client onboarding as a four-step AI Bot journey: business basics, knowledge, bot setup, and test/publish.
+- Removed legacy channel/provider language from active client Dashboard, reporting metrics, Super Admin onboarding, support categories, public bot capability defaults and commerce copy.
+- Client workspace status now reads the AI Bot lifecycle rather than a dormant channel integration.
+- Preserved legacy database columns and inactive provider modules without exposing or activating them; no destructive production migration is included in the beta package.
+
 ## `UX-005` Public Help Center — AI Bot operating guides
 
 - Removed every WhatsApp and Meta reference/article from the public Help Center catalogue.

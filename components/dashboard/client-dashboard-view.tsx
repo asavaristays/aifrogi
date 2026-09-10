@@ -11,7 +11,7 @@ export type DashboardAttention = {
   action: string;
   href: string;
   tone: "urgent" | "waiting" | "ready";
-  owner: "You" | "AiFrogi" | "Meta";
+  owner: "You" | "AiFrogi";
 };
 
 export type DashboardReadiness = { label: string; value: string; ok: boolean };
@@ -22,10 +22,7 @@ export type ClientDashboardViewProps = {
   todayLabel: string;
   organizationName: string;
   workspaceName: string;
-  displayPhoneNumber: string;
   connected: boolean;
-  whatsappEnabled: boolean;
-  metaStatus: string;
   accessRole: string;
   knowledgeReady: boolean;
   botName: string;
@@ -52,7 +49,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
   const firstName = props.ownerName.trim().split(/\s+/)[0] || "there";
   const primaryAttention = props.attention.filter((item) => item.tone !== "ready");
   const actionCount = primaryAttention.length;
-  const healthy = (!props.whatsappEnabled || props.connected) && props.readiness.every((item) => item.ok);
+  const healthy = props.connected && props.readiness.every((item) => item.ok);
 
   return (
     <div className="product-surface min-h-screen">
@@ -73,9 +70,9 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
               <Icon name="message-circle" className="h-4 w-4" />
               Inbox
             </Link>
-            <Link href={props.whatsappEnabled ? "/campaigns" : "/knowledge"} className="inline-flex min-h-9 items-center gap-2 rounded-md bg-[var(--primary-strong)] px-3 text-xs font-semibold text-white transition hover:bg-[var(--primary)]">
-              <Icon name={props.whatsappEnabled ? "megaphone" : "file-text"} className="h-4 w-4" />
-              {props.whatsappEnabled ? "New campaign" : "Manage intelligence"}
+            <Link href="/knowledge" className="inline-flex min-h-9 items-center gap-2 rounded-md bg-[var(--primary-strong)] px-3 text-xs font-semibold text-white transition hover:bg-[var(--primary)]">
+              <Icon name="file-text" className="h-4 w-4" />
+              Manage intelligence
             </Link>
           </div>
         </div>
@@ -96,11 +93,11 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
           </div>
           <div className="flex min-w-0 items-center gap-3 rounded-md border border-[var(--border)] bg-white px-3.5 py-3">
             <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${props.connected ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--tertiary-soft)] text-[var(--tertiary)]"}`}>
-              <Icon name={props.whatsappEnabled ? "smartphone" : "sparkles"} className="h-4 w-4" />
+              <Icon name="sparkles" className="h-4 w-4" />
             </span>
             <span className="min-w-0">
-              <span className="block text-[11px] text-[var(--text-muted)]">{props.whatsappEnabled ? "WhatsApp line" : "AI Business Bot"}</span>
-              <strong className="block truncate text-xs font-semibold">{props.whatsappEnabled ? props.displayPhoneNumber || "Not connected" : props.botName}</strong>
+              <span className="block text-[11px] text-[var(--text-muted)]">AI Business Bot</span>
+              <strong className="block truncate text-xs font-semibold">{props.botName}</strong>
             </span>
             <span className={`status-pill ${props.connected ? "status-success" : "status-warning"}`}>{props.connected ? "Live" : "Setup"}</span>
           </div>
@@ -181,7 +178,7 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
                 </Link>
               </div>
               <div className="divide-y divide-[var(--border)]">
-                {props.recent.length ? props.recent.map((lead) => <ConversationRow key={lead.id} lead={lead} />) : <EmptyConversations whatsappEnabled={props.whatsappEnabled} />}
+                {props.recent.length ? props.recent.map((lead) => <ConversationRow key={lead.id} lead={lead} />) : <EmptyConversations />}
               </div>
             </section>
           </div>
@@ -370,14 +367,14 @@ function ConversationRow({ lead }: { lead: Lead }) {
   );
 }
 
-function EmptyConversations({ whatsappEnabled }: { whatsappEnabled: boolean }) {
+function EmptyConversations() {
   return (
     <div className="px-6 py-9 text-center">
       <span className="mx-auto flex h-9 w-9 items-center justify-center rounded-md bg-[var(--secondary-soft)] text-[var(--text-muted)]">
         <Icon name="message-circle" className="h-4 w-4" />
       </span>
       <h4 className="mt-3 text-sm font-semibold">No conversations yet</h4>
-      <p className="mx-auto mt-1.5 max-w-sm text-xs leading-5 text-[var(--text-muted)]">New {whatsappEnabled ? "WhatsApp" : "website AI Bot"} conversations will appear here with a clear reply state.</p>
+      <p className="mx-auto mt-1.5 max-w-sm text-xs leading-5 text-[var(--text-muted)]">New AI Bot conversations will appear here with a clear reply state.</p>
     </div>
   );
 }

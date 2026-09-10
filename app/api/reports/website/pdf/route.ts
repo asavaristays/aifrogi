@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { loadLeads } from "@/lib/services/lead-service";
-import { buildWhatsAppMetrics } from "@/lib/whatsapp-metrics";
+import { buildConversationMetrics } from "@/lib/conversation-metrics";
 import { resolveReportPeriod, websiteLeadsForPeriod, websiteMonthlyReport, websiteOutcomeSummary } from "@/lib/website-reporting";
 import { createSimplePdf, type PdfLine } from "@/lib/pdf-report";
 
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const period = resolveReportPeriod(request.nextUrl.searchParams.get("period") || undefined);
   const allLeads = await loadLeads(access.propertySlug);
   const leads = websiteLeadsForPeriod(allLeads, period.since);
-  const metrics = buildWhatsAppMetrics(leads);
+  const metrics = buildConversationMetrics(leads);
   const outcomes = websiteOutcomeSummary(leads);
   const monthly = websiteMonthlyReport(allLeads);
   const answered = Math.max(metrics.contacts - metrics.unanswered, 0);

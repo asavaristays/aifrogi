@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
   const result = await createFlowCartOrder({
     propertySlug: typeof flowData.propertySlug === "string" ? flowData.propertySlug : "hotelradar",
-    customerName: typeof flowData.customerName === "string" ? flowData.customerName : "WhatsApp Customer",
+    customerName: typeof flowData.customerName === "string" ? flowData.customerName : "AI Bot Customer",
     customerPhone: typeof flowData.customerPhone === "string" ? flowData.customerPhone : "",
     productId: typeof flowData.productId === "string" ? flowData.productId : "cake-signature-chocolate",
     variantId: typeof flowData.variantId === "string" ? flowData.variantId : undefined,

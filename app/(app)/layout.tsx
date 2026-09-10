@@ -38,8 +38,8 @@ export default async function ProductLayout({ children }: { children: React.Reac
     id: record.id,
     name: record.name,
     slug: record.slug,
-    status: record.whatsappIntegration?.status ?? "NOT_CONFIGURED",
-    displayPhoneNumber: record.whatsappIntegration?.displayPhoneNumber ?? ""
+    status: record.organization?.botProfile?.status ?? "NOT_CONFIGURED",
+    displayPhoneNumber: ""
   }));
   const selectedSlug = workspaces.some((workspace) => workspace.slug === currentWorkspaceSlug)
     ? currentWorkspaceSlug

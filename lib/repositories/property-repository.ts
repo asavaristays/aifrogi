@@ -27,10 +27,9 @@ export async function listProperties() {
         id: true,
         name: true,
         slug: true,
-        whatsappIntegration: {
+        organization: {
           select: {
-            status: true,
-            displayPhoneNumber: true
+            botProfile: { select: { status: true } }
           }
         }
       },
@@ -62,10 +61,9 @@ export async function listPropertiesForMember(email: string, isAdmin = false) {
         id: true,
         name: true,
         slug: true,
-        whatsappIntegration: {
+        organization: {
           select: {
-            status: true,
-            displayPhoneNumber: true
+            botProfile: { select: { status: true } }
           }
         }
       },

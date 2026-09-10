@@ -8,8 +8,7 @@ const queuePage = readFileSync(resolve(process.cwd(), "app/admin/customers/page.
 
 test("Super Admin exposes website-only AI Bot onboarding", () => {
   assert.match(detailPage, /AI Bot Onboarding/);
-  assert.match(detailPage, /const whatsappEnabled = false/);
   assert.match(detailPage, /<BotProfileConfigurator[^>]+websiteOnly/);
-  assert.match(queuePage, /\?onboarding=ai-bot/);
+  assert.doesNotMatch(detailPage, /whats\s*app|meta business|meta webhook/i);
   assert.doesNotMatch(queuePage, /\?onboarding=whatsapp/);
 });

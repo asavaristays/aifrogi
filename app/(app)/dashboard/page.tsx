@@ -3,7 +3,7 @@ import { ClientDashboardView, type DashboardAttention } from "@/components/dashb
 import { getOrganizationForMember } from "@/lib/repositories/onboarding-repository";
 import { listSupportTickets } from "@/lib/repositories/support-repository";
 import { loadLeads } from "@/lib/services/lead-service";
-import { buildWhatsAppMetrics } from "@/lib/whatsapp-metrics";
+import { buildConversationMetrics } from "@/lib/conversation-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeWorkspaceSummary } from "@/lib/services/website-knowledge-service";
 import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
@@ -32,7 +32,7 @@ export default async function DashboardPage() {
     db && workspaceProperty ? db.sovereignAnswerEvidence.findFirst({ where: { propertyId: workspaceProperty.id }, select: { id: true } }) : Promise.resolve(null)
   ]);
   const leads = allLeads.filter((lead) => Boolean(lead.websiteSession) || /website|ai bot/i.test(lead.source));
-  const metrics = buildWhatsAppMetrics(leads);
+  const metrics = buildConversationMetrics(leads);
   const recent = [...leads].sort((a, b) => +new Date(b.updatedAtIso) - +new Date(a.updatedAtIso)).slice(0, 5);
   const connected = organization?.botProfile?.status === "LIVE";
   const openTickets = tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status));
@@ -58,10 +58,7 @@ export default async function DashboardPage() {
     todayLabel={todayLabel}
     organizationName={organization?.name || "HotelRADAR"}
     workspaceName={workspace?.name || propertySlug}
-    displayPhoneNumber={organization?.publicPhone || organization?.ownerMobile || ""}
     connected={connected}
-    whatsappEnabled={false}
-    metaStatus="NOT_STARTED"
     accessRole={membership?.role || "AGENT"}
     knowledgeReady={knowledge.pages.length > 0 && knowledge.settings.status === "READY" && knowledge.settings.approvedForAi}
     botName={organization?.botProfile?.personaName || "Business Assistant"}

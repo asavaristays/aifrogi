@@ -18,9 +18,6 @@ export default async function OnboardingPage() {
     <CustomerOnboarding
       initialOrganization={organization}
       accountEmail={user.username}
-      metaAppId={process.env.NEXT_PUBLIC_META_APP_ID || ""}
-      metaConfigId={process.env.NEXT_PUBLIC_META_EMBEDDED_SIGNUP_CONFIG_ID || ""}
-      graphVersion={process.env.META_GRAPH_API_VERSION || "v25.0"}
     />
   );
 }

@@ -1,6 +1,6 @@
 import { AnalyticsWorkspaceView } from "@/components/analytics/analytics-workspace-view";
 import { loadLeads } from "@/lib/services/lead-service";
-import { buildWhatsAppMetrics } from "@/lib/whatsapp-metrics";
+import { buildConversationMetrics } from "@/lib/conversation-metrics";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getAiOperationsReport } from "@/lib/repositories/ai-operations-repository";
@@ -14,7 +14,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const period = resolveReportPeriod(query.period);
   const allLeads = await loadLeads(propertySlug);
   const leads = websiteLeadsForPeriod(allLeads, period.since);
-  const metrics = buildWhatsAppMetrics(leads);
+  const metrics = buildConversationMetrics(leads);
   const outcomes = websiteOutcomeSummary(leads);
   const operations = access.ok ? await getAiOperationsReport(access.propertyId, period.since) : null;
 

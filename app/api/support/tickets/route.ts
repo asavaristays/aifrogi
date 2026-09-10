@@ -6,7 +6,7 @@ import { logSupportDataAccess } from "@/lib/support-access";
 import { sendSupportTicketMail } from "@/lib/support-mail";
 import { containsUnsafeSupportSecret, structuredResolution, SUPPORT_STATUSES, supportSlaState } from "@/lib/support-policy";
 
-const categories = new Set(["AI_BOT", "KNOWLEDGE", "CONNECTOR", "ONBOARDING", "BILLING", "ACCOUNT", "WHATSAPP", "OTHER"]);
+const categories = new Set(["AI_BOT", "KNOWLEDGE", "CONNECTOR", "ONBOARDING", "BILLING", "ACCOUNT", "OTHER"]);
 const priorities = new Set(["LOW", "NORMAL", "HIGH", "URGENT"]);
 const statuses = new Set<string>(SUPPORT_STATUSES);
 const supportEmail = process.env.BOOKING_INBOX_EMAIL?.trim() || "info@aifrogi.com";

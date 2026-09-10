@@ -25,7 +25,7 @@ const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
   enabled: true, language: "EN", welcomeEnabled: true,
   welcomeMessage: "Welcome. How can I help with your business enquiry today?",
-  serviceBuckets: ["WEBSITE_CMS", "WHATSAPP_AUTOMATION", "AI_AUTOMATION", "CONSULTATION_INTEGRATIONS"],
+  serviceBuckets: ["WEBSITE_CMS", "AI_AUTOMATION", "CONSULTATION_INTEGRATIONS"],
   auditEnabled: false, trialEnabled: false, humanHandoffEnabled: true, collectLeadDetails: true
 };
 
