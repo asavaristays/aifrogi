@@ -11,9 +11,9 @@ test("only explicitly approved live website bots may serve visitors", () => {
   assert.equal(canServeWebsiteBot("LIVE", ["WHATSAPP"]), false);
 });
 
-test("go-live requires installation detection", () => {
+test("go-live supports standalone or website delivery after Super Admin approval", () => {
   assert.throws(() => nextWebsiteBotStatus("DELETED", "MAKE_LIVE", true), /Restore/);
-  assert.throws(() => nextWebsiteBotStatus("INSTALLATION_READY", "MAKE_LIVE", false), /Install the code/);
+  assert.equal(nextWebsiteBotStatus("INSTALLATION_READY", "MAKE_LIVE", false), "LIVE");
   assert.equal(nextWebsiteBotStatus("INSTALLATION_DETECTED", "MAKE_LIVE", true), "LIVE");
 });
 
@@ -21,8 +21,9 @@ test("Super Admin review exposes explicit approval and correction paths", () => 
   const installation = readFileSync("components/website-bot/website-bot-installation.tsx", "utf8");
   const route = readFileSync("app/api/admin/customers/[id]/route.ts", "utf8");
   assert.match(installation, /Approve and Make Bot Live/);
-  assert.match(installation, /approvalAvailable = detected/);
+  assert.match(installation, /approvalAvailable = \[/);
   assert.match(installation, /"INSTALLATION_READY", "INSTALLATION_DETECTED", "PAUSED"/);
+  assert.match(installation, /Website installed \(optional\)/);
   assert.match(installation, /Not Approved · Request Correction/);
   assert.match(route, /DECLINE_BOT_APPROVAL/);
   assert.match(route, /correction-required email/);

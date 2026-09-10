@@ -9,7 +9,6 @@ export function canServeWebsiteBot(status: string, channels: readonly string[]) 
 export function nextWebsiteBotStatus(status: string, action: WebsiteBotLifecycleAction, installationDetected: boolean): WebsiteBotStatus {
   if (action === "MAKE_LIVE") {
     if (status === "DELETED") throw new Error("Restore the bot before requesting approval.");
-    if (!installationDetected) throw new Error("Install the code on the customer website before making the bot live.");
     return "LIVE";
   }
   if (action === "PAUSE") return "PAUSED";

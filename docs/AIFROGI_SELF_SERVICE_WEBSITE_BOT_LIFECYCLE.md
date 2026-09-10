@@ -42,8 +42,9 @@ Allow a business owner to select an AI Business Bot, start a controlled 15-day t
 stateDiagram-v2
   [*] --> DRAFT: Trial registration and category selection
   DRAFT --> INSTALLATION_READY: Super Admin saves governed blueprint
-  INSTALLATION_READY --> INSTALLATION_DETECTED: Valid install code loads on customer website
-  INSTALLATION_DETECTED --> LIVE: Super Admin readiness approval
+  INSTALLATION_READY --> INSTALLATION_DETECTED: Optional website code loads
+  INSTALLATION_READY --> LIVE: Super Admin approval for standalone delivery
+  INSTALLATION_DETECTED --> LIVE: Super Admin approval for website or combined delivery
   LIVE --> PAUSED: Super Admin pauses traffic
   PAUSED --> LIVE: Super Admin resumes after checks
   LIVE --> DELETED: Super Admin soft-deletes bot
@@ -92,7 +93,7 @@ iFrame and WordPress instructions are provided as alternate presentation methods
 1. A new trial records the selected AI Bot category.
 2. Saving the governed blueprint generates tenant-specific installation code.
 3. Copying code alone does not make the bot public.
-4. Loading valid code records `INSTALLATION_DETECTED`.
+4. Loading valid website code records `INSTALLATION_DETECTED`; this evidence is optional when the client chooses standalone delivery.
 5. Super Admin cannot make the bot live before detection.
 6. Super Admin makes the detected bot live and the script loads the iframe.
 7. Pause and Delete stop new public AI Bot conversations.
