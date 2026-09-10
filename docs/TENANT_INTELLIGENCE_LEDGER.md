@@ -44,7 +44,7 @@ A missing or wrong client fact is fixed only in that tenant's approved knowledge
 | Tenant ID | Bot / vertical | Knowledge status | Human-reviewed evidence | Current state | Next evidence |
 | --- | --- | --- | --- | --- | --- |
 | `TEN-WEBTECHNOSYS` | Webtechnosys AI Agency / Business AI | Approved tenant facts and trained answers are live | Reference 25-question production set passed 25/25 after human review and targeted corrections | `PILOT_EVIDENCE` | Continue real visitor review; correct feedback and missing answers through Improve My Bot. |
-| `TEN-PILOT-02` | Second friendly client / to be selected | Not onboarded | None | `PLANNED` | Complete source intake, client approvals, 10-question smoke set and 25-question human-reviewed golden set. |
+| `TEN-ASAVARISTAYS` | Asavaristays / Business AI for hospitality | Five governed trial-essential answers published: services, business identity, contact, booking-enquiry start and human support | Each added answer passed atomic validation, field approval, preview approval and publication regression; client-wide golden-set review is not yet complete | `PILOT_EVIDENCE` · LIVE | Client reviews the four account-derived essentials and completes a 10-question live smoke set followed by a 25-question human-reviewed golden set. |
 
 ## Duplicate-prevention gate
 
