@@ -25,6 +25,7 @@ const navItems = [
       { label: "Custom Business Bot", href: "/solutions/custom-business-bot", copy: "A governed workflow built for you" }
     ]
   },
+  { label: "Resources", href: "/resources" },
   { label: "How to Install", href: "/install-ai-bot" },
   { label: "Pricing", href: "/pricing" },
   { label: "Founder", href: "https://webtechnosys.com/founder/", external: true }

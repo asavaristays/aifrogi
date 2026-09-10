@@ -2,101 +2,71 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
-import { helpArticles } from "@/lib/help-center";
 import { marketingMetadata } from "@/lib/seo";
 
 export const metadata = marketingMetadata({
-  title: "AI Business Bot Guides & Resources | AiFrogi",
-  description: "Practical resources for website AI business automation, customer conversations, approved knowledge, security, and support.",
+  title: "AiFrogi Client Onboarding & Training Guides",
+  description: "Visual, step-by-step guides to create, train, test, design, install and operate an AiFrogi business bot.",
   path: "/resources"
 });
 
-const securityProofs = [
-  {
-    title: "Customer-approved support",
-    copy: "Private conversations, documents, knowledge, and integration details stay locked until an owner/admin grants time-bound support access."
-  },
-  {
-    title: "Privileged login OTP",
-    copy: "Platform admin and workspace owner/admin sign-in requires password verification plus an email OTP before a session is created."
-  },
-  {
-    title: "Signed visitor sessions",
-    copy: "Website conversations use tenant-bound visitor capabilities; a guessed browser session cannot read private transcripts."
-  },
-  {
-    title: "Boundary verifier",
-    copy: "Repeatable fixture tests confirm covered sensitive routes reject workspace spoofing and role-bypass attempts."
-  }
+const workspaceUrl = "https://app.aifrogi.com";
+
+const journey = [
+  { number: "01", label: "Sign up", copy: "Create the business workspace and verify your login.", href: "#sign-up" },
+  { number: "02", label: "Add knowledge", copy: "Upload the approved Excel file, PDF or website pages.", href: "#knowledge" },
+  { number: "03", label: "Train and approve", copy: "Review extracted answers before they can go live.", href: "#train" },
+  { number: "04", label: "Design the bot", copy: "Set identity, welcome card and Main menu.", href: "#design" },
+  { number: "05", label: "Test and install", copy: "Run real questions, then copy the correct embed option.", href: "#install" },
+  { number: "06", label: "Operate and improve", copy: "Manage leads, replies, credits and missing answers.", href: "#operate" }
 ];
 
-const trustResources = [
-  { title: "Support standards", copy: "Published response targets, priority definitions, and customer-controlled access boundaries.", href: "/help/support-response-standards" },
-  { title: "Security guide", copy: "Plain-English explanation of workspace boundaries, support access, OTP, signed sessions, and safe AI.", href: "/security" },
-  { title: "Data security", copy: "How support access, privileged login, credentials, and workspace boundaries are protected.", href: "/security" },
-  { title: "Privacy policy", copy: "What information is collected, why it is used, and how it is protected.", href: "/privacy-policy" },
-  { title: "Terms of service", copy: "Platform responsibilities, acceptable use, billing, and service boundaries.", href: "/terms-of-service" },
-  { title: "Data deletion", copy: "How to request removal of customer or account information.", href: "/data-deletion" }
+const guides = [
+  { id: "sign-up", eyebrow: "Guide 1 · Account", title: "Create your AiFrogi workspace", copy: "Start the trial with the owner’s real business email. AiFrogi creates a private workspace for that business and keeps its bot, knowledge, leads and billing separate.", steps: ["Open Start 15-day trial", "Enter business and owner details", "Verify the email and sign in", "Open Today to continue setup"], action: { label: "Start 15-day trial", href: `${workspaceUrl}/register?source=resources` }, preview: "signup" as const },
+  { id: "knowledge", eyebrow: "Guide 2 · Intelligence", title: "Upload Excel, PDF or website knowledge", copy: "Use only information the bot is allowed to tell customers. Keep each answer precise, current and specific to this business—never mix another client’s facts.", steps: ["Open Intelligence", "Choose Excel, PDF or website", "Upload or add the approved source", "Review validation and conflicts"], action: { label: "Download Excel template", href: "/downloads/AiFrogi-Simple-AI-Bot-Onboarding.xlsx", download: true }, preview: "upload" as const },
+  { id: "train", eyebrow: "Guide 3 · Approval", title: "Train the bot by approving answers", copy: "Training here means governing the business truth: review the exact customer-facing answer, edit mistakes, approve good answers and pause anything uncertain. The bot does not learn silently from visitors.", steps: ["Open Review and approve answers", "Read the customer question and answer", "Edit, then Save and approve", "Use Improve My Bot for missing information"], action: { label: "Open Intelligence", href: `${workspaceUrl}/knowledge` }, preview: "approve" as const },
+  { id: "design", eyebrow: "Guide 4 · Appearance", title: "Design the welcome and Main menu", copy: "Add the bot name, logo, colour and welcome message. Use a welcome image or today’s offer only when it helps. Keep Main menu options short and connect each one to a useful customer question.", steps: ["Open Setup · Bot appearance", "Add logo, colour and welcome content", "Open Main menu", "Add, order and save customer choices"], action: { label: "Open bot setup", href: `${workspaceUrl}/setup` }, preview: "menu" as const },
+  { id: "install", eyebrow: "Guide 5 · Go live", title: "Test first, then install once", copy: "Ask real questions about services, price, process, contact details and unsupported topics. Go live only when approved facts answer correctly and missing information routes safely to the team.", steps: ["Use Test my bot", "Check desktop and mobile", "Choose JavaScript, WordPress or share link", "Install and confirm the checklist turns green"], action: { label: "Read installation guide", href: "/install-ai-bot" }, preview: "install" as const },
+  { id: "operate", eyebrow: "Guide 6 · Daily work", title: "Manage leads, replies and improvements", copy: "Today shows urgent work. Team Inbox holds human conversations, Leads holds consented customer details, Reports shows outcomes, and Improve My Bot turns missing information into reviewed knowledge.", steps: ["Reply to waiting Team Inbox conversations", "Review new Leads and consented callback details", "Correct missing or wrong answers", "Check Reports, credits and Billing"], action: { label: "Open Today", href: `${workspaceUrl}/dashboard` }, preview: "operate" as const }
+];
+
+const quickAnswers = [
+  ["What is an AI Bot persona?", "The shared role, tone and boundaries for a bot family. It shapes behaviour but never replaces the client’s approved facts."],
+  ["What are AI credits?", "Credits measure billable AI replies. Trial, plan, purchased and Super Admin-granted credits appear in Billing and are allocated to the client account."],
+  ["When does the bot request a mobile number?", "Not on the first ordinary question. It offers an optional private callback after sustained commercial interest, a direct callback or quote request, or when a verified answer is missing."],
+  ["What happens when the bot cannot answer?", "It does not invent a reply. It offers the configured business number and a consented callback, then records the enquiry for the business team."],
+  ["Can support see client conversations?", "Not by default. A workspace owner controls time-bound support access. Never place passwords, OTPs, card details or API secrets in chat or support."],
+  ["How do I get help?", "Open Support inside AiFrogi so the request carries the correct workspace context and its replies remain in one auditable thread."]
 ];
 
 export default function ResourcesPage() {
-  return (
-    <main className="bg-white text-[#101010]">
-      <SiteHeader />
+  return <main className="bg-[#f7f5ef] text-[#111]">
+    <SiteHeader />
+    <section className="relative overflow-hidden bg-[#0b0c0c] px-5 py-16 text-white sm:px-8 sm:py-24">
+      <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_80%_20%,rgba(177,138,37,.48),transparent_30%),linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] [background-size:auto,56px_56px,56px_56px]" aria-hidden="true" />
+      <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-[#e2c66d]">AiFrogi Client Resource Center</p><h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-.045em] sm:text-6xl">From sign-up to a confident live bot.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-white/66">Follow one visual path to add business knowledge, approve answers, design the menu, install the widget and manage customer enquiries.</p><div className="mt-8 flex flex-wrap gap-3"><a href="#start" className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#9b7518] px-5 text-sm font-bold text-white">Start onboarding <Icon name="arrow-right" /></a><Link href="/help" className="inline-flex min-h-12 items-center rounded-lg border border-white/18 px-5 text-sm font-bold text-white">Browse all help</Link></div></div><div className="rounded-3xl border border-[#e2c66d]/25 bg-white/6 p-4 shadow-2xl backdrop-blur sm:p-6"><ResourcePreview type="journey" /></div></div>
+    </section>
 
-      <section className="relative overflow-hidden bg-[#101010] px-5 py-16 text-white sm:px-8 sm:py-24">
-        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-[#8a6a16]/15 blur-[100px]" aria-hidden="true" />
-        <div className="relative mx-auto max-w-7xl">
-          <p className="text-xs font-bold uppercase tracking-[.16em] text-[#e2c66d]">Resources</p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-[-.04em] sm:text-6xl">Practical guides. Clear answers.</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/62">Set up your website AI Bot, govern its knowledge, protect access, and resolve issues without unnecessary reading.</p>
-          <a href="#guides" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b28728]">Browse guides <Icon name="arrow-right" /></a>
-        </div>
-      </section>
+    <section id="start" className="scroll-mt-24 px-5 py-14 sm:px-8"><div className="mx-auto max-w-7xl"><div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><p className="product-eyebrow">Your complete route</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] sm:text-4xl">Six steps. One clear launch path.</h2></div><p className="max-w-md text-sm leading-6 text-[#68645c]">Complete these in order for a new bot. Return directly to one step when updating an existing bot.</p></div><nav aria-label="Onboarding steps" className="mt-9 grid overflow-hidden rounded-2xl border border-black/10 bg-white sm:grid-cols-2 lg:grid-cols-3">{journey.map((item) => <a key={item.number} href={item.href} className="group border-b border-black/8 p-5 transition hover:bg-[#fff9e8] lg:border-r"><span className="text-xs font-bold text-[#8a6a16]">{item.number}</span><h3 className="mt-3 font-semibold">{item.label}</h3><p className="mt-2 text-sm leading-6 text-[#68645c]">{item.copy}</p></a>)}</nav></div></section>
 
-      <section className="border-b border-black/8 bg-white px-5 py-20 sm:px-8">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-start">
-          <div>
-            <p className="product-eyebrow">Security proof</p>
-            <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-tight tracking-[-.03em] sm:text-4xl">Not just policy text. Controls customers can understand.</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[var(--text-muted)]">AiFrogi is built for customer data boundaries: support access is customer-controlled, privileged users complete OTP, visitor sessions are signed, and sensitive routes are checked with repeatable verifier tests.</p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/security" className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#b28728]">Read security guide <Icon name="arrow-right" /></Link>
-              <Link href="/security" className="inline-flex min-h-12 items-center gap-2 rounded-lg border border-black/10 px-5 text-sm font-bold text-[#101010] transition hover:-translate-y-0.5 hover:border-[#8a6a16]/35 hover:bg-[#f8f0d8]">Open security center</Link>
-            </div>
-          </div>
+    <section className="border-y border-black/8 bg-white px-5 py-16 sm:px-8"><div className="mx-auto max-w-7xl space-y-20">{guides.map((guide, index) => <article key={guide.id} id={guide.id} className="scroll-mt-24 grid gap-8 lg:grid-cols-2 lg:items-center"><div className={index % 2 ? "lg:order-2" : ""}><p className="product-eyebrow">{guide.eyebrow}</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] sm:text-4xl">{guide.title}</h2><p className="mt-5 max-w-xl leading-7 text-[#68645c]">{guide.copy}</p><ol className="mt-7 grid gap-3">{guide.steps.map((step, stepIndex) => <li key={step} className="flex items-center gap-3 text-sm"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#f3e5b5] text-xs font-bold text-[#6d5310]">{stepIndex + 1}</span><span>{step}</span></li>)}</ol><Link href={guide.action.href} download={"download" in guide.action ? guide.action.download : undefined} className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#101010] px-5 text-sm font-bold text-white">{guide.action.label} <Icon name="arrow-right" /></Link></div><div className={`rounded-3xl border border-black/10 bg-[#f2efe7] p-3 shadow-[0_24px_60px_rgba(22,18,9,.09)] sm:p-6 ${index % 2 ? "lg:order-1" : ""}`}><ResourcePreview type={guide.preview} /></div></article>)}</div></section>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {securityProofs.map((proof) => (
-              <article key={proof.title} className="rounded-xl border border-black/8 bg-[#fbfaf7] p-5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#101010] text-sm font-bold text-white">✓</div>
-                <h3 className="mt-5 text-lg font-bold">{proof.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{proof.copy}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+    <section className="px-5 py-16 sm:px-8"><div className="mx-auto max-w-7xl"><div className="max-w-2xl"><p className="product-eyebrow">Know before you operate</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.035em] sm:text-4xl">Short answers to important questions.</h2></div><div className="mt-9 grid gap-4 md:grid-cols-2">{quickAnswers.map(([question, answer]) => <details key={question} className="group rounded-xl border border-black/10 bg-white p-5 open:border-[#b18a25]"><summary className="cursor-pointer list-none pr-8 font-semibold marker:hidden">{question}<span className="float-right text-[#8a6a16] group-open:rotate-45">+</span></summary><p className="mt-4 text-sm leading-6 text-[#68645c]">{answer}</p></details>)}</div></div></section>
 
-      <section id="guides" className="scroll-mt-20 px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl"><p className="product-eyebrow">Help guides</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Start with the task in front of you.</h2></div>
-          <div className="mt-10 grid gap-x-10 md:grid-cols-2">
-            {helpArticles.filter((article) => !/whatsapp|meta/i.test(`${article.slug} ${article.title} ${article.summary}`)).map((article) => <Link key={article.slug} href={`/help/${article.slug}`} className="group border-t border-black/10 py-6"><div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-[.1em] text-[#6d5310]">{article.category} · {article.minutes} min</span><Icon name="arrow-right" className="text-[#8a6a16] transition-transform group-hover:translate-x-1" /></div><h3 className="mt-4 text-xl font-semibold transition group-hover:text-[#6d5310]">{article.title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)]">{article.summary}</p></Link>)}
-          </div>
-        </div>
-      </section>
+    <section className="bg-[#101010] px-5 py-14 text-white sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-2xl font-semibold">Still need a person?</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-white/58">Sign in and open Support. Describe the screen, expected result and actual result—without passwords, OTPs, payment details or API secrets.</p></div><a href={`${workspaceUrl}/support`} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-[#9b7518] px-6 text-sm font-bold">Open Support <Icon name="arrow-right" /></a></div></section>
+    <SiteFooter />
+  </main>;
+}
 
-      <section className="border-y border-black/8 bg-[#fbfaf7] px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl"><p className="product-eyebrow">Trust resources</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em] sm:text-4xl">Understand the boundaries before you connect.</h2></div>
-          <div className="mt-10 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">{trustResources.map((resource) => <Link key={resource.href} href={resource.href} className="group border-t border-black/10 py-5"><h3 className="flex items-center justify-between gap-3 font-bold">{resource.title}<Icon name="arrow-right" className="text-[#8a6a16] transition-transform group-hover:translate-x-1" /></h3><p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">{resource.copy}</p></Link>)}</div>
-        </div>
-      </section>
-
-      <section className="px-5 py-16 sm:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-xl bg-[#101010] px-6 py-8 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8"><div><h2 className="text-2xl font-semibold">Still need a person?</h2><p className="mt-2 text-sm text-white/55">Share the blocker without passwords, OTPs, or access tokens.</p></div><a href="mailto:info@aifrogi.com?subject=AiFrogi%20support" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-[#8a6a16] px-5 text-sm font-bold">Contact support <Icon name="arrow-right" /></a></div></section>
-
-      <SiteFooter />
-    </main>
-  );
+function ResourcePreview({ type }: { type: "journey" | "signup" | "upload" | "approve" | "menu" | "install" | "operate" }) {
+  if (type === "journey") return <div className="rounded-2xl bg-[#121414] p-5"><div className="flex items-center justify-between border-b border-white/10 pb-4"><span className="text-sm font-semibold text-white">Your bot launch</span><span className="rounded-full bg-[#183f35] px-3 py-1 text-xs text-[#82d8bc]">Guided</span></div><div className="mt-5 space-y-3">{["Business workspace", "Approved knowledge", "Bot appearance", "Test and install"].map((item, index) => <div key={item} className="flex items-center gap-3"><span className={`grid h-7 w-7 place-items-center rounded-full text-xs ${index < 2 ? "bg-[#9b7518] text-white" : "bg-white/8 text-white/50"}`}>{index < 2 ? "✓" : index + 1}</span><span className="text-sm text-white/74">{item}</span></div>)}</div></div>;
+  const data = {
+    signup: { title: "Create your workspace", rows: ["Business name", "Owner email", "Business category"], button: "Create account" },
+    upload: { title: "Add business knowledge", rows: ["Excel template.xlsx", "Business brochure.pdf", "Approved website pages"], button: "Upload and validate" },
+    approve: { title: "Review answer 3 of 12", rows: ["Customer asks", "Answer exactly as shown", "Edit when correction is needed"], button: "Save and approve" },
+    menu: { title: "Main menu", rows: ["Our services", "Training programmes", "Contact our team"], button: "Save menu" },
+    install: { title: "Installation checklist", rows: ["Bot tested", "Embed code copied", "Website detected"], button: "Verify installation" },
+    operate: { title: "Today", rows: ["2 conversations need reply", "3 new leads", "1 missing answer to review"], button: "Open next action" }
+  }[type];
+  return <div className="overflow-hidden rounded-2xl border border-black/10 bg-white"><div className="flex items-center gap-2 bg-[#111] px-4 py-3"><span className="h-2.5 w-2.5 rounded-full bg-[#e2c66d]" /><span className="h-2.5 w-2.5 rounded-full bg-white/20" /><span className="ml-2 text-[11px] font-semibold text-white/60">app.aifrogi.com</span></div><div className="p-5 sm:p-7"><p className="text-xs font-bold uppercase tracking-[.12em] text-[#8a6a16]">AiFrogi workspace</p><h3 className="mt-2 text-xl font-semibold">{data.title}</h3><div className="mt-5 space-y-3">{data.rows.map((row, index) => <div key={row} className="flex min-h-11 items-center gap-3 rounded-lg border border-black/8 bg-[#fbfaf7] px-3"><span className={`grid h-6 w-6 place-items-center rounded-md text-xs ${index === data.rows.length - 1 ? "bg-[#f3e5b5] text-[#6d5310]" : "bg-[#173c33] text-white"}`}>{index + 1}</span><span className="text-sm text-[#47433c]">{row}</span></div>)}</div><div className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-[#9b7518] px-4 text-xs font-bold text-white">{data.button}</div></div></div>;
 }
