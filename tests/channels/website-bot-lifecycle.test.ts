@@ -17,6 +17,15 @@ test("go-live requires installation detection", () => {
   assert.equal(nextWebsiteBotStatus("INSTALLATION_DETECTED", "MAKE_LIVE", true), "LIVE");
 });
 
+test("Super Admin review exposes explicit approval and correction paths", () => {
+  const installation = readFileSync("components/website-bot/website-bot-installation.tsx", "utf8");
+  const route = readFileSync("app/api/admin/customers/[id]/route.ts", "utf8");
+  assert.match(installation, /Approve and Make Bot Live/);
+  assert.match(installation, /Not Approved · Request Correction/);
+  assert.match(route, /DECLINE_BOT_APPROVAL/);
+  assert.match(route, /correction-required email/);
+});
+
 test("pause, soft delete and restore are deterministic", () => {
   assert.equal(nextWebsiteBotStatus("LIVE", "PAUSE", true), "PAUSED");
   assert.equal(nextWebsiteBotStatus("PAUSED", "DELETE", true), "DELETED");

@@ -7,8 +7,10 @@ import {
   saveOrganizationBotProfile,
   updateWebsiteBotLifecycle,
   updateOrganizationStatus,
-  updateBotConnectorPlan
+  updateBotConnectorPlan,
+  declineWebsiteBotApproval
 } from "@/lib/repositories/onboarding-repository";
+import { getDb } from "@/lib/db";
 import { setAppointmentJourneyEnabled } from "@/lib/appointment-journey-service";
 import { parseBotProfile } from "@/lib/bot-profile";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
@@ -109,6 +111,22 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   if (action === "RESEND_LIVE_EMAIL") {
     try { return NextResponse.json({ notification: await notifyBotLive(id, user.username) }); }
     catch { return NextResponse.json({ error: "Live email could not be processed. Check that the bot is live and retry." }, { status: 400 }); }
+  }
+  if (action === "DECLINE_BOT_APPROVAL") {
+    const reason = payload?.reason?.trim() || "";
+    if (!reason) return NextResponse.json({ error: "Add the correction required before declining approval." }, { status: 400 });
+    try {
+      const updated = await declineWebsiteBotApproval({ organizationId: id, actorEmail: user.username, reason });
+      const mail = await sendBookingMail({
+        to: organization.ownerEmail,
+        subject: "AiFrogi bot review — correction required",
+        body: `Hello ${organization.ownerName},\n\nYour AI Bot remains offline after Super Admin review.\n\nCorrection required:\n${reason}\n\nPlease update the requested information in AiFrogi and submit it for review again. No customer can access the bot until approval.\n\nAiFrogi`
+      }).catch(() => ({ error: "Mail delivery failed", messageId: null }));
+      await getDb()?.onboardingActivity.create({ data: { organizationId: id, actorEmail: user.username, action: mail.error || !mail.messageId ? "BOT_CORRECTION_EMAIL_FAILED" : "BOT_CORRECTION_EMAIL_ACCEPTED", detail: mail.error || !mail.messageId ? "Correction email was not accepted; contact the client from Support." : "SMTP accepted the correction-required email; inbox delivery is not verified." } });
+      return NextResponse.json({ organization: updated, notification: { accepted: !mail.error && Boolean(mail.messageId), message: mail.error || !mail.messageId ? "Bot remains offline. Correction email could not be sent; contact the client from Support." : "Bot remains offline. Correction email accepted by the mail server." } });
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Bot approval could not be declined." }, { status: 400 });
+    }
   }
   if (["MAKE_LIVE", "PAUSE", "DELETE", "RESTORE"].includes(action || "")) {
     try {

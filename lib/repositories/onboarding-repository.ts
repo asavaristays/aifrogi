@@ -337,6 +337,36 @@ export async function updateWebsiteBotLifecycle(input: {
   return getOrganizationById(input.organizationId);
 }
 
+export async function declineWebsiteBotApproval(input: {
+  organizationId: string;
+  actorEmail: string;
+  reason: string;
+}) {
+  const db = getDb();
+  if (!db) return null;
+  const reason = input.reason.trim();
+  if (!reason) throw new Error("Add the correction required before declining approval.");
+  const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
+  if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured AI Bot is required.");
+  if (profile.status === "LIVE") throw new Error("Pause the live bot before requesting corrections.");
+  if (profile.status === "DELETED") throw new Error("Restore the bot before reviewing it.");
+  await db.$transaction([
+    db.botProfile.update({
+      where: { organizationId: input.organizationId },
+      data: { status: "INSTALLATION_READY", lifecycleUpdatedBy: input.actorEmail }
+    }),
+    db.onboardingActivity.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        action: "WEBSITE_BOT_APPROVAL_DECLINED",
+        detail: reason.slice(0, 1200)
+      }
+    })
+  ]);
+  return getOrganizationById(input.organizationId);
+}
+
 export async function recordWebsiteBotInstallation(slug: string, installationKey: string, origin?: string | null) {
   const db = getDb();
   if (!db) return null;

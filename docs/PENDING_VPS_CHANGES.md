@@ -2,6 +2,13 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
+## `UX-007` Super Admin bot approval decision
+
+- Added explicit **Approve and Make Bot Live** and **Not Approved · Request Correction** decisions to each AI Bot installation review.
+- Approval remains gated by active billing/trial, approved tenant knowledge, required connector readiness and detected installation; successful approval activates the bot and sends the existing live confirmation email.
+- Decline requires a correction reason, keeps the bot offline, records the decision in the audit activity and emails the client with the required correction.
+- Mail-server acceptance is reported separately from inbox delivery, with a Support fallback when notification sending fails.
+
 ## `CI-010` Core Intelligence — timezone-aware first greeting
 
 - All website bots now send the visitor browser's IANA timezone with each message and generate the first greeting using that local time.
