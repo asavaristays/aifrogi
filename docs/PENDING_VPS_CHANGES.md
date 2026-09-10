@@ -2,20 +2,6 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
-## `UX-003` Public header — final four-item navigation
-
-- Desktop and mobile public headers contain exactly: Home, AI Bot, How to Install and Pricing.
-- Resources remains available through the footer and direct URL; Founder remains in the footer only.
-- WhatsApp API remains absent.
-- Marketing navigation tests passed 3/3; TypeScript, targeted ESLint and the clean 77-page webpack build passed.
-
-## `UX-004` Resources — standalone bot for businesses without websites
-
-- Resources now states clearly that a website is optional.
-- A trained bot can be published as a standalone shareable web app and distributed through a direct link, email, social profile or QR code.
-- If the client adds a website later, the same bot can be embedded without retraining; standalone and widget delivery use the same tenant intelligence.
-- Guide 5 and its visual preview now explain standalone link, website/WordPress widget and shared intelligence as equal publishing options.
-
 ## `CI-010` Core Intelligence — timezone-aware first greeting
 
 - All website bots now send the visitor browser's IANA timezone with each message and generate the first greeting using that local time.
