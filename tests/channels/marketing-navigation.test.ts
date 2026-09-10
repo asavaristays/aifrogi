@@ -25,8 +25,10 @@ test("resources stay focused on self-serve AI Bot onboarding", () => {
     "Upload Excel, PDF or website knowledge",
     "Train the bot by approving answers",
     "Design the welcome and Main menu",
-    "Test first, then install once",
+    "Publish with or without a website",
     "Manage leads, replies and improvements"
   ]) assert.match(resources, new RegExp(required));
+  assert.match(resources, /A website is optional/);
+  assert.match(resources, /standalone web app/);
   assert.doesNotMatch(resources, /WhatsApp/);
 });
