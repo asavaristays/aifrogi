@@ -2,6 +2,13 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
+## `UX-005` Public Help Center — AI Bot operating guides
+
+- Removed every WhatsApp and Meta reference/article from the public Help Center catalogue.
+- Rebuilt Help around the AI Bot lifecycle: account creation, knowledge upload, answer approval, persona, appearance/Main menu, standalone publishing, website installation, Leads/Team Inbox, credits/Billing, improvement and Support.
+- Added clear routing for new clients, ready-to-publish clients and live clients.
+- Individual guides now return to All AI Bot guides and route authenticated help to client Support.
+
 ## `CI-010` Core Intelligence — timezone-aware first greeting
 
 - All website bots now send the visitor browser's IANA timezone with each message and generate the first greeting using that local time.
