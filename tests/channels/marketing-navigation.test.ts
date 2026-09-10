@@ -7,19 +7,19 @@ const header = readFileSync(resolve(process.cwd(), "components/marketing/site-he
 const footer = readFileSync(resolve(process.cwd(), "components/marketing/site-footer.tsx"), "utf8");
 const resources = readFileSync(resolve(process.cwd(), "app/resources/page.tsx"), "utf8");
 
-test("shared marketing header and footer expose the approved founder link", () => {
-  for (const source of [header, footer]) {
-    assert.match(source, /https:\/\/webtechnosys\.com\/founder\//);
-    assert.match(source, /rel="noreferrer"/);
-  }
-
-  assert.match(header, /label: "Founder"/);
+test("marketing footer retains the approved founder link", () => {
+  assert.match(footer, /https:\/\/webtechnosys\.com\/founder\//);
+  assert.match(footer, /rel="noreferrer"/);
   assert.match(footer, />Founder<\/a>/);
 });
 
-test("public navigation and resources stay focused on self-serve AI Bot onboarding", () => {
+test("public header is locked to the four approved navigation items", () => {
   assert.doesNotMatch(header, /label: "WhatsApp API"/);
-  assert.match(header, /label: "Resources", href: "\/resources"/);
+  assert.doesNotMatch(header, /label: "Resources"|label: "Founder"/);
+  for (const item of ["Home", "AI Bot", "How to Install", "Pricing"]) assert.match(header, new RegExp(`label: "${item}"`));
+});
+
+test("resources stay focused on self-serve AI Bot onboarding", () => {
   for (const required of [
     "Create your AiFrogi workspace",
     "Upload Excel, PDF or website knowledge",

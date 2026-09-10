@@ -25,10 +25,8 @@ const navItems = [
       { label: "Custom Business Bot", href: "/solutions/custom-business-bot", copy: "A governed workflow built for you" }
     ]
   },
-  { label: "Resources", href: "/resources" },
   { label: "How to Install", href: "/install-ai-bot" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Founder", href: "https://webtechnosys.com/founder/", external: true }
+  { label: "Pricing", href: "/pricing" }
 ];
 
 export function SiteHeader() {
@@ -61,7 +59,7 @@ export function SiteHeader() {
                   </div>
                 </div>
               ) : (
-                item.external ? <a key={item.href} href={item.href} target="_blank" rel="noreferrer" className="transition hover:text-white">{item.label}</a> : <Link key={item.href} href={item.href} className="transition hover:text-white">{item.label}</Link>
+                <Link key={item.href} href={item.href} className="transition hover:text-white">{item.label}</Link>
               )
             ))}
           </nav>
@@ -110,16 +108,7 @@ export function SiteHeader() {
                     </div> : null}
                   </div>
                 ) : (
-                  item.external ? <a
-                    key={item.href}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => setMenuOpen(false)}
-                    className="flex min-h-14 items-center border-b border-white/8 px-2 text-base font-semibold text-white/82 transition hover:bg-white/8 hover:text-white"
-                  >
-                    {item.label}
-                  </a> : <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="flex min-h-14 items-center border-b border-white/8 px-2 text-base font-semibold text-white/82 transition hover:bg-white/8 hover:text-white">{item.label}</Link>
+                  <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="flex min-h-14 items-center border-b border-white/8 px-2 text-base font-semibold text-white/82 transition hover:bg-white/8 hover:text-white">{item.label}</Link>
                 )
               ))}
             </nav>
