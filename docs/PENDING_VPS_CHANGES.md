@@ -2,12 +2,6 @@
 
 This file contains only changes that are complete locally but not yet deployed to the VPS.
 
-## `CI-015` Delivery-independent Super Admin go-live
-
-- Standalone web app or website installation is the client's delivery choice; website detection is informational and no longer blocks Super Admin approval.
-- Super Admin approval remains gated by active account access and approved tenant knowledge. External connectors block only action-performing operating modes.
-- Approval makes the shared bot runtime live for standalone and website delivery, triggers the existing client live email and leaves existing AI-reply entitlement accounting/hard-stop enforcement unchanged.
-
 ## `CI-010` Core Intelligence — timezone-aware first greeting
 
 - All website bots now send the visitor browser's IANA timezone with each message and generate the first greeting using that local time.
