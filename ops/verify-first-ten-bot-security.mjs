@@ -37,7 +37,7 @@ try {
   if (invalidLive.rowCount) failures.push(`live connectors with invalid credentials: ${invalidLive.rows.map((row) => `${row.slug}/${row.connectorKey}`).join(", ")}`);
   const duplicateOwners = await client.query(`SELECT lower("ownerEmail") email, count(*)::int count FROM "Organization" WHERE "isDemo" = false GROUP BY lower("ownerEmail") HAVING count(*) > 1`);
   if (duplicateOwners.rowCount) failures.push(`duplicate live tenant owner identities: ${duplicateOwners.rows.map((row) => row.email).join(", ")}`);
-  const liveCount = await client.query(`SELECT count(*)::int count FROM "Organization" WHERE status = 'LIVE' AND "isDemo" = false`);
+  const liveCount = await client.query(`SELECT count(*)::int count FROM "BotProfile" b JOIN "Organization" o ON o.id = b."organizationId" WHERE b.status = 'LIVE' AND o."isDemo" = false`);
   console.log(`SEC-001 inventory: ${liveCount.rows[0].count} live tenants; ${invalidLive.rowCount} invalid live credentials; ${duplicateOwners.rowCount} duplicate owner identities.`);
 } finally { await client.end(); }
 
