@@ -22,6 +22,7 @@ export async function checkTenantStayAvailability(input: { organizationId: strin
   if (!db) return null;
   const connector = await db.botConnectorConfiguration.findUnique({ where: { organizationId_connectorKey: { organizationId: input.organizationId, connectorKey: "PMS_AVAILABILITY" } }, include: { credential: true } });
   if (!connector?.enabled || connector.lifecycle !== "LIVE" || connector.lastHealthStatus !== "HEALTHY" || !connector.apiBaseUrl) return null;
+  if (connector.authType !== "NONE" && (!connector.credential || connector.credential.revokedAt || (connector.credential.expiresAt && connector.credential.expiresAt <= new Date()))) return null;
   const mapping = (connector.operationMapping || {}) as ConnectorOperationMapping;
   if (!mapping.availability) return null;
   const target = new URL(mapping.availability, `${connector.apiBaseUrl}/`);
@@ -37,6 +38,7 @@ export async function checkTenantStayAvailability(input: { organizationId: strin
   if (connector.authType === "BEARER") headers.Authorization = `Bearer ${secret}`;
   if (connector.authType === "API_KEY") headers["X-API-Key"] = secret!;
   const response = await fetch(target, { method: "GET", headers, cache: "no-store", redirect: "error", signal: AbortSignal.timeout(8000) });
+  if (connector.credential) await db.botConnectorCredential.update({ where: { id: connector.credential.id }, data: { lastUsedAt: new Date() } });
   if (!response.ok) return null;
   const payload = await response.json().catch(() => null) as { success?: boolean; data?: { destination?: string; check_in?: string; check_out?: string; available?: boolean; properties?: AvailabilityProperty[] } } | null;
   if (!payload?.success || !payload.data) return null;

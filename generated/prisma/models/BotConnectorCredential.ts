@@ -20,14 +20,30 @@ export type BotConnectorCredentialModel = runtime.Types.Result.DefaultSelection<
 
 export type AggregateBotConnectorCredential = {
   _count: BotConnectorCredentialCountAggregateOutputType | null
+  _avg: BotConnectorCredentialAvgAggregateOutputType | null
+  _sum: BotConnectorCredentialSumAggregateOutputType | null
   _min: BotConnectorCredentialMinAggregateOutputType | null
   _max: BotConnectorCredentialMaxAggregateOutputType | null
+}
+
+export type BotConnectorCredentialAvgAggregateOutputType = {
+  keyVersion: number | null
+}
+
+export type BotConnectorCredentialSumAggregateOutputType = {
+  keyVersion: number | null
 }
 
 export type BotConnectorCredentialMinAggregateOutputType = {
   id: string | null
   connectorId: string | null
   secretEncrypted: string | null
+  keyVersion: number | null
+  rotatedAt: Date | null
+  expiresAt: Date | null
+  revokedAt: Date | null
+  revokedBy: string | null
+  lastUsedAt: Date | null
   updatedBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -37,6 +53,12 @@ export type BotConnectorCredentialMaxAggregateOutputType = {
   id: string | null
   connectorId: string | null
   secretEncrypted: string | null
+  keyVersion: number | null
+  rotatedAt: Date | null
+  expiresAt: Date | null
+  revokedAt: Date | null
+  revokedBy: string | null
+  lastUsedAt: Date | null
   updatedBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,6 +68,12 @@ export type BotConnectorCredentialCountAggregateOutputType = {
   id: number
   connectorId: number
   secretEncrypted: number
+  keyVersion: number
+  rotatedAt: number
+  expiresAt: number
+  revokedAt: number
+  revokedBy: number
+  lastUsedAt: number
   updatedBy: number
   createdAt: number
   updatedAt: number
@@ -53,10 +81,24 @@ export type BotConnectorCredentialCountAggregateOutputType = {
 }
 
 
+export type BotConnectorCredentialAvgAggregateInputType = {
+  keyVersion?: true
+}
+
+export type BotConnectorCredentialSumAggregateInputType = {
+  keyVersion?: true
+}
+
 export type BotConnectorCredentialMinAggregateInputType = {
   id?: true
   connectorId?: true
   secretEncrypted?: true
+  keyVersion?: true
+  rotatedAt?: true
+  expiresAt?: true
+  revokedAt?: true
+  revokedBy?: true
+  lastUsedAt?: true
   updatedBy?: true
   createdAt?: true
   updatedAt?: true
@@ -66,6 +108,12 @@ export type BotConnectorCredentialMaxAggregateInputType = {
   id?: true
   connectorId?: true
   secretEncrypted?: true
+  keyVersion?: true
+  rotatedAt?: true
+  expiresAt?: true
+  revokedAt?: true
+  revokedBy?: true
+  lastUsedAt?: true
   updatedBy?: true
   createdAt?: true
   updatedAt?: true
@@ -75,6 +123,12 @@ export type BotConnectorCredentialCountAggregateInputType = {
   id?: true
   connectorId?: true
   secretEncrypted?: true
+  keyVersion?: true
+  rotatedAt?: true
+  expiresAt?: true
+  revokedAt?: true
+  revokedBy?: true
+  lastUsedAt?: true
   updatedBy?: true
   createdAt?: true
   updatedAt?: true
@@ -88,19 +142,19 @@ export type BotConnectorCredentialAggregateArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.BotConnectorCredentialWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-   * 
+   *
    * Determine the order of BotConnectorCredentials to fetch.
    */
   orderBy?: Prisma.BotConnectorCredentialOrderByWithRelationInput | Prisma.BotConnectorCredentialOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-   * 
+   *
    * Sets the start position
    */
   cursor?: Prisma.BotConnectorCredentialWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-   * 
+   *
    * Take `±n` BotConnectorCredentials from the position of the cursor.
    */
   take?: number
@@ -119,6 +173,18 @@ export type BotConnectorCredentialAggregateArgs<ExtArgs extends runtime.Types.Ex
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BotConnectorCredentialAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: BotConnectorCredentialSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: BotConnectorCredentialMinAggregateInputType
@@ -149,6 +215,8 @@ export type BotConnectorCredentialGroupByArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   _count?: BotConnectorCredentialCountAggregateInputType | true
+  _avg?: BotConnectorCredentialAvgAggregateInputType
+  _sum?: BotConnectorCredentialSumAggregateInputType
   _min?: BotConnectorCredentialMinAggregateInputType
   _max?: BotConnectorCredentialMaxAggregateInputType
 }
@@ -157,10 +225,18 @@ export type BotConnectorCredentialGroupByOutputType = {
   id: string
   connectorId: string
   secretEncrypted: string
+  keyVersion: number
+  rotatedAt: Date
+  expiresAt: Date | null
+  revokedAt: Date | null
+  revokedBy: string | null
+  lastUsedAt: Date | null
   updatedBy: string
   createdAt: Date
   updatedAt: Date
   _count: BotConnectorCredentialCountAggregateOutputType | null
+  _avg: BotConnectorCredentialAvgAggregateOutputType | null
+  _sum: BotConnectorCredentialSumAggregateOutputType | null
   _min: BotConnectorCredentialMinAggregateOutputType | null
   _max: BotConnectorCredentialMaxAggregateOutputType | null
 }
@@ -187,6 +263,12 @@ export type BotConnectorCredentialWhereInput = {
   id?: Prisma.StringFilter<"BotConnectorCredential"> | string
   connectorId?: Prisma.StringFilter<"BotConnectorCredential"> | string
   secretEncrypted?: Prisma.StringFilter<"BotConnectorCredential"> | string
+  keyVersion?: Prisma.IntFilter<"BotConnectorCredential"> | number
+  rotatedAt?: Prisma.DateTimeFilter<"BotConnectorCredential"> | Date | string
+  expiresAt?: Prisma.DateTimeNullableFilter<"BotConnectorCredential"> | Date | string | null
+  revokedAt?: Prisma.DateTimeNullableFilter<"BotConnectorCredential"> | Date | string | null
+  revokedBy?: Prisma.StringNullableFilter<"BotConnectorCredential"> | string | null
+  lastUsedAt?: Prisma.DateTimeNullableFilter<"BotConnectorCredential"> | Date | string | null
   updatedBy?: Prisma.StringFilter<"BotConnectorCredential"> | string
   createdAt?: Prisma.DateTimeFilter<"BotConnectorCredential"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotConnectorCredential"> | Date | string
@@ -197,6 +279,12 @@ export type BotConnectorCredentialOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   connectorId?: Prisma.SortOrder
   secretEncrypted?: Prisma.SortOrder
+  keyVersion?: Prisma.SortOrder
+  rotatedAt?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  revokedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastUsedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -210,6 +298,12 @@ export type BotConnectorCredentialWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.BotConnectorCredentialWhereInput[]
   NOT?: Prisma.BotConnectorCredentialWhereInput | Prisma.BotConnectorCredentialWhereInput[]
   secretEncrypted?: Prisma.StringFilter<"BotConnectorCredential"> | string
+  keyVersion?: Prisma.IntFilter<"BotConnectorCredential"> | number
+  rotatedAt?: Prisma.DateTimeFilter<"BotConnectorCredential"> | Date | string
+  expiresAt?: Prisma.DateTimeNullableFilter<"BotConnectorCredential"> | Date | string | null
+  revokedAt?: Prisma.DateTimeNullableFilter<"BotConnectorCredential"> | Date | string | null
+  revokedBy?: Prisma.StringNullableFilter<"BotConnectorCredential"> | string | null
+  lastUsedAt?: Prisma.DateTimeNullableFilter<"BotConnectorCredential"> | Date | string | null
   updatedBy?: Prisma.StringFilter<"BotConnectorCredential"> | string
   createdAt?: Prisma.DateTimeFilter<"BotConnectorCredential"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotConnectorCredential"> | Date | string
@@ -220,12 +314,20 @@ export type BotConnectorCredentialOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   connectorId?: Prisma.SortOrder
   secretEncrypted?: Prisma.SortOrder
+  keyVersion?: Prisma.SortOrder
+  rotatedAt?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  revokedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastUsedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BotConnectorCredentialCountOrderByAggregateInput
+  _avg?: Prisma.BotConnectorCredentialAvgOrderByAggregateInput
   _max?: Prisma.BotConnectorCredentialMaxOrderByAggregateInput
   _min?: Prisma.BotConnectorCredentialMinOrderByAggregateInput
+  _sum?: Prisma.BotConnectorCredentialSumOrderByAggregateInput
 }
 
 export type BotConnectorCredentialScalarWhereWithAggregatesInput = {
@@ -235,6 +337,12 @@ export type BotConnectorCredentialScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"BotConnectorCredential"> | string
   connectorId?: Prisma.StringWithAggregatesFilter<"BotConnectorCredential"> | string
   secretEncrypted?: Prisma.StringWithAggregatesFilter<"BotConnectorCredential"> | string
+  keyVersion?: Prisma.IntWithAggregatesFilter<"BotConnectorCredential"> | number
+  rotatedAt?: Prisma.DateTimeWithAggregatesFilter<"BotConnectorCredential"> | Date | string
+  expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotConnectorCredential"> | Date | string | null
+  revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotConnectorCredential"> | Date | string | null
+  revokedBy?: Prisma.StringNullableWithAggregatesFilter<"BotConnectorCredential"> | string | null
+  lastUsedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotConnectorCredential"> | Date | string | null
   updatedBy?: Prisma.StringWithAggregatesFilter<"BotConnectorCredential"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BotConnectorCredential"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BotConnectorCredential"> | Date | string
@@ -243,6 +351,12 @@ export type BotConnectorCredentialScalarWhereWithAggregatesInput = {
 export type BotConnectorCredentialCreateInput = {
   id?: string
   secretEncrypted: string
+  keyVersion?: number
+  rotatedAt?: Date | string
+  expiresAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedBy?: string | null
+  lastUsedAt?: Date | string | null
   updatedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -253,6 +367,12 @@ export type BotConnectorCredentialUncheckedCreateInput = {
   id?: string
   connectorId: string
   secretEncrypted: string
+  keyVersion?: number
+  rotatedAt?: Date | string
+  expiresAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedBy?: string | null
+  lastUsedAt?: Date | string | null
   updatedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -261,6 +381,12 @@ export type BotConnectorCredentialUncheckedCreateInput = {
 export type BotConnectorCredentialUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   secretEncrypted?: Prisma.StringFieldUpdateOperationsInput | string
+  keyVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  rotatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -271,6 +397,12 @@ export type BotConnectorCredentialUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   connectorId?: Prisma.StringFieldUpdateOperationsInput | string
   secretEncrypted?: Prisma.StringFieldUpdateOperationsInput | string
+  keyVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  rotatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -280,6 +412,12 @@ export type BotConnectorCredentialCreateManyInput = {
   id?: string
   connectorId: string
   secretEncrypted: string
+  keyVersion?: number
+  rotatedAt?: Date | string
+  expiresAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedBy?: string | null
+  lastUsedAt?: Date | string | null
   updatedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -288,6 +426,12 @@ export type BotConnectorCredentialCreateManyInput = {
 export type BotConnectorCredentialUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   secretEncrypted?: Prisma.StringFieldUpdateOperationsInput | string
+  keyVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  rotatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -297,6 +441,12 @@ export type BotConnectorCredentialUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   connectorId?: Prisma.StringFieldUpdateOperationsInput | string
   secretEncrypted?: Prisma.StringFieldUpdateOperationsInput | string
+  keyVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  rotatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,15 +461,31 @@ export type BotConnectorCredentialCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   connectorId?: Prisma.SortOrder
   secretEncrypted?: Prisma.SortOrder
+  keyVersion?: Prisma.SortOrder
+  rotatedAt?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
+  revokedAt?: Prisma.SortOrder
+  revokedBy?: Prisma.SortOrder
+  lastUsedAt?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BotConnectorCredentialAvgOrderByAggregateInput = {
+  keyVersion?: Prisma.SortOrder
 }
 
 export type BotConnectorCredentialMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   connectorId?: Prisma.SortOrder
   secretEncrypted?: Prisma.SortOrder
+  keyVersion?: Prisma.SortOrder
+  rotatedAt?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
+  revokedAt?: Prisma.SortOrder
+  revokedBy?: Prisma.SortOrder
+  lastUsedAt?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -329,9 +495,19 @@ export type BotConnectorCredentialMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   connectorId?: Prisma.SortOrder
   secretEncrypted?: Prisma.SortOrder
+  keyVersion?: Prisma.SortOrder
+  rotatedAt?: Prisma.SortOrder
+  expiresAt?: Prisma.SortOrder
+  revokedAt?: Prisma.SortOrder
+  revokedBy?: Prisma.SortOrder
+  lastUsedAt?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BotConnectorCredentialSumOrderByAggregateInput = {
+  keyVersion?: Prisma.SortOrder
 }
 
 export type BotConnectorCredentialCreateNestedOneWithoutConnectorInput = {
@@ -369,6 +545,12 @@ export type BotConnectorCredentialUncheckedUpdateOneWithoutConnectorNestedInput 
 export type BotConnectorCredentialCreateWithoutConnectorInput = {
   id?: string
   secretEncrypted: string
+  keyVersion?: number
+  rotatedAt?: Date | string
+  expiresAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedBy?: string | null
+  lastUsedAt?: Date | string | null
   updatedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -377,6 +559,12 @@ export type BotConnectorCredentialCreateWithoutConnectorInput = {
 export type BotConnectorCredentialUncheckedCreateWithoutConnectorInput = {
   id?: string
   secretEncrypted: string
+  keyVersion?: number
+  rotatedAt?: Date | string
+  expiresAt?: Date | string | null
+  revokedAt?: Date | string | null
+  revokedBy?: string | null
+  lastUsedAt?: Date | string | null
   updatedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -401,6 +589,12 @@ export type BotConnectorCredentialUpdateToOneWithWhereWithoutConnectorInput = {
 export type BotConnectorCredentialUpdateWithoutConnectorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   secretEncrypted?: Prisma.StringFieldUpdateOperationsInput | string
+  keyVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  rotatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -409,6 +603,12 @@ export type BotConnectorCredentialUpdateWithoutConnectorInput = {
 export type BotConnectorCredentialUncheckedUpdateWithoutConnectorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   secretEncrypted?: Prisma.StringFieldUpdateOperationsInput | string
+  keyVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  rotatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revokedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUsedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,6 +620,12 @@ export type BotConnectorCredentialSelect<ExtArgs extends runtime.Types.Extension
   id?: boolean
   connectorId?: boolean
   secretEncrypted?: boolean
+  keyVersion?: boolean
+  rotatedAt?: boolean
+  expiresAt?: boolean
+  revokedAt?: boolean
+  revokedBy?: boolean
+  lastUsedAt?: boolean
   updatedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -430,6 +636,12 @@ export type BotConnectorCredentialSelectCreateManyAndReturn<ExtArgs extends runt
   id?: boolean
   connectorId?: boolean
   secretEncrypted?: boolean
+  keyVersion?: boolean
+  rotatedAt?: boolean
+  expiresAt?: boolean
+  revokedAt?: boolean
+  revokedBy?: boolean
+  lastUsedAt?: boolean
   updatedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -440,6 +652,12 @@ export type BotConnectorCredentialSelectUpdateManyAndReturn<ExtArgs extends runt
   id?: boolean
   connectorId?: boolean
   secretEncrypted?: boolean
+  keyVersion?: boolean
+  rotatedAt?: boolean
+  expiresAt?: boolean
+  revokedAt?: boolean
+  revokedBy?: boolean
+  lastUsedAt?: boolean
   updatedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -450,12 +668,18 @@ export type BotConnectorCredentialSelectScalar = {
   id?: boolean
   connectorId?: boolean
   secretEncrypted?: boolean
+  keyVersion?: boolean
+  rotatedAt?: boolean
+  expiresAt?: boolean
+  revokedAt?: boolean
+  revokedBy?: boolean
+  lastUsedAt?: boolean
   updatedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BotConnectorCredentialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "connectorId" | "secretEncrypted" | "updatedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botConnectorCredential"]>
+export type BotConnectorCredentialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "connectorId" | "secretEncrypted" | "keyVersion" | "rotatedAt" | "expiresAt" | "revokedAt" | "revokedBy" | "lastUsedAt" | "updatedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botConnectorCredential"]>
 export type BotConnectorCredentialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   connector?: boolean | Prisma.BotConnectorConfigurationDefaultArgs<ExtArgs>
 }
@@ -475,6 +699,12 @@ export type $BotConnectorCredentialPayload<ExtArgs extends runtime.Types.Extensi
     id: string
     connectorId: string
     secretEncrypted: string
+    keyVersion: number
+    rotatedAt: Date
+    expiresAt: Date | null
+    revokedAt: Date | null
+    revokedBy: string | null
+    lastUsedAt: Date | null
     updatedBy: string
     createdAt: Date
     updatedAt: Date
@@ -905,6 +1135,12 @@ export interface BotConnectorCredentialFieldRefs {
   readonly id: Prisma.FieldRef<"BotConnectorCredential", 'String'>
   readonly connectorId: Prisma.FieldRef<"BotConnectorCredential", 'String'>
   readonly secretEncrypted: Prisma.FieldRef<"BotConnectorCredential", 'String'>
+  readonly keyVersion: Prisma.FieldRef<"BotConnectorCredential", 'Int'>
+  readonly rotatedAt: Prisma.FieldRef<"BotConnectorCredential", 'DateTime'>
+  readonly expiresAt: Prisma.FieldRef<"BotConnectorCredential", 'DateTime'>
+  readonly revokedAt: Prisma.FieldRef<"BotConnectorCredential", 'DateTime'>
+  readonly revokedBy: Prisma.FieldRef<"BotConnectorCredential", 'String'>
+  readonly lastUsedAt: Prisma.FieldRef<"BotConnectorCredential", 'DateTime'>
   readonly updatedBy: Prisma.FieldRef<"BotConnectorCredential", 'String'>
   readonly createdAt: Prisma.FieldRef<"BotConnectorCredential", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BotConnectorCredential", 'DateTime'>

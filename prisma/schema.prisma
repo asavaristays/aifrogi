@@ -471,9 +471,17 @@ model BotConnectorCredential {
   connectorId     String                    @unique
   connector       BotConnectorConfiguration @relation(fields: [connectorId], references: [id], onDelete: Cascade)
   secretEncrypted String
+  keyVersion      Int                     @default(1)
+  rotatedAt       DateTime                @default(now())
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  revokedBy       String?
+  lastUsedAt      DateTime?
   updatedBy       String
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
+
+  @@index([expiresAt, revokedAt])
 }
 
 model OrganizationMember {

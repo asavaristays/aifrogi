@@ -40,7 +40,7 @@ export function parseConnectorApiConfiguration(input: { apiBaseUrl?: string | nu
   return { apiBaseUrl: url.toString().replace(/\/$/, ""), authType, operationMapping };
 }
 
-export async function saveConnectorApiConfiguration(input: { organizationId: string; connectorKey: string; apiBaseUrl?: string | null; authType?: string | null; operationMapping?: ConnectorOperationMapping | null; secret?: string | null; actorEmail: string }) {
+export async function saveConnectorApiConfiguration(input: { organizationId: string; connectorKey: string; apiBaseUrl?: string | null; authType?: string | null; operationMapping?: ConnectorOperationMapping | null; secret?: string | null; credentialExpiresAt?: Date | null; actorEmail: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const config = parseConnectorApiConfiguration(input);
@@ -53,10 +53,23 @@ export async function saveConnectorApiConfiguration(input: { organizationId: str
   }
   await db.$transaction(async (tx) => {
     await tx.botConnectorConfiguration.update({ where: { id: connector.id }, data: { ...config, lifecycle: "AUTHORISED", enabled: false, lastHealthStatus: null, lastHealthCode: null, lastHealthAt: null, lastError: null, configuredBy: input.actorEmail } });
-    if (secret) await tx.botConnectorCredential.upsert({ where: { connectorId: connector.id }, update: { secretEncrypted: encryptSecretValue(secret)!, updatedBy: input.actorEmail }, create: { connectorId: connector.id, secretEncrypted: encryptSecretValue(secret)!, updatedBy: input.actorEmail } });
+    if (secret) await tx.botConnectorCredential.upsert({ where: { connectorId: connector.id }, update: { secretEncrypted: encryptSecretValue(secret)!, keyVersion: { increment: 1 }, rotatedAt: new Date(), expiresAt: input.credentialExpiresAt || null, revokedAt: null, revokedBy: null, updatedBy: input.actorEmail }, create: { connectorId: connector.id, secretEncrypted: encryptSecretValue(secret)!, expiresAt: input.credentialExpiresAt || null, updatedBy: input.actorEmail } });
     if (config.authType === "NONE") await tx.botConnectorCredential.deleteMany({ where: { connectorId: connector.id } });
     await tx.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "BOT_CONNECTOR_API_CONFIGURED", detail: `${connector.name}: API configuration saved; secret ${secret ? "replaced" : "retained"}.` } });
+    await tx.platformAuditLog.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, actorRole: "CLIENT_ADMIN", action: secret ? "CONNECTOR_CREDENTIAL_ROTATED" : "CONNECTOR_CONFIGURATION_UPDATED", targetType: "BotConnectorConfiguration", targetId: connector.id, summary: `${connector.name} connector configuration updated; credential value was not logged.`, metadata: { connectorKey: input.connectorKey, credentialReplaced: Boolean(secret), expiresAt: input.credentialExpiresAt?.toISOString() || null } } });
   });
+}
+
+export async function revokeConnectorCredential(input: { organizationId: string; connectorKey: string; actorEmail: string }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const connector = await db.botConnectorConfiguration.findUnique({ where: { organizationId_connectorKey: { organizationId: input.organizationId, connectorKey: input.connectorKey } } });
+  if (!connector) throw new Error("Connector requirement was not found for this workspace.");
+  await db.$transaction([
+    db.botConnectorCredential.updateMany({ where: { connectorId: connector.id, revokedAt: null }, data: { revokedAt: new Date(), revokedBy: input.actorEmail } }),
+    db.botConnectorConfiguration.update({ where: { id: connector.id }, data: { enabled: false, lifecycle: "REVOKED", lastHealthStatus: "DISABLED", lastError: "Credential revoked by workspace owner.", configuredBy: input.actorEmail } }),
+    db.platformAuditLog.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, actorRole: "CLIENT_ADMIN", action: "CONNECTOR_CREDENTIAL_REVOKED", targetType: "BotConnectorConfiguration", targetId: connector.id, summary: `${connector.name} credential revoked and connector disabled.`, metadata: { connectorKey: input.connectorKey } } })
+  ]);
 }
 
 export async function testConnectorApi(input: { organizationId: string; connectorKey: string; actorEmail: string }) {
@@ -64,6 +77,7 @@ export async function testConnectorApi(input: { organizationId: string; connecto
   if (!db) throw new Error("Database unavailable.");
   const connector = await db.botConnectorConfiguration.findUnique({ where: { organizationId_connectorKey: { organizationId: input.organizationId, connectorKey: input.connectorKey } }, include: { credential: true } });
   if (!connector?.apiBaseUrl) throw new Error("Save the connector API configuration before testing.");
+  if (connector.authType !== "NONE" && (!connector.credential || connector.credential.revokedAt || (connector.credential.expiresAt && connector.credential.expiresAt <= new Date()))) throw new Error("Connector credential is missing, expired, or revoked. Rotate it before testing.");
   const mapping = (connector.operationMapping || {}) as ConnectorOperationMapping;
   const target = new URL(mapping.health || "/health", `${connector.apiBaseUrl}/`);
   if (target.origin !== new URL(connector.apiBaseUrl).origin) throw new Error("Health path must remain on the configured API host.");
@@ -80,7 +94,9 @@ export async function testConnectorApi(input: { organizationId: string; connecto
   const healthy = !error;
   await db.$transaction([
     db.botConnectorConfiguration.update({ where: { id: connector.id }, data: { lastHealthStatus: healthy ? "HEALTHY" : "FAILED", lastHealthCode: status || null, lastHealthAt: new Date(), lastError: error, lifecycle: healthy ? "CONNECTED" : connector.lifecycle, enabled: false, configuredBy: input.actorEmail } }),
-    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: healthy ? "BOT_CONNECTOR_API_TEST_PASSED" : "BOT_CONNECTOR_API_TEST_FAILED", detail: `${connector.name}: ${healthy ? "authenticated health check passed" : error}` } })
+    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: healthy ? "BOT_CONNECTOR_API_TEST_PASSED" : "BOT_CONNECTOR_API_TEST_FAILED", detail: `${connector.name}: ${healthy ? "authenticated health check passed" : error}` } }),
+    ...(connector.credential ? [db.botConnectorCredential.update({ where: { id: connector.credential.id }, data: { lastUsedAt: new Date() } })] : []),
+    db.platformAuditLog.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, actorRole: "CLIENT_ADMIN", action: healthy ? "CONNECTOR_AUTH_TEST_PASSED" : "CONNECTOR_AUTH_TEST_FAILED", targetType: "BotConnectorConfiguration", targetId: connector.id, summary: `${connector.name} authenticated health test ${healthy ? "passed" : "failed"}.`, metadata: { connectorKey: input.connectorKey, status: status || null } } })
   ]);
   return { healthy, status, message: healthy ? "Authenticated API health check passed. Map and sandbox-test operations before enabling live actions." : error };
 }

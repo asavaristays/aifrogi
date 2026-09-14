@@ -33,6 +33,7 @@
     "verify:sovereign": "node --import tsx --test tests/sovereign-intelligence/*.test.ts",
     "verify:core-fleet": "tsx scripts/verify-core-fleet-release.ts",
     "verify:release-gates": "node ops/verify-release-gates.mjs",
+    "verify:security:first-ten": "node ops/verify-first-ten-bot-security.mjs",
     "ops:backup": "node ops/run-encrypted-backup.mjs",
     "ops:restore-drill": "bash ops/run-restore-drill.sh",
     "verify:flow": "tsx scripts/verify-product-flow.ts",

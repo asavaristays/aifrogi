@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
-import { saveConnectorApiConfiguration, testConnectorApi, type ConnectorOperationMapping } from "@/lib/connector-api-control";
+import { revokeConnectorCredential, saveConnectorApiConfiguration, testConnectorApi, type ConnectorOperationMapping } from "@/lib/connector-api-control";
 import { getOrganizationById } from "@/lib/repositories/onboarding-repository";
 
-type Payload = { action?: string; connectorKey?: string; apiBaseUrl?: string; authType?: string; secret?: string; operationMapping?: ConnectorOperationMapping };
+type Payload = { action?: string; connectorKey?: string; apiBaseUrl?: string; authType?: string; secret?: string; credentialExpiresAt?: string | null; operationMapping?: ConnectorOperationMapping };
 
 export async function PATCH(request: Request) {
   const access = await getCurrentClientAccess();
@@ -13,11 +13,14 @@ export async function PATCH(request: Request) {
   const connectorKey = payload?.connectorKey?.trim() || "";
   if (!connectorKey) return NextResponse.json({ error: "Connector is required." }, { status: 400 });
   try {
-    if (payload?.action === "SAVE_CONNECTOR_API") await saveConnectorApiConfiguration({ organizationId: access.organization.id, connectorKey, apiBaseUrl: payload.apiBaseUrl, authType: payload.authType, secret: payload.secret, operationMapping: payload.operationMapping, actorEmail: access.user.username });
+    const credentialExpiresAt = payload?.credentialExpiresAt ? new Date(payload.credentialExpiresAt) : null;
+    if (credentialExpiresAt && Number.isNaN(credentialExpiresAt.getTime())) return NextResponse.json({ error: "Credential expiry is invalid." }, { status: 400 });
+    if (payload?.action === "SAVE_CONNECTOR_API") await saveConnectorApiConfiguration({ organizationId: access.organization.id, connectorKey, apiBaseUrl: payload.apiBaseUrl, authType: payload.authType, secret: payload.secret, credentialExpiresAt, operationMapping: payload.operationMapping, actorEmail: access.user.username });
     else if (payload?.action === "TEST_CONNECTOR_API") {
       const test = await testConnectorApi({ organizationId: access.organization.id, connectorKey, actorEmail: access.user.username });
       return NextResponse.json({ test, organization: await getOrganizationById(access.organization.id) }, { status: test.healthy ? 200 : 400 });
-    } else return NextResponse.json({ error: "Unsupported connector action." }, { status: 400 });
+    } else if (payload?.action === "REVOKE_CONNECTOR_CREDENTIAL") await revokeConnectorCredential({ organizationId: access.organization.id, connectorKey, actorEmail: access.user.username });
+    else return NextResponse.json({ error: "Unsupported connector action." }, { status: 400 });
     return NextResponse.json({ organization: await getOrganizationById(access.organization.id) });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Connector API operation failed." }, { status: 400 }); }
 }

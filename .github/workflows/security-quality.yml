@@ -26,4 +26,5 @@ jobs:
       - run: npm run build
       - run: npm run verify:client-secrets
       - run: npm run test:core
+      - run: node --import tsx --test tests/channels/sec001-security-foundation.test.ts
       - run: node --import tsx --test tests/tenant-intelligence/*.test.ts tests/sovereign-intelligence/fleet-release-gate.test.ts tests/sovereign-intelligence/tenant-usage-metering.test.ts

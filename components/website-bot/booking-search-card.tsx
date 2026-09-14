@@ -8,8 +8,9 @@ import styles from "./booking-search-card.module.css";
 type AvailabilityProperty = { id:number; name:string; city?:string; imageUrl?:string; availableCount:number; fromRate?:number; currency?:string; rooms:Array<{id?:string;name:string;availableCount:number;fromRate?:number;currency?:string}> };
 type AvailabilityResult = { available:boolean; destination:string; checkIn:string; checkOut:string; properties:AvailabilityProperty[] };
 
-export function BookingSearchCard({item,onBack,initialDestination="",initialCheckIn="",initialCheckOut="",initialStay="",slug}:{item:WidgetMenuItem;onBack:()=>void;initialDestination?:string;initialCheckIn?:string;initialCheckOut?:string;initialStay?:string;slug?:string}){
- const day=(offset:number)=>new Date(Date.now()+offset*86400000).toISOString().slice(0,10);
+export function BookingSearchCard({item,onBack,initialDestination="",initialCheckIn="",initialCheckOut="",slug}:{item:WidgetMenuItem;onBack:()=>void;initialDestination?:string;initialCheckIn?:string;initialCheckOut?:string;initialStay?:string;slug?:string}){
+ const [calendarOrigin]=useState(()=>new Date());
+ const day=(offset:number)=>new Date(calendarOrigin.getTime()+offset*86400000).toISOString().slice(0,10);
  const options=(item.children||[]).map(entry=>{const [destination,stay]=entry.label.split("|").map(value=>value.trim());return{destination,stay:stay||destination,url:entry.value||item.value||""};}).filter(option=>option.destination&&option.url);
  const destinations=[...new Set(options.map(option=>option.destination))];
  const requestedDestination=destinations.find(value=>value.toLocaleLowerCase()===initialDestination.trim().toLocaleLowerCase());

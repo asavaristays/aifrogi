@@ -438,6 +438,12 @@ export const BotConnectorCredentialScalarFieldEnum = {
   id: 'id',
   connectorId: 'connectorId',
   secretEncrypted: 'secretEncrypted',
+  keyVersion: 'keyVersion',
+  rotatedAt: 'rotatedAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedBy: 'revokedBy',
+  lastUsedAt: 'lastUsedAt',
   updatedBy: 'updatedBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
