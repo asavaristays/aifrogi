@@ -1,11 +1,18 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import pg from "pg";
+
+function protectedFileEnvironment() {
+  try {
+    return Object.fromEntries(readFileSync(".env.local", "utf8").split(/\r?\n/).map((line) => line.match(/^([A-Z][A-Z0-9_]*)=(.*)$/)).filter(Boolean).map((match) => [match[1], match[2].trim().replace(/^['\"]|['\"]$/g, "")]));
+  } catch { return {}; }
+}
 
 const apps = JSON.parse(execFileSync("pm2", ["jlist"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }));
 const app = apps.find((item) => item.name === "lead-os-ai" && item.pm2_env?.status === "online");
 if (!app?.pm2_env?.DATABASE_URL) throw new Error("SEC-001 blocked: protected production database configuration is unavailable.");
-const env = app.pm2_env;
+const env = { ...protectedFileEnvironment(), ...app.pm2_env };
 const failures = [];
 const requiredSecrets = ["AUTH_SESSION_SECRET", "LEADOS_FIELD_ENCRYPTION_SECRET", "BACKUP_ENCRYPTION_PASSPHRASE"];
 for (const name of requiredSecrets) {
