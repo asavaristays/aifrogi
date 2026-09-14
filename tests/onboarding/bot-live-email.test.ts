@@ -5,6 +5,8 @@ test("live mail matches approved brand and retains text fallback", () => {
   const email = botLiveEmail({ ownerName: "Owner", businessName: "Business", slug: "business" });
   for (const value of ["aifrogi-logo-white.png", "#404040", "Open My AI Bot", "info@aifrogi.com", "+91-7410582898"]) assert.ok(email.html.includes(value));
   assert.ok(email.body.includes("https://app.aifrogi.com/bot/business"));
+  assert.ok(email.html.includes('width="170"'));
+  assert.ok(email.html.includes("max-width:650px"));
 });
 test("client supplied names cannot inject email HTML", () => {
   const email = botLiveEmail({ ownerName: "<img src=x>", businessName: "A&B", slug: "a/b" });

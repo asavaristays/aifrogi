@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { encryptSecretValue } from "@/lib/field-encryption";
 import { nextWebsiteBotStatus, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
+import { assertCoreLaunchCertification } from "@/lib/sovereign-intelligence/launch-certification";
 import { KB_FRAMEWORK_VERSION } from "@/lib/knowledge-verification";
 import { BOT_PERSONA_PACK_VERSION, getBotPersonaPack } from "@/lib/bot-persona-packs";
 
@@ -301,13 +302,16 @@ export async function updateWebsiteBotLifecycle(input: {
   if (!db) return null;
   const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
   if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured Website Bot is required.");
+  let coreCertification: ReturnType<typeof assertCoreLaunchCertification> | null = null;
   if (input.action === "MAKE_LIVE") {
+    coreCertification = assertCoreLaunchCertification();
+    if (!["REVIEW_PENDING", "PAUSED"].includes(profile.status)) throw new Error("The client must approve the prepared intelligence and submit the bot for review before go-live.");
     const { getOrganizationSubscriptionAccess } = await import("@/lib/subscription-access");
     const subscription = await getOrganizationSubscriptionAccess(input.organizationId);
     if (!subscription?.canUsePaidActions) throw new Error("An active trial or subscription is required.");
     const organization = await db.organization.findUnique({ where: { id: input.organizationId }, select: { status: true } });
     if (!organization || ["SUSPENDED", "REMOVED"].includes(organization.status)) throw new Error("Reactivate the customer before making the bot live.");
-    const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true } });
+    const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true, slug: true } });
     if (!property) throw new Error("A business workspace is required before this bot can go live.");
     const category = profile.category === "PINGBOOK" ? "APPOINTMENTS" : profile.category === "STAY" ? "HOSPITALITY" : profile.category;
     const readiness = await getKnowledgeVerificationReadiness(property.id, category);
@@ -320,6 +324,12 @@ export async function updateWebsiteBotLifecycle(input: {
       const unavailable = requiredConnectors.filter((connector) => !connector.enabled || !["LIVE", "MONITORED"].includes(connector.lifecycle));
       if (!requiredConnectors.length || unavailable.length) throw new Error(`Connector preparation is incomplete. ${!requiredConnectors.length ? "No required category connector plan exists." : `${unavailable.map((connector)=>connector.name).join(", ")} must be verified, live, and enabled.`}`);
     }
+    const tested = await db.onboardingActivity.findFirst({ where: { organizationId: input.organizationId, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } });
+    if (!tested) throw new Error("A recorded customer-question test is required before go-live.");
+    const { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } = await import("@/lib/tenant-intelligence/certification");
+    const tenantCertification = await readTenantCertification(property.slug);
+    const tenantCertificationGate = tenantCertificationStatus(tenantCertification, await getTenantKnowledgeRevision(property.slug));
+    if (!tenantCertificationGate.eligible) throw new Error(`Tenant certification blocked go-live. ${tenantCertificationGate.blocker || "Run certification again."}`);
   }
   const now = new Date();
   const status = nextWebsiteBotStatus(profile.status, input.action, Boolean(profile.installationDetectedAt));
@@ -336,7 +346,40 @@ export async function updateWebsiteBotLifecycle(input: {
     }),
     db.onboardingActivity.create({
       data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: `WEBSITE_BOT_${input.action}`, detail: `Website Bot lifecycle changed from ${profile.status} to ${status}` }
-    })
+    }),
+    ...(coreCertification ? [db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "CORE_LAUNCH_CERTIFICATION_PASSED", detail: `${coreCertification.passed}/${coreCertification.questionCount} Core questions passed · score ${coreCertification.score}% · certification ${coreCertification.version}` } })] : [])
+  ]);
+  return getOrganizationById(input.organizationId);
+}
+
+export async function submitWebsiteBotForReview(input: { organizationId: string; actorEmail: string }) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
+  if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured Website Bot is required.");
+  if (["LIVE", "DELETED"].includes(profile.status)) throw new Error(profile.status === "LIVE" ? "This bot is already live." : "Restore the bot before submitting it.");
+  const { getOrganizationSubscriptionAccess } = await import("@/lib/subscription-access");
+  const subscription = await getOrganizationSubscriptionAccess(input.organizationId);
+  if (!subscription?.canUsePaidActions) throw new Error("An active trial or subscription is required.");
+  if (subscription.planCode === "TRIAL" && ["APPROVED_ACTIONS", "HUMAN_APPROVAL"].includes(profile.operatingMode)) {
+    throw new Error("The 15-day trial supports the Starter Bot without connector-backed actions. Choose an eligible paid setup before enabling connectors.");
+  }
+  const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true, slug: true } });
+  if (!property) throw new Error("A business workspace is required.");
+  const category = profile.category === "PINGBOOK" ? "APPOINTMENTS" : profile.category === "STAY" ? "HOSPITALITY" : profile.category;
+  const readiness = await getKnowledgeVerificationReadiness(property.id, category);
+  if (!(subscription.planCode === "TRIAL" ? readiness.trialReady : readiness.ready)) {
+    throw new Error(subscription.planCode === "TRIAL" && readiness.essentials.missing.length ? `Approve the missing trial topics: ${readiness.essentials.missing.join(", ")}.` : "Complete the intelligence readiness checks before submission.");
+  }
+  const tested = await db.onboardingActivity.findFirst({ where: { organizationId: input.organizationId, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } });
+  if (!tested) throw new Error("Test at least one customer question before submitting the bot.");
+  const { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } = await import("@/lib/tenant-intelligence/certification");
+  const certification = await readTenantCertification(property.slug);
+  const certificationStatus = tenantCertificationStatus(certification, await getTenantKnowledgeRevision(property.slug));
+  if (!certificationStatus.eligible) throw new Error(`Tenant certification is required before submission. ${certificationStatus.blocker || "Run certification again."}`);
+  await db.$transaction([
+    db.botProfile.update({ where: { organizationId: input.organizationId }, data: { status: "REVIEW_PENDING", lifecycleUpdatedBy: input.actorEmail } }),
+    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "WEBSITE_BOT_SUBMITTED_FOR_REVIEW", detail: `Client approved the prepared intelligence and submitted the bot for Super Admin review after ${certification.level.toLowerCase()} certification (${certification.results.filter((result) => result.passed).length}/${certification.results.length}).` } })
   ]);
   return getOrganizationById(input.organizationId);
 }
@@ -414,6 +457,7 @@ export async function updateBotConnectorPlan(input: { organizationId: string; co
   const connector = await db.botConnectorConfiguration.findUnique({ where: { organizationId_connectorKey: { organizationId: input.organizationId, connectorKey: input.connectorKey } } });
   if (!connector) throw new Error("Connector requirement was not found for this bot persona.");
   if (input.enabled && !["LIVE", "MONITORED"].includes(lifecycle)) throw new Error("A connector can be enabled only after it is verified and live.");
+  if (["MAPPED", "SANDBOX_TESTED", "VERIFIED", "LIVE", "MONITORED"].includes(lifecycle) && connector.lastHealthStatus !== "HEALTHY") throw new Error("Run a successful authenticated API test before advancing this connector.");
   await db.$transaction([
     db.botConnectorConfiguration.update({ where: { id: connector.id }, data: { provider: input.provider?.trim().slice(0, 120) || null, lifecycle, enabled: input.enabled, lastVerifiedAt: ["VERIFIED", "LIVE", "MONITORED"].includes(lifecycle) ? new Date() : connector.lastVerifiedAt, configuredBy: input.actorEmail } }),
     db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "BOT_CONNECTOR_UPDATED", detail: `${connector.name}: ${lifecycle} · ${input.enabled ? "enabled" : "disabled"}` } })

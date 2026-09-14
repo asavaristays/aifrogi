@@ -57,6 +57,11 @@ test("Today is website-bot focused and contains no business-verification gate", 
   assert.doesNotMatch(page, /businessVerified|Business verification|kycStatus|href:\s*"\/onboarding"|\/whatsapp-bot/);
   assert.doesNotMatch(view, /\/whatsapp-bot/);
   assert.doesNotMatch(page, /Usage matrix|Hard-stop protected/);
+  assert.match(view, /Conversations today/);
+  assert.match(view, /Visitor messages today/);
+  assert.match(view, /Replies today/);
+  assert.doesNotMatch(view, /label="Delivery"|label="Read rate"|label="First response"/);
+  assert.match(page, /websiteLeadsForPeriod\(leads, resolveReportPeriod\("today"\)\.since\)/);
 });
 
 test("client settings and intelligence expose only current website-bot actions", () => {

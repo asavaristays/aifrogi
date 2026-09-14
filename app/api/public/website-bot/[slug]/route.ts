@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { buildWebsiteKnowledgeAnswer } from "@/lib/services/website-knowledge-service";
+import { recordTenantAnswerUsage } from "@/lib/tenant-usage-metering";
 import { captureIncomingAiBotMessage } from "@/lib/services/lead-service";
 import type { WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
 import { hashWebsiteVisitorValue, issueWebsiteVisitorToken, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
@@ -20,6 +21,13 @@ import { withWebsiteTurnLock } from "@/lib/website-turn-lock";
 import { persistWebsiteTurn } from "@/lib/website-persistence";
 import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "@/lib/lead-qualification";
 import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
+import { buildMissingAnswerRecovery, evaluateVisitorAnswerQuality } from "@/lib/sovereign-intelligence/answer-quality-gate";
+import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+import { approvedBookingLink } from "@/lib/widget-menu";
+import { checkTenantStayAvailability } from "@/lib/tenant-availability";
+import { planConversation } from "@/lib/sovereign-intelligence/conversation-planner";
+import { activeNegotiationPolicy, evaluateTenantNegotiation, policyForVerifiedStay, tenantNegotiationAuthority, tenantRateInquiry } from "@/lib/tenant-negotiation";
+import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sovereign-intelligence/layer-router";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -52,7 +60,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (!sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400 });
   try { return await withWebsiteTurnLock(`${slug}:${hashWebsiteVisitorValue(sessionId)}`, () => handleVisitorTurn(request, context)); }
-  catch { return NextResponse.json({ error: "Conversation update could not complete. Please retry shortly." }, { status: 503, headers: responseHeaders }); }
+  catch (error) {
+    console.error("[website-bot] Conversation turn failed", error instanceof Error ? error.message : "Unknown error");
+    return NextResponse.json({ error: "Conversation update could not complete. Please retry shortly." }, { status: 503, headers: responseHeaders });
+  }
 }
 
 async function handleVisitorTurn(request: Request, context: { params: Promise<{ slug: string }> }) {
@@ -104,6 +115,15 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   const acceptedCallbackOffer = acceptedHumanOffer(message, lastAssistantAnswer);
   const explicitHumanRequest = Boolean(payload?.requestHuman || fallbackDecision.intent === "HUMAN_REQUEST" || acceptedCallbackOffer);
+  const hasExplicitActionableOffer = /\bwould you like\b/i.test(lastAssistantAnswer)
+    && /\b(?:details?|book|booking|check|schedule|continue|proceed)\b/i.test(lastAssistantAnswer)
+    || /https?:\/\/\S+/i.test(lastAssistantAnswer) && /\b(?:book|booking|schedule|register|apply|order|pay)\b/i.test(lastAssistantAnswer);
+  const unsupportedAffirmative = /^(?:yes|yes please|yeah|yep|ok|okay|sure|please do)[.!\s]*$/i.test(message)
+    && !acceptedCallbackOffer && !hasExplicitActionableOffer;
+  const repeatsUnresolvedAffirmative = unsupportedAffirmative
+    && existingResolutionState && typeof existingResolutionState === "object" && !Array.isArray(existingResolutionState)
+    && "status" in existingResolutionState && existingResolutionState.status === "ACTIVE"
+    && "clarifyCount" in existingResolutionState && typeof existingResolutionState.clarifyCount === "number" && existingResolutionState.clarifyCount >= 1;
   const handoffEnabled = profile.humanHandoffEnabled === true;
   // A human-owned conversation must not call the model or generate competing advice.
   if (sessionStatus === "HUMAN_JOINED" && priorToken) {
@@ -114,17 +134,97 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     });
   }
   const businessName = property.organization?.name || "the business";
+  const knowledgeSettings = await readKnowledgeSettings(slug);
+  const bookingLink = approvedBookingLink(knowledgeSettings.widgetMenu);
+  const bookingChoices = (bookingLink?.children || []).map((item) => {
+    const [destination, stay] = item.label.split("|").map((value) => value.trim());
+    return { destination, stay, url: item.value };
+  }).filter((item) => item.destination && item.stay && item.url);
+  const bookingPlan = planConversation({
+    question: message,
+    priorQuestions,
+    lastAssistantAnswer,
+    blueprintVersion: CATEGORY_BLUEPRINT_VERSION,
+    operations: bookingLink ? [{
+      id: "booking.availability",
+      triggerTerms: ["book", "booking", "reserve", "reservation", "availability", "available", "rate", "rates", "price", "pricing", "cost", "room", "rooms", "stay", "stays", "property", "properties", "hotel", "hotels", "villa", "villas"],
+      slots: [
+        { key: "destination", knownValues: [...new Set(bookingChoices.map((item) => item.destination))], required: true },
+        { key: "dates", entityKind: "DATE", required: true }
+      ]
+    }] : []
+  });
+  const conversationText = `${message}\n${lastAssistantAnswer}`.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const requestedStay = bookingChoices.find((item) => conversationText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")));
+  const requestedDestination = requestedStay?.destination || (bookingPlan.operation?.id === "booking.availability" ? bookingPlan.operation.slots.destination?.[0] : undefined);
+  const destinationStays = requestedDestination ? bookingChoices.filter((item) => item.destination === requestedDestination) : [];
+  const destinationBookingUrl = requestedDestination && bookingLink?.value ? (() => { const url = new URL("/destination", bookingLink.value); url.searchParams.set("destination", requestedDestination); return url.toString(); })() : bookingLink?.value;
+  const requestedDates = bookingPlan.operation?.id === "booking.availability" ? (bookingPlan.operation.slots.dates || []).slice(0, 2) : [];
+  const requestsOnlineBooking = bookingPlan.operation?.id === "booking.availability" && bookingPlan.operation.requested;
+  const liveAvailability = requestsOnlineBooking && requestedDestination && requestedDates.length === 2
+    ? await checkTenantStayAvailability({ organizationId: organization.id, destination: requestedDestination, checkIn: requestedDates[0], checkOut: requestedDates[1] }).catch(() => null)
+    : null;
+  const matchingLiveStay = liveAvailability?.properties.find((item) => requestedStay && item.name.toLowerCase().replace(/[^a-z0-9]/g, "").includes(requestedStay.stay.toLowerCase().replace(/[^a-z0-9]/g, ""))) || (liveAvailability?.properties.length === 1 ? liveAvailability.properties[0] : undefined);
+  const configuredPolicy = activeNegotiationPolicy(knowledgeSettings.tenantFlows || [], `${message}\n${lastAssistantAnswer}`);
+  const tenantAuthority = tenantNegotiationAuthority(knowledgeSettings.tenantFlows || []);
+  const contextualRate = matchingLiveStay?.fromRate || Number(lastAssistantAnswer.match(/(?:₹|INR)\s*([\d,]+)/i)?.[1]?.replaceAll(",", "") || 0);
+  const contextualStayName = matchingLiveStay?.name || requestedStay?.stay || configuredPolicy?.propertyName || "";
+  const negotiationPolicy = configuredPolicy || policyForVerifiedStay(tenantAuthority, contextualStayName, contextualRate);
+  const negotiation = evaluateTenantNegotiation({ policy: negotiationPolicy, message, priorCustomerMessages: priorQuestions, lastAssistantAnswer });
+  const rateInquiryAnswer = tenantRateInquiry(negotiationPolicy, message);
   const categoryBoundary = evaluateCategoryHardBoundary(profile.category, message);
   const demoCommonAnswer = property.organization?.isDemo ? resolveDemoCommonAnswer(profile.category, message) : null;
   const directCommercialHandoff = /\b(?:quote|quotation|proposal|estimate)\b/i.test(message) || /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i.test(message);
   const explorationOnly = /\b(?:only|just)\s+(?:exploring|browsing|looking)|\bnot\s+(?:decided|ready)\b/i.test(message);
   const demoTurn = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
-  let result = safety.blocked ? null : explorationOnly ? {
+  let result = safety.blocked ? null : categoryBoundary ? {
+    answer: categoryBoundary.answer,
+    sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CATEGORY_AUTHORITY_BOUNDARY",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, intent: "SENSITIVE" as const, disposition: "ESCALATE" as const, reason: `Hard category boundary ${categoryBoundary.code}.` },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_1_BUSINESS_ASYNC" as const, degradedMode: false }
+  } : unsupportedAffirmative ? {
+    answer: `Please tell me what you would like to do next about ${businessName}—for example, ask another question or name the option you want to check.`,
+    sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONTEXT_CLARIFICATION",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: {
+      ...fallbackDecision,
+      disposition: "CLARIFY" as const,
+      contextUsed: Boolean(existingResolutionState),
+      resolvedQuestion: existingResolutionState && typeof existingResolutionState === "object" && !Array.isArray(existingResolutionState) && "resolvedQuestion" in existingResolutionState && typeof existingResolutionState.resolvedQuestion === "string" ? existingResolutionState.resolvedQuestion : fallbackDecision.resolvedQuestion,
+      reason: "Affirmative reply had no explicit actionable offer to accept."
+    },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : rateInquiryAnswer ? {
+    answer: rateInquiryAnswer,
+    sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: knowledgeSettings.updatedAt, usedOpenAi: false, model: "TENANT_APPROVED_RATE_POLICY",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Published tenant negotiation policy supplied the approved starting rate." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : negotiation.kind !== "NOT_APPLICABLE" ? {
+    answer: negotiation.message,
+    sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: negotiation.kind === "COUNTER" || negotiation.kind === "ACCEPTED" ? "TENANT_NEGOTIATION_POLICY" : "TENANT_NEGOTIATION_HANDOVER",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: negotiation.kind === "COUNTER" || negotiation.kind === "ACCEPTED" ? "ANSWER" as const : "CLARIFY" as const, reason: negotiation.kind === "COUNTER" ? "Counteroffer calculated inside the published tenant boundary." : negotiation.kind === "ACCEPTED" ? "Guest acceptance recorded without claiming an unverified booking." : "Negotiation requires verified rate context or human approval." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: negotiation.kind === "COUNTER" || negotiation.kind === "ACCEPTED" ? "TIER_0_SELF_RESOLVE" as const : "TIER_1_BUSINESS_ASYNC" as const, degradedMode: false }
+  } : requestsOnlineBooking && bookingLink ? {
+    answer: liveAvailability
+      ? liveAvailability.available
+        ? `Yes—live availability is confirmed in ${liveAvailability.destination} for ${liveAvailability.checkIn} to ${liveAvailability.checkOut}.\n\n${liveAvailability.properties.filter((item) => !requestedStay || item === matchingLiveStay).map((item) => `${item.name}: ${item.availableCount} room${item.availableCount === 1 ? "" : "s"} available${item.fromRate ? ` from ${item.currency} ${item.fromRate.toLocaleString("en-IN")}` : ""}\nhttps://asavaristays.com/properties/${item.id}?checkIn=${liveAvailability.checkIn}&checkOut=${liveAvailability.checkOut}&adults=2&children=0`).join("\n\n")}\n\nThe verified property card is shown below. Select the stay to continue booking.`
+        : `No live availability was returned in ${liveAvailability.destination} for ${liveAvailability.checkIn} to ${liveAvailability.checkOut}. Please select different dates below.`
+      : requestedDestination && destinationStays.length
+      ? `${businessName} has ${destinationStays.map((item) => item.stay).join(" and ")} in ${requestedDestination}. Select check-in and check-out dates below and I’ll verify live room availability from the booking database.\n\nCheck stays: ${destinationBookingUrl}`
+      : `Select your destination and dates below to check live availability from ${businessName}'s approved booking system.\n\nCheck stays: ${bookingLink.value}`,
+    sources: [{ title: "Approved online booking page", url: bookingLink.value!, crawledAt: knowledgeSettings.updatedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness: "CURRENT" as const }], sourceUrls: [bookingLink.value!], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "APPROVED_BOOKING_LINK",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Booking intent routed to the tenant-approved secure booking destination." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : explorationOnly ? {
     answer: `No problem. Take your time exploring ${businessName}. Ask me anything about the business whenever you’re ready.`, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "EXPLORATION_ACKNOWLEDGEMENT",
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Low-intent exploration acknowledged without creating a knowledge gap or sales prompt." },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
-  } : directCommercialHandoff ? {
+  } : directCommercialHandoff && !demoTurn ? {
     answer: "Thank you for your enquiry. I can arrange for the right team member to discuss the requirement and prepare the next step with you.", sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "COMMERCIAL_HANDOFF",
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Explicit commercial request routed to consented callback capture." },
@@ -144,7 +244,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     answer: handoffEnabled
       ? consentedContact
         ? `Thank you. Your callback request has been saved for the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. They will contact you ${humanResponseWindow(profile.responseSlaMinutes)}.`
-        : `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. They will respond here ${humanResponseWindow(profile.responseSlaMinutes)}. If you prefer a callback, share your name and mobile number using the consent fields below.${organization.publicPhone ? ` For immediate assistance, you may also call ${organization.publicPhone}.` : ""}`
+        : `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. A team member has not joined yet; they will respond here ${humanResponseWindow(profile.responseSlaMinutes)}. If you prefer a callback, share your name and mobile number using the consent fields below.${organization.publicPhone ? ` For immediate assistance, you may also call ${organization.publicPhone}.` : ""}`
       : `Human handover is not enabled for this bot.${organization.publicPhone ? ` Please call ${organization.publicPhone}.` : " Please use the business’s published contact details."}`,
     sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "HANDOVER_CONTROL",
     decision: { ...fallbackDecision, disposition: "ESCALATE", reason: handoffEnabled ? "Explicit human request; persisted before acknowledgment." : "Human handover is disabled; no connection promised." },
@@ -155,22 +255,31 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     messages: [...priorQuestions].reverse().concat(message),
     previousState: existingResolutionState,
     contact: consentedContact || undefined,
-    enabled: profile.capabilities.includes("CAPTURE_LEADS") && profile.capabilities.includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
+    enabled: (profile.capabilities || []).includes("CAPTURE_LEADS") && (profile.capabilities || []).includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
   });
-  const verifiedResultAnswer = explicitHumanRequest || result?.decision.disposition === "ANSWER" ? result?.answer : "";
-  const fallbackContactPath = `I don’t have enough verified ${businessName} information to answer that accurately. I’ve sent your enquiry to the business team. Please share your name and mobile number below for a callback.${organization.publicPhone ? ` You can also call ${organization.publicPhone}.` : ""}`;
-  const baseAnswer = safety.answer || verifiedResultAnswer || (fallbackDecision.intent === "OFF_TOPIC" ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.` : fallbackContactPath);
+  if (result) {
+    const quality = evaluateVisitorAnswerQuality({ question: message, answer: result.answer, decision: result.decision });
+    if (!quality.passed) result = null;
+  }
+  const verifiedResultAnswer = explicitHumanRequest || (result && ["ANSWER", "CLARIFY", "ESCALATE"].includes(result.decision.disposition)) || negotiation.kind === "HUMAN_APPROVAL" ? result?.answer : "";
+  const fallbackContactPath = buildMissingAnswerRecovery({ businessName, category: profile.category, publicPhone: organization.publicPhone, handoffEnabled });
+  const baseAnswer = safety.answer || verifiedResultAnswer || (fallbackDecision.intent === "OFF_TOPIC"
+    ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.`
+    : fallbackDecision.disposition === "CLARIFY"
+      ? `What would you like help with about ${businessName}? Please share the service, product or booking detail you mean.`
+      : fallbackContactPath);
   const hasVerifiedAnswer = result?.decision.disposition === "ANSWER" && Boolean(result.sources.length || result.claimIds.length || result.reliability.failureLayer === "NONE");
   const proposedAnswer = qualification.state && hasVerifiedAnswer ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
-    : fallbackDecision.intent === "OFF_TOPIC" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
+    : fallbackDecision.intent === "OFF_TOPIC" || fallbackDecision.disposition === "CLARIFY" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
   const assistedFallback = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && proposedDecision.disposition !== "ANSWER";
   const resolution = governResolutionOutcome({
     question: message,
     answer: proposedAnswer,
     decision: proposedDecision,
     previousState: existingResolutionState,
+    maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
   const answer = resolution.answer;
@@ -217,14 +326,24 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     reliability
   }).catch(() => null);
   if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
+  await recordTenantAnswerUsage({ organizationId: organization.id, evidenceId: evidence.id, usage: { inputTokens: result?.modelUsage?.inputTokens || 0, outputTokens: result?.modelUsage?.outputTokens || 0, model: result?.model || "NON_MODEL", attempts: reliability.attemptCount, latencyMs: reliability.latencyMs } }).catch((error) => console.error("Tenant usage metering failed", { organizationId: organization.id, evidenceId: evidence.id, error }));
   const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
   const consented = Boolean(consentedContact);
   const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
   const baseResolutionState = preserveActiveState ? existingResolutionState : resolution.state;
+  const intelligenceLayer = resolveIntelligenceLayer({
+    safetyBlocked: safety.blocked,
+    humanRequested: explicitHumanRequest || sessionStatus === "HUMAN_REQUESTED",
+    flowMatched: negotiation.kind !== "NOT_APPLICABLE" || Boolean(rateInquiryAnswer),
+    connectorMatched: Boolean(requestsOnlineBooking || demoTurn),
+    tenantGrounded: Boolean(result?.sources.length || result?.claimIds.length),
+    coreAnswered: Boolean(result)
+  });
   const sessionResolutionState = {
     ...((baseResolutionState && typeof baseResolutionState === "object" && !Array.isArray(baseResolutionState)) ? baseResolutionState : {}),
-    ...(qualification.state ? { qualification: qualification.state } : {})
+    ...(qualification.state ? { qualification: qualification.state } : {}),
+    intelligenceRouter: { version: INTELLIGENCE_ROUTER_VERSION, layer: intelligenceLayer }
   } as Prisma.InputJsonValue;
   await persistenceDb.websiteVisitorSession.upsert({
     where: { leadId: captured.lead.id },
@@ -257,7 +376,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     });
   }
 
-  return NextResponse.json({ answer, grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
+  return NextResponse.json({ answer, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
 }
 

@@ -36,7 +36,7 @@ test("training booking intent selects the active training route over the hotel b
 
 test("citations exclude weak matches relative to the best approved source", () => {
   assert.match(source, /relevanceFloor/);
-  assert.match(source, /score \* 0\.8/);
+  assert.match(source, /bestScore \* 0\.8/);
   assert.match(source, /item\.score >= relevanceFloor/);
 });
 
@@ -155,8 +155,9 @@ test("when-and-where follow-up ranks a complete schedule claim above a bare link
 
 test("crawler prioritizes sitemap inventory before legacy seeds", () => {
   assert.match(source, /baseUrl, \.\.\.priorityUrls, \.\.\.sitemapUrls, \.\.\.homepageLinks, \.\.\.seedUrls/);
-  assert.match(source, /MAX_DISCOVERY_URLS = 120/);
+  assert.match(source, /MAX_DISCOVERY_URLS = 300/);
   assert.match(source, /pages\.length >= MAX_PAGES/);
+  assert.match(source, /Deep discovery follows same-origin links/);
 });
 
 test("crawler preserves approved JSON-LD and meta-description business facts", () => {

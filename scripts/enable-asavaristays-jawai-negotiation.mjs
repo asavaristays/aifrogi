@@ -1,0 +1,20 @@
+import fs from "node:fs";
+import crypto from "node:crypto";
+
+const file = "/var/www/lead-os-ai/data/runtime/knowledge-settings-asavaristays-703624.json";
+const settings = JSON.parse(fs.readFileSync(file, "utf8"));
+const now = new Date().toISOString();
+const node = (type, label, x, y) => ({ id: crypto.randomUUID().replaceAll("-", "").slice(0, 16), type, label, x, y });
+const trigger = node("MENU_TRIGGER", "Guest requests a better rate", 40, 250);
+const verify = node("VERIFY_RATE", "Verify selected stay and live rate", 320, 250);
+const negotiate = node("NEGOTIATE_RATE", "Apply private tenant boundary", 600, 250);
+const accept = node("CONDITION", "Guest accepts the offer", 880, 250);
+const quote = node("CREATE_QUOTE", "Prepare an expiring quote", 1160, 120);
+const handover = node("HUMAN_HANDOVER", "Request reservations approval", 1160, 400);
+trigger.nextId = verify.id; verify.nextId = negotiate.id; verify.alternateNextId = handover.id; negotiate.nextId = accept.id; negotiate.alternateNextId = handover.id; accept.nextId = quote.id; accept.alternateNextId = negotiate.id;
+const id = "asavari-jawai-rate-negotiation";
+const flow = { id, name: "Jawai Damstay rate negotiation", templateKey: "COMMERCIAL_NEGOTIATION", status: "PUBLISHED", version: 1, menuLabel: "Request best available rate", openingQuestion: "I would like to check whether a better approved rate is available for Jawai Damstay.", fallbackMode: "HUMAN_OR_CALLBACK", steps: [trigger, verify, negotiate, accept, quote, handover], negotiationPolicy: { enabled: true, propertyName: "Jawai Damstay", currency: "INR", publicRate: 6500, floorRate: 6000, adjustmentMode: "FIXED", adjustmentValue: 250, discountSteps: [250, 350, 500], maxRounds: 3, quoteExpiryMinutes: 15, approvalMode: "AUTO_ABOVE_FLOOR" }, createdAt: now, updatedAt: now, publishedAt: now };
+settings.tenantFlows = [...(Array.isArray(settings.tenantFlows) ? settings.tenantFlows : []).filter((item) => item.id !== id), flow];
+settings.updatedAt = now;
+fs.writeFileSync(file, `${JSON.stringify(settings, null, 2)}\n`, { mode: 0o640 });
+console.log("Jawai Damstay negotiation enabled: ₹6,250, ₹6,150, then ₹6,000; lower requests require manager review.");

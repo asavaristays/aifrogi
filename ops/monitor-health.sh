@@ -6,6 +6,8 @@ ALERT_WEBHOOK_URL="${AIFROGI_ALERT_WEBHOOK_URL:-}"
 TIMEOUT_SECONDS="${AIFROGI_MONITOR_TIMEOUT_SECONDS:-15}"
 STATE_DIR="${AIFROGI_MONITOR_STATE_DIR:-/var/lib/aifrogi-monitor}"
 STATE_FILE="${STATE_DIR}/state"
+BACKUP_DIR="${AIFROGI_BACKUP_DIR:-/var/backups/aifrogi}"
+BACKUP_MAX_AGE_SECONDS="${AIFROGI_BACKUP_MAX_AGE_SECONDS:-129600}"
 
 mkdir -p "$STATE_DIR"
 
@@ -17,6 +19,15 @@ status="down"
 if [[ "$http_code" == "200" ]] && grep -q '"status":"ok"' "$response_file"; then
   status="up"
 fi
+
+latest_backup="$(find "$BACKUP_DIR" -maxdepth 1 -type f -name 'aifrogi-*.dump.gz.enc' -printf '%T@ %p\n' 2>/dev/null | sort -nr | head -1 | cut -d' ' -f2-)"
+backup_problem=""
+if [[ -z "$latest_backup" ]]; then
+  backup_problem="No encrypted database backup found."
+elif (( $(date +%s) - $(stat -c %Y "$latest_backup") > BACKUP_MAX_AGE_SECONDS )); then
+  backup_problem="Encrypted database backup is older than ${BACKUP_MAX_AGE_SECONDS} seconds."
+fi
+if [[ -n "$backup_problem" ]]; then status="down"; fi
 
 previous="unknown"
 [[ -f "$STATE_FILE" ]] && previous="$(cat "$STATE_FILE")"
@@ -30,7 +41,7 @@ if [[ "$status" == "up" ]]; then
   exit 0
 fi
 
-body="$(tr '\n' ' ' < "$response_file" | cut -c1-500)"
+body="$(tr '\n' ' ' < "$response_file" | cut -c1-500) ${backup_problem}"
 if [[ "$previous" != "down" ]] && [[ -n "$ALERT_WEBHOOK_URL" ]]; then
   payload="$(printf '{"text":"AiFrogi alert: readiness failed with HTTP %s. %s"}' "$http_code" "${body//\"/\\\"}")"
   curl --silent --show-error --max-time "$TIMEOUT_SECONDS" --request POST --header 'Content-Type: application/json' --data "$payload" "$ALERT_WEBHOOK_URL" >/dev/null

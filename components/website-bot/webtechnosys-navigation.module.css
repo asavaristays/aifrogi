@@ -8,7 +8,10 @@
 .option > svg:first-child { color: var(--nav-gold); }
 .option > svg:first-child { box-sizing: content-box; padding: 8px; background: #e4ca820c; border: 1px solid #e4ca8220; border-radius: 12px; }
 .option > svg:last-child { transition: transform 180ms ease; color: #a09b8e; }
-.option[data-featured="true"] { border-color: #e4ca8255; background: linear-gradient(115deg, #373124, #24231f); }
+.option[data-featured="true"] { border-color: color-mix(in srgb, var(--widget-accent, #8a6a16) 82%, #000); background: var(--widget-accent, #8a6a16); color: #fff!important; box-shadow: 0 8px 22px color-mix(in srgb, var(--widget-accent, #8a6a16) 22%, transparent); }
+.option[data-featured="true"] > span, .option[data-featured="true"] > svg:first-child, .option[data-featured="true"] > svg:last-child { color: #fff!important; }
+.option[data-featured="true"] > svg:first-child { border-color: #ffffff3b; background: #ffffff12; }
+.option[data-featured="true"]:hover { border-color: color-mix(in srgb, var(--widget-accent, #8a6a16) 70%, #000); background: var(--widget-accent, #8a6a16); color: #fff; filter: brightness(1.06); }
 .link { justify-content: space-between; }
 .option:hover, .link:hover, .copy:hover { color: #fff; background: #303030; border-color: #b39643; }
 .chat { justify-content: center; width: 100%; margin-top: 14px; background: #e4ca82; color: #17130a; border-color: #e4ca82; font-weight: 600; border-radius: 100px; }

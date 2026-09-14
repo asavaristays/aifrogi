@@ -57,12 +57,15 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     return NextResponse.json({ organization: updated });
   }
 
-  if (action === "SUSPEND" || action === "ACTIVATE" || action === "REMOVE_FROM_OPERATIONS") {
+  if (action === "SUSPEND" || action === "ACTIVATE" || action === "REMOVE_FROM_OPERATIONS" || action === "RESTORE_TO_OPERATIONS") {
     if (action === "REMOVE_FROM_OPERATIONS" && !payload?.reason?.trim()) return NextResponse.json({ error: "Add a reason before removing a customer from active operations" }, { status: 400 });
     if (action === "REMOVE_FROM_OPERATIONS" && organization.botProfile?.channels.includes("WEBSITE") && organization.botProfile.status !== "DELETED") {
       await updateWebsiteBotLifecycle({ organizationId: id, actorEmail: user.username, action: "DELETE" });
     }
-    await updateOrganizationStatus(id, action === "SUSPEND" ? "SUSPENDED" : action === "ACTIVATE" ? "ACTIVE" : "REMOVED");
+    if (action === "RESTORE_TO_OPERATIONS" && organization.botProfile?.channels.includes("WEBSITE") && organization.botProfile.status === "DELETED") {
+      await updateWebsiteBotLifecycle({ organizationId: id, actorEmail: user.username, action: "RESTORE" });
+    }
+    await updateOrganizationStatus(id, action === "SUSPEND" ? "SUSPENDED" : action === "ACTIVATE" || action === "RESTORE_TO_OPERATIONS" ? "ACTIVE" : "REMOVED");
     return NextResponse.json({ organization: await getOrganizationById(id) });
   }
 
@@ -109,7 +112,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   }
 
   if (action === "RESEND_LIVE_EMAIL") {
-    try { return NextResponse.json({ notification: await notifyBotLive(id, user.username) }); }
+    try { return NextResponse.json({ notification: await notifyBotLive(id, user.username, { force: true }) }); }
     catch { return NextResponse.json({ error: "Live email could not be processed. Check that the bot is live and retry." }, { status: 400 }); }
   }
   if (action === "DECLINE_BOT_APPROVAL") {

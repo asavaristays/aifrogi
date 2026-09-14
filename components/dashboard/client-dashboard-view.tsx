@@ -36,6 +36,7 @@ export type ClientDashboardViewProps = {
   metrics: {
     contacts: number;
     incoming: number;
+    outgoing: number;
     unanswered: number;
     averageResponseLabel: string;
     readRate: number;
@@ -110,31 +111,27 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
             helper={props.metrics.unanswered ? "Open conversations" : "Queue is clear"}
             icon="message-circle"
             tone="coral"
-            progress={props.metrics.unanswered ? 68 : 100}
           />
           <SignalCard
-            label="Delivery"
-            value={`${props.metrics.deliveryRate}%`}
-            helper={props.metrics.failed ? `${props.metrics.failed} failed events` : "Sending normally"}
+            label="Conversations today"
+            value={String(props.metrics.contacts)}
+            helper={props.metrics.contacts ? "Active website chats" : "No conversations yet"}
             icon="arrow-right"
             tone="blue"
-            progress={props.metrics.deliveryRate}
           />
           <SignalCard
-            label="Read rate"
-            value={`${props.metrics.readRate}%`}
-            helper={`${props.metrics.contacts} active contacts`}
+            label="Visitor messages today"
+            value={String(props.metrics.incoming)}
+            helper="Received through this bot"
             icon="inbox"
             tone="violet"
-            progress={props.metrics.readRate}
           />
           <SignalCard
-            label="First response"
-            value={props.metrics.averageResponseLabel}
-            helper={`${props.metrics.incoming} inbound messages`}
+            label="Replies today"
+            value={String(props.metrics.outgoing)}
+            helper="AI and team replies"
             icon="bar-chart-3"
             tone="green"
-            progress={responseScore(props.metrics.averageResponseLabel)}
           />
         </section>
 
@@ -260,25 +257,21 @@ function SignalCard({
   value,
   helper,
   icon,
-  tone,
-  progress
+  tone
 }: {
   label: string;
   value: string;
   helper: string;
   icon: "message-circle" | "arrow-right" | "inbox" | "bar-chart-3";
   tone: SignalTone;
-  progress: number;
 }) {
-  const styles: Record<SignalTone, { icon: string; bar: string }> = {
-    coral: { icon: "bg-[#fff0eb] text-[#c75c38]", bar: "bg-[#e87855]" },
-    blue: { icon: "bg-[var(--info-soft)] text-[var(--info)]", bar: "bg-[#4a8fe7]" },
-    violet: { icon: "bg-[var(--primary-soft)] text-[var(--primary-strong)]", bar: "bg-[var(--primary)]" },
-    green: { icon: "bg-[var(--success-soft)] text-[var(--success)]", bar: "bg-[#28a77f]" }
+  const styles: Record<SignalTone, { icon: string }> = {
+    coral: { icon: "bg-[#fff0eb] text-[#c75c38]" },
+    blue: { icon: "bg-[var(--info-soft)] text-[var(--info)]" },
+    violet: { icon: "bg-[var(--primary-soft)] text-[var(--primary-strong)]" },
+    green: { icon: "bg-[var(--success-soft)] text-[var(--success)]" }
   };
   const style = styles[tone];
-  const width = Math.min(100, Math.max(4, Number.isFinite(progress) ? progress : 0));
-
   return (
     <article className="rounded-lg border border-[var(--border)] bg-white p-4 shadow-[var(--shadow-card)]">
       <div className="flex items-start justify-between gap-3">
@@ -290,10 +283,7 @@ function SignalCard({
           <Icon name={icon} className="h-4 w-4" />
         </span>
       </div>
-      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#f8f0d8]">
-        <span className={`block h-full rounded-full ${style.bar}`} style={{ width: `${width}%` }} />
-      </div>
-      <p className="mt-2 text-[11px] text-[var(--text-muted)]">{helper}</p>
+      <p className="mt-4 text-[11px] text-[var(--text-muted)]">{helper}</p>
     </article>
   );
 }
@@ -389,11 +379,4 @@ function SystemTask({ label, active }: { label: string; active: boolean }) {
       </span>
     </div>
   );
-}
-
-function responseScore(label: string) {
-  const numeric = Number.parseInt(label, 10);
-  if (!Number.isFinite(numeric)) return 100;
-  if (label.toLowerCase().includes("h")) return 20;
-  return Math.max(8, Math.min(100, 100 - numeric * 4));
 }

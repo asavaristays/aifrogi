@@ -16,8 +16,9 @@ test("Super Admin uses icon sidebar and a first-class pilot onboarding action", 
   assert.match(dashboard, /A client moves through four gates\./);
 });
 
-test("pilot onboarding starts AI Bot without silently enabling WhatsApp", () => {
+test("pilot onboarding starts the website AI Bot without legacy messaging copy", () => {
   assert.match(onboard, /super-admin-pilot/);
-  assert.match(onboard, /WhatsApp remains off unless deliberately enabled later/);
+  assert.match(onboard, /AI Bot onboarding track/);
+  assert.doesNotMatch(onboard, /WhatsApp/i);
   assert.match(onboard, /Create pilot and send activation/);
 });

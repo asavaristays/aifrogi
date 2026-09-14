@@ -24,8 +24,10 @@ fi
 openssl enc -d -aes-256-cbc -pbkdf2 -in "$BACKUP_FILE" -pass env:BACKUP_ENCRYPTION_PASSPHRASE | gzip -dc > "$dump_file"
 pg_restore --list "$dump_file" >/dev/null
 createdb --maintenance-db "$RESTORE_ADMIN_URL" "$drill_db"
-pg_restore --no-owner --no-privileges --dbname "${RESTORE_ADMIN_URL%/*}/${drill_db}" "$dump_file"
+drill_url="${RESTORE_ADMIN_URL%/*}/${drill_db}"
+psql "$drill_url" --set ON_ERROR_STOP=1 --command "DROP SCHEMA IF EXISTS public CASCADE;" >/dev/null
+pg_restore --exit-on-error --no-owner --no-privileges --dbname "$drill_url" "$dump_file"
 
-table_count="$(psql "${RESTORE_ADMIN_URL%/*}/${drill_db}" --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema='public';")"
+table_count="$(psql "$drill_url" --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema='public';")"
 [[ "$table_count" -gt 0 ]] || { echo "Restore completed without public tables" >&2; exit 4; }
 printf 'Restore drill passed: %s public tables restored into temporary database %s.\n' "$table_count" "$drill_db"

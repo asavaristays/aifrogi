@@ -35,7 +35,7 @@ export function CustomerReviewActions({ organizationId, organizationStatus }: { 
       <textarea className="mt-4 min-h-24 w-full rounded-md border border-black/10 bg-[#f8faf9] px-3 py-3 text-sm outline-none focus:border-[#8a6a16]" value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Reason required when removing from operations" />
       {error ? <p className="mt-3 text-sm font-semibold text-[#a3342b]">{error}</p> : null}
       <div className="mt-4 flex flex-wrap gap-2">
-        <Button tone="surface" disabled={saving} onClick={() => run(organizationStatus === "SUSPENDED" ? "ACTIVATE" : "SUSPEND")}>{organizationStatus === "SUSPENDED" ? "Reactivate" : "Suspend"}</Button>
+        {organizationStatus === "REMOVED" ? <Button tone="surface" disabled={saving} onClick={() => run("RESTORE_TO_OPERATIONS")}>Restore customer</Button> : <Button tone="surface" disabled={saving} onClick={() => run(organizationStatus === "SUSPENDED" ? "ACTIVATE" : "SUSPEND")}>{organizationStatus === "SUSPENDED" ? "Reactivate" : "Suspend"}</Button>}
         <Button tone="danger" disabled={saving || !reason.trim() || organizationStatus === "REMOVED"} onClick={() => run("REMOVE_FROM_OPERATIONS")}>Remove from operations</Button>
       </div>
       <p className="mt-3 text-xs leading-5 text-[#68645c]">Suspend blocks account operation temporarily. Remove retires the AI Bot and removes the customer from active operations while preserving an auditable record.</p>

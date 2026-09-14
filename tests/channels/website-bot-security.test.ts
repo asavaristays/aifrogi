@@ -76,17 +76,24 @@ test("accepted support offers become persisted, consent-aware handovers", () => 
   assert.match(source, /Your callback request has been saved/);
   assert.match(source, /humanResponseWindow\(profile\.responseSlaMinutes\)/);
   assert.match(source, /\(explicitHumanRequest \|\| assistedFallback\) && !consentedContact/);
-  assert.match(source, /Please share your name and mobile number below for a callback/);
-  assert.match(source, /You can also call \$\{organization\.publicPhone\}/);
+  assert.match(source, /buildMissingAnswerRecovery/);
+  const recovery = readFileSync(resolve(process.cwd(), "lib/sovereign-intelligence/answer-quality-gate.ts"), "utf8");
+  assert.match(recovery, /private consent fields below/);
+  assert.match(recovery, /You can also call \$\{input\.publicPhone\}/);
   assert.match(widget, /requestHuman: true/);
 });
 
 test("a missing verified answer always becomes a lead and human route", () => {
-  assert.match(source, /verifiedResultAnswer = explicitHumanRequest \|\| result\?\.decision\.disposition === "ANSWER"/);
+  assert.match(source, /verifiedResultAnswer = explicitHumanRequest \|\| \(result && \["ANSWER", "CLARIFY", "ESCALATE"\]\.includes\(result\.decision\.disposition\)\)/);
   assert.match(source, /explicitHumanRequest \|\| assistedFallback \|\| evidenceDecision\.disposition === "ESCALATE"/);
   assert.match(source, /captureIncomingAiBotMessage\([\s\S]*phone: consentedContact/);
   assert.match(source, /ensureWebsiteHandover/);
   assert.match(source, /conversationState: humanRequested \? "HUMAN_REQUESTED" : "AI_READY"/);
+});
+
+test("a below-floor negotiation keeps the manager-review wording while routing human help", () => {
+  assert.match(source, /negotiation\.kind === "HUMAN_APPROVAL" \? result\?\.answer/);
+  assert.match(source, /assistedFallback/);
 });
 
 test("widget connects helpful feedback to the returned evidence id", () => {

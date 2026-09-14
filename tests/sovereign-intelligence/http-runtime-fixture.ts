@@ -11,7 +11,7 @@ export const fixture: any = { claims: [], evidence: [], messages: [], sessions: 
 (globalThis as any).__bucketOne = fixture;
 process.env.WEBSITE_VISITOR_SESSION_SECRET = "synthetic-bucket-one-test-only-secret";
 process.env.OPENAI_API_KEY = "synthetic-not-a-credential";
-export const profile = { status: "LIVE", channels: ["WEBSITE"], category: "BUSINESS_AI", kbGateVersion: "1.0", personaName: "Fixture Assistant", personaPackVersion: "1.0", languages: ["EN"], prohibitedClaims: [], escalationTriggers: [], connectors: [], humanHandoffEnabled: true, responseSlaMinutes: 60 };
+export const profile = { status: "LIVE", channels: ["WEBSITE"], category: "BUSINESS_AI", operatingMode: "LEAD_CAPTURE", capabilities: ["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"], kbGateVersion: "1.0", personaName: "Fixture Assistant", personaPackVersion: "1.0", languages: ["EN"], prohibitedClaims: [], escalationTriggers: [], connectors: [], humanHandoffEnabled: true, responseSlaMinutes: 60 };
 export const org = { id: "org-a", name: "Fixture Business", isDemo: false, botProfile: profile, updatedAt: new Date(), publicPhone: null, publicEmail: null };
 fixture.profile = profile;
 const property = { id: "tenant-a", slug: "fixture-a", organization: org };
@@ -36,7 +36,10 @@ fixture.db = {
     updateMany: async ({ where, data }: any) => { const found = fixture.claims.filter((r: any) => matches(r, where)); found.forEach((r: any) => Object.assign(r, data)); return { count: found.length }; },
     findMany: async ({ where, take }: any) => fixture.claims.filter((r: any) => matches(r, where)).slice(0, take)
   },
-  lead: { findFirst: async ({ where }: any) => ({ stage: "NEW", tags: fixture.closed ? [{ value: "Resolved" }] : [], messages: fixture.agentMessages.filter((m: any) => m.leadId === where.id) }) },
+  lead: {
+    findFirst: async ({ where }: any) => ({ stage: "NEW", tags: fixture.closed ? [{ value: "Resolved" }] : [], messages: fixture.agentMessages.filter((m: any) => m.leadId === where.id) }),
+    update: async ({ where, data }: any) => ({ id: where.id, ...data })
+  },
   leadMessage: { findMany: async ({ where }: any) => fixture.messages.filter((m: any) => m.leadId === where.leadId).slice().reverse(), updateMany: async ({ where, data }: any) => { const found = fixture.agentMessages.filter((m: any) => matches(m, where)); found.forEach((m: any) => Object.assign(m, data)); return { count: found.length }; } },
   sovereignAnswerEvidence: {
     findFirst: async ({ where }: any) => fixture.evidence.filter((e: any) => matches(e, where)).at(-1) || null,
@@ -57,6 +60,7 @@ const adapters: Record<string, string> = {
   "@/lib/services/lead-service": "export const captureIncomingAiBotMessage=(x)=>globalThis.__bucketOne.capture(x);",
   "@/generated/prisma/client": "export const Prisma={};",
   "@/lib/subscription-access": "export const getOrganizationSubscriptionAccess=async()=>({canUsePaidActions:true});"
+  ,"@/lib/billing-super-admin": "export const checkOrganizationEntitlement=async()=>({allowed:true,remaining:999});"
 };
 export let POST: any, GET: any, PATCH: any;
 test.before(async () => {

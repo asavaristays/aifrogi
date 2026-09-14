@@ -9,6 +9,7 @@ import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-con
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
+import { runCoreLaunchCertification } from "@/lib/sovereign-intelligence/launch-certification";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,6 +25,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
   const trial = getTrialWindow(organization);
   const channels = organization.botProfile?.channels || [];
   const websiteEnabled = channels.includes("WEBSITE") || !channels.length;
+  const coreCertification = runCoreLaunchCertification();
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
@@ -43,7 +45,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} /></div>
           <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} websiteOnly />
           <BotConnectorPlan organizationId={organization.id} connectors={organization.botConnectors} />
-          {websiteEnabled ? <div className="lg:col-span-2"><WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin /></div> : <Section title="Bot delivery"><p className="text-sm text-[#68645c]">Enable web delivery to provide the standalone app and optional website installation choices.</p></Section>}
+          {websiteEnabled ? <div className="lg:col-span-2"><WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin coreCertification={coreCertification} /></div> : <Section title="Bot delivery"><p className="text-sm text-[#68645c]">Enable web delivery to provide the standalone app and optional website installation choices.</p></Section>}
           <Section title="Company and approved source details"><Detail label="Legal name" value={onboarding?.legalName} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Address" value={organization.businessAddress} /></Section>
           <Section title="AI Bot readiness"><Detail label="Persona" value={organization.botProfile?.personaName} /><Detail label="Channel" value={channels.length ? channels.join(", ") : "Web"} /><Detail label="Lifecycle" value={organization.botProfile?.status || "DRAFT"} /><p className="mt-4 text-sm leading-6 text-[#68645c]">Review the persona, approved business knowledge and answer previews. Website installation is optional because every approved bot can run through its standalone web app. Connectors must be live only when the selected operating mode performs external actions.</p></Section>
         </div>

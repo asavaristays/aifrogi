@@ -4,11 +4,11 @@ import { useState } from "react";
 import { WIDGET_MENU_ICONS, type WidgetMenuAction, type WidgetMenuConfig, type WidgetMenuItem } from "@/lib/widget-menu";
 
 const actions: Array<{ value: WidgetMenuAction; label: string }> = [
-  { value: "LINK", label: "Website link" }, { value: "CHAT", label: "Start chat" },
+  { value: "LINK", label: "Website link" }, { value: "BOOKING", label: "Booking form" }, { value: "CHAT", label: "Start chat" },
   { value: "CALL", label: "Phone call" }, { value: "EMAIL", label: "Email" }, { value: "SUBMENU", label: "Submenu" }
 ];
-const needsValue = (action: WidgetMenuAction) => ["LINK", "CALL", "EMAIL"].includes(action);
-const placeholder = (action: WidgetMenuAction) => action === "LINK" ? "https://example.com/page" : action === "CALL" ? "+919876543210" : "help@example.com";
+const needsValue = (action: WidgetMenuAction) => ["LINK", "BOOKING", "CALL", "EMAIL"].includes(action);
+const placeholder = (action: WidgetMenuAction) => ["LINK", "BOOKING"].includes(action) ? "https://example.com/booking" : action === "CALL" ? "+919876543210" : "help@example.com";
 const fresh = (child = false): WidgetMenuItem => ({ id: crypto.randomUUID(), label: "", action: child ? "LINK" : "LINK", value: "", icon: "link" });
 
 export function BotMenuSettings({ initialMenu, canManage }: { initialMenu?: WidgetMenuConfig; canManage: boolean }) {

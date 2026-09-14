@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import { getBotPersonaPack } from "@/lib/bot-persona-packs";
+import { normalizeRegistrationMobile } from "@/lib/trial-registration-validation";
 
 export const SELF_SERVICE_REGISTRATION = "SELF_SERVICE_REGISTRATION";
 
@@ -65,6 +66,18 @@ export async function registerTrialOrganization(input: {
       });
       return { organizationId: existing.organization.id, email, token, expiresAt, resumed: true };
     }
+
+    const normalizedMobile = normalizeRegistrationMobile(input.ownerMobile || "");
+    const websiteHost = input.website ? new URL(input.website).hostname.toLowerCase().replace(/^www\./, "") : "";
+    const candidates = await tx.organization.findMany({
+      where: { status: { not: "REMOVED" }, OR: [
+        ...(normalizedMobile ? [{ ownerMobile: { not: null } }] : []),
+        ...(websiteHost ? [{ website: { not: null } }] : [])
+      ] },
+      select: { ownerMobile: true, website: true },
+    });
+    if (normalizedMobile && candidates.some((item) => normalizeRegistrationMobile(item.ownerMobile || "") === normalizedMobile)) throw new Error("An AiFrogi account already uses this mobile number. Sign in or contact support.");
+    if (websiteHost && candidates.some((item) => { try { return new URL(item.website || "").hostname.toLowerCase().replace(/^www\./, "") === websiteHost; } catch { return false; } })) throw new Error("An AiFrogi workspace already uses this business website. Sign in or contact support.");
 
     const slug = `${slugBase(input.companyName)}-${randomBytes(3).toString("hex")}`;
     const organization = await tx.organization.create({

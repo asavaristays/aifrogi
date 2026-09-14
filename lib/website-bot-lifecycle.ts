@@ -1,4 +1,4 @@
-export const WEBSITE_BOT_STATUSES = ["DRAFT", "INSTALLATION_READY", "INSTALLATION_DETECTED", "LIVE", "PAUSED", "DELETED"] as const;
+export const WEBSITE_BOT_STATUSES = ["DRAFT", "INSTALLATION_READY", "INSTALLATION_DETECTED", "REVIEW_PENDING", "LIVE", "PAUSED", "DELETED"] as const;
 export type WebsiteBotStatus = typeof WEBSITE_BOT_STATUSES[number];
 export type WebsiteBotLifecycleAction = "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE";
 

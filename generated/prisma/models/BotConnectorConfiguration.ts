@@ -20,8 +20,18 @@ export type BotConnectorConfigurationModel = runtime.Types.Result.DefaultSelecti
 
 export type AggregateBotConnectorConfiguration = {
   _count: BotConnectorConfigurationCountAggregateOutputType | null
+  _avg: BotConnectorConfigurationAvgAggregateOutputType | null
+  _sum: BotConnectorConfigurationSumAggregateOutputType | null
   _min: BotConnectorConfigurationMinAggregateOutputType | null
   _max: BotConnectorConfigurationMaxAggregateOutputType | null
+}
+
+export type BotConnectorConfigurationAvgAggregateOutputType = {
+  lastHealthCode: number | null
+}
+
+export type BotConnectorConfigurationSumAggregateOutputType = {
+  lastHealthCode: number | null
 }
 
 export type BotConnectorConfigurationMinAggregateOutputType = {
@@ -36,6 +46,12 @@ export type BotConnectorConfigurationMinAggregateOutputType = {
   lifecycle: string | null
   unavailableBehavior: string | null
   lastVerifiedAt: Date | null
+  apiBaseUrl: string | null
+  authType: string | null
+  lastHealthStatus: string | null
+  lastHealthCode: number | null
+  lastHealthAt: Date | null
+  lastError: string | null
   configuredBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +69,12 @@ export type BotConnectorConfigurationMaxAggregateOutputType = {
   lifecycle: string | null
   unavailableBehavior: string | null
   lastVerifiedAt: Date | null
+  apiBaseUrl: string | null
+  authType: string | null
+  lastHealthStatus: string | null
+  lastHealthCode: number | null
+  lastHealthAt: Date | null
+  lastError: string | null
   configuredBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -72,12 +94,27 @@ export type BotConnectorConfigurationCountAggregateOutputType = {
   writeOperations: number
   unavailableBehavior: number
   lastVerifiedAt: number
+  apiBaseUrl: number
+  authType: number
+  operationMapping: number
+  lastHealthStatus: number
+  lastHealthCode: number
+  lastHealthAt: number
+  lastError: number
   configuredBy: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type BotConnectorConfigurationAvgAggregateInputType = {
+  lastHealthCode?: true
+}
+
+export type BotConnectorConfigurationSumAggregateInputType = {
+  lastHealthCode?: true
+}
 
 export type BotConnectorConfigurationMinAggregateInputType = {
   id?: true
@@ -91,6 +128,12 @@ export type BotConnectorConfigurationMinAggregateInputType = {
   lifecycle?: true
   unavailableBehavior?: true
   lastVerifiedAt?: true
+  apiBaseUrl?: true
+  authType?: true
+  lastHealthStatus?: true
+  lastHealthCode?: true
+  lastHealthAt?: true
+  lastError?: true
   configuredBy?: true
   createdAt?: true
   updatedAt?: true
@@ -108,6 +151,12 @@ export type BotConnectorConfigurationMaxAggregateInputType = {
   lifecycle?: true
   unavailableBehavior?: true
   lastVerifiedAt?: true
+  apiBaseUrl?: true
+  authType?: true
+  lastHealthStatus?: true
+  lastHealthCode?: true
+  lastHealthAt?: true
+  lastError?: true
   configuredBy?: true
   createdAt?: true
   updatedAt?: true
@@ -127,6 +176,13 @@ export type BotConnectorConfigurationCountAggregateInputType = {
   writeOperations?: true
   unavailableBehavior?: true
   lastVerifiedAt?: true
+  apiBaseUrl?: true
+  authType?: true
+  operationMapping?: true
+  lastHealthStatus?: true
+  lastHealthCode?: true
+  lastHealthAt?: true
+  lastError?: true
   configuredBy?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +227,18 @@ export type BotConnectorConfigurationAggregateArgs<ExtArgs extends runtime.Types
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BotConnectorConfigurationAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BotConnectorConfigurationSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BotConnectorConfigurationMinAggregateInputType
@@ -201,6 +269,8 @@ export type BotConnectorConfigurationGroupByArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   _count?: BotConnectorConfigurationCountAggregateInputType | true
+  _avg?: BotConnectorConfigurationAvgAggregateInputType
+  _sum?: BotConnectorConfigurationSumAggregateInputType
   _min?: BotConnectorConfigurationMinAggregateInputType
   _max?: BotConnectorConfigurationMaxAggregateInputType
 }
@@ -219,10 +289,19 @@ export type BotConnectorConfigurationGroupByOutputType = {
   writeOperations: string[]
   unavailableBehavior: string
   lastVerifiedAt: Date | null
+  apiBaseUrl: string | null
+  authType: string
+  operationMapping: runtime.JsonValue | null
+  lastHealthStatus: string | null
+  lastHealthCode: number | null
+  lastHealthAt: Date | null
+  lastError: string | null
   configuredBy: string | null
   createdAt: Date
   updatedAt: Date
   _count: BotConnectorConfigurationCountAggregateOutputType | null
+  _avg: BotConnectorConfigurationAvgAggregateOutputType | null
+  _sum: BotConnectorConfigurationSumAggregateOutputType | null
   _min: BotConnectorConfigurationMinAggregateOutputType | null
   _max: BotConnectorConfigurationMaxAggregateOutputType | null
 }
@@ -259,10 +338,18 @@ export type BotConnectorConfigurationWhereInput = {
   writeOperations?: Prisma.StringNullableListFilter<"BotConnectorConfiguration">
   unavailableBehavior?: Prisma.StringFilter<"BotConnectorConfiguration"> | string
   lastVerifiedAt?: Prisma.DateTimeNullableFilter<"BotConnectorConfiguration"> | Date | string | null
+  apiBaseUrl?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
+  authType?: Prisma.StringFilter<"BotConnectorConfiguration"> | string
+  operationMapping?: Prisma.JsonNullableFilter<"BotConnectorConfiguration">
+  lastHealthStatus?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
+  lastHealthCode?: Prisma.IntNullableFilter<"BotConnectorConfiguration"> | number | null
+  lastHealthAt?: Prisma.DateTimeNullableFilter<"BotConnectorConfiguration"> | Date | string | null
+  lastError?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
   configuredBy?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotConnectorConfiguration"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotConnectorConfiguration"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  credential?: Prisma.XOR<Prisma.BotConnectorCredentialNullableScalarRelationFilter, Prisma.BotConnectorCredentialWhereInput> | null
 }
 
 export type BotConnectorConfigurationOrderByWithRelationInput = {
@@ -279,10 +366,18 @@ export type BotConnectorConfigurationOrderByWithRelationInput = {
   writeOperations?: Prisma.SortOrder
   unavailableBehavior?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiBaseUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  authType?: Prisma.SortOrder
+  operationMapping?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastHealthStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastHealthCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastHealthAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastError?: Prisma.SortOrderInput | Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
+  credential?: Prisma.BotConnectorCredentialOrderByWithRelationInput
 }
 
 export type BotConnectorConfigurationWhereUniqueInput = Prisma.AtLeast<{
@@ -303,10 +398,18 @@ export type BotConnectorConfigurationWhereUniqueInput = Prisma.AtLeast<{
   writeOperations?: Prisma.StringNullableListFilter<"BotConnectorConfiguration">
   unavailableBehavior?: Prisma.StringFilter<"BotConnectorConfiguration"> | string
   lastVerifiedAt?: Prisma.DateTimeNullableFilter<"BotConnectorConfiguration"> | Date | string | null
+  apiBaseUrl?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
+  authType?: Prisma.StringFilter<"BotConnectorConfiguration"> | string
+  operationMapping?: Prisma.JsonNullableFilter<"BotConnectorConfiguration">
+  lastHealthStatus?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
+  lastHealthCode?: Prisma.IntNullableFilter<"BotConnectorConfiguration"> | number | null
+  lastHealthAt?: Prisma.DateTimeNullableFilter<"BotConnectorConfiguration"> | Date | string | null
+  lastError?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
   configuredBy?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotConnectorConfiguration"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotConnectorConfiguration"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  credential?: Prisma.XOR<Prisma.BotConnectorCredentialNullableScalarRelationFilter, Prisma.BotConnectorCredentialWhereInput> | null
 }, "id" | "organizationId_connectorKey">
 
 export type BotConnectorConfigurationOrderByWithAggregationInput = {
@@ -323,12 +426,21 @@ export type BotConnectorConfigurationOrderByWithAggregationInput = {
   writeOperations?: Prisma.SortOrder
   unavailableBehavior?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiBaseUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  authType?: Prisma.SortOrder
+  operationMapping?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastHealthStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastHealthCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastHealthAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastError?: Prisma.SortOrderInput | Prisma.SortOrder
   configuredBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BotConnectorConfigurationCountOrderByAggregateInput
+  _avg?: Prisma.BotConnectorConfigurationAvgOrderByAggregateInput
   _max?: Prisma.BotConnectorConfigurationMaxOrderByAggregateInput
   _min?: Prisma.BotConnectorConfigurationMinOrderByAggregateInput
+  _sum?: Prisma.BotConnectorConfigurationSumOrderByAggregateInput
 }
 
 export type BotConnectorConfigurationScalarWhereWithAggregatesInput = {
@@ -348,6 +460,13 @@ export type BotConnectorConfigurationScalarWhereWithAggregatesInput = {
   writeOperations?: Prisma.StringNullableListFilter<"BotConnectorConfiguration">
   unavailableBehavior?: Prisma.StringWithAggregatesFilter<"BotConnectorConfiguration"> | string
   lastVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotConnectorConfiguration"> | Date | string | null
+  apiBaseUrl?: Prisma.StringNullableWithAggregatesFilter<"BotConnectorConfiguration"> | string | null
+  authType?: Prisma.StringWithAggregatesFilter<"BotConnectorConfiguration"> | string
+  operationMapping?: Prisma.JsonNullableWithAggregatesFilter<"BotConnectorConfiguration">
+  lastHealthStatus?: Prisma.StringNullableWithAggregatesFilter<"BotConnectorConfiguration"> | string | null
+  lastHealthCode?: Prisma.IntNullableWithAggregatesFilter<"BotConnectorConfiguration"> | number | null
+  lastHealthAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BotConnectorConfiguration"> | Date | string | null
+  lastError?: Prisma.StringNullableWithAggregatesFilter<"BotConnectorConfiguration"> | string | null
   configuredBy?: Prisma.StringNullableWithAggregatesFilter<"BotConnectorConfiguration"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BotConnectorConfiguration"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BotConnectorConfiguration"> | Date | string
@@ -366,10 +485,18 @@ export type BotConnectorConfigurationCreateInput = {
   writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
   unavailableBehavior: string
   lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutBotConnectorsInput
+  credential?: Prisma.BotConnectorCredentialCreateNestedOneWithoutConnectorInput
 }
 
 export type BotConnectorConfigurationUncheckedCreateInput = {
@@ -386,9 +513,17 @@ export type BotConnectorConfigurationUncheckedCreateInput = {
   writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
   unavailableBehavior: string
   lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  credential?: Prisma.BotConnectorCredentialUncheckedCreateNestedOneWithoutConnectorInput
 }
 
 export type BotConnectorConfigurationUpdateInput = {
@@ -404,10 +539,18 @@ export type BotConnectorConfigurationUpdateInput = {
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutBotConnectorsNestedInput
+  credential?: Prisma.BotConnectorCredentialUpdateOneWithoutConnectorNestedInput
 }
 
 export type BotConnectorConfigurationUncheckedUpdateInput = {
@@ -424,9 +567,17 @@ export type BotConnectorConfigurationUncheckedUpdateInput = {
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  credential?: Prisma.BotConnectorCredentialUncheckedUpdateOneWithoutConnectorNestedInput
 }
 
 export type BotConnectorConfigurationCreateManyInput = {
@@ -443,6 +594,13 @@ export type BotConnectorConfigurationCreateManyInput = {
   writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
   unavailableBehavior: string
   lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -461,6 +619,13 @@ export type BotConnectorConfigurationUpdateManyMutationInput = {
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -480,6 +645,13 @@ export type BotConnectorConfigurationUncheckedUpdateManyInput = {
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -514,9 +686,20 @@ export type BotConnectorConfigurationCountOrderByAggregateInput = {
   writeOperations?: Prisma.SortOrder
   unavailableBehavior?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrder
+  apiBaseUrl?: Prisma.SortOrder
+  authType?: Prisma.SortOrder
+  operationMapping?: Prisma.SortOrder
+  lastHealthStatus?: Prisma.SortOrder
+  lastHealthCode?: Prisma.SortOrder
+  lastHealthAt?: Prisma.SortOrder
+  lastError?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BotConnectorConfigurationAvgOrderByAggregateInput = {
+  lastHealthCode?: Prisma.SortOrder
 }
 
 export type BotConnectorConfigurationMaxOrderByAggregateInput = {
@@ -531,6 +714,12 @@ export type BotConnectorConfigurationMaxOrderByAggregateInput = {
   lifecycle?: Prisma.SortOrder
   unavailableBehavior?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrder
+  apiBaseUrl?: Prisma.SortOrder
+  authType?: Prisma.SortOrder
+  lastHealthStatus?: Prisma.SortOrder
+  lastHealthCode?: Prisma.SortOrder
+  lastHealthAt?: Prisma.SortOrder
+  lastError?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -548,9 +737,24 @@ export type BotConnectorConfigurationMinOrderByAggregateInput = {
   lifecycle?: Prisma.SortOrder
   unavailableBehavior?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrder
+  apiBaseUrl?: Prisma.SortOrder
+  authType?: Prisma.SortOrder
+  lastHealthStatus?: Prisma.SortOrder
+  lastHealthCode?: Prisma.SortOrder
+  lastHealthAt?: Prisma.SortOrder
+  lastError?: Prisma.SortOrder
   configuredBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BotConnectorConfigurationSumOrderByAggregateInput = {
+  lastHealthCode?: Prisma.SortOrder
+}
+
+export type BotConnectorConfigurationScalarRelationFilter = {
+  is?: Prisma.BotConnectorConfigurationWhereInput
+  isNot?: Prisma.BotConnectorConfigurationWhereInput
 }
 
 export type BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput = {
@@ -613,6 +817,28 @@ export type BotConnectorConfigurationUpdatewriteOperationsInput = {
   push?: string | string[]
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type BotConnectorConfigurationCreateNestedOneWithoutCredentialInput = {
+  create?: Prisma.XOR<Prisma.BotConnectorConfigurationCreateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedCreateWithoutCredentialInput>
+  connectOrCreate?: Prisma.BotConnectorConfigurationCreateOrConnectWithoutCredentialInput
+  connect?: Prisma.BotConnectorConfigurationWhereUniqueInput
+}
+
+export type BotConnectorConfigurationUpdateOneRequiredWithoutCredentialNestedInput = {
+  create?: Prisma.XOR<Prisma.BotConnectorConfigurationCreateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedCreateWithoutCredentialInput>
+  connectOrCreate?: Prisma.BotConnectorConfigurationCreateOrConnectWithoutCredentialInput
+  upsert?: Prisma.BotConnectorConfigurationUpsertWithoutCredentialInput
+  connect?: Prisma.BotConnectorConfigurationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BotConnectorConfigurationUpdateToOneWithWhereWithoutCredentialInput, Prisma.BotConnectorConfigurationUpdateWithoutCredentialInput>, Prisma.BotConnectorConfigurationUncheckedUpdateWithoutCredentialInput>
+}
+
 export type BotConnectorConfigurationCreateWithoutOrganizationInput = {
   id?: string
   connectorKey: string
@@ -626,9 +852,17 @@ export type BotConnectorConfigurationCreateWithoutOrganizationInput = {
   writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
   unavailableBehavior: string
   lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  credential?: Prisma.BotConnectorCredentialCreateNestedOneWithoutConnectorInput
 }
 
 export type BotConnectorConfigurationUncheckedCreateWithoutOrganizationInput = {
@@ -644,9 +878,17 @@ export type BotConnectorConfigurationUncheckedCreateWithoutOrganizationInput = {
   writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
   unavailableBehavior: string
   lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  credential?: Prisma.BotConnectorCredentialUncheckedCreateNestedOneWithoutConnectorInput
 }
 
 export type BotConnectorConfigurationCreateOrConnectWithoutOrganizationInput = {
@@ -692,9 +934,136 @@ export type BotConnectorConfigurationScalarWhereInput = {
   writeOperations?: Prisma.StringNullableListFilter<"BotConnectorConfiguration">
   unavailableBehavior?: Prisma.StringFilter<"BotConnectorConfiguration"> | string
   lastVerifiedAt?: Prisma.DateTimeNullableFilter<"BotConnectorConfiguration"> | Date | string | null
+  apiBaseUrl?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
+  authType?: Prisma.StringFilter<"BotConnectorConfiguration"> | string
+  operationMapping?: Prisma.JsonNullableFilter<"BotConnectorConfiguration">
+  lastHealthStatus?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
+  lastHealthCode?: Prisma.IntNullableFilter<"BotConnectorConfiguration"> | number | null
+  lastHealthAt?: Prisma.DateTimeNullableFilter<"BotConnectorConfiguration"> | Date | string | null
+  lastError?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
   configuredBy?: Prisma.StringNullableFilter<"BotConnectorConfiguration"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BotConnectorConfiguration"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BotConnectorConfiguration"> | Date | string
+}
+
+export type BotConnectorConfigurationCreateWithoutCredentialInput = {
+  id?: string
+  connectorKey: string
+  name: string
+  provider?: string | null
+  requiredFor: string
+  required?: boolean
+  enabled?: boolean
+  lifecycle?: string
+  readOperations?: Prisma.BotConnectorConfigurationCreatereadOperationsInput | string[]
+  writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
+  unavailableBehavior: string
+  lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
+  configuredBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutBotConnectorsInput
+}
+
+export type BotConnectorConfigurationUncheckedCreateWithoutCredentialInput = {
+  id?: string
+  organizationId: string
+  connectorKey: string
+  name: string
+  provider?: string | null
+  requiredFor: string
+  required?: boolean
+  enabled?: boolean
+  lifecycle?: string
+  readOperations?: Prisma.BotConnectorConfigurationCreatereadOperationsInput | string[]
+  writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
+  unavailableBehavior: string
+  lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
+  configuredBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BotConnectorConfigurationCreateOrConnectWithoutCredentialInput = {
+  where: Prisma.BotConnectorConfigurationWhereUniqueInput
+  create: Prisma.XOR<Prisma.BotConnectorConfigurationCreateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedCreateWithoutCredentialInput>
+}
+
+export type BotConnectorConfigurationUpsertWithoutCredentialInput = {
+  update: Prisma.XOR<Prisma.BotConnectorConfigurationUpdateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedUpdateWithoutCredentialInput>
+  create: Prisma.XOR<Prisma.BotConnectorConfigurationCreateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedCreateWithoutCredentialInput>
+  where?: Prisma.BotConnectorConfigurationWhereInput
+}
+
+export type BotConnectorConfigurationUpdateToOneWithWhereWithoutCredentialInput = {
+  where?: Prisma.BotConnectorConfigurationWhereInput
+  data: Prisma.XOR<Prisma.BotConnectorConfigurationUpdateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedUpdateWithoutCredentialInput>
+}
+
+export type BotConnectorConfigurationUpdateWithoutCredentialInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  connectorKey?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredFor?: Prisma.StringFieldUpdateOperationsInput | string
+  required?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lifecycle?: Prisma.StringFieldUpdateOperationsInput | string
+  readOperations?: Prisma.BotConnectorConfigurationUpdatereadOperationsInput | string[]
+  writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
+  unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutBotConnectorsNestedInput
+}
+
+export type BotConnectorConfigurationUncheckedUpdateWithoutCredentialInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  connectorKey?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredFor?: Prisma.StringFieldUpdateOperationsInput | string
+  required?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lifecycle?: Prisma.StringFieldUpdateOperationsInput | string
+  readOperations?: Prisma.BotConnectorConfigurationUpdatereadOperationsInput | string[]
+  writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
+  unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
+  lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BotConnectorConfigurationCreateManyOrganizationInput = {
@@ -710,6 +1079,13 @@ export type BotConnectorConfigurationCreateManyOrganizationInput = {
   writeOperations?: Prisma.BotConnectorConfigurationCreatewriteOperationsInput | string[]
   unavailableBehavior: string
   lastVerifiedAt?: Date | string | null
+  apiBaseUrl?: string | null
+  authType?: string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: string | null
+  lastHealthCode?: number | null
+  lastHealthAt?: Date | string | null
+  lastError?: string | null
   configuredBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -728,9 +1104,17 @@ export type BotConnectorConfigurationUpdateWithoutOrganizationInput = {
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  credential?: Prisma.BotConnectorCredentialUpdateOneWithoutConnectorNestedInput
 }
 
 export type BotConnectorConfigurationUncheckedUpdateWithoutOrganizationInput = {
@@ -746,9 +1130,17 @@ export type BotConnectorConfigurationUncheckedUpdateWithoutOrganizationInput = {
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  credential?: Prisma.BotConnectorCredentialUncheckedUpdateOneWithoutConnectorNestedInput
 }
 
 export type BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationInput = {
@@ -764,6 +1156,13 @@ export type BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationInput
   writeOperations?: Prisma.BotConnectorConfigurationUpdatewriteOperationsInput | string[]
   unavailableBehavior?: Prisma.StringFieldUpdateOperationsInput | string
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  apiBaseUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authType?: Prisma.StringFieldUpdateOperationsInput | string
+  operationMapping?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  lastHealthStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastHealthCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  lastHealthAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   configuredBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -785,10 +1184,18 @@ export type BotConnectorConfigurationSelect<ExtArgs extends runtime.Types.Extens
   writeOperations?: boolean
   unavailableBehavior?: boolean
   lastVerifiedAt?: boolean
+  apiBaseUrl?: boolean
+  authType?: boolean
+  operationMapping?: boolean
+  lastHealthStatus?: boolean
+  lastHealthCode?: boolean
+  lastHealthAt?: boolean
+  lastError?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  credential?: boolean | Prisma.BotConnectorConfiguration$credentialArgs<ExtArgs>
 }, ExtArgs["result"]["botConnectorConfiguration"]>
 
 export type BotConnectorConfigurationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -805,6 +1212,13 @@ export type BotConnectorConfigurationSelectCreateManyAndReturn<ExtArgs extends r
   writeOperations?: boolean
   unavailableBehavior?: boolean
   lastVerifiedAt?: boolean
+  apiBaseUrl?: boolean
+  authType?: boolean
+  operationMapping?: boolean
+  lastHealthStatus?: boolean
+  lastHealthCode?: boolean
+  lastHealthAt?: boolean
+  lastError?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -825,6 +1239,13 @@ export type BotConnectorConfigurationSelectUpdateManyAndReturn<ExtArgs extends r
   writeOperations?: boolean
   unavailableBehavior?: boolean
   lastVerifiedAt?: boolean
+  apiBaseUrl?: boolean
+  authType?: boolean
+  operationMapping?: boolean
+  lastHealthStatus?: boolean
+  lastHealthCode?: boolean
+  lastHealthAt?: boolean
+  lastError?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -845,14 +1266,22 @@ export type BotConnectorConfigurationSelectScalar = {
   writeOperations?: boolean
   unavailableBehavior?: boolean
   lastVerifiedAt?: boolean
+  apiBaseUrl?: boolean
+  authType?: boolean
+  operationMapping?: boolean
+  lastHealthStatus?: boolean
+  lastHealthCode?: boolean
+  lastHealthAt?: boolean
+  lastError?: boolean
   configuredBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BotConnectorConfigurationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "connectorKey" | "name" | "provider" | "requiredFor" | "required" | "enabled" | "lifecycle" | "readOperations" | "writeOperations" | "unavailableBehavior" | "lastVerifiedAt" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botConnectorConfiguration"]>
+export type BotConnectorConfigurationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "connectorKey" | "name" | "provider" | "requiredFor" | "required" | "enabled" | "lifecycle" | "readOperations" | "writeOperations" | "unavailableBehavior" | "lastVerifiedAt" | "apiBaseUrl" | "authType" | "operationMapping" | "lastHealthStatus" | "lastHealthCode" | "lastHealthAt" | "lastError" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botConnectorConfiguration"]>
 export type BotConnectorConfigurationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  credential?: boolean | Prisma.BotConnectorConfiguration$credentialArgs<ExtArgs>
 }
 export type BotConnectorConfigurationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -865,6 +1294,7 @@ export type $BotConnectorConfigurationPayload<ExtArgs extends runtime.Types.Exte
   name: "BotConnectorConfiguration"
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
+    credential: Prisma.$BotConnectorCredentialPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -880,6 +1310,13 @@ export type $BotConnectorConfigurationPayload<ExtArgs extends runtime.Types.Exte
     writeOperations: string[]
     unavailableBehavior: string
     lastVerifiedAt: Date | null
+    apiBaseUrl: string | null
+    authType: string
+    operationMapping: runtime.JsonValue | null
+    lastHealthStatus: string | null
+    lastHealthCode: number | null
+    lastHealthAt: Date | null
+    lastError: string | null
     configuredBy: string | null
     createdAt: Date
     updatedAt: Date
@@ -1278,6 +1715,7 @@ readonly fields: BotConnectorConfigurationFieldRefs;
 export interface Prisma__BotConnectorConfigurationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  credential<T extends Prisma.BotConnectorConfiguration$credentialArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BotConnectorConfiguration$credentialArgs<ExtArgs>>): Prisma.Prisma__BotConnectorCredentialClient<runtime.Types.Result.GetResult<Prisma.$BotConnectorCredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1320,6 +1758,13 @@ export interface BotConnectorConfigurationFieldRefs {
   readonly writeOperations: Prisma.FieldRef<"BotConnectorConfiguration", 'String[]'>
   readonly unavailableBehavior: Prisma.FieldRef<"BotConnectorConfiguration", 'String'>
   readonly lastVerifiedAt: Prisma.FieldRef<"BotConnectorConfiguration", 'DateTime'>
+  readonly apiBaseUrl: Prisma.FieldRef<"BotConnectorConfiguration", 'String'>
+  readonly authType: Prisma.FieldRef<"BotConnectorConfiguration", 'String'>
+  readonly operationMapping: Prisma.FieldRef<"BotConnectorConfiguration", 'Json'>
+  readonly lastHealthStatus: Prisma.FieldRef<"BotConnectorConfiguration", 'String'>
+  readonly lastHealthCode: Prisma.FieldRef<"BotConnectorConfiguration", 'Int'>
+  readonly lastHealthAt: Prisma.FieldRef<"BotConnectorConfiguration", 'DateTime'>
+  readonly lastError: Prisma.FieldRef<"BotConnectorConfiguration", 'String'>
   readonly configuredBy: Prisma.FieldRef<"BotConnectorConfiguration", 'String'>
   readonly createdAt: Prisma.FieldRef<"BotConnectorConfiguration", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BotConnectorConfiguration", 'DateTime'>
@@ -1721,6 +2166,25 @@ export type BotConnectorConfigurationDeleteManyArgs<ExtArgs extends runtime.Type
    * Limit how many BotConnectorConfigurations to delete.
    */
   limit?: number
+}
+
+/**
+ * BotConnectorConfiguration.credential
+ */
+export type BotConnectorConfiguration$credentialArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BotConnectorCredential
+   */
+  select?: Prisma.BotConnectorCredentialSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BotConnectorCredential
+   */
+  omit?: Prisma.BotConnectorCredentialOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BotConnectorCredentialInclude<ExtArgs> | null
+  where?: Prisma.BotConnectorCredentialWhereInput
 }
 
 /**

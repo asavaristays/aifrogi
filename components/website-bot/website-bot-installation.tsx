@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Profile = { status?: string | null; installationKey?: string | null; installationDetectedAt?: string | Date | null; liveAt?: string | Date | null; channels?: string[] };
+type CoreCertification = { questionCount: number; passed: number; score: number | null; eligible: boolean; blockers: string[] };
 
-export function WebsiteBotInstallation({ organizationId, slug, profile, superAdmin = false, sectionId }: { organizationId?: string; slug: string; profile?: Profile | null; superAdmin?: boolean; sectionId?: string }) {
+export function WebsiteBotInstallation({ organizationId, slug, profile, superAdmin = false, sectionId, coreCertification }: { organizationId?: string; slug: string; profile?: Profile | null; superAdmin?: boolean; sectionId?: string; coreCertification?: CoreCertification }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
@@ -17,7 +18,7 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
   const status = profile.status || "DRAFT";
   const detected = Boolean(profile.installationDetectedAt);
   const live = status === "LIVE";
-  const approvalAvailable = ["INSTALLATION_READY", "INSTALLATION_DETECTED", "PAUSED"].includes(status);
+  const approvalAvailable = ["REVIEW_PENDING", "PAUSED"].includes(status);
   const statusLabel = status === "CONFIGURED" ? "APPROVAL REQUIRED" : status.replaceAll("_", " ");
 
   async function copy(value: string, label: string) {
@@ -48,8 +49,8 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
     <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-black/7 bg-black/7 sm:grid-cols-4">{[
       ["1", "Delivery links generated", Boolean(profile.installationKey)], ["2", "Website installed (optional)", detected], ["3", "Super Admin approved", live], ["4", "AI Bot live", live]
     ].map(([number, label, complete]) => <div key={String(number)} className="bg-[#fbfcfb] p-4"><span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-black ${complete ? "bg-[#dff2ea] text-[#16794a]" : "bg-[#eeeae0] text-[#68645c]"}`}>{complete ? "✓" : number}</span><p className="mt-3 text-sm font-semibold">{label}</p></div>)}</div>
-    {superAdmin ? <div className="mt-6 flex flex-wrap gap-3">{approvalAvailable ? <Action disabled={saving} onClick={() => act("MAKE_LIVE")}>Approve and Make Bot Live</Action> : null}{!live && status !== "DELETED" ? <Action danger disabled={saving} onClick={declineApproval}>Not Approved · Request Correction</Action> : null}{live ? <Action disabled={saving} onClick={() => act("PAUSE")}>Pause Bot</Action> : null}{status !== "DELETED" ? <Action danger disabled={saving} onClick={() => act("DELETE")}>Delete Bot</Action> : <Action disabled={saving} onClick={() => act("RESTORE")}>Restore Bot</Action>}</div> : <p className="mt-5 rounded-lg border border-[#ded8cb] bg-[#f8f0d8] p-4 text-sm leading-6 text-[#5f4a18]">These embed options remain available after installation. AiFrogi detects valid website loads automatically; installation status appears above when the code is active.</p>}
-    {superAdmin && status === "CONFIGURED" ? <Action disabled={saving} onClick={() => act("MAKE_LIVE")}>Review and make live</Action> : null}
+    {superAdmin && coreCertification ? <div className={`mt-5 rounded-lg border p-4 ${coreCertification.eligible ? "border-[#b9dfcf] bg-[#edf8f3]" : "border-[#efc8c3] bg-[#fff2f0]"}`}><div className="flex flex-wrap items-center justify-between gap-3"><strong className="text-sm">Core pre-live certification</strong><span className={`status-pill ${coreCertification.eligible ? "status-success" : "status-error"}`}>{coreCertification.passed}/{coreCertification.questionCount} passed</span></div><p className="mt-2 text-xs leading-5 text-[#68645c]">{coreCertification.eligible ? `Shared answer, safety, context and recovery gates passed${coreCertification.score === null ? "" : ` at ${coreCertification.score}%`}. Tenant facts and test evidence are checked separately when you approve.` : coreCertification.blockers.join(" ")}</p></div> : null}
+    {superAdmin ? <div className="mt-6 flex flex-wrap gap-3">{approvalAvailable ? <Action disabled={saving || coreCertification?.eligible === false} onClick={() => act("MAKE_LIVE")}>Approve and Make Bot Live</Action> : null}{!live && status !== "DELETED" ? <Action danger disabled={saving} onClick={declineApproval}>Not Approved · Request Correction</Action> : null}{live ? <Action disabled={saving} onClick={() => act("PAUSE")}>Pause Bot</Action> : null}{status !== "DELETED" ? <Action danger disabled={saving} onClick={() => act("DELETE")}>Delete Bot</Action> : <Action disabled={saving} onClick={() => act("RESTORE")}>Restore Bot</Action>}</div> : <p className="mt-5 rounded-lg border border-[#ded8cb] bg-[#f8f0d8] p-4 text-sm leading-6 text-[#5f4a18]">These embed options remain available after installation. AiFrogi detects valid website loads automatically; installation status appears above when the code is active.</p>}
     {superAdmin && live ? <div className="mt-3"><Action disabled={saving} onClick={() => act("RESEND_LIVE_EMAIL")}>Retry live email</Action></div> : null}
     {message ? <p role="status" className={`mt-4 text-sm font-semibold ${message.includes("could not") || message.includes("required") ? "text-[#a3342b]" : "text-[#16794a]"}`}>{message}</p> : null}
   </section>;

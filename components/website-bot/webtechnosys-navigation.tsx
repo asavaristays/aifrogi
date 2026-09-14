@@ -8,7 +8,7 @@ import styles from './webtechnosys-navigation.module.css';
 const icons: Record<WidgetMenuIcon, ReactNode> = { sparkles: <Sparkles aria-hidden="true" />, training: <GraduationCap aria-hidden="true" />, film: <Film aria-hidden="true" />, grid: <LayoutGrid aria-hidden="true" />, phone: <Phone aria-hidden="true" />, link: <LinkIcon aria-hidden="true" />, mail: <Mail aria-hidden="true" />, chat: <MessageCircle aria-hidden="true" /> };
 function destination(item: WidgetMenuItem) { if (item.action === 'CALL') return `tel:${item.value}`; if (item.action === 'EMAIL') return `mailto:${item.value}`; return item.value || '#'; }
 
-export function WebtechnosysNavigation({ onChat, onFlow, menu }: { onChat: () => void; onFlow: (message: string) => void; menu: WidgetMenuConfig }) {
+export function WebtechnosysNavigation({ onChat, onFlow, onBooking, menu }: { onChat: () => void; onFlow: (message: string) => void; onBooking: (item: WidgetMenuItem) => void; menu: WidgetMenuConfig }) {
   const [submenu, setSubmenu] = useState<WidgetMenuItem | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
@@ -16,6 +16,7 @@ export function WebtechnosysNavigation({ onChat, onFlow, menu }: { onChat: () =>
   const items = submenu?.children || menu.items;
   function option(item: WidgetMenuItem) {
     if (item.action === 'CHAT') return <button key={item.id} type="button" className={styles.option} data-featured={item.featured} onClick={onChat}>{icons[item.icon]}<span>{item.label}</span><MessageCircle aria-hidden="true" /></button>;
+    if (item.action === 'BOOKING') return <button key={item.id} type="button" className={styles.option} data-featured={item.featured} onClick={() => onBooking(item)}>{icons[item.icon]}<span>{item.label}</span><ChevronRight aria-hidden="true" /></button>;
     if (item.action === 'FLOW') return <button key={item.id} type="button" className={styles.option} data-featured={item.featured} onClick={() => onFlow(item.value || item.label)}>{icons[item.icon]}<span>{item.label}</span><ChevronRight aria-hidden="true" /></button>;
     if (item.action === 'SUBMENU') return <button key={item.id} type="button" className={styles.option} data-featured={item.featured} onClick={() => setSubmenu(item)}>{icons[item.icon]}<span>{item.label}</span><ChevronRight aria-hidden="true" /></button>;
     const external = item.action === 'LINK';

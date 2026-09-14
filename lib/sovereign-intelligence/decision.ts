@@ -19,7 +19,8 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   const normalized = question.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
   if (/^(hi|hello|hey|good morning|good afternoon|good evening|good night|namaste)( there)?$/.test(normalized)) return "GREETING";
   if (/\b(who are you|what are you|your name|are you (a |an )?(bot|ai)|introduce yourself)\b/.test(normalized)) return "IDENTITY";
-  if (/\b(human|real person|team member|agent|call me|contact me|talk to someone|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
+  const rejectsHumanContact = /\b(?:do not|don t|dont|no|not)\s+(?:call|contact|phone|ring|message|arrange|schedule)|\b(?:do not|don t|dont)\s+(?:want|need)\s+(?:a\s+)?(?:call|callback|human|agent)\b/.test(normalized);
+  if (!rejectsHumanContact && /\b(human|real person|person to help|someone to help|team member|agent|call me|contact me|talk to someone|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
   if (/\b(contact (details|information|number)|phone number|mobile number|telephone( number)?|email( address)?|office address|business address|share (your )?address|where (are|r) (you|u) based|where (is|s) (the )?(office|business|company)|location|opening hours|business hours|website address)\b/.test(normalized)) return "CONTACT_INFO";
   if (/\b(password|otp|one time password|card number|cvv|medical emergency|legal dispute|complaint|system prompt|developer prompt|api key|secret key|access token|all customers|all bookings|all conversations|another customer|other customers|customer before me)\b/.test(normalized)) return "SENSITIVE";
   if (/\b(weather|temperature|forecast|rain today|cricket (score|match)|football (score|match)|who won( the)? (game|match)|stock price|share price|election result|horoscope|recipe|movie showtime)\b/.test(normalized)) return "OFF_TOPIC";
@@ -27,7 +28,7 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   // as a new question rather than requiring conversation history that it does
   // not need (for example, "share training program details").
   if (/^(give|send|share|show|provide|explain|describe)\b/.test(normalized) && EXPLICIT_BUSINESS_SUBJECT.test(normalized)) return "BUSINESS";
-  if (/\b(you already (have|know)|already have context|as i said|as mentioned|previous question|earlier question|use the context|same question|tell me more about (it|that))\b/.test(normalized)) return "CONTEXT_FOLLOW_UP";
+  if (/\b(you already (have|know)|already have context|as i said|as mentioned|previous question|earlier question|use the context|same question|same (?:date|dates|time|details|option|room|package) as before|tell me more about (it|that))\b/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/^(when|where)( and (when|where))? (is|are) (it|that|this|they|those)( please)?$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/^(give|send|share|show|open|provide|what about|how about|and|i want|i need)\b.{0,45}\b(link|url|details|price|cost|specific date|date|time|slot|booking|book|register|registration|it|that|this)( please)?$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   // Recognise ordinary plural and vertical vocabulary when recovering a topic.

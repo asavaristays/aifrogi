@@ -23,7 +23,10 @@ export async function POST(request: Request) {
   let menu = settings.widgetMenu || defaultWidgetMenu(slug);
   try {
     if (payload?.action === "create") {
-      const flow = newTenantFlow(payload.templateKey || "SERVICE_ADVISOR");
+      const templateKey = payload.templateKey || "SERVICE_ADVISOR";
+      const existingDraft = templateKey === "CUSTOM_FLOW" ? undefined : flows.find(item => item.templateKey === templateKey && item.status === "DRAFT");
+      if (existingDraft) return NextResponse.json({ ok: true, reused: true, flow: existingDraft, flows });
+      const flow = newTenantFlow(templateKey);
       flows.push(flow);
       await writeKnowledgeSettings(slug, { tenantFlows: flows });
       return NextResponse.json({ ok: true, flow, flows });

@@ -46,7 +46,7 @@ export async function getInvitation(token: string) {
   if (!db || !token) return null;
   return db.organizationMember.findUnique({
     where: { invitationTokenHash: tokenHash(token) },
-    select: { id: true, email: true, name: true, role: true, status: true, invitedBy: true, invitationExpiresAt: true, organization: { select: { id: true, name: true, status: true, createdAt: true } } }
+    select: { id: true, email: true, name: true, role: true, status: true, invitedBy: true, invitationExpiresAt: true, organization: { select: { id: true, name: true, website: true, status: true, createdAt: true } } }
   });
 }
 
@@ -62,7 +62,7 @@ export async function activateInvitation(token: string, password: string) {
       data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
       select: { email: true, name: true, role: true, organizationId: true }
     });
-    let installation: { companyName: string; propertySlug: string; installationKey: string } | null = null;
+    let installation: { companyName: string; propertySlug: string; installationKey: string; website: string | null } | null = null;
     if (invitation.invitedBy === SELF_SERVICE_REGISTRATION) {
       await tx.organization.update({ where: { id: invitation.organization.id }, data: { status: "ONBOARDING" } });
       await tx.onboardingProfile.update({ where: { organizationId: invitation.organization.id }, data: { lifecycleStatus: "DRAFT", currentStep: 1, progressPercent: 10 } });
@@ -73,7 +73,7 @@ export async function activateInvitation(token: string, password: string) {
         const profile = await tx.botProfile.findUnique({ where: { organizationId: invitation.organization.id }, select: { installationKey: true } });
         const installationKey = profile?.installationKey || randomBytes(24).toString("base64url");
         if (!profile?.installationKey) await tx.botProfile.update({ where: { organizationId: invitation.organization.id }, data: { installationKey } });
-        installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey };
+        installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey, website: invitation.organization.website };
         const schedule = (day: number) => new Date(invitation.organization.createdAt.getTime() + day * 24 * 60 * 60 * 1000);
         for (const day of [TRIAL_UPGRADE_REMINDER_DAY, TRIAL_DAYS]) {
           await tx.automationJob.upsert({

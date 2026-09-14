@@ -9,3 +9,10 @@ for (const file of ["app/api/auth/register/route.ts", "app/api/auth/invitation/r
     assert.match(source, /process\.env\.NODE_ENV === "production" \? "https:\/\/app\.aifrogi\.com"/);
   });
 }
+
+test("verified trial activation prepares website knowledge for review", () => {
+  const route = readFileSync(resolve(process.cwd(), "app/api/auth/invitation/route.ts"), "utf8");
+  assert.match(route, /TRIAL_WEBSITE_KNOWLEDGE_PREPARED/);
+  assert.match(route, /no answer was auto-approved/);
+  assert.match(route, /getWebsiteKnowledgeBase\(propertySlug, true\)/);
+});

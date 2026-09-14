@@ -117,21 +117,33 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
     };
   }
 
-  if (!organization.ownerMobile || !organization.website) {
+  if (!organization.ownerMobile) {
     return {
       title: "Complete company basics",
-      description: "Add the owner mobile number and business website so the private workspace has an accountable contact and a source to teach from.",
+      description: "Add the owner mobile number so the private workspace has an accountable contact. A website remains optional for standalone bots.",
       action: "Update organization",
       owner: "You",
       step: 1,
       tone: "urgent",
       eta: "3 minutes",
-      supportNote: "Owner contact or website is incomplete."
+      supportNote: "Owner contact is incomplete; a website is optional."
     };
   }
 
   if (!usesWhatsApp) {
-    if (organization.botProfile?.status !== "CONFIGURED") {
+    if (organization.botProfile?.status === "REVIEW_PENDING") {
+      return {
+        title: "Client submission ready for review",
+        description: "The client approved the prepared intelligence and submitted this bot. Super Admin must review it before activation.",
+        action: "Review and approve bot",
+        owner: "AiFrogi",
+        step: 6,
+        tone: "waiting",
+        eta: "Same business day",
+        supportNote: "The bot remains private until Super Admin approval."
+      };
+    }
+    if (!organization.botProfile || organization.botProfile.status === "DRAFT") {
       return {
         title: "Design your AI Business Bot",
         description: "Set the bot's business purpose, customer-facing identity and human handover rules before adding intelligence.",
@@ -143,7 +155,16 @@ export function getOnboardingGuidance(organization: OnboardingGuidanceOrganizati
         supportNote: "A Website AI Bot does not require business verification, a WhatsApp number or a Meta account."
       };
     }
-    return {
+    return organization.botProfile.status === "LIVE" ? {
+      title: "AI Bot is live",
+      description: "The bot was approved and may serve customers while its trial or subscription remains active.",
+      action: "Monitor bot",
+      owner: "You",
+      step: 6,
+      tone: "ready",
+      eta: "Live",
+      supportNote: "Monitor answers, leads, support and credits."
+    } : {
       title: "Build approved business intelligence",
       description: "Your Website AI Bot profile is ready. Add and approve business sources, test safe answers, and then publish the widget.",
       action: "Open intelligence",

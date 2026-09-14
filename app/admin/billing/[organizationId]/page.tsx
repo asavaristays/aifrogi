@@ -56,6 +56,17 @@ export default async function AdminCustomerBillingPage({ params }: { params: Pro
       </div>
     </section>
 
+    <section className="rounded-[26px] border border-white/70 bg-white p-6">
+      <p className="product-eyebrow">Tenant model economics</p>
+      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <Metric label="Input tokens" value={billing.modelUsage.inputTokens.toLocaleString("en-IN")} />
+        <Metric label="Output tokens" value={billing.modelUsage.outputTokens.toLocaleString("en-IN")} />
+        <Metric label="Model attempts" value={billing.modelUsage.attempts.toLocaleString("en-IN")} />
+        <Metric label="Estimated cost" value={formatMoney(billing.modelUsage.estimatedCostPaisa)} />
+      </div>
+      <p className="mt-4 text-xs leading-5 text-[#68645c]">Cost is calculated from configured input/output token rates. A missing rate records tokens but reports ₹0 rather than inventing a price.</p>
+    </section>
+
     <BillingControls
       organizationId={organization.id}
       plans={plans.map((plan) => ({ code: plan.code, name: plan.name, amountPaisa: plan.amountPaisa }))}

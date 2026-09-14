@@ -6,12 +6,12 @@ test("website bot checklist uses recorded test and installation evidence", () =>
   const setup = readFileSync("app/(app)/setup/page.tsx", "utf8");
   assert.match(setup, /WEBSITE_BOT_TEST_COMPLETED/);
   assert.match(setup, /sovereignAnswerEvidence\.findFirst/);
-  assert.match(setup, /installationDetectedAt/);
+  assert.match(setup, /installationKey/);
   assert.match(setup, /WebsiteBotInstallation/);
   assert.match(setup, /BotBehaviourSettings/);
   assert.match(setup, /Five steps to prepare your bot/);
   assert.match(setup, /sectionId="website-installation"/);
-  assert.match(setup, /View embed options/);
+  assert.match(setup, /View delivery options/);
   assert.doesNotMatch(setup, /ready:\s*false/);
 });
 

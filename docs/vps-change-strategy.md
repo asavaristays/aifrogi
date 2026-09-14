@@ -38,6 +38,7 @@ The hotfix must remain isolated, tested and reversible. It still requires explic
 - Verify the actual client journey in Chrome after deployment.
 - Remove only the exact temporary stage after verification; retain the rollback backup.
 - Use a new static asset filename whenever an existing asset has immutable cache headers.
+- For explicitly authorized AiFrogi VPS releases, use the user-approved saved local credential file when key authentication is unavailable. Never copy its secret into source, documentation, logs or chat output.
 
 ## 4. Cost and context controls
 

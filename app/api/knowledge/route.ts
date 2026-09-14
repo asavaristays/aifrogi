@@ -45,6 +45,7 @@ export async function PATCH(request: Request) {
       welcomeCardImageUrl: typeof payload?.welcomeCardImageUrl === "string" ? payload.welcomeCardImageUrl : undefined,
       welcomeCardTitle: typeof payload?.welcomeCardTitle === "string" ? payload.welcomeCardTitle : undefined,
       welcomeCardText: typeof payload?.welcomeCardText === "string" ? payload.welcomeCardText : undefined,
+      showcaseItems: Array.isArray(payload?.showcaseItems) ? payload.showcaseItems as never : undefined,
       status: typeof payload?.sourceUrl === "string" ? "DRAFT" : undefined
     });
     return NextResponse.json({ ok: true, settings });

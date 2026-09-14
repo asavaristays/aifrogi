@@ -55,7 +55,7 @@ export function RegisterClient() {
           <div className="mt-9 divide-y divide-[#ded8cb] border-y border-[#ded8cb]">
             <FlowRow number="1" title="Verify ownership" copy="A private 24-hour link is sent to your work email." />
             <FlowRow number="2" title="Prepare business intelligence" copy="Approve trusted sources, persona, customer journey and human handover rules." />
-            <FlowRow number="3" title="Install and verify" copy="Copy JavaScript, iFrame or WordPress code; AiFrogi detects it before Super Admin enables live traffic." />
+            <FlowRow number="3" title="Submit for approval" copy="Test the prepared bot, submit it to Super Admin, then publish by standalone link, website embed, or both." />
           </div>
           <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>15 days only:</strong> after the trial, widget responses and automation pause automatically until a paid plan is activated. Your data remains preserved. No email password, permanent token, or OTP is requested.</p>
         </section>
@@ -73,13 +73,13 @@ export function RegisterClient() {
             <>
               <p className="text-sm font-semibold text-[#8a6a16]">Business registration</p>
               <h2 className="mt-2 text-2xl font-semibold">Tell us who owns this workspace</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Business verification and website installation details come after secure account activation.</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Use genuine owner details. Duplicate, placeholder and temporary-email registrations are rejected.</p>
               <form className="mt-7 grid gap-4 sm:grid-cols-2" onSubmit={submit}>
                 <Field label="Company name"><input name="companyName" className="product-input mt-2" autoComplete="organization" required /></Field>
                 <Field label="Owner name"><input name="ownerName" className="product-input mt-2" autoComplete="name" required /></Field>
                 <Field label="Work email"><input name="ownerEmail" className="product-input mt-2" type="email" autoComplete="email" required /></Field>
-                <Field label="Mobile"><input name="ownerMobile" className="product-input mt-2" type="tel" autoComplete="tel" placeholder="+91" /></Field>
-                <Field label="Business website" wide><input name="website" className="product-input mt-2" type="text" inputMode="url" autoComplete="url" placeholder="https://example.com" required /></Field>
+                <Field label="Mobile"><input name="ownerMobile" className="product-input mt-2" type="tel" autoComplete="tel" placeholder="+91" required /></Field>
+                <Field label="Business website (optional)" wide><input name="website" className="product-input mt-2" type="text" inputMode="url" autoComplete="url" placeholder="https://yourbusiness.com" /><small className="mt-1 block text-[11px] text-[var(--text-muted)]">If provided, AiFrogi prepares public website knowledge after email verification. You review every answer before submission.</small></Field>
                 <Field label="Select your AI Bot" wide><select name="botCategory" className="product-input mt-2" defaultValue="BUSINESS_AI">{botOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
                 <Field label="Industry"><select name="industry" className="product-input mt-2" defaultValue="Hospitality">{industries.map((industry) => <option key={industry}>{industry}</option>)}</select></Field>
                 <Field label="Country"><select name="country" className="product-input mt-2" defaultValue="India"><option>India</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Other</option></select></Field>

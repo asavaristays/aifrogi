@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { getTenantUsageCostSummary } from "@/lib/tenant-usage-metering";
 import { getActiveAiCreditTotal, getAiCreditSummary } from "@/lib/ai-credits";
 import { Prisma } from "../generated/prisma/client";
 import { TRIAL_DAYS } from "@/lib/trial-policy";
@@ -566,6 +567,7 @@ export async function getCustomerBillingDetail(organizationId: string) {
   });
   if (!organization?.subscription) return null;
   const usage = await getOrganizationUsage(organizationId, organization.subscription.currentPeriodStart, organization.subscription.currentPeriodEnd);
+  const modelUsage = await getTenantUsageCostSummary(organizationId, organization.subscription.currentPeriodStart || organization.subscription.createdAt, organization.subscription.currentPeriodEnd || new Date());
   const limits = readLimits(organization.subscription.plan.limits);
   if (organization.subscription.aiReplyLimitOverride !== null) limits.aiReplies = organization.subscription.aiReplyLimitOverride;
   const aiCredits = await getAiCreditSummary({ organizationId, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies });
@@ -574,7 +576,8 @@ export async function getCustomerBillingDetail(organizationId: string) {
     subscription: organization.subscription,
     limits,
     usage,
-    aiCredits
+    aiCredits,
+    modelUsage
   };
 }
 
@@ -604,6 +607,9 @@ export async function getBillingCommandCenter() {
       ? await getOrganizationUsage(organization.id, subscription.currentPeriodStart, subscription.currentPeriodEnd)
       : emptyUsage();
     const aiCredits = await getAiCreditSummary({ organizationId: organization.id, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies });
+    const modelUsage = subscription
+      ? await getTenantUsageCostSummary(organization.id, subscription.currentPeriodStart || subscription.createdAt, subscription.currentPeriodEnd || new Date())
+      : { inputTokens: 0, outputTokens: 0, attempts: 0, latencyMs: 0, estimatedCostPaisa: 0 };
     const failedMessages = await db.leadMessage.count({
       where: { lead: { property: { organizationId: organization.id } }, deliveryStatus: { startsWith: "failed" } }
     });
@@ -621,7 +627,7 @@ export async function getBillingCommandCenter() {
       usage,
       limits: { ...limits, aiReplies: limits.aiReplies + aiCredits.granted }
     });
-    return { organization, subscription, limits, usage, aiCredits, health, failedMessages, deadJobs };
+    return { organization, subscription, limits, usage, aiCredits, modelUsage, health, failedMessages, deadJobs };
   }));
 
   const [incidents, auditLogs] = await Promise.all([

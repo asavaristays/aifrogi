@@ -13,6 +13,7 @@ import { getDb } from "@/lib/db";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { getClientSupportUpdates } from "@/lib/support-notifications";
 import { dateLabelForTimeZone, greetingForTimeZone } from "@/lib/greeting";
+import { resolveReportPeriod, websiteLeadsForPeriod } from "@/lib/website-reporting";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,7 +33,10 @@ export default async function DashboardPage() {
     db && workspaceProperty ? db.sovereignAnswerEvidence.findFirst({ where: { propertyId: workspaceProperty.id }, select: { id: true } }) : Promise.resolve(null)
   ]);
   const leads = allLeads.filter((lead) => Boolean(lead.websiteSession) || /website|ai bot/i.test(lead.source));
-  const metrics = buildConversationMetrics(leads);
+  const queueMetrics = buildConversationMetrics(leads);
+  const todayLeads = websiteLeadsForPeriod(leads, resolveReportPeriod("today").since);
+  const todayMetrics = buildConversationMetrics(todayLeads);
+  const metrics = { ...todayMetrics, unanswered: queueMetrics.unanswered };
   const recent = [...leads].sort((a, b) => +new Date(b.updatedAtIso) - +new Date(a.updatedAtIso)).slice(0, 5);
   const connected = organization?.botProfile?.status === "LIVE";
   const openTickets = tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status));
@@ -41,7 +45,7 @@ export default async function DashboardPage() {
   const humanResponse = buildHumanResponseReport({ leads: allLeads, slaMinutes: organization?.botProfile?.responseSlaMinutes, reminderPercent: organization?.botProfile?.reminderPercent, fallbackEnabled: organization?.botProfile?.fallbackEnabled });
 
   const attention: DashboardAttention[] = [];
-  if (metrics.unanswered) attention.push({ title: `${metrics.unanswered} conversation${metrics.unanswered === 1 ? "" : "s"} waiting`, reason: "The customer's latest message has not received a reply.", action: "Reply now", href: "/team-inbox", tone: "urgent", owner: "You" });
+  if (queueMetrics.unanswered) attention.push({ title: `${queueMetrics.unanswered} conversation${queueMetrics.unanswered === 1 ? "" : "s"} waiting`, reason: "The customer's latest message has not received a reply.", action: "Reply now", href: "/team-inbox", tone: "urgent", owner: "You" });
   if (humanResponse.overdue) attention.unshift({ title: `${humanResponse.overdue} human response SLA ${humanResponse.overdue === 1 ? "breach" : "breaches"}`, reason: `Oldest customer has waited ${humanResponse.oldestWaitingMinutes} minutes. ${humanResponse.fallbackEligible ? `${humanResponse.fallbackEligible} approved fallback candidate${humanResponse.fallbackEligible === 1 ? "" : "s"}.` : "Fallback sending remains disabled."}`, action: "Open response report", href: "/dashboard#human-response", tone: "urgent", owner: "You" });
   if (!knowledge.pages.length) attention.push({ title: "Knowledge is not ready", reason: "Sync the approved business website before enabling grounded AI answers.", action: "Set up knowledge", href: "/knowledge", tone: "waiting", owner: "You" });
   if (!botReadiness.ready) attention.push({ title: `Bot readiness is ${botReadiness.percent}%`, reason: `${botReadiness.total - botReadiness.completed} website-bot readiness item${botReadiness.total - botReadiness.completed === 1 ? " remains" : "s remain"} before this bot is fully operational.`, action: "Review bot setup", href: "/setup", tone: "waiting", owner: "You" });

@@ -26,7 +26,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       welcomeMessage: settings.welcomeMessage,
       welcomeCardImageUrl: settings.welcomeCardImageUrl,
       welcomeCardTitle: settings.welcomeCardTitle,
-      welcomeCardText: settings.welcomeCardText
+      welcomeCardText: settings.welcomeCardText,
+      showcaseItems: settings.showcaseItems
     }
   }, { headers });
 }

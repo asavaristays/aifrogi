@@ -112,6 +112,7 @@ export async function dismissKnowledgeGap(propertyId: string, id: string) {
 
 export async function getKnowledgeGovernanceSummary(propertySlug: string) {
   const { buildImprovementRoutes } = await import("@/lib/governed-improvement-routing");
+  const { groupTenantKnowledgeGaps } = await import("@/lib/tenant-intelligence/learning-lifecycle");
   const db = getDb();
   if (!db) return { propertyId: null, documents: [], entries: [], gaps: [] };
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
@@ -124,7 +125,7 @@ export async function getKnowledgeGovernanceSummary(propertySlug: string) {
     db.knowledgeAnswerFlag.findMany({ where: { propertyId: property.id }, orderBy: { createdAt: "desc" }, take: 50 })
   ]);
   const improvementRoutes = buildImprovementRoutes({ flags, gaps, entries });
-  return { propertyId: property.id, documents, entries, gaps, previews, flags, improvementRoutes };
+  return { propertyId: property.id, documents, entries, gaps, learningTopics: groupTenantKnowledgeGaps(gaps), previews, flags, improvementRoutes };
 }
 
 export async function getApprovedKnowledgeContext(propertySlug: string, question: string) {

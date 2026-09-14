@@ -5,6 +5,7 @@ import { normalizeTenantFlow, type TenantFlowDefinition } from "@/lib/tenant-flo
 
 export type KnowledgeSyncStatus = "DRAFT" | "SYNCING" | "READY" | "ERROR";
 export type WidgetTheme = "dark" | "light" | "system";
+export type ShowcaseItem = { id: string; imageUrl: string; title: string; text: string; linkUrl: string; linkLabel: string };
 
 export type KnowledgeSettings = {
   propertySlug: string;
@@ -21,6 +22,7 @@ export type KnowledgeSettings = {
   welcomeCardImageUrl: string;
   welcomeCardTitle: string;
   welcomeCardText: string;
+  showcaseItems: ShowcaseItem[];
   widgetMenu?: WidgetMenuConfig;
   tenantFlows?: TenantFlowDefinition[];
   lastCrawledAt: string | null;
@@ -66,6 +68,7 @@ function defaults(propertySlug: string): KnowledgeSettings {
     welcomeCardImageUrl: "",
     welcomeCardTitle: "",
     welcomeCardText: "",
+    showcaseItems: [],
     widgetMenu: defaultWidgetMenu(propertySlug),
     tenantFlows: [],
     lastCrawledAt: null,
@@ -88,6 +91,7 @@ export async function readKnowledgeSettings(propertySlug: string) {
       handoffTopics: Array.isArray(parsed.handoffTopics) ? parsed.handoffTopics.filter(Boolean) : fallback.handoffTopics,
       buckets: Array.isArray(parsed.buckets) ? parsed.buckets.filter(Boolean) : [],
       widgetMenu: normalizeWidgetMenu(parsed.widgetMenu, fallback.widgetMenu || defaultWidgetMenu(propertySlug)),
+      showcaseItems: normalizeShowcaseItems(parsed.showcaseItems),
       tenantFlows: Array.isArray(parsed.tenantFlows) ? parsed.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[] : []
     } satisfies KnowledgeSettings;
   } catch {
@@ -108,6 +112,7 @@ export async function writeKnowledgeSettings(
     const image = new URL(input.welcomeCardImageUrl.trim());
     if (image.protocol !== "https:" || image.username || image.password) throw new Error("Use a public HTTPS welcome-card image URL without credentials.");
   }
+  const showcaseItems = input.showcaseItems === undefined ? current.showcaseItems : normalizeShowcaseItems(input.showcaseItems);
   const next: KnowledgeSettings = {
     ...current,
     ...input,
@@ -125,6 +130,7 @@ export async function writeKnowledgeSettings(
     welcomeCardImageUrl: String(input.welcomeCardImageUrl ?? current.welcomeCardImageUrl).trim().slice(0, 500),
     welcomeCardTitle: String(input.welcomeCardTitle ?? current.welcomeCardTitle).trim().slice(0, 80),
     welcomeCardText: String(input.welcomeCardText ?? current.welcomeCardText).trim().slice(0, 240),
+    showcaseItems,
     widgetMenu: input.widgetMenu === undefined ? current.widgetMenu : normalizeWidgetMenu(input.widgetMenu, current.widgetMenu || defaultWidgetMenu(propertySlug)),
     tenantFlows: input.tenantFlows === undefined ? current.tenantFlows : input.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[],
     buckets: Array.isArray(input.buckets) ? [...new Set(input.buckets.map(String).filter(Boolean))].sort() : current.buckets,
@@ -134,4 +140,25 @@ export async function writeKnowledgeSettings(
   await mkdir(runtimeDir(), { recursive: true });
   await writeFile(settingsPath(propertySlug), JSON.stringify(next, null, 2), "utf8");
   return next;
+}
+
+function safeShowcaseUrl(value: unknown, image = false) {
+  const candidate = String(value || "").trim().slice(0, 500);
+  if (!candidate) return "";
+  if (image && /^\/api\/media\/uploads\/showcase\/[a-z0-9_/-]+\.(?:jpe?g|png|webp)$/i.test(candidate)) return candidate;
+  const url = new URL(candidate);
+  if (url.protocol !== "https:" || url.username || url.password) throw new Error("Showcase links must use public HTTPS URLs without credentials.");
+  return url.toString();
+}
+
+export function normalizeShowcaseItems(value: unknown): ShowcaseItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 8).map((item, index) => {
+    const source = item && typeof item === "object" && !Array.isArray(item) ? item as Record<string, unknown> : {};
+    const imageUrl = safeShowcaseUrl(source.imageUrl, true);
+    const title = String(source.title || "").trim().slice(0, 80);
+    const text = String(source.text || "").trim().slice(0, 240);
+    if (!imageUrl || (!title && !text)) throw new Error(`Showcase slide ${index + 1} requires an image and title or description.`);
+    return { id: String(source.id || `slide-${index + 1}`).replace(/[^a-z0-9_-]/gi, "").slice(0, 50) || `slide-${index + 1}`, imageUrl, title, text, linkUrl: safeShowcaseUrl(source.linkUrl), linkLabel: String(source.linkLabel || "Learn more").trim().slice(0, 40) || "Learn more" };
+  });
 }

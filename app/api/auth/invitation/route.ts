@@ -3,6 +3,9 @@ import { activateInvitation, getInvitation } from "@/lib/repositories/team-repos
 import { SELF_SERVICE_REGISTRATION } from "@/lib/repositories/trial-registration-repository";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import QRCode from "qrcode";
+import { writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+import { getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
+import { getDb } from "@/lib/db";
 
 export async function GET(request: Request) {
   const token = new URL(request.url).searchParams.get("token") || "";
@@ -18,6 +21,15 @@ export async function POST(request: Request) {
     if (member.registration && member.installation) {
       const appUrl = (process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === "production" ? "https://app.aifrogi.com" : new URL(request.url).origin)).replace(/\/$/, "");
       const { companyName, propertySlug, installationKey } = member.installation;
+      if (member.installation.website) {
+        try {
+          await writeKnowledgeSettings(propertySlug, { sourceUrl: member.installation.website, approvedForAi: true, status: "DRAFT" });
+          const prepared = await getWebsiteKnowledgeBase(propertySlug, true);
+          await getDb()?.onboardingActivity.create({ data: { organizationId: member.organizationId, actorEmail: member.email, action: "TRIAL_WEBSITE_KNOWLEDGE_PREPARED", detail: `${prepared.pages.length} public website page${prepared.pages.length === 1 ? "" : "s"} prepared for client review; no answer was auto-approved.` } });
+        } catch {
+          await getDb()?.onboardingActivity.create({ data: { organizationId: member.organizationId, actorEmail: member.email, action: "TRIAL_WEBSITE_KNOWLEDGE_NEEDS_ATTENTION", detail: "Automatic public website preparation did not complete. The client can retry from Intelligence or add information manually." } }).catch(() => null);
+        }
+      }
       const standaloneUrl = `${appUrl}/bot/${propertySlug}`;
       const script = `<script async src="${appUrl}/api/public/website-bot/${propertySlug}/install?key=${installationKey}"></script>`;
       const iframe = `<iframe src="${appUrl}/embed/${propertySlug}" title="${companyName} AI Business Bot" width="390" height="680" style="border:0;border-radius:22px" loading="lazy"></iframe>`;

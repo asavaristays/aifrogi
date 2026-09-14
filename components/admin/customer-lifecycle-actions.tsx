@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowUpRight, Pause, Play, ShieldOff, ShieldCheck, Trash2 } from "lucide-react";
+import { ArrowUpRight, Pause, Play, RotateCcw, ShieldOff, ShieldCheck, Trash2 } from "lucide-react";
 import styles from "./customer-lifecycle-actions.module.css";
 
 export function CustomerLifecycleActions({ organizationId, organizationStatus, botStatus }: { organizationId: string; organizationStatus: string; botStatus: string }) {
@@ -14,12 +14,13 @@ export function CustomerLifecycleActions({ organizationId, organizationStatus, b
   function remove() { const reason = window.prompt("Reason for removing this customer from active operations:"); if (reason?.trim()) void act("REMOVE_FROM_OPERATIONS", reason.trim()); }
   const BotIcon = botStatus === "PAUSED" ? Play : Pause;
   const AccountIcon = organizationStatus === "SUSPENDED" ? ShieldCheck : ShieldOff;
+  const removed = organizationStatus === "REMOVED";
   return <div className={styles.operations}>
     <div className={styles.grid} role="group" aria-label="Customer operations" aria-busy={Boolean(busy)}>
       <Link href={`/admin/customers/${organizationId}?onboarding=ai-bot`} className={`${styles.action} ${styles.primary}`}>Open <ArrowUpRight aria-hidden="true" /></Link>
-      <button type="button" disabled={Boolean(busy) || botStatus === "DELETED"} onClick={() => act(botStatus === "PAUSED" ? "RESTORE" : "PAUSE")} className={`${styles.action} ${styles.gold}`}><BotIcon aria-hidden="true" />{botStatus === "PAUSED" ? "Restore bot" : "Pause bot"}</button>
-      <button type="button" disabled={Boolean(busy) || organizationStatus === "REMOVED"} onClick={() => act(organizationStatus === "SUSPENDED" ? "ACTIVATE" : "SUSPEND")} className={`${styles.action} ${styles.neutral}`}><AccountIcon aria-hidden="true" />{organizationStatus === "SUSPENDED" ? "Reactivate" : "Suspend"}</button>
-      <button type="button" disabled={Boolean(busy) || organizationStatus === "REMOVED"} onClick={remove} className={`${styles.action} ${styles.danger}`}><Trash2 aria-hidden="true" />Remove</button>
+      {removed ? <button type="button" disabled={Boolean(busy)} onClick={() => act("RESTORE_TO_OPERATIONS")} className={`${styles.action} ${styles.gold}`}><RotateCcw aria-hidden="true" />Restore customer</button> : <button type="button" disabled={Boolean(busy) || botStatus === "DELETED"} onClick={() => act(botStatus === "PAUSED" ? "RESTORE" : "PAUSE")} className={`${styles.action} ${styles.gold}`}><BotIcon aria-hidden="true" />{botStatus === "PAUSED" ? "Restore bot" : "Pause bot"}</button>}
+      <button type="button" disabled={Boolean(busy) || removed} onClick={() => act(organizationStatus === "SUSPENDED" ? "ACTIVATE" : "SUSPEND")} className={`${styles.action} ${styles.neutral}`}><AccountIcon aria-hidden="true" />{organizationStatus === "SUSPENDED" ? "Reactivate" : "Suspend"}</button>
+      <button type="button" disabled={Boolean(busy) || removed} onClick={remove} className={`${styles.action} ${styles.danger}`}><Trash2 aria-hidden="true" />Remove</button>
     </div>
     {busy ? <p className={styles.status} role="status">Updating customer…</p> : null}
     {error ? <p className={styles.error} role="alert">{error}</p> : null}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-server";
-import { getMemberRoleByEmail, getOrganizationForMember, saveOrganizationBotProfile } from "@/lib/repositories/onboarding-repository";
+import { getMemberRoleByEmail, getOrganizationForMember, saveOrganizationBotProfile, submitWebsiteBotForReview } from "@/lib/repositories/onboarding-repository";
 import { normalizeCapabilitiesForCategory, parseBotProfile } from "@/lib/bot-profile";
 
 export async function PATCH(request: Request) {
@@ -10,6 +10,13 @@ export async function PATCH(request: Request) {
   if (!organization?.botProfile) return NextResponse.json({ error: "AiFrogi SuperAdmin must create the bot blueprint first." }, { status: 409 });
   if (role !== "OWNER" && role !== "ADMIN") return NextResponse.json({ error: "Client Admin access required" }, { status: 403 });
   const payload = await request.json().catch(() => null);
+  if (payload?.action === "SUBMIT_FOR_REVIEW") {
+    try {
+      return NextResponse.json({ organization: await submitWebsiteBotForReview({ organizationId: organization.id, actorEmail: user.username }) });
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Bot could not be submitted for review." }, { status: 400 });
+    }
+  }
   const governedCapabilities = normalizeCapabilitiesForCategory(organization.botProfile.category, organization.botProfile.capabilities);
   const parsed = parseBotProfile({ ...organization.botProfile, ...(payload && typeof payload === "object" ? payload : {}), category: organization.botProfile.category, operatingMode: organization.botProfile.operatingMode, channels: ["WEBSITE"], capabilities: governedCapabilities, humanHandoffEnabled: organization.botProfile.humanHandoffEnabled, actionApprovalNeeded: organization.botProfile.actionApprovalNeeded });
   if (!parsed.value) return NextResponse.json({ error: parsed.error }, { status: 400 });

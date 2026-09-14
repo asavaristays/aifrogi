@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { SovereignDecision } from "@/lib/sovereign-intelligence/decision";
+import { coreEntityFacts, extractCoreEntities } from "@/lib/sovereign-intelligence/entities";
 
 export const SOVEREIGN_EVALUATION_VERSION = "1.1" as const;
 export const DEFAULT_MAX_CLARIFY_CYCLES = 2;
@@ -80,8 +81,7 @@ function safeState(value: unknown): SovereignResolutionState | null {
 function explicitFacts(question: string, consentedFacts: Record<string, string> = {}) {
   const capturedAt = new Date().toISOString();
   const facts: Record<string, CollectedFact> = {};
-  const date = question.match(/\b(today|tomorrow|tonight|this (?:morning|afternoon|evening)|next (?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)|\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?)\b/i)?.[0];
-  if (date) facts.date = { value: date, source: "CUSTOMER_EXPLICIT", capturedAt };
+  for (const [key, value] of Object.entries(coreEntityFacts(extractCoreEntities(question)))) facts[key] = { value, source: "CUSTOMER_EXPLICIT", capturedAt };
   const topic = question.match(/\b(training|course|bootcamp|workshop|appointment|booking|reservation|room|website|automation|software|hotel|clinic|restaurant|property|product|order)\b/i)?.[0];
   if (topic) facts.topic = { value: topic, source: "CUSTOMER_EXPLICIT", capturedAt };
   for (const [key, value] of Object.entries(consentedFacts)) {

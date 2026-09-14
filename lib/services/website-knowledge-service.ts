@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, readdir, writeFile } from "fs/promises";
 import path from "path";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { recordKnowledgeGap } from "@/lib/repositories/knowledge-content-repository";
@@ -16,18 +16,29 @@ import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/category-policy";
 import { inferUsedClaimIds, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 import { greetingForTimeZone, validTimeZone } from "@/lib/greeting";
+import { buildTenantProfileDraft, extractWebsiteTenantFacts, reconcileTenantFacts, type TenantFact } from "@/lib/tenant-intelligence/fact-factory";
+import { answerExactTenantAccessFact, buildDeepTenantContext, extractDeepTenantKnowledge, type TenantEntityKnowledge, type TenantKnowledgeSection } from "@/lib/tenant-intelligence/deep-crawl";
+import { buildTenantTruthReview, type TenantTruthReview } from "@/lib/tenant-intelligence/truth-governance";
+import { buildSessionConversationMemory, routeConversationByConfidence } from "@/lib/sovereign-intelligence/conversation-confidence";
+import { buildTenantKnowledgeChangeSet, tenantKnowledgeFreshness, type TenantKnowledgeChangeSet } from "@/lib/tenant-intelligence/learning-lifecycle";
 
 export type KnowledgePage = {
   url: string;
   title: string;
   bucket: string;
   text: string;
+  sections?: TenantKnowledgeSection[];
   crawledAt: string;
 };
 
 export type KnowledgeBase = {
   baseUrl: string;
   pages: KnowledgePage[];
+  structuredFacts: TenantFact[];
+  tenantProfileDraft: ReturnType<typeof buildTenantProfileDraft>;
+  tenantEntities: TenantEntityKnowledge[];
+  truthReview: TenantTruthReview;
+  changeSet?: TenantKnowledgeChangeSet;
   crawledAt: string;
 };
 
@@ -44,15 +55,16 @@ export type KnowledgeAnswer = {
   claimIds: string[];
   retrieval: { candidates: RetrievalCandidate[]; retrievedClaimIds: string[]; usedClaimIds: string[]; nearMissClaimIds: string[] };
   reliability: ReliabilityEvidence;
+  modelUsage?: { inputTokens: number; outputTokens: number };
 };
 
 const emptyRetrieval = () => ({ candidates: [] as RetrievalCandidate[], retrievedClaimIds: [] as string[], usedClaimIds: [] as string[], nearMissClaimIds: [] as string[] });
 const publicRetrievalCandidates = (candidates: Array<RetrievalCandidate & { answer: string }>): RetrievalCandidate[] => candidates.map((candidate) => ({ claimId: candidate.claimId, claimKey: candidate.claimKey, score: candidate.score, selected: candidate.selected, status: candidate.status }));
 
 const DEFAULT_TTL_MS = 6 * 60 * 60 * 1000;
-const MAX_PAGES = 40;
-const MAX_DISCOVERY_URLS = 120;
-const MAX_PAGE_CHARS = 4500;
+const MAX_PAGES = 120;
+const MAX_DISCOVERY_URLS = 300;
+const MAX_PAGE_CHARS = 20000;
 const MAX_CONTEXT_CHARS = 11000;
 // Operator-approved pages that may be active without appearing in navigation or
 // the sitemap. They are verified by the crawler before becoming answer sources.
@@ -225,7 +237,8 @@ async function fetchText(url: string) {
       Accept: "text/html,application/xml,text/xml;q=0.9,*/*;q=0.8",
       "User-Agent": "AiFrogi-KB-Crawler/1.0"
     },
-    cache: "no-store"
+    cache: "no-store",
+    signal: AbortSignal.timeout(8000)
   });
 
   if (!response.ok) {
@@ -288,23 +301,36 @@ async function discoverUrls(baseUrl: string) {
 async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<KnowledgeBase> {
   const settings = await readKnowledgeSettings(propertySlug);
   const baseUrl = settings.sourceUrl;
+  let previous: KnowledgeBase | null = null;
+  try { previous = JSON.parse(await readFile(cachePath(propertySlug), "utf8")) as KnowledgeBase; } catch { previous = null; }
   await writeKnowledgeSettings(propertySlug, { status: "SYNCING", lastError: null });
 
   try {
     const urls = await discoverUrls(baseUrl);
+    const queued = new Set(urls);
     const pages: KnowledgePage[] = [];
+    const tenantEntities: TenantEntityKnowledge[] = [];
 
-    for (const url of urls) {
+    for (let cursor = 0; cursor < urls.length; cursor += 1) {
+      const url = urls[cursor];
       if (pages.length >= MAX_PAGES) break;
       try {
         const html = await fetchText(url);
+        // Deep discovery follows same-origin links exposed by listing/detail pages.
+        // This covers tenant inventories that are intentionally absent from sitemap.xml.
+        const discovered = uniqueSameOriginUrls(baseUrl, Array.from(html.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]));
+        discovered.sort((left, right) => Number(/\/properties\/\d+/i.test(right)) - Number(/\/properties\/\d+/i.test(left)));
+        for (const link of discovered) if (!queued.has(link) && urls.length < MAX_DISCOVERY_URLS) { queued.add(link); urls.push(link); }
         const { title, text } = stripHtml(html);
         if (text.length < 160) continue;
+        const entity = extractDeepTenantKnowledge(url, html);
+        if (entity) tenantEntities.push(entity);
         pages.push({
           url,
           title,
           bucket: bucketFor(url, title, text),
           text: text.slice(0, MAX_PAGE_CHARS),
+          sections: entity?.sections,
           crawledAt: new Date().toISOString()
         });
       } catch {
@@ -314,11 +340,19 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
 
     if (!pages.length) throw new Error("No readable website pages were found.");
 
-    const knowledgeBase = {
+    const reconciledFacts = reconcileTenantFacts(pages.flatMap(extractWebsiteTenantFacts));
+    const structuredFacts = reconciledFacts.facts;
+    const crawledAt = new Date().toISOString();
+    const knowledgeBase: KnowledgeBase = {
       baseUrl,
       pages,
-      crawledAt: new Date().toISOString()
+      structuredFacts,
+      tenantProfileDraft: buildTenantProfileDraft(structuredFacts),
+      tenantEntities,
+      truthReview: buildTenantTruthReview(structuredFacts, reconciledFacts.conflicts),
+      crawledAt
     };
+    knowledgeBase.changeSet = buildTenantKnowledgeChangeSet(previous?.baseUrl === baseUrl ? previous : null, knowledgeBase);
 
     await mkdir(runtimeDir(), { recursive: true });
     await writeFile(cachePath(propertySlug), JSON.stringify(knowledgeBase, null, 2));
@@ -402,8 +436,29 @@ export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
 
   return {
     settings,
-    pages: snapshot?.baseUrl === settings.sourceUrl ? snapshot.pages.map(({ url, title, bucket, crawledAt }) => ({ url, title, bucket, crawledAt })) : []
+    pages: snapshot?.baseUrl === settings.sourceUrl ? snapshot.pages.map(({ url, title, bucket, crawledAt }) => ({ url, title, bucket, crawledAt })) : [],
+    tenantProfileDraft: snapshot?.baseUrl === settings.sourceUrl ? snapshot.tenantProfileDraft || buildTenantProfileDraft(snapshot.structuredFacts || []) : null,
+    tenantEntities: snapshot?.baseUrl === settings.sourceUrl ? snapshot.tenantEntities || [] : [],
+    truthReview: snapshot?.baseUrl === settings.sourceUrl ? snapshot.truthReview || buildTenantTruthReview(snapshot.structuredFacts || [], reconcileTenantFacts(snapshot.structuredFacts || []).conflicts) : null,
+    changeSet: snapshot?.baseUrl === settings.sourceUrl ? snapshot.changeSet || null : null,
+    freshness: tenantKnowledgeFreshness(settings.lastCrawledAt, settings.autoRefreshHours)
   };
+}
+
+export async function refreshDueTenantKnowledge(limit = 3) {
+  const files = await readdir(runtimeDir()).catch(() => []);
+  const slugs = files.filter((name) => name.startsWith("knowledge-settings-") && name.endsWith(".json")).map((name) => name.slice(19, -5));
+  const due: string[] = [];
+  for (const slug of slugs) {
+    const settings = await readKnowledgeSettings(slug);
+    if (settings.sourceUrl && tenantKnowledgeFreshness(settings.lastCrawledAt, settings.autoRefreshHours).status === "DUE") due.push(slug);
+  }
+  const results: Array<{ propertySlug: string; status: "REFRESHED" | "FAILED"; pages?: number; error?: string }> = [];
+  for (const propertySlug of due.slice(0, Math.max(0, limit))) {
+    try { const knowledge = await getWebsiteKnowledgeBase(propertySlug, true); results.push({ propertySlug, status: "REFRESHED", pages: knowledge.pages.length }); }
+    catch (error) { results.push({ propertySlug, status: "FAILED", error: error instanceof Error ? error.message : "Refresh failed" }); }
+  }
+  return { due: due.length, processed: results.length, results };
 }
 
 export function scoreWebsiteKnowledgePage(page: KnowledgePage, question: string) {
@@ -429,21 +484,24 @@ export function scoreWebsiteKnowledgePage(page: KnowledgePage, question: string)
 }
 
 function buildContext(knowledgeBase: KnowledgeBase, question: string) {
+  const deepContext = buildDeepTenantContext(knowledgeBase.tenantEntities || [], question);
+  const deepEntities = (knowledgeBase.tenantEntities || []).filter((entity) => deepContext.includes(`Source: ${entity.sourceUrl}`));
   const rankedPages = [...knowledgeBase.pages]
     .map((page) => ({ page, score: scoreWebsiteKnowledgePage(page, question) }))
     .sort((left, right) => right.score - left.score);
-  if (!rankedPages.length || rankedPages[0].score === 0) {
+  if ((!rankedPages.length || rankedPages[0].score === 0) && !deepContext) {
     return { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
   }
-  const relevanceFloor = Math.max(3, Math.ceil(rankedPages[0].score * 0.8));
+  const bestScore = rankedPages[0]?.score || 0;
+  const relevanceFloor = Math.max(3, Math.ceil(bestScore * 0.8));
   const pages = rankedPages
     .filter((item) => item.score >= relevanceFloor)
     .slice(0, 8)
     .map(({ page }) => page);
 
-  let context = "";
-  const sourceUrls: string[] = [];
-  const sources: KnowledgeSourceEvidence[] = [];
+  let context = deepContext;
+  const sourceUrls: string[] = deepEntities.map((entity) => entity.sourceUrl);
+  const sources: KnowledgeSourceEvidence[] = deepEntities.map((entity) => ({ title: entity.name, url: entity.sourceUrl, crawledAt: entity.observedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(entity.observedAt) <= getTtlMs(24) ? "CURRENT" : "STALE" }));
 
   for (const page of pages) {
     const next = [
@@ -455,8 +513,8 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
 
     if (context.length + next.length > MAX_CONTEXT_CHARS) break;
     context += `${context ? "\n\n---\n\n" : ""}${next}`;
-    sourceUrls.push(page.url);
-    sources.push({ title: page.title.replace(/\s*[|–—-]\s*Webtechnosys.*$/i, "").trim().slice(0, 80) || page.bucket, url: page.url, crawledAt: page.crawledAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(page.crawledAt) <= getTtlMs(24) ? "CURRENT" : "STALE" });
+    if (!sourceUrls.includes(page.url)) sourceUrls.push(page.url);
+    if (!sources.some((source) => source.url === page.url)) sources.push({ title: page.title.replace(/\s*[|–—-]\s*Webtechnosys.*$/i, "").trim().slice(0, 80) || page.bucket, url: page.url, crawledAt: page.crawledAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(page.crawledAt) <= getTtlMs(24) ? "CURRENT" : "STALE" });
   }
 
   return { context, sourceUrls, sources };
@@ -516,7 +574,8 @@ export async function buildWebsiteKnowledgeAnswer({
   configuration,
   priorQuestions = [],
   lastAssistantAnswer = "",
-  visitorTimeZone
+  visitorTimeZone,
+  evaluationMode = false
 }: {
   question: string;
   propertySlug: string;
@@ -524,6 +583,7 @@ export async function buildWebsiteKnowledgeAnswer({
   priorQuestions?: string[];
   lastAssistantAnswer?: string;
   visitorTimeZone?: string;
+  evaluationMode?: boolean;
 }): Promise<KnowledgeAnswer | null> {
   void configuration;
   if (!question.trim()) return null;
@@ -588,11 +648,28 @@ export async function buildWebsiteKnowledgeAnswer({
   }
   if (resolved.intent === "CONTEXT_FOLLOW_UP" && !resolved.priorQuestion) return direct(`I retain this conversation for continuity and human handover, but I need the business topic stated clearly before using approved knowledge. Please restate the ${businessName} service or product question you want me to answer.`);
 
-  const knowledgeBase = persona?.kbGateVersion ? null : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
-  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, resolved.retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
+  // Governed bots may read only their prepared tenant snapshot during an answer.
+  // Crawling is an explicit ingestion action and must never occur in retrieval.
+  const knowledgeBase = persona?.kbGateVersion
+    ? await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours))
+    : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
+  const sessionMemory = buildSessionConversationMemory({ question: resolved.retrievalQuestion, priorQuestions, entities: knowledgeBase?.tenantEntities || [] });
+  const retrievalQuestion = sessionMemory.retrievalQuestion;
+  const exactAccess = knowledgeBase ? answerExactTenantAccessFact(knowledgeBase.tenantEntities || [], retrievalQuestion) : null;
+  if (exactAccess) {
+    const answer = direct(exactAccess.answer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped access evidence without model inference." });
+    answer.sourceUrls = [exactAccess.entity.sourceUrl];
+    answer.sources = [{ title: exactAccess.entity.name, url: exactAccess.entity.sourceUrl, crawledAt: exactAccess.entity.observedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(exactAccess.entity.observedAt) <= getTtlMs(24) ? "CURRENT" : "STALE" }];
+    answer.knowledgeAsOf = exactAccess.entity.observedAt;
+    answer.model = "EXACT_TENANT_FACT";
+    return answer;
+  }
+  const websiteResult = knowledgeBase ? buildContext(knowledgeBase, retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
+  const confidenceRoute = routeConversationByConfidence({ intent: resolved.intent, hasApprovedContext: Boolean(context.trim()), hasResolvedEntity: Boolean(sessionMemory.entity), priorQuestions });
+  if (confidenceRoute.route === "CLARIFY") return direct(`Which ${persona?.category === "STAY" ? "property or stay" : "product or service"} would you like help with? I’ll use that specific business information.` , { ...resolved.decision, disposition: "CLARIFY", reason: confidenceRoute.reason });
   if (!context.trim()) {
-    await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
+    if (!evaluationMode) await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
     const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);
     failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
     return failed;
@@ -627,19 +704,20 @@ export async function buildWebsiteKnowledgeAnswer({
       });
       if (!response.ok) throw modelHttpError(response.status);
       const payload = (await response.json().catch(() => null)) as Record<string, unknown> | null;
-      return payload ? extractOpenAiText(payload) : "";
+      const usage = payload?.usage && typeof payload.usage === "object" ? payload.usage as Record<string, unknown> : {};
+      return { text: payload ? extractOpenAiText(payload) : "", inputTokens: Math.max(0, Number(usage.input_tokens) || 0), outputTokens: Math.max(0, Number(usage.output_tokens) || 0) };
     },
-    validate: (value) => Boolean(value.trim()) && value.length <= 5000
+    validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });
     return publishedClaimFallback(governed, reliable.evidence, resolved.decision) || safeFailure(reliable.evidence.failureLayer, reliable.error.code, "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
   }
-  const answer = reliable.value;
+  const answer = reliable.value.text;
   const claimValidation = validateGeneratedClaims({ answer, approvedContext: context, connectorVerified: false });
   if (!claimValidation.valid) {
     console.error("Sovereign claim validation blocked an answer", { propertySlug, violations: claimValidation.violations });
-    await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
+    if (!evaluationMode) await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
     const reliability: ReliabilityEvidence = { ...reliable.evidence, failureLayer: "MODEL", failureCode: "OUTPUT_CLAIM_VALIDATION_BLOCKED", escalationTier: "TIER_2_AIFROGI_ASYNC", degradedMode: true };
     return publishedClaimFallback(governed, reliability, resolved.decision) || safeFailure("MODEL", "OUTPUT_CLAIM_VALIDATION_BLOCKED", "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
   }
@@ -659,6 +737,7 @@ export async function buildWebsiteKnowledgeAnswer({
       usedClaimIds: inferUsedClaimIds(answer, governed.candidates),
       nearMissClaimIds: governed.nearMissClaimIds
     },
-    reliability: reliable.evidence
+    reliability: reliable.evidence,
+    modelUsage: { inputTokens: reliable.value.inputTokens, outputTokens: reliable.value.outputTokens }
   };
 }

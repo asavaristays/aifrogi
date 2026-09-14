@@ -22,11 +22,23 @@ test("Super Admin review exposes explicit approval and correction paths", () => 
   const route = readFileSync("app/api/admin/customers/[id]/route.ts", "utf8");
   assert.match(installation, /Approve and Make Bot Live/);
   assert.match(installation, /approvalAvailable = \[/);
-  assert.match(installation, /"INSTALLATION_READY", "INSTALLATION_DETECTED", "PAUSED"/);
+  assert.match(installation, /"REVIEW_PENDING", "PAUSED"/);
   assert.match(installation, /Website installed \(optional\)/);
   assert.match(installation, /Not Approved · Request Correction/);
   assert.match(route, /DECLINE_BOT_APPROVAL/);
   assert.match(route, /correction-required email/);
+});
+
+test("client submission is required before initial Super Admin go-live", () => {
+  const repository = readFileSync("lib/repositories/onboarding-repository.ts", "utf8");
+  const clientRoute = readFileSync("app/api/onboarding/bot-profile/route.ts", "utf8");
+  const setup = readFileSync("app/(app)/setup/page.tsx", "utf8");
+  assert.match(repository, /WEBSITE_BOT_SUBMITTED_FOR_REVIEW/);
+  assert.match(repository, /status: "REVIEW_PENDING"/);
+  assert.match(repository, /The 15-day trial supports the Starter Bot without connector-backed actions/);
+  assert.match(clientRoute, /SUBMIT_FOR_REVIEW/);
+  assert.match(setup, /Starter Bot without connectors/);
+  assert.match(setup, /BotReviewSubmission/);
 });
 
 test("pause, soft delete and restore are deterministic", () => {
@@ -34,6 +46,20 @@ test("pause, soft delete and restore are deterministic", () => {
   assert.equal(nextWebsiteBotStatus("PAUSED", "DELETE", true), "DELETED");
   assert.equal(nextWebsiteBotStatus("DELETED", "RESTORE", true), "INSTALLATION_DETECTED");
   assert.equal(nextWebsiteBotStatus("DELETED", "RESTORE", false), "INSTALLATION_READY");
+});
+
+test("customer restore repairs both the account and deleted website bot", () => {
+  const route = readFileSync("app/api/admin/customers/[id]/route.ts", "utf8");
+  const actions = readFileSync("components/admin/customer-lifecycle-actions.tsx", "utf8");
+  assert.match(route, /RESTORE_TO_OPERATIONS/);
+  assert.match(route, /action === "RESTORE_TO_OPERATIONS"[\s\S]*action: "RESTORE"/);
+  assert.match(actions, /Restore customer/);
+});
+
+test("generic bot presentation uses theme tokens instead of dark-only answer colours", () => {
+  const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
+  assert.match(widget, /bg-\[var\(--widget-soft\)\] text-\[var\(--widget-ink\)\]/);
+  assert.match(widget, /text-\[var\(--widget-muted\)\]/);
 });
 
 test("JavaScript delivery uses a responsive launcher and trusted minimize message", () => {
@@ -64,6 +90,8 @@ test("only launcher-mode embeds expose the minimize control", () => {
   assert.match(shell, /\.identity \{[^}]*min-width: 0;[^}]*flex: 1 1 auto;/);
   assert.match(shell, /\.dismiss \{[^}]*padding: 0;[^}]*line-height: 0;/);
   assert.match(shell, /\.dismiss svg \{[^}]*display: block;[^}]*transform: none;/);
+  assert.match(widget, /className=\{shell\.genericDismiss\}/);
+  assert.match(shell, /\.genericDismiss \{[^}]*background: var\(--widget-soft\);[^}]*color: var\(--widget-ink\);/);
 });
 
 test("a human-owned visitor can deliberately start a separate AI conversation", () => {

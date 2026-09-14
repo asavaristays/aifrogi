@@ -3,11 +3,18 @@ import { TopBar } from "@/components/layout/top-bar";
 import { BotAppearanceSettings } from "@/components/setup/bot-appearance-settings";
 import { BotBehaviourSettings } from "@/components/setup/bot-behaviour-settings";
 import { BotMenuSettings } from "@/components/setup/bot-menu-settings";
+import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
 import { getDb } from "@/lib/db";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
+import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
+import { BotShowcaseSettings } from "@/components/setup/bot-showcase-settings";
+import { BotCertificationPanel } from "@/components/setup/bot-certification-panel";
+import { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } from "@/lib/tenant-intelligence/certification";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,31 +22,39 @@ export const revalidate = 0;
 export default async function SetupPage() {
   const [access, propertySlug] = await Promise.all([getCurrentClientAccess(), getCurrentWorkspaceSlug()]);
   const appearance = await readKnowledgeSettings(propertySlug);
+  const certification = await readTenantCertification(propertySlug);
+  const certificationStatus = tenantCertificationStatus(certification, await getTenantKnowledgeRevision(propertySlug));
   const botName = access?.organization.botProfile?.personaName?.trim() || `${access?.organization.name || "Business"} Assistant`;
   const db = getDb();
   const property = access?.organization.properties.find((item) => item.slug === propertySlug);
-  const [testActivity, answerEvidence] = db && access && property ? await Promise.all([
+  const [testActivity, answerEvidence, subscription, verification] = db && access && property ? await Promise.all([
     db.onboardingActivity.findFirst({ where: { organizationId: access.organization.id, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } }),
-    db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } })
-  ]) : [null, null];
+    db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } }),
+    getOrganizationSubscriptionAccess(access.organization.id),
+    getKnowledgeVerificationReadiness(property.id, access.organization.botProfile?.category === "STAY" ? "HOSPITALITY" : access.organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : access.organization.botProfile?.category || "BUSINESS_AI")
+  ]) : [null, null, null, null];
   const testComplete = Boolean(testActivity || answerEvidence);
-  const installationComplete = Boolean(access?.organization.botProfile?.installationDetectedAt || access?.organization.botProfile?.status === "LIVE");
+  const deliveryReady = Boolean(access?.organization.botProfile?.installationKey);
   const behaviourComplete = Boolean(access?.organization.botProfile?.businessObjective && access.organization.botProfile.tone && access.organization.botProfile.languages.length);
   const steps = [
     { number: "1", title: "Choose the appearance", copy: "Set the bot name, logo, brand colour and welcome message.", href: "#bot-appearance", action: "Edit appearance", ready: Boolean(botName && appearance.welcomeMessage) },
     { number: "2", title: "Set bot behaviour", copy: "Define its purpose, tone, languages and safety boundaries.", href: "#bot-behaviour", action: "Edit behaviour", ready: behaviourComplete },
     { number: "3", title: "Add business knowledge", copy: "Connect your website and approve the answers your bot may use.", href: "/knowledge", action: "Open Intelligence", ready: appearance.pageCount > 0 },
     { number: "4", title: "Test customer questions", copy: testComplete ? "A website-bot answer has been tested and recorded." : "Ask real questions and confirm the replies before going live.", href: "/knowledge#test-your-bot", action: testComplete ? "Test another question" : "Test my bot", ready: testComplete },
-    { number: "5", title: "Install on your website", copy: installationComplete ? "A valid widget load has been detected on the website." : "Choose an embed option when the appearance and answers are ready.", href: "#website-installation", action: installationComplete ? "View embed options" : "Choose embed option", ready: installationComplete }
+    { number: "5", title: "Choose delivery", copy: deliveryReady ? "Standalone link and optional website embed codes are ready." : "Generate the standalone link and optional website embed choices.", href: "#website-installation", action: "View delivery options", ready: deliveryReady }
   ];
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <TopBar title="AI Bot setup" subtitle="Configure, teach, test and install your website bot" />
       <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+        {subscription?.planCode === "TRIAL" ? <section className="rounded-2xl border border-[#d7c27d] bg-[#fff9e8] p-5"><p className="product-eyebrow">15-day trial boundary</p><h2 className="mt-1 text-lg font-semibold">Starter Bot without connectors</h2><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Your trial includes approved business answers, lead capture, human handover, standalone web app and website widget. Connector-backed bookings, payments or external actions require an eligible paid setup after the trial.</p></section> : null}
         {access ? <BotAppearanceSettings initialSettings={appearance} initialBotName={botName} canManage={canManageWorkspace(access.role)} /> : null}
+        {access ? <BotShowcaseSettings initialItems={appearance.showcaseItems} canManage={canManageWorkspace(access.role)} /> : null}
         {access?.organization.botProfile ? <BotBehaviourSettings initialProfile={access.organization.botProfile} canManage={canManageWorkspace(access.role)} /> : null}
         {access ? <BotMenuSettings initialMenu={appearance.widgetMenu} canManage={canManageWorkspace(access.role)} /> : null}
+        {access?.organization.botConnectors?.length ? <BotConnectorPlan connectors={access.organization.botConnectors} management="customer" canManage={canManageWorkspace(access.role)} /> : null}
+        {access ? <BotCertificationPanel initialRecord={certification} initialStatus={certificationStatus} canManage={canManageWorkspace(access.role)} /> : null}
         {access ? <section className="rounded-2xl border border-[var(--border)] bg-white p-5 sm:p-6">
           <p className="product-eyebrow">Website bot checklist</p>
           <h2 className="mt-1 text-xl font-semibold">Five steps to prepare your bot</h2>
@@ -52,6 +67,7 @@ export default async function SetupPage() {
           </ol>
         </section> : <section className="rounded-lg border border-[var(--border)] bg-white p-6"><h2 className="text-xl font-semibold">Setup unavailable</h2><p className="mt-2 text-sm text-[var(--text-muted)]">AiFrogi could not locate an active website-bot workspace for this account.</p></section>}
         {access ? <WebsiteBotInstallation sectionId="website-installation" slug={propertySlug} profile={access.organization.botProfile} /> : null}
+        {access?.organization.botProfile ? <BotReviewSubmission status={access.organization.botProfile.status} ready={Boolean(subscription?.planCode === "TRIAL" ? verification?.trialReady : verification?.ready)} tested={testComplete} certified={certificationStatus.eligible} canManage={canManageWorkspace(access.role)} /> : null}
       </div>
     </div>
   );

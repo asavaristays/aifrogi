@@ -8,5 +8,5 @@ export const dynamic = "force-dynamic";
 export default async function FlowIntelligencePage() {
   const [access, slug] = await Promise.all([getCurrentClientAccess(), getCurrentWorkspaceSlug()]);
   const settings = await readKnowledgeSettings(slug);
-  return <FlowIntelligenceWorkspace initialFlows={settings.tenantFlows || []} canManage={Boolean(access && canManageWorkspace(access.role))} />;
+  return <div className="flow-premium"><FlowIntelligenceWorkspace initialFlows={settings.tenantFlows || []} canManage={Boolean(access && canManageWorkspace(access.role))} /></div>;
 }
