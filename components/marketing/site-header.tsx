@@ -36,12 +36,12 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--gold-600)]/20 bg-[var(--ink-950)]/95 px-4 text-white backdrop-blur-xl sm:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="flex min-h-[68px] items-center justify-between gap-3">
+        <div className="flex min-h-[68px] items-center gap-3">
           <Link href="/" className="flex shrink-0 items-center" aria-label="AiFrogi home" onClick={() => setMenuOpen(false)}>
             <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125 sm:w-[190px]" />
           </Link>
 
-          <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm font-semibold text-white/62 lg:flex">
+          <nav aria-label="Main navigation" className="ml-auto hidden items-center gap-6 text-sm font-semibold text-white/62 lg:flex">
             {navItems.map((item) => (
               item.children ? (
                 <div key={item.href} className="group relative py-5">
@@ -69,7 +69,7 @@ export function SiteHeader() {
             <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 15-day trial</a>
           </div>
 
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="ml-auto flex items-center gap-2 lg:hidden">
             <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-3 text-xs font-bold text-[var(--ink-600)] shadow-sm">
               Start trial
             </a>

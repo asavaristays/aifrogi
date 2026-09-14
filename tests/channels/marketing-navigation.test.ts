@@ -4,6 +4,11 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const header = readFileSync(resolve(process.cwd(), "components/marketing/site-header.tsx"), "utf8");
+
+test("top navigation stays grouped beside login while mobile actions remain right aligned", () => {
+  assert.match(header, /aria-label="Main navigation" className="ml-auto/);
+  assert.match(header, /className="ml-auto flex items-center gap-2 lg:hidden"/);
+});
 const footer = readFileSync(resolve(process.cwd(), "components/marketing/site-footer.tsx"), "utf8");
 const resources = readFileSync(resolve(process.cwd(), "app/resources/page.tsx"), "utf8");
 const helpCenter = readFileSync(resolve(process.cwd(), "lib/help-center.ts"), "utf8");
