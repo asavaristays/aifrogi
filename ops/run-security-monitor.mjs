@@ -12,7 +12,7 @@ await client.connect();
 try {
   const expiring = await client.query(`SELECT o.slug, c."connectorKey", k."expiresAt" FROM "BotConnectorCredential" k JOIN "BotConnectorConfiguration" c ON c.id=k."connectorId" JOIN "Organization" o ON o.id=c."organizationId" WHERE k."revokedAt" IS NULL AND k."expiresAt" IS NOT NULL AND k."expiresAt" <= now() + interval '30 days' ORDER BY k."expiresAt"`);
   for (const row of expiring.rows) findings.push({ severity: row.expiresAt <= new Date() ? "CRITICAL" : "WARNING", code: "CREDENTIAL_EXPIRY", tenant: row.slug, connector: row.connectorKey, deadline: row.expiresAt.toISOString() });
-  const failedActions = await client.query(`SELECT count(*)::int count FROM "PlatformAuditLog" WHERE "createdAt" >= now() - interval '24 hours' AND action IN ('CONNECTOR_AUTH_TEST_FAILED','SUPPORT_EMAIL_REPLY_REJECTED')`);
+  const failedActions = await client.query(`SELECT count(DISTINCT action || ':' || coalesce("targetId", id))::int count FROM "PlatformAuditLog" WHERE "createdAt" >= now() - interval '24 hours' AND action IN ('CONNECTOR_AUTH_TEST_FAILED','SUPPORT_EMAIL_REPLY_REJECTED')`);
   if (failedActions.rows[0].count >= 5) findings.push({ severity: "WARNING", code: "REPEATED_SECURITY_FAILURES", count: failedActions.rows[0].count });
   const invalidLive = await client.query(`SELECT count(*)::int count FROM "BotConnectorConfiguration" c LEFT JOIN "BotConnectorCredential" k ON k."connectorId"=c.id WHERE c.enabled=true AND c.lifecycle='LIVE' AND c."authType"<>'NONE' AND (k.id IS NULL OR k."revokedAt" IS NOT NULL OR (k."expiresAt" IS NOT NULL AND k."expiresAt"<=now()))`);
   if (invalidLive.rows[0].count) findings.push({ severity: "CRITICAL", code: "INVALID_LIVE_CONNECTOR", count: invalidLive.rows[0].count });

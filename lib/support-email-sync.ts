@@ -26,7 +26,7 @@ export async function importSupportEmailReplies() {
     const ticket = await getSupportTicketByReference(reference);
     if (!ticket) continue;
     const sourceId = `${ticket.id}:email:${message.id}`;
-    if (await db.platformAuditLog.findFirst({ where: { action: "SUPPORT_EMAIL_REPLY_IMPORTED", targetId: sourceId } })) continue;
+    if (await db.platformAuditLog.findFirst({ where: { action: { in: ["SUPPORT_EMAIL_REPLY_IMPORTED", "SUPPORT_EMAIL_REPLY_REJECTED"] }, targetId: sourceId } })) continue;
     const email = senderAddress(message.from);
     const member = await db.organizationMember.findFirst({ where: { organizationId: ticket.organizationId, email: { equals: email, mode: "insensitive" }, status: "ACTIVE" } });
     const authorized = email === ticket.organization.ownerEmail.toLowerCase() || Boolean(member);

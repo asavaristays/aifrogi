@@ -6,7 +6,10 @@ const read = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8"
 
 test("continuous security monitoring covers expiry, live connectors and repeated failures", () => {
   const source = read("ops/run-security-monitor.mjs");
-  assert.match(source, /CREDENTIAL_EXPIRY/); assert.match(source, /INVALID_LIVE_CONNECTOR/); assert.match(source, /REPEATED_SECURITY_FAILURES/);
+  assert.match(source, /CREDENTIAL_EXPIRY/); assert.match(source, /INVALID_LIVE_CONNECTOR/); assert.match(source, /REPEATED_SECURITY_FAILURES/); assert.match(source, /count\(DISTINCT action/);
+});
+test("rejected support mail is audited once rather than every scheduled sync", () => {
+  assert.match(read("lib/support-email-sync.ts"), /SUPPORT_EMAIL_REPLY_IMPORTED", "SUPPORT_EMAIL_REPLY_REJECTED/);
 });
 test("dependency gate blocks high findings outside the reviewed Prisma tooling exception", () => {
   const source = read("scripts/verify-dependency-security.mjs");
