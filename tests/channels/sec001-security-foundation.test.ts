@@ -34,4 +34,6 @@ test("release promotion is blocked by the first-ten security gate", () => {
   assert.match(gate, /RAZORPAY_BILLING_WEBHOOK_SECRET/);
   assert.match(gate, /duplicate live tenant owner identities/);
   assert.match(gate, /live connectors with invalid credentials/);
+  assert.match(gate, /independent secrets/);
+  assert.match(read("ops/rotate-field-encryption-key.mjs"), /BotConnectorCredential/);
 });

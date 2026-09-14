@@ -12,6 +12,7 @@ for (const name of requiredSecrets) {
   const value = String(env[name] || "").trim();
   if (value.length < 24 || value === "change-this-in-production") failures.push(`${name} is missing, weak, or uses a default value`);
 }
+if (String(env.LEADOS_FIELD_ENCRYPTION_SECRET || "") === String(env.AUTH_SESSION_SECRET || "")) failures.push("field encryption and session signing must use independent secrets");
 const razorpay = ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET", "RAZORPAY_BILLING_WEBHOOK_SECRET"].map((name) => Boolean(String(env[name] || "").trim()));
 if (razorpay.some(Boolean) && !razorpay.every(Boolean)) failures.push("Razorpay configuration is incomplete");
 
