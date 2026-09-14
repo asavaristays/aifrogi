@@ -17,7 +17,7 @@ export const metadata: Metadata = marketingMetadata({
 });
 
 metadata.other = {
-  "aifrogi-homepage-release": "2026-07-07-flowcart"
+  "aifrogi-homepage-release": "2026-09-14-security-trust"
 };
 
 export const dynamic = "force-dynamic";
@@ -25,8 +25,8 @@ export const revalidate = 0;
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[var(--ink-900)]" data-aifrogi-homepage-release="2026-07-07-flowcart">
-      <span hidden>AiFrogi homepage canary 2026-07-07 flowcart</span>
+    <main className="overflow-hidden bg-white text-[var(--ink-900)]" data-aifrogi-homepage-release="2026-09-14-security-trust">
+      <span hidden>AiFrogi homepage canary 2026-09-14 security trust</span>
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-black px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
@@ -40,6 +40,27 @@ export default function HomePage() {
           <IntegrationLogoStrip />
 
           <FeatureShowcase />
+        </div>
+      </section>
+
+      <section aria-labelledby="security-by-design" className="bg-[#f4f1e8] px-5 py-20 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 border-b border-black/15 pb-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+            <div><p className="product-eyebrow text-[#8a6a16]">Security & control</p><h2 id="security-by-design" className="mt-4 max-w-xl text-4xl font-semibold leading-[1.04] tracking-[-.045em] sm:text-5xl">Secure by design.<br />Governed for every business.</h2></div>
+            <p className="max-w-2xl text-lg leading-8 text-black/62 lg:justify-self-end">Each business operates in its own controlled workspace. AiFrogi protects credentials, verifies sensitive actions and keeps accountable human authority in the loop.</p>
+          </div>
+
+          <div className="grid border-b border-black/15 sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              ["01", "Tenant isolation", "Business data and connector access remain scoped to the correct workspace."],
+              ["02", "Encrypted credentials", "API and connector secrets are encrypted, rotatable and never displayed after saving."],
+              ["03", "Verified actions", "Payment and connected actions must pass provider and tenant checks before confirmation."],
+              ["04", "Accountable access", "Role controls, audit records and emergency connector shutdown keep teams in control."],
+              ["05", "Release safeguards", "Automated security and cross-tenant checks can block an unsafe production release."]
+            ].map(([number, title, copy]) => <article key={number} className="border-t border-black/15 py-7 sm:px-6 sm:first:pl-0 lg:border-l lg:border-t-0 lg:first:border-l-0 lg:first:pl-0"><span className="font-mono text-xs text-[#8a6a16]">{number}</span><h3 className="mt-5 text-lg font-semibold tracking-[-.02em]">{title}</h3><p className="mt-3 text-sm leading-6 text-black/55">{copy}</p></article>)}
+          </div>
+
+          <div className="mt-8 flex flex-col gap-5 rounded-2xl bg-black px-6 py-6 text-white sm:flex-row sm:items-center sm:justify-between"><p className="max-w-3xl text-sm leading-6 text-white/65"><strong className="text-white">Safer payments.</strong> Payment details stay with the approved payment provider. AiFrogi verifies payment status and never asks customers to share card numbers, UPI PINs or OTPs in chat.</p><Link href="/security-compliance" className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-[#e8cb7b]">Review security controls <Icon name="arrow-right" /></Link></div>
         </div>
       </section>
 
