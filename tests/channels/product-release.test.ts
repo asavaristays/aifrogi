@@ -23,3 +23,8 @@ test("approved public and operator surfaces use the shared release identity", ()
   ]) assert.match(read(path), /PRODUCT_RELEASE/);
   assert.match(read("docs/releases/AIFROGI_1_0.md"), /Controlled Pilot Release/);
 });
+
+test("homepage omits the redundant experience strip while the presentation keeps its close control", () => {
+  assert.doesNotMatch(read("app/page.tsx"), /Meet your next team member/);
+  assert.match(read("components/marketing/experience-story.tsx"), /aria-label="Close presentation"/);
+});

@@ -43,8 +43,6 @@ export default function HomePage() {
           </div>
           <SovereignHero registerUrl={registerUrl} />
 
-          <Link href="/experience" className="my-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-[#e8cb7b]/35 bg-white/[.04] px-6 py-5"><span><span className="block text-sm text-[#e8cb7b]">Experience AiFrogi · 45 seconds</span><span className="mt-1 block text-lg font-semibold text-white">Meet your next team member.</span></span><span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#e8cb7b] px-5 text-sm font-semibold text-[#17140a]">Watch. Explore. Try. <Icon name="arrow-right" /></span></Link>
-
           <IntegrationLogoStrip />
 
           <FeatureShowcase />
