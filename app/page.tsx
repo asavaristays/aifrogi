@@ -35,7 +35,7 @@ export default function HomePage() {
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[var(--gold-600)]/18 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl">
           <div className="mb-7 flex justify-center sm:justify-start">
-            <Link href="/about" className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#e8cb7b]/35 bg-[#e8cb7b]/8 px-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#f0d77f] transition hover:border-[#e8cb7b]/65 hover:bg-[#e8cb7b]/12">
+            <Link href="/about" className="inline-flex min-h-9 max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-0.5 rounded-2xl border border-[#e8cb7b]/35 bg-[#e8cb7b]/8 px-3 py-2 text-center text-[10px] font-semibold uppercase leading-4 tracking-[.08em] text-[#f0d77f] transition hover:border-[#e8cb7b]/65 hover:bg-[#e8cb7b]/12 sm:flex-nowrap sm:rounded-full sm:px-4 sm:py-0 sm:text-[11px] sm:tracking-[.13em]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#e8cb7b]" aria-hidden="true" />
               Introducing {PRODUCT_RELEASE.name}
               <span className="normal-case tracking-normal text-white/48">· {PRODUCT_RELEASE.stage}</span>
