@@ -4,6 +4,7 @@ import type { Lead } from "@/types";
 import type { BotReadinessCheck } from "@/lib/bot-readiness";
 import type { HumanResponseItem } from "@/lib/human-response-sla";
 import type { ClientSupportUpdate } from "@/lib/support-notifications";
+import { PRODUCT_RELEASE } from "@/lib/product-release";
 
 export type DashboardAttention = {
   title: string;
@@ -67,6 +68,9 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
             <h1 className="mt-0.5 text-[22px] font-semibold leading-tight text-[var(--text)]">Today</h1>
           </div>
           <div className="flex items-center gap-2">
+            <span className="hidden items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2 text-[10px] font-semibold text-[var(--text-muted)] md:inline-flex">
+              {PRODUCT_RELEASE.name}<span className="rounded-full bg-[#f3e5b5] px-1.5 py-0.5 text-[9px] uppercase tracking-[.08em] text-[#6d5310]">Pilot</span>
+            </span>
             <Link href="/team-inbox" className="inline-flex min-h-9 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-xs font-semibold text-[var(--text)] transition hover:bg-[var(--surface-soft)]">
               <Icon name="message-circle" className="h-4 w-4" />
               Inbox

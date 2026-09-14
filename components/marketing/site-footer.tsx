@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PRODUCT_RELEASE } from "@/lib/product-release";
 
 export function SiteFooter() {
   return (
@@ -44,6 +45,7 @@ export function SiteFooter() {
 
       <div className="mx-auto mt-10 flex max-w-7xl flex-col gap-3 border-t border-white/10 pt-5 text-xs text-white/38 sm:flex-row sm:items-center sm:justify-between">
         <p>© AiFrogi. Operated by <a href="https://webtechnosys.com" className="font-normal hover:text-white" target="_blank" rel="noreferrer">webtechnosys</a>.</p>
+        <p className="text-[#e2c66d]/70">{PRODUCT_RELEASE.name} · {PRODUCT_RELEASE.stage}</p>
         <Link href="/about" className="font-normal hover:text-white">Company and platform details</Link>
       </div>
     </footer>

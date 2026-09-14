@@ -1,7 +1,7 @@
 {
   "name": "aifrogi",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -35,6 +35,7 @@
     "verify:core-fleet": "tsx scripts/verify-core-fleet-release.ts",
     "verify:release-gates": "node ops/verify-release-gates.mjs",
     "verify:security:first-ten": "node ops/verify-first-ten-bot-security.mjs",
+    "verify:production-hardening": "node --import tsx --test tests/production-hardening/*.test.ts tests/tenant-intelligence/*.test.ts tests/channels/razorpay-billing.test.ts tests/channels/appointment-sheet-recovery.test.ts tests/channels/appointment-sheet-sync-key.test.ts tests/channels/human-response-sla.test.ts tests/sovereign-intelligence/bucket-two-notifications.test.ts tests/sovereign-intelligence/bucket-two-operator.test.ts",
     "ops:security-monitor": "node ops/run-security-monitor.mjs",
     "ops:security-drill": "node ops/run-security-drill.mjs",
     "ops:backup": "node ops/run-encrypted-backup.mjs",

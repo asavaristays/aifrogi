@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SovereignHero } from "@/components/marketing/sovereign-hero";
 import { marketingMetadata } from "@/lib/seo";
+import { PRODUCT_RELEASE } from "@/lib/product-release";
 
 const registerUrl = "https://app.aifrogi.com/register?source=homepage";
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = marketingMetadata({
 });
 
 metadata.other = {
-  "aifrogi-homepage-release": "2026-09-14-security-trust"
+  "aifrogi-homepage-release": PRODUCT_RELEASE.version
 };
 
 export const dynamic = "force-dynamic";
@@ -25,14 +26,21 @@ export const revalidate = 0;
 
 export default function HomePage() {
   return (
-    <main className="overflow-hidden bg-white text-[var(--ink-900)]" data-aifrogi-homepage-release="2026-09-14-security-trust">
-      <span hidden>AiFrogi homepage canary 2026-09-14 security trust</span>
+    <main className="overflow-hidden bg-white text-[var(--ink-900)]" data-aifrogi-homepage-release={PRODUCT_RELEASE.version}>
+      <span hidden>AiFrogi homepage canary {PRODUCT_RELEASE.version}</span>
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-black px-5 pb-0 pt-14 text-white sm:px-8 sm:pt-24">
         <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.055)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" aria-hidden="true" />
         <div className="absolute left-1/2 top-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-[var(--gold-600)]/18 blur-[130px]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl">
+          <div className="mb-7 flex justify-center sm:justify-start">
+            <Link href="/about" className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#e8cb7b]/35 bg-[#e8cb7b]/8 px-4 text-[11px] font-semibold uppercase tracking-[.13em] text-[#f0d77f] transition hover:border-[#e8cb7b]/65 hover:bg-[#e8cb7b]/12">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#e8cb7b]" aria-hidden="true" />
+              Introducing {PRODUCT_RELEASE.name}
+              <span className="normal-case tracking-normal text-white/48">· {PRODUCT_RELEASE.stage}</span>
+            </Link>
+          </div>
           <SovereignHero registerUrl={registerUrl} />
 
           <Link href="/experience" className="my-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-[#e8cb7b]/35 bg-white/[.04] px-6 py-5"><span><span className="block text-sm text-[#e8cb7b]">Experience AiFrogi · 45 seconds</span><span className="mt-1 block text-lg font-semibold text-white">Meet your next team member.</span></span><span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#e8cb7b] px-5 text-sm font-semibold text-[#17140a]">Watch. Explore. Try. <Icon name="arrow-right" /></span></Link>

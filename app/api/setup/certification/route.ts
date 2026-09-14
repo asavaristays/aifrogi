@@ -29,7 +29,15 @@ export async function PATCH(request: Request) {
   if (!canManageWorkspace(value.access.role)) return NextResponse.json({ error: "Client Admin access required." }, { status: 403 });
   const payload = await request.json().catch(() => null) as { level?: string; cases?: TenantCertificationCase[] } | null;
   const level = payload?.level === "GOLDEN" ? "GOLDEN" : "SMOKE";
-  try { return NextResponse.json({ record: await saveTenantCertificationCases(value.propertySlug, level, Array.isArray(payload?.cases) ? payload.cases : []) }); }
+  try {
+    const record = await saveTenantCertificationCases(value.propertySlug, level, Array.isArray(payload?.cases) ? payload.cases : [], { reviewedBy: value.access.user.username, reviewerRole: value.access.role, sourceRevision: value.knowledgeRevision });
+    const db = getDb();
+    if (db) await db.$transaction([
+      db.onboardingActivity.create({ data: { organizationId: value.access.organization.id, actorEmail: value.access.user.username, action: "TENANT_CERTIFICATION_BANK_REVIEWED", detail: `${level} question bank explicitly saved with ${record.cases.length} reviewed cases; a fresh certification run is required.` } }),
+      db.platformAuditLog.create({ data: { organizationId: value.access.organization.id, actorEmail: value.access.user.username, actorRole: value.access.role, action: "TENANT_CERTIFICATION_BANK_REVIEWED", targetType: "Property", targetId: value.propertySlug, summary: "Tenant certification bank explicitly reviewed and saved; previous certification invalidated.", metadata: { level, caseCount: record.cases.length, sourceRevision: value.knowledgeRevision } } })
+    ]);
+    return NextResponse.json({ record });
+  }
   catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Could not save certification questions." }, { status: 400 }); }
 }
 

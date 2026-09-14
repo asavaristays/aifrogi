@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "@/components/icons";
 import { AdminLogoutButton } from "@/components/admin/admin-logout-button";
+import { PRODUCT_RELEASE } from "@/lib/product-release";
 
 const navigation = [
   { label: "Command center", href: "/admin", icon: "grid" as const },
@@ -41,7 +42,7 @@ export function AdminShell({ userEmail, children }: { userEmail: string; childre
           })}
         </nav>
 
-        <div className="mt-auto border-t border-white/8 px-2 pt-5"><p className="truncate text-xs font-semibold text-white/58">{userEmail}</p><p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#e2c66d]">Platform administrator</p><div className="mt-4"><AdminLogoutButton /></div></div>
+        <div className="mt-auto border-t border-white/8 px-2 pt-5"><p className="truncate text-xs font-semibold text-white/58">{userEmail}</p><p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#e2c66d]">Platform administrator</p><p className="mt-3 text-[10px] text-white/38">Platform release: {PRODUCT_RELEASE.version}</p><div className="mt-4"><AdminLogoutButton /></div></div>
       </div>
     </aside>
 
