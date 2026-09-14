@@ -30,8 +30,7 @@ test("homepage omits the redundant experience strip while the presentation keeps
   assert.match(read("components/marketing/experience-story.tsx"), /aria-label="Close presentation"/);
 });
 
-test("release marker wraps inside narrow mobile hero screens", () => {
+test("homepage does not render a release marker inside the hero", () => {
   const homepage = read("app/page.tsx");
-  assert.match(homepage, /max-w-full flex-wrap/);
-  assert.match(homepage, /sm:flex-nowrap/);
+  assert.doesNotMatch(homepage, /Introducing \{PRODUCT_RELEASE\.name\}/);
 });
