@@ -45,3 +45,17 @@ test("website extraction rejects narrative text as hours, address or price", () 
   const pricingFacts = extractWebsiteTenantFacts({ url: "https://tenant.test/packages", title: "Packages", crawledAt: "2026-09-14T00:00:00.000Z", text: "Explore our curated package and plan a memorable stay." });
   assert.equal(pricingFacts.some((fact) => fact.field === "price"), false);
 });
+
+test("hotel crawl structures operational facts for review instead of burying them in page text", () => {
+  const facts = extractWebsiteTenantFacts({
+    url: "https://hotel.test/reservations",
+    title: "Rooms, amenities and reservations",
+    crawledAt: observedAt,
+    text: "Reservations: +91 98765-43210 or stay@hotel.test. Address: Fort Campus, Main Market, Mandawa, Jhunjhunu, Rajasthan 333704. Our Heritage Suite is INR 6,500 per night and includes Wi-Fi, swimming pool and parking. Check-in is 2 PM and cancellation requires 48 hours notice. Jodhpur Airport is 170 km away. Check availability at https://hotel.test/booking/availability."
+  });
+  const fields = new Set(facts.map((fact) => fact.field));
+  for (const field of ["phone", "email", "address", "rooms", "price", "amenities", "policy", "access", "booking_url"] as const) assert.ok(fields.has(field), `${field} should be structured`);
+  const profile = buildTenantProfileDraft(facts, "STAY");
+  assert.equal(profile.bookingLinks[0], "https://hotel.test/booking/availability");
+  assert.ok(profile.access.some((value) => /Airport.*170 km/i.test(value)));
+});

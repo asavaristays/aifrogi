@@ -1,6 +1,6 @@
 export type TenantSourceType = "CORRECTION" | "QA" | "EXCEL" | "PDF" | "WEBSITE";
 export type TenantPageType = "HOME" | "ABOUT" | "SERVICES" | "PRICING" | "CONTACT" | "FAQ" | "POLICY" | "TEAM" | "BLOG" | "OTHER";
-export type TenantFactField = "business_name" | "tagline" | "about" | "team" | "service" | "price" | "hours" | "phone" | "email" | "address" | "policy" | "social" | "faq";
+export type TenantFactField = "business_name" | "tagline" | "about" | "team" | "service" | "price" | "hours" | "phone" | "email" | "address" | "booking_url" | "maps_url" | "amenities" | "rooms" | "availability" | "access" | "policy" | "social" | "faq";
 
 export type TenantFact = {
   key: string;
@@ -41,7 +41,7 @@ export function classifyTenantPage(url: string, title = "", text = ""): TenantPa
 function addFact(facts: TenantFact[], field: TenantFactField, value: string, input: { sourceType: TenantSourceType; sourceUrl?: string; pageType?: TenantPageType; observedAt: string; confidence?: number }) {
   const normalized = clean(value).slice(0, 800);
   if (normalized.length < 3) return;
-  facts.push({ key: factKey(field, normalized), field, value: normalized, sourceType: input.sourceType, sourceUrl: input.sourceUrl, pageType: input.pageType, confidence: input.confidence ?? 0.78, authority: SOURCE_AUTHORITY[input.sourceType], observedAt: input.observedAt, refreshDays: ["price", "hours"].includes(field) ? 30 : 90 });
+  facts.push({ key: factKey(field, normalized), field, value: normalized, sourceType: input.sourceType, sourceUrl: input.sourceUrl, pageType: input.pageType, confidence: input.confidence ?? 0.78, authority: SOURCE_AUTHORITY[input.sourceType], observedAt: input.observedAt, refreshDays: ["price", "hours", "availability"].includes(field) ? 30 : 90 });
 }
 
 export function extractWebsiteTenantFacts(page: { url: string; title: string; text: string; crawledAt: string }): TenantFact[] {
@@ -54,15 +54,25 @@ export function extractWebsiteTenantFacts(page: { url: string; title: string; te
   for (const match of page.text.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)) addFact(facts, "email", match[0].toLowerCase(), { ...input, confidence: 0.98 });
   for (const match of page.text.matchAll(/(?:\+91[\s-]?)?[6-9](?:[\s-]?\d){9}\b/g)) addFact(facts, "phone", match[0].replace(/[\s-]/g, ""), { ...input, confidence: 0.96 });
   for (const match of page.text.matchAll(/https?:\/\/(?:www\.)?(?:linkedin|instagram|facebook|youtube|x|twitter)\.com\/[^\s,)]+/gi)) addFact(facts, "social", match[0], { ...input, confidence: 0.94 });
+  for (const match of page.text.matchAll(/https?:\/\/[^\s,)]+/gi)) {
+    const url = match[0].replace(/[.;]+$/, "");
+    if (/google\.[^/]+\/maps|maps\.app\.goo\.gl/i.test(url)) addFact(facts, "maps_url", url, { ...input, confidence: 0.96 });
+    else if (/book|booking|reserve|reservation|availability/i.test(url)) addFact(facts, "booking_url", url, { ...input, confidence: 0.9 });
+  }
 
   const sentences = page.text.split(/(?<=[.!?])\s+/).map(clean).filter((value) => value.length >= 20 && value.length <= 360);
   const select = (field: TenantFactField, pattern: RegExp, limit: number, confidence = 0.76) => sentences.filter((sentence) => pattern.test(sentence)).slice(0, limit).forEach((sentence) => addFact(facts, field, sentence, { ...input, confidence }));
   if (pageType === "ABOUT" || pageType === "HOME") select("about", /\b(we are|our company|founded|speciali[sz]e|help(?:s|ing)? businesses)\b/i, 2);
   if (pageType === "SERVICES" || pageType === "HOME") select("service", /\b(service|solution|offer|provide|speciali[sz]e|training|booking|consult)\b/i, 8);
-  if (pageType === "PRICING") select("price", /(?:₹|\bINR\b|\bRs\.?\s*|\$|€)\s*[\d,]+(?:\.\d+)?/i, 8, 0.88);
-  if (pageType === "CONTACT") select("hours", /(?:\b(?:mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?|hours?|timings?)\b.{0,80}\b\d{1,2}(?::\d{2})?\s*(?:am|pm)\b)|(?:\bopen\b.{0,40}\b\d{1,2}(?::\d{2})?\s*(?:am|pm)\b)/i, 3, 0.9);
-  if (pageType === "CONTACT") select("address", /(?:\baddress\s*:|\b(?:road|street|sector|district)\b.{0,100}\b(?:india|goa|gurugram|jodhpur)\b|\b\d{6}\b)/i, 3, 0.86);
+  select("price", /(?:₹|\bINR\b|\bRs\.?\s*|\$|€)\s*[\d,]+(?:\.\d+)?/i, 8, 0.88);
+  select("hours", /(?:\b(?:mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?|hours?|timings?)\b.{0,80}\b\d{1,2}(?::\d{2})?\s*(?:am|pm)\b)|(?:\bopen\b.{0,40}\b\d{1,2}(?::\d{2})?\s*(?:am|pm)\b)|(?:\b(?:open\s+)?24\s*hours?\b)/i, 3, 0.9);
+  select("address", /(?:\baddress\s*:|\b(?:road|street|sector|district|campus|market)\b.{0,140}\b(?:india|goa|rajasthan|gurugram|jodhpur|jhunjhunu)\b|\b\d{6}\b)/i, 3, 0.86);
+  select("amenities", /\b(?:amenit|facilit|wi-?fi|pool|parking|restaurant|spa|air condition|laundry|room service)\w*\b/i, 10, 0.82);
+  select("rooms", /\b(?:room|suite|cottage|villa|tent|accommodation|occupancy)\w*\b/i, 10, 0.82);
+  select("availability", /\b(?:availability|available rooms?|sold out|minimum stay|inventory)\b/i, 6, 0.82);
+  select("access", /\b(?:airport|railway|train station|bus stand|distance|kilomet(?:er|re)s?|\d+\s*kms?)\b/i, 8, 0.86);
   if (pageType === "POLICY") select("policy", /\b(?:policy|cancel|refund|privacy|terms|eligible|notice)\b/i, 8, 0.84);
+  else select("policy", /\b(?:check[ -]?in|check[ -]?out|cancel(?:lation)?|refund|pet policy|child policy|visitor policy)\b/i, 8, 0.82);
   if (pageType === "TEAM") select("team", /\b(?:founder|director|team|leadership|manager|led by)\b/i, 5);
   if (pageType === "FAQ") select("faq", /\?/, 10, 0.8);
   return facts;
@@ -91,7 +101,7 @@ export function reconcileTenantFacts(facts: TenantFact[]) {
 
 const REQUIRED_FIELDS: Record<string, TenantFactField[]> = {
   DEFAULT: ["business_name", "about", "service", "phone", "email", "hours", "address"],
-  STAY: ["business_name", "about", "service", "price", "phone", "email", "address", "policy"],
+  STAY: ["business_name", "about", "service", "price", "phone", "email", "address", "booking_url", "amenities", "rooms", "access", "policy"],
   CLINIC: ["business_name", "about", "service", "hours", "phone", "email", "address", "policy"],
   TRAINING: ["business_name", "about", "service", "price", "hours", "phone", "email", "policy"]
 };
@@ -111,6 +121,8 @@ export function buildTenantProfileDraft(facts: TenantFact[], family = "DEFAULT")
     services: values("service", 8), prices: values("price", 8), hours: values("hours", 2),
     phones: values("phone", 3), emails: values("email", 3), addresses: values("address", 3),
     policies: values("policy", 8), team: values("team", 5), socialLinks: values("social", 8),
+    bookingLinks: values("booking_url", 5), mapLinks: values("maps_url", 3), amenities: values("amenities", 10),
+    rooms: values("rooms", 10), availability: values("availability", 6), access: values("access", 8),
     missing: tenantKnowledgePunchList(reconciled.facts, family), conflicts: reconciled.conflicts
   };
 }

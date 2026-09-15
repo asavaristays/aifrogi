@@ -115,6 +115,11 @@ test("contact information remains distinct from a human callback request", () =>
   assert.equal(classifyWebsiteQuestion("Please contact me"), "HUMAN_REQUEST");
 });
 
+test("a visitor asking about the named business reaches approved overview knowledge", () => {
+  assert.equal(classifyWebsiteQuestion("Please details about Castle Mandawa"), "BUSINESS");
+  assert.equal(classifyWebsiteQuestion("Tell me about Castle Mandawa"), "BUSINESS");
+});
+
 test("multi-field contact questions return every requested approved field", () => {
   assert.deepEqual(buildRequestedContactDetails("What is your phone number and where are you located?", {
     publicPhone: "+91-7410582898",

@@ -28,6 +28,7 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   // as a new question rather than requiring conversation history that it does
   // not need (for example, "share training program details").
   if (/^(give|send|share|show|provide|explain|describe)\b/.test(normalized) && EXPLICIT_BUSINESS_SUBJECT.test(normalized)) return "BUSINESS";
+  if (/\b(?:details|information)\s+about\s+[a-z0-9]|\b(?:tell|explain|describe)\s+(?:me\s+)?about\s+[a-z0-9]/.test(normalized)) return "BUSINESS";
   if (/\b(you already (have|know)|already have context|as i said|as mentioned|previous question|earlier question|use the context|same question|same (?:date|dates|time|details|option|room|package) as before|tell me more about (it|that))\b/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/^(when|where)( and (when|where))? (is|are) (it|that|this|they|those)( please)?$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/^(give|send|share|show|open|provide|what about|how about|and|i want|i need)\b.{0,45}\b(link|url|details|price|cost|specific date|date|time|slot|booking|book|register|registration|it|that|this)( please)?$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
