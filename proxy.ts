@@ -67,6 +67,9 @@ const publicApiPrefixes = [
   "/api/billing/webhook/razorpay",
   "/api/public/whatsapp-bot",
   "/api/public/website-bot",
+  // Tenant-approved visual assets are rendered by the public Website Bot.
+  // Keep every other /api/media path session-protected.
+  "/api/media/uploads/showcase",
   "/api/health/live",
   "/api/health/ready",
 ];

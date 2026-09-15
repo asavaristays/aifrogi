@@ -86,6 +86,14 @@ test("generic bot presentation uses theme tokens instead of dark-only answer col
   assert.match(widget, /text-\[var\(--widget-muted\)\]/);
 });
 
+test("public tenant logos load without a client session and fail visually safe", () => {
+  const proxy = readFileSync("proxy.ts", "utf8");
+  const embed = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
+  assert.match(proxy, /\/api\/media\/uploads\/showcase/);
+  assert.match(embed, /function SafeBotLogo/);
+  assert.match(embed, /onError=\{\(\) => setFailed\(true\)\}/);
+});
+
 test("JavaScript delivery uses a responsive launcher and trusted minimize message", () => {
   const installer = readFileSync("app/api/public/website-bot/[slug]/install/route.ts", "utf8");
   assert.match(installer, /aria-expanded/);
