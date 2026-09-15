@@ -696,7 +696,7 @@ export async function buildWebsiteKnowledgeAnswer({
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, retrievalQuestion) : { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[] };
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   const confidenceRoute = routeConversationByConfidence({ intent: resolved.intent, hasApprovedContext: Boolean(context.trim()), hasResolvedEntity: Boolean(sessionMemory.entity), priorQuestions });
-  if (confidenceRoute.route === "CLARIFY") return direct(`Which ${persona?.category === "STAY" ? "property or stay" : "product or service"} would you like help with? I’ll use that specific business information.` , { ...resolved.decision, disposition: "CLARIFY", reason: confidenceRoute.reason });
+  if (confidenceRoute.route === "CLARIFY") return direct(`What would you like to know about ${businessName}? You can ask about rooms, facilities, location, policies, weddings or reservations.` , { ...resolved.decision, disposition: "CLARIFY", reason: confidenceRoute.reason });
   if (!context.trim()) {
     if (!evaluationMode) await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
     const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);

@@ -10,6 +10,10 @@ test("visitor answer gate rejects internal and robotic language", () => {
   assert.equal(evaluateVisitorAnswerQuality({ question: "Tell me about training", answer: "Please restate the business topic before I use approved knowledge.", decision: answerDecision }).passed, false);
 });
 
+test("visitor answer gate rejects approval terminology shown to guests", () => {
+  assert.equal(evaluateVisitorAnswerQuality({ question: "Do rooms have WiFi?", answer: "The approved information does not specify WiFi.", decision: answerDecision }).passed, false);
+});
+
 test("visitor answer gate blocks premature qualification but allows commercial follow-up", () => {
   assert.equal(evaluateVisitorAnswerQuality({ question: "What services do you offer?", answer: "We provide automation. What is your budget?", decision: answerDecision }).passed, false);
   assert.equal(evaluateVisitorAnswerQuality({ question: "I need a quotation", answer: "I can help. What is your budget?", decision: answerDecision }).passed, true);
