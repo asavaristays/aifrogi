@@ -642,7 +642,8 @@ export async function buildWebsiteKnowledgeAnswer({
   if (resolved.intent === "GREETING") return direct(buildWarmGreeting(question, assistantName, validTimeZone(visitorTimeZone, business?.timezone || "Asia/Kolkata")));
   if (resolved.intent === "IDENTITY") return direct(buildCustomerFacingIdentity(assistantName, businessName));
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m here to help with ${businessName}. Ask me about its services, products, availability, or how to get started.`);
-  if (resolved.intent === "HUMAN_REQUEST" || resolved.intent === "SENSITIVE") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
+  if (resolved.intent === "SENSITIVE") return direct(`I can’t provide private customer, guest, owner, booking, credential or payment information. I can share ${businessName}’s public contact details or help with general business information.` , { ...resolved.decision, disposition: "REFUSE", reason: "Private-data and credential boundary enforced before public contact routing." });
+  if (resolved.intent === "HUMAN_REQUEST") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
   const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
   if (governed.blockedState) {
     const failed = safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));

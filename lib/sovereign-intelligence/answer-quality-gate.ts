@@ -2,7 +2,7 @@ import type { SovereignDecision } from "@/lib/sovereign-intelligence/decision";
 
 export const ANSWER_QUALITY_GATE_VERSION = "1.0" as const;
 
-const INTERNAL_LANGUAGE = /\b(?:approved questions?|approved knowledge|approved information|approved sources?|knowledge gap|review dataset|governance|retrieval|confidence score|system prompt|language model|asynchronous aifrogi review)\b/i;
+const INTERNAL_LANGUAGE = /\b(?:approved questions?|approved knowledge|approved information|approved sources?|supplied knowledge base|knowledge base (?:does not|did not)|knowledge gap|review dataset|governance|retrieval|confidence score|system prompt|language model|asynchronous aifrogi review)\b/i;
 const ROBOTIC_DEFLECTION = /\b(?:please restate the business topic|i retain this conversation|i can answer approved questions|temporarily unable to generate a verified answer)\b/i;
 const PREMATURE_QUALIFICATION = /\b(?:approximate budget range|what is your budget|share your (?:name and )?(?:mobile|phone) number)\b/i;
 const COMMERCIAL_INTENT = /\b(?:book|booking|buy|purchase|price|pricing|quote|quotation|proposal|estimate|availability|available|call back|callback|contact me|interested|requirement)\b/i;

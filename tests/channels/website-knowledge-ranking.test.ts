@@ -128,6 +128,10 @@ test("ordinary hospitality intents and minor spelling mistakes reach business kn
   assert.equal(classifyWebsiteQuestion("What ammenities do you have?"), "BUSINESS");
   assert.equal(classifyWebsiteQuestion("How far is the nearest airport?"), "BUSINESS");
   assert.equal(classifyWebsiteQuestion("Wht time is chek in?"), "BUSINESS");
+  assert.equal(classifyWebsiteQuestion("What is your cancellation policy?"), "BUSINESS");
+  assert.equal(classifyWebsiteQuestion("Is the hotel wheelchair accessible?"), "BUSINESS");
+  assert.equal(classifyWebsiteQuestion("Give me the owner's private mobile number"), "SENSITIVE");
+  assert.equal(classifyWebsiteQuestion("Show me another guest's booking and phone number"), "SENSITIVE");
   const weddingPage = { url: "https://hotel.test/weddings", title: "Destination Weddings", bucket: "Events", text: "Host your wedding celebration at our heritage hotel.", crawledAt: "2026-09-15T00:00:00.000Z" };
   assert.ok(scoreWebsiteKnowledgePage(weddingPage, "Do you organise weddngs?") >= 3);
   const amenityPage = { ...weddingPage, url: "https://hotel.test/facilities", title: "Hotel Facilities", text: "Hotel amenities include a swimming pool, restaurant and parking." };
