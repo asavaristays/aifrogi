@@ -108,6 +108,8 @@ test("ordinary sports-result wording remains outside the business bot domain", (
 
 test("contact information remains distinct from a human callback request", () => {
   assert.equal(classifyWebsiteQuestion("Please share contact details"), "CONTACT_INFO");
+  assert.equal(classifyWebsiteQuestion("Please share contact address"), "CONTACT_INFO");
+  assert.equal(classifyWebsiteQuestion("What is the reservation contact number?"), "CONTACT_INFO");
   assert.equal(classifyWebsiteQuestion("What is your contact number?"), "CONTACT_INFO");
   assert.equal(classifyWebsiteQuestion("Where are you based?"), "CONTACT_INFO");
   assert.equal(classifyWebsiteQuestion("Please contact me"), "HUMAN_REQUEST");
