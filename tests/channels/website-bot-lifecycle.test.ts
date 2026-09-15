@@ -9,6 +9,12 @@ test("only explicitly approved live website bots may serve visitors", () => {
   assert.equal(canServeWebsiteBot("LIVE", ["WEBSITE"]), true);
   for (const status of ["DRAFT", "INSTALLATION_READY", "INSTALLATION_DETECTED", "PAUSED", "DELETED"]) assert.equal(canServeWebsiteBot(status, ["WEBSITE"]), false);
   assert.equal(canServeWebsiteBot("LIVE", ["WHATSAPP"]), false);
+  const embedPage = readFileSync("app/embed/[slug]/page.tsx", "utf8");
+  assert.match(embedPage, /notFound\(\)/);
+  assert.doesNotMatch(embedPage, /return null;/);
+  const shell = readFileSync("components/layout/app-shell.tsx", "utf8");
+  assert.match(shell, /Private setup workspace/);
+  assert.match(shell, /customers cannot access or use this bot until it is submitted and approved/);
 });
 
 test("go-live supports standalone or website delivery after Super Admin approval", () => {

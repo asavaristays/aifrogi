@@ -1,4 +1,5 @@
 import { WebsiteBotEmbed } from "@/components/website-bot/website-bot-embed";
+import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
@@ -15,7 +16,7 @@ export default async function WebsiteBotEmbedPage({ params, searchParams }: { pa
     if (process.env.NODE_ENV === "development" && qa === "responsive") {
       return <WebsiteBotEmbed slug={slug} botName="Responsive QA Bot" welcomeMessage="Welcome. Ask a question to test the responsive widget." themeColor="#8a6a16" dismissible={mode === "launcher"} />;
     }
-    return null;
+    notFound();
   }
   const settings = await readKnowledgeSettings(slug);
   return <WebsiteBotEmbed slug={slug} botName={profile.personaName || `${property?.organization?.name || "Business"} AI`} welcomeMessage={settings.welcomeMessage} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme} logoUrl={settings.logoUrl} welcomeCardImageUrl={settings.welcomeCardImageUrl} welcomeCardTitle={settings.welcomeCardTitle} welcomeCardText={settings.welcomeCardText} showcaseItems={settings.showcaseItems} dismissible={mode === "launcher"} menu={settings.widgetMenu} />;
