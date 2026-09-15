@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
 import { encryptSecretValue } from "@/lib/field-encryption";
-import { nextWebsiteBotStatus, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
+import { nextWebsiteBotStatus, statusAfterBotProfileSave, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
 import { assertCoreLaunchCertification } from "@/lib/sovereign-intelligence/launch-certification";
 import { KB_FRAMEWORK_VERSION } from "@/lib/knowledge-verification";
@@ -230,6 +230,33 @@ export async function getOrganizationById(id: string) {
   });
 }
 
+function comparableBotProfile(profile: {
+  category?: string; operatingMode?: string; channels?: string[]; capabilities?: string[];
+  humanHandoffEnabled?: boolean; actionApprovalNeeded?: boolean; personaName?: string | null;
+  businessObjective?: string | null; tone?: string | null; languages?: string[];
+  prohibitedClaims?: string[]; escalationTriggers?: string[]; responseSlaMinutes?: number;
+  reminderPercent?: number; fallbackEnabled?: boolean; safeFallbackMessage?: string | null;
+}) {
+  return {
+    category: profile.category,
+    operatingMode: profile.operatingMode,
+    channels: [...(profile.channels || [])].sort(),
+    capabilities: [...(profile.capabilities || [])].sort(),
+    humanHandoffEnabled: profile.humanHandoffEnabled,
+    actionApprovalNeeded: profile.actionApprovalNeeded,
+    personaName: profile.personaName || "",
+    businessObjective: profile.businessObjective || "",
+    tone: profile.tone || "",
+    languages: [...(profile.languages || [])],
+    prohibitedClaims: [...(profile.prohibitedClaims || [])],
+    escalationTriggers: [...(profile.escalationTriggers || [])],
+    responseSlaMinutes: profile.responseSlaMinutes,
+    reminderPercent: profile.reminderPercent,
+    fallbackEnabled: profile.fallbackEnabled,
+    safeFallbackMessage: profile.safeFallbackMessage || ""
+  };
+}
+
 export async function saveOrganizationBotProfile(input: {
   organizationId: string;
   actorEmail: string;
@@ -254,14 +281,25 @@ export async function saveOrganizationBotProfile(input: {
 }) {
   const db = getDb();
   if (!db) return null;
-  const existing = await db.botProfile.findUnique({ where: { organizationId: input.organizationId }, select: { installationKey: true, installationDetectedAt: true, status: true } });
+  const [existing, latestReviewEvent] = await Promise.all([
+    db.botProfile.findUnique({ where: { organizationId: input.organizationId } }),
+    db.onboardingActivity.findFirst({
+      where: {
+        organizationId: input.organizationId,
+        action: { in: ["WEBSITE_BOT_SUBMITTED_FOR_REVIEW", "WEBSITE_BOT_REVIEW_INVALIDATED"] }
+      },
+      orderBy: { createdAt: "desc" },
+      select: { action: true }
+    })
+  ]);
   const installationKey = existing?.installationKey || randomBytes(24).toString("base64url");
-  const retainedStatuses = new Set(["INSTALLATION_DETECTED", "LIVE", "PAUSED"]);
-  const status = existing?.status && retainedStatuses.has(existing.status)
-    ? existing.status
-    : existing?.installationDetectedAt
-      ? "INSTALLATION_DETECTED"
-      : "INSTALLATION_READY";
+  const materiallyChanged = !existing || JSON.stringify(comparableBotProfile(existing)) !== JSON.stringify(comparableBotProfile(input.profile));
+  const recoverAuditedSubmission = !materiallyChanged
+    && ["INSTALLATION_READY", "INSTALLATION_DETECTED"].includes(existing?.status || "")
+    && latestReviewEvent?.action === "WEBSITE_BOT_SUBMITTED_FOR_REVIEW";
+  const status = recoverAuditedSubmission
+    ? "REVIEW_PENDING"
+    : statusAfterBotProfileSave(existing?.status, Boolean(existing?.installationDetectedAt), materiallyChanged);
   const personaPack = getBotPersonaPack(input.profile.category);
   const actionMode = input.profile.operatingMode === "APPROVED_ACTIONS" || input.profile.operatingMode === "HUMAN_APPROVAL";
   const leadMode = input.profile.operatingMode !== "ANSWER_ONLY";
@@ -288,7 +326,23 @@ export async function saveOrganizationBotProfile(input: {
         action: "BOT_PROFILE_CONFIGURED",
         detail: `${input.profile.category}: ${input.profile.channels.join(" + ")} · ${input.profile.operatingMode}`
       }
-    })
+    }),
+    ...(existing?.status === "REVIEW_PENDING" && materiallyChanged ? [db.onboardingActivity.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        action: "WEBSITE_BOT_REVIEW_INVALIDATED",
+        detail: "A material governed bot-profile change requires the client to review and submit the bot again."
+      }
+    })] : []),
+    ...(recoverAuditedSubmission ? [db.onboardingActivity.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        action: "WEBSITE_BOT_REVIEW_STATE_RESTORED",
+        detail: "Restored the latest audited client submission after a non-material profile refresh had demoted its review state."
+      }
+    })] : [])
   ]);
   return getOrganizationById(input.organizationId);
 }

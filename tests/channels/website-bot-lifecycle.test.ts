@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
-import { canServeWebsiteBot, nextWebsiteBotStatus } from "../../lib/website-bot-lifecycle";
+import { canServeWebsiteBot, nextWebsiteBotStatus, statusAfterBotProfileSave } from "../../lib/website-bot-lifecycle";
 import { acceptedHumanOffer, humanResponseWindow } from "../../lib/website-handover";
 
 test("only explicitly approved live website bots may serve visitors", () => {
@@ -50,6 +50,19 @@ test("client submission is required before initial Super Admin go-live", () => {
   assert.match(onboarding, /BotReviewSubmission/);
   assert.match(onboarding, /INSTALLATION_READY/);
   assert.match(onboarding, /REVIEW_PENDING/);
+});
+
+test("admin review cannot silently demote a submitted bot", () => {
+  assert.equal(statusAfterBotProfileSave("REVIEW_PENDING", false, false), "REVIEW_PENDING");
+  assert.equal(statusAfterBotProfileSave("REVIEW_PENDING", false, true), "INSTALLATION_READY");
+  assert.equal(statusAfterBotProfileSave("REVIEW_PENDING", true, true), "INSTALLATION_DETECTED");
+  assert.equal(statusAfterBotProfileSave("LIVE", false, true), "LIVE");
+  assert.equal(statusAfterBotProfileSave("DELETED", true, true), "DELETED");
+  const repository = readFileSync("lib/repositories/onboarding-repository.ts", "utf8");
+  assert.match(repository, /WEBSITE_BOT_REVIEW_INVALIDATED/);
+  assert.match(repository, /WEBSITE_BOT_REVIEW_STATE_RESTORED/);
+  assert.match(repository, /latestReviewEvent\?\.action === "WEBSITE_BOT_SUBMITTED_FOR_REVIEW"/);
+  assert.match(repository, /materiallyChanged/);
 });
 
 test("pause, soft delete and restore are deterministic", () => {
