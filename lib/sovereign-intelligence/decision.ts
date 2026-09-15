@@ -13,7 +13,27 @@ export type SovereignDecision = {
   reason: string;
 };
 
-const EXPLICIT_BUSINESS_SUBJECT = /\b(services?|products?|training|courses?|programmes?|programs?|bootcamp|automation|software|applications?|mobile app|web design|website development|ai bot|hotel technology|hospitality technology|channel manager|digital transformation|filmmaking|film making|marketing|seo|consultation|project process|delivery process|pricing|prices|fees?|packages?|support plans?)\b/;
+const EXPLICIT_BUSINESS_SUBJECT = /\b(services?|products?|training|courses?|programmes?|programs?|bootcamp|automation|software|applications?|mobile app|web design|website development|ai bot|hotel technology|hospitality technology|channel manager|digital transformation|filmmaking|film making|marketing|seo|consultation|project process|delivery process|pricing|prices|fees?|packages?|support plans?|weddings?|events?|banquets?|conferences?|celebrations?|amenities|facilities|restaurant|dining|rooms?|suites?|activities|spa|pool|parking)\b/;
+
+const BUSINESS_TOKEN_VOCABULARY = ["wedding", "weddings", "event", "events", "banquet", "conference", "celebration", "amenities", "facilities", "restaurant", "dining", "room", "rooms", "suite", "suites", "booking", "reservation", "availability", "price", "pricing", "rate", "rates", "service", "services", "product", "products", "training", "course", "appointment"];
+
+function smallEditDistance(left: string, right: string) {
+  if (Math.abs(left.length - right.length) > 1) return 2;
+  const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= left.length; i += 1) {
+    let previous = row[0]; row[0] = i;
+    for (let j = 1; j <= right.length; j += 1) {
+      const current = row[j];
+      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (left[i - 1] === right[j - 1] ? 0 : 1));
+      previous = current;
+    }
+  }
+  return row[right.length];
+}
+
+function hasTypoTolerantBusinessToken(normalized: string) {
+  return normalized.split(" ").some((token) => token.length >= 5 && BUSINESS_TOKEN_VOCABULARY.some((known) => smallEditDistance(token, known) <= 1));
+}
 
 export function classifySovereignIntent(question: string): SovereignIntent {
   const normalized = question.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
@@ -35,7 +55,7 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   if (/^(give|send|share|show|open|provide|what about|how about|and|i want|i need)\b.{0,45}\b(link|url|details|price|cost|specific date|date|time|slot|booking|book|register|registration|it|that|this)( please)?$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   // Recognise ordinary plural and vertical vocabulary when recovering a topic.
   // This only routes retrieval; it does not confer factual or action authority.
-  if (/\b(services?|website|web design|development|software|application|mobile app|ai|automation|bot|whatsapp|hotel|hospitality|channel manager|training|courses?|programmes?|programs?|workflows?|bootcamp|seo|marketing|integration|pricing|price|cost|quote|demo|consultation|build|project|appointment|booking|reservation|table|menu|cuisine|treatments?|rooms?|admission|counselling|propert(?:y|ies)|site visit|products?|order|catalogue|maintenance)\b/.test(normalized)) return "BUSINESS";
+  if (/\b(services?|website|web design|development|software|application|mobile app|ai|automation|bot|whatsapp|hotel|hospitality|channel manager|training|courses?|programmes?|programs?|workflows?|bootcamp|seo|marketing|integration|pricing|price|cost|quote|demo|consultation|build|project|appointment|booking|reservation|table|menu|cuisine|treatments?|rooms?|suites?|amenities|facilities|weddings?|events?|banquets?|conferences?|celebrations?|restaurant|dining|activities|spa|pool|parking|admission|counselling|propert(?:y|ies)|site visit|products?|order|catalogue|maintenance)\b/.test(normalized) || hasTypoTolerantBusinessToken(normalized)) return "BUSINESS";
   return "UNKNOWN";
 }
 

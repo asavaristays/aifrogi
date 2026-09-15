@@ -38,7 +38,7 @@ export function routeConversationByConfidence(input: {
 }) {
   const priorUnknownTurns = (input.priorQuestions || []).slice(0, 3).filter((question) => classifySovereignIntent(question) === "UNKNOWN").length;
   if (input.intent === "HUMAN_REQUEST" || input.intent === "SENSITIVE") return { version: CONVERSATION_CONFIDENCE_VERSION, route: "HANDOVER" as const, confidence: 1, reason: "Human or sensitive intent has deterministic priority." };
-  if (input.intent === "UNKNOWN" && !input.hasResolvedEntity) {
+  if (input.intent === "UNKNOWN" && !input.hasResolvedEntity && !input.hasApprovedContext) {
     return priorUnknownTurns >= 1
       ? { version: CONVERSATION_CONFIDENCE_VERSION, route: "HANDOVER" as const, confidence: 0, reason: "A second unclear request exits the clarification loop." }
       : { version: CONVERSATION_CONFIDENCE_VERSION, route: "CLARIFY" as const, confidence: 0.35, reason: "The business subject is not specific enough for safe retrieval." };

@@ -480,7 +480,9 @@ export function scoreWebsiteKnowledgePage(page: KnowledgePage, question: string)
   const bucket = page.bucket.toLowerCase();
   const text = page.text.toLowerCase();
   const pathname = new URL(page.url).pathname.toLowerCase();
-  let score = terms.reduce((total, term) => total + (title.includes(term) ? 4 : 0) + (bucket.includes(term) ? 3 : 0) + (text.includes(term) ? 1 : 0), 0);
+  const searchableTokens = [...new Set(`${title} ${bucket} ${text.slice(0, 5000)}`.split(/[^a-z0-9]+/).filter((token) => token.length >= 4))];
+  const fuzzyMatch = (term: string) => term.length >= 5 && searchableTokens.some((token) => Math.abs(token.length - term.length) <= 1 && smallTermEditDistance(token, term) <= 1);
+  let score = terms.reduce((total, term) => total + (title.includes(term) ? 4 : 0) + (bucket.includes(term) ? 3 : 0) + (text.includes(term) ? 1 : fuzzyMatch(term) ? 1 : 0), 0);
   const asksAutomation = /\b(ai|automation|bot|assistant|workflow)\b/.test(normalizedQuestion);
   const asksHospitality = /\b(hotel|hospitality|resort|booking|guest)\b/.test(normalizedQuestion);
   const asksTraining = /\b(train|training|course|bootcamp|learn|class|workshop|skill)\b/.test(normalizedQuestion);
@@ -493,6 +495,19 @@ export function scoreWebsiteKnowledgePage(page: KnowledgePage, question: string)
   if (!/\b(film|video|content)\b/.test(normalizedQuestion) && /(film|video|content creator)/.test(`${pathname} ${title}`)) score -= 12;
   if (!/\b(train|training|course|bootcamp|learn)\b/.test(normalizedQuestion) && /(training|course|bootcamp)/.test(`${pathname} ${title}`)) score -= 12;
   return score;
+}
+
+function smallTermEditDistance(left: string, right: string) {
+  const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= left.length; i += 1) {
+    let previous = row[0]; row[0] = i;
+    for (let j = 1; j <= right.length; j += 1) {
+      const current = row[j];
+      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (left[i - 1] === right[j - 1] ? 0 : 1));
+      previous = current;
+    }
+  }
+  return row[right.length];
 }
 
 function buildContext(knowledgeBase: KnowledgeBase, question: string) {

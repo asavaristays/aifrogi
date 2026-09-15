@@ -30,3 +30,8 @@ test("approved context and a resolved entity permit an answer", () => {
   assert.equal(result.route, "ANSWER");
   assert.equal(result.confidence, 0.95);
 });
+
+test("supported single-business questions do not trigger a needless property clarification", () => {
+  const result = routeConversationByConfidence({ intent: "UNKNOWN", hasApprovedContext: true, hasResolvedEntity: false });
+  assert.equal(result.route, "ANSWER");
+});

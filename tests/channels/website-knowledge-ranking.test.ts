@@ -122,6 +122,14 @@ test("a visitor asking about the named business reaches approved overview knowle
   assert.equal(classifyWebsiteQuestion("Tell me about Castle Mandawa"), "BUSINESS");
 });
 
+test("ordinary hospitality intents and minor spelling mistakes reach business knowledge", () => {
+  assert.equal(classifyWebsiteQuestion("Hi do you host weddings"), "BUSINESS");
+  assert.equal(classifyWebsiteQuestion("Do you organise weddngs?"), "BUSINESS");
+  assert.equal(classifyWebsiteQuestion("What ammenities do you have?"), "BUSINESS");
+  const weddingPage = { url: "https://hotel.test/weddings", title: "Destination Weddings", bucket: "Events", text: "Host your wedding celebration at our heritage hotel.", crawledAt: "2026-09-15T00:00:00.000Z" };
+  assert.ok(scoreWebsiteKnowledgePage(weddingPage, "Do you organise weddngs?") > 0);
+});
+
 test("multi-field contact questions return every requested approved field", () => {
   assert.deepEqual(buildRequestedContactDetails("What is your phone number and where are you located?", {
     publicPhone: "+91-7410582898",
