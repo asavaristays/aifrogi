@@ -7,6 +7,7 @@ import { BotConnectorPlan, type BotConnectorView } from "@/components/bot-profil
 import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
+import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { Button } from "@/components/ui/button";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 
@@ -28,8 +29,9 @@ export type CustomerOnboardingOrganization = {
   botConnectors: BotConnectorView[]; properties: Array<{ id: string; name: string; slug: string }>;
 };
 
-export function CustomerOnboarding({ initialOrganization, accountEmail }: {
+export function CustomerOnboarding({ initialOrganization, accountEmail, reviewReadiness }: {
   initialOrganization: CustomerOnboardingOrganization | null; accountEmail: string;
+  reviewReadiness?: { knowledgeReady: boolean; tested: boolean; certified: boolean; canManage: boolean };
 }) {
   const router = useRouter();
   const [organization, setOrganization] = useState(initialOrganization);
@@ -45,9 +47,10 @@ export function CustomerOnboarding({ initialOrganization, accountEmail }: {
     publicAddress: initialOrganization?.publicAddress || "", publicBusinessHours: initialOrganization?.publicBusinessHours || ""
   });
 
-  const profileReady = organization?.botProfile?.status === "CONFIGURED" || organization?.botProfile?.status === "LIVE";
-  const installed = Boolean(organization?.botProfile?.installationDetectedAt || organization?.botProfile?.status === "LIVE");
-  const checks = [Boolean(organization), Boolean(organization), profileReady, installed];
+  const status = organization?.botProfile?.status || "DRAFT";
+  const profileReady = ["CONFIGURED", "INSTALLATION_READY", "INSTALLATION_DETECTED", "REVIEW_PENDING", "LIVE", "PAUSED"].includes(status);
+  const submittedOrLive = ["REVIEW_PENDING", "LIVE", "PAUSED"].includes(status);
+  const checks = [Boolean(organization), Boolean(organization), profileReady, submittedOrLive];
   const progress = Math.round((checks.filter(Boolean).length / checks.length) * 100);
   const slug = organization?.properties[0]?.slug || "";
 
@@ -93,6 +96,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail }: {
       {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
       {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
       {organization && slug ? <WebsiteBotInstallation slug={slug} profile={organization.botProfile} /> : null}
+      {organization?.botProfile ? <BotReviewSubmission status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={reviewReadiness?.tested ?? false} certified={reviewReadiness?.certified ?? false} canManage={reviewReadiness?.canManage ?? false} /> : null}
     </main>
   </div>;
 }

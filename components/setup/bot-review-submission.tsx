@@ -9,6 +9,7 @@ export function BotReviewSubmission({ status, ready, tested, certified, canManag
   const [message, setMessage] = useState("");
   const pending = status === "REVIEW_PENDING";
   const live = status === "LIVE";
+  const blockers = [!ready ? "Approve the required business knowledge" : null, !tested ? "Test at least one customer question" : null, !certified ? "Run and pass the current tenant certification" : null].filter(Boolean) as string[];
 
   async function submit() {
     setSaving(true); setMessage("");
@@ -24,7 +25,7 @@ export function BotReviewSubmission({ status, ready, tested, certified, canManag
     <h2 className="mt-1 text-xl font-semibold">{live ? "Your bot is live" : pending ? "Submitted · awaiting AiFrogi review" : "Submit your bot for review"}</h2>
     <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">{live ? "Super Admin approved the bot and your live confirmation email was issued." : pending ? "No further action is required now. You will receive an email after approval or a clear correction request." : "Submit only after approving the required intelligence and testing a customer question. Submission does not make the bot public; Super Admin approval is mandatory."}</p>
     {!pending && !live && canManage ? <button type="button" disabled={saving || !ready || !tested || !certified} onClick={submit} className="mt-4 min-h-11 rounded-full bg-[#8a6a16] px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-45">{saving ? "Submitting…" : "Approve and submit for review"}</button> : null}
-    {!pending && !live && (!ready || !tested || !certified) ? <p className="mt-3 text-xs font-semibold text-[#8a5d12]">Complete approved intelligence, one successful bot test and the current tenant certification before submission.</p> : null}
+    {!pending && !live && blockers.length ? <div className="mt-4 rounded-xl border border-[#ead9a5] bg-[#fffaf0] p-4"><p className="text-xs font-black uppercase tracking-wide text-[#8a5d12]">Remaining before submission</p><ul className="mt-2 space-y-1">{blockers.map((blocker) => <li key={blocker} className="text-sm text-[#6b571e]">• {blocker}</li>)}</ul></div> : null}
     {message ? <p role="status" className="mt-3 text-sm font-semibold">{message}</p> : null}
   </section>;
 }

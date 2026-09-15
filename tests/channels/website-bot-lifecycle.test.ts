@@ -23,7 +23,8 @@ test("Super Admin review exposes explicit approval and correction paths", () => 
   assert.match(installation, /Approve and Make Bot Live/);
   assert.match(installation, /approvalAvailable = \[/);
   assert.match(installation, /"REVIEW_PENDING", "PAUSED"/);
-  assert.match(installation, /Website installed \(optional\)/);
+  assert.match(installation, /Submitted for review/);
+  assert.match(installation, /Website installation is optional/);
   assert.match(installation, /Not Approved · Request Correction/);
   assert.match(route, /DECLINE_BOT_APPROVAL/);
   assert.match(route, /correction-required email/);
@@ -39,6 +40,10 @@ test("client submission is required before initial Super Admin go-live", () => {
   assert.match(clientRoute, /SUBMIT_FOR_REVIEW/);
   assert.match(setup, /Starter Bot without connectors/);
   assert.match(setup, /BotReviewSubmission/);
+  const onboarding = readFileSync("components/onboarding/customer-onboarding.tsx", "utf8");
+  assert.match(onboarding, /BotReviewSubmission/);
+  assert.match(onboarding, /INSTALLATION_READY/);
+  assert.match(onboarding, /REVIEW_PENDING/);
 });
 
 test("pause, soft delete and restore are deterministic", () => {
