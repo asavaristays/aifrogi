@@ -34,15 +34,36 @@ export function BotAppearanceSettings({ initialSettings, initialBotName, canMana
   const [welcomeCardTitle, setWelcomeCardTitle] = useState(initialSettings.welcomeCardTitle);
   const [welcomeCardText, setWelcomeCardText] = useState(initialSettings.welcomeCardText);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState<"logo" | "welcome" | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const accentText = useMemo(() => contrastText(themeColor), [themeColor]);
   const logoIsValid = !logoUrl.trim() || (() => {
-    try { return new URL(logoUrl).protocol === "https:"; } catch { return false; }
+    try { return logoUrl.startsWith("/api/media/uploads/showcase/") || new URL(logoUrl).protocol === "https:"; } catch { return false; }
   })();
   const cardImageIsValid = !welcomeCardImageUrl.trim() || (() => {
-    try { return new URL(welcomeCardImageUrl).protocol === "https:"; } catch { return false; }
+    try { return welcomeCardImageUrl.startsWith("/api/media/uploads/showcase/") || new URL(welcomeCardImageUrl).protocol === "https:"; } catch { return false; }
   })();
   const canSave = canManage && botName.trim().length > 0 && welcomeMessage.trim().length > 0 && logoIsValid && cardImageIsValid;
+
+  async function uploadImage(kind: "logo" | "welcome", file?: File) {
+    if (!file) return;
+    setUploading(kind);
+    setNotice(null);
+    const data = new FormData();
+    data.set("file", file);
+    try {
+      const response = await fetch("/api/setup/showcase-upload", { method: "POST", body: data });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Image upload failed.");
+      if (kind === "logo") setLogoUrl(payload.url);
+      else setWelcomeCardImageUrl(payload.url);
+      setNotice(`${kind === "logo" ? "Logo" : "Welcome image"} uploaded. Select Save appearance to publish it.`);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Image upload failed.");
+    } finally {
+      setUploading(null);
+    }
+  }
 
   async function save() {
     if (!canSave) return;
@@ -84,8 +105,8 @@ export function BotAppearanceSettings({ initialSettings, initialBotName, canMana
         <label><span className="field-label">Brand colour</span><div className="mt-2 flex min-h-11 items-center gap-3 rounded-md border border-[var(--border)] px-3"><input type="color" value={themeColor} disabled={!canManage} onChange={(event) => setThemeColor(event.target.value)} className="h-7 w-9 cursor-pointer border-0 bg-transparent" /><span className="text-xs font-semibold uppercase">{themeColor}</span></div><small className="mt-2 block text-xs text-[var(--text-muted)]">We automatically use readable light or dark text over this colour.</small></label>
         <fieldset className="sm:col-span-2"><legend className="field-label">Widget theme</legend><div className="mt-2 grid grid-cols-3 gap-2">{(["dark", "light", "system"] as const).map(mode => <label key={mode} className={`flex min-h-11 cursor-pointer items-center justify-center rounded-lg border px-3 text-sm font-semibold capitalize ${widgetTheme === mode ? "border-[#9a7411] bg-[#f4ecd5] text-[#624b0c]" : "border-[var(--border)]"}`}><input type="radio" name="widget-theme" className="sr-only" value={mode} checked={widgetTheme === mode} disabled={!canManage} onChange={() => setWidgetTheme(mode)} />{mode}</label>)}</div><small className="mt-2 block text-xs text-[var(--text-muted)]">System follows the visitor&apos;s device preference automatically.</small></fieldset>
         <label className="sm:col-span-2"><span className="field-label">Welcome message</span><input className="product-input mt-2" value={welcomeMessage} maxLength={300} disabled={!canManage} onChange={(event) => setWelcomeMessage(event.target.value)} placeholder="Hello. How can I help?" /><small className="mt-2 block text-xs text-[var(--text-muted)]">The first message visitors see when they open the bot.</small></label>
-        <label className="sm:col-span-2"><span className="field-label">Logo URL (optional)</span><input className="product-input mt-2" value={logoUrl} maxLength={500} disabled={!canManage} aria-invalid={!logoIsValid} onChange={(event) => setLogoUrl(event.target.value)} placeholder="https://yourwebsite.com/logo.png" /><small className={`mt-2 block text-xs ${logoIsValid ? "text-[var(--text-muted)]" : "text-red-700"}`}>{logoIsValid ? "Use a square 512 × 512 px PNG or WebP, maximum 1 MB. The logo displays at 30–36 px, so avoid small text." : "Enter a public HTTPS image URL."}</small></label>
-        <div className="sm:col-span-2 rounded-xl border border-[var(--border)] bg-[#fbfaf7] p-4"><p className="field-label">Welcome highlight / today&apos;s offer (optional)</p><p className="mt-1 text-xs text-[var(--text-muted)]">Add a visual card above the conversation. Clear all three fields to hide it.</p><div className="mt-4 grid gap-4 sm:grid-cols-2"><label><span className="text-xs font-semibold">Heading</span><input className="product-input mt-2" value={welcomeCardTitle} maxLength={80} disabled={!canManage} onChange={(event) => setWelcomeCardTitle(event.target.value)} placeholder="Today’s offer" /></label><label><span className="text-xs font-semibold">Short text</span><input className="product-input mt-2" value={welcomeCardText} maxLength={240} disabled={!canManage} onChange={(event) => setWelcomeCardText(event.target.value)} placeholder="Book this week and receive…" /></label><label className="sm:col-span-2"><span className="text-xs font-semibold">Image URL</span><input className="product-input mt-2" value={welcomeCardImageUrl} maxLength={500} disabled={!canManage} aria-invalid={!cardImageIsValid} onChange={(event) => setWelcomeCardImageUrl(event.target.value)} placeholder="https://yourwebsite.com/offer.webp" /><small className={`mt-2 block text-xs ${cardImageIsValid ? "text-[var(--text-muted)]" : "text-red-700"}`}>{cardImageIsValid ? "Use a public HTTPS landscape image. Recommended 1200 × 630 px, WebP or JPG, maximum 1 MB." : "Enter a public HTTPS image URL."}</small></label></div></div>
+        <div className="sm:col-span-2"><label><span className="field-label">Logo image (optional)</span><input className="product-input mt-2" value={logoUrl} maxLength={500} disabled={!canManage} aria-invalid={!logoIsValid} onChange={(event) => setLogoUrl(event.target.value)} placeholder="Paste an HTTPS image URL or upload below" /></label><label className="mt-3 block rounded-xl border border-dashed border-[var(--border)] bg-[#fbfaf7] p-4"><span className="text-sm font-semibold">Upload logo</span><input className="mt-2 block w-full text-xs" type="file" accept="image/jpeg,image/png,image/webp" disabled={!canManage || uploading !== null} onChange={(event) => void uploadImage("logo", event.target.files?.[0])} /><small className={`mt-2 block text-xs ${logoIsValid ? "text-[var(--text-muted)]" : "text-red-700"}`}>{uploading === "logo" ? "Uploading logo…" : logoIsValid ? "JPG, PNG or WebP, maximum 2 MB. A square image works best." : "Upload an image or enter a public HTTPS image URL."}</small></label></div>
+        <div className="sm:col-span-2 rounded-xl border border-[var(--border)] bg-[#fbfaf7] p-4"><p className="field-label">Welcome highlight / today&apos;s offer (optional)</p><p className="mt-1 text-xs text-[var(--text-muted)]">Add a visual card above the conversation. Clear all three fields to hide it.</p><div className="mt-4 grid gap-4 sm:grid-cols-2"><label><span className="text-xs font-semibold">Heading</span><input className="product-input mt-2" value={welcomeCardTitle} maxLength={80} disabled={!canManage} onChange={(event) => setWelcomeCardTitle(event.target.value)} placeholder="Today’s offer" /></label><label><span className="text-xs font-semibold">Short text</span><input className="product-input mt-2" value={welcomeCardText} maxLength={240} disabled={!canManage} onChange={(event) => setWelcomeCardText(event.target.value)} placeholder="Book this week and receive…" /></label><label className="sm:col-span-2"><span className="text-xs font-semibold">Welcome image</span><input className="product-input mt-2" value={welcomeCardImageUrl} maxLength={500} disabled={!canManage} aria-invalid={!cardImageIsValid} onChange={(event) => setWelcomeCardImageUrl(event.target.value)} placeholder="Paste an HTTPS image URL or upload below" /></label><label className="sm:col-span-2 rounded-xl border border-dashed border-[var(--border)] bg-white p-4"><span className="text-sm font-semibold">Upload welcome image</span><input className="mt-2 block w-full text-xs" type="file" accept="image/jpeg,image/png,image/webp" disabled={!canManage || uploading !== null} onChange={(event) => void uploadImage("welcome", event.target.files?.[0])} /><small className={`mt-2 block text-xs ${cardImageIsValid ? "text-[var(--text-muted)]" : "text-red-700"}`}>{uploading === "welcome" ? "Uploading welcome image…" : cardImageIsValid ? "JPG, PNG or WebP, maximum 2 MB. Recommended landscape ratio 1200 × 630 px." : "Upload an image or enter a public HTTPS image URL."}</small></label></div></div>
         <div className="sm:col-span-2 flex flex-col gap-3 border-t border-[var(--border)] pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-[var(--text-muted)]">{canManage ? "Changes affect new widget loads after saving." : "Owner or Admin access is required to edit appearance."}</p>
           <button type="button" onClick={save} disabled={!canSave || saving} className="min-h-11 rounded-full bg-[#9a7411] px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{saving ? "Saving…" : "Save appearance"}</button>

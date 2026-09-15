@@ -104,13 +104,20 @@ export async function writeKnowledgeSettings(
   input: Partial<Omit<KnowledgeSettings, "propertySlug" | "updatedAt">>
 ) {
   const current = await readKnowledgeSettings(propertySlug);
+  const managedImagePrefix = `/api/media/uploads/showcase/${propertySlug.replace(/[^a-z0-9_-]/gi, "_").toLowerCase()}/`;
   if (input.logoUrl?.trim()) {
-    const logo = new URL(input.logoUrl.trim());
-    if (logo.protocol !== "https:" || logo.username || logo.password) throw new Error("Use a public HTTPS logo URL without credentials.");
+    const value = input.logoUrl.trim();
+    if (!value.startsWith(managedImagePrefix)) {
+      const logo = new URL(value);
+      if (logo.protocol !== "https:" || logo.username || logo.password) throw new Error("Use an uploaded logo or a public HTTPS logo URL without credentials.");
+    }
   }
   if (input.welcomeCardImageUrl?.trim()) {
-    const image = new URL(input.welcomeCardImageUrl.trim());
-    if (image.protocol !== "https:" || image.username || image.password) throw new Error("Use a public HTTPS welcome-card image URL without credentials.");
+    const value = input.welcomeCardImageUrl.trim();
+    if (!value.startsWith(managedImagePrefix)) {
+      const image = new URL(value);
+      if (image.protocol !== "https:" || image.username || image.password) throw new Error("Use an uploaded image or a public HTTPS welcome-card image URL without credentials.");
+    }
   }
   const showcaseItems = input.showcaseItems === undefined ? current.showcaseItems : normalizeShowcaseItems(input.showcaseItems);
   const next: KnowledgeSettings = {

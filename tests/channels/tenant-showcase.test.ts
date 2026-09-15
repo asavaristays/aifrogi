@@ -20,12 +20,16 @@ test("tenant showcase rejects insecure and incomplete content", () => {
 
 test("Setup supports URL or verified upload and both bot deliveries render the carousel", () => {
   const setup = readFileSync("components/setup/bot-showcase-settings.tsx", "utf8");
+  const appearance = readFileSync("components/setup/bot-appearance-settings.tsx", "utf8");
   const upload = readFileSync("app/api/setup/showcase-upload/route.ts", "utf8");
   const embed = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
   const standalone = readFileSync("app/bot/[slug]/page.tsx", "utf8");
   const frame = readFileSync("app/embed/[slug]/page.tsx", "utf8");
   assert.match(setup, /Photo carousel/);
   assert.match(setup, /Or upload an image/);
+  assert.match(appearance, /Upload logo/);
+  assert.match(appearance, /Upload welcome image/);
+  assert.match(appearance, /showcase-upload/);
   assert.match(upload, /MAX_BYTES = 2 \* 1024 \* 1024/);
   assert.match(upload, /does not contain a valid image/);
   assert.match(embed, /ShowcaseCarousel/);
