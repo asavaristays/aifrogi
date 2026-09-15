@@ -31,7 +31,7 @@ export type CustomerOnboardingOrganization = {
 
 export function CustomerOnboarding({ initialOrganization, accountEmail, reviewReadiness }: {
   initialOrganization: CustomerOnboardingOrganization | null; accountEmail: string;
-  reviewReadiness?: { knowledgeReady: boolean; tested: boolean; certified: boolean; canManage: boolean };
+  reviewReadiness?: { knowledgeReady: boolean; tested: boolean; certified: boolean; canManage: boolean; evidence?: { pageCount: number; published: number; coveragePercent: number; freshnessRate: number; conflicts: number; unsigned: number; openFlags: number; previewPending: number; missingEssentials: string[] } };
 }) {
   const router = useRouter();
   const [organization, setOrganization] = useState(initialOrganization);
@@ -96,7 +96,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
       {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
       {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
       {organization && slug ? <WebsiteBotInstallation slug={slug} profile={organization.botProfile} /> : null}
-      {organization?.botProfile ? <BotReviewSubmission status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={reviewReadiness?.tested ?? false} certified={reviewReadiness?.certified ?? false} canManage={reviewReadiness?.canManage ?? false} /> : null}
+      {organization?.botProfile ? <BotReviewSubmission status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={reviewReadiness?.tested ?? false} certified={reviewReadiness?.certified ?? false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
     </main>
   </div>;
 }

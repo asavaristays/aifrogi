@@ -94,6 +94,16 @@ test("public tenant logos load without a client session and fail visually safe",
   assert.match(embed, /onError=\{\(\) => setFailed\(true\)\}/);
 });
 
+test("client submission presents an evidence-led demonstration gate", () => {
+  const review = readFileSync("components/setup/bot-review-submission.tsx", "utf8");
+  assert.match(review, /Not ready for a client demonstration/);
+  assert.match(review, /Do not present the bot to a client until it says Demo ready/);
+  assert.match(review, /Website pages/);
+  assert.match(review, /Conflicting facts/);
+  assert.match(review, /Knowledge freshness/);
+  assert.match(review, /const demoReady = ready && tested && certified/);
+});
+
 test("JavaScript delivery uses a responsive launcher and trusted minimize message", () => {
   const installer = readFileSync("app/api/public/website-bot/[slug]/install/route.ts", "utf8");
   assert.match(installer, /aria-expanded/);
