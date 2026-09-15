@@ -395,6 +395,18 @@ export function buildRequestedContactDetails(question: string, organization: { p
   return requested;
 }
 
+export function buildCustomerFacingContactAnswer(question: string, businessName: string, details: string[]) {
+  const normalized = question.toLowerCase();
+  if (details.length === 1 && details[0].startsWith("Address:")) {
+    return `${businessName} is located at:\n${details[0].slice("Address:".length).trim()}`;
+  }
+  if (details.length === 1 && details[0].startsWith("Phone:") && /\b(reservation|booking)\b/.test(normalized)) {
+    return `For reservations, you can call ${businessName} at:\n${details[0].slice("Phone:".length).trim()}`;
+  }
+  if (details.length === 1) return `${businessName}\n${details[0]}`;
+  return `You can contact ${businessName} using:\n${details.join("\n")}`;
+}
+
 export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
   const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
@@ -638,7 +650,7 @@ export async function buildWebsiteKnowledgeAnswer({
     if (organization && !requestedFieldMissing) {
       const details = buildRequestedContactDetails(question, organization);
       if (details.length) return {
-        answer: `Here are the approved contact details for ${organization.name}:\n${details.join("\n")}`,
+        answer: buildCustomerFacingContactAnswer(question, organization.name, details),
         sourceUrls: organization.website ? [organization.website] : [],
         sources: [{ title: `${organization.name} approved business profile`, url: organization.website || "", crawledAt: organization.updatedAt.toISOString(), authority: "APPROVED_BUSINESS_PROFILE", freshness: "CURRENT" }],
         knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "STRUCTURED_BUSINESS_PROFILE", decision: resolved.decision, claimIds: [], retrieval: emptyRetrieval(),

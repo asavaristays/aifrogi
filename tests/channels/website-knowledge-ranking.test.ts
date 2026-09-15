@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { BOT_ANSWER_CONSTITUTION, buildCustomerFacingIdentity, buildRequestedContactDetails, buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
+import { BOT_ANSWER_CONSTITUTION, buildCustomerFacingContactAnswer, buildCustomerFacingIdentity, buildRequestedContactDetails, buildWarmGreeting, classifyWebsiteQuestion, publishedClaimFallback, resolveWebsiteKnowledgeQuestion, scoreWebsiteKnowledgePage } from "../../lib/services/website-knowledge-service";
 import { classifySovereignIntent, resolveSovereignQuestion } from "../../lib/sovereign-intelligence/decision";
 import { RELIABILITY_FRAMEWORK_VERSION } from "../../lib/reliability/runtime";
 import { scoreRetrievalCandidate } from "../../lib/sovereign-intelligence/evidence-pipeline";
@@ -127,6 +127,12 @@ test("multi-field contact questions return every requested approved field", () =
     publicPhone: "+91-7410582898",
     publicAddress: "Morjim, Goa"
   }), ["Phone: +91-7410582898", "Address: Morjim, Goa"]);
+});
+
+test("customer contact answers never expose internal approval language", () => {
+  assert.equal(buildCustomerFacingContactAnswer("address", "Castle Mandawa", ["Address: Fort Campus, Mandawa"]), "Castle Mandawa is located at:\nFort Campus, Mandawa");
+  assert.equal(buildCustomerFacingContactAnswer("reservation number", "Castle Mandawa", ["Phone: +91-919828729083"]), "For reservations, you can call Castle Mandawa at:\n+91-919828729083");
+  assert.doesNotMatch(buildCustomerFacingContactAnswer("contact details", "Castle Mandawa", ["Phone: +91-919828729083", "Email: stay@example.com"]), /approved/i);
 });
 
 test("context follow-up reuses the latest relevant question but skips weather", () => {
