@@ -482,7 +482,9 @@ export function scoreWebsiteKnowledgePage(page: KnowledgePage, question: string)
   const pathname = new URL(page.url).pathname.toLowerCase();
   const searchableTokens = [...new Set(`${title} ${bucket} ${text.slice(0, 5000)}`.split(/[^a-z0-9]+/).filter((token) => token.length >= 4))];
   const fuzzyMatch = (term: string) => term.length >= 5 && searchableTokens.some((token) => Math.abs(token.length - term.length) <= 1 && smallTermEditDistance(token, term) <= 1);
-  let score = terms.reduce((total, term) => total + (title.includes(term) ? 4 : 0) + (bucket.includes(term) ? 3 : 0) + (text.includes(term) ? 1 : fuzzyMatch(term) ? 1 : 0), 0);
+  // A one-edit customer typo is strong enough to cross the minimum relevance
+  // floor, while the supplied context still remains first-party website text.
+  let score = terms.reduce((total, term) => total + (title.includes(term) ? 4 : 0) + (bucket.includes(term) ? 3 : 0) + (text.includes(term) ? 1 : fuzzyMatch(term) ? 3 : 0), 0);
   const asksAutomation = /\b(ai|automation|bot|assistant|workflow)\b/.test(normalizedQuestion);
   const asksHospitality = /\b(hotel|hospitality|resort|booking|guest)\b/.test(normalizedQuestion);
   const asksTraining = /\b(train|training|course|bootcamp|learn|class|workshop|skill)\b/.test(normalizedQuestion);

@@ -127,7 +127,9 @@ test("ordinary hospitality intents and minor spelling mistakes reach business kn
   assert.equal(classifyWebsiteQuestion("Do you organise weddngs?"), "BUSINESS");
   assert.equal(classifyWebsiteQuestion("What ammenities do you have?"), "BUSINESS");
   const weddingPage = { url: "https://hotel.test/weddings", title: "Destination Weddings", bucket: "Events", text: "Host your wedding celebration at our heritage hotel.", crawledAt: "2026-09-15T00:00:00.000Z" };
-  assert.ok(scoreWebsiteKnowledgePage(weddingPage, "Do you organise weddngs?") > 0);
+  assert.ok(scoreWebsiteKnowledgePage(weddingPage, "Do you organise weddngs?") >= 3);
+  const amenityPage = { ...weddingPage, url: "https://hotel.test/facilities", title: "Hotel Facilities", text: "Hotel amenities include a swimming pool, restaurant and parking." };
+  assert.ok(scoreWebsiteKnowledgePage(amenityPage, "What ammenities do you have?") >= 3);
 });
 
 test("multi-field contact questions return every requested approved field", () => {
