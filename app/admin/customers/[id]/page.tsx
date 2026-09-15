@@ -42,7 +42,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
       <section className="mt-7">
         <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding</p><h2 className="mt-2 text-xl font-black">Prepare and activate the governed AI Bot.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Review this customer&apos;s persona, approved knowledge, connectors, website installation and go-live evidence.</p></div>
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} /></div>
+          <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} hotelTemplate={organization.botProfile?.category === "STAY"} /></div>
           <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} websiteOnly />
           <BotConnectorPlan organizationId={organization.id} connectors={organization.botConnectors} />
           {websiteEnabled ? <div className="lg:col-span-2"><WebsiteBotInstallation organizationId={organization.id} slug={organization.properties[0]?.slug || organization.slug} profile={organization.botProfile} superAdmin coreCertification={coreCertification} /></div> : <Section title="Bot delivery"><p className="text-sm text-[#68645c]">Enable web delivery to provide the standalone app and optional website installation choices.</p></Section>}

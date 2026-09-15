@@ -92,7 +92,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
         {error ? <p className="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}{notice ? <p className="mt-4 rounded-md bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{notice}</p> : null}
         <Button className="mt-5" disabled={saving || !form.name || !form.ownerName} onClick={saveBusiness}>{saving ? "Saving" : "Save and continue"}</Button>
       </section>
-      <OnboardingWorkbookImport onImported={() => window.location.reload()} />
+      <OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => window.location.reload()} />
       {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
       {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
       {organization && slug ? <WebsiteBotInstallation slug={slug} profile={organization.botProfile} /> : null}

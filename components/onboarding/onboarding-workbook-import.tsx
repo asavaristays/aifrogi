@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 
 type Preview = { business: Record<string, string>; faqs: Array<{ category: string; question: string; answer: string }>; warnings: string[]; fileName: string };
 
-export function OnboardingWorkbookImport({ organizationId, onImported }: { organizationId?: string; onImported?: () => void }) {
+export function OnboardingWorkbookImport({ organizationId, onImported, hotelTemplate = false }: { organizationId?: string; onImported?: () => void; hotelTemplate?: boolean }) {
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -29,7 +29,7 @@ export function OnboardingWorkbookImport({ organizationId, onImported }: { organ
     <h3 className="mt-2 text-xl font-black">Import business details and approved answers.</h3>
     <p className="mt-2 text-sm leading-6 text-[#68645c]">Download the template, complete it offline, then preview it here. The import updates approved profile fields and stages FAQs inside Intelligence for review. It never makes answers live automatically.</p>
     <div className="mt-5 flex flex-wrap gap-3">
-      <a href="/downloads/AiFrogi-Simple-AI-Bot-Onboarding.xlsx" download className="inline-flex min-h-11 items-center rounded-full border border-[#d8c278] px-5 py-2.5 text-sm font-bold text-[#72550c]">↓ Download Excel template</a>
+      <a href={hotelTemplate ? "/downloads/AiFrogi-HotelGPT-Knowledge-Onboarding.xlsx" : "/downloads/AiFrogi-Simple-AI-Bot-Onboarding.xlsx"} download className="inline-flex min-h-11 items-center rounded-full border border-[#d8c278] px-5 py-2.5 text-sm font-bold text-[#72550c]">↓ {hotelTemplate ? "Download HotelGPT Excel" : "Download Excel template"}</a>
       <label className="inline-flex min-h-11 cursor-pointer items-center rounded-full bg-[#101010] px-5 py-2.5 text-sm font-bold text-white">Choose completed file<input ref={input} type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" className="sr-only" onChange={(event) => { setFile(event.target.files?.[0] || null); setPreview(null); setStatus(""); }} /></label>
     </div>
     {file ? <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-md bg-[#f5f2eb] p-4"><span className="text-sm font-semibold">{file.name}</span><button type="button" disabled={busy} onClick={() => submit("PREVIEW")} className="rounded-full bg-[#9b7613] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-60">{busy ? "Checking…" : "Validate and preview"}</button></div> : null}
