@@ -5,11 +5,13 @@ import { resolve } from "node:path";
 
 const source = readFileSync(resolve(process.cwd(), "components/knowledge/knowledge-workspace.tsx"), "utf8");
 
-test("intelligence begins with a plain-language three-step journey", () => {
+test("intelligence begins with a plain-language four-step journey and one next action", () => {
   assert.match(source, /Teach your AI Bot/);
   assert.match(source, /Add information/);
   assert.match(source, /Review answers/);
-  assert.match(source, /Test and approve/);
+  assert.match(source, /Test an answer/);
+  assert.match(source, /Submit for approval/);
+  assert.match(source, /Do this next/);
 });
 
 test("website setup is a single save-and-sync action", () => {

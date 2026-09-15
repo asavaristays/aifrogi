@@ -23,3 +23,14 @@ test("authenticated knowledge testing records self-service completion", () => {
   assert.match(workspace, /fetch\("\/api\/knowledge\/test"/);
   assert.doesNotMatch(workspace, /integrations\/whatsapp\/kb\/answer/);
 });
+
+test("client intelligence shows one ordered next action and keeps crawl detail collapsed", () => {
+  const page = readFileSync("app/(app)/knowledge/page.tsx", "utf8");
+  const workspace = readFileSync("components/knowledge/knowledge-workspace.tsx", "utf8");
+  assert.match(page, /WEBSITE_BOT_TEST_COMPLETED/);
+  assert.match(page, /botStatus/);
+  assert.match(workspace, /Do this next/);
+  assert.match(workspace, /Continue to final approval/);
+  assert.match(workspace, /Submit for approval/);
+  assert.doesNotMatch(workspace, /open=\{groupedPages\.length < 5\}/);
+});
