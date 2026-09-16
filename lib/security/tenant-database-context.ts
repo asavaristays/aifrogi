@@ -52,6 +52,13 @@ export function resolvePublicBotOrganization(slug: string) {
   `);
 }
 
+export function resolvePropertyOrganization(slug: string) {
+  const normalized = clean(slug, "property slug");
+  return resolveOrganization((db) => db.$queryRaw<OrganizationResolution[]>`
+    SELECT aifrogi_security.resolve_property_organization(${normalized}) AS organization_id
+  `);
+}
+
 /** Narrow SECURITY DEFINER bootstrap for a signed application session. */
 export function resolveSessionOrganization(sessionId: string, email: string) {
   const normalizedSessionId = clean(sessionId, "session");
@@ -65,6 +72,12 @@ export async function withPublicBotDatabaseContext<T>(slug: string, work: () => 
   const organizationId = await resolvePublicBotOrganization(slug);
   if (!organizationId) return null;
   return withDatabaseIdentity({ organizationId, platformAuthority: false, actor: `public-bot:${slug}`, systemPurpose: "" }, work);
+}
+
+export async function withPropertyDatabaseContext<T>(slug: string, actor: string, work: () => Promise<T>) {
+  const organizationId = await resolvePropertyOrganization(slug);
+  if (!organizationId) return null;
+  return withDatabaseIdentity({ organizationId, platformAuthority: false, actor: clean(actor, "actor"), systemPurpose: "" }, work);
 }
 
 export function enterTenantDatabaseIdentity(organizationId: string, actor: string) {

@@ -3,6 +3,7 @@ import {
   markFlowCartPaymentPaid,
   verifyRazorpayWebhookSignature
 } from "@/lib/services/flowcart-service";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
   if (!paymentLinkId) {
     return NextResponse.json({ error: "Payment link id not found in webhook payload." }, { status: 400 });
   }
-
+  return withSystemDatabaseIdentity("flowcart:razorpay-webhook", "process-signed-flowcart-payment", async () => {
   const result = await markFlowCartPaymentPaid({
     paymentLinkId,
     externalPaymentId: getExternalPaymentId(payload),
@@ -62,4 +63,5 @@ export async function POST(request: Request) {
   });
   if (result.error) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json({ ok: true, result: result.result });
+  });
 }

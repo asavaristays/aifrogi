@@ -36,6 +36,18 @@ AS $$
   LIMIT 1
 $$;
 
+CREATE OR REPLACE FUNCTION aifrogi_security.resolve_property_organization(requested_slug text)
+RETURNS text
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+  SELECT p."organizationId" FROM public."Property" p
+  WHERE p.slug = requested_slug AND p."organizationId" IS NOT NULL
+  LIMIT 1
+$$;
+
 CREATE OR REPLACE FUNCTION aifrogi_security.resolve_session_organization(requested_session_id text, requested_email text)
 RETURNS text
 LANGUAGE sql
@@ -68,9 +80,11 @@ AS $$
 $$;
 
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION aifrogi_security.resolve_property_organization(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_session_organization(text, text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.is_session_active(text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) TO CURRENT_USER;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_property_organization(text) TO CURRENT_USER;
 GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_session_organization(text, text) TO CURRENT_USER;
 GRANT EXECUTE ON FUNCTION aifrogi_security.is_session_active(text) TO CURRENT_USER;
 
