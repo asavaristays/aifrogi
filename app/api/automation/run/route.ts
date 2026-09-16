@@ -6,6 +6,7 @@ import { processSubscriptionLifecycleBatch } from "@/lib/subscription-lifecycle"
 import { importSupportEmailReplies } from "@/lib/support-email-sync";
 import { queueWebsiteHandoverNotifications } from "@/lib/website-handover-notifications";
 import { refreshDueTenantKnowledge } from "@/lib/services/website-knowledge-service";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,7 @@ function authorized(request: Request) {
 
 export async function POST(request: Request) {
   if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return withSystemDatabaseIdentity("automation:cron", "run-scheduled-tenant-operations", async () => {
   const websiteHandover = await queueWebsiteHandoverNotifications();
   const [result, knowledgeFlagSla, subscriptions, supportEmailReplies, tenantKnowledgeRefresh] = await Promise.all([
     runDueAutomationJobs({ workerId: `cron-${Date.now()}`, take: 25, dryRun: false }),
@@ -29,4 +31,5 @@ export async function POST(request: Request) {
     refreshDueTenantKnowledge(3)
   ]);
   return NextResponse.json({ status: "ok", result, knowledgeFlagSla, subscriptions, supportEmailReplies, tenantKnowledgeRefresh, websiteHandover });
+  });
 }

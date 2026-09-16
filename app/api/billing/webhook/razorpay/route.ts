@@ -6,6 +6,7 @@ import { ensureBillingPlans, activateRazorpaySubscription } from "@/lib/billing-
 import { activatePaidAiCredits } from "@/lib/ai-credits";
 import { findAiCreditPack, type AiCreditPackCode } from "@/lib/ai-credit-catalog";
 import { notifyBillingEvent } from "@/lib/services/billing-notification";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 const SYSTEM = "razorpay-webhook@aifrogi.com";
@@ -15,6 +16,7 @@ export async function POST(request:Request){
  const raw=await request.text(),signature=request.headers.get("x-razorpay-signature"),eventId=request.headers.get("x-razorpay-event-id")?.trim();
  if(!validSignature(raw,signature))return NextResponse.json({error:"Invalid webhook signature."},{status:401});
  if(!eventId)return NextResponse.json({error:"Missing Razorpay event id."},{status:400});
+ return withSystemDatabaseIdentity("billing:razorpay-webhook", "process-signed-billing-event", async()=>{
  const payload=JSON.parse(raw) as Record<string,unknown>,event=String(payload.event||""); const db=getDb(); if(!db)return NextResponse.json({error:"Billing database unavailable."},{status:503});
  if(await db.platformAuditLog.findFirst({where:{action:"RAZORPAY_WEBHOOK_PROCESSED",targetId:eventId}}))return NextResponse.json({ok:true,duplicate:true});
  const paymentEntity=entity(payload,"payment"),refundEntity=entity(payload,"refund"); const paymentId=String(paymentEntity?.id||refundEntity?.payment_id||""); const orderId=String(paymentEntity?.order_id||"");
@@ -30,4 +32,5 @@ export async function POST(request:Request){
  else return NextResponse.json({ok:true,ignored:true});
  await db.platformAuditLog.create({data:{organizationId,actorEmail:SYSTEM,actorRole:"SYSTEM",action:"RAZORPAY_WEBHOOK_PROCESSED",targetType:"RazorpayEvent",targetId:eventId,summary:`Razorpay ${event} processed`,metadata:{event,eventId,paymentId,targetId}}});
  return NextResponse.json({ok:true,event});
+ });
 }

@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { provisionAppointmentTenant } from "@/lib/appointment-journey-service";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ function authorized(request: Request) {
 
 export async function POST(request: Request) {
   if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return withSystemDatabaseIdentity("appointment:provision", "provision-appointment-tenant", async () => {
 
   const payload = await request.json().catch(() => null) as {
     propertySlug?: string;
@@ -49,4 +51,5 @@ export async function POST(request: Request) {
 
   if (result.error) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json({ tenant: result.tenant }, { status: result.status });
+  });
 }

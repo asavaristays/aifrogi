@@ -4,6 +4,7 @@ import {
   validateAppointmentSignature
 } from "@/lib/appointment-journey-contract";
 import { processAppointmentInboundEvent } from "@/lib/appointment-journey-service";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,9 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid appointment event" }, { status: 400 });
   }
-
+  return withSystemDatabaseIdentity("appointment:webhook", "process-signed-appointment-event", async () => {
   const result = await processAppointmentInboundEvent(event);
   if (result.error) return NextResponse.json({ error: result.error }, { status: result.status });
   return NextResponse.json({ ok: true, result: result.result }, { status: result.status });
+  });
 }
