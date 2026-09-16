@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { hashWebsiteVisitorValue, verifyWebsiteVisitorToken } from "@/lib/website-visitor-session";
 import { encodeImprovementSignalReason, normalizeImprovementSignal } from "@/lib/improvement-signal";
 import { anonymizeReplayText } from "@/lib/sovereign-intelligence/evidence-pipeline";
+import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
 
@@ -15,6 +16,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const payload = await request.json().catch(() => null) as { evidenceId?: string; helpful?: boolean; reason?: string } | null;
   if (!payload?.evidenceId || typeof payload.helpful !== "boolean") return NextResponse.json({ error: "Answer and feedback choice are required." }, { status: 400, headers });
   const helpful = payload.helpful;
+  const response = await withPublicBotDatabaseContext(slug, async () => {
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Feedback service is unavailable." }, { status: 503, headers });
   const session = await db.websiteVisitorSession.findFirst({ where: { property: { slug }, leadId: token.leadId, capabilityHash: hashWebsiteVisitorValue(rawToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { propertyId: true } });
@@ -58,4 +60,6 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     return saved;
   });
   return NextResponse.json({ ok: true, helpful: feedback.helpful, message: feedback.helpful ? "Thank you. Your feedback helps us improve." : "Thank you. The business team can review this answer. You may request human help if you still need assistance." }, { headers });
+  });
+  return response || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers });
 }

@@ -3,6 +3,7 @@ import { createSessionToken, getSessionCookieName, labelForRole, roleForEmail, t
 import { sanitizeReturnTo, verifyUnifiedHandoffToken } from "@/lib/hotelradar-sso";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
 import { getMemberRoleByEmail } from "@/lib/repositories/onboarding-repository";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const COOKIE_MAX_AGE = 60 * 60 * 8;
@@ -11,6 +12,7 @@ const PUBLIC_ORIGIN =
   process.env.HOTELRADAR_LEADOS_PUBLIC_URL?.trim() ||
   "https://app.aifrogi.com";
 export async function GET(request: Request) {
+  return withSystemDatabaseIdentity("auth:hotelradar-sso", "authenticate-user", async () => {
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
   const payload = verifyUnifiedHandoffToken(token);
@@ -54,4 +56,5 @@ export async function GET(request: Request) {
   response.headers.set("Pragma", "no-cache");
   response.headers.set("Expires", "0");
   return response;
+  });
 }

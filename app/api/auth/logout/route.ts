@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createRevocationProof, getSessionCookieName, readVerifiedSessionToken } from "@/lib/auth";
 import { revokeUserSession } from "@/lib/session-registry";
 import { WORKSPACE_COOKIE_NAME } from "@/lib/workspace";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const HOTELRADAR_AUTH_BASE_URL =
@@ -16,6 +17,7 @@ function parseCookieValue(cookieHeader: string, name: string) {
 }
 
 export async function POST(request: Request) {
+  return withSystemDatabaseIdentity("auth:logout", "revoke-session", async () => {
   const sessionCookie = parseCookieValue(request.headers.get("cookie") || "", getSessionCookieName());
   const session = readVerifiedSessionToken(sessionCookie);
 
@@ -63,4 +65,5 @@ export async function POST(request: Request) {
     expires: new Date(0),
   });
   return response;
+  });
 }

@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/db";
+import { getBootstrapDb, getDb } from "@/lib/db";
 
 export async function recordUserSession(input: {
   sessionId: string;
@@ -32,10 +32,12 @@ export async function recordUserSession(input: {
 }
 
 export async function isRegisteredSessionActive(sessionId: string) {
-  const db = getDb();
+  const db = getBootstrapDb();
   if (!db) return false;
-  const session = await db.userSession.findUnique({ where: { sessionId }, select: { revokedAt: true, expiresAt: true } });
-  return Boolean(session && !session.revokedAt && session.expiresAt > new Date());
+  const rows = await db.$queryRaw<Array<{ active: boolean }>>`
+    SELECT aifrogi_security.is_session_active(${sessionId}) AS active
+  `;
+  return rows[0]?.active === true;
 }
 
 export async function listUserSessions(email: string) {

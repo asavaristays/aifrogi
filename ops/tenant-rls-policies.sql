@@ -16,6 +16,64 @@ $$;
 REVOKE ALL ON FUNCTION aifrogi_security.current_organization_id() FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.has_platform_authority() FROM PUBLIC;
 
+-- Bootstrap functions disclose only a tenant UUID for an exact, valid routing
+-- key. They do not expose tenant rows and let the application establish RLS
+-- context before any ordinary table query.
+CREATE OR REPLACE FUNCTION aifrogi_security.resolve_public_bot_organization(requested_slug text)
+RETURNS text
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+  SELECT p."organizationId"
+  FROM public."Property" p
+  JOIN public."Organization" o ON o.id = p."organizationId"
+  JOIN public."BotProfile" b ON b."organizationId" = o.id
+  WHERE p.slug = requested_slug
+    AND b.status = 'LIVE'
+    AND 'WEBSITE' = ANY(b.channels)
+  LIMIT 1
+$$;
+
+CREATE OR REPLACE FUNCTION aifrogi_security.resolve_session_organization(requested_session_id text, requested_email text)
+RETURNS text
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+  SELECT s."organizationId"
+  FROM public."UserSession" s
+  WHERE s."sessionId" = requested_session_id
+    AND lower(s.email) = lower(requested_email)
+    AND s."revokedAt" IS NULL
+    AND s."expiresAt" > now()
+  LIMIT 1
+$$;
+
+CREATE OR REPLACE FUNCTION aifrogi_security.is_session_active(requested_session_id text)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public."UserSession" s
+    WHERE s."sessionId" = requested_session_id
+      AND s."revokedAt" IS NULL
+      AND s."expiresAt" > now()
+  )
+$$;
+
+REVOKE ALL ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION aifrogi_security.resolve_session_organization(text, text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION aifrogi_security.is_session_active(text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) TO CURRENT_USER;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_session_organization(text, text) TO CURRENT_USER;
+GRANT EXECUTE ON FUNCTION aifrogi_security.is_session_active(text) TO CURRENT_USER;
+
 DO $rls$
 DECLARE
   table_name text;

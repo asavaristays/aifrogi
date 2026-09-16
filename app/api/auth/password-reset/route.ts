@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { completePasswordReset, inspectPasswordReset } from "@/lib/password-reset";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export async function GET(request: Request) {
+  return withSystemDatabaseIdentity("auth:password-reset", "inspect-password-reset", async () => {
   const token = new URL(request.url).searchParams.get("token") || "";
   const reset = await inspectPasswordReset(token);
   if (!reset) {
     return NextResponse.json({ error: "This password reset link is invalid or has expired." }, { status: 404 });
   }
   return NextResponse.json(reset, { headers: { "Cache-Control": "no-store" } });
+  });
 }
 
 export async function POST(request: Request) {
+  return withSystemDatabaseIdentity("auth:password-reset", "complete-password-reset", async () => {
   const payload = (await request.json().catch(() => null)) as { token?: string; password?: string } | null;
   try {
     const result = await completePasswordReset(String(payload?.token || ""), String(payload?.password || ""));
@@ -21,4 +25,5 @@ export async function POST(request: Request) {
       { status: 400, headers: { "Cache-Control": "no-store" } }
     );
   }
+  });
 }

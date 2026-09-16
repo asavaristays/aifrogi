@@ -28,6 +28,7 @@ import { checkTenantStayAvailability } from "@/lib/tenant-availability";
 import { planConversation } from "@/lib/sovereign-intelligence/conversation-planner";
 import { activeNegotiationPolicy, evaluateTenantNegotiation, policyForVerifiedStay, tenantNegotiationAuthority, tenantRateInquiry } from "@/lib/tenant-negotiation";
 import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sovereign-intelligence/layer-router";
+import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -68,6 +69,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
 async function handleVisitorTurn(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
+  const scopedResponse = await withPublicBotDatabaseContext(slug, async () => {
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
@@ -379,6 +381,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   return NextResponse.json({ answer, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
+  });
+  return scopedResponse || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
@@ -386,6 +390,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   if (rateLimited(request, slug, 60)) return NextResponse.json({ error: "Please wait a moment before checking replies." }, { status: 429, headers: responseHeaders });
   const token = verifyWebsiteVisitorToken(bearerToken(request), slug);
   if (!token) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
+  const scopedResponse = await withPublicBotDatabaseContext(slug, async () => {
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Conversation is temporarily unavailable." }, { status: 503, headers: responseHeaders });
   const session = await db.websiteVisitorSession.findFirst({ where: { property: { slug }, leadId: token.leadId, sessionIdHash: hashWebsiteVisitorValue(token.sessionId), capabilityHash: hashWebsiteVisitorValue(bearerToken(request)), expiresAt: { gt: new Date() } }, select: { id: true, status: true, revokedAt: true } });
@@ -420,6 +425,8 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   // Fetching historical replies must never undo an explicit owner/admin AI resume.
   const conversationState = websiteConversationState(session.status, closed, false);
   return NextResponse.json({ messages: page.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString() })), conversationState, hasMore }, { headers: responseHeaders });
+  });
+  return scopedResponse || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ slug: string }> }) {
@@ -430,6 +437,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ slug:
   const payload = await request.json().catch(() => null) as { messageIds?: unknown } | null;
   const messageIds = Array.isArray(payload?.messageIds) ? payload.messageIds.filter((id): id is string => typeof id === "string").slice(0, 50) : [];
   if (!messageIds.length) return NextResponse.json({ error: "Message IDs are required." }, { status: 400, headers: responseHeaders });
+  const scopedResponse = await withPublicBotDatabaseContext(slug, async () => {
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Conversation is temporarily unavailable." }, { status: 503, headers: responseHeaders });
   const session = await db.websiteVisitorSession.findFirst({ where: { property: { slug }, leadId: token.leadId, capabilityHash: hashWebsiteVisitorValue(bearerToken(request)), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true } });
@@ -440,4 +448,6 @@ export async function PATCH(request: Request, context: { params: Promise<{ slug:
     return updated;
   });
   return NextResponse.json({ read: result.count }, { headers: responseHeaders });
+  });
+  return scopedResponse || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 }

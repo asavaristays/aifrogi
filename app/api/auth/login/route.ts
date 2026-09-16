@@ -7,6 +7,7 @@ import { consumeRateLimit } from "@/lib/rate-limit";
 import { createLoginOtpChallenge, shouldRequireLoginOtp, verifyLoginOtpChallenge } from "@/lib/login-otp";
 import { randomUUID } from "node:crypto";
 import { recordUserSession } from "@/lib/session-registry";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 const COOKIE_SECURE = process.env.NODE_ENV === "production";
 const CENTRAL_AUTH_URL =
@@ -67,6 +68,7 @@ function safeDestination(value: unknown, role: SessionUser["role"]) {
 }
 
 export async function POST(request: Request) {
+  return withSystemDatabaseIdentity("auth:login", "authenticate-user", async () => {
   const ip = (request.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
   const ipLimit = consumeRateLimit(`login:ip:${ip}`, 30, 15 * 60 * 1000);
   if (!ipLimit.allowed) {
@@ -188,4 +190,5 @@ export async function POST(request: Request) {
     maxAge: 8 * 60 * 60
   });
   return response;
+  });
 }

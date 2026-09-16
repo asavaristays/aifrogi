@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { requestPasswordReset } from "@/lib/password-reset";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 export async function POST(request: Request) {
+  return withSystemDatabaseIdentity("auth:password-reset", "request-password-reset", async () => {
   const ip = (request.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
   const limit = consumeRateLimit(`password-reset:${ip}`, 10, 15 * 60 * 1000);
   if (!limit.allowed) {
@@ -15,4 +17,5 @@ export async function POST(request: Request) {
   const payload = (await request.json().catch(() => null)) as { email?: string } | null;
   const result = await requestPasswordReset(String(payload?.email || ""));
   return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
+  });
 }

@@ -2,12 +2,14 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { recordWebsiteBotInstallation } from "@/lib/repositories/onboarding-repository";
+import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
 
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
   const payload = await request.json().catch(() => null) as { key?: string; origin?: string } | null;
+  const response = await withPublicBotDatabaseContext(slug, async () => {
   const result = await recordWebsiteBotInstallation(slug, String(payload?.key || ""), payload?.origin || request.headers.get("origin"));
   if (!result) return NextResponse.json({ error: "Installation code is invalid." }, { status: 404, headers });
   if (result.status !== "LIVE") return NextResponse.json(result, { headers });
@@ -30,6 +32,8 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       showcaseItems: settings.showcaseItems
     }
   }, { headers });
+  });
+  return response || NextResponse.json({ error: "Installation code is invalid." }, { status: 404, headers });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {

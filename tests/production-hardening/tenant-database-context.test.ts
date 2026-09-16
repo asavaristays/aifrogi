@@ -19,6 +19,26 @@ test("RLS package forces policies on direct and indirect tenant tables", () => {
   assert.match(sql, /ConversationParticipant/);
   assert.match(sql, /SupportTicketMessage/);
   assert.match(sql, /aifrogi_security\.has_platform_authority/);
+  assert.match(sql, /SECURITY DEFINER/);
+  assert.match(sql, /resolve_public_bot_organization/);
+  assert.match(sql, /resolve_session_organization/);
+  assert.match(sql, /REVOKE ALL ON FUNCTION aifrogi_security\.resolve_public_bot_organization/);
+});
+
+test("every public website data route establishes a tenant identity", () => {
+  const routes = ["route.ts", "availability/route.ts", "feedback/route.ts", "flag/route.ts", "install/route.ts"];
+  for (const route of routes) {
+    const source = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]", route), "utf8");
+    assert.match(source, /withPublicBotDatabaseContext/, `${route} must establish database tenant identity`);
+  }
+});
+
+test("identity-scoped database calls use short transaction-local contexts", () => {
+  const source = readFileSync(resolve(process.cwd(), "lib/db.ts"), "utf8");
+  assert.match(source, /identityScopedClient/);
+  assert.match(source, /configureIdentity/);
+  assert.match(source, /set_config\('app\.organization_id'/);
+  assert.doesNotMatch(source, /SET\s+SESSION/i);
 });
 
 test("every directly tenant-keyed Prisma model appears in the RLS package", () => {

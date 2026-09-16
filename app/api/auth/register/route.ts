@@ -7,6 +7,7 @@ import QRCode from "qrcode";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { validateTrialIdentity } from "@/lib/trial-registration-validation";
+import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
 
 function clean(value: unknown, max = 180) {
   return typeof value === "string" ? value.trim().replace(/[\r\n]+/g, " ").slice(0, max) : "";
@@ -38,6 +39,7 @@ function validTimezone(value: string) {
 }
 
 export async function POST(request: Request) {
+  return withSystemDatabaseIdentity("auth:registration", "create-trial-tenant", async () => {
   const requestUrl = new URL(request.url);
   const origin = request.headers.get("origin");
   const requestHost = (request.headers.get("x-forwarded-host") || request.headers.get("host") || requestUrl.host).split(",")[0].trim();
@@ -100,4 +102,5 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Registration could not be completed." }, { status: 400 });
   }
+  });
 }
