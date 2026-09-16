@@ -70,7 +70,7 @@ DECLARE policy_spec record;
 BEGIN
   FOR policy_spec IN SELECT * FROM (VALUES
     ('BotConnectorCredential','EXISTS (SELECT 1 FROM "BotConnectorConfiguration" c WHERE c.id = "BotConnectorCredential"."connectorId" AND c."organizationId" = aifrogi_security.current_organization_id())'),
-    ('DemoConnectorEvent','EXISTS (SELECT 1 FROM "DemoSandbox" s WHERE s.id = "DemoConnectorEvent"."sandboxId" AND s."organizationId" = aifrogi_security.current_organization_id())'),
+    ('DemoConnectorEvent','EXISTS (SELECT 1 FROM "DemoSandbox" s WHERE s.id = "DemoConnectorEvent"."demoSandboxId" AND s."organizationId" = aifrogi_security.current_organization_id())'),
     ('LeadTag','EXISTS (SELECT 1 FROM "Lead" l JOIN "Property" p ON p.id=l."propertyId" WHERE l.id="LeadTag"."leadId" AND p."organizationId"=aifrogi_security.current_organization_id())'),
     ('LeadMessage','EXISTS (SELECT 1 FROM "Lead" l JOIN "Property" p ON p.id=l."propertyId" WHERE l.id="LeadMessage"."leadId" AND p."organizationId"=aifrogi_security.current_organization_id())'),
     ('ConversationParticipant','EXISTS (SELECT 1 FROM "Conversation" c JOIN "Property" p ON p.id=c."propertyId" WHERE c.id="ConversationParticipant"."conversationId" AND p."organizationId"=aifrogi_security.current_organization_id())'),
