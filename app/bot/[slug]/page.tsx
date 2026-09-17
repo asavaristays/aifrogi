@@ -4,7 +4,6 @@ import { WebsiteBotDeliveryActions } from "@/components/website-bot/website-bot-
 import { WebsiteBotEmbed } from "@/components/website-bot/website-bot-embed";
 import { getDb } from "@/lib/db";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
-import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { WEBTECHNOSYS_BOT_SLUG } from "@/lib/webtechnosys-navigation";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
@@ -38,8 +37,12 @@ export default async function StandaloneWebsiteBotPage({ params }: { params: Pro
   const profile = organization?.botProfile;
   if (!bot || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) notFound();
   const available = await withPublicBotDatabaseContext(slug, async () => {
-    const subscription = await getOrganizationSubscriptionAccess(organization.id);
-    return !subscription || subscription.canUsePaidActions;
+    const db = getDb();
+    const subscription = db ? await db.subscription.findUnique({
+      where: { organizationId: organization.id },
+      select: { status: true }
+    }) : null;
+    return !subscription || !["PAUSED", "SUSPENDED", "CANCELLED"].includes(subscription.status);
   });
   if (!available) notFound();
   const name = bot.organization?.name || bot.name;
