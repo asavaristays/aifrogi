@@ -137,29 +137,15 @@ function readLimits(value: Prisma.JsonValue): PlanLimits {
 export async function ensureBillingPlans() {
   const db = getDb();
   if (!db) return [];
-  await db.$transaction(BILLING_PLAN_CATALOGUE.map((plan) => db.billingPlan.upsert({
-    where: { code: plan.code },
-    update: {
-      name: plan.name,
-      description: plan.description,
-      billingInterval: plan.billingInterval,
-      amountPaisa: plan.amountPaisa,
-      trialDays: plan.trialDays,
-      limits: plan.limits,
-      sortOrder: plan.sortOrder,
-      isActive: true
-    },
-    create: {
-      code: plan.code,
-      name: plan.name,
-      description: plan.description,
-      billingInterval: plan.billingInterval,
-      amountPaisa: plan.amountPaisa,
-      trialDays: plan.trialDays,
-      limits: plan.limits,
-      sortOrder: plan.sortOrder
-    }
-  })));
+  // Array transactions construct all queries before identity is bound.  These
+  // idempotent upserts must also work inside an RLS-scoped public bot request.
+  for (const plan of BILLING_PLAN_CATALOGUE) {
+    await db.billingPlan.upsert({
+      where: { code: plan.code },
+      update: { name: plan.name, description: plan.description, billingInterval: plan.billingInterval, amountPaisa: plan.amountPaisa, trialDays: plan.trialDays, limits: plan.limits, sortOrder: plan.sortOrder, isActive: true },
+      create: { code: plan.code, name: plan.name, description: plan.description, billingInterval: plan.billingInterval, amountPaisa: plan.amountPaisa, trialDays: plan.trialDays, limits: plan.limits, sortOrder: plan.sortOrder }
+    });
+  }
   return db.billingPlan.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } });
 }
 

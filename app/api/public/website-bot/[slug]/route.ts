@@ -60,7 +60,12 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const payload = await request.clone().json().catch(() => null);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (!sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400 });
-  try { return await withWebsiteTurnLock(`${slug}:${hashWebsiteVisitorValue(sessionId)}`, () => handleVisitorTurn(request, context)); }
+  try {
+    const response = await withPublicBotDatabaseContext(slug, () =>
+      withWebsiteTurnLock(`${slug}:${hashWebsiteVisitorValue(sessionId)}`, () => handleVisitorTurn(request, context))
+    );
+    return response || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+  }
   catch (error) {
     console.error("[website-bot] Conversation turn failed", error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json({ error: "Conversation update could not complete. Please retry shortly." }, { status: 503, headers: responseHeaders });
@@ -69,7 +74,6 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
 async function handleVisitorTurn(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
-  const scopedResponse = await withPublicBotDatabaseContext(slug, async () => {
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
@@ -381,8 +385,6 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   return NextResponse.json({ answer, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
-  });
-  return scopedResponse || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
