@@ -1,5 +1,6 @@
 import { randomBytes } from "crypto";
 import { getDb } from "@/lib/db";
+import { resolveMemberOrganization, withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { encryptSecretValue } from "@/lib/field-encryption";
 import { nextWebsiteBotStatus, statusAfterBotProfileSave, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
@@ -52,23 +53,22 @@ const organizationInclude = {
 };
 
 export async function getOrganizationForMember(email: string) {
-  const db = getDb();
-  if (!db) return null;
+  const normalizedEmail = email.trim().toLowerCase();
+  const organizationId = await resolveMemberOrganization(normalizedEmail);
+  if (!organizationId) return null;
 
-  const membership = await db.organizationMember.findFirst({
-    where: {
-      email: email.toLowerCase(),
-      status: "ACTIVE"
-    },
-    include: {
-      organization: {
-        include: organizationInclude
-      }
-    },
-    orderBy: { createdAt: "asc" }
+  return withTenantDatabaseContext({
+    kind: "tenant",
+    organizationId,
+    actor: `member-workspace:${normalizedEmail}`
+  }, async () => {
+    const db = getDb();
+    if (!db) return null;
+    return db.organization.findUnique({
+      where: { id: organizationId },
+      include: organizationInclude
+    });
   });
-
-  return membership?.organization ?? null;
 }
 
 export async function getMemberRoleByEmail(email: string) {

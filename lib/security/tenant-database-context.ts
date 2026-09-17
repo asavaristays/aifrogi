@@ -68,6 +68,17 @@ export function resolveSessionOrganization(sessionId: string, email: string) {
   `);
 }
 
+/**
+ * Resolves one active authenticated member to a tenant id before tenant RLS
+ * context is established. It returns an id only; it never reads tenant data.
+ */
+export function resolveMemberOrganization(email: string) {
+  const normalizedEmail = clean(email.toLowerCase(), "email");
+  return resolveOrganization((db) => db.$queryRaw<OrganizationResolution[]>`
+    SELECT aifrogi_security.resolve_member_organization(${normalizedEmail}) AS organization_id
+  `);
+}
+
 export async function withPublicBotDatabaseContext<T>(slug: string, work: () => Promise<T>) {
   const organizationId = await resolvePublicBotOrganization(slug);
   if (!organizationId) return null;

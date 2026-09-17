@@ -67,6 +67,24 @@ AS $$
   LIMIT 1
 $$;
 
+-- Resolves the workspace for an authenticated application member before an
+-- ordinary tenant-scoped query begins.  It returns only the organization id;
+-- all subsequent reads still run under the normal RLS identity.
+CREATE OR REPLACE FUNCTION aifrogi_security.resolve_member_organization(requested_email text)
+RETURNS text
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+  SELECT m."organizationId"
+  FROM public."OrganizationMember" m
+  WHERE lower(m.email) = lower(requested_email)
+    AND m.status = 'ACTIVE'
+  ORDER BY m."createdAt" ASC
+  LIMIT 1
+$$;
+
 CREATE OR REPLACE FUNCTION aifrogi_security.is_session_active(requested_session_id text)
 RETURNS boolean
 LANGUAGE sql
@@ -85,10 +103,12 @@ $$;
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_property_organization(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_session_organization(text, text) FROM PUBLIC;
+REVOKE ALL ON FUNCTION aifrogi_security.resolve_member_organization(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.is_session_active(text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) TO leados_app;
 GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_property_organization(text) TO leados_app;
 GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_session_organization(text, text) TO leados_app;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_member_organization(text) TO leados_app;
 GRANT EXECUTE ON FUNCTION aifrogi_security.is_session_active(text) TO leados_app;
 
 DO $rls$
