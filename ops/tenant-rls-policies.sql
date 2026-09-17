@@ -2,6 +2,7 @@ BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS aifrogi_security;
 REVOKE ALL ON SCHEMA aifrogi_security FROM PUBLIC;
+GRANT USAGE ON SCHEMA aifrogi_security TO leados_app;
 
 CREATE OR REPLACE FUNCTION aifrogi_security.current_organization_id()
 RETURNS text LANGUAGE sql STABLE AS $$
@@ -83,10 +84,10 @@ REVOKE ALL ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) FR
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_property_organization(text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.resolve_session_organization(text, text) FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.is_session_active(text) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) TO CURRENT_USER;
-GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_property_organization(text) TO CURRENT_USER;
-GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_session_organization(text, text) TO CURRENT_USER;
-GRANT EXECUTE ON FUNCTION aifrogi_security.is_session_active(text) TO CURRENT_USER;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_public_bot_organization(text) TO leados_app;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_property_organization(text) TO leados_app;
+GRANT EXECUTE ON FUNCTION aifrogi_security.resolve_session_organization(text, text) TO leados_app;
+GRANT EXECUTE ON FUNCTION aifrogi_security.is_session_active(text) TO leados_app;
 
 DO $rls$
 DECLARE
