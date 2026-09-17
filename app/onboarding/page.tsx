@@ -20,6 +20,7 @@ export default async function OnboardingPage() {
   if (user.role === "admin") redirect("/admin/customers");
 
   const organization = await loadOnboardingForUser(user.username);
+  if (organization?.onboarding?.lifecycleStatus === "LIVE") redirect("/dashboard");
   const property = organization?.properties[0];
   const db = getDb();
   const [memberRole, subscription, verification, testActivity, answerEvidence, certification] = organization && property && db ? await Promise.all([
