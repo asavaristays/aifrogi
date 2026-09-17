@@ -7,13 +7,16 @@ import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { WEBTECHNOSYS_BOT_SLUG } from "@/lib/webtechnosys-navigation";
+import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import shell from "@/components/website-bot/webtechnosys-shell.module.css";
 
 export const dynamic = "force-dynamic";
 
 async function loadBot(slug: string) {
-  const db = getDb();
-  return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { id: true, name: true, isDemo: true, botProfile: { select: { status: true, channels: true, personaName: true } } } } } }) : null;
+  return withPublicBotDatabaseContext(slug, async () => {
+    const db = getDb();
+    return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { id: true, name: true, isDemo: true, botProfile: { select: { status: true, channels: true, personaName: true } } } } } }) : null;
+  });
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -34,10 +37,14 @@ export default async function StandaloneWebsiteBotPage({ params }: { params: Pro
   const organization = bot?.organization;
   const profile = organization?.botProfile;
   if (!bot || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) notFound();
-  const subscription = await getOrganizationSubscriptionAccess(organization.id);
-  if (subscription && !subscription.canUsePaidActions) notFound();
+  const available = await withPublicBotDatabaseContext(slug, async () => {
+    const subscription = await getOrganizationSubscriptionAccess(organization.id);
+    return !subscription || subscription.canUsePaidActions;
+  });
+  if (!available) notFound();
   const name = bot.organization?.name || bot.name;
-  const settings = await readKnowledgeSettings(slug);
+  const settings = await withPublicBotDatabaseContext(slug, () => readKnowledgeSettings(slug));
+  if (!settings) notFound();
 
   const premium = slug === WEBTECHNOSYS_BOT_SLUG && organization.isDemo !== true;
   return <main className={premium ? shell.standalone : "min-h-dvh bg-[#050505] px-3 py-4 sm:px-6 sm:py-8"}>

@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
+import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const db = getDb();
-  const bot = db ? await db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { name: true, botProfile: { select: { status: true, channels: true } } } } } }) : null;
+  const bot = await withPublicBotDatabaseContext(slug, async () => {
+    const db = getDb();
+    return db ? db.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { name: true, botProfile: { select: { status: true, channels: true } } } } } }) : null;
+  });
   const profile = bot?.organization?.botProfile;
   if (!bot || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Bot unavailable" }, { status: 404 });
   const name = `${bot.organization?.name || bot.name} AI Assistant`;
