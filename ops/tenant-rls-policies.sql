@@ -16,6 +16,8 @@ $$;
 
 REVOKE ALL ON FUNCTION aifrogi_security.current_organization_id() FROM PUBLIC;
 REVOKE ALL ON FUNCTION aifrogi_security.has_platform_authority() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION aifrogi_security.current_organization_id() TO leados_app;
+GRANT EXECUTE ON FUNCTION aifrogi_security.has_platform_authority() TO leados_app;
 
 -- Bootstrap functions disclose only a tenant UUID for an exact, valid routing
 -- key. They do not expose tenant rows and let the application establish RLS
