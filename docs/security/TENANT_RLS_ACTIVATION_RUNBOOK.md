@@ -11,6 +11,7 @@ This control must be rehearsed against a production-derived staging database bef
 7. Prove Platform Administrator and explicitly named system jobs operate only through `withTenantDatabaseContext` with audited authority.
 8. Run Core certification and every live tenant Golden bank.
 9. Exercise `ops/disable-tenant-rls.sql` in staging and prove service recovery.
-10. Promote only after both activation and rollback evidence pass.
+10. Run `npm run verify:tenant-rls:pool` against staging with a pool size of one. It must prove one backend is reused for tenant A, an empty-context request, and tenant B without identity leakage.
+11. Promote only after activation, rollback/recovery, and pooled-connection evidence pass.
 
 Production activation is blocked if any tenant-owned model lacks a policy, any application path runs without database context, or the rollback drill fails.
