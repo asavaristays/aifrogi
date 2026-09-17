@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { getPropertyBySlug } from "@/lib/repositories/property-repository";
 import { WORKSPACE_COOKIE_NAME } from "@/lib/workspace";
+import { getCurrentUser } from "@/lib/auth-server";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 
 export async function POST(request: Request) {
   const payload = await request.json().catch(() => null);
   const slug = String(payload?.slug || "").trim();
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Sign in is required." }, { status: 401 });
+  if (user.role !== "admin") {
+    const access = await resolveClientWorkspaceAccess({ propertySlug: slug });
+    if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
+  }
   const workspace = slug ? await getPropertyBySlug(slug) : null;
 
   if (!workspace) {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createPropertyWorkspace, listProperties } from "@/lib/repositories/property-repository";
+import { getCurrentUser } from "@/lib/auth-server";
 
 function slugify(value: string) {
   return value
@@ -12,11 +13,15 @@ function slugify(value: string) {
 }
 
 export async function GET() {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") return NextResponse.json({ error: "Super Admin access is required." }, { status: 403 });
   const workspaces = await listProperties();
   return NextResponse.json({ workspaces });
 }
 
 export async function POST(request: Request) {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") return NextResponse.json({ error: "Super Admin access is required." }, { status: 403 });
   const payload = await request.json().catch(() => null);
   const name = String(payload?.name || "").trim();
   const slug = slugify(String(payload?.slug || name));

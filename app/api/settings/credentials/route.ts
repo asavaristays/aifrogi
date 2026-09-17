@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { getSessionCookieName, verifySessionToken } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth-server";
 import { writeCredentialSettings } from "@/lib/credential-store";
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get(getSessionCookieName())?.value;
-  const session = await verifySessionToken(sessionToken);
+  const session = await getCurrentUser();
 
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
