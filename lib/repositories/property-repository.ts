@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { isDatabaseAccessError } from "@/lib/errors";
+import { resolveMemberOrganization, withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export async function getPropertyBySlug(slug: string) {
   const db = getDb();
@@ -42,32 +43,49 @@ export async function listProperties() {
 }
 
 export async function listPropertiesForMember(email: string, isAdmin = false) {
-  const db = getDb();
-  if (!db) return [];
-
   try {
-    return await db.property.findMany({
-      where: isAdmin ? undefined : {
-        organization: {
-          members: {
-            some: {
-              email: email.toLowerCase(),
-              status: "ACTIVE"
+    if (isAdmin) {
+      const db = getDb();
+      if (!db) return [];
+      return await db.property.findMany({
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          organization: {
+            select: {
+              botProfile: { select: { status: true } }
             }
           }
-        }
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        organization: {
-          select: {
-            botProfile: { select: { status: true } }
+        },
+        orderBy: { createdAt: "asc" }
+      });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const organizationId = await resolveMemberOrganization(normalizedEmail);
+    if (!organizationId) return [];
+    return await withTenantDatabaseContext({
+      kind: "tenant",
+      organizationId,
+      actor: `member-properties:${normalizedEmail}`
+    }, async () => {
+      const db = getDb();
+      if (!db) return [];
+      return db.property.findMany({
+        where: { organizationId },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          organization: {
+            select: {
+              botProfile: { select: { status: true } }
+            }
           }
-        }
-      },
-      orderBy: { createdAt: "asc" }
+        },
+        orderBy: { createdAt: "asc" }
+      });
     });
   } catch (error) {
     if (isDatabaseAccessError(error)) return [];
