@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth-server";
 import {
   createManualInvoice,
   addConnectorBilling,
+  extendTrialSubscription,
   grantComplimentarySubscription,
   createPlatformIncident,
   markInvoicePaid,
@@ -38,6 +39,14 @@ export async function PATCH(request: Request, context: { params: Promise<{ organ
       const endsAt = new Date(String(payload?.endsAt || ""));
       if (!planCode || !reason || Number.isNaN(endsAt.getTime())) return NextResponse.json({ error: "Plan, future expiry date and reason are required" }, { status: 400 });
       const subscription = await grantComplimentarySubscription({ organizationId, planCode, endsAt, reason, actorEmail: user.username });
+      return NextResponse.json({ subscription });
+    }
+
+    if (action === "EXTEND_TRIAL") {
+      const days = Number(payload?.days);
+      const reason = String(payload?.reason || "").trim();
+      if (!Number.isInteger(days) || !reason) return NextResponse.json({ error: "Whole-number days and an approval reason are required" }, { status: 400 });
+      const subscription = await extendTrialSubscription({ organizationId, days, reason, actorEmail: user.username });
       return NextResponse.json({ subscription });
     }
 

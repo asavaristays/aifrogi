@@ -39,6 +39,17 @@ async function main() {
 
     const trial = await billing.ensureOrganizationSubscription(organizationId);
     assert(trial?.plan.code === "TRIAL" && trial.status === "TRIALING", "Trial subscription was not created.");
+    const beforeExtension = trial.trialEndsAt?.getTime() || 0;
+    const extendedTrial = await billing.extendTrialSubscription({
+      organizationId,
+      days: 15,
+      reason: "Synthetic verification of a governed pilot extension.",
+      actorEmail: "billing-qa@aifrogi.local"
+    });
+    assert(extendedTrial.plan.code === "TRIAL" && extendedTrial.status === "TRIALING", "Trial extension changed the commercial plan or state.");
+    assert((extendedTrial.trialEndsAt?.getTime() || 0) >= beforeExtension + 14 * 24 * 60 * 60 * 1000, "Trial expiry was not extended by the approved period.");
+    const extensionAudit = await db.platformAuditLog.count({ where: { organizationId, action: "TRIAL_EXTENDED" } });
+    assert(extensionAudit === 1, "Trial extension was not audited exactly once.");
     await db.subscription.update({ where: { organizationId }, data: { trialEndsAt: new Date(Date.now() - 1000) } });
     const expired = await subscriptionAccess.getOrganizationSubscriptionAccess(organizationId);
     assert(!expired?.paused && expired?.canUsePaidActions && expired.status === "GRACE", "Expired trial did not enter its 3-day grace period.");

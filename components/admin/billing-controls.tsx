@@ -43,6 +43,8 @@ export function BillingControls({
   const [complimentaryEndsAt, setComplimentaryEndsAt] = useState("");
   const [complimentaryReason, setComplimentaryReason] = useState("");
   const [complimentaryPlanCode, setComplimentaryPlanCode] = useState(() => plans.find((plan) => plan.code !== "TRIAL")?.code || "");
+  const [trialExtensionDays, setTrialExtensionDays] = useState("15");
+  const [trialExtensionReason, setTrialExtensionReason] = useState("");
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -110,6 +112,7 @@ export function BillingControls({
       </div>
 
       <div className="mt-6 grid gap-6">
+        <div className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="field-label text-[#6d5310]">Trial extension</p><p className="mt-2 text-xs leading-5 text-[#68645c]">Keep the customer on the Trial plan while extending their evaluation period. The original trial record, approval reason and new expiry are audited.</p><div className="mt-3 grid gap-2 sm:grid-cols-[160px_1fr]"><input className="product-input" inputMode="numeric" min="1" max="90" type="number" value={trialExtensionDays} onChange={(event) => setTrialExtensionDays(event.target.value)} aria-label="Trial extension days" /><textarea className="product-input min-h-11" placeholder="Approval reason" value={trialExtensionReason} onChange={(event) => setTrialExtensionReason(event.target.value)} /></div><Button className="mt-3 w-full" disabled={saving || !trialExtensionReason.trim() || !Number.isInteger(Number(trialExtensionDays))} onClick={() => run({ action: "EXTEND_TRIAL", days: Number(trialExtensionDays), reason: trialExtensionReason }, `Trial extended by ${trialExtensionDays} days.`)}>Extend trial</Button></div>
         <div className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="field-label text-[#6d5310]">Complimentary access</p><p className="mt-2 text-xs leading-5 text-[#68645c]">Grant paid-plan entitlements without collecting payment. Expiry and reason are mandatory and audited.</p><select className="product-input mt-3" value={complimentaryPlanCode} onChange={(event) => setComplimentaryPlanCode(event.target.value)}>{plans.filter((plan) => plan.code !== "TRIAL").map((plan) => <option key={plan.code} value={plan.code}>{plan.name}</option>)}</select><input className="product-input mt-2" type="date" value={complimentaryEndsAt} onChange={(event) => setComplimentaryEndsAt(event.target.value)} /><textarea className="product-input mt-2 min-h-20" placeholder="Business reason and approval reference" value={complimentaryReason} onChange={(event) => setComplimentaryReason(event.target.value)} /><Button className="mt-3 w-full" disabled={saving || !complimentaryPlanCode || !complimentaryEndsAt || !complimentaryReason.trim()} onClick={() => run({ action: "GRANT_COMPLIMENTARY", planCode: complimentaryPlanCode, endsAt: complimentaryEndsAt, reason: complimentaryReason }, "Complimentary access granted.")}>Grant complimentary access</Button></div>
       </div>
 

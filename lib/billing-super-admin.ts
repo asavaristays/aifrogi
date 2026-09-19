@@ -181,6 +181,63 @@ export async function ensureOrganizationSubscription(organizationId: string, req
   });
 }
 
+/**
+ * Extends an existing trial without silently converting the customer to a
+ * paid or complimentary plan. This is deliberately separate from a
+ * complimentary entitlement: the commercial record must continue to show
+ * that the customer is evaluating the product.
+ */
+export async function extendTrialSubscription(input: {
+  organizationId: string;
+  days: number;
+  reason: string;
+  actorEmail: string;
+}) {
+  const db = getDb();
+  if (!db) throw new Error("Billing database is unavailable.");
+  if (!Number.isInteger(input.days) || input.days < 1 || input.days > 90) {
+    throw new Error("Trial extension must be a whole number between 1 and 90 days.");
+  }
+  const reason = input.reason.trim();
+  if (reason.length < 5) throw new Error("Record a clear reason for the trial extension.");
+
+  return db.$transaction(async (tx) => {
+    const subscription = await tx.subscription.findUnique({
+      where: { organizationId: input.organizationId },
+      include: { plan: true }
+    });
+    if (!subscription || subscription.plan.code !== "TRIAL") {
+      throw new Error("Only an active or grace-period trial can be extended.");
+    }
+    if (!["TRIALING", "GRACE"].includes(subscription.status)) {
+      throw new Error("Only an active or grace-period trial can be extended.");
+    }
+
+    const now = new Date();
+    const base = subscription.trialEndsAt && subscription.trialEndsAt > now ? subscription.trialEndsAt : now;
+    const trialEndsAt = new Date(base);
+    trialEndsAt.setDate(trialEndsAt.getDate() + input.days);
+    const updated = await tx.subscription.update({
+      where: { id: subscription.id },
+      data: { status: "TRIALING", trialEndsAt, graceEndsAt: null, currentPeriodEnd: null },
+      include: { plan: true }
+    });
+    await tx.platformAuditLog.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        actorRole: "SUPER_ADMIN",
+        action: "TRIAL_EXTENDED",
+        targetType: "Subscription",
+        targetId: subscription.id,
+        summary: `Trial extended by ${input.days} days until ${trialEndsAt.toISOString().slice(0, 10)}.`,
+        metadata: { days: input.days, previousTrialEndsAt: subscription.trialEndsAt?.toISOString() || null, trialEndsAt: trialEndsAt.toISOString(), reason }
+      }
+    });
+    return updated;
+  });
+}
+
 export async function syncAllOrganizationSubscriptions() {
   const db = getDb();
   if (!db) return [];
