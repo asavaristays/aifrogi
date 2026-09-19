@@ -680,6 +680,75 @@ export async function getBillingCommandCenter() {
   return { plans, customers, incidents, auditLogs };
 }
 
+export type PlatformAiCostMatrix = {
+  periodStart: Date;
+  periodEnd: Date;
+  inputTokens: number;
+  outputTokens: number;
+  attempts: number;
+  estimatedCostPaisa: number;
+  paidRevenuePaisa: number;
+  grossMarginBeforeOperationsPaisa: number;
+  monthlyBudgetPaisa: number | null;
+  budgetPercent: number | null;
+  budgetState: "NOT_SET" | "WITHIN" | "WATCH" | "AT_RISK" | "OVER";
+  renewalDate: Date | null;
+  tenants: Array<{
+    organizationId: string;
+    name: string;
+    inputTokens: number;
+    outputTokens: number;
+    attempts: number;
+    estimatedCostPaisa: number;
+  }>;
+};
+
+/**
+ * Platform-only operational view. It deliberately does not create charges or
+ * expose OpenAI costs in a customer's billing workspace.
+ */
+export async function getPlatformAiCostMatrix(): Promise<PlatformAiCostMatrix> {
+  const now = new Date();
+  const periodStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const periodEnd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+  const empty: PlatformAiCostMatrix = {
+    periodStart, periodEnd, inputTokens: 0, outputTokens: 0, attempts: 0, estimatedCostPaisa: 0,
+    paidRevenuePaisa: 0, grossMarginBeforeOperationsPaisa: 0, monthlyBudgetPaisa: null,
+    budgetPercent: null, budgetState: "NOT_SET", renewalDate: null, tenants: []
+  };
+  const db = getDb();
+  if (!db) return empty;
+
+  const [organizations, paidInvoices] = await Promise.all([
+    db.organization.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+    db.billingInvoice.findMany({
+      where: { status: "PAID", paidAt: { gte: periodStart, lt: periodEnd } },
+      select: { totalPaisa: true }
+    })
+  ]);
+  const tenants = await Promise.all(organizations.map(async (organization) => {
+    const usage = await getTenantUsageCostSummary(organization.id, periodStart, periodEnd);
+    return { organizationId: organization.id, name: organization.name, ...usage };
+  }));
+  const inputTokens = tenants.reduce((total, tenant) => total + tenant.inputTokens, 0);
+  const outputTokens = tenants.reduce((total, tenant) => total + tenant.outputTokens, 0);
+  const attempts = tenants.reduce((total, tenant) => total + tenant.attempts, 0);
+  const estimatedCostPaisa = tenants.reduce((total, tenant) => total + tenant.estimatedCostPaisa, 0);
+  const paidRevenuePaisa = paidInvoices.reduce((total, invoice) => total + invoice.totalPaisa, 0);
+  const configuredBudget = Number(process.env.OPENAI_MONTHLY_BUDGET_PAISE_PER_MONTH || 0);
+  const monthlyBudgetPaisa = Number.isFinite(configuredBudget) && configuredBudget > 0 ? Math.round(configuredBudget) : null;
+  const budgetPercent = monthlyBudgetPaisa ? Math.round((estimatedCostPaisa / monthlyBudgetPaisa) * 100) : null;
+  const budgetState = budgetPercent === null ? "NOT_SET" : budgetPercent >= 100 ? "OVER" : budgetPercent >= 90 ? "AT_RISK" : budgetPercent >= 75 ? "WATCH" : "WITHIN";
+  const renewalRaw = process.env.OPENAI_BILLING_RENEWAL_DATE;
+  const renewalDate = renewalRaw && /^\d{4}-\d{2}-\d{2}$/.test(renewalRaw) ? new Date(`${renewalRaw}T00:00:00.000Z`) : null;
+
+  return {
+    periodStart, periodEnd, inputTokens, outputTokens, attempts, estimatedCostPaisa, paidRevenuePaisa,
+    grossMarginBeforeOperationsPaisa: paidRevenuePaisa - estimatedCostPaisa,
+    monthlyBudgetPaisa, budgetPercent, budgetState, renewalDate, tenants
+  };
+}
+
 export function calculateCustomerHealth(input: {
   metaStatus: string;
   webhookStatus: string;
