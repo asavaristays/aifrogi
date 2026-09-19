@@ -11,7 +11,8 @@ test("only explicitly approved live website bots may serve visitors", () => {
   assert.equal(canServeWebsiteBot("LIVE", ["WHATSAPP"]), false);
   const embedPage = readFileSync("app/embed/[slug]/page.tsx", "utf8");
   assert.match(embedPage, /notFound\(\)/);
-  assert.doesNotMatch(embedPage, /return null;/);
+  assert.match(embedPage, /withPublicBotDatabaseContext/);
+  assert.match(embedPage, /if \(!profile \|\| !canServeWebsiteBot\(profile\.status, profile\.channels\)\) return null;/);
   const shell = readFileSync("components/layout/app-shell.tsx", "utf8");
   assert.match(shell, /Private setup workspace/);
   assert.match(shell, /customers cannot access or use this bot until it is submitted and approved/);
@@ -164,7 +165,7 @@ test("workspace menu configuration flows through Setup and public bot surfaces",
   const standalone = readFileSync("app/bot/[slug]/page.tsx", "utf8");
   const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
   assert.match(setup, /BotMenuSettings/);
-  assert.match(embedPage, /menu=\{settings\.widgetMenu\}/);
+  assert.match(embedPage, /menu=\{loaded\.settings\.widgetMenu\}/);
   assert.match(standalone, /menu=\{settings\.widgetMenu\}/);
   assert.match(widget, /menu\.enabled/);
 });
@@ -177,7 +178,7 @@ test("widget theme flows from Setup to embedded and standalone bots", () => {
   const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
   assert.match(appearance, /\["dark", "light", "system"\]/);
   assert.match(repository, /widgetTheme: "dark"/);
-  assert.match(embedPage, /widgetTheme=\{settings\.widgetTheme\}/);
+  assert.match(embedPage, /widgetTheme=\{loaded\.settings\.widgetTheme\}/);
   assert.match(standalone, /widgetTheme=\{settings\.widgetTheme\}/);
   assert.match(widget, /data-widget-theme=\{widgetTheme\}/);
 });

@@ -18,7 +18,7 @@ export function evaluateCategoryHardBoundary(category: BotProfileInput["category
     return { code: "MEDICAL_EMERGENCY", answer: "This may require urgent medical attention. Please contact local emergency services or the clinic’s emergency channel now; this bot cannot assess or treat an emergency." };
   }
   if (category === "RESTAURANT" && /\b(allergen|allergic|nut free|nuts?|peanut|gluten free|contains? dairy|ingredient uncertainty)\b/.test(normalized)) {
-    return { code: "FOOD_ALLERGEN_AUTHORITY_REQUIRED", answer: "I cannot confirm an allergen or ingredient claim unless it is explicitly present in the restaurant’s approved information. Please ask an authorised restaurant team member to verify this before ordering." };
+    return { code: "FOOD_ALLERGEN_AUTHORITY_REQUIRED", answer: "I cannot confirm an allergen or ingredient claim unless it is listed in the restaurant’s confirmed ingredient information. Please ask a restaurant team member to verify this before ordering." };
   }
   if (category === "FLOWCART" && /\b(payment|paid|transaction)\b.{0,80}\b(succeeded|successful|confirmed|complete)\b|\b(say|claim|confirm|guarantee)\b.{0,80}\b(payment|paid|transaction)\b/.test(normalized)) {
     return { code: "PAYMENT_PROVIDER_VERIFICATION_REQUIRED", answer: "I cannot confirm a payment without a successful verification from the approved payment provider. Please check the payment status or ask the business team to verify it before the order proceeds." };

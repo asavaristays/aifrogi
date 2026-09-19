@@ -34,5 +34,7 @@ test("Setup supports URL or verified upload and both bot deliveries render the c
   assert.match(upload, /does not contain a valid image/);
   assert.match(embed, /ShowcaseCarousel/);
   assert.match(standalone, /showcaseItems=\{settings\.showcaseItems\}/);
-  assert.match(frame, /showcaseItems=\{settings\.showcaseItems\}/);
+  // The embedded public surface loads settings in its tenant-bound database context.
+  assert.match(frame, /withPublicBotDatabaseContext/);
+  assert.match(frame, /showcaseItems=\{loaded\.settings\.showcaseItems\}/);
 });

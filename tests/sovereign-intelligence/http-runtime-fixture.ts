@@ -23,11 +23,12 @@ const matches = (row: any, where: any): boolean => Object.entries(where || {}).e
   return row[key] === value;
 });
 fixture.db = {
+  $queryRaw: async () => [{ acquired: !fixture.busy, organization_id: "org-a" }],
   demoSandbox: { findUnique: async ({ where }: any) => org.isDemo && where.organizationId === org.id ? { id: "sandbox-a", status: "READY" } : null },
   demoConnectorEvent: { upsert: async ({ where, create, update }: any) => { const key = where.demoSandboxId_idempotencyKey.idempotencyKey; const old = fixture.connectorEvents.get(key); const row = old ? { ...old, ...update } : create; fixture.connectorEvents.set(key, row); return row; } },
   $transaction: async (fn: any) => {
     const snapshot = structuredClone({ messages: fixture.messages, evidence: fixture.evidence, sessions: fixture.sessions, operations: fixture.operations });
-    try { return await fn({ $queryRaw: async () => [{ acquired: !fixture.busy }], ...fixture.db }); }
+    try { return await fn({ $queryRaw: async () => [{ acquired: !fixture.busy, organization_id: "org-a" }], ...fixture.db }); }
     catch (error) { Object.assign(fixture, snapshot); throw error; }
   },
   aiOperation: { upsert: async ({ where, create }: any) => { if (fixture.failHandover) throw new Error("Synthetic queue outage"); if (!fixture.operations.has(where.id)) fixture.operations.set(where.id, create); return fixture.operations.get(where.id); } },
@@ -35,6 +36,10 @@ fixture.db = {
   knowledgeEntry: {
     updateMany: async ({ where, data }: any) => { const found = fixture.claims.filter((r: any) => matches(r, where)); found.forEach((r: any) => Object.assign(r, data)); return { count: found.length }; },
     findMany: async ({ where, take }: any) => fixture.claims.filter((r: any) => matches(r, where)).slice(0, take)
+  },
+  usageRecord: {
+    upsert: async () => ({}),
+    groupBy: async () => []
   },
   lead: {
     findFirst: async ({ where }: any) => ({ stage: "NEW", tags: fixture.closed ? [{ value: "Resolved" }] : [], messages: fixture.agentMessages.filter((m: any) => m.leadId === where.id) }),
@@ -53,7 +58,7 @@ fixture.db = {
 };
 fixture.capture = async (input: any) => { const leadId = input.conversationId; fixture.messages.push({ leadId, body: input.message, aiReply: input.aiReply }); return { lead: { id: leadId, propertySlug: input.propertySlug } }; };
 const adapters: Record<string, string> = {
-  "@/lib/db": "export const getDb=()=>globalThis.__bucketOne.db;export const withDatabaseTransaction=(_tx,work)=>work();",
+  "@/lib/db": "export const getDb=()=>globalThis.__bucketOne.db;export const getBootstrapDb=()=>globalThis.__bucketOne.db;export const withDatabaseTransaction=(_tx,work)=>work();export const withDatabaseIdentity=(_identity,work)=>work();export const enterDatabaseIdentity=()=>{};",
   "@/lib/repositories/knowledge-repository": "export const readKnowledgeSettings=async()=>({approvedForAi:globalThis.__bucketOne.approved,handoffTopics:[]}); export const writeKnowledgeSettings=async()=>{};",
   "@/lib/repositories/knowledge-content-repository": "export const recordKnowledgeGap=async()=>{};",
   "@/lib/repositories/bot-profile-repository": "export const getBotPersonaForPropertySlug=async()=>globalThis.__bucketOne.profile;",
