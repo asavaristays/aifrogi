@@ -33,8 +33,20 @@ function boundedText(value: unknown) {
 }
 
 function boundedConfidence(value: unknown) {
-  const number = Number(value);
-  return Number.isFinite(number) && number >= 0 && number <= 1 ? number : 0;
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1 ? value : 0;
+}
+
+function validAnswer(answer: Record<string, unknown> | undefined) {
+  if (!answer || answer.type !== "choice" || !TYPESAFE_ACTION_INTENTS.includes(answer.choice as TypesafeActionIntent)) return false;
+  if (typeof answer.confidence !== "number" || !Number.isFinite(answer.confidence) || answer.confidence < 0 || answer.confidence > 1) return false;
+  const probabilities = answer.probabilities;
+  if (!probabilities || typeof probabilities !== "object" || Array.isArray(probabilities)) return false;
+  const entries = Object.entries(probabilities);
+  if (entries.length !== TYPESAFE_ACTION_INTENTS.length || !TYPESAFE_ACTION_INTENTS.every(key => Object.hasOwn(probabilities, key))) return false;
+  if (entries.some(([, value]) => typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1)) return false;
+  const values = entries.map(([, value]) => value as number);
+  return Math.abs(values.reduce((sum, value) => sum + value, 0) - 1) < 0.01
+    && (probabilities as Record<string, number>)[answer.choice as string] >= Math.max(...values);
 }
 
 function choice(value: unknown): TypesafeActionIntent {
@@ -47,7 +59,7 @@ function policy(intent: TypesafeActionIntent, confidence: number, enabled: boole
   const certain = confidence >= MIN_CONFIDENCE;
   const highRisk = intent === "PAYMENT_OR_TRANSACTION" || intent === "SENSITIVE_OR_UNSAFE" || intent === "HUMAN_HANDOVER";
   if (!enabled) return { enabled: false, intent: "UNKNOWN", confidence: 0, mayOfferNextStep: false, mustRequireHuman: false, reason: "TypeSafe action gate is not configured." };
-  if (!certain) return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: true, reason: "Intent confidence is below the action threshold; clarification or human review is required.", usage };
+  if (!certain || intent === "UNKNOWN") return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: true, reason: "Intent is unresolved; clarification or human review is required.", usage };
   if (highRisk) return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: true, reason: "This intent is never eligible for autonomous execution.", usage };
   return { enabled: true, intent, confidence, mayOfferNextStep: intent === "AVAILABILITY_ENQUIRY" || intent === "BOOKING_ENQUIRY", mustRequireHuman: false, reason: "Intent is classified with sufficient confidence; deterministic field validation is still required.", usage };
 }
@@ -61,11 +73,12 @@ export async function assessTypesafeActionIntent(input: {
   businessName: unknown;
   apiKey?: string;
   fetchImpl?: typeof fetch;
+  enabled?: boolean;
 }): Promise<TypesafeActionGate> {
   const apiKey = input.apiKey?.trim();
   const question = boundedText(input.question);
   const businessName = boundedText(input.businessName) || "this business";
-  if (!apiKey || !question) return typeSafeActionGateDisabled();
+  if (input.enabled !== true || !apiKey || !question) return typeSafeActionGateDisabled();
 
   const request = {
     state: { customerMessage: question, businessName },
@@ -91,12 +104,14 @@ export async function assessTypesafeActionIntent(input: {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify(request),
-      signal: AbortSignal.timeout(2_500)
+      signal: AbortSignal.timeout(2_500),
+      redirect: "error"
     });
     if (!response.ok) return typeSafeActionGateDisabled();
     const body = await response.json().catch(() => null) as Record<string, unknown> | null;
     const answers = body?.answers as Record<string, unknown> | undefined;
     const answer = answers?.action_intent as Record<string, unknown> | undefined;
+    if (!validAnswer(answer)) return typeSafeActionGateDisabled();
     const usage = body?.usage as Record<string, unknown> | undefined;
     return policy(choice(answer?.choice), boundedConfidence(answer?.confidence), true, usage ? { inputTokens: Math.max(0, Number(usage.input_tokens) || 0), outputTokens: Math.max(0, Number(usage.output_tokens) || 0) } : undefined);
   } catch {
