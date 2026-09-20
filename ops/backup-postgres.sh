@@ -12,7 +12,7 @@ encrypted="${base}.gz.enc"
 temporary="${base}.tmp"
 pg_database_url="$(node -e 'const url=new URL(process.argv[1]); url.searchParams.delete("schema"); process.stdout.write(url.toString())' "$DATABASE_URL")"
 pg_schema="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.searchParams.get("schema") || "public")' "$DATABASE_URL")"
-pg_database="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.pathname.replace(/^\\//, ""))' "$DATABASE_URL")"
+pg_database="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.pathname.slice(1))' "$DATABASE_URL")"
 
 mkdir -p "$BACKUP_DIR"
 umask 077
