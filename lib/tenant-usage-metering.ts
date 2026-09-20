@@ -18,10 +18,11 @@ export async function recordTenantAnswerUsage(input: { organizationId: string; e
     ["AI_INPUT_TOKENS", input.usage.inputTokens, "TOKENS"], ["AI_OUTPUT_TOKENS", input.usage.outputTokens, "TOKENS"],
     ["AI_MODEL_ATTEMPTS", input.usage.attempts, "COUNT"], ["AI_LATENCY_MS", input.usage.latencyMs, "MILLISECONDS"]
   ] as const;
-  await db.$transaction(metrics.map(([metric, quantity, unit]) => db.usageRecord.upsert({
+  // Use the transaction delegate so all writes share the configured RLS identity.
+  await db.$transaction(async (transaction) => Promise.all(metrics.map(([metric, quantity, unit]) => transaction.usageRecord.upsert({
     where: { idempotencyKey: `${input.certification ? "cert" : "answer"}:${input.evidenceId}:${metric}` },
     update: {}, create: { organizationId: input.organizationId, metric, quantity: Math.max(0, Math.round(quantity)), unit, periodStart, periodEnd, sourceRef: `${input.usage.model}:${input.evidenceId}`, idempotencyKey: `${input.certification ? "cert" : "answer"}:${input.evidenceId}:${metric}` }
-  })));
+  }))));
   return { costPaisa: estimatedUsageCostPaisa(input.usage), metrics: metrics.length };
 }
 
