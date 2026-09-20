@@ -23,7 +23,7 @@ trap 'rm -f "$temporary" "${base}.gz"' EXIT
 # administrator solely for the encrypted backup; regular environments retain
 # the configured application connection path.
 if [[ "$(id -u)" == "0" ]] && id postgres >/dev/null 2>&1; then
-  sudo -u postgres pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database"
+  sudo -u postgres pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" "$pg_database" > "$temporary"
 else
   pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database_url"
 fi
