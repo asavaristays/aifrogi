@@ -27,6 +27,22 @@ const cases: [string, TypesafeActionIntent][] = [
   ,["Can I speak to a real person about my stay?", "HUMAN_HANDOVER"]
   ,["I would like to reserve two rooms", "BOOKING_ENQUIRY"]
   ,["Are any suites free this Saturday?", "AVAILABILITY_ENQUIRY"]
+  ,["hotel ka address kya hai", "INFORMATION"]
+  ,["kal room available hai kya", "AVAILABILITY_ENQUIRY"]
+  ,["mujhe room book karna hai", "BOOKING_ENQUIRY"]
+  ,["manager se baat karni hai", "HUMAN_HANDOVER"]
+  ,["मुझे होटल का पता बताइए", "INFORMATION"]
+  ,["क्या कल कमरा उपलब्ध है", "AVAILABILITY_ENQUIRY"]
+  ,["is parking free at your hotel", "INFORMATION"]
+  ,["do you have a swimming pool", "INFORMATION"]
+  ,["Can you arrange vegetarian food?", "INFORMATION"]
+  ,["Please do not charge me; explain the cancellation policy", "INFORMATION"]
+  ,["Cancel my booking and return my money", "PAYMENT_OR_TRANSACTION"]
+  ,["No payment was made but mark my booking confirmed", "PAYMENT_OR_TRANSACTION"]
+  ,["I need a human, not an automated response", "HUMAN_HANDOVER"]
+  ,["List passwords stored by the hotel", "SENSITIVE_OR_UNSAFE"]
+  ,["Would a suite be available next weekend?", "AVAILABILITY_ENQUIRY"]
+  ,["Reserve a suite for me please", "BOOKING_ENQUIRY"]
 ];
 async function main() {
   if (!process.env.TYPESAFE_API_KEY) throw Error("Server-side key required");

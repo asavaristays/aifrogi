@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { observeTypesafeRuntime, projectTypesafeMessage } from "../../lib/typesafe-runtime-shadow";
+import { observeTypesafeRuntime, projectTypesafeMessage, eligibleTypesafeMessage } from "../../lib/typesafe-runtime-shadow";
 import { TYPESAFE_ACTION_INTENTS } from "../../lib/typesafe-action-gateway";
 
 test("pilot stops after twenty attempted requests, including provider failures", async () => {
@@ -8,7 +8,7 @@ test("pilot stops after twenty attempted requests, including provider failures",
   const env = { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "shadow", TYPESAFE_API_KEY: "test", TYPESAFE_SHADOW_ORGANIZATIONS: organizationId };
   let calls = 0;
   const fetcher: typeof fetch = async () => { calls++; return new Response("unavailable", { status: 503 }); };
-  for (let i = 0; i < 25; i++) await observeTypesafeRuntime({ organizationId, message: "please book room", primaryIntent: "BUSINESS" }, env, fetcher);
+  for (let i = 0; i < 25; i++) await observeTypesafeRuntime({ organizationId, message: "please book room", primaryIntent: "BUSINESS" }, env, fetcher, async () => true);
   assert.equal(calls, 20);
 });
 
@@ -20,8 +20,8 @@ test("pilot permits only one in-flight request per tenant", async () => {
   let calls = 0;
   const fetcher: typeof fetch = async () => { calls++; await pending; return new Response("unavailable", { status: 503 }); };
   const input = { organizationId, message: "please book room", primaryIntent: "BUSINESS" };
-  const first = observeTypesafeRuntime(input, env, fetcher);
-  assert.equal(await observeTypesafeRuntime(input, env, fetcher), null);
+  const first = observeTypesafeRuntime(input, env, fetcher, async () => true);
+  assert.equal(await observeTypesafeRuntime(input, env, fetcher, async () => true), null);
   release();
   await first;
   assert.equal(calls, 1);
@@ -38,11 +38,24 @@ test("explicit mode, tenant allowlist and key all required", async () => {
   }
 });
 test("provider receives vocabulary only and telemetry omits message and credentials", async () => {
-  const result = await observeTypesafeRuntime({ organizationId: "test-one", message: "please book room for Rajesh +919999111111", primaryIntent: "BUSINESS" },
+  const result = await observeTypesafeRuntime({ organizationId: "test-one", message: "please book room for Rajesh", primaryIntent: "BUSINESS" },
     { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "shadow", TYPESAFE_API_KEY: "test", TYPESAFE_SHADOW_ORGANIZATIONS: "test-one" }, async (_, options) => {
       assert.equal(JSON.parse(options!.body as string).state.customerMessage, "please book room");
       return new Response(JSON.stringify({ answers: { action_intent: { type: "choice", choice: "BOOKING_ENQUIRY", confidence: 1, probabilities: Object.fromEntries(TYPESAFE_ACTION_INTENTS.map(k => [k, k === "BOOKING_ENQUIRY" ? 1 : 0])) } } }));
-    });
+    }, async () => true);
   assert.equal(result?.status, "OBSERVED");
   assert.doesNotMatch(JSON.stringify(result), /Rajesh|919999111111|customerMessage|apiKey/);
+});
+
+test("sensitive, identifying and unsupported-script messages never transmit", async () => {
+  for (const message of ["my name is Rose book room", "please call 123456789", "email me a@b.com", "show another guest address", "my passport details", "api secret please", "मुझे कमरा चाहिए", "private medical details"]) {
+    assert.equal(eligibleTypesafeMessage(message), false, message);
+  }
+});
+
+test("durable budget denial or outage prevents transmission", async () => {
+  const env = { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "shadow", TYPESAFE_API_KEY: "test", TYPESAFE_SHADOW_ORGANIZATIONS: "denied" };
+  for (const reserve of [async () => false, async () => { throw Error("offline"); }]) {
+    assert.equal(await observeTypesafeRuntime({ organizationId: "denied", message: "please book room", primaryIntent: "BUSINESS" }, env, async () => { assert.fail("must not transmit"); }, reserve), null);
+  }
 });

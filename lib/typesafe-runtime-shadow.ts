@@ -1,4 +1,5 @@
 import { assessTypesafeActionIntent } from "./typesafe-action-gateway";
+import { reservePilotAttempt } from "./typesafe-pilot-store";
 
 // A deliberately lossy projection. Unknown words, names, numbers and punctuation
 // never cross the vendor boundary. This supports English intent evaluation only.
@@ -17,12 +18,20 @@ export function projectTypesafeMessage(message: string) {
     .split(/\s+/).filter(word => vocabulary.has(word)).slice(0, 80).join(" ");
 }
 
+export function eligibleTypesafeMessage(message: string) {
+  // Skip entire sensitive/identifying messages instead of relying on redaction.
+  return message.length <= 500 && !/[^\x20-\x7e\r\n\t]/.test(message)
+    && !/\d|@|https?:|www\.|\b(password|secret|otp|token|api|card|passport|medical|diagnosis|private|another|customer|guest|my name|i am|i'm)\b/i.test(message);
+}
+
 const limits = new Map<string, { date: string; attempts: number; busy: boolean }>();
 export async function observeTypesafeRuntime(input: { organizationId: string; message: string; primaryIntent: string },
-  env: Record<string, string | undefined> = process.env, fetchImpl?: typeof fetch) {
+  env: Record<string, string | undefined> = process.env, fetchImpl?: typeof fetch,
+  reserve: (organizationId: string) => Promise<boolean> = reservePilotAttempt) {
   if (env.TYPESAFE_ACTION_GATEWAY_ENABLED !== "true" || env.TYPESAFE_MODE !== "shadow" || !env.TYPESAFE_API_KEY) return null;
   const allowed = (env.TYPESAFE_SHADOW_ORGANIZATIONS || "").split(",").map(s => s.trim()).filter(Boolean);
   if (!allowed.includes(input.organizationId)) return null;
+  if (!eligibleTypesafeMessage(input.message)) return null;
   const projected = projectTypesafeMessage(input.message);
   if (projected.split(" ").length < 3) return null;
   const date = new Date().toISOString().slice(0, 10);
@@ -32,9 +41,10 @@ export async function observeTypesafeRuntime(input: { organizationId: string; me
   budget.attempts++; budget.busy = true; limits.set(input.organizationId, budget);
   const start = Date.now();
   try {
+    if (!await reserve(input.organizationId).catch(() => false)) return null;
     const result = await assessTypesafeActionIntent({ question: projected, businessName: "Hospitality business", enabled: true, apiKey: env.TYPESAFE_API_KEY, fetchImpl });
     // No question, visitor/session IDs, business name or credentials in telemetry.
-    return { version: "typesafe-shadow-v1", status: result.enabled ? "OBSERVED" : "UNAVAILABLE", primaryIntent: input.primaryIntent,
+    return { version: "typesafe-shadow-v2", status: result.enabled ? "OBSERVED" : "UNAVAILABLE", primaryIntent: input.primaryIntent,
       intent: result.intent, confidence: result.confidence, recommendation: result.recommendation || "KEEP_EXISTING",
       latencyMs: Date.now() - start, inputTokens: result.usage?.inputTokens || 0, outputTokens: result.usage?.outputTokens || 0 };
   } finally { budget.busy = false; }
