@@ -309,6 +309,7 @@ model Organization {
   botConfiguration     WhatsAppBotConfiguration?
   botProfile           BotProfile?
   botConnectors        BotConnectorConfiguration[]
+  agentGatewayClients  AgentGatewayClient[]
   demoSandbox          DemoSandbox?
   documents            OnboardingDocument[]
   activities           OnboardingActivity[]
@@ -481,6 +482,28 @@ model BotConnectorCredential {
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
 
+  @@index([expiresAt, revokedAt])
+}
+
+// External AI agents receive a tenant-scoped, revocable read-only credential.
+// Secrets are stored as one-way hashes and are shown only at creation time.
+model AgentGatewayClient {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  label          String
+  tokenHash      String       @unique
+  scopes         String[]     @default(["profile:read", "availability:read"])
+  enabled        Boolean      @default(true)
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  revokedAt      DateTime?
+  revokedBy      String?
+  createdBy      String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId, enabled, revokedAt])
   @@index([expiresAt, revokedAt])
 }
 

@@ -33,6 +33,14 @@ test("every public website data route establishes a tenant identity", () => {
   }
 });
 
+test("every Agent Gateway data route establishes a tenant identity", () => {
+  const routes = ["profile/route.ts", "availability/route.ts"];
+  for (const route of routes) {
+    const source = readFileSync(resolve(process.cwd(), "app/api/agent/v1/[slug]", route), "utf8");
+    assert.match(source, /withPublicBotDatabaseContext/, `${route} must establish database tenant identity`);
+  }
+});
+
 test("identity-scoped database calls use short transaction-local contexts", () => {
   const source = readFileSync(resolve(process.cwd(), "lib/db.ts"), "utf8");
   assert.match(source, /identityScopedClient/);

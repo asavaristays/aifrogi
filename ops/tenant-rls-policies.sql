@@ -115,7 +115,7 @@ DO $rls$
 DECLARE
   table_name text;
   direct_organization_tables text[] := ARRAY[
-    'DemoSandbox','UserSession','WhatsAppBotConfiguration','BotProfile','BotConnectorConfiguration',
+    'DemoSandbox','UserSession','WhatsAppBotConfiguration','BotProfile','BotConnectorConfiguration','AgentGatewayClient',
     'OrganizationMember','OnboardingProfile','OnboardingCredential','OnboardingDocument','OnboardingActivity',
     'Subscription','BillingAddon','BillingInvoice','UsageRecord','AiCreditTransaction','SupportTicket'
   ];

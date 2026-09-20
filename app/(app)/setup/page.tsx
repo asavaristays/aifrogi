@@ -14,6 +14,7 @@ import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
 import { BotShowcaseSettings } from "@/components/setup/bot-showcase-settings";
 import { BotCertificationPanel } from "@/components/setup/bot-certification-panel";
+import { AgentGatewaySettings } from "@/components/setup/agent-gateway-settings";
 import { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } from "@/lib/tenant-intelligence/certification";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +55,7 @@ export default async function SetupPage() {
         {access?.organization.botProfile ? <BotBehaviourSettings initialProfile={access.organization.botProfile} canManage={canManageWorkspace(access.role)} /> : null}
         {access ? <BotMenuSettings initialMenu={appearance.widgetMenu} canManage={canManageWorkspace(access.role)} /> : null}
         {access?.organization.botConnectors?.length ? <BotConnectorPlan connectors={access.organization.botConnectors} management="customer" canManage={canManageWorkspace(access.role)} /> : null}
+        {access?.organization.botProfile ? <AgentGatewaySettings slug={propertySlug} canManage={canManageWorkspace(access.role)} live={access.organization.botProfile.status === "LIVE"} /> : null}
         {access ? <BotCertificationPanel initialRecord={certification} initialStatus={certificationStatus} canManage={canManageWorkspace(access.role)} /> : null}
         {access ? <section className="rounded-2xl border border-[var(--border)] bg-white p-5 sm:p-6">
           <p className="product-eyebrow">Website bot checklist</p>

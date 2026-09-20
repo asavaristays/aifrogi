@@ -2,7 +2,7 @@ import { Client } from "pg";
 
 const required = [
   "Organization","Property","KnowledgeDocument","KnowledgeEntry","Lead","Conversation","Message",
-  "BotProfile","BotConnectorConfiguration","BotConnectorCredential","OrganizationMember","Subscription",
+  "BotProfile","BotConnectorConfiguration","BotConnectorCredential","AgentGatewayClient","OrganizationMember","Subscription",
   "BillingInvoice","UsageRecord","SupportTicket","AppointmentTenant","CommerceTenant"
   ,"AppointmentBooking","AppointmentPayment","CommerceOrder","CommercePayment","CommerceOrderItem"
 ];
