@@ -8,10 +8,32 @@ layer, not an action engine.
 
 ## Current implementation status
 
-The adapter is not imported by a live bot route. `enabled: true` must be passed
-explicitly even when a key is available. The environment flag is a rollout
-placeholder, not a wired production control. Installing the skill or creating
-the API key does not activate the adapter.
+The website bot source now calls a shadow observer after deciding its answer.
+Activation requires TYPESAFE_ACTION_GATEWAY_ENABLED=true, TYPESAFE_MODE=shadow,
+a key, and an exact organization ID in TYPESAFE_SHADOW_ORGANIZATIONS. Defaults
+send no traffic. These runtime changes have not been promoted to production.
+
+The observer applies a fixed English vocabulary projection before transmission:
+unknown words, digit-containing tokens, email tokens and URLs are omitted.
+This is a lossy minimization technique, not a general anonymization guarantee;
+allowed words can still convey sensitive intent. Only the projection and generic
+"Hospitality business" name are sent. Telemetry contains labels, confidence,
+latency and token counts, never the message. A process-local limit permits 20
+requests per tenant per UTC day and one in flight; it resets on restart and is
+not an account-wide billing cap. Requests can add up to the adapter timeout to
+response latency. Audit writes use a separate transaction and failure cannot
+roll back the visitor response. The primary response is never changed.
+
+### Production promotion blocker discovered
+
+The existing production release script returned a misleading 0/0 fleet pass
+because it did not establish the system identity required by RLS. The candidate
+script now establishes that identity and refuses zero-tenant production passes.
+The corrected server check found three live tenants (Asavaristays, Castle Mandawa,
+Webtechnosys), all blocked because no Golden banks were available. A read-only
+check also found no tenant-certification JSON files in the active application data
+directory. Restore/review their banks and rerun certification before promotion.
+Core's fixed certification remains 30/30. No RLS policy was weakened.
 
 The standalone synthetic runner can be invoked with:
 `node --import tsx scripts/evaluate-typesafe-synthetic.ts`
@@ -63,8 +85,9 @@ connected. No real customer messages were transmitted.
 ## Required boundaries before customer rollout
 
 - Synthetic evaluation sends only fictional messages. Before any customer
-  rollout, implement and review a data-minimization policy: the current adapter
-  forwards the supplied message and does not itself redact personal information.
+  rollout, review the vocabulary projection and tenant opt-in. Direct adapter
+  callers must not pass raw customer messages; only the runtime observer applies
+  projection.
 - It cannot create a quote, booking, cancellation, payment order, or refund.
 - A high-confidence availability or booking enquiry still requires deterministic
   field validation, live connector reads, tenant authorization and the existing
@@ -72,8 +95,8 @@ connected. No real customer messages were transmitted.
 - Payment, transaction, sensitive, unclear and human-handover intents are never
   eligible for autonomous execution.
 - API failure, malformed output, a missing credential or low confidence fails
-  closed: no action suggestion is made. The standalone pilot is its only caller;
-  no live bot route invokes it.
+  closed: no action suggestion is made. Production remains disabled pending
+  fleet certification and tenant-specific enablement.
 
 ## Controlled rollout
 

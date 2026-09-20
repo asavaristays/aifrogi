@@ -29,6 +29,7 @@ import { planConversation } from "@/lib/sovereign-intelligence/conversation-plan
 import { activeNegotiationPolicy, evaluateTenantNegotiation, policyForVerifiedStay, tenantNegotiationAuthority, tenantRateInquiry } from "@/lib/tenant-negotiation";
 import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sovereign-intelligence/layer-router";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
+import { observeTypesafeRuntime } from "@/lib/typesafe-runtime-shadow";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -299,6 +300,16 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     };
   }
   const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "INFRASTRUCTURE" as const, failureCode: safety.blocked ? null : "UNATTRIBUTED_RUNTIME_FAILURE", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
+  const typesafeShadow = !safety.blocked && profile.category === "STAY"
+    ? await observeTypesafeRuntime({ organizationId: organization.id, message, primaryIntent: evidenceDecision.intent }).catch(() => null)
+    : null;
+  // Separate from the required answer transaction: optional telemetry failure
+  // must never roll back the visitor's response or handover.
+  if (typesafeShadow) await db.platformAuditLog.create({ data: {
+    organizationId: organization.id, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM",
+    action: "TYPESAFE_SHADOW_OBSERVED", targetType: "Property", targetId: property.id,
+    summary: "Advisory TypeSafe observation; customer response and action authority unchanged.", metadata: typesafeShadow
+  } }).catch(() => console.warn("TypeSafe shadow telemetry unavailable"));
   return persistWebsiteTurn(async () => {
   const persistenceDb = getDb()!;
   const captured = await captureIncomingAiBotMessage({
