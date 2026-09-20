@@ -88,12 +88,12 @@ export async function assessTypesafeActionIntent(input: {
         type: "choice",
         instructions: "Classify `customerMessage` for `businessName` into one safe intent. This is routing only; do not infer missing dates, identity, payment authority, or booking confirmation.",
         criteria: {
-          INFORMATION: "Public business, property, service, policy, contact, or amenity information.",
+          INFORMATION: "Public business, property, service, policy, contact, or amenity information. Requests for the hotel's reservation desk phone, booking contact number, email or address are public contact enquiries, including misspellings. They do not ask for a guest record unless the message explicitly identifies private guest information.",
           AVAILABILITY_ENQUIRY: "Asks whether a stay/service is available; dates or other required fields may still be missing.",
           BOOKING_ENQUIRY: "Wants to start or continue a booking/enquiry; this never authorizes a booking write.",
           PAYMENT_OR_TRANSACTION: "Asks to pay, confirm payment, refund, cancel, modify, or otherwise transact.",
           HUMAN_HANDOVER: "Explicit request for a person, manager, callback, complaint, or exception review.",
-          SENSITIVE_OR_UNSAFE: "Requests private data, credentials, OTPs, card data, another guest record, or unsafe action.",
+          SENSITIVE_OR_UNSAFE: "Requests private guest/customer data, credentials, OTPs, card data, another guest record, or unsafe action. A request for the business's public reservation/booking phone number or address belongs to INFORMATION.",
           UNKNOWN: "Does not clearly fit a permitted category."
         }
       }

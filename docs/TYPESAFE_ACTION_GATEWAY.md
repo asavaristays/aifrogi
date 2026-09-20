@@ -16,7 +16,22 @@ the API key does not activate the adapter.
 The standalone synthetic runner can be invoked with:
 `node --import tsx scripts/evaluate-typesafe-synthetic.ts`
 It expects `TYPESAFE_API_KEY` in the process environment and reads no tenant
-records. Its 12 hand-authored cases are a smoke test, not production certification.
+records. Its 16 hand-authored cases are a smoke test, not production certification.
+
+### Authenticated evaluation — 20 September 2026
+
+The user-supplied credential was tested without displaying it and stored on the
+bot VPS in `/etc/aifrogi-typesafe-evaluation.env` (root-only, mode 0600), separate
+from the live bot environment. The live routing flag remains false.
+
+Initial evaluation: 11/12 intent labels matched; a misspelled public reservation
+phone enquiry was incorrectly classified as sensitive. After clarifying public
+contact versus private guest records in the criteria, the expanded run matched
+16/16 labels. Observed per-request latency was 343–1215 ms. The wedding enquiry
+was correctly labelled INFORMATION but confidence was 0.56, below the provisional
+0.82 threshold; it would request review under this policy. Label agreement alone
+does not establish a good customer experience. No production bot route has been
+connected. No real customer messages were transmitted.
 
 ## Required boundaries before customer rollout
 
