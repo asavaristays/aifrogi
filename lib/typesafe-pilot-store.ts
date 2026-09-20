@@ -11,6 +11,8 @@ export function validPilotPolicy(value: unknown, now = Date.now()): value is Pil
 }
 const controlAction = "TYPESAFE_PILOT_CONTROL";
 const attemptAction = "TYPESAFE_SHADOW_RESERVED";
+const reviewAction = "TYPESAFE_OBSERVATION_REVIEW";
+export type PilotReviewVerdict = "CORRECT" | "INCORRECT" | "UNRESOLVED";
 
 export async function setPilotPolicy(organizationId: string, policy: PilotPolicy, actor: string) {
   if (organizationId !== CASTLE_PILOT_TENANT) throw new Error("Only Castle Mandawa is authorized for this pilot");
@@ -51,12 +53,36 @@ export async function getPilotReport(organizationId = CASTLE_PILOT_TENANT) {
   const since = new Date(Date.now() - 7 * 86400_000);
   const control = await db.platformAuditLog.findFirst({ where: { organizationId, action: controlAction }, orderBy: [{ createdAt: "desc" }, { id: "desc" }] });
   const rows = await db.platformAuditLog.findMany({ where: { organizationId, action: "TYPESAFE_SHADOW_OBSERVED", createdAt: { gte: since } }, orderBy: { createdAt: "desc" }, take: 500, select: { id: true, createdAt: true, metadata: true } });
-  const samples = rows.map(row => ({ id: row.id, at: row.createdAt.toISOString(), ...(row.metadata as Record<string, unknown>) }));
+  const reviewRows = await db.platformAuditLog.findMany({ where: { organizationId, action: reviewAction, createdAt: { gte: since } }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 1000, select: { targetId: true, createdAt: true, actorEmail: true, metadata: true } });
+  const latestReviews = new Map<string, { verdict: PilotReviewVerdict; rationale: string; reviewer: string; reviewedAt: string }>();
+  for (const row of reviewRows) {
+    if (!row.targetId || latestReviews.has(row.targetId)) continue;
+    const metadata = row.metadata as Record<string, unknown>;
+    if (!["CORRECT", "INCORRECT", "UNRESOLVED"].includes(String(metadata.verdict))) continue;
+    latestReviews.set(row.targetId, { verdict: metadata.verdict as PilotReviewVerdict, rationale: String(metadata.rationale || ""), reviewer: row.actorEmail, reviewedAt: row.createdAt.toISOString() });
+  }
+  const refs = [...new Set(rows.map(row => String((row.metadata as Record<string, unknown>).reviewRef || "")).filter(Boolean))];
+  const evidenceRows = refs.length ? await db.sovereignAnswerEvidence.findMany({ where: { property: { organizationId }, sessionIdHash: { in: refs }, createdAt: { gte: since } }, orderBy: { createdAt: "desc" }, select: { sessionIdHash: true, question: true, answer: true, createdAt: true } }) : [];
+  const evidenceByRef = new Map<string, { question: string; answer: string }>();
+  for (const item of evidenceRows) if (!evidenceByRef.has(item.sessionIdHash)) evidenceByRef.set(item.sessionIdHash, { question: item.question, answer: item.answer });
+  const samples = rows.map(row => { const metadata = row.metadata as Record<string, unknown>; const ref = String(metadata.reviewRef || ""); return { id: row.id, at: row.createdAt.toISOString(), ...metadata, review: latestReviews.get(row.id) || null, evidence: ref ? evidenceByRef.get(ref) || null : null }; });
   const values = samples.map(s => s as Record<string, unknown>);
   const sum = (key: string) => values.reduce((n, s) => n + (typeof s[key] === "number" ? s[key] as number : 0), 0);
   const latency = values.map(s => Number(s.latencyMs) || 0).sort((a,b) => a-b);
-  return { policy: control?.metadata || null, active: validPilotPolicy(control?.metadata), samples, count: samples.length, unavailable: values.filter(s => s.status !== "OBSERVED").length,
+  const resolvedReviews = samples.filter(sample => sample.review?.verdict === "CORRECT" || sample.review?.verdict === "INCORRECT").length;
+  return { policy: control?.metadata || null, active: validPilotPolicy(control?.metadata), samples, count: samples.length, unavailable: values.filter(s => s.status !== "OBSERVED").length, reviewed: resolvedReviews,
     inputTokens: sum("inputTokens"), outputTokens: sum("outputTokens"), p95Ms: latency.length ? latency[Math.ceil(latency.length * .95)-1] : null,
     estimatedUsd: estimatedTypesafeUsd(sum("inputTokens")), priceSource: TYPESAFE_PRICE_SOURCE,
     costStatus: "Estimated USD at $0.042 / million input tokens; output free. Rate verified 2026-09-20. Excludes unreported usage, taxes and contract differences.", assessment: samples.length < 30 ? "INSUFFICIENT_LIVE_EVIDENCE" : "HUMAN_REVIEW_REQUIRED" };
+}
+
+export async function reviewPilotObservation(organizationId: string, observationId: string, verdict: PilotReviewVerdict, rationale: string, reviewer: string) {
+  if (organizationId !== CASTLE_PILOT_TENANT) throw new Error("Only Castle Mandawa is authorized for this pilot");
+  if (!["CORRECT", "INCORRECT", "UNRESOLVED"].includes(verdict)) throw new Error("Invalid review verdict");
+  const note = rationale.trim();
+  if (note.length < 12 || note.length > 1000) throw new Error("Review rationale must be 12–1000 characters");
+  const db = getDb(); if (!db) throw new Error("Database unavailable");
+  const observation = await db.platformAuditLog.findFirst({ where: { id: observationId, organizationId, action: "TYPESAFE_SHADOW_OBSERVED" }, select: { id: true } });
+  if (!observation) throw new Error("TypeSafe observation not found");
+  return db.platformAuditLog.create({ data: { organizationId, actorEmail: reviewer, actorRole: "ADMIN", action: reviewAction, targetType: "TypeSafeObservation", targetId: observationId, summary: `Human review recorded: ${verdict}`, metadata: { verdict, rationale: note, version: "typesafe-review-v1" } } });
 }

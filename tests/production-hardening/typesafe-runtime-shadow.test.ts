@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { observeTypesafeRuntime, projectTypesafeMessage, eligibleTypesafeMessage } from "../../lib/typesafe-runtime-shadow";
+import { observeTypesafeRuntime, projectTypesafeMessage, eligibleTypesafeMessage, routeTypesafeStaging } from "../../lib/typesafe-runtime-shadow";
 import { TYPESAFE_ACTION_INTENTS } from "../../lib/typesafe-action-gateway";
 
 test("pilot stops after twenty attempted requests, including provider failures", async () => {
@@ -57,5 +57,25 @@ test("durable budget denial or outage prevents transmission", async () => {
   const env = { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "shadow", TYPESAFE_API_KEY: "test", TYPESAFE_SHADOW_ORGANIZATIONS: "denied" };
   for (const reserve of [async () => false, async () => { throw Error("offline"); }]) {
     assert.equal(await observeTypesafeRuntime({ organizationId: "denied", message: "please book room", primaryIntent: "BUSINESS" }, env, async () => { assert.fail("must not transmit"); }, reserve), null);
+  }
+});
+
+test("staging canary requires every switch, exact tenant and durable reservation", async () => {
+  const base = { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "staging", TYPESAFE_STAGING_ROUTING_ENABLED: "true", TYPESAFE_API_KEY: "test", TYPESAFE_STAGING_ORGANIZATIONS: "tenant-a" };
+  const input = { organizationId: "tenant-a", message: "please call human manager", primaryIntent: "BUSINESS" };
+  for (const override of [{ TYPESAFE_MODE: "shadow" }, { TYPESAFE_STAGING_ROUTING_ENABLED: "false" }, { TYPESAFE_STAGING_ORGANIZATIONS: "tenant-b" }, { TYPESAFE_API_KEY: "" }]) {
+    assert.equal(await routeTypesafeStaging(input, { ...base, ...override }, async () => { assert.fail("must not transmit"); }, async () => true), null);
+  }
+  assert.equal(await routeTypesafeStaging(input, base, async () => { assert.fail("must not transmit"); }, async () => false), null);
+});
+
+test("staging canary can add only high-confidence human handover", async () => {
+  const env = { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "staging", TYPESAFE_STAGING_ROUTING_ENABLED: "true", TYPESAFE_API_KEY: "test", TYPESAFE_STAGING_ORGANIZATIONS: "tenant-a" };
+  const input = { organizationId: "tenant-a", message: "please call human manager", primaryIntent: "BUSINESS" };
+  const provider = (intent: typeof TYPESAFE_ACTION_INTENTS[number], confidence: number): typeof fetch => async () => new Response(JSON.stringify({ answers: { action_intent: { type: "choice", choice: intent, confidence, probabilities: Object.fromEntries(TYPESAFE_ACTION_INTENTS.map(key => [key, key === intent ? 1 : 0])) } } }));
+  assert.equal((await routeTypesafeStaging(input, env, provider("HUMAN_HANDOVER", .95), async () => true))?.route, "HUMAN_HANDOVER");
+  assert.equal((await routeTypesafeStaging(input, env, provider("HUMAN_HANDOVER", .5), async () => true))?.route, "KEEP_EXISTING");
+  for (const intent of TYPESAFE_ACTION_INTENTS.filter(value => value !== "HUMAN_HANDOVER")) {
+    assert.equal((await routeTypesafeStaging(input, env, provider(intent, .99), async () => true))?.route, "KEEP_EXISTING", intent);
   }
 });

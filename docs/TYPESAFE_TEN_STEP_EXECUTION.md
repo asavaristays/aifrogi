@@ -5,14 +5,14 @@ Scope: Castle Mandawa shadow-only. No TypeSafe payment/booking authority, no oth
 | Step | Process | Evidence / current state |
 |---|---|---|
 | 1 | Finish pilot | Scheduled expiry 2026-09-21 08:46:35 UTC. Initial inspection: zero live observations. Await expiry/traffic, do not label complete. |
-| 2 | Review decisions | Dashboard exposes primary vs provider labels. Raw customer messages are intentionally absent; agreement is not correctness. Synthetic bank expectations are explicit. Human adjudication remains required. |
+| 2 | Review decisions | New observations carry an internal hashed session reference that is never sent to TypeSafe. `/admin/typesafe` resolves that reference against existing Sovereign evidence, shows the customer question and served answer only to Super Admins, and records append-only CORRECT / INCORRECT / UNRESOLVED reviews with reviewer identity and rationale. Legacy observations without linkage remain explicitly unreviewable. |
 | 3 | Operational impact | Dashboard measures observed failures, input/output tokens and p95 added latency. Published direct-provider price verified: USD 0.042/million input; output free. Estimate excludes missing usage/taxes; no live performance claim with zero samples. |
 | 4 | Privacy | Skip identifiers/sensitive markers/non-ASCII/oversized messages entirely; fixed English vocabulary for remaining messages. Tested exclusions. This is not guaranteed anonymization or multilingual support. |
 | 5 | Durable bounds | Tenant-scoped PostgreSQL audit reservations with advisory transaction lock, maximum 20/day, 10-second spacing, DB-backed expiry/disable and fail-closed outages. No schema migration. Conservative legacy counts included. |
 | 6 | Evaluation bank | 40 fictional labelled classifier questions including Hindi/Hinglish, typos, negation, unsafe requests; separate 40-case outbound-policy suite. Unsupported language is not thereby enabled in production. |
-| 7 | Acceptance | Proposed conservative thresholds below; evaluate before considering routing. Insufficient evidence blocks promotion. |
-| 8 | Admin visibility | /admin/typesafe: authenticated Super Admin status, expiry, limits, token/cost/latency report, immediate DB-backed disable. Activation remains operator-only; no UI routing activation. |
-| 9 | Staging routing | NOT enabled: depends on reviewed evidence and acceptance. Existing tests verify unchanged primary plan, failure fallback and tenant exclusions. These are not proof of a routing canary. |
+| 7 | Acceptance | Executable gate in `lib/typesafe-promotion-gates.ts`, verified with `npm run verify:typesafe:promotion -- <reviewed-evidence.json>`. Every quality, privacy, availability, latency, isolation and operational-control gate must pass; incomplete evidence fails closed. |
+| 8 | Admin visibility | /admin/typesafe: authenticated Super Admin status, expiry, limits, token/cost/latency report, immediate DB-backed disable, and the complete promotion-gate result. Activation remains operator-only; no UI routing activation. |
+| 9 | Staging routing | Implemented but OFF: requires `TYPESAFE_MODE=staging`, a separate routing switch, exact staging tenant allowlist, API key and active DB-backed pilot policy. It can only add an existing human-handover route at confidence >= 0.82; all other intents retain the governed primary path. Activation still depends on reviewed evidence and acceptance. |
 | 10 | Production routing canary | BLOCKED until steps 1–9 pass. Shadow deployment is not a routing release. |
 
 ## Acceptance before routing (not current achievements)

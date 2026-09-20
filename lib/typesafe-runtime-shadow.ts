@@ -25,7 +25,7 @@ export function eligibleTypesafeMessage(message: string) {
 }
 
 const limits = new Map<string, { date: string; attempts: number; busy: boolean }>();
-export async function observeTypesafeRuntime(input: { organizationId: string; message: string; primaryIntent: string },
+export async function observeTypesafeRuntime(input: { organizationId: string; message: string; primaryIntent: string; reviewRef?: string },
   env: Record<string, string | undefined> = process.env, fetchImpl?: typeof fetch,
   reserve: (organizationId: string) => Promise<boolean> = reservePilotAttempt) {
   if (env.TYPESAFE_ACTION_GATEWAY_ENABLED !== "true" || env.TYPESAFE_MODE !== "shadow" || !env.TYPESAFE_API_KEY) return null;
@@ -46,6 +46,33 @@ export async function observeTypesafeRuntime(input: { organizationId: string; me
     // No question, visitor/session IDs, business name or credentials in telemetry.
     return { version: "typesafe-shadow-v2", status: result.enabled ? "OBSERVED" : "UNAVAILABLE", primaryIntent: input.primaryIntent,
       intent: result.intent, confidence: result.confidence, recommendation: result.recommendation || "KEEP_EXISTING",
-      latencyMs: Date.now() - start, inputTokens: result.usage?.inputTokens || 0, outputTokens: result.usage?.outputTokens || 0 };
+      latencyMs: Date.now() - start, inputTokens: result.usage?.inputTokens || 0, outputTokens: result.usage?.outputTokens || 0,
+      ...(input.reviewRef ? { reviewRef: input.reviewRef } : {}) };
   } finally { budget.busy = false; }
+}
+
+/**
+ * Narrow staging canary. The only behavioral route it may add is an explicit
+ * human-handover request. Every other result preserves the governed primary path.
+ */
+export async function routeTypesafeStaging(input: { organizationId: string; message: string; primaryIntent: string; reviewRef?: string },
+  env: Record<string, string | undefined> = process.env, fetchImpl?: typeof fetch,
+  reserve: (organizationId: string) => Promise<boolean> = reservePilotAttempt) {
+  if (env.TYPESAFE_ACTION_GATEWAY_ENABLED !== "true" || env.TYPESAFE_MODE !== "staging"
+    || env.TYPESAFE_STAGING_ROUTING_ENABLED !== "true" || !env.TYPESAFE_API_KEY) return null;
+  const allowed = (env.TYPESAFE_STAGING_ORGANIZATIONS || "").split(",").map(value => value.trim()).filter(Boolean);
+  if (!allowed.includes(input.organizationId) || !eligibleTypesafeMessage(input.message)) return null;
+  const projected = projectTypesafeMessage(input.message);
+  if (projected.split(" ").length < 3 || !await reserve(input.organizationId).catch(() => false)) return null;
+  const start = Date.now();
+  const result = await assessTypesafeActionIntent({ question: projected, businessName: "Hospitality business", enabled: true, apiKey: env.TYPESAFE_API_KEY, fetchImpl });
+  const humanRoute = result.enabled && result.intent === "HUMAN_HANDOVER" && result.mustRequireHuman && result.confidence >= 0.82;
+  return {
+    version: "typesafe-staging-v1", status: result.enabled ? "OBSERVED" : "UNAVAILABLE",
+    primaryIntent: input.primaryIntent, intent: result.intent, confidence: result.confidence,
+    route: humanRoute ? "HUMAN_HANDOVER" as const : "KEEP_EXISTING" as const,
+    recommendation: result.recommendation || "KEEP_EXISTING", latencyMs: Date.now() - start,
+    inputTokens: result.usage?.inputTokens || 0, outputTokens: result.usage?.outputTokens || 0,
+    ...(input.reviewRef ? { reviewRef: input.reviewRef } : {})
+  };
 }
