@@ -147,29 +147,33 @@ RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
-  IF TG_TABLE_NAME = 'ReadinessScan' AND NOT EXISTS (
-    SELECT 1 FROM "Property" p WHERE p.id = NEW."propertyId" AND p."organizationId" = NEW."organizationId"
-  ) THEN RAISE EXCEPTION 'ReadinessScan property must belong to its organization'; END IF;
-
-  IF TG_TABLE_NAME = 'ReadinessEvidence' AND NOT EXISTS (
-    SELECT 1 FROM "ReadinessScan" s WHERE s.id = NEW."scanId" AND s."organizationId" = NEW."organizationId"
-  ) THEN RAISE EXCEPTION 'ReadinessEvidence scan must belong to its organization'; END IF;
-
-  IF TG_TABLE_NAME = 'ReadinessIssue' AND NOT EXISTS (
-    SELECT 1 FROM "ReadinessScan" s WHERE s.id = NEW."scanId" AND s."organizationId" = NEW."organizationId"
-  ) THEN RAISE EXCEPTION 'ReadinessIssue scan must belong to its organization'; END IF;
-
-  IF TG_TABLE_NAME = 'ReadinessWorkItem' AND (
-    NOT EXISTS (SELECT 1 FROM "Property" p WHERE p.id = NEW."propertyId" AND p."organizationId" = NEW."organizationId")
-    OR NOT EXISTS (SELECT 1 FROM "ReadinessIssue" i WHERE i.id = NEW."issueId" AND i."organizationId" = NEW."organizationId")
-  ) THEN RAISE EXCEPTION 'ReadinessWorkItem parents must belong to its organization'; END IF;
-
-  IF TG_TABLE_NAME = 'ReadinessVerification' AND (
-    NOT EXISTS (SELECT 1 FROM "Property" p WHERE p.id = NEW."propertyId" AND p."organizationId" = NEW."organizationId")
-    OR NOT EXISTS (SELECT 1 FROM "ReadinessWorkItem" w WHERE w.id = NEW."workItemId" AND w."organizationId" = NEW."organizationId")
-    OR NOT EXISTS (SELECT 1 FROM "ReadinessScan" b WHERE b.id = NEW."beforeScanId" AND b."organizationId" = NEW."organizationId")
-    OR NOT EXISTS (SELECT 1 FROM "ReadinessScan" a WHERE a.id = NEW."afterScanId" AND a."organizationId" = NEW."organizationId")
-  ) THEN RAISE EXCEPTION 'ReadinessVerification parents must belong to its organization'; END IF;
+  -- Use mutually exclusive branches. PostgreSQL resolves NEW fields while
+  -- compiling an expression, even where an AND condition would be false.
+  IF TG_TABLE_NAME = 'ReadinessScan' THEN
+    IF NOT EXISTS (SELECT 1 FROM "Property" p WHERE p.id = NEW."propertyId" AND p."organizationId" = NEW."organizationId") THEN
+      RAISE EXCEPTION 'ReadinessScan property must belong to its organization';
+    END IF;
+  ELSIF TG_TABLE_NAME = 'ReadinessEvidence' THEN
+    IF NOT EXISTS (SELECT 1 FROM "ReadinessScan" s WHERE s.id = NEW."scanId" AND s."organizationId" = NEW."organizationId") THEN
+      RAISE EXCEPTION 'ReadinessEvidence scan must belong to its organization';
+    END IF;
+  ELSIF TG_TABLE_NAME = 'ReadinessIssue' THEN
+    IF NOT EXISTS (SELECT 1 FROM "ReadinessScan" s WHERE s.id = NEW."scanId" AND s."organizationId" = NEW."organizationId") THEN
+      RAISE EXCEPTION 'ReadinessIssue scan must belong to its organization';
+    END IF;
+  ELSIF TG_TABLE_NAME = 'ReadinessWorkItem' THEN
+    IF NOT EXISTS (SELECT 1 FROM "Property" p WHERE p.id = NEW."propertyId" AND p."organizationId" = NEW."organizationId")
+      OR NOT EXISTS (SELECT 1 FROM "ReadinessIssue" i WHERE i.id = NEW."issueId" AND i."organizationId" = NEW."organizationId") THEN
+      RAISE EXCEPTION 'ReadinessWorkItem parents must belong to its organization';
+    END IF;
+  ELSIF TG_TABLE_NAME = 'ReadinessVerification' THEN
+    IF NOT EXISTS (SELECT 1 FROM "Property" p WHERE p.id = NEW."propertyId" AND p."organizationId" = NEW."organizationId")
+      OR NOT EXISTS (SELECT 1 FROM "ReadinessWorkItem" w WHERE w.id = NEW."workItemId" AND w."organizationId" = NEW."organizationId")
+      OR NOT EXISTS (SELECT 1 FROM "ReadinessScan" b WHERE b.id = NEW."beforeScanId" AND b."organizationId" = NEW."organizationId")
+      OR NOT EXISTS (SELECT 1 FROM "ReadinessScan" a WHERE a.id = NEW."afterScanId" AND a."organizationId" = NEW."organizationId") THEN
+      RAISE EXCEPTION 'ReadinessVerification parents must belong to its organization';
+    END IF;
+  END IF;
   RETURN NEW;
 END;
 $$;

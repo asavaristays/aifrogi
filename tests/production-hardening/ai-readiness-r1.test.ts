@@ -54,6 +54,8 @@ test("R1 scan foundation is durable, tenant-scoped and cannot become a public cr
   assert.match(migration, /ReadinessScan property must belong to its organization/);
   assert.match(migration, /prevent_readiness_evidence_update/);
   assert.match(migration, /Readiness evidence is immutable/);
+  assert.match(migration, /ELSIF TG_TABLE_NAME = 'ReadinessEvidence'/);
+  assert.doesNotMatch(migration, /TG_TABLE_NAME = 'ReadinessScan' AND NOT EXISTS/);
   assert.match(queue, /withTenantDatabaseContext/);
   assert.match(queue, /withSystemDatabaseIdentity/);
   assert.match(queue, /property\.findFirst\(\{ where: \{ id: propertyId, organizationId \}/);
