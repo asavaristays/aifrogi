@@ -4,7 +4,8 @@ const required = [
   "Organization","Property","KnowledgeDocument","KnowledgeEntry","Lead","Conversation","Message",
   "BotProfile","BotConnectorConfiguration","BotConnectorCredential","AgentGatewayClient","OrganizationMember","Subscription",
   "BillingInvoice","UsageRecord","SupportTicket","AppointmentTenant","CommerceTenant"
-  ,"AppointmentBooking","AppointmentPayment","CommerceOrder","CommercePayment","CommerceOrderItem"
+  ,"AppointmentBooking","AppointmentPayment","CommerceOrder","CommercePayment","CommerceOrderItem",
+  "ReadinessScan","ReadinessEvidence","ReadinessIssue","ReadinessWorkItem","ReadinessVerification"
 ];
 const client = new Client({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 5000 });
 await client.connect();

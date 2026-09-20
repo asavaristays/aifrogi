@@ -106,41 +106,220 @@ enum BotOperatingMode {
   HUMAN_APPROVAL
 }
 
+// AI Readiness is an internal, evidence-led product line. These enums are
+// deliberately separate from bot lifecycle state so a readiness observation
+// can never make a bot live or change customer-facing behaviour.
+enum ReadinessScanStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum ReadinessEvidenceStatus {
+  PASS
+  FAIL
+  INSUFFICIENT_EVIDENCE
+  NOT_APPLICABLE
+}
+
+enum ReadinessIssueStatus {
+  DETECTED
+  REVIEW_REQUIRED
+  APPROVED
+  DECLINED
+  NOT_APPLICABLE
+  IN_PROGRESS
+  IMPLEMENTED
+  VERIFIED
+}
+
+enum ReadinessDeliveryRoute {
+  AIFROGI_MANAGED
+  AGENCY_HANDOFF
+  CLIENT_GUIDANCE
+}
+
 model Property {
-  id                  String               @id @default(cuid())
-  organizationId      String?
-  organization        Organization?        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  name                String
-  slug                String               @unique
-  city                String?
-  state               String?
-  timezone            String               @default("Asia/Kolkata")
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  leads               Lead[]
-  metrics             MetricDaily[]
-  campaigns           Campaign[]
-  automationJobs      AutomationJob[]
-  assets              Asset[]
-  whatsappIntegration WhatsAppIntegration?
-  appointmentTenants  AppointmentTenant[]
-  commerceTenants     CommerceTenant[]
-  knowledgeDocuments  KnowledgeDocument[]
-  knowledgeEntries    KnowledgeEntry[]
-  knowledgeGaps       KnowledgeGap[]
-  knowledgePreviews   KnowledgePreview[]
-  knowledgeFlags      KnowledgeAnswerFlag[]
-  channelConnections  ChannelConnection[]
-  participants        Participant[]
-  conversations       Conversation[]
-  neutralMessages     Message[]
-  aiOperations        AiOperation[]
-  websiteSessions     WebsiteVisitorSession[]
-  sovereignEvidence   SovereignAnswerEvidence[]
-  answerFeedback      SovereignAnswerFeedback[]
-  sovereignReplayCases SovereignReplayCase[]
+  id                     String                    @id @default(cuid())
+  organizationId         String?
+  organization           Organization?             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name                   String
+  slug                   String                    @unique
+  city                   String?
+  state                  String?
+  timezone               String                    @default("Asia/Kolkata")
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+  leads                  Lead[]
+  metrics                MetricDaily[]
+  campaigns              Campaign[]
+  automationJobs         AutomationJob[]
+  assets                 Asset[]
+  whatsappIntegration    WhatsAppIntegration?
+  appointmentTenants     AppointmentTenant[]
+  commerceTenants        CommerceTenant[]
+  knowledgeDocuments     KnowledgeDocument[]
+  knowledgeEntries       KnowledgeEntry[]
+  knowledgeGaps          KnowledgeGap[]
+  knowledgePreviews      KnowledgePreview[]
+  knowledgeFlags         KnowledgeAnswerFlag[]
+  channelConnections     ChannelConnection[]
+  participants           Participant[]
+  conversations          Conversation[]
+  neutralMessages        Message[]
+  aiOperations           AiOperation[]
+  websiteSessions        WebsiteVisitorSession[]
+  sovereignEvidence      SovereignAnswerEvidence[]
+  answerFeedback         SovereignAnswerFeedback[]
+  sovereignReplayCases   SovereignReplayCase[]
+  readinessScans         ReadinessScan[]
+  readinessWorkItems     ReadinessWorkItem[]
+  readinessVerifications ReadinessVerification[]
 
   @@index([organizationId])
+}
+
+/**
+ * Durable, internal-only scan request and execution record. A scan is never
+ * created by a public bot route; its state is advanced by a controlled worker.
+ */
+model ReadinessScan {
+  id                 String                  @id @default(cuid())
+  organizationId     String
+  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  propertyId         String
+  property           Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  rubricVersion      String
+  sourceUrl          String
+  status             ReadinessScanStatus     @default(QUEUED)
+  idempotencyKey     String                  @unique
+  requestPayload     Json?
+  result             Json?
+  requestedBy        String
+  attemptCount       Int                     @default(0)
+  maxAttempts        Int                     @default(3)
+  nextRunAt          DateTime                @default(now())
+  lockedAt           DateTime?
+  lockedBy           String?
+  leaseExpiresAt     DateTime?
+  startedAt          DateTime?
+  completedAt        DateTime?
+  canceledAt         DateTime?
+  canceledBy         String?
+  cancellationReason String?                 @db.Text
+  lastError          String?                 @db.Text
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  evidence           ReadinessEvidence[]
+  issues             ReadinessIssue[]
+  verificationAfter  ReadinessVerification[] @relation("ReadinessVerificationAfter")
+  verificationBefore ReadinessVerification[] @relation("ReadinessVerificationBefore")
+
+  @@index([organizationId, status, nextRunAt])
+  @@index([propertyId, createdAt])
+  @@index([status, leaseExpiresAt])
+}
+
+/**
+ * Immutable observation captured by one scan/check; scan text is evidence, never tenant authority.
+ */
+model ReadinessEvidence {
+  id                  String                  @id @default(cuid())
+  organizationId      String
+  organization        Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  scanId              String
+  scan                ReadinessScan           @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  pillar              String
+  checkKey            String
+  status              ReadinessEvidenceStatus
+  observedValue       Json?
+  canonicalComparison Json?
+  sourceUrl           String?
+  capturedAt          DateTime                @default(now())
+  evidenceHash        String
+  createdAt           DateTime                @default(now())
+  issue               ReadinessIssue?
+
+  @@unique([scanId, checkKey])
+  @@index([organizationId, pillar, status])
+}
+
+model ReadinessIssue {
+  id              String               @id @default(cuid())
+  organizationId  String
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  scanId          String
+  scan            ReadinessScan        @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  evidenceId      String?              @unique
+  evidence        ReadinessEvidence?   @relation(fields: [evidenceId], references: [id], onDelete: SetNull)
+  pillar          String
+  checkKey        String
+  severity        String
+  status          ReadinessIssueStatus @default(DETECTED)
+  summary         String               @db.Text
+  proposedRemedy  String?              @db.Text
+  remediationType String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  decisionReason  String?              @db.Text
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  workItems       ReadinessWorkItem[]
+
+  @@index([organizationId, status, severity])
+  @@index([scanId, pillar])
+}
+
+model ReadinessWorkItem {
+  id                  String                 @id @default(cuid())
+  organizationId      String
+  organization        Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  propertyId          String
+  property            Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  issueId             String
+  issue               ReadinessIssue         @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  deliveryRoute       ReadinessDeliveryRoute
+  owner               String
+  dueAt               DateTime?
+  acceptanceCriterion String                 @db.Text
+  status              String                 @default("OPEN")
+  approvedBy          String?
+  approvedAt          DateTime?
+  completedBy         String?
+  completedAt         DateTime?
+  completionRecord    Json?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  verification        ReadinessVerification?
+
+  @@index([organizationId, status, dueAt])
+  @@index([propertyId, createdAt])
+  @@index([issueId])
+}
+
+model ReadinessVerification {
+  id             String            @id @default(cuid())
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  propertyId     String
+  property       Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  workItemId     String            @unique
+  workItem       ReadinessWorkItem @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+  beforeScanId   String
+  beforeScan     ReadinessScan     @relation("ReadinessVerificationBefore", fields: [beforeScanId], references: [id], onDelete: Restrict)
+  afterScanId    String
+  afterScan      ReadinessScan     @relation("ReadinessVerificationAfter", fields: [afterScanId], references: [id], onDelete: Restrict)
+  rubricVersion  String
+  status         String
+  evidenceRefs   Json
+  verifiedBy     String
+  verifiedAt     DateTime          @default(now())
+  createdAt      DateTime          @default(now())
+
+  @@index([organizationId, verifiedAt])
+  @@index([propertyId, rubricVersion])
 }
 
 model KnowledgeDocument {
@@ -165,48 +344,48 @@ model KnowledgeDocument {
 }
 
 model KnowledgeEntry {
-  id              String             @id @default(cuid())
-  propertyId      String
-  property        Property           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  documentId      String?
-  document        KnowledgeDocument? @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  question        String             @db.Text
-  answer          String             @db.Text
-  category        String             @default("General")
-  status          String             @default("DRAFT")
-  conflictSummary String?            @db.Text
-  claimKey        String?
-  claimType       String             @default("FACT")
-  valueType       String             @default("TEXT")
-  currency        String?
-  effectiveAt     DateTime?
-  expiresAt       DateTime?
-  refreshDays     Int                @default(90)
-  reliability     String             @default("CLIENT_CONFIRMED")
-  authorityLevel  String             @default("CLIENT_APPROVED_STRUCTURED")
-  version         Int                @default(1)
-  supersedesId    String?
-  supersedes      KnowledgeEntry?    @relation("KnowledgeSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
-  supersededBy    KnowledgeEntry[]   @relation("KnowledgeSupersession")
-  validationStatus String            @default("PENDING")
-  validationErrors String[]          @default([])
-  conflictStatus  String             @default("CLEAR")
-  fieldApprovedBy String?
-  fieldApprovedAt DateTime?
+  id                String                @id @default(cuid())
+  propertyId        String
+  property          Property              @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  documentId        String?
+  document          KnowledgeDocument?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  question          String                @db.Text
+  answer            String                @db.Text
+  category          String                @default("General")
+  status            String                @default("DRAFT")
+  conflictSummary   String?               @db.Text
+  claimKey          String?
+  claimType         String                @default("FACT")
+  valueType         String                @default("TEXT")
+  currency          String?
+  effectiveAt       DateTime?
+  expiresAt         DateTime?
+  refreshDays       Int                   @default(90)
+  reliability       String                @default("CLIENT_CONFIRMED")
+  authorityLevel    String                @default("CLIENT_APPROVED_STRUCTURED")
+  version           Int                   @default(1)
+  supersedesId      String?
+  supersedes        KnowledgeEntry?       @relation("KnowledgeSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
+  supersededBy      KnowledgeEntry[]      @relation("KnowledgeSupersession")
+  validationStatus  String                @default("PENDING")
+  validationErrors  String[]              @default([])
+  conflictStatus    String                @default("CLEAR")
+  fieldApprovedBy   String?
+  fieldApprovedAt   DateTime?
   previewApprovedBy String?
   previewApprovedAt DateTime?
-  publishedAt     DateTime?
-  pausedAt        DateTime?
-  pauseReason     String?
-  lastConfirmedAt DateTime?
-  createdBy       String
-  approvedBy      String?
-  approvedAt      DateTime?
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  resolvedGaps    KnowledgeGap[]
-  previews        KnowledgePreview[]
-  answerFlags     KnowledgeAnswerFlag[]
+  publishedAt       DateTime?
+  pausedAt          DateTime?
+  pauseReason       String?
+  lastConfirmedAt   DateTime?
+  createdBy         String
+  approvedBy        String?
+  approvedAt        DateTime?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  resolvedGaps      KnowledgeGap[]
+  previews          KnowledgePreview[]
+  answerFlags       KnowledgeAnswerFlag[]
 
   @@index([propertyId, status])
   @@index([propertyId, claimKey, version])
@@ -236,25 +415,25 @@ model KnowledgePreview {
 }
 
 model KnowledgeAnswerFlag {
-  id              String          @id @default(cuid())
-  propertyId      String
-  property        Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  entryId         String?
-  entry           KnowledgeEntry? @relation(fields: [entryId], references: [id], onDelete: SetNull)
-  evidenceId      String?
-  reporterType    String          @default("CLIENT_ADMIN")
-  reporterId      String?
-  reason          String          @db.Text
-  status          String          @default("OPEN")
+  id               String          @id @default(cuid())
+  propertyId       String
+  property         Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  entryId          String?
+  entry            KnowledgeEntry? @relation(fields: [entryId], references: [id], onDelete: SetNull)
+  evidenceId       String?
+  reporterType     String          @default("CLIENT_ADMIN")
+  reporterId       String?
+  reason           String          @db.Text
+  status           String          @default("OPEN")
   acknowledgeDueAt DateTime
-  resolveDueAt    DateTime
-  acknowledgedAt DateTime?
-  acknowledgedBy String?
-  resolvedAt      DateTime?
-  resolvedBy      String?
-  resolution      String?         @db.Text
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  resolveDueAt     DateTime
+  acknowledgedAt   DateTime?
+  acknowledgedBy   String?
+  resolvedAt       DateTime?
+  resolvedBy       String?
+  resolution       String?         @db.Text
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
   @@index([propertyId, status, resolveDueAt])
   @@index([entryId, status])
@@ -280,48 +459,53 @@ model KnowledgeGap {
 }
 
 model Organization {
-  id                   String                    @id @default(cuid())
-  name                 String
-  slug                 String                    @unique
-  industry             String?
-  website              String?
-  country              String                    @default("India")
-  timezone             String                    @default("Asia/Kolkata")
-  gstNumber            String?
-  businessAddress      String?
-  ownerName            String
-  ownerEmail           String
-  ownerMobile          String?
-  publicPhone          String?
-  publicEmail          String?
-  publicAddress        String?
-  publicBusinessHours  String?
-  status               String                    @default("DRAFT")
-  plan                 String                    @default("TRIAL")
-  isDemo               Boolean                   @default(false)
-  demoKey              String?                   @unique
-  createdAt            DateTime                  @default(now())
-  updatedAt            DateTime                  @updatedAt
-  properties           Property[]
-  members              OrganizationMember[]
-  onboarding           OnboardingProfile?
-  onboardingCredential OnboardingCredential?
-  botConfiguration     WhatsAppBotConfiguration?
-  botProfile           BotProfile?
-  botConnectors        BotConnectorConfiguration[]
-  agentGatewayClients  AgentGatewayClient[]
-  demoSandbox          DemoSandbox?
-  documents            OnboardingDocument[]
-  activities           OnboardingActivity[]
-  supportTickets       SupportTicket[]
-  subscription         Subscription?
-  invoices             BillingInvoice[]
-  billingAddons        BillingAddon[]
-  usageRecords         UsageRecord[]
-  aiCreditTransactions AiCreditTransaction[]
-  incidents            PlatformIncident[]
-  auditLogs            PlatformAuditLog[]
-  userSessions         UserSession[]
+  id                     String                      @id @default(cuid())
+  name                   String
+  slug                   String                      @unique
+  industry               String?
+  website                String?
+  country                String                      @default("India")
+  timezone               String                      @default("Asia/Kolkata")
+  gstNumber              String?
+  businessAddress        String?
+  ownerName              String
+  ownerEmail             String
+  ownerMobile            String?
+  publicPhone            String?
+  publicEmail            String?
+  publicAddress          String?
+  publicBusinessHours    String?
+  status                 String                      @default("DRAFT")
+  plan                   String                      @default("TRIAL")
+  isDemo                 Boolean                     @default(false)
+  demoKey                String?                     @unique
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  properties             Property[]
+  members                OrganizationMember[]
+  onboarding             OnboardingProfile?
+  onboardingCredential   OnboardingCredential?
+  botConfiguration       WhatsAppBotConfiguration?
+  botProfile             BotProfile?
+  botConnectors          BotConnectorConfiguration[]
+  agentGatewayClients    AgentGatewayClient[]
+  readinessScans         ReadinessScan[]
+  readinessEvidence      ReadinessEvidence[]
+  readinessIssues        ReadinessIssue[]
+  readinessWorkItems     ReadinessWorkItem[]
+  readinessVerifications ReadinessVerification[]
+  demoSandbox            DemoSandbox?
+  documents              OnboardingDocument[]
+  activities             OnboardingActivity[]
+  supportTickets         SupportTicket[]
+  subscription           Subscription?
+  invoices               BillingInvoice[]
+  billingAddons          BillingAddon[]
+  usageRecords           UsageRecord[]
+  aiCreditTransactions   AiCreditTransaction[]
+  incidents              PlatformIncident[]
+  auditLogs              PlatformAuditLog[]
+  userSessions           UserSession[]
 
   @@index([ownerEmail])
   @@index([status])
@@ -331,31 +515,31 @@ model DemoSandbox {
   id              String               @id @default(cuid())
   organizationId  String               @unique
   organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  category         BotCategory
-  fixtureVersion   String               @default("1.0")
-  fixture           Json
-  status            String               @default("READY")
-  resetCount        Int                  @default(0)
-  lastResetAt       DateTime?
-  lastResetBy       String?
-  createdAt         DateTime             @default(now())
-  updatedAt         DateTime             @updatedAt
-  connectorEvents   DemoConnectorEvent[]
+  category        BotCategory
+  fixtureVersion  String               @default("1.0")
+  fixture         Json
+  status          String               @default("READY")
+  resetCount      Int                  @default(0)
+  lastResetAt     DateTime?
+  lastResetBy     String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  connectorEvents DemoConnectorEvent[]
 
   @@index([category, status])
 }
 
 model DemoConnectorEvent {
-  id              String      @id @default(cuid())
-  demoSandboxId   String
-  demoSandbox     DemoSandbox @relation(fields: [demoSandboxId], references: [id], onDelete: Cascade)
-  connectorKey    String
-  operation       String
-  idempotencyKey  String
-  status          String
-  request         Json
-  response        Json
-  createdAt       DateTime    @default(now())
+  id             String      @id @default(cuid())
+  demoSandboxId  String
+  demoSandbox    DemoSandbox @relation(fields: [demoSandboxId], references: [id], onDelete: Cascade)
+  connectorKey   String
+  operation      String
+  idempotencyKey String
+  status         String
+  request        Json
+  response       Json
+  createdAt      DateTime    @default(now())
 
   @@unique([demoSandboxId, idempotencyKey])
   @@index([demoSandboxId, createdAt])
@@ -401,65 +585,65 @@ model WhatsAppBotConfiguration {
 }
 
 model BotProfile {
-  id                   String           @id @default(cuid())
-  organizationId       String           @unique
-  organization         Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  category             BotCategory      @default(BUSINESS_AI)
-  personaPackVersion   String           @default("1.0")
-  operatingMode        BotOperatingMode @default(LEAD_CAPTURE)
-  channels             ChannelKind[]    @default([WEBSITE])
-  capabilities         String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"])
-  humanHandoffEnabled  Boolean          @default(true)
-  actionApprovalNeeded Boolean          @default(true)
-  personaName          String?
-  businessObjective    String?          @db.Text
-  tone                  String           @default("Professional, clear and helpful")
-  languages             String[]         @default(["English"])
-  prohibitedClaims      String[]         @default([])
-  escalationTriggers    String[]         @default([])
-  responseSlaMinutes    Int              @default(60)
-  reminderPercent       Int              @default(50)
-  fallbackEnabled       Boolean          @default(false)
-  safeFallbackMessage   String?          @db.Text
-  kbGateVersion         String?
-  kbCoverageMinimum     Int              @default(80)
-  status               String           @default("DRAFT")
-  installationKey      String?          @unique
+  id                     String           @id @default(cuid())
+  organizationId         String           @unique
+  organization           Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category               BotCategory      @default(BUSINESS_AI)
+  personaPackVersion     String           @default("1.0")
+  operatingMode          BotOperatingMode @default(LEAD_CAPTURE)
+  channels               ChannelKind[]    @default([WEBSITE])
+  capabilities           String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"])
+  humanHandoffEnabled    Boolean          @default(true)
+  actionApprovalNeeded   Boolean          @default(true)
+  personaName            String?
+  businessObjective      String?          @db.Text
+  tone                   String           @default("Professional, clear and helpful")
+  languages              String[]         @default(["English"])
+  prohibitedClaims       String[]         @default([])
+  escalationTriggers     String[]         @default([])
+  responseSlaMinutes     Int              @default(60)
+  reminderPercent        Int              @default(50)
+  fallbackEnabled        Boolean          @default(false)
+  safeFallbackMessage    String?          @db.Text
+  kbGateVersion          String?
+  kbCoverageMinimum      Int              @default(80)
+  status                 String           @default("DRAFT")
+  installationKey        String?          @unique
   installationDetectedAt DateTime?
-  liveAt               DateTime?
-  pausedAt             DateTime?
-  deletedAt            DateTime?
-  lifecycleUpdatedBy   String?
-  configuredBy         String?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  liveAt                 DateTime?
+  pausedAt               DateTime?
+  deletedAt              DateTime?
+  lifecycleUpdatedBy     String?
+  configuredBy           String?
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
 }
 
 model BotConnectorConfiguration {
-  id                  String       @id @default(cuid())
+  id                  String                  @id @default(cuid())
   organizationId      String
-  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization        Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   connectorKey        String
   name                String
   provider            String?
   requiredFor         String
-  required            Boolean      @default(false)
-  enabled             Boolean      @default(false)
-  lifecycle           String       @default("REQUESTED")
-  readOperations      String[]     @default([])
-  writeOperations     String[]     @default([])
-  unavailableBehavior String       @db.Text
+  required            Boolean                 @default(false)
+  enabled             Boolean                 @default(false)
+  lifecycle           String                  @default("REQUESTED")
+  readOperations      String[]                @default([])
+  writeOperations     String[]                @default([])
+  unavailableBehavior String                  @db.Text
   lastVerifiedAt      DateTime?
   apiBaseUrl          String?
-  authType            String       @default("BEARER")
+  authType            String                  @default("BEARER")
   operationMapping    Json?
   lastHealthStatus    String?
   lastHealthCode      Int?
   lastHealthAt        DateTime?
   lastError           String?
   configuredBy        String?
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
   credential          BotConnectorCredential?
 
   @@unique([organizationId, connectorKey])
@@ -472,8 +656,8 @@ model BotConnectorCredential {
   connectorId     String                    @unique
   connector       BotConnectorConfiguration @relation(fields: [connectorId], references: [id], onDelete: Cascade)
   secretEncrypted String
-  keyVersion      Int                     @default(1)
-  rotatedAt       DateTime                @default(now())
+  keyVersion      Int                       @default(1)
+  rotatedAt       DateTime                  @default(now())
   expiresAt       DateTime?
   revokedAt       DateTime?
   revokedBy       String?
@@ -530,48 +714,48 @@ model OrganizationMember {
 }
 
 model OnboardingProfile {
-  id                      String       @id @default(cuid())
-  organizationId          String       @unique
-  organization            Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  currentStep             Int          @default(1)
-  progressPercent         Int          @default(10)
-  lifecycleStatus         String       @default("DRAFT")
-  legalName               String?
-  registrationNumber      String?
-  facebookPage            String?
-  googleMapsUrl           String?
+  id                       String       @id @default(cuid())
+  organizationId           String       @unique
+  organization             Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  currentStep              Int          @default(1)
+  progressPercent          Int          @default(10)
+  lifecycleStatus          String       @default("DRAFT")
+  legalName                String?
+  registrationNumber       String?
+  facebookPage             String?
+  googleMapsUrl            String?
   googleBusinessProfileUrl String?
-  instagramUrl            String?
-  photoUrls               String[]     @default([])
-  businessCategory        String?
-  logoUrl                 String?
-  kycStatus               String       @default("NOT_SUBMITTED")
-  kycSubmittedAt          DateTime?
-  kycReviewedAt           DateTime?
-  kycReviewedBy           String?
-  kycRejectionReason      String?
-  phoneCountryCode        String       @default("+91")
-  phoneNumber             String?
-  whatsappActiveOnNumber  Boolean?
-  numberConnectionPath    String?
-  phoneVerificationStatus String       @default("NOT_STARTED")
-  facebookStatus          String       @default("NOT_CONNECTED")
-  metaStatus              String       @default("NOT_STARTED")
-  metaBusinessId          String?
-  wabaId                  String?
-  phoneNumberId           String?
-  displayPhoneNumber      String?
-  qualityRating           String?
-  webhookStatus           String       @default("NOT_CONFIGURED")
-  tokenStatus             String       @default("NOT_CONFIGURED")
-  metaBillingStatus       String       @default("NOT_CONFIRMED")
-  templateStatus          String       @default("NOT_STARTED")
-  firstMessageStatus      String       @default("NOT_STARTED")
-  lastStatusCheckAt       DateTime?
-  lastError               String?
-  completedAt             DateTime?
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
+  instagramUrl             String?
+  photoUrls                String[]     @default([])
+  businessCategory         String?
+  logoUrl                  String?
+  kycStatus                String       @default("NOT_SUBMITTED")
+  kycSubmittedAt           DateTime?
+  kycReviewedAt            DateTime?
+  kycReviewedBy            String?
+  kycRejectionReason       String?
+  phoneCountryCode         String       @default("+91")
+  phoneNumber              String?
+  whatsappActiveOnNumber   Boolean?
+  numberConnectionPath     String?
+  phoneVerificationStatus  String       @default("NOT_STARTED")
+  facebookStatus           String       @default("NOT_CONNECTED")
+  metaStatus               String       @default("NOT_STARTED")
+  metaBusinessId           String?
+  wabaId                   String?
+  phoneNumberId            String?
+  displayPhoneNumber       String?
+  qualityRating            String?
+  webhookStatus            String       @default("NOT_CONFIGURED")
+  tokenStatus              String       @default("NOT_CONFIGURED")
+  metaBillingStatus        String       @default("NOT_CONFIRMED")
+  templateStatus           String       @default("NOT_STARTED")
+  firstMessageStatus       String       @default("NOT_STARTED")
+  lastStatusCheckAt        DateTime?
+  lastError                String?
+  completedAt              DateTime?
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
 
   @@index([lifecycleStatus])
   @@index([kycStatus])
@@ -618,30 +802,30 @@ model OnboardingActivity {
 }
 
 model Lead {
-  id             String           @id @default(cuid())
+  id             String                 @id @default(cuid())
   propertyId     String
-  property       Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  property       Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   name           String
   initials       String
   score          Int
   source         String
   stage          LeadStage
-  language       LeadLanguage     @default(EN)
+  language       LeadLanguage           @default(EN)
   intent         String
   stayLabel      String
   partyLabel     String
   budgetLabel    String
   phone          String
-  lastActivityAt DateTime         @default(now())
-  isHighPriority Boolean          @default(false)
+  lastActivityAt DateTime               @default(now())
+  isHighPriority Boolean                @default(false)
   tags           LeadTag[]
   messages       LeadMessage[]
   assetShares    LeadAssetShare[]
   conversations  Conversation[]
   aiOperations   AiOperation[]
   websiteSession WebsiteVisitorSession?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
 
   @@unique([propertyId, phone])
   @@index([propertyId, stage])
@@ -649,25 +833,25 @@ model Lead {
 }
 
 model WebsiteVisitorSession {
-  id                 String    @id @default(cuid())
-  propertyId         String
-  property           Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  leadId             String    @unique
-  lead               Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  sessionIdHash      String
-  capabilityHash     String    @unique
-  status             String    @default("AI_READY")
-  contactName        String?
-  contactValue       String?
-  consentText        String?   @db.Text
-  consentedAt        DateTime?
-  expiresAt          DateTime
-  lastDeliveredAt    DateTime?
-  lastReadAt         DateTime?
-  resolutionState    Json?
-  revokedAt          DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  propertyId      String
+  property        Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId          String    @unique
+  lead            Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sessionIdHash   String
+  capabilityHash  String    @unique
+  status          String    @default("AI_READY")
+  contactName     String?
+  contactValue    String?
+  consentText     String?   @db.Text
+  consentedAt     DateTime?
+  expiresAt       DateTime
+  lastDeliveredAt DateTime?
+  lastReadAt      DateTime?
+  resolutionState Json?
+  revokedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@unique([propertyId, sessionIdHash])
   @@index([propertyId, status, updatedAt])
@@ -675,54 +859,54 @@ model WebsiteVisitorSession {
 }
 
 model SovereignAnswerEvidence {
-  id                  String   @id @default(cuid())
-  propertyId          String
-  property            Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  leadId              String?
-  sessionIdHash       String
-  constitutionVersion String
-  blueprintVersion    String
-  intent              String
-  disposition         String
-  contextUsed         Boolean  @default(false)
-  confidence          Float    @default(0)
-  safetyClassification String  @default("STANDARD")
-  permittedOperation  String   @default("ANSWER")
-  observedBehavior    String   @default("UNKNOWN")
-  decisionConsistent  Boolean  @default(false)
-  consistencyReason   String?  @db.Text
-  resolutionState     String   @default("RESOLVED")
-  clarifyCount        Int      @default(0)
-  circuitBreaker      Boolean  @default(false)
-  circuitBreakerReason String?
-  evaluationVersion   String   @default("1.1")
-  decisionReason      String   @db.Text
-  question            String   @db.Text
-  resolvedQuestion    String   @db.Text
-  answer              String   @db.Text
-  grounded            Boolean  @default(false)
-  model               String
-  sources             Json
-  knowledgeAsOf       DateTime?
-  knowledgeClaimIds   String[] @default([])
-  personaCategory     String   @default("UNKNOWN")
-  personaVersion      String   @default("UNKNOWN")
-  retrievalCandidates Json     @default("[]")
-  retrievedClaimIds   String[] @default([])
-  usedClaimIds        String[] @default([])
-  nearMissClaimIds    String[] @default([])
-  failureClassification String @default("NONE")
-  safeResolution      Boolean  @default(false)
-  evidencePipelineVersion String @default("1.0")
-  failureLayer        String   @default("NONE")
-  failureCode         String?
-  latencyMs           Int      @default(0)
-  attemptCount        Int      @default(0)
-  escalationTier      String   @default("TIER_0_SELF_RESOLVE")
-  degradedMode        Boolean  @default(false)
-  createdAt           DateTime @default(now())
-  feedback            SovereignAnswerFeedback?
-  replayCase          SovereignReplayCase?
+  id                      String                   @id @default(cuid())
+  propertyId              String
+  property                Property                 @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId                  String?
+  sessionIdHash           String
+  constitutionVersion     String
+  blueprintVersion        String
+  intent                  String
+  disposition             String
+  contextUsed             Boolean                  @default(false)
+  confidence              Float                    @default(0)
+  safetyClassification    String                   @default("STANDARD")
+  permittedOperation      String                   @default("ANSWER")
+  observedBehavior        String                   @default("UNKNOWN")
+  decisionConsistent      Boolean                  @default(false)
+  consistencyReason       String?                  @db.Text
+  resolutionState         String                   @default("RESOLVED")
+  clarifyCount            Int                      @default(0)
+  circuitBreaker          Boolean                  @default(false)
+  circuitBreakerReason    String?
+  evaluationVersion       String                   @default("1.1")
+  decisionReason          String                   @db.Text
+  question                String                   @db.Text
+  resolvedQuestion        String                   @db.Text
+  answer                  String                   @db.Text
+  grounded                Boolean                  @default(false)
+  model                   String
+  sources                 Json
+  knowledgeAsOf           DateTime?
+  knowledgeClaimIds       String[]                 @default([])
+  personaCategory         String                   @default("UNKNOWN")
+  personaVersion          String                   @default("UNKNOWN")
+  retrievalCandidates     Json                     @default("[]")
+  retrievedClaimIds       String[]                 @default([])
+  usedClaimIds            String[]                 @default([])
+  nearMissClaimIds        String[]                 @default([])
+  failureClassification   String                   @default("NONE")
+  safeResolution          Boolean                  @default(false)
+  evidencePipelineVersion String                   @default("1.0")
+  failureLayer            String                   @default("NONE")
+  failureCode             String?
+  latencyMs               Int                      @default(0)
+  attemptCount            Int                      @default(0)
+  escalationTier          String                   @default("TIER_0_SELF_RESOLVE")
+  degradedMode            Boolean                  @default(false)
+  createdAt               DateTime                 @default(now())
+  feedback                SovereignAnswerFeedback?
+  replayCase              SovereignReplayCase?
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
@@ -736,17 +920,17 @@ model SovereignAnswerEvidence {
 }
 
 model SovereignAnswerFeedback {
-  id           String                  @id @default(cuid())
-  propertyId   String
-  property     Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  evidenceId   String                  @unique
-  evidence     SovereignAnswerEvidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
-  leadId       String?
-  helpful      Boolean
-  reason       String?                 @db.Text
-  source       String                  @default("WEBSITE_WIDGET")
-  createdAt    DateTime                @default(now())
-  updatedAt    DateTime                @updatedAt
+  id         String                  @id @default(cuid())
+  propertyId String
+  property   Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  evidenceId String                  @unique
+  evidence   SovereignAnswerEvidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  leadId     String?
+  helpful    Boolean
+  reason     String?                 @db.Text
+  source     String                  @default("WEBSITE_WIDGET")
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
 
   @@index([propertyId, helpful, createdAt])
   @@index([leadId, createdAt])
@@ -1048,11 +1232,11 @@ model Subscription {
   complimentaryEndsAt    DateTime?
   complimentaryReason    String?          @db.Text
   complimentaryGrantedBy String?
-  messageLimitOverride    Int?
-  aiReplyLimitOverride    Int?
-  messageOveragePaisa     Int              @default(0)
-  aiReplyOveragePaisa     Int              @default(0)
-  overageApproved         Boolean          @default(false)
+  messageLimitOverride   Int?
+  aiReplyLimitOverride   Int?
+  messageOveragePaisa    Int              @default(0)
+  aiReplyOveragePaisa    Int              @default(0)
+  overageApproved        Boolean          @default(false)
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
   invoices               BillingInvoice[]
@@ -1221,25 +1405,25 @@ model AutomationJob {
 }
 
 model SupportTicket {
-  id              String                 @id @default(cuid())
-  organizationId  String
-  organization    Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  reference       String                 @unique
-  subject         String
-  category        String
-  priority        String                 @default("NORMAL")
-  status          String                 @default("OPEN")
-  description     String                 @db.Text
-  createdByEmail  String
-  assignedToEmail String?
-  resolution      String?                @db.Text
-  resolvedAt      DateTime?
-  lastActivityBy  String                 @default("CUSTOMER")
+  id                 String                 @id @default(cuid())
+  organizationId     String
+  organization       Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reference          String                 @unique
+  subject            String
+  category           String
+  priority           String                 @default("NORMAL")
+  status             String                 @default("OPEN")
+  description        String                 @db.Text
+  createdByEmail     String
+  assignedToEmail    String?
+  resolution         String?                @db.Text
+  resolvedAt         DateTime?
+  lastActivityBy     String                 @default("CUSTOMER")
   lastClientViewedAt DateTime?
   lastAdminViewedAt  DateTime?
-  createdAt       DateTime               @default(now())
-  updatedAt       DateTime               @updatedAt
-  messages        SupportTicketMessage[]
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  messages           SupportTicketMessage[]
 
   @@index([organizationId, status])
   @@index([status, priority])
