@@ -21,6 +21,7 @@ export type TypesafeActionGate = {
   confidence: number;
   mayOfferNextStep: boolean;
   mustRequireHuman: boolean;
+  recommendation?: "KEEP_EXISTING" | "VALIDATE_FIELDS" | "USE_TRANSACTION_CONTROLS" | "USE_SAFETY_CONTROLS" | "HUMAN_REQUEST";
   reason: string;
   usage?: { inputTokens: number; outputTokens: number };
 };
@@ -57,11 +58,12 @@ function choice(value: unknown): TypesafeActionIntent {
 
 function policy(intent: TypesafeActionIntent, confidence: number, enabled: boolean, usage?: TypesafeActionGate["usage"]): TypesafeActionGate {
   const certain = confidence >= MIN_CONFIDENCE;
-  const highRisk = intent === "PAYMENT_OR_TRANSACTION" || intent === "SENSITIVE_OR_UNSAFE" || intent === "HUMAN_HANDOVER";
   if (!enabled) return { enabled: false, intent: "UNKNOWN", confidence: 0, mayOfferNextStep: false, mustRequireHuman: false, reason: "TypeSafe action gate is not configured." };
-  if (!certain || intent === "UNKNOWN") return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: true, reason: "Intent is unresolved; clarification or human review is required.", usage };
-  if (highRisk) return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: true, reason: "This intent is never eligible for autonomous execution.", usage };
-  return { enabled: true, intent, confidence, mayOfferNextStep: intent === "AVAILABILITY_ENQUIRY" || intent === "BOOKING_ENQUIRY", mustRequireHuman: false, reason: "Intent is classified with sufficient confidence; deterministic field validation is still required.", usage };
+  if (!certain || intent === "UNKNOWN") return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: false, recommendation: "KEEP_EXISTING", reason: "TypeSafe abstains; retain the existing governed decision without adding a handover.", usage };
+  if (intent === "HUMAN_HANDOVER") return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: true, recommendation: "HUMAN_REQUEST", reason: "Customer requested human assistance; existing consent and handover controls apply.", usage };
+  if (intent === "PAYMENT_OR_TRANSACTION" || intent === "SENSITIVE_OR_UNSAFE") return { enabled: true, intent, confidence, mayOfferNextStep: false, mustRequireHuman: false, recommendation: intent === "PAYMENT_OR_TRANSACTION" ? "USE_TRANSACTION_CONTROLS" : "USE_SAFETY_CONTROLS", reason: "Retain existing authorization, verification and safety controls; classification grants no action authority.", usage };
+  const commercial = intent === "AVAILABILITY_ENQUIRY" || intent === "BOOKING_ENQUIRY";
+  return { enabled: true, intent, confidence, mayOfferNextStep: commercial, mustRequireHuman: false, recommendation: commercial ? "VALIDATE_FIELDS" : "KEEP_EXISTING", reason: "Intent is classified with sufficient confidence; deterministic field validation is still required.", usage };
 }
 
 export function typeSafeActionGateDisabled() {

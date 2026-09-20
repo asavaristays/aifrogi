@@ -16,7 +16,33 @@ the API key does not activate the adapter.
 The standalone synthetic runner can be invoked with:
 `node --import tsx scripts/evaluate-typesafe-synthetic.ts`
 It expects `TYPESAFE_API_KEY` in the process environment and reads no tenant
-records. Its 16 hand-authored cases are a smoke test, not production certification.
+records. Its 24 hand-authored cases are a smoke test, not production certification.
+
+### Completed comparison pilot
+
+The standalone bundled runner is installed on the bot VPS at
+`/var/lib/aifrogi-typesafe-pilot/evaluate-20260920-r2.mjs`. The root-only report is
+`/var/lib/aifrogi-typesafe-pilot/report-20260920-r2.jsonl`.
+
+The second server run matched 24/24 expected classifications with zero category
+compatibility disagreements after two targeted local Core routing fixes. All
+24 primary plans were retained unchanged. Two results abstained (low-confidence
+wedding enquiry and unknown text). Usage: 15,303 input and 2,430 output tokens.
+This is TypeSafe usage, separate from OpenAI usage; no dollar estimate is claimed.
+
+The initial comparison found that Core missed a misspelled reservation contact
+request and incorrectly routed a guest-owned mobile-number request as public
+contact. Targeted code fixes and regression tests now cover both. These Core
+changes are committed source, not a promotion of the running bot application.
+
+Low confidence now recommends KEEP_EXISTING rather than adding a human handover.
+Payments retain existing transaction controls; sensitive requests retain existing
+safety controls. Only an explicit human request recommends handover. The
+comparison module never mutates the primary plan and skips non-synthetic inputs.
+
+Validation: 25 targeted tests, TypeScript check and the full `test:core` command
+passed. Live tenant Golden banks, data-minimization review and customer-message
+pilot approval are still required before a production routing release.
 
 ### Authenticated evaluation — 20 September 2026
 
@@ -29,7 +55,8 @@ phone enquiry was incorrectly classified as sensitive. After clarifying public
 contact versus private guest records in the criteria, the expanded run matched
 16/16 labels. Observed per-request latency was 343–1215 ms. The wedding enquiry
 was correctly labelled INFORMATION but confidence was 0.56, below the provisional
-0.82 threshold; it would request review under this policy. Label agreement alone
+0.82 threshold; the original policy would request review. The comparison pilot
+now abstains and preserves existing routing instead. Label agreement alone
 does not establish a good customer experience. No production bot route has been
 connected. No real customer messages were transmitted.
 
@@ -45,8 +72,8 @@ connected. No real customer messages were transmitted.
 - Payment, transaction, sensitive, unclear and human-handover intents are never
   eligible for autonomous execution.
 - API failure, malformed output, a missing credential or low confidence fails
-  closed: no action suggestion is made. This adapter currently has no runtime
-  caller and therefore does not change existing AiFrogi controls.
+  closed: no action suggestion is made. The standalone pilot is its only caller;
+  no live bot route invokes it.
 
 ## Controlled rollout
 

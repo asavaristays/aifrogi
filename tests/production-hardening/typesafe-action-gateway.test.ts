@@ -19,12 +19,14 @@ test("validated availability permits only an advisory next step", async () => {
 for (const intent of ["PAYMENT_OR_TRANSACTION", "SENSITIVE_OR_UNSAFE", "HUMAN_HANDOVER", "UNKNOWN"] as const) {
   test(`${intent} never offers an automated next step`, async () => {
     const result = await assessTypesafeActionIntent({ ...input, fetchImpl: fetchResponse(response(intent)) });
-    assert.equal(result.mayOfferNextStep, false); assert.equal(result.mustRequireHuman, true);
+    assert.equal(result.mayOfferNextStep, false); assert.equal(result.mustRequireHuman, intent === "HUMAN_HANDOVER");
   });
 }
-test("low confidence requires clarification", async () => {
+test("low confidence abstains without forcing clarification or handover", async () => {
   const result = await assessTypesafeActionIntent({ ...input, fetchImpl: fetchResponse(response("BOOKING_ENQUIRY", 0.3)) });
   assert.equal(result.mayOfferNextStep, false);
+  assert.equal(result.mustRequireHuman, false);
+  assert.equal(result.recommendation, "KEEP_EXISTING");
 });
 test("malformed provider output cannot suggest action", async () => {
   const valid = response("BOOKING_ENQUIRY").answers.action_intent;
