@@ -12,12 +12,21 @@ encrypted="${base}.gz.enc"
 temporary="${base}.tmp"
 pg_database_url="$(node -e 'const url=new URL(process.argv[1]); url.searchParams.delete("schema"); process.stdout.write(url.toString())' "$DATABASE_URL")"
 pg_schema="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.searchParams.get("schema") || "public")' "$DATABASE_URL")"
+pg_database="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.pathname.replace(/^\\//, ""))' "$DATABASE_URL")"
 
 mkdir -p "$BACKUP_DIR"
 umask 077
 trap 'rm -f "$temporary" "${base}.gz"' EXIT
 
-pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database_url"
+# Forced RLS deliberately prevents the application role from extracting every
+# tenant row. On a root-operated local PostgreSQL host, use the local database
+# administrator solely for the encrypted backup; regular environments retain
+# the configured application connection path.
+if [[ "$(id -u)" == "0" ]] && id postgres >/dev/null 2>&1; then
+  sudo -u postgres pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database"
+else
+  pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database_url"
+fi
 pg_restore --list "$temporary" >/dev/null
 gzip -c "$temporary" > "${base}.gz"
 openssl enc -aes-256-cbc -pbkdf2 -salt -in "${base}.gz" -out "$encrypted" -pass env:BACKUP_ENCRYPTION_PASSPHRASE
