@@ -1,12 +1,11 @@
-.visual {
-  background: url("/media/hero/aifrogi-opening.jpg") center / contain no-repeat;
-}
 .video {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: contain;
+  /* The source is black-backed; screen blending lets the hero glow show through. */
+  mix-blend-mode: screen;
 }
 .motionControl {
   position: absolute;
