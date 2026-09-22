@@ -1,15 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/icons";
+import { HeroVideo } from "./hero-video";
 
 const botNames = ["HotelGPT", "ClinicGPT", "DineGPT", "eduGPT", "PropertyGPT", "BusinessGPT", "FlowCart"];
 
 export function SovereignHero({ registerUrl }: { registerUrl: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
-
   useEffect(() => {
     const timer = window.setInterval(() => setActiveIndex((current) => (current + 1) % botNames.length), 2600);
     return () => window.clearInterval(timer);
@@ -35,16 +34,7 @@ export function SovereignHero({ registerUrl }: { registerUrl: string }) {
         </div>
       </div>
 
-      <div className="relative mx-auto w-full max-w-[430px] lg:max-w-[510px]" aria-label="AiFrogi sovereign business bot visual">
-        <div className="absolute inset-[12%] rounded-full bg-[var(--gold-600)]/18 blur-[70px]" aria-hidden="true" />
-        <div className="hero-bot-float relative aspect-[1122/1402]">
-          <Image src="/brand/aifrogi-sovereign-bot.png" alt="Black and antique-gold AiFrogi business bot" fill priority sizes="(max-width: 1024px) 430px, 510px" className="object-contain [mask-image:radial-gradient(ellipse_76%_72%_at_50%_48%,black_54%,transparent_100%)]" />
-          <span className="hero-bot-eye hero-bot-eye-left" aria-hidden="true" />
-          <span className="hero-bot-eye hero-bot-eye-right" aria-hidden="true" />
-          <span className="hero-bot-blink hero-bot-blink-left" aria-hidden="true" />
-          <span className="hero-bot-blink hero-bot-blink-right" aria-hidden="true" />
-        </div>
-      </div>
+      <HeroVideo />
     </div>
   );
 }
