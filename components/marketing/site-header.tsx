@@ -14,7 +14,6 @@ const navItems = [
     label: "AI Bot",
     href: "/solutions",
     children: [
-      { label: "All AI Bots", href: "/solutions", copy: "Choose intelligence by business outcome" },
       { label: "Experience AiFrogi", href: "/experience", copy: "Watch the 45-second interactive story" },
       { label: "HotelGPT", href: "/solutions/hotelgpt", copy: "Hospitality and guest intelligence" },
       { label: "ClinicGPT", href: "/solutions/clinicgpt", copy: "Appointments and confirmations" },
