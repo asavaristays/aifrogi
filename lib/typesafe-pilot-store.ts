@@ -1,17 +1,19 @@
 import { getDb } from "@/lib/db";
 
 export const CASTLE_PILOT_TENANT = "cmu2dcedu003284kxjotchehs";
+export const ASAVARI_PILOT_TENANT = "cmtv7qspl00678ekxasnphvqc";
 // Direct-provider published price, verified 2026-09-20. Estimate, not invoice.
 export const TYPESAFE_PRICE_SOURCE = "https://typesafe.ai/blog/introducing-system-one-models-and-jev";
 export const estimatedTypesafeUsd = (inputTokens: number) => Math.max(0, inputTokens) * 0.042 / 1_000_000;
-export type PilotPolicy = { enabled: boolean; expiresAt: string; dailyLimit: number };
+export type PilotPolicy = { enabled: boolean; expiresAt: string | null; dailyLimit: number };
 export function eligibleHotelPilot(organization: { isDemo: boolean; status: string; botProfile: { category: string; status: string } | null } | null) {
   return Boolean(organization && !organization.isDemo && organization.status === "ACTIVE"
     && organization.botProfile?.category === "STAY" && organization.botProfile.status === "LIVE");
 }
 export function validPilotPolicy(value: unknown, now = Date.now()): value is PilotPolicy {
   const p = value as PilotPolicy | null;
-  return Boolean(p && p.enabled === true && Number.isFinite(Date.parse(p.expiresAt)) && Date.parse(p.expiresAt) > now && Number.isInteger(p.dailyLimit) && p.dailyLimit > 0 && p.dailyLimit <= 20);
+  return Boolean(p && p.enabled === true && (p.expiresAt === null || typeof p.expiresAt === "string" && Number.isFinite(Date.parse(p.expiresAt)) && Date.parse(p.expiresAt) > now)
+    && Number.isInteger(p.dailyLimit) && p.dailyLimit > 0 && p.dailyLimit <= 20);
 }
 const controlAction = "TYPESAFE_PILOT_CONTROL";
 const attemptAction = "TYPESAFE_SHADOW_RESERVED";
@@ -19,7 +21,8 @@ const reviewAction = "TYPESAFE_OBSERVATION_REVIEW";
 export type PilotReviewVerdict = "CORRECT" | "INCORRECT" | "UNRESOLVED";
 
 export async function setPilotPolicy(organizationId: string, policy: PilotPolicy, actor: string) {
-  if (policy.enabled && (!validPilotPolicy(policy) || Date.parse(policy.expiresAt) > Date.now() + 86400_000)) throw new Error("Pilot must expire within 24 hours with at most 20 daily attempts");
+  if (policy.enabled && (!validPilotPolicy(policy) || policy.expiresAt !== null && Date.parse(policy.expiresAt) > Date.now() + 86400_000)) throw new Error("Invalid TypeSafe policy or daily limit");
+  if (policy.enabled && policy.expiresAt === null && ![ASAVARI_PILOT_TENANT, CASTLE_PILOT_TENANT].includes(organizationId)) throw new Error("Non-expiring TypeSafe quality checks are approved only for two hotels");
   const db = getDb(); if (!db) throw new Error("Database unavailable");
   const organization = await db.organization.findUnique({ where: { id: organizationId }, select: { isDemo: true, status: true, botProfile: { select: { category: true, status: true } } } });
   if (!eligibleHotelPilot(organization)) throw new Error("TypeSafe shadow policy requires an active, live, non-demo HotelGPT tenant");

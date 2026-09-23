@@ -31,6 +31,7 @@ import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sov
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
 import { assessTypesafeAnswerQuality } from "@/lib/typesafe-answer-quality";
+import { assessTypesafePreSend, shouldEscalatePreSend } from "@/lib/typesafe-pre-send";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -294,8 +295,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
-  const answer = resolution.answer;
-  const evidenceDecision = resolution.decision;
+  let answer = resolution.answer;
+  let evidenceDecision = resolution.decision;
   // Evidence describes the response actually served, not a discarded model answer.
   // Keep retrieval candidates for diagnosis, but never attribute their use to a breaker reply.
   if (answer !== proposedAnswer && result) {
@@ -303,6 +304,24 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       retrieval: { ...result.retrieval, usedClaimIds: [] },
       reliability: { ...result.reliability, failureLayer: "CONVERSATION_STATE", failureCode: resolution.state.circuitBreakerReason || "RESOLUTION_OVERRIDE", escalationTier: "TIER_1_BUSINESS_ASYNC" }
     };
+  }
+  let preSendObservation: Awaited<ReturnType<typeof assessTypesafePreSend>> = null;
+  const usedClaimIds = result?.retrieval.usedClaimIds || [];
+  if (!safety.blocked && !organization.isDemo && profile.category === "STAY" && handoffEnabled
+    && evidenceDecision.disposition === "ANSWER" && !requestsOnlineBooking && negotiation.kind === "NOT_APPLICABLE"
+    && usedClaimIds.length && process.env.TYPESAFE_PRE_SEND_ENABLED === "true") {
+    const claims = await db.knowledgeEntry.findMany({ where: { id: { in: usedClaimIds.slice(0, 3) },
+      propertyId: property.id, status: "PUBLISHED", OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] },
+      select: { question: true, answer: true }, take: 3 }).catch(() => []);
+    if (claims.length) preSendObservation = await assessTypesafePreSend({ organizationId: organization.id, question: message,
+      answer, approvedClaims: claims.map((claim) => `${claim.question}: ${claim.answer}`) }).catch(() => null);
+  }
+  const typesafeEscalated = shouldEscalatePreSend(preSendObservation);
+  if (typesafeEscalated) {
+    answer = fallbackContactPath;
+    evidenceDecision = { ...evidenceDecision, disposition: "ESCALATE", reason: "TypeSafe found a high-confidence factual conflict with approved hotel knowledge; human handover required." };
+    if (result) result = { ...result, answer, decision: evidenceDecision, sources: [], sourceUrls: [], claimIds: [], usedOpenAi: false,
+      model: "TYPESAFE_SAFE_HANDOVER", retrieval: { ...result.retrieval, usedClaimIds: [] } };
   }
   const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "INFRASTRUCTURE" as const, failureCode: safety.blocked ? null : "UNATTRIBUTED_RUNTIME_FAILURE", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
   const typesafeObservation = typesafeStaging;
@@ -324,7 +343,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
-  if ((explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE") && handoffEnabled) {
+  if ((explicitHumanRequest || assistedFallback || typesafeEscalated || evidenceDecision.disposition === "ESCALATE") && handoffEnabled) {
     try { await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes }); }
     catch { return NextResponse.json({ error: "Your human-help request could not be saved. Please retry." }, { status: 503, headers: responseHeaders }); }
   }
@@ -349,7 +368,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
   savedEvidenceId = evidence.id;
   await recordTenantAnswerUsage({ organizationId: organization.id, evidenceId: evidence.id, usage: { inputTokens: result?.modelUsage?.inputTokens || 0, outputTokens: result?.modelUsage?.outputTokens || 0, model: result?.model || "NON_MODEL", attempts: reliability.attemptCount, latencyMs: reliability.latencyMs } }).catch((error) => console.error("Tenant usage metering failed", { organizationId: organization.id, evidenceId: evidence.id, error }));
-  const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
+  const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || typesafeEscalated || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
   const consented = Boolean(consentedContact);
   const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
@@ -409,6 +428,15 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       try {
         const qualityDb = getDb();
         if (!qualityDb) return;
+        if (preSendObservation) {
+          await qualityDb.platformAuditLog.create({ data: { organizationId: organization.id, actorEmail: "system@aifrogi.com",
+            actorRole: "SYSTEM", action: "TYPESAFE_QUALITY_OBSERVED", targetType: "SovereignAnswerEvidence", targetId: evidenceId,
+            summary: typesafeEscalated ? "Pre-send check routed a factual conflict to staff." : "Pre-send check kept the governed answer.",
+            metadata: { ...preSendObservation, evidenceId, preSend: true, escalated: typesafeEscalated,
+              ...(preSendObservation.status === "OBSERVED" ? { grounding: { choice: preSendObservation.choice, confidence: preSendObservation.confidence },
+                reviewReasons: typesafeEscalated ? ["POSSIBLE_UNSUPPORTED_CLAIM"] : [] } : {}) } } });
+          return;
+        }
         const evidence = await qualityDb.sovereignAnswerEvidence.findFirst({ where: { id: evidenceId, propertyId: property.id },
           select: { id: true, question: true, answer: true, disposition: true, usedClaimIds: true } });
         if (!evidence) return;

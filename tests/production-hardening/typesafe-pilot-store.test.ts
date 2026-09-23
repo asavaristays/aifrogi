@@ -14,6 +14,7 @@ test("policy rejects expiry, invalid caps, disabled and missing configuration", 
   const now = Date.now();
   const good = { enabled: true, expiresAt: new Date(now + 10000).toISOString(), dailyLimit: 20 };
   assert.equal(validPilotPolicy(good, now), true);
+  assert.equal(validPilotPolicy({ ...good, expiresAt: null }, now), true);
   for (const bad of [null, {}, { ...good, enabled: false }, { ...good, expiresAt: "bad" }, { ...good, expiresAt: new Date(now).toISOString() }, { ...good, dailyLimit: 21 }, { ...good, dailyLimit: 0 }, { ...good, dailyLimit: 1.5 }]) assert.equal(validPilotPolicy(bad, now), false);
 });
 
