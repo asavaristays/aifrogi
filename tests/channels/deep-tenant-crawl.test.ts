@@ -52,10 +52,28 @@ test("short transposed entity spelling still uses exact source wording", () => {
 });
 
 test("exact hotel facts preserve published rate and capacity without claiming availability", () => {
-  const hotel = `<html><head><title>Kates Adobe | Asavari Stays</title></head><body><h1>Kates Adobe</h1><h2>Rooms</h2><p>Cottage Room EP INR 22,500 / night + 18 % tax Up to 10 guests, 4 rooms available.</p></body></html>`;
+  const hotel = `<html><head><title>Kates Adobe | Asavari Stays</title></head><body><h1>Kates Adobe</h1><h2>Rooms</h2><p>4 Bedrooms | 4 Bathrooms. Cottage Room EP INR 22,500 / night + 18 % tax Up to 10 guests, 4 rooms available.</p></body></html>`;
   const entity = extractDeepTenantKnowledge("https://asavaristays.com/properties/33", hotel, "2026-09-23T00:00:00.000Z");
-  const result = answerExactTenantStayFact(entity ? [entity] : [], "Kates Adbe rate and capacity?");
+  const result = answerExactTenantStayFact(entity ? [entity] : [], "Kates Adbe rate, bedrooms, bathrooms and capacity?", "33");
   assert.match(result?.answer || "", /INR 22,500 \/ night \+ 18 % tax/);
   assert.match(result?.answer || "", /up to 10 guests, 4 rooms available/i);
+  assert.match(result?.answer || "", /4 Bedrooms/i);
+  assert.match(result?.answer || "", /4 Bathrooms/i);
   assert.match(result?.answer || "", /not live availability/i);
+});
+
+test("stable property ID prevents facts leaking between two hotels", () => {
+  const kates = extractDeepTenantKnowledge("https://asavaristays.com/properties/33", `<h1>Kates Adobe</h1><h2>Rooms</h2><p>INR 22,500 / night Up to 10 guests.</p>`, "2026-09-23T00:00:00.000Z");
+  const rohet = extractDeepTenantKnowledge("https://asavaristays.com/properties/47", `<h1>Rohet Garh</h1><h2>Rooms</h2><p>INR 9,500 / night Up to 2 guests.</p>`, "2026-09-23T00:00:00.000Z");
+  const result = answerExactTenantStayFact([kates!, rohet!], "What is its price and guest capacity?", "47");
+  assert.match(result?.answer || "", /Rohet Garh/);
+  assert.match(result?.answer || "", /9,500/);
+  assert.doesNotMatch(result?.answer || "", /22,500/);
+});
+
+test("requested railway landmark is not replaced by another station", () => {
+  const entity = extractDeepTenantKnowledge("https://asavaristays.com/properties/47", html, "2026-09-14T00:00:00.000Z");
+  const result = answerExactTenantAccessFact(entity ? [entity] : [], "How far is Rohet Garh from Jodhpur railway station?", "47");
+  assert.match(result?.answer || "", /does not publish the distance from Jodhpur railway station/i);
+  assert.match(result?.answer || "", /Rohet 7 Kms/i);
 });

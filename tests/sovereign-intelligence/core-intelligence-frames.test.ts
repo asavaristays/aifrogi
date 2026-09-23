@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { CORE_INTELLIGENCE_FRAMES, planCoreIntelligenceFrame, verifyCoreFrameAnswer } from "../../lib/sovereign-intelligence/core-intelligence-frames";
+import { CORE_INTELLIGENCE_FRAMES, planCoreIntelligenceFrame, verifyCoreFrameAnswer, verifyCorePropertySources } from "../../lib/sovereign-intelligence/core-intelligence-frames";
 import { runHotelGptContinuousJourney } from "../../lib/sovereign-intelligence/hotelgpt-journey";
 import { scoreDeterministicAnswerQuality } from "../../lib/sovereign-intelligence/deterministic-quality-score";
 
 test("Core Intelligence exposes reusable ordered frames", () => {
   assert.equal(CORE_INTELLIGENCE_FRAMES.length, 5);
-  for (const frame of CORE_INTELLIGENCE_FRAMES) assert.deepEqual(frame.nodes.map((node) => node.type), ["DETECT_PARTS", "RESOLVE_ENTITY", "RETRIEVE_EVIDENCE", "APPLY_AUTHORITY", "COMPOSE", "VERIFY"]);
+  for (const frame of CORE_INTELLIGENCE_FRAMES) assert.deepEqual(frame.nodes.map((node) => node.type), ["DETECT_PARTS", "RESOLVE_TENANT", "RESOLVE_PROPERTY_ID", "RETRIEVE_EVIDENCE", "APPLY_AUTHORITY", "COMPOSE", "VERIFY"]);
 });
 
 test("multipart frame requires every requested hotel topic", () => {
@@ -15,6 +15,14 @@ test("multipart frame requires every requested hotel topic", () => {
   assert.equal(plan.frameKey, "HOTEL_MULTIPART");
   assert.deepEqual(verifyCoreFrameAnswer(plan, question, "The rate is INR 10,000."), { passed: false, missingParts: ["BREAKFAST"] });
   assert.deepEqual(verifyCoreFrameAnswer(plan, question, "The rate is INR 10,000. Breakfast is not included."), { passed: true, missingParts: [] });
+});
+
+test("Hotel frame carries one stable tenant property ID through the workflow", () => {
+  const plan = planCoreIntelligenceFrame("STAY", "Kates Adboe price, bedrooms, bathrooms and guest capacity", "33");
+  assert.equal(plan.tenantPropertyId, "33");
+  assert.deepEqual(plan.requestedParts, ["RATE", "CAPACITY", "BEDROOMS", "BATHROOMS"]);
+  assert.equal(verifyCorePropertySources(plan, ["https://asavaristays.com/properties/33", "https://asavaristays.com/cancellation-policies"]), true);
+  assert.equal(verifyCorePropertySources(plan, ["https://asavaristays.com/properties/47"]), false);
 });
 
 test("continuous HotelGPT journey keeps the current property through 20 turns", () => {

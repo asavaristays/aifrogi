@@ -23,6 +23,7 @@ export function buildSessionConversationMemory(input: {
   return {
     version: CONVERSATION_CONFIDENCE_VERSION,
     entity,
+    tenantPropertyId: entity?.entityType === "PROPERTY" ? entity.entityId : null,
     entityFromCurrentTurn: Boolean(currentEntity),
     contextUsed: mayUseRememberedEntity,
     slots: coreEntityFacts(customerEntities, { consentContact: input.consentContact }),

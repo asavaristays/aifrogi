@@ -23,7 +23,7 @@ import { buildSessionConversationMemory, routeConversationByConfidence } from "@
 import { buildTenantKnowledgeChangeSet, tenantKnowledgeFreshness, type TenantKnowledgeChangeSet } from "@/lib/tenant-intelligence/learning-lifecycle";
 import { assembleAnswerContext, type AnswerReplayTrace } from "@/lib/sovereign-intelligence/answer-context";
 import { hasCompleteAnswerEnding } from "@/lib/sovereign-intelligence/answer-quality-gate";
-import { planCoreIntelligenceFrame, verifyCoreFrameAnswer } from "@/lib/sovereign-intelligence/core-intelligence-frames";
+import { planCoreIntelligenceFrame, verifyCoreFrameAnswer, verifyCorePropertySources } from "@/lib/sovereign-intelligence/core-intelligence-frames";
 
 export type KnowledgePage = {
   url: string;
@@ -528,6 +528,7 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
   const bestScore = rankedPages[0]?.score || 0;
   const relevanceFloor = Math.max(3, Math.ceil(bestScore * 0.8));
   const pages = rankedPages
+    .filter(({ page }) => !explicitEntity || !/\/properties\/\d+/i.test(new URL(page.url).pathname) || page.url === explicitEntity.sourceUrl)
     .filter((item) => item.score >= relevanceFloor)
     .slice(0, 8)
     .map(({ page, score }) => ({ ...page, score }));
@@ -562,7 +563,7 @@ export function publishedClaimFallback(
   decision: SovereignDecision
 ): KnowledgeAnswer | null {
   const claim = governed.candidates.find((candidate) => candidate.selected && candidate.answer.trim());
-  if (!claim) return null;
+  if (!claim || !hasCompleteAnswerEnding(claim.answer)) return null;
   return {
     answer: claim.answer.trim(),
     sourceUrls: [],
@@ -674,7 +675,7 @@ export async function buildWebsiteKnowledgeAnswer({
     : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
   const sessionMemory = buildSessionConversationMemory({ question: resolved.retrievalQuestion, priorQuestions, entities: knowledgeBase?.tenantEntities || [] });
   const retrievalQuestion = sessionMemory.retrievalQuestion;
-  const exactAccess = knowledgeBase ? answerExactTenantAccessFact(knowledgeBase.tenantEntities || [], retrievalQuestion) : null;
+  const exactAccess = knowledgeBase ? answerExactTenantAccessFact(knowledgeBase.tenantEntities || [], retrievalQuestion, sessionMemory.tenantPropertyId) : null;
   if (exactAccess) {
     const answer = direct(exactAccess.answer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped access evidence without model inference." });
     answer.sourceUrls = [exactAccess.entity.sourceUrl];
@@ -683,7 +684,7 @@ export async function buildWebsiteKnowledgeAnswer({
     answer.model = "EXACT_TENANT_FACT";
     return answer;
   }
-  const exactStayFact = persona?.category === "STAY" && knowledgeBase ? answerExactTenantStayFact(knowledgeBase.tenantEntities || [], retrievalQuestion) : null;
+  const exactStayFact = persona?.category === "STAY" && knowledgeBase ? answerExactTenantStayFact(knowledgeBase.tenantEntities || [], retrievalQuestion, sessionMemory.tenantPropertyId) : null;
   if (exactStayFact) {
     const answer = direct(exactStayFact.answer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped hotel commercial evidence without model inference." });
     answer.sourceUrls = [exactStayFact.entity.sourceUrl];
@@ -721,7 +722,7 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const primaryModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
   const fallbackModel = process.env.OPENAI_FALLBACK_MODEL?.trim();
-  const intelligenceFrame = planCoreIntelligenceFrame(persona?.category || "CORE", question);
+  const intelligenceFrame = planCoreIntelligenceFrame(persona?.category || "CORE", question, sessionMemory.tenantPropertyId);
   const requiredHotelParts = intelligenceFrame.requestedParts;
   const frameGuidance = intelligenceFrame.frameKey === "HOTEL_POLICY"
     ? "Preserve every relevant booking type, timing window, charge, exception, written-notice rule, and refund timing found in evidence. Do not merge different policy categories."
@@ -742,7 +743,7 @@ export async function buildWebsiteKnowledgeAnswer({
         body: JSON.stringify({ model, input: [
           { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}` },
           { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nCore Intelligence frame: ${intelligenceFrame.frameKey}.${frameGuidance ? ` ${frameGuidance}` : ""}${intelligenceFrame.requiresPartByPartEvidence ? ` The guest asked about ${requiredHotelParts.join(", ")}. Address each topic separately from approved evidence; if evidence is missing for one topic, say only that part cannot be confirmed.` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
-        ], max_output_tokens: 320 })
+        ], max_output_tokens: intelligenceFrame.frameKey === "HOTEL_POLICY" ? 600 : 400 })
       });
       if (!response.ok) throw modelHttpError(response.status);
       const payload = (await response.json().catch(() => null)) as Record<string, unknown> | null;
@@ -751,6 +752,7 @@ export async function buildWebsiteKnowledgeAnswer({
     },
     validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000 && hasCompleteAnswerEnding(value.text)
       && verifyCoreFrameAnswer(intelligenceFrame, question, value.text).passed
+      && verifyCorePropertySources(intelligenceFrame, websiteResult.sourceUrls)
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });

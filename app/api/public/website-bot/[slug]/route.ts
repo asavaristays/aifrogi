@@ -30,7 +30,7 @@ import { activeNegotiationPolicy, evaluateTenantNegotiation, policyForVerifiedSt
 import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sovereign-intelligence/layer-router";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
-import { answerStayDirectoryQuestion, requestsStayBooking } from "@/lib/stay-question-routing";
+import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking, resolveApprovedStay } from "@/lib/stay-question-routing";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -150,7 +150,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingLink = approvedBookingLink(knowledgeSettings.widgetMenu);
   const bookingChoices = (bookingLink?.children || []).map((item) => {
     const [destination, stay] = item.label.split("|").map((value) => value.trim());
-    return { destination, stay, url: item.value };
+    return { destination, stay, url: item.value, propertyId: propertyIdFromStayUrl(item.value || "") || undefined };
   }).filter((item) => item.destination && item.stay && item.url);
   const directoryAnswer = profile.category === "STAY" ? answerStayDirectoryQuestion(message, bookingChoices) : null;
   const bookingPlan = planConversation({
@@ -170,7 +170,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const currentMessageText = message.toLowerCase().replace(/[^a-z0-9]/g, "");
   const explicitDestination = bookingChoices.find((item) => currentMessageText.includes(item.destination.toLowerCase().replace(/[^a-z0-9]/g, "")))?.destination;
   const contextualText = !explicitDestination && fallbackDecision.contextUsed ? lastAssistantAnswer.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
-  const requestedStay = bookingChoices.find((item) => currentMessageText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")))
+  const currentResolvedStay = resolveApprovedStay(message, bookingChoices);
+  const requestedStay = currentResolvedStay
+    || bookingChoices.find((item) => currentMessageText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")))
     || bookingChoices.find((item) => contextualText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")));
   const requestedDestination = explicitDestination || requestedStay?.destination || (bookingPlan.operation?.id === "booking.availability" ? bookingPlan.operation.slots.destination?.[0] : undefined);
   const destinationStays = requestedDestination ? bookingChoices.filter((item) => item.destination === requestedDestination) : [];
@@ -183,9 +185,10 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const matchingLiveStay = liveAvailability?.properties.find((item) => requestedStay && item.name.toLowerCase().replace(/[^a-z0-9]/g, "").includes(requestedStay.stay.toLowerCase().replace(/[^a-z0-9]/g, ""))) || (liveAvailability?.properties.length === 1 ? liveAvailability.properties[0] : undefined);
   const configuredPolicy = activeNegotiationPolicy(knowledgeSettings.tenantFlows || [], `${message}\n${lastAssistantAnswer}`);
   const tenantAuthority = tenantNegotiationAuthority(knowledgeSettings.tenantFlows || []);
-  const contextualRate = matchingLiveStay?.fromRate || Number(lastAssistantAnswer.match(/(?:₹|INR)\s*([\d,]+)/i)?.[1]?.replaceAll(",", "") || 0);
+  const contextualRate = matchingLiveStay?.fromRate || (!currentResolvedStay ? Number(lastAssistantAnswer.match(/(?:₹|INR)\s*([\d,]+)/i)?.[1]?.replaceAll(",", "") || 0) : 0);
   const contextualStayName = matchingLiveStay?.name || requestedStay?.stay || configuredPolicy?.propertyName || "";
-  const negotiationPolicy = configuredPolicy || policyForVerifiedStay(tenantAuthority, contextualStayName, contextualRate);
+  const configuredPolicyMatchesProperty = !currentResolvedStay || configuredPolicy?.propertyName.toLowerCase() === currentResolvedStay.stay.toLowerCase();
+  const negotiationPolicy = configuredPolicyMatchesProperty ? configuredPolicy || policyForVerifiedStay(tenantAuthority, contextualStayName, contextualRate) : undefined;
   const negotiation = evaluateTenantNegotiation({ policy: negotiationPolicy, message, priorCustomerMessages: priorQuestions, lastAssistantAnswer });
   const rateInquiryAnswer = tenantRateInquiry(negotiationPolicy, message);
   const categoryBoundary = evaluateCategoryHardBoundary(profile.category, message);

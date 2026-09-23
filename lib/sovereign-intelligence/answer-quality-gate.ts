@@ -17,6 +17,7 @@ export function hasCompleteAnswerEnding(answer: string) {
   const value = answer.trim();
   if (!value) return false;
   if (value.length < 180) return true;
+  if (/\b(?:and|or|with|after|before|for|from|to|by|of|the|a|an|can|fee)$/i.test(value.replace(/[,:;-]$/, "").trim())) return false;
   return /(?:[.!?]["')\]]?|https?:\/\/\S+)$/i.test(value);
 }
 

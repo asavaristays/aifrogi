@@ -43,7 +43,8 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   if (!rejectsHumanContact && /\b(human|real person|person to help|someone to help|team member|agent|call me|contact me|talk to someone|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
   // Privacy and credential boundaries must run before public contact routing so
   // words such as "phone number" cannot downgrade a private-data request.
-  if (/\b(?:phone|mobile|email|address|contact)(?: number| details| information)?\s+(?:of|for|belonging to)\s+(?:the |a |another )?(?:guest|customer)\b/.test(normalized)) return "SENSITIVE";
+  if (/\b(?:phone|mobile|email|address|contact)(?: number| details| information)?\s+(?:of|for|belonging to)\s+(?:the |a |another |previous )?(?:guest|customer)\b/.test(normalized)) return "SENSITIVE";
+  if (/\b(?:previous|prior|last)\s+(?:guest|customer)\b/.test(normalized) && /\b(?:booked|booking|phone|mobile|email|address|contact|details|information|share|tell|show)\b/.test(normalized)) return "SENSITIVE";
   if (/\b(password|otp|one time password|card number|cvv|medical emergency|legal dispute|complaint|system prompt|developer prompt|api key|secret key|access token|all customers|all bookings|all conversations|another (?:customer|guest)|other (?:customers|guests)|customer before me|guest before me|owner'?s? private|private (?:mobile|phone|email|address)|guest'?s? (?:booking|phone|mobile|email|address))\b/.test(normalized)) return "SENSITIVE";
   if (/\bcontact\s+(?:numbr|nmbr|number)\b/.test(normalized)) return "CONTACT_INFO";
   if (/^(address|phone|telephone|mobile|email|contact|reservation (?:number|phone|email|contact)|booking (?:number|phone|email|contact))$/.test(normalized)) return "CONTACT_INFO";

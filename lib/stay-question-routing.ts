@@ -1,9 +1,11 @@
-export type ApprovedStayChoice = { destination: string; stay: string };
-export type HotelQuestionPart = "RATE" | "CAPACITY" | "BREAKFAST" | "PARKING" | "AVAILABILITY" | "BOOKING" | "PAYMENT" | "CANCELLATION" | "CHECK_IN" | "CHECK_OUT" | "PETS" | "LOCATION";
+export type ApprovedStayChoice = { destination: string; stay: string; propertyId?: string };
+export type HotelQuestionPart = "RATE" | "CAPACITY" | "BEDROOMS" | "BATHROOMS" | "BREAKFAST" | "PARKING" | "AVAILABILITY" | "BOOKING" | "PAYMENT" | "CANCELLATION" | "CHECK_IN" | "CHECK_OUT" | "PETS" | "LOCATION";
 
 const HOTEL_PART_PATTERNS: Array<[HotelQuestionPart, RegExp]> = [
   ["RATE", /\b(?:rate|rates|price|prices|pricing|cost|tariff|per night|nightly)\b/i],
   ["CAPACITY", /\b(?:capacity|accommodate|occupancy|how many (?:guests|people|persons)|up to \d+ (?:guests|people|persons))\b/i],
+  ["BEDROOMS", /\b(?:bedroom|bedrooms|beds)\b/i],
+  ["BATHROOMS", /\b(?:bathroom|bathrooms|baths)\b/i],
   ["BREAKFAST", /\b(?:breakfast|meal plan|ep plan|cp plan)\b/i],
   ["PARKING", /\b(?:parking|self-parking|car park)\b/i],
   ["AVAILABILITY", /\b(?:availability|vacancy)|\b(?:room|rooms|stay|stays|suite|suites|property|properties|it|this|that)\b.{0,30}\b(?:available|vacant)\b|\b(?:available|vacant)\b.{0,30}\b(?:room|rooms|stay|stays|suite|suites|property|properties)\b/i],
@@ -54,6 +56,11 @@ export function resolveApprovedStay(question: string, choices: ApprovedStayChoic
   }).filter((item) => item.score > 0).sort((left, right) => right.score - left.score);
   if (!ranked[0] || ranked[0].score === ranked[1]?.score) return null;
   return ranked[0].choice;
+}
+
+export function propertyIdFromStayUrl(value: string) {
+  try { return new URL(value).pathname.match(/\/properties\/(\d+)/i)?.[1] || null; }
+  catch { return null; }
 }
 
 export function missingHotelAnswerParts(question: string, answer: string) {

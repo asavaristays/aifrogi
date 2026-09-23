@@ -125,27 +125,40 @@ export function buildDeepTenantContext(entities: TenantEntityKnowledge[], questi
   }).join("\n\n").slice(0, 9000);
 }
 
-export function answerExactTenantAccessFact(entities: TenantEntityKnowledge[], question: string) {
+export function answerExactTenantAccessFact(entities: TenantEntityKnowledge[], question: string, tenantPropertyId?: string | null) {
   const requested = /\bairport\b/i.test(question) ? "Airport" : /\brailway|train station\b/i.test(question) ? "Railway(?: Station)?" : /\bbus stand\b/i.test(question) ? "Bus Stand" : null;
   if (!requested) return null;
-  const entity = resolveTenantEntity(entities, question);
+  const entity = tenantPropertyId ? entities.find((item) => item.entityId === tenantPropertyId) || null : resolveTenantEntity(entities, question);
   if (!entity) return null;
   // Search every source-preserved fact so an access block nested under a broad
   // page heading (for example "Request a Booking") still resolves exactly.
   const access = entity.facts.map((fact) => fact.value).join(" ");
-  const match = access.match(new RegExp(`${requested}\\s*:\\s*([^.;|]+?\\b(?:km|kms|kilomet(?:er|re)s?)\\b)`, "i"));
+  const matches = [...access.matchAll(new RegExp(`${requested}\\s*:\\s*([^.;|]+?\\b(?:km|kms|kilomet(?:er|re)s?)\\b)`, "gi"))];
+  const requestedLandmark = requested.startsWith("Railway")
+    ? question.match(/\b(?:from|to|near|at)\s+([a-z][a-z -]{1,30})\s+railway(?: station)?\b/i)?.[1]?.trim()
+    : requested === "Airport" ? question.match(/\b(?:from|to|near|at)\s+([a-z][a-z -]{1,30})\s+airport\b/i)?.[1]?.trim() : null;
+  const meaningfulLandmark = requestedLandmark && !/^(?:nearest|the nearest|which|what|where|nearby)$/i.test(requestedLandmark) ? requestedLandmark : null;
+  const match = meaningfulLandmark
+    ? matches.find((item) => item[1].toLowerCase().includes(meaningfulLandmark.toLowerCase()))
+    : matches[0];
+  if (!match && meaningfulLandmark && matches[0]) return {
+    answer: `For ${entity.name}, the website lists ${matches[0][0].replace(/\s+/g, " ").trim()}, but it does not publish the distance from ${meaningfulLandmark} ${requested.startsWith("Railway") ? "railway station" : requested.toLowerCase()}.`,
+    entity
+  };
   if (!match) return null;
   return { answer: `For ${entity.name}, the website lists ${match[0].replace(/\s+/g, " ").trim()}.`, entity };
 }
 
 /** Exact hotel rate/capacity answers copy source wording instead of asking a model
  * to reinterpret commercial numbers. Availability is deliberately excluded. */
-export function answerExactTenantStayFact(entities: TenantEntityKnowledge[], question: string) {
+export function answerExactTenantStayFact(entities: TenantEntityKnowledge[], question: string, tenantPropertyId?: string | null) {
   const wantsRate = /\b(?:rate|rates|price|prices|pricing|cost|tariff|per night|nightly)\b/i.test(question);
   const wantsCapacity = /\b(?:capacity|accommodate|occupancy|how many (?:guests|people|persons)|guests?)\b/i.test(question);
-  if (!wantsRate && !wantsCapacity) return null;
+  const wantsBedrooms = /\b(?:bedroom|bedrooms|beds)\b/i.test(question);
+  const wantsBathrooms = /\b(?:bathroom|bathrooms|baths)\b/i.test(question);
+  if (!wantsRate && !wantsCapacity && !wantsBedrooms && !wantsBathrooms) return null;
   if (/\b(?:availability|available|vacancy|vacant)\b/i.test(question)) return null;
-  const entity = resolveTenantEntity(entities, question);
+  const entity = tenantPropertyId ? entities.find((item) => item.entityId === tenantPropertyId) || null : resolveTenantEntity(entities, question);
   if (!entity || entity.entityType !== "PROPERTY") return null;
   const evidence = entity.facts.map((fact) => fact.value).join(" ").replace(/\s+/g, " ");
   const parts: string[] = [];
@@ -159,6 +172,16 @@ export function answerExactTenantStayFact(entities: TenantEntityKnowledge[], que
     const capacity = evidence.match(/up to\s+\d+\s+(?:guests|people|persons)(?:\s*[,;]\s*\d+\s+rooms?\s+available)?/i);
     if (!capacity) return null;
     parts.push(`the listed capacity is ${capacity[0].replace(/\s+/g, " ").trim()}`);
+  }
+  if (wantsBedrooms) {
+    const bedrooms = evidence.match(/\b\d+\s+bedrooms?\b/i);
+    if (!bedrooms) return null;
+    parts.push(`it lists ${bedrooms[0].replace(/\s+/g, " ").trim()}`);
+  }
+  if (wantsBathrooms) {
+    const bathrooms = evidence.match(/\b\d+\s+bathrooms?\b/i);
+    if (!bathrooms) return null;
+    parts.push(`it lists ${bathrooms[0].replace(/\s+/g, " ").trim()}`);
   }
   const answer = `For ${entity.name}, ${parts.join("; ")}. This is published property information, not live availability.`;
   return { answer, entity };
