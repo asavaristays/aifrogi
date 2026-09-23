@@ -60,6 +60,10 @@ function collectSlots(messages: string[], definition: OperationDefinition) {
   return slots;
 }
 
+function isGeneralOperationCapabilityQuestion(question: string) {
+  return /\b(?:can|could|may|do)\s+(?:i|we|you)\b.{0,35}\b(?:book|reserve|schedule|order|pay)\b.{0,25}\b(?:online|here|through (?:the )?(?:bot|website|chat))\b/i.test(question);
+}
+
 export function planConversation(input: {
   question: string;
   priorQuestions?: string[];
@@ -89,7 +93,8 @@ export function planConversation(input: {
   // Customer messages are newest-first in the website runtime. The current
   // turn is authoritative, followed by recent customer context. Assistant
   // copy is deliberately excluded so offered examples cannot become facts.
-  const slots = collectSlots([input.question, ...priorQuestions.slice(0, 6)], operation);
+  const slotMessages = isGeneralOperationCapabilityQuestion(input.question) ? [input.question] : [input.question, ...priorQuestions.slice(0, 6)];
+  const slots = collectSlots(slotMessages, operation);
   const missingSlots = (operation.slots || []).filter((slot) => slot.required && !(slots[slot.key] || []).length).map((slot) => slot.key);
   const ready = missingSlots.length === 0;
   return {

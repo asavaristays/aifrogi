@@ -26,6 +26,13 @@ test("planner retains slots only from recent customer context", () => {
   assert.equal(plan.operation?.slots.dates.length, 2);
 });
 
+test("a new capability question does not inherit an earlier destination", () => {
+  const plan = planConversation({ question: "Can I book online?", priorQuestions: ["Tell me about Coorg"], operations: [booking] });
+  assert.equal(plan.outcome, "CLARIFY");
+  assert.deepEqual(plan.operation?.slots.destination, []);
+  assert.deepEqual(plan.operation?.missingSlots, ["destination", "dates"]);
+});
+
 test("planner identifies missing operation slots without inventing them", () => {
   const plan = planConversation({ question: "I want to book", operations: [booking] });
   assert.equal(plan.outcome, "CLARIFY");
