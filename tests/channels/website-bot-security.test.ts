@@ -84,11 +84,16 @@ test("accepted support offers become persisted, consent-aware handovers", () => 
 });
 
 test("a missing verified answer always becomes a lead and human route", () => {
-  assert.match(source, /verifiedResultAnswer = explicitHumanRequest \|\| \(result && \["ANSWER", "CLARIFY", "ESCALATE"\]\.includes\(result\.decision\.disposition\)\)/);
+  assert.match(source, /verifiedResultAnswer = explicitHumanRequest \|\| \(result && \["ANSWER", "CLARIFY", "ESCALATE", "REFUSE"\]\.includes\(result\.decision\.disposition\)\)/);
   assert.match(source, /explicitHumanRequest \|\| assistedFallback \|\| evidenceDecision\.disposition === "ESCALATE"/);
   assert.match(source, /captureIncomingAiBotMessage\([\s\S]*phone: consentedContact/);
   assert.match(source, /ensureWebsiteHandover/);
   assert.match(source, /conversationState: humanRequested \? "HUMAN_REQUESTED" : "AI_READY"/);
+});
+
+test("governed refusals and clarifications do not become assisted handovers", () => {
+  assert.match(source, /\["FALLBACK", "ESCALATE"\]\.includes\(proposedDecision\.disposition\)/);
+  assert.match(source, /"REFUSE"\]\.includes\(result\.decision\.disposition\)/);
 });
 
 test("a below-floor negotiation keeps the manager-review wording while routing human help", () => {

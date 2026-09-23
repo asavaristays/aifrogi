@@ -286,7 +286,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     const quality = evaluateVisitorAnswerQuality({ question: message, answer: result.answer, decision: result.decision });
     if (!quality.passed) result = null;
   }
-  const verifiedResultAnswer = explicitHumanRequest || (result && ["ANSWER", "CLARIFY", "ESCALATE"].includes(result.decision.disposition)) || negotiation.kind === "HUMAN_APPROVAL" ? result?.answer : "";
+  // REFUSE is a complete governed response (for example, protecting guest PII),
+  // not a missing answer. Preserve it instead of replacing it with handover copy.
+  const verifiedResultAnswer = explicitHumanRequest || (result && ["ANSWER", "CLARIFY", "ESCALATE", "REFUSE"].includes(result.decision.disposition)) || negotiation.kind === "HUMAN_APPROVAL" ? result?.answer : "";
   const fallbackContactPath = buildMissingAnswerRecovery({ businessName, category: profile.category, publicPhone: organization.publicPhone, handoffEnabled });
   const baseAnswer = safety.answer || verifiedResultAnswer || (fallbackDecision.intent === "OFF_TOPIC"
     ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.`
@@ -298,7 +300,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
     : fallbackDecision.intent === "OFF_TOPIC" || fallbackDecision.disposition === "CLARIFY" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
-  const assistedFallback = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && proposedDecision.disposition !== "ANSWER";
+  // Only a genuine missing-answer/escalation path creates assisted handover.
+  // Governed refusals and clarification questions remain AI-controlled outcomes.
+  const assistedFallback = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && ["FALLBACK", "ESCALATE"].includes(proposedDecision.disposition);
   const resolution = governResolutionOutcome({
     question: message,
     answer: proposedAnswer,

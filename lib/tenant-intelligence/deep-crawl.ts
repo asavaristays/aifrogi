@@ -162,27 +162,34 @@ export function answerExactTenantStayFact(entities: TenantEntityKnowledge[], que
   if (!entity || entity.entityType !== "PROPERTY") return null;
   const evidence = entity.facts.map((fact) => fact.value).join(" ").replace(/\s+/g, " ");
   const parts: string[] = [];
+  const unavailable: string[] = [];
   if (wantsRate) {
     const rate = evidence.match(/(?:[A-Z]{2,4}\s+)?(?:INR|Rs\.?|₹)\s*[\d,]+(?:\.\d+)?\s*(?:\/|per)\s*night(?:\s*[+–-]\s*\d+\s*%\s*tax)?/i)
       || evidence.match(/starting from\s+(?:INR|Rs\.?|₹)\s*[\d,]+(?:\.\d+)?(?:\s*\/\s*night)?/i);
-    if (!rate) return null;
-    parts.push(`the published rate is ${rate[0].replace(/\s+/g, " ").trim()}`);
+    if (rate) parts.push(`the published rate is ${rate[0].replace(/\s+/g, " ").trim()}`);
+    else unavailable.push("rate");
   }
   if (wantsCapacity) {
     const capacity = evidence.match(/up to\s+\d+\s+(?:guests|people|persons)(?:\s*[,;]\s*\d+\s+rooms?\s+available)?/i);
-    if (!capacity) return null;
-    parts.push(`the listed capacity is ${capacity[0].replace(/\s+/g, " ").trim()}`);
+    if (capacity) parts.push(`the listed capacity is ${capacity[0].replace(/\s+/g, " ").trim()}`);
+    else unavailable.push("guest capacity");
   }
   if (wantsBedrooms) {
     const bedrooms = evidence.match(/\b\d+\s+bedrooms?\b/i);
-    if (!bedrooms) return null;
-    parts.push(`it lists ${bedrooms[0].replace(/\s+/g, " ").trim()}`);
+    if (bedrooms) parts.push(`it lists ${bedrooms[0].replace(/\s+/g, " ").trim()}`);
+    else unavailable.push("bedroom count");
   }
   if (wantsBathrooms) {
     const bathrooms = evidence.match(/\b\d+\s+bathrooms?\b/i);
-    if (!bathrooms) return null;
-    parts.push(`it lists ${bathrooms[0].replace(/\s+/g, " ").trim()}`);
+    if (bathrooms) parts.push(`it lists ${bathrooms[0].replace(/\s+/g, " ").trim()}`);
+    else unavailable.push("bathroom count");
   }
-  const answer = `For ${entity.name}, ${parts.join("; ")}. This is published property information, not live availability.`;
+  // Never discard verified fields merely because one part of a compound question
+  // is absent. Answer the supported parts and identify each unpublished field.
+  if (!parts.length) return null;
+  const unavailableNotice = unavailable.length
+    ? ` The property page does not publish a verified ${unavailable.join(" or ")}.`
+    : "";
+  const answer = `For ${entity.name}, ${parts.join("; ")}.${unavailableNotice} This is published property information, not live availability.`;
   return { answer, entity };
 }

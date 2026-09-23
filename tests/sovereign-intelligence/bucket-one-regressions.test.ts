@@ -18,6 +18,24 @@ test("a repeated question with a newly verified answer does not escalate", () =>
   assert.equal(second.state.circuitBreakerTriggered, false);
 });
 
+test("an unresolved hotel question cannot contaminate a later property answer", () => {
+  const firstQuestion = "Kates Adobe rate, bedrooms, bathrooms and capacity?";
+  const firstDecision = { ...resolveSovereignQuestion(firstQuestion), disposition: "FALLBACK" as const };
+  const first = governResolutionOutcome({ question: firstQuestion, answer: "I do not have enough verified information.", decision: firstDecision });
+  const nextQuestion = "I meant Rohet Garh. What is its rate and max guest capacity?";
+  const nextDecision = { ...resolveSovereignQuestion(nextQuestion), disposition: "ANSWER" as const };
+  const next = governResolutionOutcome({
+    question: nextQuestion,
+    answer: "For Rohet Garh, the published rate is INR 9,500 / night and the listed capacity is Up to 3 guests.",
+    decision: nextDecision,
+    previousState: first.state
+  });
+  assert.equal(next.decision.disposition, "ANSWER");
+  assert.equal(next.state.status, "RESOLVED");
+  assert.equal(next.state.circuitBreakerTriggered, false);
+  assert.match(next.answer, /Rohet Garh/);
+});
+
 test("unresolved repeated question exits without naming another tenant or promising delivery", () => {
   const question = "What does the service cost?";
   const decision = { ...resolveSovereignQuestion(question), disposition: "CLARIFY" as const };
