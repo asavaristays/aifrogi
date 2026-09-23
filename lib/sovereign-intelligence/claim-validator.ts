@@ -6,17 +6,29 @@ function canonical(value: string) {
 
 const entitlementTopics = ["parking", "breakfast", "wifi", "wi-fi", "internet", "transfer", "laundry", "meal", "tax", "fee", "room", "service"];
 const entitlementTerms = /\b(?:free|complimentary|included|without (?:an? )?(?:extra )?(?:charge|cost|fee)|no (?:extra )?(?:charge|cost|fee))\b/i;
+const approvedEntitlementTerms = /\b(?:free|complimentary|included (?:in|with) (?:the )?(?:rate|price|package|booking|stay)|without (?:an? )?(?:extra )?(?:charge|cost|fee)|no (?:extra )?(?:charge|cost|fee))\b/i;
+
+function contextExplicitlySupportsEntitlement(context: string, topicPattern: RegExp) {
+  for (const segment of context.split(/(?<=[.!?])\s+|\n+|[,;|]/)) {
+    for (const match of segment.matchAll(new RegExp(topicPattern.source, `${topicPattern.flags.replace("g", "")}g`))) {
+      const start = Math.max(0, (match.index || 0) - 40);
+      const end = Math.min(segment.length, (match.index || 0) + match[0].length + 40);
+      if (approvedEntitlementTerms.test(segment.slice(start, end))) return true;
+    }
+  }
+  return false;
+}
 
 function unsupportedEntitlements(answer: string, approvedContext: string) {
   const violations: string[] = [];
   const answerSentences = answer.split(/(?<=[.!?])\s+|\n+/);
-  const contextSegments = approvedContext.split(/(?<=[.!?])\s+|\n+|[,;|]/);
   for (const sentence of answerSentences) {
-    if (!entitlementTerms.test(sentence)) continue;
-    const topic = entitlementTopics.find((candidate) => new RegExp(`\\b${candidate.replace("-", "[- ]?")}\\b`, "i").test(sentence));
+    const positiveClaims = sentence.replace(/\b(?:(?:is|are|was|were)\s+)?(?:not|never)\s+(?:free|complimentary|included)\b/gi, "");
+    if (!entitlementTerms.test(positiveClaims)) continue;
+    const topic = entitlementTopics.find((candidate) => new RegExp(`\\b${candidate.replace("-", "[- ]?")}\\b`, "i").test(positiveClaims));
     if (!topic) continue;
     const topicPattern = new RegExp(`\\b${topic.replace("-", "[- ]?")}\\b`, "i");
-    const supported = contextSegments.some((segment) => topicPattern.test(segment) && entitlementTerms.test(segment));
+    const supported = contextExplicitlySupportsEntitlement(approvedContext, topicPattern);
     if (!supported) violations.push(`UNSUPPORTED_ENTITLEMENT:${topic}`);
   }
   return violations;
@@ -30,7 +42,7 @@ export function validateGeneratedClaims(input: { answer: string; approvedContext
     const clean = url.replace(/[.;!?]+$/, "");
     if (!input.approvedContext.includes(clean)) violations.push(`UNAPPROVED_URL:${clean}`);
   }
-  const numericClaims = input.answer.match(/(?:₹|rs\.?|inr|\$)?\s*\d[\d,]*(?:\.\d+)?(?:\s*%|\s*(?:minutes?|hours?|days?|weeks?|months?|years?))?/gi) || [];
+  const numericClaims = input.answer.match(/(?:(?:₹|\brs\.?|\binr\b|\$)\s*)?\d[\d,]*(?:\.\d+)?(?:\s*%|\s*(?:minutes?|hours?|days?|weeks?|months?|years?))?/gi) || [];
   for (const claim of numericClaims) {
     const normalized = canonical(claim);
     if (normalized && !context.includes(normalized)) violations.push(`UNSUPPORTED_NUMBER:${claim.trim()}`);

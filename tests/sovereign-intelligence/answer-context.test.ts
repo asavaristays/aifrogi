@@ -31,6 +31,21 @@ test("unsupported free parking is blocked even when free Wi-Fi is approved", () 
   if (!result.valid) assert.ok(result.violations.includes("UNSUPPORTED_ENTITLEMENT:parking"));
 });
 
+test("an amenity list cannot turn self-parking into an included entitlement", () => {
+  const context = "Everything needed for an effortless stay: Property Amenities Daily housekeeping Complimentary toiletries Laundry Breakfast options (buffet) self-parking airport transfers Security personnel CCTV surveillance Car rental desk ATM Near By In-Room Amenities Free Wi-Fi / high-speed internet";
+  const result = validateGeneratedClaims({ answer: "Self-parking is included as a property amenity.", approvedContext: context });
+  assert.equal(result.valid, false);
+  if (!result.valid) assert.ok(result.violations.includes("UNSUPPORTED_ENTITLEMENT:parking"));
+});
+
 test("an approved complimentary entitlement remains valid", () => {
   assert.equal(validateGeneratedClaims({ answer: "Breakfast is complimentary.", approvedContext: "Breakfast is complimentary for registered guests." }).valid, true);
+});
+
+test("a negated entitlement does not become a positive included claim", () => {
+  assert.equal(validateGeneratedClaims({ answer: "Breakfast is available but is not included by default.", approvedContext: "Breakfast options (buffet). EP plan." }).valid, true);
+});
+
+test("the end of incurs is not parsed as a rupee currency prefix", () => {
+  assert.equal(validateGeneratedClaims({ answer: "Cancellation 3-7 days prior incurs 50% charge.", approvedContext: "Cancellation 3-7 days prior incurs 50 % charge." }).valid, true);
 });
