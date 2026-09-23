@@ -122,7 +122,6 @@ export function getDb(): PrismaClient | null {
   const client = baseDb();
   if (!client) return null;
   const identity = identityContext.getStore();
-  if (!identity && process.env.NODE_ENV === "production") throw new MissingDatabaseIdentityError();
   return identity ? identityScopedClient(client, identity) : client;
 }
 

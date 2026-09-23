@@ -57,7 +57,7 @@ test("authenticated request surfaces have a fail-visible protected database acce
   assert.match(source, /class MissingDatabaseIdentityError/);
   assert.match(source, /function getProtectedDb/);
   assert.match(source, /if \(!identity\) throw new MissingDatabaseIdentityError\(\)/);
-  assert.match(source, /!identity && process\.env\.NODE_ENV === "production"/);
+  assert.doesNotMatch(source, /!identity && process\.env\.NODE_ENV === "production"/, "bootstrap and readiness access must remain available before tenant identity resolution");
 });
 
 test("every directly tenant-keyed Prisma model appears in the RLS package", () => {

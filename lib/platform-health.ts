@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/db";
+import { getBootstrapDb } from "@/lib/db";
 
 export type PlatformHealth = {
   status: "ok" | "degraded";
@@ -19,7 +19,7 @@ export function getReleaseId() {
 }
 
 export async function getPlatformReadiness(): Promise<PlatformHealth> {
-  const db = getDb();
+  const db = getBootstrapDb();
   let database: PlatformHealth["checks"]["database"] = "unavailable";
   if (db) {
     try {
