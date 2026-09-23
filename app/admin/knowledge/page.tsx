@@ -1,15 +1,21 @@
 import Link from "next/link";
 import { listOrganizationsForAdmin } from "@/lib/repositories/onboarding-repository";
 import { getKnowledgeWorkspaceSummary } from "@/lib/services/website-knowledge-service";
+import { getCurrentPlatformAdmin, withPlatformAdminDatabaseContext } from "@/lib/admin-access";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminKnowledgePage() {
-  const organizations = await listOrganizationsForAdmin();
-  const records = await Promise.all(organizations.flatMap((organization) => organization.properties.map(async (property) => {
-    const summary = await getKnowledgeWorkspaceSummary(property.slug);
-    return { organization, property, summary };
-  })));
+  const user = await getCurrentPlatformAdmin();
+  if (!user) redirect("/login");
+  const records = await withPlatformAdminDatabaseContext(user, "admin-knowledge", async () => {
+    const organizations = await listOrganizationsForAdmin();
+    return Promise.all(organizations.flatMap((organization) => organization.properties.map(async (property) => {
+      const summary = await getKnowledgeWorkspaceSummary(property.slug);
+      return { organization, property, summary };
+    })));
+  });
   const ready = records.filter((record) => record.summary.settings.status === "READY" && record.summary.pages.length).length;
   const needsAttention = records.length - ready;
 
@@ -24,4 +30,3 @@ export default async function AdminKnowledgePage() {
 
 function AdminMetric({ label, value, helper }: { label: string; value: string; helper: string }) { return <article className="rounded-lg border border-black/7 bg-white p-5 shadow-sm"><p className="product-eyebrow">{label}</p><p className="mt-3 text-3xl font-semibold">{value}</p><p className="mt-2 text-xs text-[var(--text-muted)]">{helper}</p></article>; }
 function Status({ value }: { value: string }) { const success = value === "READY" || value === "APPROVED"; const error = value === "ERROR"; return <span className={`status-pill ${success ? "status-success" : error ? "status-error" : "status-warning"}`}>{value.toLowerCase()}</span>; }
-

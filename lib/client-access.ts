@@ -97,3 +97,18 @@ export async function resolveClientWorkspaceAccess(input?: {
     subscriptionAccess
   };
 }
+
+export async function withCurrentClientDatabaseContext<T>(
+  surface: string,
+  input: Parameters<typeof resolveClientWorkspaceAccess>[0],
+  work: (access: Extract<ClientWorkspaceAccessResult, { ok: true }>) => Promise<T>
+) {
+  const access = await resolveClientWorkspaceAccess(input);
+  if (!access.ok) return access;
+  const value = await withTenantDatabaseContext({
+    kind: "tenant",
+    organizationId: access.organization.id,
+    actor: `${surface}:${access.user.username}`
+  }, () => work(access));
+  return { ok: true as const, access, value };
+}

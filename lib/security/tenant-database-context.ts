@@ -21,7 +21,9 @@ function clean(value: string, field: string) {
  * identity. SET LOCAL semantics prevent identity leaking through the pool.
  */
 export async function withTenantDatabaseContext<T>(identity: TenantDatabaseIdentity, work: () => Promise<T>) {
-  const db = getDb();
+  // Establish PostgreSQL-local identity from the bootstrap connection. Calling
+  // getDb() here would fail closed in production before the identity exists.
+  const db = getBootstrapDb();
   if (!db) throw new Error("Database unavailable.");
   const actor = clean(identity.actor, "actor");
   return db.$transaction(async (tx) => {

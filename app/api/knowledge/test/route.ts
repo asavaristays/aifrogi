@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveClientWorkspaceAccess } from "@/lib/client-access";
+import { resolveClientWorkspaceAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { getDb } from "@/lib/db";
 import { buildWebsiteKnowledgeAnswer } from "@/lib/services/website-knowledge-service";
 
@@ -14,16 +14,21 @@ export async function POST(request: Request) {
 
   const result = await buildWebsiteKnowledgeAnswer({ question, propertySlug: workspace.propertySlug }).catch(() => null);
   const answer = result?.answer || "I do not have enough approved business information to answer that confidently. Add or approve the answer in Intelligence, then test again.";
-  const db = getDb();
-  if (!db) return NextResponse.json({ error: "The test result could not be recorded. Please retry." }, { status: 503 });
-
-  await db.onboardingActivity.create({
-    data: {
-      organizationId: workspace.organization.id,
-      actorEmail: workspace.user.username,
-      action: "WEBSITE_BOT_TEST_COMPLETED",
-      detail: `Authenticated website-bot test completed for ${workspace.propertySlug}`
-    }
+  await withClientDatabaseContext({
+    user: workspace.user,
+    organization: workspace.organization,
+    role: workspace.role,
+    membership: workspace.organization.members.find((member) => member.email.toLowerCase() === workspace.user.username.toLowerCase())
+  }, "knowledge-test-api", async () => {
+    const db = getDb();
+    if (!db) throw new Error("Database unavailable.");
+    await db.onboardingActivity.create({ data: {
+        organizationId: workspace.organization.id,
+        actorEmail: workspace.user.username,
+        action: "WEBSITE_BOT_TEST_COMPLETED",
+        detail: `Authenticated website-bot test completed for ${workspace.propertySlug}`
+      }
+    });
   });
 
   return NextResponse.json({

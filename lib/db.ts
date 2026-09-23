@@ -13,6 +13,14 @@ export type DatabaseIdentity = {
 };
 const identityContext = new AsyncLocalStorage<DatabaseIdentity>();
 
+export class MissingDatabaseIdentityError extends Error {
+  readonly code = "MISSING_DATABASE_IDENTITY";
+  constructor() {
+    super("Protected database access requires an explicit tenant, platform, or system identity.");
+    this.name = "MissingDatabaseIdentityError";
+  }
+}
+
 export function withDatabaseIdentity<T>(identity: DatabaseIdentity, work: () => Promise<T>) {
   return identityContext.run(identity, work);
 }
@@ -114,5 +122,16 @@ export function getDb(): PrismaClient | null {
   const client = baseDb();
   if (!client) return null;
   const identity = identityContext.getStore();
+  if (!identity && process.env.NODE_ENV === "production") throw new MissingDatabaseIdentityError();
   return identity ? identityScopedClient(client, identity) : client;
+}
+
+/** Use in authenticated request surfaces where an unscoped query must fail visibly. */
+export function getProtectedDb(): PrismaClient | null {
+  const transaction = transactionContext.getStore();
+  if (transaction) return transaction;
+  const identity = identityContext.getStore();
+  if (!identity) throw new MissingDatabaseIdentityError();
+  const client = baseDb();
+  return client ? identityScopedClient(client, identity) : null;
 }

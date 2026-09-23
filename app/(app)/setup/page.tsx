@@ -5,7 +5,7 @@ import { BotBehaviourSettings } from "@/components/setup/bot-behaviour-settings"
 import { BotMenuSettings } from "@/components/setup/bot-menu-settings";
 import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
-import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { getDb } from "@/lib/db";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
@@ -16,24 +16,30 @@ import { BotShowcaseSettings } from "@/components/setup/bot-showcase-settings";
 import { BotCertificationPanel } from "@/components/setup/bot-certification-panel";
 import { AgentGatewaySettings } from "@/components/setup/agent-gateway-settings";
 import { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } from "@/lib/tenant-intelligence/certification";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function SetupPage() {
   const [access, propertySlug] = await Promise.all([getCurrentClientAccess(), getCurrentWorkspaceSlug()]);
+  if (!access) redirect("/login");
   const appearance = await readKnowledgeSettings(propertySlug);
   const certification = await readTenantCertification(propertySlug);
-  const certificationStatus = tenantCertificationStatus(certification, await getTenantKnowledgeRevision(propertySlug));
   const botName = access?.organization.botProfile?.personaName?.trim() || `${access?.organization.name || "Business"} Assistant`;
-  const db = getDb();
-  const property = access?.organization.properties.find((item) => item.slug === propertySlug);
-  const [testActivity, answerEvidence, subscription, verification] = db && access && property ? await Promise.all([
-    db.onboardingActivity.findFirst({ where: { organizationId: access.organization.id, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } }),
-    db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } }),
-    getOrganizationSubscriptionAccess(access.organization.id),
-    getKnowledgeVerificationReadiness(property.id, access.organization.botProfile?.category === "STAY" ? "HOSPITALITY" : access.organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : access.organization.botProfile?.category || "BUSINESS_AI")
-  ]) : [null, null, null, null];
+  const property = access.organization.properties.find((item) => item.slug === propertySlug);
+  const [testActivity, answerEvidence, subscription, verification, knowledgeRevision] = property ? await withClientDatabaseContext(access, "client-setup", async () => {
+    const db = getDb();
+    if (!db) throw new Error("Database unavailable.");
+    return Promise.all([
+      db.onboardingActivity.findFirst({ where: { organizationId: access.organization.id, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } }),
+      db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } }),
+      getOrganizationSubscriptionAccess(access.organization.id),
+      getKnowledgeVerificationReadiness(property.id, access.organization.botProfile?.category === "STAY" ? "HOSPITALITY" : access.organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : access.organization.botProfile?.category || "BUSINESS_AI"),
+      getTenantKnowledgeRevision(propertySlug)
+    ]);
+  }) : [null, null, null, null, ""];
+  const certificationStatus = tenantCertificationStatus(certification, knowledgeRevision);
   const testComplete = Boolean(testActivity || answerEvidence);
   const deliveryReady = Boolean(access?.organization.botProfile?.installationKey);
   const behaviourComplete = Boolean(access?.organization.botProfile?.businessObjective && access.organization.botProfile.tone && access.organization.botProfile.languages.length);

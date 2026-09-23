@@ -10,16 +10,20 @@ import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-ins
 import { BotConnectorPlan } from "@/components/bot-profile/bot-connector-plan";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import { runCoreLaunchCertification } from "@/lib/sovereign-intelligence/launch-certification";
+import { getCurrentPlatformAdmin, withPlatformAdminDatabaseContext } from "@/lib/admin-access";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [organization, billing] = await Promise.all([
+  const user = await getCurrentPlatformAdmin();
+  if (!user) redirect("/login");
+  const [organization, billing] = await withPlatformAdminDatabaseContext(user, "admin-customer-detail", () => Promise.all([
     getOrganizationById(id),
     getCustomerBillingDetail(id)
-  ]);
+  ]));
   if (!organization) notFound();
   const onboarding = organization.onboarding;
   const trial = getTrialWindow(organization);

@@ -2,6 +2,8 @@ import {NextResponse} from 'next/server';
 import {getCurrentUser} from '@/lib/auth-server';
 import {getDb} from '@/lib/db';
 import {resolveClientWorkspaceAccess} from '@/lib/client-access';
+import {withTenantDatabaseContext} from '@/lib/security/tenant-database-context';
+import {withPlatformAdminDatabaseContext} from '@/lib/admin-access';
 import {parsePilotReview, PILOT_REVIEW_ACTION} from '@/lib/sovereign-intelligence/pilot-review';
 import {isPilotReviewOriginAllowed} from '@/lib/sovereign-intelligence/pilot-origin';
 export const dynamic = 'force-dynamic';
@@ -9,14 +11,20 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   const user = await getCurrentUser();
   let propertyId: string | undefined;
+  let organizationId: string | undefined;
   if (user?.role !== 'admin') {
     const access = await resolveClientWorkspaceAccess();
     if (!access.ok) return NextResponse.json({error: 'Workspace access required'}, {status: 403});
     propertyId = access.propertyId;
+    organizationId = access.organization.id;
   }
-  const db = getDb();
-  if (!db) return NextResponse.json({error: 'Review storage unavailable'}, {status: 503});
+  if (!user) return NextResponse.json({error: 'Workspace access required'}, {status: 403});
   try {
+    return await withTenantDatabaseContext(user.role === 'admin'
+      ? {kind: 'platform-admin', actor: `pilot-reviews:${user.username}`}
+      : {kind: 'tenant', organizationId: organizationId!, actor: `pilot-reviews:${user.username}`}, async () => {
+    const db = getDb();
+    if (!db) return NextResponse.json({error: 'Review storage unavailable'}, {status: 503});
     const property = propertyId ? await db.property.findUnique({where: {id: propertyId}, select: {organizationId: true}}) : null;
     if (propertyId && !property?.organizationId) return NextResponse.json({error: 'Workspace unavailable'}, {status: 403});
     const events = await db.onboardingActivity.findMany({where: {action: PILOT_REVIEW_ACTION,
@@ -32,6 +40,7 @@ export async function GET() {
     });
     return NextResponse.json({reviews, truncated: events.length > 1000, certified: false,
       note: 'Append-only review history, newest first. Revisions are not independent samples.'}, {headers: {'Cache-Control': 'private, no-store'}});
+    });
   } catch { return NextResponse.json({error: 'Review storage unavailable'}, {status: 503}); }
 }
 
@@ -42,9 +51,10 @@ export async function POST(request: Request) {
     return NextResponse.json({error: 'Same-origin request required'}, {status: 403});
   const review = parsePilotReview(await request.json().catch(() => null));
   if (!review) return NextResponse.json({error: 'Provide evidence, cohort, outcome and a 20–2000 character review rationale. Do not include personal information.'}, {status: 400});
-  const db = getDb();
-  if (!db) return NextResponse.json({error: 'Review storage unavailable'}, {status: 503});
   try {
+    return await withPlatformAdminDatabaseContext(user, 'pilot-review-save', async () => {
+    const db = getDb();
+    if (!db) return NextResponse.json({error: 'Review storage unavailable'}, {status: 503});
     const evidence = await db.sovereignAnswerEvidence.findFirst({where: {id: review.evidenceId, propertyId: review.propertyId},
       select: {model: true, property: {select: {organizationId: true, organization: {select: {isDemo: true}}}}}});
     if (!evidence?.property.organizationId) return NextResponse.json({error: 'Evidence not found'}, {status: 404});
@@ -53,5 +63,6 @@ export async function POST(request: Request) {
     const saved = await db.onboardingActivity.create({data: {organizationId: evidence.property.organizationId,
       actorEmail: user.username, action: PILOT_REVIEW_ACTION, detail: JSON.stringify(review)}, select: {id: true, createdAt: true}});
     return NextResponse.json({reviewId: saved.id, recordedAt: saved.createdAt, certified: false}, {headers: {'Cache-Control': 'private, no-store'}});
+    });
   } catch { return NextResponse.json({error: 'Review could not be saved'}, {status: 503}); }
 }

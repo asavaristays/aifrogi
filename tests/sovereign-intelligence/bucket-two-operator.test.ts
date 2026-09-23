@@ -14,7 +14,7 @@ test.before(async () => {
     "@/lib/client-access": "export const getCurrentClientAccess=async()=>globalThis.__b2operator.access;",
     "@/lib/workspace": "export const getCurrentWorkspaceSlug=async()=>globalThis.__b2operator.slug;",
     "@/lib/services/lead-service": "export const loadLead=async()=>globalThis.__b2operator.lead;export const appendLeadMessage=async()=>{throw Error('Wrong transport')};",
-    "@/lib/db": "export const getDb=()=>globalThis.__b2operator.db;"
+    "@/lib/db": "export const getDb=()=>globalThis.__b2operator.db;export const getBootstrapDb=()=>globalThis.__b2operator.db;export const withDatabaseTransaction=(_tx,work)=>work();export const withDatabaseIdentity=(_identity,work)=>work();export const enterDatabaseIdentity=()=>{};"
   };
   const compiled = await build({ entryPoints: [path.resolve("app/api/leads/[id]/messages/route.ts")], bundle: true, write: false, platform: "node", format: "cjs", packages: "external", plugins: [{ name: "fixture", setup(b) {
     b.onResolve({ filter: /^@\// }, a => adapters[a.path] ? { path: a.path, namespace: "fixture" } : undefined);
@@ -23,7 +23,7 @@ test.before(async () => {
   const m = { exports: {} as any }; new Function("require", "module", "exports", compiled.outputFiles[0].text)(createRequire(path.resolve("package.json")), m, m.exports); POST = m.exports.POST;
 });
 test.beforeEach(() => {
-  f.user = { username: "agent@example.invalid", role: "hotel_owner" }; f.access = { role: "AGENT", membership: { status: "ACTIVE" }, organization: { properties: [{ slug: "tenant-a" }] } }; f.slug = "tenant-a"; f.lead = { propertySlug: "tenant-a", tags: ["Website Bot"] }; f.status = "HUMAN_REQUESTED"; f.replies = []; f.audit = []; f.operation = {}; f.revokedAt = null;
+  f.user = { username: "agent@example.invalid", role: "hotel_owner" }; f.access = { role: "AGENT", membership: { status: "ACTIVE" }, organization: { id: "org-a", properties: [{ slug: "tenant-a" }] } }; f.slug = "tenant-a"; f.lead = { propertySlug: "tenant-a", tags: ["Website Bot"] }; f.status = "HUMAN_REQUESTED"; f.replies = []; f.audit = []; f.operation = {}; f.revokedAt = null;
   const tx = {
     $queryRaw: async () => [{ acquired: !f.busy }],
     websiteVisitorSession: { update: async ({ data }: any) => Object.assign(f, data), updateMany: async ({ data }: any) => { if (f.status === "CLOSED") return { count: 0 }; Object.assign(f, data); return { count: 1 }; }, findUniqueOrThrow: async () => ({ propertyId: "p-a", sessionIdHash: "fixture-session", revokedAt: f.revokedAt, expiresAt: new Date(Date.now() + 60000) }) },

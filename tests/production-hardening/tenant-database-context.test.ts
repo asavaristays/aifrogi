@@ -9,6 +9,9 @@ test("tenant database context uses transaction-local identity", () => {
   assert.match(source, /set_config\('app\.organization_id'/);
   assert.match(source, /true\)`/);
   assert.doesNotMatch(source, /SET\s+SESSION/i);
+  const contextBody = source.match(/export async function withTenantDatabaseContext[\s\S]*?\n}\n/)?.[0] || "";
+  assert.match(contextBody, /const db = getBootstrapDb\(\)/, "identity bootstrap must bypass the protected accessor");
+  assert.doesNotMatch(contextBody, /const db = getDb\(\)/, "production fail-closed access must not run before identity setup");
 });
 
 test("RLS package forces policies on direct and indirect tenant tables", () => {
@@ -47,6 +50,14 @@ test("identity-scoped database calls use short transaction-local contexts", () =
   assert.match(source, /configureIdentity/);
   assert.match(source, /set_config\('app\.organization_id'/);
   assert.doesNotMatch(source, /SET\s+SESSION/i);
+});
+
+test("authenticated request surfaces have a fail-visible protected database accessor", () => {
+  const source = readFileSync(resolve(process.cwd(), "lib/db.ts"), "utf8");
+  assert.match(source, /class MissingDatabaseIdentityError/);
+  assert.match(source, /function getProtectedDb/);
+  assert.match(source, /if \(!identity\) throw new MissingDatabaseIdentityError\(\)/);
+  assert.match(source, /!identity && process\.env\.NODE_ENV === "production"/);
 });
 
 test("every directly tenant-keyed Prisma model appears in the RLS package", () => {

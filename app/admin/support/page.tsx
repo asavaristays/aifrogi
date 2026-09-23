@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { listSupportTickets } from "@/lib/repositories/support-repository";
+import { getCurrentPlatformAdmin, withPlatformAdminDatabaseContext } from "@/lib/admin-access";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,9 @@ function statusTone(status: string) {
 }
 
 export default async function AdminSupportPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
-  const [tickets, query] = await Promise.all([listSupportTickets({}), searchParams]);
+  const [user, query] = await Promise.all([getCurrentPlatformAdmin(), searchParams]);
+  if (!user) redirect("/login");
+  const tickets = await withPlatformAdminDatabaseContext(user, "admin-support", () => listSupportTickets({}));
   const view = filters.some((item) => item.value === query.view) ? query.view! : "open";
   const matches = tickets.filter((ticket) => {
     if (view === "all") return true;

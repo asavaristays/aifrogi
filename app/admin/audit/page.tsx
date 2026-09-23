@@ -1,15 +1,22 @@
 import { getDb } from "@/lib/db";
+import { getCurrentPlatformAdmin, withPlatformAdminDatabaseContext } from "@/lib/admin-access";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function AuditPage() {
-  const db = getDb();
-  const logs = db ? await db.platformAuditLog.findMany({
+  const user = await getCurrentPlatformAdmin();
+  if (!user) redirect("/login");
+  const logs = await withPlatformAdminDatabaseContext(user, "admin-audit", async () => {
+    const db = getDb();
+    if (!db) throw new Error("Database unavailable.");
+    return db.platformAuditLog.findMany({
     include: { organization: { select: { name: true } } },
     orderBy: { createdAt: "desc" },
     take: 200
-  }) : [];
+    });
+  });
   const systemCount = logs.filter((log) => log.actorRole === "SYSTEM").length;
   const customerCount = logs.filter((log) => Boolean(log.organizationId)).length;
 

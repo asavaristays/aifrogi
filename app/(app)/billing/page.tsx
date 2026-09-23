@@ -10,6 +10,7 @@ import { ActivatePlan } from "@/components/billing/activate-plan";
 import { BuyAiCredits } from "@/components/billing/buy-ai-credits";
 import { CreditHistoryTable } from "@/components/billing/credit-history-table";
 import { aiReplyAllowancePosition } from "@/lib/ai-credits";
+import { requireData } from "@/lib/security/data-access-error";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,11 +20,12 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   const access = await getCurrentClientAccess();
   if (!access) redirect("/login");
   if (!canManageWorkspace(access.role)) redirect("/dashboard");
-  const [billing, subscriptionAccess] = await withClientDatabaseContext(access, "client-billing", () => Promise.all([
+  const [billingRecord, subscriptionRecord] = await withClientDatabaseContext(access, "client-billing", () => Promise.all([
     getCustomerBillingDetail(access.organization.id),
     getOrganizationSubscriptionAccess(access.organization.id)
   ]));
-  if (!billing || !subscriptionAccess) return null;
+  const billing = requireData(billingRecord, "client billing record");
+  const subscriptionAccess = requireData(subscriptionRecord, "client subscription record");
 
   const replies = aiReplyAllowancePosition({ included: billing.limits.aiReplies, added: billing.aiCredits.granted, used: billing.usage.aiReplies });
 

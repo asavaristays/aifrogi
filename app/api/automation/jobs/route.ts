@@ -8,7 +8,7 @@ import {
 } from "@/lib/automation-engine";
 import { getDb } from "@/lib/db";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
-import { resolveClientWorkspaceAccess } from "@/lib/client-access";
+import { resolveClientWorkspaceAccess, withClientDatabaseContext } from "@/lib/client-access";
 
 async function loadCurrentProperty() {
   const db = getDb();
@@ -18,13 +18,16 @@ async function loadCurrentProperty() {
 }
 
 export async function GET() {
-  const property = await loadCurrentProperty();
+  const access = await resolveClientWorkspaceAccess();
+  if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
+  const clientAccess = { user: access.user, organization: access.organization, role: access.role, membership: access.organization.members.find((member) => member.email.toLowerCase() === access.user.username.toLowerCase()) };
+  const property = await withClientDatabaseContext(clientAccess, "automation-jobs-get", loadCurrentProperty);
   if (!property) return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
 
-  const [summary, jobs] = await Promise.all([
+  const [summary, jobs] = await withClientDatabaseContext(clientAccess, "automation-jobs-list", () => Promise.all([
     getAutomationQueueSummary(property.id),
     listAutomationJobs(property.id, 20)
-  ]);
+  ]));
 
   return NextResponse.json({ property, summary, jobs });
 }
@@ -38,10 +41,11 @@ export async function POST(request: Request) {
   });
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
   const property = { id: access.propertyId, name: access.property.name, slug: access.propertySlug };
+  const clientAccess = { user: access.user, organization: access.organization, role: access.role, membership: access.organization.members.find((member) => member.email.toLowerCase() === access.user.username.toLowerCase()) };
   const action = typeof payload.action === "string" ? payload.action : "run_due";
 
   if (action === "enqueue_demo") {
-    const job = await enqueueAutomationJob({
+    const job = await withClientDatabaseContext(clientAccess, "automation-job-enqueue", () => enqueueAutomationJob({
       propertyId: property.id,
       workflowId: "manager_daily_digest",
       triggerType: "manual_demo",
@@ -52,17 +56,17 @@ export async function POST(request: Request) {
         note: "Prepared a digest simulation without sending any external message."
       },
       createdBy: "operator"
-    });
+    }));
     return NextResponse.json({ property, job });
   }
 
   if (action === "run_due") {
-    const result = await runDueAutomationJobs({
+    const result = await withClientDatabaseContext(clientAccess, "automation-job-run", () => runDueAutomationJobs({
       propertyId: property.id,
       workerId: `manual-${Date.now()}`,
       take: Number(payload.take) || 10,
       dryRun: true
-    });
+    }));
     return NextResponse.json({ property, result });
   }
 

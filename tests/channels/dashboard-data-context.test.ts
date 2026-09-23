@@ -22,6 +22,15 @@ test("billing and Team Inbox keep all reads and review writes inside explicit te
   assert.match(inbox, /withTenantDatabaseContext/);
   assert.match(summary, /withTenantDatabaseContext/g);
   assert.match(summary, /kind:'tenant',organizationId:a\.organization\.id/);
+  assert.match(summary, /getProtectedDb/);
+  assert.doesNotMatch(billing, /return null/);
+});
+
+test("remaining authenticated data pages are covered by the build-time context guard", () => {
+  const guard = source("scripts/verify-database-context-boundaries.mjs");
+  for (const path of ["app/(app)/knowledge/page.tsx", "app/(app)/setup/page.tsx", "app/admin/audit/page.tsx", "app/admin/knowledge/page.tsx", "app/admin/support/page.tsx"]) {
+    assert.match(guard, new RegExp(path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), path);
+  }
 });
 
 test("client dashboard loads operational data inside its tenant boundary", () => {

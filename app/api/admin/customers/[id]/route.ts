@@ -15,6 +15,7 @@ import { setAppointmentJourneyEnabled } from "@/lib/appointment-journey-service"
 import { parseBotProfile } from "@/lib/bot-profile";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { notifyBotLive } from "@/lib/services/bot-live-notification";
+import { withPlatformAdminDatabaseContext } from "@/lib/admin-access";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -125,7 +126,11 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
         subject: "AiFrogi bot review — correction required",
         body: `Hello ${organization.ownerName},\n\nYour AI Bot remains offline after Super Admin review.\n\nCorrection required:\n${reason}\n\nPlease update the requested information in AiFrogi and submit it for review again. No customer can access the bot until approval.\n\nAiFrogi`
       }).catch(() => ({ error: "Mail delivery failed", messageId: null }));
-      await getDb()?.onboardingActivity.create({ data: { organizationId: id, actorEmail: user.username, action: mail.error || !mail.messageId ? "BOT_CORRECTION_EMAIL_FAILED" : "BOT_CORRECTION_EMAIL_ACCEPTED", detail: mail.error || !mail.messageId ? "Correction email was not accepted; contact the client from Support." : "SMTP accepted the correction-required email; inbox delivery is not verified." } });
+      await withPlatformAdminDatabaseContext(user, "admin-customer-correction-audit", async () => {
+        const db = getDb();
+        if (!db) throw new Error("Database unavailable.");
+        await db.onboardingActivity.create({ data: { organizationId: id, actorEmail: user.username, action: mail.error || !mail.messageId ? "BOT_CORRECTION_EMAIL_FAILED" : "BOT_CORRECTION_EMAIL_ACCEPTED", detail: mail.error || !mail.messageId ? "Correction email was not accepted; contact the client from Support." : "SMTP accepted the correction-required email; inbox delivery is not verified." } });
+      });
       return NextResponse.json({ organization: updated, notification: { accepted: !mail.error && Boolean(mail.messageId), message: mail.error || !mail.messageId ? "Bot remains offline. Correction email could not be sent; contact the client from Support." : "Bot remains offline. Correction email accepted by the mail server." } });
     } catch (error) {
       return NextResponse.json({ error: error instanceof Error ? error.message : "Bot approval could not be declined." }, { status: 400 });

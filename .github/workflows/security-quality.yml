@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run db:generate
       - run: npm run typecheck
+      - run: npm run verify:database-contexts
+      - run: node --import tsx --test tests/channels/dashboard-data-invariants.test.ts tests/production-hardening/tenant-database-context.test.ts
       - run: npm run lint
       - run: npm run build
       - run: npm run verify:client-secrets

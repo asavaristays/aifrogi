@@ -5,6 +5,8 @@ import { ensureBillingPlans, formatMoney, getCustomerBillingDetail, usagePercent
 import { CreditHistoryTable } from "@/components/billing/credit-history-table";
 import { aiReplyAllowancePosition } from "@/lib/ai-credits";
 import { FreeCreditGrant } from "@/components/admin/free-credit-grant";
+import { getCurrentPlatformAdmin, withPlatformAdminDatabaseContext } from "@/lib/admin-access";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,7 +17,9 @@ const date = (value?: Date | null) => value
 
 export default async function AdminCustomerBillingPage({ params }: { params: Promise<{ organizationId: string }> }) {
   const { organizationId } = await params;
-  const [billing, plans] = await Promise.all([getCustomerBillingDetail(organizationId), ensureBillingPlans()]);
+  const user = await getCurrentPlatformAdmin();
+  if (!user) redirect("/login");
+  const [billing, plans] = await withPlatformAdminDatabaseContext(user, "admin-customer-billing", () => Promise.all([getCustomerBillingDetail(organizationId), ensureBillingPlans()]));
   if (!billing) notFound();
 
   const { organization, subscription, limits, usage } = billing;

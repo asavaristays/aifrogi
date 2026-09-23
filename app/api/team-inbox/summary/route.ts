@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { resolveClientWorkspaceAccess } from '@/lib/client-access';
 import { getCurrentWorkspaceSlug } from '@/lib/workspace';
-import { getDb } from '@/lib/db';
+import { getProtectedDb } from '@/lib/db';
 import { isPilotReviewOriginAllowed } from '@/lib/sovereign-intelligence/pilot-origin';
 import { withTenantDatabaseContext } from '@/lib/security/tenant-database-context';
 export const dynamic = 'force-dynamic';
@@ -13,7 +13,7 @@ export async function GET() {
   const a = await access();
   if (!a.ok) return NextResponse.json({error:a.error},{status:a.status,headers});
   return withTenantDatabaseContext({kind:'tenant',organizationId:a.organization.id,actor:`team-inbox-summary:${a.user.username}`},async()=>{
-    const db = getDb();
+    const db = getProtectedDb();
     if (!db) return NextResponse.json({error:'Inbox unavailable'},{status:503,headers});
     const checkedAt = new Date();
     const action = `TEAM_INBOX_SEEN:${a.propertyId}`;
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const time = typeof body?.checkedAt === 'string' ? Date.parse(body.checkedAt) : NaN;
   if (!Number.isFinite(time) || time > Date.now() || time < Date.now()-300000) return NextResponse.json({error:'Refresh the inbox before marking reviewed'},{status:400,headers});
   return withTenantDatabaseContext({kind:'tenant',organizationId:a.organization.id,actor:`team-inbox-summary:${a.user.username}`},async()=>{
-    const db = getDb();
+    const db = getProtectedDb();
     if (!db) return NextResponse.json({error:'Inbox unavailable'},{status:503,headers});
     await db.onboardingActivity.create({data:{organizationId:a.organization.id,actorEmail:a.user.username,action:`TEAM_INBOX_SEEN:${a.propertyId}`,detail:new Date(time).toISOString()}});
     return NextResponse.json({ok:true},{headers});

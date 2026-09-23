@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeWorkspaceSummary, getWebsiteKnowledgeBase } from "@/lib/services/website-knowledge-service";
 import { writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
@@ -12,15 +12,18 @@ export async function GET() {
   const access = await getCurrentClientAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const propertySlug = await getCurrentWorkspaceSlug();
-  const summary = await getKnowledgeWorkspaceSummary(propertySlug);
-  const governance = await getKnowledgeGovernanceSummary(propertySlug);
-  const db = getDb();
-  const property = db ? await db.property.findUnique({ where: { slug: propertySlug }, select: { organization: { select: { botProfile: { select: { category: true, kbGateVersion: true } } } } } }) : null;
-  const rawCategory = property?.organization?.botProfile?.category || "BUSINESS_AI";
-  const category = rawCategory === "PINGBOOK" ? "APPOINTMENTS" : rawCategory === "STAY" ? "HOSPITALITY" : rawCategory;
-  const verification = governance.propertyId ? await getKnowledgeVerificationReadiness(governance.propertyId, category) : null;
-  const workspace = db ? await db.property.findUnique({ where: { slug: propertySlug }, select: { organizationId: true } }) : null;
-  const subscription = workspace?.organizationId ? await getOrganizationSubscriptionAccess(workspace.organizationId) : null;
+  const { summary, governance, verification, subscription } = await withClientDatabaseContext(access, "knowledge-api", async () => {
+    const summary = await getKnowledgeWorkspaceSummary(propertySlug);
+    const governance = await getKnowledgeGovernanceSummary(propertySlug);
+    const db = getDb();
+    if (!db) throw new Error("Database unavailable.");
+    const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { organizationId: true, organization: { select: { botProfile: { select: { category: true, kbGateVersion: true } } } } } });
+    const rawCategory = property?.organization?.botProfile?.category || "BUSINESS_AI";
+    const category = rawCategory === "PINGBOOK" ? "APPOINTMENTS" : rawCategory === "STAY" ? "HOSPITALITY" : rawCategory;
+    const verification = governance.propertyId ? await getKnowledgeVerificationReadiness(governance.propertyId, category) : null;
+    const subscription = property?.organizationId ? await getOrganizationSubscriptionAccess(property.organizationId) : null;
+    return { summary, governance, verification, subscription };
+  });
   return NextResponse.json({ ...summary, ...governance, verification, isTrial: subscription?.planCode === "TRIAL", kbGateEnabled: true, propertySlug, canManage: canManageWorkspace(access.role) });
 }
 

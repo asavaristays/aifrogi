@@ -28,6 +28,8 @@
     "verify:billing": "tsx scripts/verify-billing-super-admin.ts",
     "verify:meta-webhook": "tsx scripts/verify-meta-webhook-enforcement.ts",
     "verify:security-boundaries": "tsx scripts/verify-security-boundaries.ts",
+    "verify:database-contexts": "node scripts/verify-database-context-boundaries.mjs",
+    "verify:dashboard-data-invariants": "tsx scripts/verify-dashboard-data-invariants.ts",
     "verify:security-boundaries:fixtures": "tsx scripts/verify-security-boundaries-with-fixtures.ts",
     "verify:client-secrets": "tsx scripts/verify-client-bundle-secrets.ts",
     "verify:dependency-security": "node scripts/verify-dependency-security.mjs",

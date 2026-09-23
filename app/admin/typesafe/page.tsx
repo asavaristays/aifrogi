@@ -3,14 +3,15 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth-server";
 import { CASTLE_PILOT_TENANT, getPilotReport, reviewPilotObservation, setPilotPolicy, type PilotReviewVerdict } from "@/lib/typesafe-pilot-store";
 import { evaluateTypesafePromotion } from "@/lib/typesafe-promotion-gates";
+import { withPlatformAdminDatabaseContext } from "@/lib/admin-access";
 
 export const dynamic = "force-dynamic";
-async function disablePilot() { "use server"; const user=await getCurrentUser(); if(!user||user.role!=="admin")throw Error("Super Admin required"); await setPilotPolicy(CASTLE_PILOT_TENANT,{enabled:false,expiresAt:new Date().toISOString(),dailyLimit:20},user.username); revalidatePath("/admin/typesafe"); }
-async function reviewObservation(formData:FormData) { "use server"; const user=await getCurrentUser(); if(!user||user.role!=="admin")throw Error("Super Admin required"); await reviewPilotObservation(CASTLE_PILOT_TENANT,String(formData.get("observationId")||""),String(formData.get("verdict")||"") as PilotReviewVerdict,String(formData.get("rationale")||""),user.username); revalidatePath("/admin/typesafe"); }
+async function disablePilot() { "use server"; const user=await getCurrentUser(); if(!user||user.role!=="admin")throw Error("Super Admin required"); await withPlatformAdminDatabaseContext(user,"admin-typesafe-disable",()=>setPilotPolicy(CASTLE_PILOT_TENANT,{enabled:false,expiresAt:new Date().toISOString(),dailyLimit:20},user.username)); revalidatePath("/admin/typesafe"); }
+async function reviewObservation(formData:FormData) { "use server"; const user=await getCurrentUser(); if(!user||user.role!=="admin")throw Error("Super Admin required"); await withPlatformAdminDatabaseContext(user,"admin-typesafe-review",()=>reviewPilotObservation(CASTLE_PILOT_TENANT,String(formData.get("observationId")||""),String(formData.get("verdict")||"") as PilotReviewVerdict,String(formData.get("rationale")||""),user.username)); revalidatePath("/admin/typesafe"); }
 
 export default async function TypeSafePilotPage(){
  const user=await getCurrentUser(); if(!user||user.role!=="admin")redirect("/login");
- const report=await getPilotReport(); const policy=report.policy as {expiresAt?:string;dailyLimit?:number}|null;
+ const report=await withPlatformAdminDatabaseContext(user,"admin-typesafe",getPilotReport); const policy=report.policy as {expiresAt?:string;dailyLimit?:number}|null;
  const configured=process.env.TYPESAFE_ACTION_GATEWAY_ENABLED==="true"&&process.env.TYPESAFE_MODE==="shadow"&&Boolean(process.env.TYPESAFE_API_KEY)&&(process.env.TYPESAFE_SHADOW_ORGANIZATIONS||"").split(",").includes(CASTLE_PILOT_TENANT);
  const promotion=evaluateTypesafePromotion({liveObservations:report.count,unavailable:report.unavailable,p95Ms:report.p95Ms,humanReviewedLiveDecisions:report.reviewed,crossTenantRegressions:0,durableQuotaVerified:true,disableVerified:true,failureFallbackVerified:true,synthetic:null});
  return <main className="mx-auto max-w-6xl space-y-6 p-8">

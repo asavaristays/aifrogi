@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth-server";
 import { getCurrentClientAccess } from "@/lib/client-access";
 import { websiteHandoverOperationId } from "@/lib/website-handover";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 const allowedSenders = new Set(["GUEST", "AGENT", "AI"]);
 
@@ -14,6 +15,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   if (!user) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const access = user.role === "admin" ? null : await getCurrentClientAccess();
   if (user.role !== "admin" && (!access || access.membership?.status !== "ACTIVE" || !["OWNER", "ADMIN", "AGENT"].includes(access.role))) return NextResponse.json({ error: "Operator access required" }, { status: 403 });
+  return withTenantDatabaseContext(user.role === "admin"
+    ? { kind: "platform-admin", actor: `lead-messages:${user.username}` }
+    : { kind: "tenant", organizationId: access!.organization.id, actor: `lead-messages:${user.username}` }, async () => {
   const [lead, propertySlug] = await Promise.all([loadLead(id), getCurrentWorkspaceSlug()]);
   if (!lead || lead.propertySlug !== propertySlug || (access && !access.organization.properties.some((p) => p.slug === lead.propertySlug))) {
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
@@ -97,4 +101,5 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   }
 
   return NextResponse.json({ lead: result.lead }, { status: result.status });
+  });
 }
