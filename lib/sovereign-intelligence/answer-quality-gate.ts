@@ -13,6 +13,13 @@ export type AnswerQualityResult = {
   reasons: string[];
 };
 
+export function hasCompleteAnswerEnding(answer: string) {
+  const value = answer.trim();
+  if (!value) return false;
+  if (value.length < 180) return true;
+  return /(?:[.!?]["')\]]?|https?:\/\/\S+)$/i.test(value);
+}
+
 export function evaluateVisitorAnswerQuality(input: {
   question: string;
   answer: string;
@@ -22,6 +29,7 @@ export function evaluateVisitorAnswerQuality(input: {
   const reasons: string[] = [];
   if (!answer) reasons.push("EMPTY_ANSWER");
   if (answer.length > 1800) reasons.push("EXCESSIVE_LENGTH");
+  if (!hasCompleteAnswerEnding(answer)) reasons.push("INCOMPLETE_ENDING");
   if (INTERNAL_LANGUAGE.test(answer)) reasons.push("INTERNAL_LANGUAGE");
   if (ROBOTIC_DEFLECTION.test(answer)) reasons.push("ROBOTIC_DEFLECTION");
   if (input.decision.disposition === "ANSWER" && !COMMERCIAL_INTENT.test(input.question) && PREMATURE_QUALIFICATION.test(answer)) reasons.push("PREMATURE_QUALIFICATION");

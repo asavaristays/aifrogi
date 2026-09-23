@@ -22,6 +22,7 @@ import { buildTenantTruthReview, type TenantTruthReview } from "@/lib/tenant-int
 import { buildSessionConversationMemory, routeConversationByConfidence } from "@/lib/sovereign-intelligence/conversation-confidence";
 import { buildTenantKnowledgeChangeSet, tenantKnowledgeFreshness, type TenantKnowledgeChangeSet } from "@/lib/tenant-intelligence/learning-lifecycle";
 import { assembleAnswerContext, type AnswerReplayTrace } from "@/lib/sovereign-intelligence/answer-context";
+import { hasCompleteAnswerEnding } from "@/lib/sovereign-intelligence/answer-quality-gate";
 
 export type KnowledgePage = {
   url: string;
@@ -729,7 +730,7 @@ export async function buildWebsiteKnowledgeAnswer({
       const usage = payload?.usage && typeof payload.usage === "object" ? payload.usage as Record<string, unknown> : {};
       return { text: payload ? extractOpenAiText(payload) : "", inputTokens: Math.max(0, Number(usage.input_tokens) || 0), outputTokens: Math.max(0, Number(usage.output_tokens) || 0) };
     },
-    validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000
+    validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000 && hasCompleteAnswerEnding(value.text)
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });

@@ -15,7 +15,7 @@ export type SovereignDecision = {
 
 const EXPLICIT_BUSINESS_SUBJECT = /\b(services?|products?|training|courses?|programmes?|programs?|bootcamp|automation|software|applications?|mobile app|web design|website development|ai bot|hotel technology|hospitality technology|channel manager|digital transformation|filmmaking|film making|marketing|seo|consultation|project process|delivery process|pricing|prices|fees?|packages?|support plans?|weddings?|events?|banquets?|conferences?|celebrations?|amenities|facilities|restaurant|dining|rooms?|suites?|activities|spa|pool|parking)\b/;
 
-const BUSINESS_TOKEN_VOCABULARY = ["wedding", "weddings", "event", "events", "banquet", "conference", "celebration", "amenities", "facilities", "restaurant", "dining", "room", "rooms", "suite", "suites", "booking", "reservation", "availability", "price", "pricing", "rate", "rates", "service", "services", "product", "products", "training", "course", "appointment", "airport", "railway", "distance", "transport", "breakfast", "wifi", "parking", "checkin", "checkout", "pets"];
+const BUSINESS_TOKEN_VOCABULARY = ["wedding", "weddings", "event", "events", "banquet", "conference", "celebration", "amenities", "facilities", "restaurant", "dining", "room", "rooms", "suite", "suites", "booking", "reservation", "availability", "price", "pricing", "rate", "rates", "service", "services", "product", "products", "training", "course", "appointment", "airport", "railway", "distance", "transport", "breakfast", "wifi", "parking", "checkin", "checkout", "pets", "policy", "cancellation"];
 
 function smallEditDistance(left: string, right: string) {
   if (Math.abs(left.length - right.length) > 1) return 2;
@@ -49,6 +49,8 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   if (/^(address|phone|telephone|mobile|email|contact|reservation (?:number|phone|email|contact)|booking (?:number|phone|email|contact))$/.test(normalized)) return "CONTACT_INFO";
   if (/\b(contact (details|information|number|address)|phone number|mobile number|telephone( number)?|email( address)?|office address|business address|reservation (contact|number|phone|email)|booking (contact|number|phone|email)|share (your )?(contact )?address|where (are|r) (you|u) based|where (is|s) (the )?(office|business|company)|location|opening hours|business hours|website address)\b/.test(normalized)) return "CONTACT_INFO";
   if (/\b(weather|temperature|forecast|rain today|cricket (score|match)|football (score|match)|who won( the)? (game|match)|stock price|share price|election result|horoscope|recipe|movie showtime)\b/.test(normalized)) return "OFF_TOPIC";
+  if (/^(?:no\s+)?(?:i\s+)?meant\s+\S+|^(?:tell me more|what about (?:it|that|this|there)|how about (?:it|that|this|there)|same (?:date|dates|time|details|option|room|package))$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
+  if (/^(?:what|who) (?:is|are) [a-z0-9][a-z0-9 '&.-]{1,80}$/.test(normalized)) return "BUSINESS";
   // A polite imperative can still contain a complete business subject. Route it
   // as a new question rather than requiring conversation history that it does
   // not need (for example, "share training program details").
@@ -71,6 +73,7 @@ export function resolveSovereignQuestion(question: string, priorQuestions: strin
   }
   const intent = classifySovereignIntent(question);
   if (intent !== "CONTEXT_FOLLOW_UP") return { constitutionVersion: SOVEREIGN_CONSTITUTION_VERSION, blueprintVersion, intent, disposition: intent === "OFF_TOPIC" ? "REFUSE" : intent === "HUMAN_REQUEST" || intent === "SENSITIVE" ? "ESCALATE" : "ANSWER", resolvedQuestion: question.trim(), contextUsed: false, reason: `Current message classified as ${intent}.` };
+  if (/^(?:no[,\s]+)?(?:i\s+)?meant\s+\S+/i.test(question.trim())) return { constitutionVersion: SOVEREIGN_CONSTITUTION_VERSION, blueprintVersion, intent, disposition: "ANSWER", resolvedQuestion: question.trim(), contextUsed: false, reason: "Explicit correction replaces stale prior context." };
   const priorQuestion = priorQuestions.find((candidate) => ["BUSINESS", "CONTACT_INFO"].includes(classifySovereignIntent(candidate)))?.trim();
   return { constitutionVersion: SOVEREIGN_CONSTITUTION_VERSION, blueprintVersion, intent, disposition: priorQuestion ? "ANSWER" : "CLARIFY", resolvedQuestion: priorQuestion ? `${priorQuestion}\nFollow-up question: ${question.trim()}` : question.trim(), contextUsed: Boolean(priorQuestion), reason: priorQuestion ? "Combined the latest relevant business subject with the current follow-up; unrelated messages excluded." : "No relevant prior business question was available." };
 }

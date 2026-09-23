@@ -1,9 +1,9 @@
 export function guardWebsiteVisitorMessage(message: string) {
   const hasCard = /(?:\d[ -]?){13,19}/.test(message);
   const hasOtp = /\b(?:otp|one[ -]?time password|verification code)\b\s*[:=-]?\s*\d{4,8}\b/i.test(message);
-  const hasPassword = /\b(?:password|passwd|pwd)\b\s*[:=-]\s*\S{4,}/i.test(message);
+  const hasPassword = /\b(?:password|passwd|pwd)\b\s*(?::|=|-)?\s+\S{4,}/i.test(message);
   const hasPromptOrSecretProbe = /\b(system prompt|developer prompt|api key|secret key|access token|show (?:me )?(?:your|the) (?:prompt|instructions|credentials|secrets)|ignore (?:all |your |the )?(?:previous|prior|system|developer) (?:instructions|rules|prompt))\b/i.test(message);
-  const hasCrossTenantProbe = /\b(all (?:customers|bookings|conversations)|another (?:customer|client|tenant)|other (?:customer|client|tenant)s?|customer before me|competitor.{0,30}(?:price|data|booking|conversation))\b/i.test(message);
+  const hasCrossTenantProbe = /\b(all (?:customers|bookings|conversations)|another (?:customer|client|tenant|guest)|other (?:customer|client|tenant|guest)s?|customer before me|guest before me|competitor.{0,30}(?:price|data|booking|conversation))\b|(?:दूसरे|अन्य)\s+(?:अतिथि|ग्राहक).{0,30}(?:फोन|मोबाइल|ईमेल|बुकिंग)/iu.test(message);
   if (!hasCard && !hasOtp && !hasPassword && !hasPromptOrSecretProbe && !hasCrossTenantProbe) return { blocked: false, storageText: message, answer: null as string | null, safetyClassification: "STANDARD" as const };
   if (hasPromptOrSecretProbe || hasCrossTenantProbe) return {
     blocked: true,
