@@ -11,10 +11,12 @@ type QualityInput = { organizationId: string; evidenceId: string; question: stri
 
 /** Reject unsupported scripts and sensitive markers; remove contact values and numeric identifiers. */
 export function redactQualityText(value: string, limit = 1200) {
-  if (!value || value.length > 5000 || /[^\x20-\x7e\r\n\t]/.test(value)
-    || /\b(?:password|secret|otp|token|passport|medical|diagnosis|card number|upi pin|my name|i am|i'm)\b/i.test(value)
-    || /\b(?:mr|mrs|ms|dr)\.?\s+[A-Z][a-z]+\b/.test(value)) return null;
-  const redacted = value.replace(/https?:\/\/\S+|www\.\S+/gi, "[link]")
+  const normalized = value.replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-").replace(/\u00a0/g, " ").replace(/\u20b9/g, "INR");
+  if (!normalized || normalized.length > 5000 || /[^\x20-\x7e\r\n\t]/.test(normalized)
+    || /\b(?:password|secret|otp|token|passport|medical|diagnosis|card number|upi pin|my name|i am|i'm)\b/i.test(normalized)
+    || /\b(?:mr|mrs|ms|dr)\.?\s+[A-Z][a-z]+\b/.test(normalized)) return null;
+  const redacted = normalized.replace(/https?:\/\/\S+|www\.\S+/gi, "[link]")
     .replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g, "[email]")
     .replace(/\+?\d[\d\s().-]{5,}\d/g, "[number]")
     .replace(/\d+/g, "[number]")

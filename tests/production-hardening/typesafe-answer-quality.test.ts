@@ -27,6 +27,7 @@ test("disabled configuration and sensitive input never call provider", async () 
   assert.equal(await assessTypesafeAnswerQuality({ ...input, question: "My password is secret" }, env, fetchImpl, async () => true), null);
   assert.equal(called, false);
   assert.equal(redactQualityText("email me at foo@example.com"), "email me at [email]");
+  assert.equal(redactQualityText("I’ll check the ₹500 rate."), "I'll check the INR[number] rate.");
 });
 
 test("provider rejection is unavailable, not an answer change", async () => {
