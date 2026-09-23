@@ -37,6 +37,14 @@ test("explicit mode, tenant allowlist and key all required", async () => {
     assert.equal(await observeTypesafeRuntime({ organizationId: "a", message: "please book room", primaryIntent: "BUSINESS" }, { ...env, ...override }, async () => { assert.fail("must not transmit"); }), null);
   }
 });
+test("hotel-wide shadow switch still requires the gateway, key, and shadow mode", async () => {
+  const env = { TYPESAFE_HOTEL_SHADOW_ENABLED: "true", TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "shadow", TYPESAFE_API_KEY: "test" };
+  const input = { organizationId: "hotel-two", message: "please book room", primaryIntent: "BUSINESS" };
+  for (const override of [{ TYPESAFE_MODE: "off" }, { TYPESAFE_API_KEY: "" }, { TYPESAFE_ACTION_GATEWAY_ENABLED: "false" }]) {
+    assert.equal(await observeTypesafeRuntime(input, { ...env, ...override }, async () => { assert.fail("must not transmit"); }, async () => true), null);
+  }
+  assert.equal((await observeTypesafeRuntime(input, env, async () => new Response("unavailable", { status: 503 }), async () => true))?.status, "UNAVAILABLE");
+});
 test("provider receives vocabulary only and telemetry omits message and credentials", async () => {
   const result = await observeTypesafeRuntime({ organizationId: "test-one", message: "please book room for Rajesh", primaryIntent: "BUSINESS" },
     { TYPESAFE_ACTION_GATEWAY_ENABLED: "true", TYPESAFE_MODE: "shadow", TYPESAFE_API_KEY: "test", TYPESAFE_SHADOW_ORGANIZATIONS: "test-one" }, async (_, options) => {

@@ -5,6 +5,10 @@ export const CASTLE_PILOT_TENANT = "cmu2dcedu003284kxjotchehs";
 export const TYPESAFE_PRICE_SOURCE = "https://typesafe.ai/blog/introducing-system-one-models-and-jev";
 export const estimatedTypesafeUsd = (inputTokens: number) => Math.max(0, inputTokens) * 0.042 / 1_000_000;
 export type PilotPolicy = { enabled: boolean; expiresAt: string; dailyLimit: number };
+export function eligibleHotelPilot(organization: { isDemo: boolean; status: string; botProfile: { category: string; status: string } | null } | null) {
+  return Boolean(organization && !organization.isDemo && organization.status === "ACTIVE"
+    && organization.botProfile?.category === "STAY" && organization.botProfile.status === "LIVE");
+}
 export function validPilotPolicy(value: unknown, now = Date.now()): value is PilotPolicy {
   const p = value as PilotPolicy | null;
   return Boolean(p && p.enabled === true && Number.isFinite(Date.parse(p.expiresAt)) && Date.parse(p.expiresAt) > now && Number.isInteger(p.dailyLimit) && p.dailyLimit > 0 && p.dailyLimit <= 20);
@@ -15,9 +19,10 @@ const reviewAction = "TYPESAFE_OBSERVATION_REVIEW";
 export type PilotReviewVerdict = "CORRECT" | "INCORRECT" | "UNRESOLVED";
 
 export async function setPilotPolicy(organizationId: string, policy: PilotPolicy, actor: string) {
-  if (organizationId !== CASTLE_PILOT_TENANT) throw new Error("Only Castle Mandawa is authorized for this pilot");
   if (policy.enabled && (!validPilotPolicy(policy) || Date.parse(policy.expiresAt) > Date.now() + 86400_000)) throw new Error("Pilot must expire within 24 hours with at most 20 daily attempts");
   const db = getDb(); if (!db) throw new Error("Database unavailable");
+  const organization = await db.organization.findUnique({ where: { id: organizationId }, select: { isDemo: true, status: true, botProfile: { select: { category: true, status: true } } } });
+  if (!eligibleHotelPilot(organization)) throw new Error("TypeSafe shadow policy requires an active, live, non-demo HotelGPT tenant");
   return db.$transaction(async tx => {
     const locked = await tx.$queryRaw<Array<{ acquired: boolean }>>`SELECT pg_try_advisory_xact_lock(hashtext('typesafe-pilot'), hashtext(${organizationId})) AS acquired`;
     if (!locked[0]?.acquired) throw new Error("Pilot busy; retry control change");
@@ -27,10 +32,12 @@ export async function setPilotPolicy(organizationId: string, policy: PilotPolicy
 
 /** Reserve before transmission. Failed requests count; missing state/errors fail closed. */
 export async function reservePilotAttempt(organizationId: string) {
-  if (organizationId !== CASTLE_PILOT_TENANT) return false;
+  if (organizationId !== CASTLE_PILOT_TENANT && process.env.TYPESAFE_HOTEL_SHADOW_ENABLED !== "true") return false;
   const db = getDb(); if (!db) return false;
   try {
     return await db.$transaction(async tx => {
+      const organization = await tx.organization.findUnique({ where: { id: organizationId }, select: { isDemo: true, status: true, botProfile: { select: { category: true, status: true } } } });
+      if (!eligibleHotelPilot(organization)) return false;
       const locked = await tx.$queryRaw<Array<{ acquired: boolean }>>`SELECT pg_try_advisory_xact_lock(hashtext('typesafe-pilot'), hashtext(${organizationId})) AS acquired`;
       if (!locked[0]?.acquired) return false;
       const latest = await tx.platformAuditLog.findFirst({ where: { organizationId, action: controlAction }, orderBy: [{ createdAt: "desc" }, { id: "desc" }] });
@@ -77,7 +84,7 @@ export async function getPilotReport(organizationId = CASTLE_PILOT_TENANT) {
 }
 
 export async function reviewPilotObservation(organizationId: string, observationId: string, verdict: PilotReviewVerdict, rationale: string, reviewer: string) {
-  if (organizationId !== CASTLE_PILOT_TENANT) throw new Error("Only Castle Mandawa is authorized for this pilot");
+  if (organizationId !== CASTLE_PILOT_TENANT) throw new Error("Only Castle Mandawa is authorized for this review workflow");
   if (!["CORRECT", "INCORRECT", "UNRESOLVED"].includes(verdict)) throw new Error("Invalid review verdict");
   const note = rationale.trim();
   if (note.length < 12 || note.length > 1000) throw new Error("Review rationale must be 12–1000 characters");
