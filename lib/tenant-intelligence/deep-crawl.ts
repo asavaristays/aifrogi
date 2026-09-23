@@ -137,3 +137,29 @@ export function answerExactTenantAccessFact(entities: TenantEntityKnowledge[], q
   if (!match) return null;
   return { answer: `For ${entity.name}, the website lists ${match[0].replace(/\s+/g, " ").trim()}.`, entity };
 }
+
+/** Exact hotel rate/capacity answers copy source wording instead of asking a model
+ * to reinterpret commercial numbers. Availability is deliberately excluded. */
+export function answerExactTenantStayFact(entities: TenantEntityKnowledge[], question: string) {
+  const wantsRate = /\b(?:rate|rates|price|prices|pricing|cost|tariff|per night|nightly)\b/i.test(question);
+  const wantsCapacity = /\b(?:capacity|accommodate|occupancy|how many (?:guests|people|persons)|guests?)\b/i.test(question);
+  if (!wantsRate && !wantsCapacity) return null;
+  if (/\b(?:availability|available|vacancy|vacant)\b/i.test(question)) return null;
+  const entity = resolveTenantEntity(entities, question);
+  if (!entity || entity.entityType !== "PROPERTY") return null;
+  const evidence = entity.facts.map((fact) => fact.value).join(" ").replace(/\s+/g, " ");
+  const parts: string[] = [];
+  if (wantsRate) {
+    const rate = evidence.match(/(?:[A-Z]{2,4}\s+)?(?:INR|Rs\.?|₹)\s*[\d,]+(?:\.\d+)?\s*(?:\/|per)\s*night(?:\s*[+–-]\s*\d+\s*%\s*tax)?/i)
+      || evidence.match(/starting from\s+(?:INR|Rs\.?|₹)\s*[\d,]+(?:\.\d+)?(?:\s*\/\s*night)?/i);
+    if (!rate) return null;
+    parts.push(`the published rate is ${rate[0].replace(/\s+/g, " ").trim()}`);
+  }
+  if (wantsCapacity) {
+    const capacity = evidence.match(/up to\s+\d+\s+(?:guests|people|persons)(?:\s*[,;]\s*\d+\s+rooms?\s+available)?/i);
+    if (!capacity) return null;
+    parts.push(`the listed capacity is ${capacity[0].replace(/\s+/g, " ").trim()}`);
+  }
+  const answer = `For ${entity.name}, ${parts.join("; ")}. This is published property information, not live availability.`;
+  return { answer, entity };
+}

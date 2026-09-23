@@ -5,6 +5,7 @@ import { SOVEREIGN_EVALUATION_VERSION } from "@/lib/sovereign-intelligence/resol
 import type { ReliabilityEvidence } from "@/lib/reliability/runtime";
 import { evaluateDecisionBehaviourConsistency } from "@/lib/sovereign-intelligence/evidence-consistency";
 import { classifyEvidenceFailure, INTELLIGENCE_EVIDENCE_VERSION, isSafeResolution, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
+import { summarizeDeterministicQuality } from "@/lib/sovereign-intelligence/deterministic-quality-score";
 
 export async function recordSovereignAnswerEvidence(input: {
   propertyId: string;
@@ -60,7 +61,7 @@ export async function recordSovereignAnswerEvidence(input: {
 
 export async function getSovereignIntelligenceReport() {
   const db = getDb();
-  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, consistencyMismatches: 0, consistencyRate: null as number | null, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, tier0: 0, tier1: 0, tier2: 0, tier3: 0, degraded: 0, failures: 0, averageLatencyMs: 0, automatedResolutionRate: null as number | null, supportCallsPerThousand: null as number | null, nearMisses: 0, replayCases: 0, pendingReplayCases: 0, personaMetrics: [] as Array<{ personaCategory: string; total: number; safe: number; srr: number }>, recent: [] };
+  if (!db) return { total: 0, grounded: 0, fallback: 0, escalated: 0, offTopic: 0, contextual: 0, circuitBreakers: 0, unresolved: 0, consistencyMismatches: 0, consistencyRate: null as number | null, feedbackTotal: 0, helpfulFeedback: 0, helpfulRate: null as number | null, tier0: 0, tier1: 0, tier2: 0, tier3: 0, degraded: 0, failures: 0, averageLatencyMs: 0, automatedResolutionRate: null as number | null, supportCallsPerThousand: null as number | null, nearMisses: 0, replayCases: 0, pendingReplayCases: 0, personaMetrics: [] as Array<{ personaCategory: string; total: number; safe: number; srr: number }>, qualitySummary: summarizeDeterministicQuality([]), recent: [] };
   const [total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, feedbackTotal, helpfulFeedback, tier0, tier1, tier2, tier3, degraded, failures, latency, nearMisses, replayCases, pendingReplayCases, personaTotals, personaSafe, recent] = await Promise.all([
     db.sovereignAnswerEvidence.count(),
     db.sovereignAnswerEvidence.count({ where: { grounded: true } }),
@@ -94,5 +95,6 @@ export async function getSovereignIntelligenceReport() {
   const consistencyRate = consistencyEligible ? Number((((consistencyEligible - consistencyMismatches) / consistencyEligible) * 100).toFixed(1)) : null;
   const safeByPersona = new Map(personaSafe.map((item) => [item.personaCategory, item._count._all]));
   const personaMetrics = personaTotals.map((item) => { const safe = safeByPersona.get(item.personaCategory) || 0; return { personaCategory: item.personaCategory, total: item._count._all, safe, srr: Number(((safe / item._count._all) * 100).toFixed(1)) }; }).sort((a, b) => b.total - a.total);
-  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, consistencyRate, feedbackTotal, helpfulFeedback, helpfulRate, tier0, tier1, tier2, tier3, degraded, failures, averageLatencyMs: Math.round(latency._avg.latencyMs || 0), automatedResolutionRate, supportCallsPerThousand, nearMisses, replayCases, pendingReplayCases, personaMetrics, recent };
+  const qualitySummary = summarizeDeterministicQuality(recent.map((item) => ({ question: item.question, answer: item.answer, intent: item.intent as SovereignDecision["intent"], disposition: item.disposition as SovereignDecision["disposition"], grounded: item.grounded, decisionConsistent: item.decisionConsistent, safeResolution: item.safeResolution, personaCategory: item.personaCategory, failureLayer: item.failureLayer })));
+  return { total, grounded, fallback, escalated, offTopic, contextual, circuitBreakers, unresolved, consistencyEligible, consistencyMismatches, consistencyRate, feedbackTotal, helpfulFeedback, helpfulRate, tier0, tier1, tier2, tier3, degraded, failures, averageLatencyMs: Math.round(latency._avg.latencyMs || 0), automatedResolutionRate, supportCallsPerThousand, nearMisses, replayCases, pendingReplayCases, personaMetrics, qualitySummary, recent };
 }

@@ -17,12 +17,13 @@ import { evaluateCategoryHardBoundary } from "@/lib/sovereign-intelligence/categ
 import { inferUsedClaimIds, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 import { greetingForTimeZone, validTimeZone } from "@/lib/greeting";
 import { buildTenantProfileDraft, extractWebsiteTenantFacts, reconcileTenantFacts, type TenantFact } from "@/lib/tenant-intelligence/fact-factory";
-import { answerExactTenantAccessFact, buildDeepTenantContext, extractDeepTenantKnowledge, resolveTenantEntity, type TenantEntityKnowledge, type TenantKnowledgeSection } from "@/lib/tenant-intelligence/deep-crawl";
+import { answerExactTenantAccessFact, answerExactTenantStayFact, buildDeepTenantContext, extractDeepTenantKnowledge, resolveTenantEntity, type TenantEntityKnowledge, type TenantKnowledgeSection } from "@/lib/tenant-intelligence/deep-crawl";
 import { buildTenantTruthReview, type TenantTruthReview } from "@/lib/tenant-intelligence/truth-governance";
 import { buildSessionConversationMemory, routeConversationByConfidence } from "@/lib/sovereign-intelligence/conversation-confidence";
 import { buildTenantKnowledgeChangeSet, tenantKnowledgeFreshness, type TenantKnowledgeChangeSet } from "@/lib/tenant-intelligence/learning-lifecycle";
 import { assembleAnswerContext, type AnswerReplayTrace } from "@/lib/sovereign-intelligence/answer-context";
 import { hasCompleteAnswerEnding } from "@/lib/sovereign-intelligence/answer-quality-gate";
+import { planCoreIntelligenceFrame, verifyCoreFrameAnswer } from "@/lib/sovereign-intelligence/core-intelligence-frames";
 
 export type KnowledgePage = {
   url: string;
@@ -682,6 +683,15 @@ export async function buildWebsiteKnowledgeAnswer({
     answer.model = "EXACT_TENANT_FACT";
     return answer;
   }
+  const exactStayFact = persona?.category === "STAY" && knowledgeBase ? answerExactTenantStayFact(knowledgeBase.tenantEntities || [], retrievalQuestion) : null;
+  if (exactStayFact) {
+    const answer = direct(exactStayFact.answer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped hotel commercial evidence without model inference." });
+    answer.sourceUrls = [exactStayFact.entity.sourceUrl];
+    answer.sources = [{ title: exactStayFact.entity.name, url: exactStayFact.entity.sourceUrl, crawledAt: exactStayFact.entity.observedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(exactStayFact.entity.observedAt) <= getTtlMs(24) ? "CURRENT" : "STALE" }];
+    answer.knowledgeAsOf = exactStayFact.entity.observedAt;
+    answer.model = "EXACT_TENANT_FACT";
+    return answer;
+  }
   const websiteResult = knowledgeBase ? buildContext(knowledgeBase, retrievalQuestion) : {
     context: "",
     sourceUrls: [] as string[],
@@ -711,6 +721,15 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const primaryModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
   const fallbackModel = process.env.OPENAI_FALLBACK_MODEL?.trim();
+  const intelligenceFrame = planCoreIntelligenceFrame(persona?.category || "CORE", question);
+  const requiredHotelParts = intelligenceFrame.requestedParts;
+  const frameGuidance = intelligenceFrame.frameKey === "HOTEL_POLICY"
+    ? "Preserve every relevant booking type, timing window, charge, exception, written-notice rule, and refund timing found in evidence. Do not merge different policy categories."
+    : intelligenceFrame.frameKey === "HOTEL_BOOKING_BOUNDARY"
+      ? "Keep published information, live availability, booking request, payment, and confirmed reservation as separate states. Never advance a state without verified connector evidence."
+      : intelligenceFrame.frameKey === "HOTEL_PROPERTY_FACT"
+        ? "Separate starting rate, taxes, meal plan, room type, capacity, and live availability. Copy commercial numbers exactly from evidence."
+        : "";
   const reliable = await executeReliableModel({
     models: [primaryModel, ...(fallbackModel ? [fallbackModel] : [])],
     attemptsPerModel: 2,
@@ -722,7 +741,7 @@ export async function buildWebsiteKnowledgeAnswer({
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({ model, input: [
           { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}` },
-          { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
+          { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nCore Intelligence frame: ${intelligenceFrame.frameKey}.${frameGuidance ? ` ${frameGuidance}` : ""}${intelligenceFrame.requiresPartByPartEvidence ? ` The guest asked about ${requiredHotelParts.join(", ")}. Address each topic separately from approved evidence; if evidence is missing for one topic, say only that part cannot be confirmed.` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
         ], max_output_tokens: 320 })
       });
       if (!response.ok) throw modelHttpError(response.status);
@@ -731,6 +750,7 @@ export async function buildWebsiteKnowledgeAnswer({
       return { text: payload ? extractOpenAiText(payload) : "", inputTokens: Math.max(0, Number(usage.input_tokens) || 0), outputTokens: Math.max(0, Number(usage.output_tokens) || 0) };
     },
     validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000 && hasCompleteAnswerEnding(value.text)
+      && verifyCoreFrameAnswer(intelligenceFrame, question, value.text).passed
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });

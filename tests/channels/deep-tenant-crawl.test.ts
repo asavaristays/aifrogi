@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { answerExactTenantAccessFact, buildDeepTenantContext, extractDeepTenantKnowledge, resolveTenantEntity } from "../../lib/tenant-intelligence/deep-crawl";
+import { answerExactTenantAccessFact, answerExactTenantStayFact, buildDeepTenantContext, extractDeepTenantKnowledge, resolveTenantEntity } from "../../lib/tenant-intelligence/deep-crawl";
 
 const html = `
   <html><head><title>Rohet Garh | Asavari Stays</title></head><body>
@@ -49,4 +49,13 @@ test("short transposed entity spelling still uses exact source wording", () => {
   const entity = extractDeepTenantKnowledge("https://asavaristays.com/properties/47", html, "2026-09-14T00:00:00.000Z");
   const result = answerExactTenantAccessFact(entity ? [entity] : [], "What is the nearest airport to Rohet Grah?");
   assert.equal(result?.answer, "For Rohet Garh, the website lists Airport: Jodhpur 35 Kms.");
+});
+
+test("exact hotel facts preserve published rate and capacity without claiming availability", () => {
+  const hotel = `<html><head><title>Kates Adobe | Asavari Stays</title></head><body><h1>Kates Adobe</h1><h2>Rooms</h2><p>Cottage Room EP INR 22,500 / night + 18 % tax Up to 10 guests, 4 rooms available.</p></body></html>`;
+  const entity = extractDeepTenantKnowledge("https://asavaristays.com/properties/33", hotel, "2026-09-23T00:00:00.000Z");
+  const result = answerExactTenantStayFact(entity ? [entity] : [], "Kates Adbe rate and capacity?");
+  assert.match(result?.answer || "", /INR 22,500 \/ night \+ 18 % tax/);
+  assert.match(result?.answer || "", /up to 10 guests, 4 rooms available/i);
+  assert.match(result?.answer || "", /not live availability/i);
 });

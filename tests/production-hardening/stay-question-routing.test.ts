@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { answerStayDirectoryQuestion, requestsStayBooking } from "../../lib/stay-question-routing";
+import { answerStayDirectoryQuestion, hotelQuestionParts, missingHotelAnswerParts, requestsStayBooking, resolveApprovedStay } from "../../lib/stay-question-routing";
 
 const choices = [
   { destination: "Mukteshwar", stay: "Kates Adobe", url: "https://example.test/33" },
@@ -28,4 +28,10 @@ test("destination answers use all approved menu choices, not prior assistant con
   assert.equal(answerStayDirectoryQuestion("Do you have villas in Coorg?", choices), "We list stays in Coorg, including Wild Cat Coorg and Sagar Estate. Please check each property for its accommodation type.");
   assert.equal(answerStayDirectoryQuestion("Is parking free at Kates Adobe?", choices), null);
   assert.equal(answerStayDirectoryQuestion("Can I book in Coorg?", choices), null);
+});
+
+test("HotelGPT decomposes multipart questions and resolves typo property names", () => {
+  assert.deepEqual(hotelQuestionParts("What is the rate, capacity, and is breakfast included?"), ["RATE", "CAPACITY", "BREAKFAST"]);
+  assert.equal(resolveApprovedStay("Kates Adbe rate please", choices)?.stay, "Kates Adobe");
+  assert.deepEqual(missingHotelAnswerParts("What is the rate and is parking free?", "The rate is INR 22,500."), ["PARKING"]);
 });
