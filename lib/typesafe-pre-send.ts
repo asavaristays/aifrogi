@@ -1,6 +1,6 @@
 import { eligibleTypesafeMessage } from "./typesafe-runtime-shadow";
 import { redactQualityText } from "./typesafe-answer-quality";
-import { reservePilotAttempt } from "./typesafe-pilot-store";
+import { authorizePreSendAttempt } from "./typesafe-pilot-store";
 
 const HOTEL_IDS = new Set(["cmtv7qspl00678ekxasnphvqc", "cmu2dcedu003284kxjotchehs"]);
 const options = ["SUPPORTED", "CONTRADICTED", "INSUFFICIENT"] as const;
@@ -14,7 +14,7 @@ export function shouldEscalatePreSend(result: { status: string; choice?: string;
 export async function assessTypesafePreSend(input: Input,
   env: Record<string, string | undefined> = process.env,
   fetchImpl: typeof fetch = fetch,
-  reserve: (organizationId: string) => Promise<boolean> = reservePilotAttempt) {
+  reserve: (organizationId: string) => Promise<boolean> = authorizePreSendAttempt) {
   if (!HOTEL_IDS.has(input.organizationId) || env.TYPESAFE_PRE_SEND_ENABLED !== "true"
     || env.TYPESAFE_ACTION_GATEWAY_ENABLED !== "true" || !env.TYPESAFE_API_KEY
     || !eligibleTypesafeMessage(input.question)) return null;

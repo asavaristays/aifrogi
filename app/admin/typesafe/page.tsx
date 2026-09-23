@@ -12,7 +12,7 @@ async function updateHotelShadow(formData: FormData) {
   if (!user || user.role !== "admin") throw new Error("Super Admin required");
   const organizationId = String(formData.get("organizationId") || "");
   const enabled = formData.get("action") === "renew";
-  await setPilotPolicy(organizationId, { enabled, expiresAt: null, dailyLimit: 20 }, user.username);
+  await setPilotPolicy(organizationId, { enabled, expiresAt: null, dailyLimit: null }, user.username);
   revalidatePath("/admin/typesafe");
 }
 
@@ -40,7 +40,7 @@ export default async function TypeSafeHotelPage() {
       <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-600">For the two approved hotels, TypeSafe checks factual answers against approved knowledge before guests see them. A high-confidence conflict goes to staff; if TypeSafe is unavailable, the existing bot answer continues. Booking and payment actions are unchanged.</p></header>
     <section className="rounded-2xl bg-stone-950 p-6 text-white">
       <h2 className="text-xl font-semibold">TypeSafe API: {apiStatus}</h2>
-      <p className="mt-2 text-sm text-stone-300">Before-send check: {preSendConfigured ? "Configured" : "Off"}. Current allowance: 20 attempts per hotel per UTC day; when used up, the bot continues with its existing answer rules.</p>
+      <p className="mt-2 text-sm text-stone-300">Before-send check: {preSendConfigured ? "Configured" : "Off"}. Every eligible answer can be checked; there is no AiFrogi timer or daily check limit. If the provider is unavailable, the bot continues with its existing answer rules.</p>
       <p className="mt-2 text-sm text-stone-300">Last successful check: {format(lastSuccess)}. API key is {process.env.TYPESAFE_API_KEY ? "present" : "missing"}; its value is never displayed.</p>
       <p className="mt-2 text-sm text-stone-300">Provider renewal date is not supplied by the TypeSafe API. Check it in the provider account. The approved AiFrogi pre-send policy has no expiry timer and can be disabled here.</p>
     </section>
@@ -54,7 +54,7 @@ export default async function TypeSafeHotelPage() {
         <th className="px-4 py-3">Hotel</th><th className="px-4 py-3">Quality policy</th><th className="px-4 py-3">Answer fit</th><th className="px-4 py-3">Grounding</th><th className="px-4 py-3">Review / API</th><th className="px-4 py-3">Control</th>
       </tr></thead><tbody className="divide-y divide-stone-100">{hotels.map((hotel) => <tr key={hotel.id}>
         <td className="px-4 py-4"><strong>{hotel.name}</strong><span className="mt-1 block text-xs text-stone-500">{hotel.slug}</span></td>
-        <td className="px-4 py-4">{hotel.active && preSendConfigured ? "Active" : "Off / expired"}<span className="mt-1 block text-xs text-stone-500">{hotel.active && !hotel.expiresAt ? "No timer" : `Expires ${format(hotel.expiresAt)}`} · {hotel.attemptsToday}/{hotel.dailyLimit || 20} today</span></td>
+        <td className="px-4 py-4">{hotel.active && preSendConfigured ? "Active" : "Off / expired"}<span className="mt-1 block text-xs text-stone-500">{hotel.active && !hotel.expiresAt ? "No timer" : `Expires ${format(hotel.expiresAt)}`} · {hotel.attemptsToday} checks today{hotel.dailyLimit === null ? " · no daily cap" : ` / ${hotel.dailyLimit || 20} limit`}</span></td>
         <td className="px-4 py-4">{hotel.addressed7d} addressed<span className="mt-1 block text-xs text-stone-500">{hotel.partial7d} partial · {hotel.missed7d} missed</span></td>
         <td className="px-4 py-4">{hotel.supported7d} supported<span className="mt-1 block text-xs text-stone-500">{hotel.unverified7d} lacked exact approved context</span></td>
         <td className="px-4 py-4">{hotel.flagged7d} flagged<span className="mt-1 block text-xs text-stone-500">{hotel.unavailable7d} unavailable · last {format(hotel.lastObservedAt)}</span></td>

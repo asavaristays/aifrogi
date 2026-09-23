@@ -12,8 +12,8 @@ export function summarizeHotelShadow(policy: unknown, attemptsToday: number, obs
   const lastSuccess = observations.find((row) => (row.metadata as Metadata | null)?.status === "OBSERVED");
   const latest = observations[0]?.metadata as Metadata | null;
   return {
-    active, expiresAt: current?.expiresAt || null, dailyLimit: current?.dailyLimit || 0,
-    attemptsToday, remainingToday: active ? Math.max(0, current!.dailyLimit - attemptsToday) : 0,
+    active, expiresAt: current?.expiresAt || null, dailyLimit: current ? current.dailyLimit : 0,
+    attemptsToday, remainingToday: active && current!.dailyLimit !== null ? Math.max(0, current!.dailyLimit - attemptsToday) : null,
     assessed7d: observed.length, unavailable7d: observations.length - observed.length,
     addressed7d: count((row) => row.fit?.choice === "ADDRESSED" || row.fit?.choice === "APPROPRIATE_HANDOVER"),
     partial7d: count((row) => row.fit?.choice === "PARTIAL"), missed7d: count((row) => row.fit?.choice === "MISSED"),
@@ -36,11 +36,12 @@ export async function getHotelShadowMatrix(now = new Date()) {
   const today = new Date(now.toISOString().slice(0, 10));
   const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000);
   return Promise.all(hotels.map(async (hotel) => {
-    const [control, attemptsToday, observations] = await Promise.all([
+    const [control, shadowAttemptsToday, preSendAttemptsToday, observations] = await Promise.all([
       db.platformAuditLog.findFirst({ where: { organizationId: hotel.id, action: "TYPESAFE_PILOT_CONTROL" }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], select: { metadata: true } }),
       db.platformAuditLog.count({ where: { organizationId: hotel.id, action: "TYPESAFE_SHADOW_RESERVED", createdAt: { gte: today } } }),
+      db.platformAuditLog.count({ where: { organizationId: hotel.id, action: "TYPESAFE_PRE_SEND_RESERVED", createdAt: { gte: today } } }),
       db.platformAuditLog.findMany({ where: { organizationId: hotel.id, action: "TYPESAFE_QUALITY_OBSERVED", createdAt: { gte: sevenDaysAgo } }, orderBy: { createdAt: "desc" }, take: 200, select: { createdAt: true, metadata: true } })
     ]);
-    return { ...hotel, ...summarizeHotelShadow(control?.metadata, attemptsToday, observations, now) };
+    return { ...hotel, ...summarizeHotelShadow(control?.metadata, shadowAttemptsToday + preSendAttemptsToday, observations, now) };
   }));
 }

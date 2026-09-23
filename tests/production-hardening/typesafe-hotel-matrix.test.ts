@@ -17,4 +17,7 @@ test("hotel matrix distinguishes policy expiry, answer quality and provider heal
   assert.equal(result.unavailable7d, 1);
   assert.equal(result.latestHttpStatus, null);
   assert.equal(summarizeHotelShadow({ ...policy, expiresAt: now.toISOString() }, 3, [], now).active, false);
+  const unlimited = summarizeHotelShadow({ enabled: true, expiresAt: null, dailyLimit: null }, 25, [], now);
+  assert.equal(unlimited.active, true);
+  assert.equal(unlimited.remainingToday, null);
 });

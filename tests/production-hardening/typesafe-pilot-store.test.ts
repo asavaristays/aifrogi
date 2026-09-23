@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { validPilotPolicy, reservePilotAttempt, eligibleHotelPilot, CASTLE_PILOT_TENANT } from "../../lib/typesafe-pilot-store";
+import { validPilotPolicy, reservePilotAttempt, authorizePreSendAttempt, eligibleHotelPilot, CASTLE_PILOT_TENANT, ASAVARI_PILOT_TENANT } from "../../lib/typesafe-pilot-store";
 
 test("only active, live, non-demo HotelGPT tenants qualify", () => {
   const hotel = { isDemo: false, status: "ACTIVE", botProfile: { category: "STAY", status: "LIVE" } };
@@ -15,7 +15,30 @@ test("policy rejects expiry, invalid caps, disabled and missing configuration", 
   const good = { enabled: true, expiresAt: new Date(now + 10000).toISOString(), dailyLimit: 20 };
   assert.equal(validPilotPolicy(good, now), true);
   assert.equal(validPilotPolicy({ ...good, expiresAt: null }, now), true);
+  assert.equal(validPilotPolicy({ ...good, expiresAt: null, dailyLimit: null }, now), true);
   for (const bad of [null, {}, { ...good, enabled: false }, { ...good, expiresAt: "bad" }, { ...good, expiresAt: new Date(now).toISOString() }, { ...good, dailyLimit: 21 }, { ...good, dailyLimit: 0 }, { ...good, dailyLimit: 1.5 }]) assert.equal(validPilotPolicy(bad, now), false);
+});
+
+test("approved pre-send policy has no timer or daily cutoff, but can be switched off", async () => {
+  const previousDb = globalThis.__prisma__, previousUrl = process.env.DATABASE_URL;
+  let created = 0;
+  const policy = { enabled: true, expiresAt: null, dailyLimit: null };
+  const tx = {
+    organization: { findUnique: async () => ({ isDemo: false, status: "ACTIVE", botProfile: { category: "STAY", status: "LIVE" } }) },
+    platformAuditLog: { findFirst: async () => ({ metadata: policy }), create: async () => { created++; return {}; } }
+  };
+  globalThis.__prisma__ = { $transaction: async (work: (transaction: unknown) => Promise<unknown>) => work(tx) } as unknown as NonNullable<typeof globalThis.__prisma__>;
+  process.env.DATABASE_URL = "postgresql://unused/test";
+  try {
+    assert.equal(await authorizePreSendAttempt("other-hotel"), false);
+    for (let index = 0; index < 25; index++) assert.equal(await authorizePreSendAttempt(ASAVARI_PILOT_TENANT), true);
+    assert.equal(created, 25);
+    policy.enabled = false;
+    assert.equal(await authorizePreSendAttempt(CASTLE_PILOT_TENANT), false);
+  } finally {
+    globalThis.__prisma__ = previousDb;
+    if (previousUrl === undefined) delete process.env.DATABASE_URL; else process.env.DATABASE_URL = previousUrl;
+  }
 });
 
 test("durable quota counts failures and legacy samples; lock/expiry/errors fail closed", async () => {

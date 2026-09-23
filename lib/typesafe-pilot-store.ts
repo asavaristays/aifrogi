@@ -5,7 +5,7 @@ export const ASAVARI_PILOT_TENANT = "cmtv7qspl00678ekxasnphvqc";
 // Direct-provider published price, verified 2026-09-20. Estimate, not invoice.
 export const TYPESAFE_PRICE_SOURCE = "https://typesafe.ai/blog/introducing-system-one-models-and-jev";
 export const estimatedTypesafeUsd = (inputTokens: number) => Math.max(0, inputTokens) * 0.042 / 1_000_000;
-export type PilotPolicy = { enabled: boolean; expiresAt: string | null; dailyLimit: number };
+export type PilotPolicy = { enabled: boolean; expiresAt: string | null; dailyLimit: number | null };
 export function eligibleHotelPilot(organization: { isDemo: boolean; status: string; botProfile: { category: string; status: string } | null } | null) {
   return Boolean(organization && !organization.isDemo && organization.status === "ACTIVE"
     && organization.botProfile?.category === "STAY" && organization.botProfile.status === "LIVE");
@@ -13,7 +13,7 @@ export function eligibleHotelPilot(organization: { isDemo: boolean; status: stri
 export function validPilotPolicy(value: unknown, now = Date.now()): value is PilotPolicy {
   const p = value as PilotPolicy | null;
   return Boolean(p && p.enabled === true && (p.expiresAt === null || typeof p.expiresAt === "string" && Number.isFinite(Date.parse(p.expiresAt)) && Date.parse(p.expiresAt) > now)
-    && Number.isInteger(p.dailyLimit) && p.dailyLimit > 0 && p.dailyLimit <= 20);
+    && (p.dailyLimit === null || Number.isInteger(p.dailyLimit) && p.dailyLimit > 0 && p.dailyLimit <= 20));
 }
 const controlAction = "TYPESAFE_PILOT_CONTROL";
 const attemptAction = "TYPESAFE_SHADOW_RESERVED";
@@ -22,7 +22,7 @@ export type PilotReviewVerdict = "CORRECT" | "INCORRECT" | "UNRESOLVED";
 
 export async function setPilotPolicy(organizationId: string, policy: PilotPolicy, actor: string) {
   if (policy.enabled && (!validPilotPolicy(policy) || policy.expiresAt !== null && Date.parse(policy.expiresAt) > Date.now() + 86400_000)) throw new Error("Invalid TypeSafe policy or daily limit");
-  if (policy.enabled && policy.expiresAt === null && ![ASAVARI_PILOT_TENANT, CASTLE_PILOT_TENANT].includes(organizationId)) throw new Error("Non-expiring TypeSafe quality checks are approved only for two hotels");
+  if (policy.enabled && (policy.expiresAt === null || policy.dailyLimit === null) && ![ASAVARI_PILOT_TENANT, CASTLE_PILOT_TENANT].includes(organizationId)) throw new Error("Unbounded TypeSafe quality checks are approved only for two hotels");
   const db = getDb(); if (!db) throw new Error("Database unavailable");
   const organization = await db.organization.findUnique({ where: { id: organizationId }, select: { isDemo: true, status: true, botProfile: { select: { category: true, status: true } } } });
   if (!eligibleHotelPilot(organization)) throw new Error("TypeSafe shadow policy requires an active, live, non-demo HotelGPT tenant");
@@ -51,8 +51,28 @@ export async function reservePilotAttempt(organizationId: string) {
       // Include pre-v2 observations only; later observations correspond to reservations.
       const legacy = await tx.platformAuditLog.count({ where: { organizationId, action: "TYPESAFE_SHADOW_OBSERVED", createdAt: { gte: start }, NOT: { metadata: { path: ["version"], equals: "typesafe-shadow-v2" } } } });
       const recent = await tx.platformAuditLog.findFirst({ where: { organizationId, action: attemptAction, createdAt: { gte: new Date(now - 10_000) } } });
-      if (recent || attempts + legacy >= latest.metadata.dailyLimit) return false;
+      if (recent || latest.metadata.dailyLimit === null || attempts + legacy >= latest.metadata.dailyLimit) return false;
       await tx.platformAuditLog.create({ data: { organizationId, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM", action: attemptAction, targetType: "TypeSafePilot", targetId: organizationId, summary: "Budget reserved before advisory transmission; no customer text stored", metadata: { version: "typesafe-shadow-v2" } } });
+      return true;
+    }, { timeout: 2000, maxWait: 1000 });
+  } catch { return false; }
+}
+
+/** Authorize every eligible pre-send call for the two approved hotels; no timer or daily cutoff. */
+export async function authorizePreSendAttempt(organizationId: string) {
+  if (![ASAVARI_PILOT_TENANT, CASTLE_PILOT_TENANT].includes(organizationId)) return false;
+  const db = getDb(); if (!db) return false;
+  try {
+    return await db.$transaction(async tx => {
+      const organization = await tx.organization.findUnique({ where: { id: organizationId },
+        select: { isDemo: true, status: true, botProfile: { select: { category: true, status: true } } } });
+      if (!eligibleHotelPilot(organization)) return false;
+      const latest = await tx.platformAuditLog.findFirst({ where: { organizationId, action: controlAction },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }], select: { metadata: true } });
+      if (!validPilotPolicy(latest?.metadata) || latest.metadata.expiresAt !== null || latest.metadata.dailyLimit !== null) return false;
+      await tx.platformAuditLog.create({ data: { organizationId, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM",
+        action: "TYPESAFE_PRE_SEND_RESERVED", targetType: "TypeSafeQuality", targetId: organizationId,
+        summary: "Approved hotel pre-send check reserved; no customer text stored", metadata: { version: "typesafe-pre-send-v1" } } });
       return true;
     }, { timeout: 2000, maxWait: 1000 });
   } catch { return false; }
