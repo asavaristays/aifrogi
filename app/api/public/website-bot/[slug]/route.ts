@@ -30,6 +30,7 @@ import { activeNegotiationPolicy, evaluateTenantNegotiation, policyForVerifiedSt
 import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sovereign-intelligence/layer-router";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
+import { answerStayDirectoryQuestion, requestsStayBooking } from "@/lib/stay-question-routing";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -151,12 +152,13 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     const [destination, stay] = item.label.split("|").map((value) => value.trim());
     return { destination, stay, url: item.value };
   }).filter((item) => item.destination && item.stay && item.url);
+  const directoryAnswer = profile.category === "STAY" ? answerStayDirectoryQuestion(message, bookingChoices) : null;
   const bookingPlan = planConversation({
     question: message,
     priorQuestions,
     lastAssistantAnswer,
     blueprintVersion: CATEGORY_BLUEPRINT_VERSION,
-    operations: bookingLink ? [{
+    operations: bookingLink && !directoryAnswer && requestsStayBooking(message) ? [{
       id: "booking.availability",
       triggerTerms: ["book", "booking", "reserve", "reservation", "availability", "available", "rate", "rates", "price", "pricing", "cost", "room", "rooms", "stay", "stays", "property", "properties", "hotel", "hotels", "villa", "villas"],
       slots: [
@@ -165,9 +167,12 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       ]
     }] : []
   });
-  const conversationText = `${message}\n${lastAssistantAnswer}`.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const requestedStay = bookingChoices.find((item) => conversationText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")));
-  const requestedDestination = requestedStay?.destination || (bookingPlan.operation?.id === "booking.availability" ? bookingPlan.operation.slots.destination?.[0] : undefined);
+  const currentMessageText = message.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const explicitDestination = bookingChoices.find((item) => currentMessageText.includes(item.destination.toLowerCase().replace(/[^a-z0-9]/g, "")))?.destination;
+  const contextualText = !explicitDestination && fallbackDecision.contextUsed ? lastAssistantAnswer.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+  const requestedStay = bookingChoices.find((item) => currentMessageText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")))
+    || bookingChoices.find((item) => contextualText.includes(item.stay.toLowerCase().replace(/[^a-z0-9]/g, "")));
+  const requestedDestination = explicitDestination || requestedStay?.destination || (bookingPlan.operation?.id === "booking.availability" ? bookingPlan.operation.slots.destination?.[0] : undefined);
   const destinationStays = requestedDestination ? bookingChoices.filter((item) => item.destination === requestedDestination) : [];
   const destinationBookingUrl = requestedDestination && bookingLink?.value ? (() => { const url = new URL("/destination", bookingLink.value); url.searchParams.set("destination", requestedDestination); return url.toString(); })() : bookingLink?.value;
   const requestedDates = bookingPlan.operation?.id === "booking.availability" ? (bookingPlan.operation.slots.dates || []).slice(0, 2) : [];
@@ -218,6 +223,12 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: negotiation.kind === "COUNTER" || negotiation.kind === "ACCEPTED" ? "ANSWER" as const : "CLARIFY" as const, reason: negotiation.kind === "COUNTER" ? "Counteroffer calculated inside the published tenant boundary." : negotiation.kind === "ACCEPTED" ? "Guest acceptance recorded without claiming an unverified booking." : "Negotiation requires verified rate context or human approval." },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: negotiation.kind === "COUNTER" || negotiation.kind === "ACCEPTED" ? "TIER_0_SELF_RESOLVE" as const : "TIER_1_BUSINESS_ASYNC" as const, degradedMode: false }
+  } : directoryAnswer && bookingLink ? {
+    answer: directoryAnswer,
+    sources: [{ title: "Approved stays menu", url: bookingLink.value!, crawledAt: knowledgeSettings.updatedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness: "CURRENT" as const }], sourceUrls: [bookingLink.value!], claimIds: [], knowledgeAsOf: knowledgeSettings.updatedAt, usedOpenAi: false, model: "APPROVED_STAYS_DIRECTORY",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, disposition: "ANSWER" as const, reason: "Tenant-approved stays menu supplied the destinations and property names." },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
   } : requestsOnlineBooking && bookingLink ? {
     answer: liveAvailability
       ? liveAvailability.available
