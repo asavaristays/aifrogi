@@ -99,6 +99,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });
   const residentStay = payload?.stayAccessToken ? verifyHotelGuestStayToken(payload.stayAccessToken, slug) : null;
   if (payload?.stayAccessToken && (!residentStay || profile.category !== "STAY")) return NextResponse.json({ error: "Resident access is invalid or expired." }, { status: 401, headers: responseHeaders });
+  const approvedResidentAccess = residentStay ? (await db.$queryRaw<Array<{ id: string; approvedCheckOut: Date }>>`SELECT id,"approvedCheckOut" FROM "HotelGuestAccessRequest" WHERE id=${residentStay.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() LIMIT 1`)[0] : null;
+  if (residentStay && !approvedResidentAccess) return NextResponse.json({ error: "Resident access is not approved, has expired, or was revoked." }, { status: 401, headers: responseHeaders });
 
   const priorToken = payload?.visitorToken ? verifyWebsiteVisitorToken(payload.visitorToken, slug) : null;
   let existingResolutionState: unknown = null;
@@ -111,7 +113,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     if (!activeSession) return NextResponse.json({ error: "Visitor session is invalid, closed, or expired." }, { status: 401, headers: responseHeaders });
     existingResolutionState = activeSession.resolutionState;
     sessionStatus = activeSession.status;
-    if (activeSession.consentText?.startsWith("Guest-declared HotelGPT resident access")) residentSessionExpiry = Math.floor(activeSession.expiresAt.getTime() / 1000);
+    if (activeSession.consentText?.startsWith("Front-desk-approved HotelGPT resident access")) residentSessionExpiry = Math.floor(activeSession.expiresAt.getTime() / 1000);
     if (sessionStatus === "CLOSED") return NextResponse.json({ error: "This conversation is closed.", conversationState: "CLOSED" }, { status: 410, headers: responseHeaders });
     const latestEvidence = await db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id, sessionIdHash: hashWebsiteVisitorValue(sessionId) }, orderBy: { createdAt: "desc" }, select: { circuitBreaker: true, circuitBreakerReason: true, question: true, resolvedQuestion: true, answer: true } });
     lastAssistantAnswer = latestEvidence?.answer || "";
@@ -395,12 +397,12 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     create: {
       propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
       status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", resolutionState: sessionResolutionState, expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
-      ...(residentStay ? { contactName: residentStay.guestName, consentText: `Guest-declared HotelGPT resident access for room ${residentStay.roomNumber}, ${residentStay.checkIn} to ${residentStay.checkOut}.` } : consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
+      ...(residentStay ? { contactName: residentStay.guestName, consentText: `Front-desk-approved HotelGPT resident access for room ${residentStay.roomNumber}, ${residentStay.checkIn} to ${residentStay.checkOut}.` } : consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     },
     update: {
       capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: sessionResolutionState,
       expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
-      ...(residentStay ? { contactName: residentStay.guestName, consentText: `Guest-declared HotelGPT resident access for room ${residentStay.roomNumber}, ${residentStay.checkIn} to ${residentStay.checkOut}.` } : consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
+      ...(residentStay ? { contactName: residentStay.guestName, consentText: `Front-desk-approved HotelGPT resident access for room ${residentStay.roomNumber}, ${residentStay.checkIn} to ${residentStay.checkOut}.` } : consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     }
   });
 
@@ -411,8 +413,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       initials: residentStay.guestName.split(/\s+/).slice(0, 2).map(part => part[0]?.toUpperCase() || "").join("") || "RG",
       source: "HotelGPT Resident QR",
       stayLabel: `Room ${residentStay.roomNumber} · checkout ${residentStay.checkOut}`,
-      partyLabel: "Guest-declared stay",
-      tags: wasResident ? undefined : { create: [{ value: "Resident Guest" }, { value: "Guest-declared" }] }
+      partyLabel: "Front-desk-approved stay",
+      tags: wasResident ? undefined : { create: [{ value: "Resident Guest" }, { value: "Front-desk approved" }] }
     } });
     if (!wasResident) await persistenceDb.platformAuditLog.create({ data: {
       organizationId: organization.id,
@@ -421,9 +423,10 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       action: "HOTELGPT_RESIDENT_SESSION_STARTED",
       targetType: "LEAD",
       targetId: captured.lead.id,
-      summary: `Guest-declared resident session started for room ${residentStay.roomNumber}; access ends at submitted checkout.`,
-      metadata: { propertyId: property.id, verification: "GUEST_DECLARED", checkIn: residentStay.checkIn, checkOut: residentStay.checkOut }
+      summary: `Front-desk-approved resident session started for room ${residentStay.roomNumber}; access ends at the approved checkout.`,
+      metadata: { propertyId: property.id, access: "FRONT_DESK_APPROVED", checkIn: residentStay.checkIn, checkOut: residentStay.checkOut }
     } });
+    await persistenceDb.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${residentStay.requestId} AND "propertyId"=${property.id} AND status='APPROVED'`;
   }
 
   if (qualification.state) {

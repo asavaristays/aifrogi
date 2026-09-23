@@ -171,6 +171,7 @@ model Property {
   neutralMessages        Message[]
   aiOperations           AiOperation[]
   websiteSessions        WebsiteVisitorSession[]
+  hotelGuestAccessRequests HotelGuestAccessRequest[]
   sovereignEvidence      SovereignAnswerEvidence[]
   answerFeedback         SovereignAnswerFeedback[]
   sovereignReplayCases   SovereignReplayCase[]
@@ -856,6 +857,32 @@ model WebsiteVisitorSession {
   @@unique([propertyId, sessionIdHash])
   @@index([propertyId, status, updatedAt])
   @@index([expiresAt, revokedAt])
+}
+
+model HotelGuestAccessRequest {
+  id                 String    @id @default(cuid())
+  propertyId         String
+  property           Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  requestTokenHash   String    @unique
+  guestName          String
+  roomNumber         String
+  requestedCheckIn   DateTime
+  requestedCheckOut  DateTime
+  approvedCheckOut   DateTime?
+  status             String    @default("PENDING")
+  reviewedBy         String?
+  reviewedAt         DateTime?
+  rejectionReason    String?
+  activatedAt        DateTime?
+  revokedAt          DateTime?
+  revokedBy          String?
+  leadId             String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([propertyId, status, createdAt])
+  @@index([approvedCheckOut, status])
+  @@index([leadId])
 }
 
 model SovereignAnswerEvidence {

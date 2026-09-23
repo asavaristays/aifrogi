@@ -7,6 +7,7 @@ import { getCurrentWorkspaceSlug } from '@/lib/workspace';
 import { loadLeads } from '@/lib/services/lead-service';
 import { redirect } from 'next/navigation';
 import styles from '@/components/lead-inbox/team-inbox.module.css';
+import { HotelGptAccessQueue } from '@/components/lead-inbox/hotelgpt-access-queue';
 import type { WhatsAppIntegration } from '@/types';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {title:'Team Inbox · AiFrogi',manifest:'/team-inbox.webmanifest',robots:{index:false,follow:false}};
@@ -15,5 +16,5 @@ export default async function TeamInboxPage(){
   const access=await resolveClientWorkspaceAccess({propertySlug:await getCurrentWorkspaceSlug()});
   if(!access.ok)redirect('/login?returnTo=%2Fteam-inbox');
   const leads=await withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug));
-  return <div className={styles.page}><TeamInboxStatus/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode/></div>;
+  return <div className={styles.page}><TeamInboxStatus/>{access.organization.botProfile?.category === "STAY" ? <HotelGptAccessQueue propertySlug={access.propertySlug} /> : null}<WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode/></div>;
 }

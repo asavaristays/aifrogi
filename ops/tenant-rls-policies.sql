@@ -122,7 +122,7 @@ DECLARE
   ];
   property_tables text[] := ARRAY[
     'KnowledgeDocument','KnowledgeEntry','KnowledgePreview','KnowledgeAnswerFlag','KnowledgeGap','Lead',
-    'WebsiteVisitorSession','SovereignAnswerEvidence','SovereignAnswerFeedback','SovereignReplayCase',
+    'WebsiteVisitorSession','HotelGuestAccessRequest','SovereignAnswerEvidence','SovereignAnswerFeedback','SovereignReplayCase',
     'ChannelConnection','Participant','Conversation','Message','AiOperation','MetricDaily','Campaign',
     'AutomationJob','Asset','WhatsAppIntegration','AppointmentTenant','CommerceTenant'
   ];
