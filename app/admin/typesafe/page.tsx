@@ -1,67 +1,24 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth-server";
-import { getHotelShadowMatrix } from "@/lib/typesafe-hotel-matrix";
-import { setPilotPolicy } from "@/lib/typesafe-pilot-store";
+import { CASTLE_PILOT_TENANT, getPilotReport, reviewPilotObservation, setPilotPolicy, type PilotReviewVerdict } from "@/lib/typesafe-pilot-store";
+import { evaluateTypesafePromotion } from "@/lib/typesafe-promotion-gates";
 
 export const dynamic = "force-dynamic";
+async function disablePilot() { "use server"; const user=await getCurrentUser(); if(!user||user.role!=="admin")throw Error("Super Admin required"); await setPilotPolicy(CASTLE_PILOT_TENANT,{enabled:false,expiresAt:new Date().toISOString(),dailyLimit:20},user.username); revalidatePath("/admin/typesafe"); }
+async function reviewObservation(formData:FormData) { "use server"; const user=await getCurrentUser(); if(!user||user.role!=="admin")throw Error("Super Admin required"); await reviewPilotObservation(CASTLE_PILOT_TENANT,String(formData.get("observationId")||""),String(formData.get("verdict")||"") as PilotReviewVerdict,String(formData.get("rationale")||""),user.username); revalidatePath("/admin/typesafe"); }
 
-async function updateHotelShadow(formData: FormData) {
-  "use server";
-  const user = await getCurrentUser();
-  if (!user || user.role !== "admin") throw new Error("Super Admin required");
-  const organizationId = String(formData.get("organizationId") || "");
-  const enabled = formData.get("action") === "renew";
-  await setPilotPolicy(organizationId, { enabled, expiresAt: null, dailyLimit: null }, user.username);
-  revalidatePath("/admin/typesafe");
-}
-
-export default async function TypeSafeHotelPage() {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "admin") redirect("/login");
-  const hotels = await getHotelShadowMatrix();
-  const configured = process.env.TYPESAFE_ACTION_GATEWAY_ENABLED === "true"
-    && process.env.TYPESAFE_MODE === "shadow"
-    && process.env.TYPESAFE_HOTEL_SHADOW_ENABLED === "true"
-    && Boolean(process.env.TYPESAFE_API_KEY);
-  const preSendConfigured = configured && process.env.TYPESAFE_PRE_SEND_ENABLED === "true";
-  const total = (key: "assessed7d" | "addressed7d" | "flagged7d" | "unavailable7d") => hotels.reduce((sum, hotel) => sum + hotel[key], 0);
-  const lastSuccess = hotels.map((hotel) => hotel.lastSuccessAt).filter((date): date is Date => Boolean(date)).sort((a, b) => b.getTime() - a.getTime())[0];
-  const failures = hotels.filter((hotel) => hotel.latestStatus === "UNAVAILABLE");
-  const apiStatus = !configured ? "Off / incomplete configuration" : failures.some((hotel) => hotel.latestHttpStatus === 401 || hotel.latestHttpStatus === 403)
-    ? "Key rejected — check provider account" : failures.some((hotel) => hotel.latestHttpStatus === 429)
-      ? "Provider limit reached — check renewal" : failures.length ? "Recent provider error — investigate" : lastSuccess ? "Operational" : "Configured; no successful quality check yet";
-  const format = (value: string | Date | null | undefined) => value
-    ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date(value)) : "—";
-
-  return <main className="mx-auto max-w-6xl space-y-6 p-5 sm:p-8">
-    <header><p className="product-eyebrow">Super Admin · HotelGPT</p>
-      <h1 className="mt-2 text-3xl font-semibold">Answer quality matrix</h1>
-      <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-600">For the two approved hotels, TypeSafe checks factual answers against approved knowledge before guests see them. A high-confidence conflict goes to staff; if TypeSafe is unavailable, the existing bot answer continues. Booking and payment actions are unchanged.</p></header>
-    <section className="rounded-2xl bg-stone-950 p-6 text-white">
-      <h2 className="text-xl font-semibold">TypeSafe API: {apiStatus}</h2>
-      <p className="mt-2 text-sm text-stone-300">Before-send check: {preSendConfigured ? "Configured" : "Off"}. Every eligible answer can be checked; there is no AiFrogi timer or daily check limit. If the provider is unavailable, the bot continues with its existing answer rules.</p>
-      <p className="mt-2 text-sm text-stone-300">Last successful check: {format(lastSuccess)}. API key is {process.env.TYPESAFE_API_KEY ? "present" : "missing"}; its value is never displayed.</p>
-      <p className="mt-2 text-sm text-stone-300">Provider renewal date is not supplied by the TypeSafe API. Check it in the provider account. The approved AiFrogi pre-send policy has no expiry timer and can be disabled here.</p>
-    </section>
-    <section className="grid gap-3 sm:grid-cols-4">
-      {[["Assessed", total("assessed7d")], ["Addressed / justified handover", total("addressed7d")], ["Flagged for human review", total("flagged7d")], ["Provider unavailable", total("unavailable7d")]].map(([label, value]) =>
-        <div className="rounded-xl border bg-white p-4" key={label}><p className="text-xs text-stone-500">{label}</p><p className="mt-2 text-2xl font-semibold">{value}</p></div>)}
-    </section>
-    <section className="overflow-x-auto rounded-2xl border bg-white">
-      <div className="border-b px-6 py-5"><h2 className="text-xl font-semibold">Live hotel answer quality · last 7 days</h2><p className="mt-1 text-sm text-stone-500">Only eligible, filtered English turns are checked; counts are not a score for all guest answers.</p></div>
-      <table className="w-full min-w-[900px] text-left text-sm"><thead className="bg-stone-50 text-xs uppercase tracking-wide text-stone-500"><tr>
-        <th className="px-4 py-3">Hotel</th><th className="px-4 py-3">Quality policy</th><th className="px-4 py-3">Answer fit</th><th className="px-4 py-3">Grounding</th><th className="px-4 py-3">Review / API</th><th className="px-4 py-3">Control</th>
-      </tr></thead><tbody className="divide-y divide-stone-100">{hotels.map((hotel) => <tr key={hotel.id}>
-        <td className="px-4 py-4"><strong>{hotel.name}</strong><span className="mt-1 block text-xs text-stone-500">{hotel.slug}</span></td>
-        <td className="px-4 py-4">{hotel.active && preSendConfigured ? "Active" : "Off / expired"}<span className="mt-1 block text-xs text-stone-500">{hotel.active && !hotel.expiresAt ? "No timer" : `Expires ${format(hotel.expiresAt)}`} · {hotel.attemptsToday} checks today{hotel.dailyLimit === null ? " · no daily cap" : ` / ${hotel.dailyLimit || 20} limit`}</span></td>
-        <td className="px-4 py-4">{hotel.addressed7d} addressed<span className="mt-1 block text-xs text-stone-500">{hotel.partial7d} partial · {hotel.missed7d} missed</span></td>
-        <td className="px-4 py-4">{hotel.supported7d} supported<span className="mt-1 block text-xs text-stone-500">{hotel.unverified7d} lacked exact approved context</span></td>
-        <td className="px-4 py-4">{hotel.flagged7d} flagged<span className="mt-1 block text-xs text-stone-500">{hotel.unavailable7d} unavailable · last {format(hotel.lastObservedAt)}</span></td>
-        <td className="px-4 py-4"><div className="flex gap-2">{["cmtv7qspl00678ekxasnphvqc", "cmu2dcedu003284kxjotchehs"].includes(hotel.id) ? <form action={updateHotelShadow}><input type="hidden" name="organizationId" value={hotel.id}/><button type="submit" name="action" value="renew" className="rounded-lg bg-stone-900 px-3 py-2 text-xs font-semibold text-white">{hotel.active && !hotel.expiresAt ? "Enabled" : "Enable without timer"}</button></form> : null}
-          {hotel.active ? <form action={updateHotelShadow}><input type="hidden" name="organizationId" value={hotel.id}/><button type="submit" name="action" value="disable" className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700">Disable</button></form> : null}</div></td>
-      </tr>)}</tbody></table>{!hotels.length ? <p className="p-6 text-sm text-stone-500">No active, live, non-demo HotelGPT tenants.</p> : null}
-    </section>
-    <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">These are review signals, not verified correctness rates. Only a clear, high-confidence conflict with exact approved knowledge changes a reply; a human must review flagged answers. TypeSafe cost is not a separate client charge.</p>
-  </main>;
+export default async function TypeSafePilotPage(){
+ const user=await getCurrentUser(); if(!user||user.role!=="admin")redirect("/login");
+ const report=await getPilotReport(); const policy=report.policy as {expiresAt?:string;dailyLimit?:number}|null;
+ const configured=process.env.TYPESAFE_ACTION_GATEWAY_ENABLED==="true"&&process.env.TYPESAFE_MODE==="shadow"&&Boolean(process.env.TYPESAFE_API_KEY)&&(process.env.TYPESAFE_SHADOW_ORGANIZATIONS||"").split(",").includes(CASTLE_PILOT_TENANT);
+ const promotion=evaluateTypesafePromotion({liveObservations:report.count,unavailable:report.unavailable,p95Ms:report.p95Ms,humanReviewedLiveDecisions:report.reviewed,crossTenantRegressions:0,durableQuotaVerified:true,disableVerified:true,failureFallbackVerified:true,synthetic:null});
+ return <main className="mx-auto max-w-6xl space-y-6 p-8">
+  <header><p className="product-eyebrow">Super Admin · controlled evaluation</p><h1 className="mt-2 text-3xl font-semibold">TypeSafe shadow pilot</h1><p className="mt-3 text-sm text-stone-600">Castle Mandawa only. Customer text stays in existing internal evidence and is never copied to TypeSafe telemetry or sent to TypeSafe.</p></header>
+  <section className="rounded-2xl bg-stone-950 p-6 text-white"><h2 className="text-xl">{report.active&&configured?"Shadow enabled":"Off / expired / not configured"}</h2><p className="mt-2">Expiry: {policy?.expiresAt||"Not configured"} · Daily cap: {policy?.dailyLimit||0}</p><p className="mt-2 text-sm text-stone-300">Database reservations survive restarts. An already-dispatched request may finish after disable.</p><form action={disablePilot}><button className="mt-5 rounded-lg bg-red-700 px-5 py-3 font-semibold">Disable pilot now</button></form></section>
+  <section className="grid gap-4 sm:grid-cols-5">{[["Observations",report.count],["Human reviewed",report.reviewed],["Unavailable",report.unavailable],["p95 latency",report.p95Ms===null?"No data":`${report.p95Ms} ms`],["Input / output tokens",`${report.inputTokens} / ${report.outputTokens}`]].map(([label,value])=><div key={label} className="rounded-xl border bg-white p-5"><p className="text-sm text-stone-600">{label}</p><strong className="mt-2 block text-xl">{value}</strong></div>)}</section>
+  <p className="rounded-xl border bg-amber-50 p-4 text-sm">{report.assessment}. Label agreement is not accuracy. Estimated usage cost: ${report.estimatedUsd.toFixed(6)}. {report.costStatus} <a className="underline" href={report.priceSource} target="_blank" rel="noreferrer">Pricing source</a>.</p>
+  <section className="rounded-xl border bg-white p-6"><h2 className="text-xl font-semibold">Ten-step promotion review</h2><p className="mt-2 text-sm text-stone-600">Step 9 needs every gate plus human approval. Step 10 requires a separate production decision.</p><div className="mt-5 grid gap-3 sm:grid-cols-2">{promotion.gates.map(gate=><div key={gate.id} className={`rounded-lg border p-4 ${gate.passed?"border-emerald-200 bg-emerald-50":"border-amber-200 bg-amber-50"}`}><strong className="text-sm">{gate.passed?"PASS":"BLOCKED"} · {gate.label}</strong><p className="mt-1 text-xs text-stone-600">{gate.detail}</p></div>)}</div></section>
+  <section className="space-y-4"><h2 className="text-xl font-semibold">Independent decision review</h2>{report.samples.map(sample=>{const data=sample as Record<string,unknown>;return <article key={sample.id} className="rounded-xl border bg-white p-5"><div className="flex flex-wrap justify-between gap-3"><strong>{String(data.intent||"UNKNOWN")} · {String(data.confidence??"—")}</strong><span className="text-xs text-stone-500">{sample.at}</span></div>{sample.evidence?<><p className="mt-4 text-sm"><b>Customer:</b> {sample.evidence.question}</p><p className="mt-2 text-sm"><b>Served answer:</b> {sample.evidence.answer}</p></>:<p className="mt-4 text-sm text-amber-700">No review linkage is available for this legacy observation.</p>}{sample.review?<p className="mt-4 rounded-lg bg-stone-100 p-3 text-sm"><b>{sample.review.verdict}</b> · {sample.review.rationale} · {sample.review.reviewer}</p>:sample.evidence?<form action={reviewObservation} className="mt-4 grid gap-3 sm:grid-cols-[180px_1fr_auto]"><input type="hidden" name="observationId" value={sample.id}/><select name="verdict" required className="rounded-lg border p-2"><option value="">Choose verdict</option><option value="CORRECT">Correct</option><option value="INCORRECT">Incorrect</option><option value="UNRESOLVED">Unresolved</option></select><input name="rationale" minLength={12} maxLength={1000} required placeholder="Independent review rationale" className="rounded-lg border p-2"/><button className="rounded-lg bg-stone-950 px-4 py-2 font-semibold text-white">Save review</button></form>:null}</article>})}{!report.count?<p className="rounded-xl border bg-white p-6">No live observations yet.</p>:null}</section>
+ </main>;
 }

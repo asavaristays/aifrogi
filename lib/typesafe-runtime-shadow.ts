@@ -30,7 +30,7 @@ export async function observeTypesafeRuntime(input: { organizationId: string; me
   reserve: (organizationId: string) => Promise<boolean> = reservePilotAttempt) {
   if (env.TYPESAFE_ACTION_GATEWAY_ENABLED !== "true" || env.TYPESAFE_MODE !== "shadow" || !env.TYPESAFE_API_KEY) return null;
   const allowed = (env.TYPESAFE_SHADOW_ORGANIZATIONS || "").split(",").map(s => s.trim()).filter(Boolean);
-  if (env.TYPESAFE_HOTEL_SHADOW_ENABLED !== "true" && !allowed.includes(input.organizationId)) return null;
+  if (!allowed.includes(input.organizationId)) return null;
   if (!eligibleTypesafeMessage(input.message)) return null;
   const projected = projectTypesafeMessage(input.message);
   if (projected.split(" ").length < 3) return null;
