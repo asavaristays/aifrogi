@@ -14,6 +14,7 @@ import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { getClientSupportUpdates } from "@/lib/support-notifications";
 import { dateLabelForTimeZone, greetingForTimeZone } from "@/lib/greeting";
 import { resolveReportPeriod, websiteLeadsForPeriod } from "@/lib/website-reporting";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -21,6 +22,17 @@ export const revalidate = 0;
 export default async function DashboardPage() {
   const [propertySlug, user] = await Promise.all([getCurrentWorkspaceSlug(), getCurrentUser()]);
   const organization = user && user.role !== "admin" ? await getOrganizationForMember(user.username) : null;
+  if (user && user.role !== "admin" && organization) {
+    return withTenantDatabaseContext({ kind: "tenant", organizationId: organization.id, actor: `client-dashboard:${user.username}` }, () => renderDashboard({ propertySlug, user, organization }));
+  }
+  return renderDashboard({ propertySlug, user, organization });
+}
+
+async function renderDashboard({ propertySlug, user, organization }: {
+  propertySlug: string;
+  user: Awaited<ReturnType<typeof getCurrentUser>>;
+  organization: Awaited<ReturnType<typeof getOrganizationForMember>>;
+}) {
   const db = getDb();
   const workspaceProperty = organization?.properties.find(property => property.slug === propertySlug) || organization?.properties[0];
   const [allLeads, tickets, knowledge, governance, subscription, testActivity, answerEvidence] = await Promise.all([

@@ -8,12 +8,21 @@ import { getOperationalHealthSnapshot } from "@/lib/operational-health";
 import { getCapacitySnapshot } from "@/lib/capacity-advisor";
 import { getAdminSupportActions } from "@/lib/support-notifications";
 import { getAdminLeadAwareness } from "@/lib/lead-insights";
+import { getCurrentUser } from "@/lib/auth-server";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 const DAY = 86_400_000;
 const format = (value: Date) => new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(value);
 
 export default async function AdminPage() {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") redirect("/login");
+  return withTenantDatabaseContext({ kind: "platform-admin", actor: `admin-command-center:${user.username}` }, renderAdminCommandCenter);
+}
+
+async function renderAdminCommandCenter() {
   const db = getDb();
   const [organizations, tickets, failedMessages, messageMatrix, operationalHealth, capacity, leadAwareness] = await Promise.all([listOrganizationsForAdmin(), listSupportTickets({ includeMessages: true }), db?.leadMessage.count({ where: { deliveryStatus: { startsWith: "failed" } } }) ?? 0, getMessageMatrix(), getOperationalHealthSnapshot(), getCapacitySnapshot(), getAdminLeadAwareness()]);
   const now = new Date();

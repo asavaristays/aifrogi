@@ -3,6 +3,9 @@ import { CustomerLifecycleActions } from "@/components/admin/customer-lifecycle-
 import { loadAdminOrganizations } from "@/lib/services/onboarding-service";
 import { getOnboardingGuidance } from "@/lib/onboarding-guidance";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { getCurrentUser } from "@/lib/auth-server";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -10,11 +13,16 @@ export const revalidate = 0;
 const date = (value?: Date | null) => value ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(value) : "Not scheduled";
 
 export default async function AdminCustomersPage() {
-  const organizations = (await loadAdminOrganizations()).map((organization) => ({
-    ...organization,
-    botProfile: organization.botProfile ? { ...organization.botProfile, channels: ["WEBSITE"] as string[] } : organization.botProfile
-  }));
-  const states = new Map(await Promise.all(organizations.map(async (organization) => [organization.id, await getOrganizationSubscriptionAccess(organization.id)] as const)));
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") redirect("/login");
+  const { organizations, states } = await withTenantDatabaseContext({ kind: "platform-admin", actor: `admin-customers:${user.username}` }, async () => {
+    const organizations = (await loadAdminOrganizations()).map((organization) => ({
+      ...organization,
+      botProfile: organization.botProfile ? { ...organization.botProfile, channels: ["WEBSITE"] as string[] } : organization.botProfile
+    }));
+    const states = new Map(await Promise.all(organizations.map(async (organization) => [organization.id, await getOrganizationSubscriptionAccess(organization.id)] as const)));
+    return { organizations, states };
+  });
   const live = organizations.filter((item) => item.botProfile?.status === "LIVE").length;
   const attention = organizations.filter((item) => item.status === "SUSPENDED" || item.status === "REMOVED" || states.get(item.id)?.paused).length;
   const trials = Array.from(states.values()).filter((state) => state?.planCode === "TRIAL").length;
