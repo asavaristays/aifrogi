@@ -58,7 +58,12 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
   const isHotelGpt = organization?.botProfile?.category === "STAY";
 
   async function saveBusiness() {
-    setSaving(true); setError(null); setNotice(null);
+    setError(null); setNotice(null);
+    if (form.publicEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.publicEmail.trim())) {
+      setError("Enter a valid public customer email address, or leave it blank.");
+      return;
+    }
+    setSaving(true);
     const response = await fetch("/api/onboarding", {
       method: organization ? "PATCH" : "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...(organization ? { step: 1 } : {}), ...form })
@@ -88,7 +93,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
           <Field label="Business name" value={form.name} required onChange={(value) => setForm({ ...form, name: value })} /><Field label="Industry" value={form.industry} onChange={(value) => setForm({ ...form, industry: value })} />
           <Field label="Website (optional)" value={form.website} placeholder="https://yourbusiness.com" onChange={(value) => setForm({ ...form, website: value })} /><Field label="Owner name" value={form.ownerName} required onChange={(value) => setForm({ ...form, ownerName: value })} />
           <Field label="Owner mobile" value={form.ownerMobile} onChange={(value) => setForm({ ...form, ownerMobile: value })} /><Field label="Public customer phone" value={form.publicPhone} onChange={(value) => setForm({ ...form, publicPhone: value })} />
-          <Field label="Public customer email" value={form.publicEmail} onChange={(value) => setForm({ ...form, publicEmail: value })} /><Field label="Business hours" value={form.publicBusinessHours} onChange={(value) => setForm({ ...form, publicBusinessHours: value })} />
+          <Field label="Public customer email" value={form.publicEmail} type="email" onChange={(value) => setForm({ ...form, publicEmail: value })} /><Field label="Business hours" value={form.publicBusinessHours} onChange={(value) => setForm({ ...form, publicBusinessHours: value })} />
           <Field label="Country" value={form.country} onChange={(value) => setForm({ ...form, country: value })} /><Field label="Timezone" value={form.timezone} onChange={(value) => setForm({ ...form, timezone: value })} />
           <div className="md:col-span-2"><Field label="Public address" value={form.publicAddress || form.businessAddress} onChange={(value) => setForm({ ...form, publicAddress: value, businessAddress: value })} /></div>
         </div>
@@ -105,6 +110,6 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
   </div>;
 }
 
-function Field({ label, value, onChange, placeholder, required = false }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; required?: boolean }) {
-  return <label className="block text-sm font-semibold">{label}{required ? " *" : ""}<input className="mt-2 min-h-11 w-full rounded-md border border-black/10 bg-white px-3 font-normal outline-none focus:border-[var(--gold-600)]" value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} /></label>;
+function Field({ label, value, onChange, placeholder, required = false, type = "text" }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; required?: boolean; type?: string }) {
+  return <label className="block text-sm font-semibold">{label}{required ? " *" : ""}<input className="mt-2 min-h-11 w-full rounded-md border border-black/10 bg-white px-3 font-normal outline-none focus:border-[var(--gold-600)]" type={type} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} /></label>;
 }

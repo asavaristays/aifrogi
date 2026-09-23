@@ -60,6 +60,16 @@ test("authenticated request surfaces have a fail-visible protected database acce
   assert.doesNotMatch(source, /!identity && process\.env\.NODE_ENV === "production"/, "bootstrap and readiness access must remain available before tenant identity resolution");
 });
 
+test("authenticated onboarding writes remain inside an explicit tenant database context", () => {
+  const service = readFileSync(resolve(process.cwd(), "lib/services/onboarding-service.ts"), "utf8");
+  const saveStep = service.match(/export async function saveOnboardingStep[\s\S]*?\n}\n\nexport async function loadAdminOrganizations/)?.[0] || "";
+  assert.match(saveStep, /withTenantDatabaseContext/);
+  assert.match(saveStep, /kind: "tenant"/);
+  assert.match(saveStep, /organizationId: organization\.id/);
+  assert.match(saveStep, /onboarding-write:/);
+  assert.match(saveStep, /Enter a valid public customer email address/);
+});
+
 test("every directly tenant-keyed Prisma model appears in the RLS package", () => {
   const schema = readFileSync(resolve(process.cwd(), "prisma/schema.prisma"), "utf8");
   const sql = readFileSync(resolve(process.cwd(), "ops/tenant-rls-policies.sql"), "utf8");

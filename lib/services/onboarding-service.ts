@@ -5,6 +5,7 @@ import {
   updateOnboardingProfile,
   updateOrganizationDetails
 } from "@/lib/repositories/onboarding-repository";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 function clean(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -65,106 +66,118 @@ export async function saveOnboardingStep(email: string, payload: Record<string, 
     return { error: "Create an organization before continuing", organization: null, status: 404 };
   }
 
-  const step = Number(payload.step);
-  if (!Number.isInteger(step) || step < 1 || step > 6) {
-    return { error: "Invalid onboarding step", organization: null, status: 400 };
-  }
+  const onboarding = organization.onboarding;
+  const normalizedEmail = email.trim().toLowerCase();
+  return withTenantDatabaseContext({
+    kind: "tenant",
+    organizationId: organization.id,
+    actor: `onboarding-write:${normalizedEmail}`
+  }, async () => {
+    const step = Number(payload.step);
+    if (!Number.isInteger(step) || step < 1 || step > 6) {
+      return { error: "Invalid onboarding step", organization: null, status: 400 };
+    }
 
-  if (step === 1) {
-    const updated = await updateOrganizationDetails(organization.id, {
-      name: clean(payload.name) || organization.name,
-      industry: clean(payload.industry) || undefined,
-      website: clean(payload.website) || undefined,
-      country: clean(payload.country) || organization.country,
-      timezone: clean(payload.timezone) || organization.timezone,
-      gstNumber: clean(payload.gstNumber) || undefined,
-      businessAddress: clean(payload.businessAddress) || undefined,
-      ownerName: clean(payload.ownerName) || organization.ownerName,
-      ownerMobile: clean(payload.ownerMobile) || undefined,
-      publicPhone: clean(payload.publicPhone) || null,
-      publicEmail: clean(payload.publicEmail) || null,
-      publicAddress: clean(payload.publicAddress) || null,
-      publicBusinessHours: clean(payload.publicBusinessHours) || null
-    });
-    return { error: null, organization: updated, status: 200 };
-  }
+    if (step === 1) {
+      const publicEmail = clean(payload.publicEmail);
+      if (publicEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(publicEmail)) {
+        return { error: "Enter a valid public customer email address, or leave it blank.", organization: null, status: 400 };
+      }
+      const updated = await updateOrganizationDetails(organization.id, {
+        name: clean(payload.name) || organization.name,
+        industry: clean(payload.industry) || undefined,
+        website: clean(payload.website) || undefined,
+        country: clean(payload.country) || organization.country,
+        timezone: clean(payload.timezone) || organization.timezone,
+        gstNumber: clean(payload.gstNumber) || undefined,
+        businessAddress: clean(payload.businessAddress) || undefined,
+        ownerName: clean(payload.ownerName) || organization.ownerName,
+        ownerMobile: clean(payload.ownerMobile) || undefined,
+        publicPhone: clean(payload.publicPhone) || null,
+        publicEmail: publicEmail || null,
+        publicAddress: clean(payload.publicAddress) || null,
+        publicBusinessHours: clean(payload.publicBusinessHours) || null
+      });
+      return { error: null, organization: updated, status: 200 };
+    }
 
-  if (step === 2) {
-    const legalName = clean(payload.legalName);
-    const businessCategory = clean(payload.businessCategory);
-    if (!legalName || !businessCategory) {
-      return { error: "Business legal name and category are required", organization: null, status: 400 };
+    if (step === 2) {
+      const legalName = clean(payload.legalName);
+      const businessCategory = clean(payload.businessCategory);
+      if (!legalName || !businessCategory) {
+        return { error: "Business legal name and category are required", organization: null, status: 400 };
+      }
+
+      const updated = await updateOnboardingProfile(
+        organization.id,
+        {
+          legalName,
+          registrationNumber: clean(payload.registrationNumber) || null,
+          facebookPage: clean(payload.facebookPage) || null,
+          googleMapsUrl: clean(payload.googleMapsUrl) || null,
+          googleBusinessProfileUrl: clean(payload.googleBusinessProfileUrl) || null,
+          instagramUrl: clean(payload.instagramUrl) || null,
+          photoUrls: clean(payload.photoUrls).split(/\r?\n|,/).map((item) => item.trim()).filter(Boolean).slice(0, 50),
+          businessCategory,
+          logoUrl: clean(payload.logoUrl) || null,
+          kycStatus: "SUBMITTED",
+          kycSubmittedAt: new Date(),
+          lifecycleStatus: "KYC_SUBMITTED",
+          currentStep: 3,
+          progressPercent: 40
+        },
+        { actorEmail: normalizedEmail, action: "KYC_SUBMITTED", detail: "Business details submitted for review" }
+      );
+      return { error: null, organization: updated, status: 200 };
+    }
+
+    if (step === 3) {
+      const phoneNumber = clean(payload.phoneNumber).replace(/[^\d]/g, "");
+      if (phoneNumber.length < 8) {
+        return { error: "Enter a valid mobile number", organization: null, status: 400 };
+      }
+
+      const whatsappActive = Boolean(payload.whatsappActiveOnNumber);
+      const updated = await updateOnboardingProfile(
+        organization.id,
+        {
+          phoneCountryCode: clean(payload.phoneCountryCode) || "+91",
+          phoneNumber,
+          whatsappActiveOnNumber: whatsappActive,
+          numberConnectionPath: whatsappActive ? "ELIGIBILITY_CHECK" : "NEW_NUMBER",
+          phoneVerificationStatus: "READY_FOR_META",
+          lifecycleStatus: "NUMBER_READY",
+          currentStep: 4,
+          progressPercent: 60
+        },
+        { actorEmail: normalizedEmail, action: "PHONE_NUMBER_ADDED", detail: "WhatsApp number is ready for connection" }
+      );
+      return { error: null, organization: updated, status: 200 };
+    }
+
+    if (step === 4) {
+      const updated = await updateOnboardingProfile(
+        organization.id,
+        {
+          currentStep: 4,
+          progressPercent: Math.max(60, onboarding.progressPercent),
+          lifecycleStatus: onboarding.facebookStatus === "CONNECTED" ? "WHATSAPP_CONFIGURING" : "NUMBER_READY"
+        },
+        { actorEmail: normalizedEmail, action: "META_CONNECTION_OPENED", detail: "Customer opened the secure WhatsApp connection step" }
+      );
+      return { error: null, organization: updated, status: 200 };
     }
 
     const updated = await updateOnboardingProfile(
       organization.id,
       {
-        legalName,
-        registrationNumber: clean(payload.registrationNumber) || null,
-        facebookPage: clean(payload.facebookPage) || null,
-        googleMapsUrl: clean(payload.googleMapsUrl) || null,
-        googleBusinessProfileUrl: clean(payload.googleBusinessProfileUrl) || null,
-        instagramUrl: clean(payload.instagramUrl) || null,
-        photoUrls: clean(payload.photoUrls).split(/\r?\n|,/).map((item) => item.trim()).filter(Boolean).slice(0, 50),
-        businessCategory,
-        logoUrl: clean(payload.logoUrl) || null,
-        kycStatus: "SUBMITTED",
-        kycSubmittedAt: new Date(),
-        lifecycleStatus: "KYC_SUBMITTED",
-        currentStep: 3,
-        progressPercent: 40
+        currentStep: step,
+        progressPercent: step === 5 ? 85 : onboarding.progressPercent
       },
-      { actorEmail: email, action: "KYC_SUBMITTED", detail: "Business details submitted for review" }
+      { actorEmail: normalizedEmail, action: "ONBOARDING_STATUS_VIEWED" }
     );
     return { error: null, organization: updated, status: 200 };
-  }
-
-  if (step === 3) {
-    const phoneNumber = clean(payload.phoneNumber).replace(/[^\d]/g, "");
-    if (phoneNumber.length < 8) {
-      return { error: "Enter a valid mobile number", organization: null, status: 400 };
-    }
-
-    const whatsappActive = Boolean(payload.whatsappActiveOnNumber);
-    const updated = await updateOnboardingProfile(
-      organization.id,
-      {
-        phoneCountryCode: clean(payload.phoneCountryCode) || "+91",
-        phoneNumber,
-        whatsappActiveOnNumber: whatsappActive,
-        numberConnectionPath: whatsappActive ? "ELIGIBILITY_CHECK" : "NEW_NUMBER",
-        phoneVerificationStatus: "READY_FOR_META",
-        lifecycleStatus: "NUMBER_READY",
-        currentStep: 4,
-        progressPercent: 60
-      },
-      { actorEmail: email, action: "PHONE_NUMBER_ADDED", detail: "WhatsApp number is ready for connection" }
-    );
-    return { error: null, organization: updated, status: 200 };
-  }
-
-  if (step === 4) {
-    const updated = await updateOnboardingProfile(
-      organization.id,
-      {
-        currentStep: 4,
-        progressPercent: Math.max(60, organization.onboarding.progressPercent),
-        lifecycleStatus: organization.onboarding.facebookStatus === "CONNECTED" ? "WHATSAPP_CONFIGURING" : "NUMBER_READY"
-      },
-      { actorEmail: email, action: "META_CONNECTION_OPENED", detail: "Customer opened the secure WhatsApp connection step" }
-    );
-    return { error: null, organization: updated, status: 200 };
-  }
-
-  const updated = await updateOnboardingProfile(
-    organization.id,
-    {
-      currentStep: step,
-      progressPercent: step === 5 ? 85 : organization.onboarding.progressPercent
-    },
-    { actorEmail: email, action: "ONBOARDING_STATUS_VIEWED" }
-  );
-  return { error: null, organization: updated, status: 200 };
+  });
 }
 
 export async function loadAdminOrganizations() {
