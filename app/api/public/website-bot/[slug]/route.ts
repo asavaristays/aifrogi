@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { NextResponse, after } from "next/server";
+import { getDb, withDatabaseIdentity } from "@/lib/db";
 import { buildWebsiteKnowledgeAnswer } from "@/lib/services/website-knowledge-service";
 import { recordTenantAnswerUsage } from "@/lib/tenant-usage-metering";
 import { captureIncomingAiBotMessage } from "@/lib/services/lead-service";
@@ -29,7 +29,8 @@ import { planConversation } from "@/lib/sovereign-intelligence/conversation-plan
 import { activeNegotiationPolicy, evaluateTenantNegotiation, policyForVerifiedStay, tenantNegotiationAuthority, tenantRateInquiry } from "@/lib/tenant-negotiation";
 import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sovereign-intelligence/layer-router";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
-import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
+import { routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
+import { assessTypesafeAnswerQuality } from "@/lib/typesafe-answer-quality";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -304,10 +305,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     };
   }
   const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "INFRASTRUCTURE" as const, failureCode: safety.blocked ? null : "UNATTRIBUTED_RUNTIME_FAILURE", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
-  const typesafeShadow = !typesafeStaging && !safety.blocked && profile.category === "STAY"
-    ? await observeTypesafeRuntime({ organizationId: organization.id, message, primaryIntent: evidenceDecision.intent, reviewRef: typesafeReviewRef }).catch(() => null)
-    : null;
-  const typesafeObservation = typesafeStaging || typesafeShadow;
+  const typesafeObservation = typesafeStaging;
   // Separate from the required answer transaction: optional telemetry failure
   // must never roll back the visitor's response or handover.
   if (typesafeObservation) await db.platformAuditLog.create({ data: {
@@ -315,7 +313,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     action: "TYPESAFE_SHADOW_OBSERVED", targetType: "Property", targetId: property.id,
     summary: typesafeStaging?.route === "HUMAN_HANDOVER" ? "TypeSafe staging canary requested the existing human-handover control." : "Advisory TypeSafe observation; customer response and material action authority unchanged.", metadata: typesafeObservation
   } }).catch(() => console.warn("TypeSafe shadow telemetry unavailable"));
-  return persistWebsiteTurn(async () => {
+  let savedEvidenceId: string | null = null;
+  const response = await persistWebsiteTurn(async () => {
   const persistenceDb = getDb()!;
   const captured = await captureIncomingAiBotMessage({
     conversationId: `website:${sessionId}`,
@@ -348,6 +347,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     reliability
   }).catch(() => null);
   if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
+  savedEvidenceId = evidence.id;
   await recordTenantAnswerUsage({ organizationId: organization.id, evidenceId: evidence.id, usage: { inputTokens: result?.modelUsage?.inputTokens || 0, outputTokens: result?.modelUsage?.outputTokens || 0, model: result?.model || "NON_MODEL", attempts: reliability.attemptCount, latencyMs: reliability.latencyMs } }).catch((error) => console.error("Tenant usage metering failed", { organizationId: organization.id, evidenceId: evidence.id, error }));
   const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
@@ -401,6 +401,32 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   return NextResponse.json({ answer, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
+  if (response.ok && savedEvidenceId && !organization.isDemo && profile.category === "STAY" && !safety.blocked
+    && process.env.TYPESAFE_ACTION_GATEWAY_ENABLED === "true" && process.env.TYPESAFE_MODE === "shadow"
+    && process.env.TYPESAFE_HOTEL_SHADOW_ENABLED === "true") {
+    const evidenceId = savedEvidenceId;
+    after(async () => withDatabaseIdentity({ organizationId: organization.id, platformAuthority: false, actor: "typesafe-quality", systemPurpose: "advisory answer quality" }, async () => {
+      try {
+        const qualityDb = getDb();
+        if (!qualityDb) return;
+        const evidence = await qualityDb.sovereignAnswerEvidence.findFirst({ where: { id: evidenceId, propertyId: property.id },
+          select: { id: true, question: true, answer: true, disposition: true, usedClaimIds: true } });
+        if (!evidence) return;
+        const claims = evidence.usedClaimIds.length ? await qualityDb.knowledgeEntry.findMany({ where: {
+          id: { in: evidence.usedClaimIds.slice(0, 3) }, propertyId: property.id, status: "PUBLISHED",
+          OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }]
+        }, select: { question: true, answer: true }, take: 3 }) : [];
+        const quality = await assessTypesafeAnswerQuality({ organizationId: organization.id, evidenceId: evidence.id,
+          question: evidence.question, answer: evidence.answer, disposition: evidence.disposition,
+          approvedClaims: claims.map((claim) => `${claim.question}: ${claim.answer}`) });
+        if (quality) await qualityDb.platformAuditLog.create({ data: { organizationId: organization.id,
+          actorEmail: "system@aifrogi.com", actorRole: "SYSTEM", action: "TYPESAFE_QUALITY_OBSERVED",
+          targetType: "SovereignAnswerEvidence", targetId: evidence.id,
+          summary: "Advisory quality signal; customer answer and action authority unchanged.", metadata: quality } });
+      } catch (error) { console.warn("TypeSafe quality telemetry unavailable", error instanceof Error ? error.message : "Unknown error"); }
+    }));
+  }
+  return response;
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {

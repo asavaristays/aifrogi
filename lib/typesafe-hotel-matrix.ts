@@ -1,25 +1,31 @@
 import { getDb } from "@/lib/db";
-import { estimatedTypesafeUsd, validPilotPolicy, type PilotPolicy } from "@/lib/typesafe-pilot-store";
+import { validPilotPolicy, type PilotPolicy } from "@/lib/typesafe-pilot-store";
 
 type Observation = { createdAt: Date; metadata: unknown };
+type Metadata = { status?: string; fit?: { choice?: string }; grounding?: { choice?: string }; reviewReasons?: string[]; httpStatus?: number };
 
 export function summarizeHotelShadow(policy: unknown, attemptsToday: number, observations: Observation[], now = new Date()) {
   const current = policy as PilotPolicy | null;
   const active = validPilotPolicy(current, now.getTime());
-  const inputTokens = observations.reduce((sum, row) => sum + Math.max(0, Number((row.metadata as Record<string, unknown> | null)?.inputTokens) || 0), 0);
-  const outputTokens = observations.reduce((sum, row) => sum + Math.max(0, Number((row.metadata as Record<string, unknown> | null)?.outputTokens) || 0), 0);
-  const unavailable = observations.filter((row) => (row.metadata as Record<string, unknown> | null)?.status !== "OBSERVED").length;
+  const observed = observations.map((row) => row.metadata as Metadata | null).filter((row): row is Metadata => row?.status === "OBSERVED");
+  const count = (predicate: (row: Metadata) => boolean) => observed.filter(predicate).length;
+  const lastSuccess = observations.find((row) => (row.metadata as Metadata | null)?.status === "OBSERVED");
+  const latest = observations[0]?.metadata as Metadata | null;
   return {
     active, expiresAt: current?.expiresAt || null, dailyLimit: current?.dailyLimit || 0,
     attemptsToday, remainingToday: active ? Math.max(0, current!.dailyLimit - attemptsToday) : 0,
-    observations7d: observations.length, unavailable7d: unavailable,
-    inputTokens7d: inputTokens, outputTokens7d: outputTokens,
-    estimatedUsd7d: estimatedTypesafeUsd(inputTokens),
-    lastObservedAt: observations[0]?.createdAt || null
+    assessed7d: observed.length, unavailable7d: observations.length - observed.length,
+    addressed7d: count((row) => row.fit?.choice === "ADDRESSED" || row.fit?.choice === "APPROPRIATE_HANDOVER"),
+    partial7d: count((row) => row.fit?.choice === "PARTIAL"), missed7d: count((row) => row.fit?.choice === "MISSED"),
+    supported7d: count((row) => row.grounding?.choice === "SUPPORTED"),
+    unverified7d: count((row) => row.grounding?.choice === "NO_APPROVED_CONTEXT"),
+    flagged7d: count((row) => Boolean(row.reviewReasons?.length)),
+    lastObservedAt: observations[0]?.createdAt || null, lastSuccessAt: lastSuccess?.createdAt || null,
+    latestStatus: latest?.status || null, latestHttpStatus: latest?.httpStatus || null
   };
 }
 
-/** Super-admin only. Call after platform database identity has been established. */
+/** Super-admin only; the caller must establish platform database identity. */
 export async function getHotelShadowMatrix(now = new Date()) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable");
@@ -33,7 +39,7 @@ export async function getHotelShadowMatrix(now = new Date()) {
     const [control, attemptsToday, observations] = await Promise.all([
       db.platformAuditLog.findFirst({ where: { organizationId: hotel.id, action: "TYPESAFE_PILOT_CONTROL" }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], select: { metadata: true } }),
       db.platformAuditLog.count({ where: { organizationId: hotel.id, action: "TYPESAFE_SHADOW_RESERVED", createdAt: { gte: today } } }),
-      db.platformAuditLog.findMany({ where: { organizationId: hotel.id, action: "TYPESAFE_SHADOW_OBSERVED", createdAt: { gte: sevenDaysAgo } }, orderBy: { createdAt: "desc" }, take: 200, select: { createdAt: true, metadata: true } })
+      db.platformAuditLog.findMany({ where: { organizationId: hotel.id, action: "TYPESAFE_QUALITY_OBSERVED", createdAt: { gte: sevenDaysAgo } }, orderBy: { createdAt: "desc" }, take: 200, select: { createdAt: true, metadata: true } })
     ]);
     return { ...hotel, ...summarizeHotelShadow(control?.metadata, attemptsToday, observations, now) };
   }));
