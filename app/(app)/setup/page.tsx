@@ -5,6 +5,7 @@ import { BotBehaviourSettings } from "@/components/setup/bot-behaviour-settings"
 import { BotMenuSettings } from "@/components/setup/bot-menu-settings";
 import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
+import { HotelGptStayDelivery } from "@/components/website-bot/hotelgpt-stay-delivery";
 import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { getDb } from "@/lib/db";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
@@ -75,6 +76,7 @@ export default async function SetupPage() {
           </ol>
         </section> : <section className="rounded-lg border border-[var(--border)] bg-white p-6"><h2 className="text-xl font-semibold">Setup unavailable</h2><p className="mt-2 text-sm text-[var(--text-muted)]">AiFrogi could not locate an active website-bot workspace for this account.</p></section>}
         {access ? <WebsiteBotInstallation sectionId="website-installation" slug={propertySlug} profile={access.organization.botProfile} /> : null}
+        {access?.organization.botProfile?.category === "STAY" ? <HotelGptStayDelivery slug={propertySlug} propertyName={property?.name || access.organization.name} status={access.organization.botProfile.status} /> : null}
         {access?.organization.botProfile ? <BotReviewSubmission status={access.organization.botProfile.status} ready={Boolean(subscription?.planCode === "TRIAL" ? verification?.trialReady : verification?.ready)} tested={testComplete} certified={certificationStatus.eligible} canManage={canManageWorkspace(access.role)} evidence={{ pageCount: appearance.pageCount, published: verification?.published || 0, coveragePercent: verification?.coverage.percentage || 0, freshnessRate: verification?.freshnessRate || 0, conflicts: verification?.conflicts || 0, unsigned: verification?.unsigned || 0, openFlags: verification?.openFlags || 0, previewPending: verification?.previewPending || 0, missingEssentials: verification?.essentials.missing || [] }} /> : null}
       </div>
     </div>

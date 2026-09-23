@@ -49,3 +49,20 @@ test("front-desk approval is privileged, origin-protected and tenant-scoped", ()
   assert.match(migration, /ENABLE ROW LEVEL SECURITY/);
   assert.match(migration, /FORCE ROW LEVEL SECURITY/);
 });
+
+test("HotelGPT signup progresses through governed launch into QR delivery", () => {
+  const registration = readFileSync(resolve(process.cwd(), "lib/repositories/trial-registration-repository.ts"), "utf8");
+  const lifecycle = readFileSync(resolve(process.cwd(), "lib/repositories/onboarding-repository.ts"), "utf8");
+  const qrRoute = readFileSync(resolve(process.cwd(), "app/api/hotelgpt-stay/qr/route.ts"), "utf8");
+  const onboarding = readFileSync(resolve(process.cwd(), "components/onboarding/customer-onboarding.tsx"), "utf8");
+  const delivery = readFileSync(resolve(process.cwd(), "components/website-bot/hotelgpt-stay-delivery.tsx"), "utf8");
+  assert.match(registration, /botProfile:[\s\S]*governedProfile/);
+  assert.match(lifecycle, /lifecycleStatus: "LIVE", currentStep: 6, progressPercent: 100/);
+  assert.match(qrRoute, /profile\.status !== "LIVE"/);
+  assert.match(qrRoute, /category !== "STAY"/);
+  assert.match(qrRoute, /resolveClientWorkspaceAccess/);
+  assert.match(qrRoute, /\/stay\/\$\{encodeURIComponent\(access\.propertySlug\)\}/);
+  assert.match(onboarding, /HotelGPT onboarding/);
+  assert.match(delivery, /QR scanning alone never grants access|Scanning opens the stay form; it never grants access/);
+  assert.match(delivery, /No PMS connection is required/);
+});

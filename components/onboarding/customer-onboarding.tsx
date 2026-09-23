@@ -10,6 +10,7 @@ import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-wor
 import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { Button } from "@/components/ui/button";
 import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
+import { HotelGptStayDelivery } from "@/components/website-bot/hotelgpt-stay-delivery";
 
 type BotProfile = {
   category: string; operatingMode: string; channels: string[]; capabilities: string[];
@@ -53,6 +54,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
   const checks = [Boolean(organization), Boolean(organization), profileReady, submittedOrLive];
   const progress = Math.round((checks.filter(Boolean).length / checks.length) * 100);
   const slug = organization?.properties[0]?.slug || "";
+  const isHotelGpt = organization?.botProfile?.category === "STAY";
 
   async function saveBusiness() {
     setSaving(true); setError(null); setNotice(null);
@@ -75,7 +77,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
     </div></header>
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-8">
       <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">AI Bot onboarding</p><h1 className="mt-2 text-3xl font-black">Prepare your bot for real customers.</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">Add business basics, upload approved knowledge, define behaviour, test answers and publish as a standalone link or website widget.</p></div><strong className="rounded-full bg-[var(--primary-soft)] px-4 py-2 text-sm text-[var(--primary-strong)]">{progress}% ready</strong></div>
+        <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">{isHotelGpt ? "HotelGPT onboarding" : "AI Bot onboarding"}</p><h1 className="mt-2 text-3xl font-black">{isHotelGpt ? "Prepare the complete hotel guest journey." : "Prepare your bot for real customers."}</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">{isHotelGpt ? "Approve hotel knowledge, test guest answers, complete review, then issue the property QR for front-desk-approved in-stay access. No PMS is required." : "Add business basics, upload approved knowledge, define behaviour, test answers and publish as a standalone link or website widget."}</p></div><strong className="rounded-full bg-[var(--primary-soft)] px-4 py-2 text-sm text-[var(--primary-strong)]">{progress}% ready</strong></div>
         <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--surface-muted)]"><div className="h-full rounded-full bg-[var(--gold-600)]" style={{ width: `${progress}%` }} /></div>
         <div className="mt-6 grid gap-3 sm:grid-cols-4">{["Business basics", "Knowledge", "Bot setup", "Test & publish"].map((label, index) => <div key={label} className="rounded-md border border-black/7 bg-[#fbfcfb] p-4"><span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-black ${checks[index] ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--surface-muted)] text-[var(--text-muted)]"}`}>{checks[index] ? "✓" : index + 1}</span><strong className="mt-3 block text-sm">{label}</strong></div>)}</div>
       </section>
@@ -96,6 +98,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
       {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
       {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
       {organization && slug ? <WebsiteBotInstallation slug={slug} profile={organization.botProfile} /> : null}
+      {isHotelGpt && organization && slug ? <HotelGptStayDelivery slug={slug} propertyName={organization.properties[0]?.name || organization.name} status={status} /> : null}
       {organization?.botProfile ? <BotReviewSubmission status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={reviewReadiness?.tested ?? false} certified={reviewReadiness?.certified ?? false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
     </main>
   </div>;

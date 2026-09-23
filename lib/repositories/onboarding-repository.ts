@@ -398,6 +398,10 @@ export async function updateWebsiteBotLifecycle(input: {
         deletedAt: input.action === "DELETE" ? now : null
       }
     }),
+    ...(input.action === "MAKE_LIVE" ? [
+      db.organization.update({ where: { id: input.organizationId }, data: { status: "ACTIVE" } }),
+      db.onboardingProfile.updateMany({ where: { organizationId: input.organizationId }, data: { lifecycleStatus: "LIVE", currentStep: 6, progressPercent: 100 } })
+    ] : []),
     db.onboardingActivity.create({
       data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: `WEBSITE_BOT_${input.action}`, detail: `Website Bot lifecycle changed from ${profile.status} to ${status}` }
     }),
