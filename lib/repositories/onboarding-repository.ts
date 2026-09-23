@@ -233,6 +233,7 @@ export async function getOrganizationById(id: string) {
 function comparableBotProfile(profile: {
   category?: string; operatingMode?: string; channels?: string[]; capabilities?: string[];
   humanHandoffEnabled?: boolean; actionApprovalNeeded?: boolean; personaName?: string | null;
+  stayAccessEnabled?: boolean;
   businessObjective?: string | null; tone?: string | null; languages?: string[];
   prohibitedClaims?: string[]; escalationTriggers?: string[]; responseSlaMinutes?: number;
   reminderPercent?: number; fallbackEnabled?: boolean; safeFallbackMessage?: string | null;
@@ -244,6 +245,7 @@ function comparableBotProfile(profile: {
     capabilities: [...(profile.capabilities || [])].sort(),
     humanHandoffEnabled: profile.humanHandoffEnabled,
     actionApprovalNeeded: profile.actionApprovalNeeded,
+    stayAccessEnabled: profile.stayAccessEnabled,
     personaName: profile.personaName || "",
     businessObjective: profile.businessObjective || "",
     tone: profile.tone || "",
@@ -267,6 +269,7 @@ export async function saveOrganizationBotProfile(input: {
     capabilities: string[];
     humanHandoffEnabled: boolean;
     actionApprovalNeeded: boolean;
+    stayAccessEnabled: boolean;
     personaName: string;
     businessObjective: string;
     tone: string;

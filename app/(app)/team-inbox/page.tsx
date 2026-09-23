@@ -16,5 +16,5 @@ export default async function TeamInboxPage(){
   const access=await resolveClientWorkspaceAccess({propertySlug:await getCurrentWorkspaceSlug()});
   if(!access.ok)redirect('/login?returnTo=%2Fteam-inbox');
   const leads=await withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug));
-  return <div className={styles.page}><TeamInboxStatus/>{access.organization.botProfile?.category === "STAY" ? <HotelGptAccessQueue propertySlug={access.propertySlug} /> : null}<WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode/></div>;
+  return <div className={styles.page}><TeamInboxStatus/>{access.organization.botProfile?.category === "STAY" && access.organization.botProfile.stayAccessEnabled ? <HotelGptAccessQueue propertySlug={access.propertySlug} /> : null}<WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode/></div>;
 }

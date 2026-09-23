@@ -15,6 +15,7 @@ import { HotelGptStayDelivery } from "@/components/website-bot/hotelgpt-stay-del
 type BotProfile = {
   category: string; operatingMode: string; channels: string[]; capabilities: string[];
   humanHandoffEnabled: boolean; actionApprovalNeeded: boolean; personaName?: string | null;
+  stayAccessEnabled?: boolean;
   businessObjective?: string | null; tone?: string | null; languages?: string[];
   prohibitedClaims?: string[]; escalationTriggers?: string[]; responseSlaMinutes?: number;
   reminderPercent?: number; fallbackEnabled?: boolean; safeFallbackMessage?: string | null;
@@ -98,7 +99,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
       {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
       {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
       {organization && slug ? <WebsiteBotInstallation slug={slug} profile={organization.botProfile} /> : null}
-      {isHotelGpt && organization && slug ? <HotelGptStayDelivery slug={slug} propertyName={organization.properties[0]?.name || organization.name} status={status} /> : null}
+      {isHotelGpt && organization && slug ? <HotelGptStayDelivery slug={slug} propertyName={organization.properties[0]?.name || organization.name} status={status} enabled={organization.botProfile?.stayAccessEnabled === true} /> : null}
       {organization?.botProfile ? <BotReviewSubmission status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={reviewReadiness?.tested ?? false} certified={reviewReadiness?.certified ?? false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
     </main>
   </div>;

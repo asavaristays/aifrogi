@@ -98,7 +98,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const consentedName = payload?.consent ? String(payload.name || "").trim().slice(0, 100) : "";
   if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });
   const residentStay = payload?.stayAccessToken ? verifyHotelGuestStayToken(payload.stayAccessToken, slug) : null;
-  if (payload?.stayAccessToken && (!residentStay || profile.category !== "STAY")) return NextResponse.json({ error: "Resident access is invalid or expired." }, { status: 401, headers: responseHeaders });
+  if (payload?.stayAccessToken && (!residentStay || profile.category !== "STAY" || !profile.stayAccessEnabled)) return NextResponse.json({ error: "Resident access is invalid, expired, or disabled." }, { status: 401, headers: responseHeaders });
   const approvedResidentAccess = residentStay ? (await db.$queryRaw<Array<{ id: string; approvedCheckOut: Date }>>`SELECT id,"approvedCheckOut" FROM "HotelGuestAccessRequest" WHERE id=${residentStay.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() LIMIT 1`)[0] : null;
   if (residentStay && !approvedResidentAccess) return NextResponse.json({ error: "Resident access is not approved, has expired, or was revoked." }, { status: 401, headers: responseHeaders });
 

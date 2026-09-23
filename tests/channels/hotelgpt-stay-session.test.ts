@@ -56,13 +56,17 @@ test("HotelGPT signup progresses through governed launch into QR delivery", () =
   const qrRoute = readFileSync(resolve(process.cwd(), "app/api/hotelgpt-stay/qr/route.ts"), "utf8");
   const onboarding = readFileSync(resolve(process.cwd(), "components/onboarding/customer-onboarding.tsx"), "utf8");
   const delivery = readFileSync(resolve(process.cwd(), "components/website-bot/hotelgpt-stay-delivery.tsx"), "utf8");
+  const moduleMigration = readFileSync(resolve(process.cwd(), "prisma/migrations/20260923193000_hotelgpt_stay_module/migration.sql"), "utf8");
   assert.match(registration, /botProfile:[\s\S]*governedProfile/);
   assert.match(lifecycle, /lifecycleStatus: "LIVE", currentStep: 6, progressPercent: 100/);
   assert.match(qrRoute, /profile\.status !== "LIVE"/);
   assert.match(qrRoute, /category !== "STAY"/);
+  assert.match(qrRoute, /stayAccessEnabled/);
   assert.match(qrRoute, /resolveClientWorkspaceAccess/);
   assert.match(qrRoute, /\/stay\/\$\{encodeURIComponent\(access\.propertySlug\)\}/);
   assert.match(onboarding, /HotelGPT onboarding/);
   assert.match(delivery, /QR scanning alone never grants access|Scanning opens the stay form; it never grants access/);
   assert.match(delivery, /No PMS connection is required/);
+  assert.match(delivery, /in-stay module is disabled/);
+  assert.doesNotMatch(moduleMigration, /UPDATE "BotProfile"/);
 });

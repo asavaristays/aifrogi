@@ -145,6 +145,7 @@ export async function applyOnboardingWorkbook(input: { organizationId: string; p
         capabilities: organization.botProfile.capabilities,
         humanHandoffEnabled: organization.botProfile.humanHandoffEnabled,
         actionApprovalNeeded: organization.botProfile.actionApprovalNeeded,
+        stayAccessEnabled: organization.botProfile.stayAccessEnabled,
         personaName: preview.business.personaName || organization.botProfile.personaName || "Business Assistant",
         tone: preview.business.tone || organization.botProfile.tone || "Professional, clear and helpful",
         businessObjective: preview.business.businessObjective || organization.botProfile.businessObjective || "Answer approved business questions and arrange human follow-up when required.",

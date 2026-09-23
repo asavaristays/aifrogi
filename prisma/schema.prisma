@@ -596,6 +596,7 @@ model BotProfile {
   capabilities           String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"])
   humanHandoffEnabled    Boolean          @default(true)
   actionApprovalNeeded   Boolean          @default(true)
+  stayAccessEnabled      Boolean          @default(false)
   personaName            String?
   businessObjective      String?          @db.Text
   tone                   String           @default("Professional, clear and helpful")

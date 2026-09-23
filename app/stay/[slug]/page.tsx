@@ -14,7 +14,7 @@ export default async function HotelGptStayPage({ params }: { params: Promise<{ s
     return db?.property.findUnique({ where: { slug }, select: { name: true, organization: { select: { name: true, botProfile: true } } } }) || null;
   });
   const profile = property?.organization?.botProfile;
-  if (!property || !profile || profile.category !== "STAY" || !canServeWebsiteBot(profile.status, profile.channels)) notFound();
+  if (!property || !profile || profile.category !== "STAY" || !profile.stayAccessEnabled || !canServeWebsiteBot(profile.status, profile.channels)) notFound();
   const settings = await withPublicBotDatabaseContext(slug, () => readKnowledgeSettings(slug));
   if (!settings) notFound();
   const propertyName = property.organization?.name || property.name;

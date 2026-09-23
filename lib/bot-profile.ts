@@ -12,6 +12,7 @@ export type BotProfileInput = {
   capabilities: Array<typeof BOT_CAPABILITIES[number]>;
   humanHandoffEnabled: boolean;
   actionApprovalNeeded: boolean;
+  stayAccessEnabled: boolean;
   personaName: string;
   businessObjective: string;
   tone: string;
@@ -70,5 +71,5 @@ export function parseBotProfile(value: unknown): { value?: BotProfileInput; erro
   if (!languages.length) return { error: "Select at least one supported language" };
   if (missingCapabilities.length) return { error: `${category.replaceAll("_", " ")} requires ${missingCapabilities.map((capability)=>capability.toLowerCase().replaceAll("_", " ")).join(", ")} capability` };
   if (input.fallbackEnabled === true && safeFallbackMessage.length < 20) return { error: "Add approved safe fallback wording before enabling fallback" };
-  return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false, personaName, businessObjective, tone, languages, prohibitedClaims: list(input.prohibitedClaims), escalationTriggers: list(input.escalationTriggers), responseSlaMinutes, reminderPercent, fallbackEnabled: input.fallbackEnabled === true, safeFallbackMessage } };
+  return { value: { category: category as BotProfileInput["category"], operatingMode: operatingMode as BotProfileInput["operatingMode"], channels: channels as BotProfileInput["channels"], capabilities: capabilities as BotProfileInput["capabilities"], humanHandoffEnabled: input.humanHandoffEnabled !== false, actionApprovalNeeded: input.actionApprovalNeeded !== false, stayAccessEnabled: category === "STAY" && input.stayAccessEnabled === true, personaName, businessObjective, tone, languages, prohibitedClaims: list(input.prohibitedClaims), escalationTriggers: list(input.escalationTriggers), responseSlaMinutes, reminderPercent, fallbackEnabled: input.fallbackEnabled === true, safeFallbackMessage } };
 }

@@ -16,9 +16,9 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const body = await request.json().catch(() => null) as { roomNumber?: unknown; guestName?: unknown; checkIn?: unknown; checkOut?: unknown } | null;
   const response = await withPublicBotDatabaseContext(slug, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Resident access is temporarily unavailable." }, { status: 503, headers });
-    const property = await db.property.findUnique({ where: { slug }, select: { id: true, organization: { select: { botProfile: { select: { category: true, status: true, channels: true } } } } } });
+    const property = await db.property.findUnique({ where: { slug }, select: { id: true, organization: { select: { botProfile: { select: { category: true, status: true, channels: true, stayAccessEnabled: true } } } } } });
     const profile = property?.organization?.botProfile;
-    if (!property || !profile || profile.category !== "STAY" || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Resident access is not enabled for this property." }, { status: 404, headers });
+    if (!property || !profile || profile.category !== "STAY" || !profile.stayAccessEnabled || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Resident access is not enabled for this property." }, { status: 404, headers });
     const result = validateHotelGuestStayInput({ roomNumber: body?.roomNumber, guestName: body?.guestName, checkIn: body?.checkIn, checkOut: body?.checkOut });
     if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400, headers });
     const requestId = randomUUID();
@@ -37,6 +37,9 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   if (!capability) return NextResponse.json({ error: "Access request is invalid or expired." }, { status: 401, headers });
   const response = await withPublicBotDatabaseContext(slug, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Resident access is temporarily unavailable." }, { status: 503, headers });
+    const property = await db.property.findUnique({ where: { slug }, select: { organization: { select: { botProfile: { select: { category: true, status: true, channels: true, stayAccessEnabled: true } } } } } });
+    const profile = property?.organization?.botProfile;
+    if (!profile || profile.category !== "STAY" || !profile.stayAccessEnabled || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Resident access is not enabled for this property." }, { status: 404, headers });
     const rows = await db.$queryRaw<Array<{ id: string; roomNumber: string; guestName: string; requestedCheckIn: Date; approvedCheckOut: Date | null; status: string; activatedAt: Date | null; revokedAt: Date | null }>>`SELECT r."id",r."roomNumber",r."guestName",r."requestedCheckIn",r."approvedCheckOut",r."status",r."activatedAt",r."revokedAt" FROM "HotelGuestAccessRequest" r JOIN "Property" p ON p.id=r."propertyId" WHERE r.id=${capability.requestId} AND p.slug=${slug} AND r."requestTokenHash"=${hashHotelGuestRequestToken(requestToken)} LIMIT 1`;
     const item = rows[0];
     if (!item) return NextResponse.json({ error: "Access request was not found." }, { status: 404, headers });

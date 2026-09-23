@@ -8,6 +8,7 @@ export async function GET(request: Request) {
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
   const profile = access.organization.botProfile;
   if (profile?.category !== "STAY") return NextResponse.json({ error: "HotelGPT is not selected for this workspace." }, { status: 404 });
+  if (!profile.stayAccessEnabled) return NextResponse.json({ error: "HotelGPT in-stay access is disabled." }, { status: 409 });
   if (profile.status !== "LIVE") return NextResponse.json({ error: "The stay QR becomes available after Super Admin approval." }, { status: 409 });
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://app.aifrogi.com").replace(/\/$/, "");
   const stayUrl = `${appUrl}/stay/${encodeURIComponent(access.propertySlug)}`;

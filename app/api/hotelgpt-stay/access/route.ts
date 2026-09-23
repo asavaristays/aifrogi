@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
   return withTenantDatabaseContext({ kind: "tenant", organizationId: access.organization.id, actor: `hotelgpt-access:${access.user.username}` }, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
-    if (access.organization.botProfile?.category !== "STAY") return NextResponse.json({ error: "HotelGPT is not selected for this workspace." }, { status: 404 });
+    if (access.organization.botProfile?.category !== "STAY" || !access.organization.botProfile.stayAccessEnabled) return NextResponse.json({ error: "HotelGPT in-stay access is not enabled for this workspace." }, { status: 404 });
     const items = await db.$queryRaw<AccessRow[]>`SELECT id,"guestName","roomNumber","requestedCheckIn","requestedCheckOut","approvedCheckOut",status,"reviewedBy","reviewedAt","revokedAt","leadId","createdAt" FROM "HotelGuestAccessRequest" WHERE "propertyId"=${access.propertyId} ORDER BY status ASC,"createdAt" DESC LIMIT 100`;
     return NextResponse.json({ canApprove: ["OWNER", "ADMIN"].includes(access.role), items: items.map(item => ({ ...item, requestedCheckIn: item.requestedCheckIn.toISOString(), requestedCheckOut: item.requestedCheckOut.toISOString(), approvedCheckOut: item.approvedCheckOut?.toISOString() || null, status: item.revokedAt ? "REVOKED" : item.status === "APPROVED" && item.approvedCheckOut && item.approvedCheckOut <= new Date() ? "EXPIRED" : item.status, reviewedAt: item.reviewedAt?.toISOString() || null, createdAt: item.createdAt.toISOString() })) }, { headers: { "Cache-Control": "private, no-store" } });
   });
@@ -23,7 +23,7 @@ export async function PATCH(request: Request) {
   if (request.headers.get("origin") !== new URL(request.url).origin) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
   return withTenantDatabaseContext({ kind: "tenant", organizationId: access.organization.id, actor: `hotelgpt-access-review:${access.user.username}` }, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
-    if (access.organization.botProfile?.category !== "STAY") return NextResponse.json({ error: "HotelGPT is not selected for this workspace." }, { status: 404 });
+    if (access.organization.botProfile?.category !== "STAY" || !access.organization.botProfile.stayAccessEnabled) return NextResponse.json({ error: "HotelGPT in-stay access is not enabled for this workspace." }, { status: 404 });
     const rows = await db.$queryRaw<AccessRow[]>`SELECT id,"guestName","roomNumber","requestedCheckIn","requestedCheckOut","approvedCheckOut",status,"reviewedBy","reviewedAt","revokedAt","leadId","createdAt" FROM "HotelGuestAccessRequest" WHERE id=${String(body?.requestId || "")} AND "propertyId"=${access.propertyId} LIMIT 1`;
     const item = rows[0]; if (!item) return NextResponse.json({ error: "Access request not found" }, { status: 404 });
     const action = String(body?.action || ""); const now = new Date();

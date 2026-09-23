@@ -37,7 +37,8 @@ export async function registerTrialOrganization(input: {
     operatingMode: personaPack.defaultOperatingMode,
     capabilities: personaPack.defaultCapabilities,
     personaName: personaPack.defaultPersonaName,
-    tone: personaPack.tone
+    tone: personaPack.tone,
+    stayAccessEnabled: category === "STAY"
   };
 
   return db.$transaction(async (tx) => {
