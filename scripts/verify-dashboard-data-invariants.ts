@@ -17,17 +17,21 @@ async function snapshot(): Promise<DashboardDataSnapshot> {
   });
 }
 
-const current = validateDashboardDataSnapshot(await snapshot());
-const baselinePath = process.argv[2];
-if (!baselinePath) {
-  process.stdout.write(`${JSON.stringify(current)}\n`);
-  process.exit(0);
+async function main() {
+  const current = validateDashboardDataSnapshot(await snapshot());
+  const baselinePath = process.argv[2];
+  if (!baselinePath) {
+    process.stdout.write(`${JSON.stringify(current)}\n`);
+    return;
+  }
+
+  const baseline = validateDashboardDataSnapshot(JSON.parse(await readFile(baselinePath, "utf8")));
+  const failures = compareDashboardDataSnapshots(baseline, current);
+  if (failures.length) throw new Error(`Dashboard data invariant failed:\n- ${failures.join("\n- ")}`);
+  console.log(`Dashboard data invariant passed: ${JSON.stringify(current)}`);
 }
 
-const baseline = validateDashboardDataSnapshot(JSON.parse(await readFile(baselinePath, "utf8")));
-const failures = compareDashboardDataSnapshots(baseline, current);
-if (failures.length) {
-  console.error(`Dashboard data invariant failed:\n- ${failures.join("\n- ")}`);
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
   process.exit(1);
-}
-console.log(`Dashboard data invariant passed: ${JSON.stringify(current)}`);
+});
