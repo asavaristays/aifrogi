@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { cn, currency } from '@/lib/utils';
 import type { Lead as BaseLead } from '@/types';
 import { ChatDetail } from './ChatDetail';
@@ -87,7 +86,6 @@ function toDashboardLead(lead: BaseLead, index: number): LeadRecord {
 }
 
 export function DashboardLayout({ mode, initialLeads, notificationCount }: DashboardLayoutProps) {
-  const router = useRouter();
   const mappedInitialLeads = useMemo(() => initialLeads.map((lead, index) => toDashboardLead(lead, index)), [initialLeads]);
   const visibleInitialLeads = useMemo(
     () => mappedInitialLeads.filter((lead) => isModeLead(lead, mode)),
@@ -134,14 +132,6 @@ export function DashboardLayout({ mode, initialLeads, notificationCount }: Dashb
     }
     setActiveLeadId(preferredLeadId);
   }, [activeLeadId, leads, preferredLeadId]);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      router.refresh();
-    }, 10000);
-
-    return () => window.clearInterval(timer);
-  }, [router]);
 
   const selectedLead = useMemo(
     () => leads.find((lead) => lead.id === activeLeadId) ?? leads[0] ?? null,

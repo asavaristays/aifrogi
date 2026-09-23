@@ -287,14 +287,6 @@ export function WhatsAppBotClient({
   }, [activeId, hasManualSelection, latestLeadId]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      router.refresh();
-    }, 10000);
-
-    return () => window.clearInterval(timer);
-  }, [router]);
-
-  useEffect(() => {
     let cancelled = false;
 
     async function loadAssets() {

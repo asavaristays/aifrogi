@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './team-inbox.module.css';
 type Summary = {unread:number;needsHuman:number;checkedAt:string};
 type BadgingNavigator = Navigator & {setAppBadge?:(count:number)=>Promise<void>;clearAppBadge?:()=>Promise<void>};
 export function TeamInboxStatus() {
+  const router = useRouter();
   const [summary,setSummary] = useState<Summary|null>(null);
   const [notice,setNotice] = useState('');
   const [alerts,setAlerts] = useState(false);
@@ -15,6 +17,7 @@ export function TeamInboxStatus() {
     const nav=navigator as BadgingNavigator;
     const originalTitle=document.title;
     async function poll() {
+      if(document.visibilityState!=='visible')return;
       try {
         const response=await fetch('/api/team-inbox/summary',{cache:'no-store'});
         if(!response.ok) throw new Error('Sign in again or retry. Inbox counts unavailable.');
@@ -26,14 +29,18 @@ export function TeamInboxStatus() {
         if(alerts && last.current && (value.unread>last.current.unread || value.needsHuman>last.current.needsHuman) && typeof Notification!=='undefined' && Notification.permission==='granted') {
           try { new Notification('AiFrogi Team Inbox',{body:'New inbox activity. Sign in to review.',tag:'aifrogi-team-inbox'}); } catch { /* In-app counts remain available on unsupported devices. */ }
         }
+        const changed=last.current!==null&&(value.unread!==last.current.unread||value.needsHuman!==last.current.needsHuman);
         last.current=value;
+        if(changed)router.refresh();
       } catch { if(!cancelled){setSummary(null);setNotice('Counts unavailable. Refresh or sign in again.');await nav.clearAppBadge?.().catch(()=>{});} }
     }
     refresh.current=poll;
     void poll();
     const timer=setInterval(poll,20000);
-    return ()=>{cancelled=true;clearInterval(timer);document.title=originalTitle;void nav.clearAppBadge?.().catch(()=>{});};
-  },[alerts]);
+    const onVisibility=()=>{if(document.visibilityState==='visible')void poll();};
+    document.addEventListener('visibilitychange',onVisibility);
+    return ()=>{cancelled=true;clearInterval(timer);document.removeEventListener('visibilitychange',onVisibility);document.title=originalTitle;void nav.clearAppBadge?.().catch(()=>{});};
+  },[alerts,router]);
   async function enableAlerts(){
     if(typeof Notification==='undefined'){setNotice('Browser alerts are not supported here. Use the inbox counts and existing email alerts.');return;}
     const permission=await Notification.requestPermission();
