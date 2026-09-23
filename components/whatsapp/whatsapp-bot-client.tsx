@@ -153,6 +153,7 @@ function isCampaignLead(lead: Lead) {
 
 function getLeadSourceLabel(lead: Lead) {
   const text = leadTextIndex(lead);
+  if (text.includes("resident guest") || text.includes("hotelgpt resident qr")) return "Resident guest";
   if (text.includes("audit")) return "AI audit";
   if (text.includes("trial")) return "Trial";
   if (text.includes("campaign") || text.includes("broadcast") || text.includes("template")) return "Campaign";

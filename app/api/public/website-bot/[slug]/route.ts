@@ -31,6 +31,7 @@ import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sov
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
 import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking, resolveApprovedStay } from "@/lib/stay-question-routing";
+import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -89,24 +90,28 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
   if (!replyEntitlement.allowed) return NextResponse.json({ error: "This AI Bot has used its available reply credits. The business account owner can add credits or activate a plan in Billing." }, { status: 402, headers: responseHeaders });
 
-  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string } | null;
+  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; stayAccessToken?: string; visitorTimeZone?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
   const consentedContact = payload?.consent ? normalizeConsentedLeadPhone(payload.contact) : null;
   const consentedName = payload?.consent ? String(payload.name || "").trim().slice(0, 100) : "";
   if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });
+  const residentStay = payload?.stayAccessToken ? verifyHotelGuestStayToken(payload.stayAccessToken, slug) : null;
+  if (payload?.stayAccessToken && (!residentStay || profile.category !== "STAY")) return NextResponse.json({ error: "Resident access is invalid or expired." }, { status: 401, headers: responseHeaders });
 
   const priorToken = payload?.visitorToken ? verifyWebsiteVisitorToken(payload.visitorToken, slug) : null;
   let existingResolutionState: unknown = null;
   let lastAssistantAnswer = "";
   let sessionStatus = "AI_READY";
+  let residentSessionExpiry: number | undefined;
   if (payload?.visitorToken && (!priorToken || priorToken.sessionId !== sessionId)) return NextResponse.json({ error: "Visitor session is invalid or expired." }, { status: 401, headers: responseHeaders });
   if (payload?.visitorToken) {
-    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true, resolutionState: true, status: true } });
+    const activeSession = await db.websiteVisitorSession.findFirst({ where: { propertyId: property.id, leadId: priorToken!.leadId, capabilityHash: hashWebsiteVisitorValue(payload.visitorToken), revokedAt: null, expiresAt: { gt: new Date() } }, select: { id: true, resolutionState: true, status: true, expiresAt: true, consentText: true } });
     if (!activeSession) return NextResponse.json({ error: "Visitor session is invalid, closed, or expired." }, { status: 401, headers: responseHeaders });
     existingResolutionState = activeSession.resolutionState;
     sessionStatus = activeSession.status;
+    if (activeSession.consentText?.startsWith("Guest-declared HotelGPT resident access")) residentSessionExpiry = Math.floor(activeSession.expiresAt.getTime() / 1000);
     if (sessionStatus === "CLOSED") return NextResponse.json({ error: "This conversation is closed.", conversationState: "CLOSED" }, { status: 410, headers: responseHeaders });
     const latestEvidence = await db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id, sessionIdHash: hashWebsiteVisitorValue(sessionId) }, orderBy: { createdAt: "desc" }, select: { circuitBreaker: true, circuitBreakerReason: true, question: true, resolvedQuestion: true, answer: true } });
     lastAssistantAnswer = latestEvidence?.answer || "";
@@ -368,7 +373,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
   await recordTenantAnswerUsage({ organizationId: organization.id, evidenceId: evidence.id, usage: { inputTokens: result?.modelUsage?.inputTokens || 0, outputTokens: result?.modelUsage?.outputTokens || 0, model: result?.model || "NON_MODEL", attempts: reliability.attemptCount, latencyMs: reliability.latencyMs } }).catch((error) => console.error("Tenant usage metering failed", { organizationId: organization.id, evidenceId: evidence.id, error }));
   const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
-  const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
+  const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested }, residentStay?.exp || residentSessionExpiry);
   const consented = Boolean(consentedContact);
   const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
   const baseResolutionState = preserveActiveState ? existingResolutionState : resolution.state;
@@ -390,14 +395,36 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     create: {
       propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken),
       status: humanRequested ? "HUMAN_REQUESTED" : "AI_READY", resolutionState: sessionResolutionState, expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000),
-      ...(consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
+      ...(residentStay ? { contactName: residentStay.guestName, consentText: `Guest-declared HotelGPT resident access for room ${residentStay.roomNumber}, ${residentStay.checkIn} to ${residentStay.checkOut}.` } : consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     },
     update: {
       capabilityHash: hashWebsiteVisitorValue(visitorToken), status: humanRequested ? "HUMAN_REQUESTED" : undefined, resolutionState: sessionResolutionState,
       expiresAt: new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000), revokedAt: null,
-      ...(consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
+      ...(residentStay ? { contactName: residentStay.guestName, consentText: `Guest-declared HotelGPT resident access for room ${residentStay.roomNumber}, ${residentStay.checkIn} to ${residentStay.checkOut}.` } : consented ? { contactName: consentedName, contactValue: consentedContact, consentText: `${businessName} may store these details and contact me about this enquiry.`, consentedAt: new Date() } : {})
     }
   });
+
+  if (residentStay) {
+    const wasResident = captured.lead.source === "HotelGPT Resident QR";
+    await persistenceDb.lead.update({ where: { id: captured.lead.id }, data: {
+      name: residentStay.guestName,
+      initials: residentStay.guestName.split(/\s+/).slice(0, 2).map(part => part[0]?.toUpperCase() || "").join("") || "RG",
+      source: "HotelGPT Resident QR",
+      stayLabel: `Room ${residentStay.roomNumber} · checkout ${residentStay.checkOut}`,
+      partyLabel: "Guest-declared stay",
+      tags: wasResident ? undefined : { create: [{ value: "Resident Guest" }, { value: "Guest-declared" }] }
+    } });
+    if (!wasResident) await persistenceDb.platformAuditLog.create({ data: {
+      organizationId: organization.id,
+      actorEmail: "hotelgpt-resident-session",
+      actorRole: "PUBLIC_GUEST",
+      action: "HOTELGPT_RESIDENT_SESSION_STARTED",
+      targetType: "LEAD",
+      targetId: captured.lead.id,
+      summary: `Guest-declared resident session started for room ${residentStay.roomNumber}; access ends at submitted checkout.`,
+      metadata: { propertyId: property.id, verification: "GUEST_DECLARED", checkIn: residentStay.checkIn, checkOut: residentStay.checkOut }
+    } });
+  }
 
   if (qualification.state) {
     const facts = qualification.state.facts;

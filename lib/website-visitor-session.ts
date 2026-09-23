@@ -20,8 +20,8 @@ function sign(value: string) {
   return createHmac("sha256", secret()).update(value, "utf8").digest("base64url");
 }
 
-export function issueWebsiteVisitorToken(input: Omit<WebsiteVisitorToken, "exp">) {
-  const payload: WebsiteVisitorToken = { ...input, exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS };
+export function issueWebsiteVisitorToken(input: Omit<WebsiteVisitorToken, "exp">, expiresAt?: number) {
+  const payload: WebsiteVisitorToken = { ...input, exp: expiresAt || Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS };
   const encoded = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
   return `${encoded}.${sign(encoded)}`;
 }
