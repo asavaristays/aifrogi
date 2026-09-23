@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { activatePaidAiCredits } from "@/lib/ai-credits";
 import { findAiCreditPack, type AiCreditPackCode } from "@/lib/ai-credit-catalog";
 import { fetchRazorpayOrder, fetchVerifiedRazorpayPayment, verifyRazorpayCheckoutSignature } from "@/lib/razorpay-billing";
@@ -21,8 +21,11 @@ export async function POST(request: Request) {
     const [order, payment] = await Promise.all([fetchRazorpayOrder(orderId), fetchVerifiedRazorpayPayment(paymentId)]);
     const valid = order.notes?.organizationId === access.organization.id && order.notes?.packCode === pack.code && payment.order_id === orderId && payment.amount === pack.amountPaisa && order.amount === pack.amountPaisa && payment.currency === "INR" && order.currency === "INR" && payment.status === "captured" && payment.captured;
     if (!valid) return NextResponse.json({ error: "Payment is not captured or does not match this credit pack." }, { status: 400 });
-    const credit = await activatePaidAiCredits({ organizationId: access.organization.id, actorEmail: access.user.username, packCode, orderId, paymentId, amountPaisa: payment.amount, currency: payment.currency });
-    const notification = await notifyBillingEvent({ organizationId: access.organization.id, targetId: credit.id, actorEmail: access.user.username, event: "CREDITS_PURCHASED", description: `${credit.credits.toLocaleString("en-IN")} AI reply credits`, value: `₹${(payment.amount / 100).toLocaleString("en-IN")} paid`, reference: paymentId, validity: credit.expiresAt });
+    const { credit, notification } = await withClientDatabaseContext(access, "billing-credits-verify", async () => {
+      const credit = await activatePaidAiCredits({ organizationId: access.organization.id, actorEmail: access.user.username, packCode, orderId, paymentId, amountPaisa: payment.amount, currency: payment.currency });
+      const notification = await notifyBillingEvent({ organizationId: access.organization.id, targetId: credit.id, actorEmail: access.user.username, event: "CREDITS_PURCHASED", description: `${credit.credits.toLocaleString("en-IN")} AI reply credits`, value: `₹${(payment.amount / 100).toLocaleString("en-IN")} paid`, reference: paymentId, validity: credit.expiresAt });
+      return { credit, notification };
+    });
     return NextResponse.json({ ok: true, creditId: credit.id, credits: credit.credits, allocatedImmediately: true, notification });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Credit payment verification failed." }, { status: 502 });

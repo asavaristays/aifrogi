@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { TopBar } from "@/components/layout/top-bar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { BILLING_PLAN_CATALOGUE, formatMoney, getCustomerBillingDetail } from "@/lib/billing-super-admin";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { ActivatePlan } from "@/components/billing/activate-plan";
@@ -19,10 +19,10 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   const access = await getCurrentClientAccess();
   if (!access) redirect("/login");
   if (!canManageWorkspace(access.role)) redirect("/dashboard");
-  const [billing, subscriptionAccess] = await Promise.all([
+  const [billing, subscriptionAccess] = await withClientDatabaseContext(access, "client-billing", () => Promise.all([
     getCustomerBillingDetail(access.organization.id),
     getOrganizationSubscriptionAccess(access.organization.id)
-  ]);
+  ]));
   if (!billing || !subscriptionAccess) return null;
 
   const replies = aiReplyAllowancePosition({ included: billing.limits.aiReplies, added: billing.aiCredits.granted, used: billing.usage.aiReplies });

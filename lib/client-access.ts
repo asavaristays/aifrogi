@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth-server";
 import { getOrganizationForMember } from "@/lib/repositories/onboarding-repository";
 import { getOrganizationSubscriptionAccess, type SubscriptionAccessState } from "@/lib/subscription-access";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export type ClientAccessRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -16,6 +17,24 @@ export async function getCurrentClientAccess() {
 
 export function canManageWorkspace(role: ClientAccessRole) {
   return role === "OWNER" || role === "ADMIN";
+}
+
+/**
+ * Keep every post-authentication tenant query inside one explicit database
+ * transaction. Next layouts and pages do not share AsyncLocalStorage reliably,
+ * so callers must not depend on the identity established while resolving the
+ * session or membership.
+ */
+export function withClientDatabaseContext<T>(
+  access: NonNullable<Awaited<ReturnType<typeof getCurrentClientAccess>>>,
+  surface: string,
+  work: () => Promise<T>
+) {
+  return withTenantDatabaseContext({
+    kind: "tenant",
+    organizationId: access.organization.id,
+    actor: `${surface}:${access.user.username}`
+  }, work);
 }
 
 export type ClientWorkspaceAccessResult =
@@ -62,7 +81,7 @@ export async function resolveClientWorkspaceAccess(input?: {
     return { ok: false, status: 404, error: "No workspace is available for your account." };
   }
 
-  const subscriptionAccess = await getOrganizationSubscriptionAccess(access.organization.id);
+  const subscriptionAccess = await withClientDatabaseContext(access, "client-access", () => getOrganizationSubscriptionAccess(access.organization.id));
   if (input?.requireActiveSubscription && subscriptionAccess && !subscriptionAccess.canUsePaidActions) {
     return { ok: false, status: 402, error: subscriptionAccess.message };
   }

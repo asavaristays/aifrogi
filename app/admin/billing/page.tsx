@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { formatMoney, getBillingCommandCenter, getPlatformAiCostMatrix } from "@/lib/billing-super-admin";
+import { getCurrentUser } from "@/lib/auth-server";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -7,7 +10,9 @@ const formatDate = (value?: Date | null) => value ? new Intl.DateTimeFormat("en-
 const formatPreciseMoney = (paisa: number) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(paisa / 100);
 
 export default async function AdminBillingPage() {
-  const [{ customers }, platformAi] = await Promise.all([getBillingCommandCenter(), getPlatformAiCostMatrix()]);
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") redirect("/login");
+  const [{ customers }, platformAi] = await withTenantDatabaseContext({ kind: "platform-admin", actor: `admin-billing:${user.username}` }, () => Promise.all([getBillingCommandCenter(), getPlatformAiCostMatrix()]));
   const invoices = customers.flatMap((item) => item.organization.invoices.map((invoice) => ({ ...invoice, customer: item.organization.name, organizationId: item.organization.id }))).sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime());
   const creditTransactions = customers.flatMap((item) => item.organization.aiCreditTransactions.map((transaction) => ({ ...transaction, customer: item.organization.name, organizationId: item.organization.id }))).sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime());
   const active = customers.filter((item) => ["ACTIVE","TRIALING","COMPLIMENTARY"].includes(item.subscription?.status || "")).length;

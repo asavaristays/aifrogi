@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentClientAccess, canManageWorkspace } from "@/lib/client-access";
+import { getCurrentClientAccess, canManageWorkspace, withClientDatabaseContext } from "@/lib/client-access";
 import { ensureBillingPlans } from "@/lib/billing-super-admin";
 import { createRazorpayOrder } from "@/lib/razorpay-billing";
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   if (!CLIENT_PLAN_CODES.has(planCode)) return NextResponse.json({ error: "Select a valid paid plan." }, { status: 400 });
 
   try {
-    const plans = await ensureBillingPlans();
+    const plans = await withClientDatabaseContext(access, "billing-checkout-order", ensureBillingPlans);
     const plan = plans.find((item) => item.code === planCode);
     if (!plan || !plan.amountPaisa) return NextResponse.json({ error: "Selected plan is unavailable." }, { status: 400 });
     const receipt = `aif-${access.organization.id.slice(-10)}-${Date.now().toString().slice(-10)}`;

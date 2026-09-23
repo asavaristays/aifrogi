@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { TeamInboxStatus } from '@/components/lead-inbox/team-inbox-status';
 import { WhatsAppBotClient } from '@/components/whatsapp/whatsapp-bot-client';
 import { resolveClientWorkspaceAccess } from '@/lib/client-access';
+import { withTenantDatabaseContext } from '@/lib/security/tenant-database-context';
 import { getCurrentWorkspaceSlug } from '@/lib/workspace';
 import { loadLeads } from '@/lib/services/lead-service';
 import { redirect } from 'next/navigation';
@@ -13,6 +14,6 @@ const websiteOnlyIntegration: WhatsAppIntegration = {id:'',provider:'META_CLOUD_
 export default async function TeamInboxPage(){
   const access=await resolveClientWorkspaceAccess({propertySlug:await getCurrentWorkspaceSlug()});
   if(!access.ok)redirect('/login?returnTo=%2Fteam-inbox');
-  const leads=await loadLeads(access.propertySlug);
+  const leads=await withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug));
   return <div className={styles.page}><TeamInboxStatus/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode/></div>;
 }

@@ -5,13 +5,18 @@ import { Card } from "@/components/ui/card";
 import { loadLeads } from "@/lib/services/lead-service";
 import { gradeCapturedLead, isCapturedLead, leadGradeLabel, type LeadGrade } from "@/lib/lead-insights";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { resolveClientWorkspaceAccess } from "@/lib/client-access";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function ContactsPage() {
   const propertySlug = await getCurrentWorkspaceSlug();
-  const leads = (await loadLeads(propertySlug)).filter(isCapturedLead);
+  const access = await resolveClientWorkspaceAccess({propertySlug});
+  if (!access.ok) redirect("/login");
+  const leads = (await withTenantDatabaseContext({kind:"tenant",organizationId:access.organization.id,actor:`client-contacts:${access.user.username}`},()=>loadLeads(propertySlug))).filter(isCapturedLead);
 
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#f1fbf5_0%,#ffffff_50%,#eef8f5_100%)]">

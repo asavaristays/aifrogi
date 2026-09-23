@@ -6,17 +6,18 @@ import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access"
 import { getOrganizationForMember } from "@/lib/repositories/onboarding-repository";
 import { listSupportTickets, markSupportTicketViewed } from "@/lib/repositories/support-repository";
 import { listSupportAccessEvents, listSupportAccessGrants } from "@/lib/support-access";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
 export default async function SupportPage() {
   const [user, access] = await Promise.all([getCurrentUser(), getCurrentClientAccess()]);
   const organization = user ? await getOrganizationForMember(user.username) : null;
-  const [tickets, grants, events] = organization ? await Promise.all([
+  const [tickets, grants, events] = organization && user ? await withTenantDatabaseContext({kind:"tenant",organizationId:organization.id,actor:`client-support:${user.username}`},()=>Promise.all([
     listSupportTickets({ organizationId: organization.id, includeMessages: true }),
     listSupportAccessGrants(organization.id),
     listSupportAccessEvents(organization.id)
-  ]) : [[], [], []];
+  ])) : [[], [], []];
   const serializedTickets = tickets.map((ticket) => {
     const messages = (ticket as typeof ticket & { messages?: Array<{ id: string; authorEmail: string; authorRole: string; body: string; createdAt: Date }> }).messages || [];
     return {
@@ -36,7 +37,7 @@ export default async function SupportPage() {
     ...event,
     createdAt: event.createdAt.toISOString()
   }));
-  if (organization) await markSupportTicketViewed({ organizationId: organization.id, viewer: "CLIENT" });
+  if (organization && user) await withTenantDatabaseContext({kind:"tenant",organizationId:organization.id,actor:`client-support:${user.username}`},()=>markSupportTicketViewed({ organizationId: organization.id, viewer: "CLIENT" }));
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <TopBar title="Support" subtitle="Guided help for widget onboarding, website conversations, billing, and automation" notificationCount={tickets.filter((ticket) => !["RESOLVED", "CLOSED"].includes(ticket.status)).length} />

@@ -5,13 +5,14 @@ import { TopBar } from "@/components/layout/top-bar";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getClientImprovementReport } from "@/lib/repositories/improvement-report-repository";
 import { ImprovementAnswerQueue, type ImprovementItem } from "@/components/improve/improvement-answer-queue";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
 export default async function ImproveMyBotPage() {
   const access = await resolveClientWorkspaceAccess();
   if (!access.ok) redirect("/login");
-  const report = await getClientImprovementReport(access.propertyId);
+  const report = await withTenantDatabaseContext({kind:"tenant",organizationId:access.organization.id,actor:`client-improve:${access.user.username}`},()=>getClientImprovementReport(access.propertyId));
   const helpfulRate = report.feedbackTotal ? Math.round((report.helpful / report.feedbackTotal) * 100) : null;
   const unresolvedFeedback = report.negativeFeedback.filter((item) => item.evidence.replayCase?.status !== "RESOLVED_BY_CLIENT").length;
   const unresolvedGaps = report.gaps.filter((item) => item.status === "OPEN").length;
