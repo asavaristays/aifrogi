@@ -27,10 +27,12 @@ export default async function OnboardingPage() {
     organizationId: organization.id,
     actor: `onboarding-page:${user.username}`
   }, async () => {
+    const tenantDb = getDb();
+    if (!tenantDb) return { subscription: null, verification: null, confirmedAnswers: 0 };
     const [subscription, verification, confirmedAnswers] = await Promise.all([
       getOrganizationSubscriptionAccess(organization.id),
       getKnowledgeVerificationReadiness(property.id, organization.botProfile?.category === "STAY" ? "HOSPITALITY" : organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : organization.botProfile?.category || "BUSINESS_AI"),
-      db.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } })
+      tenantDb.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } })
     ]);
     return { subscription, verification, confirmedAnswers };
   }) : { subscription: null, verification: null, confirmedAnswers: 0 };
