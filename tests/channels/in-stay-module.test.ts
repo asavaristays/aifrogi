@@ -33,4 +33,6 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(inbox, />In-Stay</);
   assert.match(session, /CONFIRM_RESOLUTION/);
   assert.match(session, /REOPEN/);
+  const proxy = source("proxy.ts");
+  assert.match(proxy, /"\/api\/public\/hotelgpt-stay"/);
 });
