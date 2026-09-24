@@ -136,10 +136,12 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
         const lead = await db.lead.findFirst({ where: { id: priorToken.leadId, propertyId: property.id }, select: { id: true } });
         if (!lead) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
         await db.leadMessage.create({ data: { leadId: lead.id, sender: "GUEST", body: safety.storageText, sentAt: new Date() } });
+        const shouldAcknowledge = !["HUMAN_REQUESTED", "HUMAN_JOINED"].includes(sessionStatus);
+        if (shouldAcknowledge) await db.leadMessage.create({ data: { leadId: lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
         await db.lead.update({ where: { id: lead.id }, data: { intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
         await db.websiteVisitorSession.update({ where: { leadId: lead.id }, data: { status: "HUMAN_REQUESTED" } });
         await ensureWebsiteHandover({ propertyId: property.id, leadId: lead.id, responseSlaMinutes: profile.responseSlaMinutes });
-        return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: true }, { headers: responseHeaders });
+        return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: !shouldAcknowledge }, { headers: responseHeaders });
       }
 
       const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, phone: stayCapability.phoneNumber, profileName: stayCapability.guestName, message: safety.storageText, aiReply: inStayAcknowledgement, propertySlug: slug }).catch(() => null);
