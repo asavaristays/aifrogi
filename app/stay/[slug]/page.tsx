@@ -21,5 +21,5 @@ export default async function HotelGptStayPage({ params }: { params: Promise<{ s
   const settings = await withPublicBotDatabaseContext(slug, () => readKnowledgeSettings(slug));
   if (!settings) notFound();
   const propertyName = property.organization?.name || property.name;
-  return <HotelGptResidentEntry slug={slug} propertyName={propertyName} botName={profile.personaName || `${propertyName} HotelGPT`} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme || "dark"} logoUrl={settings.logoUrl} menu={settings.widgetMenu || { enabled: false, heading: "", items: [] }} />;
+  return <HotelGptResidentEntry slug={slug} propertyName={propertyName} botName={profile.personaName || `${propertyName} HotelGPT`} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme || "dark"} logoUrl={settings.logoUrl} menu={settings.widgetMenu || { enabled: false, heading: "", items: [] }} welcomeCardImageUrl={settings.welcomeCardImageUrl} welcomeCardTitle={settings.welcomeCardTitle} welcomeCardText={settings.welcomeCardText} showcaseItems={settings.showcaseItems} />;
 }

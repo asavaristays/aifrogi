@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { consumeRateLimit } from "@/lib/rate-limit";
-import { hashHotelGuestRequestToken, issueHotelGuestRequestToken, issueHotelGuestStayToken, validateHotelGuestStayInput, verifyHotelGuestRequestToken } from "@/lib/hotelgpt-stay-session";
+import { hashHotelGuestRequestToken, issueHotelGuestRequestToken, issueHotelGuestStayToken, validateHotelGuestStayInput, verifyHotelGuestRequestToken, verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { randomUUID } from "node:crypto";
@@ -43,6 +43,19 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const { slug } = await context.params;
   if (!consumeRateLimit(`hotelgpt-status:${slug}:${ip(request)}`, 60, 15 * 60_000).allowed) return NextResponse.json({ error: "Please wait before checking again." }, { status: 429, headers });
   const requestToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || "";
+  const stayCapability = verifyHotelGuestStayToken(requestToken, slug);
+  if (stayCapability) {
+    const result = await withPublicBotDatabaseContext(slug, async () => {
+      const db = getDb(); if (!db) return NextResponse.json({ error: "Resident access is temporarily unavailable." }, { status: 503, headers });
+      const rows = await db.$queryRaw<Array<{ leadId: string | null }>>`SELECT "leadId" FROM "HotelGuestAccessRequest" WHERE id=${stayCapability.requestId} AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() LIMIT 1`;
+      const leadId = rows[0]?.leadId;
+      if (!leadId) return NextResponse.json({ caseStatus: "NONE", feedback: null }, { headers });
+      const lead = await db.lead.findFirst({ where: { id: leadId }, select: { stage: true, tags: { select: { value: true } } } });
+      const feedbackTag = lead?.tags.find(tag => tag.value.startsWith("In-stay feedback:"))?.value || null;
+      return NextResponse.json({ caseStatus: lead?.stage === "BOOKED" ? "RESOLVED" : lead?.stage === "CONTACTED" ? "IN_PROGRESS" : "OPEN", feedback: feedbackTag?.replace("In-stay feedback: ", "") || null }, { headers });
+    });
+    return result || NextResponse.json({ error: "Resident access is not enabled." }, { status: 404, headers });
+  }
   const capability = verifyHotelGuestRequestToken(requestToken, slug);
   if (!capability) return NextResponse.json({ error: "Access request is invalid or expired." }, { status: 401, headers });
   const response = await withPublicBotDatabaseContext(slug, async () => {
@@ -69,19 +82,27 @@ export async function PATCH(request: Request, context: { params: Promise<{ slug:
   const { slug } = await context.params;
   if (!consumeRateLimit(`hotelgpt-resolution:${slug}:${ip(request)}`, 20, 15 * 60_000).allowed) return NextResponse.json({ error: "Please wait before updating again." }, { status: 429, headers });
   const stayToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || "";
-  const { verifyHotelGuestStayToken } = await import("@/lib/hotelgpt-stay-session");
   const capability = verifyHotelGuestStayToken(stayToken, slug);
   if (!capability) return NextResponse.json({ error: "In-stay access is invalid or expired." }, { status: 401, headers });
   const body = await request.json().catch(() => null) as { action?: unknown } | null;
-  if (body?.action !== "CONFIRM_RESOLUTION" && body?.action !== "REOPEN") return NextResponse.json({ error: "Choose a valid resolution action." }, { status: 400, headers });
+  const action = String(body?.action || "");
+  if (!["CONFIRM_RESOLUTION", "REOPEN", "FEEDBACK_POSITIVE", "FEEDBACK_NEGATIVE"].includes(action)) return NextResponse.json({ error: "Choose a valid resolution action." }, { status: 400, headers });
   const response = await withPublicBotDatabaseContext(slug, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Resident access is temporarily unavailable." }, { status: 503, headers });
     const rows = await db.$queryRaw<Array<{ leadId: string | null }>>`SELECT r."leadId" FROM "HotelGuestAccessRequest" r JOIN "Property" p ON p.id=r."propertyId" WHERE r.id=${capability.requestId} AND p.slug=${slug} AND r.status='APPROVED' AND r."revokedAt" IS NULL AND r."approvedCheckOut">NOW() LIMIT 1`;
     const leadId = rows[0]?.leadId;
     if (!leadId) return NextResponse.json({ error: "No in-stay request is available to update yet." }, { status: 404, headers });
-    const stage = body.action === "CONFIRM_RESOLUTION" ? "BOOKED" : "NEW";
+    if (action === "FEEDBACK_POSITIVE" || action === "FEEDBACK_NEGATIVE") {
+      const lead = await db.lead.findFirst({ where: { id: leadId }, select: { stage: true } });
+      if (lead?.stage !== "BOOKED") return NextResponse.json({ error: "Feedback is available after the front desk resolves the request." }, { status: 409, headers });
+      await db.leadTag.deleteMany({ where: { leadId, value: { startsWith: "In-stay feedback:" } } });
+      const feedback = action === "FEEDBACK_POSITIVE" ? "Positive" : "Needs improvement";
+      await db.leadTag.create({ data: { leadId, value: `In-stay feedback: ${feedback}` } });
+      return NextResponse.json({ ok: true, status: "RESOLVED", feedback }, { headers });
+    }
+    const stage = action === "CONFIRM_RESOLUTION" ? "BOOKED" : "NEW";
     await db.$executeRaw`UPDATE "Lead" SET stage=${stage}::"LeadStage","updatedAt"=NOW() WHERE id=${leadId}`;
-    return NextResponse.json({ ok: true, status: body.action === "CONFIRM_RESOLUTION" ? "RESOLVED" : "REOPENED" }, { headers });
+    return NextResponse.json({ ok: true, status: action === "CONFIRM_RESOLUTION" ? "RESOLVED" : "REOPENED" }, { headers });
   });
   return response || NextResponse.json({ error: "Resident access is not enabled." }, { status: 404, headers });
 }

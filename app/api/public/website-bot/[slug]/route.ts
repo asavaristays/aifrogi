@@ -123,6 +123,40 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     where: { leadId: priorToken.leadId, sender: "GUEST" }, orderBy: [{ sentAt: "desc" }, { id: "desc" }], take: 6, select: { body: true }
   })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
+  const handoffEnabled = profile.humanHandoffEnabled === true;
+  const inStayAcknowledgement = "Thank you. Our front desk has received your request and will start resolving it shortly. We will update you here.";
+
+  // In-stay service is deliberately isolated from pre-stay sales knowledge.
+  // During the human-first launch, every resident message becomes a front-desk
+  // case and no model-generated advice is returned.
+  if (stayCapability) {
+    const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
+    return persistWebsiteTurn(async () => {
+      if (priorToken) {
+        const lead = await db.lead.findFirst({ where: { id: priorToken.leadId, propertyId: property.id }, select: { id: true } });
+        if (!lead) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
+        await db.leadMessage.create({ data: { leadId: lead.id, sender: "GUEST", body: safety.storageText, sentAt: new Date() } });
+        await db.lead.update({ where: { id: lead.id }, data: { intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
+        await db.websiteVisitorSession.update({ where: { leadId: lead.id }, data: { status: "HUMAN_REQUESTED" } });
+        await ensureWebsiteHandover({ propertyId: property.id, leadId: lead.id, responseSlaMinutes: profile.responseSlaMinutes });
+        return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: true }, { headers: responseHeaders });
+      }
+
+      const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, phone: stayCapability.phoneNumber, profileName: stayCapability.guestName, message: safety.storageText, aiReply: inStayAcknowledgement, propertySlug: slug }).catch(() => null);
+      if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
+      await db.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
+      await db.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL`;
+      await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes });
+      const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested: true });
+      const expiresAt = new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000);
+      await db.websiteVisitorSession.upsert({
+        where: { leadId: captured.lead.id },
+        create: { propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt },
+        update: { capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt, revokedAt: null }
+      });
+      return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true }, { headers: responseHeaders });
+    });
+  }
   const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   const acceptedCallbackOffer = acceptedHumanOffer(message, lastAssistantAnswer);
   const typesafeReviewRef = hashWebsiteVisitorValue(sessionId);
@@ -139,7 +173,6 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     && existingResolutionState && typeof existingResolutionState === "object" && !Array.isArray(existingResolutionState)
     && "status" in existingResolutionState && existingResolutionState.status === "ACTIVE"
     && "clarifyCount" in existingResolutionState && typeof existingResolutionState.clarifyCount === "number" && existingResolutionState.clarifyCount >= 1;
-  const handoffEnabled = profile.humanHandoffEnabled === true;
   // A human-owned conversation must not call the model or generate competing advice.
   if (sessionStatus === "HUMAN_JOINED" && priorToken) {
     return persistWebsiteTurn(async () => {
@@ -352,13 +385,6 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
-  if (stayCapability) {
-    const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
-    await persistenceDb.$transaction([
-      persistenceDb.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, lastActivityAt: new Date() } }),
-      persistenceDb.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL`
-    ]);
-  }
   if ((explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE") && handoffEnabled) {
     try { await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes }); }
     catch { return NextResponse.json({ error: "Your human-help request could not be saved. Please retry." }, { status: 503, headers: responseHeaders }); }
