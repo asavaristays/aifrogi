@@ -124,7 +124,7 @@ DECLARE
     'KnowledgeDocument','KnowledgeEntry','KnowledgePreview','KnowledgeAnswerFlag','KnowledgeGap','Lead',
     'WebsiteVisitorSession','SovereignAnswerEvidence','SovereignAnswerFeedback','SovereignReplayCase',
     'ChannelConnection','Participant','Conversation','Message','AiOperation','MetricDaily','Campaign',
-    'AutomationJob','Asset','WhatsAppIntegration','AppointmentTenant','CommerceTenant'
+    'AutomationJob','Asset','WhatsAppIntegration','AppointmentTenant','CommerceTenant','HotelGuestAccessRequest'
   ];
 BEGIN
   EXECUTE 'ALTER TABLE "Organization" ENABLE ROW LEVEL SECURITY';

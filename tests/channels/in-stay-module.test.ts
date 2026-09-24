@@ -32,6 +32,7 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(resident, /localStorage\.getItem/);
   assert.match(resident, /scan the same QR on this phone/);
   assert.match(resident, /Guest Login/);
+  assert.match(resident, /Already approved\? Login with room number/);
   assert.match(resident, /Register Stay/);
   assert.match(resident, /Enter room number/);
   assert.match(resident, /stayAccessToken/);
