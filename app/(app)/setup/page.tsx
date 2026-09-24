@@ -46,7 +46,7 @@ export default async function SetupPage() {
   const steps = [
     { number: "1", title: "Choose the appearance", copy: "Set the bot name, logo, brand colour and welcome message.", href: "#bot-appearance", action: "Edit appearance", ready: Boolean(botName && appearance.welcomeMessage) },
     { number: "2", title: "Set bot behaviour", copy: "Define its purpose, tone, languages and safety boundaries.", href: "#bot-behaviour", action: "Edit behaviour", ready: behaviourComplete },
-    { number: "3", title: "Add business knowledge", copy: "Connect your website and approve the answers your bot may use.", href: "/knowledge", action: "Open Intelligence", ready: appearance.pageCount > 0 },
+    { number: "3", title: "Add business knowledge", copy: "Upload your hotel sheet or connect a website, then approve the answers your bot may use.", href: "/knowledge", action: "Open Intelligence", ready: appearance.pageCount > 0 || Boolean(verification?.published) },
     { number: "4", title: "Test customer questions", copy: testComplete ? "A website-bot answer has been tested and recorded." : "Ask real questions and confirm the replies before going live.", href: "/knowledge#test-your-bot", action: testComplete ? "Test another question" : "Test my bot", ready: testComplete },
     { number: "5", title: "Choose delivery", copy: deliveryReady ? "Standalone link and optional website embed codes are ready." : "Generate the standalone link and optional website embed choices.", href: "#website-installation", action: "View delivery options", ready: deliveryReady }
   ];
