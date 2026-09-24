@@ -35,4 +35,6 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(session, /REOPEN/);
   const proxy = source("proxy.ts");
   assert.match(proxy, /"\/api\/public\/hotelgpt-stay"/);
+  const tenantContext = source("lib/security/tenant-database-context.ts");
+  assert.match(tenantContext, /withPublicBotDatabaseContext[\s\S]*withTenantDatabaseContext\(\{ kind: "tenant", organizationId/);
 });

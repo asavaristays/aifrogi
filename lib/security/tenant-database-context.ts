@@ -84,7 +84,7 @@ export function resolveMemberOrganization(email: string) {
 export async function withPublicBotDatabaseContext<T>(slug: string, work: () => Promise<T>) {
   const organizationId = await resolvePublicBotOrganization(slug);
   if (!organizationId) return null;
-  return withDatabaseIdentity({ organizationId, platformAuthority: false, actor: `public-bot:${slug}`, systemPurpose: "" }, work);
+  return withTenantDatabaseContext({ kind: "tenant", organizationId, actor: `public-bot:${slug}` }, work);
 }
 
 export async function withPropertyDatabaseContext<T>(slug: string, actor: string, work: () => Promise<T>) {
