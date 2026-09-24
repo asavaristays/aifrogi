@@ -1,6 +1,6 @@
 export const WIDGET_MENU_ICONS = ["sparkles", "training", "film", "grid", "phone", "link", "mail", "chat"] as const;
 export type WidgetMenuIcon = typeof WIDGET_MENU_ICONS[number];
-export type WidgetMenuAction = "LINK" | "BOOKING" | "CHAT" | "FLOW" | "CALL" | "EMAIL" | "SUBMENU";
+export type WidgetMenuAction = "INFO" | "LINK" | "BOOKING" | "CHAT" | "FLOW" | "CALL" | "EMAIL" | "SUBMENU";
 export type WidgetMenuItem = { id: string; label: string; action: WidgetMenuAction; value?: string; icon: WidgetMenuIcon; featured?: boolean; children?: WidgetMenuItem[] };
 export type WidgetMenuConfig = { enabled: boolean; heading: string; items: WidgetMenuItem[] };
 
@@ -27,11 +27,12 @@ export function defaultWidgetMenu(propertySlug: string): WidgetMenuConfig {
 function cleanItem(raw: unknown, depth = 0): WidgetMenuItem | null {
   if (!raw || typeof raw !== "object") return null;
   const item = raw as Partial<WidgetMenuItem>;
-  const action = ["LINK", "BOOKING", "CHAT", "FLOW", "CALL", "EMAIL", "SUBMENU"].includes(String(item.action)) ? item.action as WidgetMenuAction : "LINK";
+  const action = ["INFO", "LINK", "BOOKING", "CHAT", "FLOW", "CALL", "EMAIL", "SUBMENU"].includes(String(item.action)) ? item.action as WidgetMenuAction : "LINK";
   const label = String(item.label || "").trim().slice(0, 54);
   if (!label || (depth > 0 && action === "SUBMENU")) return null;
   const icon = WIDGET_MENU_ICONS.includes(item.icon as WidgetMenuIcon) ? item.icon as WidgetMenuIcon : "link";
   let value = String(item.value || "").trim().slice(0, 500);
+  if (action === "INFO" && value.length < 2) throw new Error("Add the short information guests should see inside the bot.");
   if (action === "LINK" || action === "BOOKING") {
     const url = new URL(value);
     if (url.protocol !== "https:" || url.username || url.password) throw new Error("Menu website links must use public HTTPS URLs.");

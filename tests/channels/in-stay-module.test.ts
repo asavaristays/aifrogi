@@ -25,7 +25,8 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   const session = source("app/api/public/hotelgpt-stay/[slug]/session/route.ts");
   assert.match(resident, /Phone number/);
   assert.match(resident, /Awaiting front desk approval/);
-  assert.match(resident, /Hello, \{guestName\}/);
+  assert.match(resident, /Welcome, \$\{guestName\}/);
+  assert.match(resident, /action: "INFO"/);
   assert.match(resident, /Yes, satisfied/);
   assert.match(resident, /New request or complaint/);
   assert.match(resident, /localStorage\.getItem/);
