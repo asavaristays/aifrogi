@@ -24,7 +24,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   }
 
   const { id } = await context.params;
-  const organization = await getOrganizationById(id);
+  const organization = await withPlatformAdminDatabaseContext(user, "admin-customer-load", () => getOrganizationById(id));
   if (!organization) {
     return NextResponse.json({ error: "Customer not found" }, { status: 404 });
   }
@@ -138,8 +138,8 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   }
   if (["MAKE_LIVE", "PAUSE", "DELETE", "RESTORE"].includes(action || "")) {
     try {
-      const updated = await updateWebsiteBotLifecycle({ organizationId: id, actorEmail: user.username, action: action as "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE" });
-      const notification = action === "MAKE_LIVE" ? await notifyBotLive(id, user.username).catch(() => ({ accepted: false, message: "Bot live; email status unavailable. Use Retry live email." })) : undefined;
+      const updated = await withPlatformAdminDatabaseContext(user, "admin-customer-bot-lifecycle", () => updateWebsiteBotLifecycle({ organizationId: id, actorEmail: user.username, action: action as "MAKE_LIVE" | "PAUSE" | "DELETE" | "RESTORE" }));
+      const notification = action === "MAKE_LIVE" ? await withPlatformAdminDatabaseContext(user, "admin-customer-live-notification", () => notifyBotLive(id, user.username)).catch(() => ({ accepted: false, message: "Bot live; email status unavailable. Use Retry live email." })) : undefined;
       return NextResponse.json({ organization: updated, notification });
     } catch (error) {
       return NextResponse.json({ error: error instanceof Error ? error.message : "Website Bot lifecycle could not be updated." }, { status: 400 });
