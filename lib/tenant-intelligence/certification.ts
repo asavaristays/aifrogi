@@ -64,16 +64,24 @@ export function tenantCertificationStatus(record: TenantCertificationRecord, kno
   return { required, complete, current, eligible: complete && current && record.passed, blocker: !complete ? `Add at least ${required} tenant questions.` : !record.runAt ? "Run the tenant certification." : !current ? "Knowledge changed after the last certification. Run it again." : !record.passed ? "Correct failed questions and rerun certification." : null };
 }
 
-export async function runTenantCertification(propertySlug: string, knowledgeRevision: string, organizationId?: string) {
+type TenantCertificationContextRunner = <T>(work: () => Promise<T>) => Promise<T>;
+
+export async function runTenantCertification(
+  propertySlug: string,
+  knowledgeRevision: string,
+  organizationId?: string,
+  options?: { withTenantContext?: TenantCertificationContextRunner }
+) {
   const record = await readTenantCertification(propertySlug);
   const requirement = certificationRequirement(record.level);
   if (record.cases.length < requirement) throw new Error(`Add at least ${requirement} tenant questions before certification.`);
   const tenantResults: TenantCertificationResult[] = [];
   const runId = randomUUID();
   for (const item of record.cases) {
-    const answer = await buildWebsiteKnowledgeAnswer({ propertySlug, question: item.question, evaluationMode: true });
+    const buildAnswer = () => buildWebsiteKnowledgeAnswer({ propertySlug, question: item.question, evaluationMode: true });
+    const answer = options?.withTenantContext ? await options.withTenantContext(buildAnswer) : await buildAnswer();
     if (organizationId && answer) {
-      await recordTenantAnswerUsage({
+      const recordUsage = () => recordTenantAnswerUsage({
         organizationId,
         evidenceId: `${runId}:${item.id}`,
         certification: true,
@@ -84,7 +92,9 @@ export async function runTenantCertification(propertySlug: string, knowledgeRevi
           attempts: answer.reliability.attemptCount,
           latencyMs: answer.reliability.latencyMs
         }
-      }).catch((error) => console.error("Tenant certification usage metering failed", { organizationId, propertySlug, caseId: item.id, error }));
+      });
+      await (options?.withTenantContext ? options.withTenantContext(recordUsage) : recordUsage())
+        .catch((error) => console.error("Tenant certification usage metering failed", { organizationId, propertySlug, caseId: item.id, error }));
     }
     const grounded = Boolean(answer && answer.decision.disposition === "ANSWER" && (answer.sourceUrls.length || answer.claimIds.length));
     const handedOver = Boolean(answer && ["ESCALATE", "FALLBACK"].includes(answer.decision.disposition));

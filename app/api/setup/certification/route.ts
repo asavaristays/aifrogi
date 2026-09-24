@@ -53,9 +53,9 @@ export async function POST() {
   if (!value) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!canManageWorkspace(value.access.role)) return NextResponse.json({ error: "Client Admin access required." }, { status: 403 });
   try {
-    const record = await withClientDatabaseContext(value.access, "certification-run", () =>
-      runTenantCertification(value.propertySlug, value.knowledgeRevision, value.access.organization.id)
-    );
+    const record = await runTenantCertification(value.propertySlug, value.knowledgeRevision, value.access.organization.id, {
+      withTenantContext: (work) => withClientDatabaseContext(value.access, "certification-run", work)
+    });
     return NextResponse.json({ record, status: tenantCertificationStatus(record, value.knowledgeRevision) });
   }
   catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Certification could not run." }, { status: 400 }); }
