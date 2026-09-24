@@ -488,14 +488,22 @@ export function WhatsAppBotClient({
       .sort((left, right) => new Date(right.updatedAtIso).getTime() - new Date(left.updatedAtIso).getTime());
   }, [activeQueue, queueDefinitions, searchTerm, validLeads]);
 
+  const journeyNavigation = hotelMode ? <nav className="flex w-fit gap-2 rounded-xl border border-[var(--border)] bg-white p-2" aria-label="Hotel guest journey">
+    <button type="button" onClick={() => setJourneyView("pre-stay")} aria-pressed={journeyView === "pre-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "pre-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>Pre-Stay</button>
+    <button type="button" onClick={() => setJourneyView("in-stay")} aria-pressed={journeyView === "in-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "in-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>In-Stay</button>
+  </nav> : null;
+
   if (!activeLead) {
     return (
-      <Card className="p-8">
-        <h2 className="text-xl font-semibold">No conversations yet</h2>
-        <p className="mt-2 text-sm text-[var(--text-muted)]">
-          {whatsappEnabled ? "Website and WhatsApp conversations will appear here automatically." : "Website AI Bot conversations will appear here automatically."}
-        </p>
-      </Card>
+      <div className="space-y-3">
+        {journeyNavigation}
+        <Card className="p-8">
+          <h2 className="text-xl font-semibold">No {hotelMode ? journeyView === "in-stay" ? "In-Stay" : "Pre-Stay" : ""} conversations yet</h2>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
+            {whatsappEnabled ? "Website and WhatsApp conversations will appear here automatically." : "Website AI Bot conversations will appear here automatically."}
+          </p>
+        </Card>
+      </div>
     );
   }
 
@@ -850,10 +858,7 @@ export function WhatsAppBotClient({
 
   return (
     <div className="space-y-3">
-      {hotelMode ? <nav className="flex w-fit gap-2 rounded-xl border border-[var(--border)] bg-white p-2" aria-label="Hotel guest journey">
-        <button type="button" onClick={() => setJourneyView("pre-stay")} aria-pressed={journeyView === "pre-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "pre-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>Pre-Stay</button>
-        <button type="button" onClick={() => setJourneyView("in-stay")} aria-pressed={journeyView === "in-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "in-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>In-Stay</button>
-      </nav> : null}
+      {journeyNavigation}
     <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView}>
       {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}].map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
       <nav className={`${teamMode ? "hidden" : "flex lg:hidden"} sticky top-0 z-20 gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2`} aria-label="Inbox mobile sections">

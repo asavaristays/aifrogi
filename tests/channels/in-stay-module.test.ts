@@ -42,6 +42,7 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   for (const label of ["Overview", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
   assert.match(inbox, />Pre-Stay</);
   assert.match(inbox, />In-Stay</);
+  assert.match(inbox, /if \(!activeLead\)[\s\S]*\{journeyNavigation\}[\s\S]*No \{hotelMode/);
   assert.match(session, /CONFIRM_RESOLUTION/);
   assert.match(session, /REOPEN/);
   const proxy = source("proxy.ts");
