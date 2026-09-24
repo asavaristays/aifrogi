@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
-import { saveOrganizationBotProfile, submitWebsiteBotForReview } from "@/lib/repositories/onboarding-repository";
+import { saveOrganizationBotProfile } from "@/lib/repositories/onboarding-repository";
+import { submitSimpleOnboardingForReview } from "@/lib/simple-onboarding-submission";
 import { normalizeCapabilitiesForCategory, parseBotProfile } from "@/lib/bot-profile";
 
 export async function PATCH(request: Request) {
@@ -12,7 +13,7 @@ export async function PATCH(request: Request) {
   const payload = await request.json().catch(() => null);
   if (payload?.action === "SUBMIT_FOR_REVIEW") {
     try {
-      const updated = await withTenantDatabaseContext({ kind: "tenant", organizationId: organization.id, actor: `onboarding-bot-submit:${user.username}` }, () => submitWebsiteBotForReview({ organizationId: organization.id, actorEmail: user.username }));
+      const updated = await withTenantDatabaseContext({ kind: "tenant", organizationId: organization.id, actor: `onboarding-bot-submit:${user.username}` }, () => submitSimpleOnboardingForReview({ organizationId: organization.id, actorEmail: user.username }));
       return NextResponse.json({ organization: updated });
     } catch (error) {
       return NextResponse.json({ error: error instanceof Error ? error.message : "Bot could not be submitted for review." }, { status: 400 });
