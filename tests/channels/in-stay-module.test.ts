@@ -40,6 +40,11 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   const publicBot = source("app/api/public/website-bot/[slug]/route.ts");
   assert.match(publicBot, /stayRows\[0\]\.leadId !== priorToken\.leadId/);
   for (const label of ["Overview", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
+  for (const step of ["Received", "Acknowledged", "In progress", "Resolved", "Feedback"]) assert.match(workspace, new RegExp(step));
+  assert.match(workspace, /Request → Resolution → Feedback/);
+  assert.match(workspace, /Start work/);
+  assert.match(workspace, /Mark resolved/);
+  assert.match(workspace, /Open guest chat/);
   assert.match(inbox, />Pre-Stay</);
   assert.match(inbox, />In-Stay</);
   assert.match(inbox, /if \(!activeLead\)[\s\S]*\{journeyNavigation\}[\s\S]*No \{hotelMode/);
