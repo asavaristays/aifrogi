@@ -35,7 +35,7 @@ export async function PATCH(request: Request) {
   const propertySlug = await getCurrentWorkspaceSlug();
   const payload = await request.json().catch(() => null) as Record<string, unknown> | null;
   try {
-    const settings = await writeKnowledgeSettings(propertySlug, {
+    const settings = await withClientDatabaseContext(access, "knowledge-settings-write", () => writeKnowledgeSettings(propertySlug, {
       sourceUrl: typeof payload?.sourceUrl === "string" ? payload.sourceUrl : undefined,
       approvedForAi: typeof payload?.approvedForAi === "boolean" ? payload.approvedForAi : undefined,
       autoRefreshHours: typeof payload?.autoRefreshHours === "number" ? payload.autoRefreshHours : undefined,
@@ -50,7 +50,7 @@ export async function PATCH(request: Request) {
       welcomeCardText: typeof payload?.welcomeCardText === "string" ? payload.welcomeCardText : undefined,
       showcaseItems: Array.isArray(payload?.showcaseItems) ? payload.showcaseItems as never : undefined,
       status: typeof payload?.sourceUrl === "string" ? "DRAFT" : undefined
-    });
+    }));
     return NextResponse.json({ ok: true, settings });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not save knowledge settings." }, { status: 400 });
@@ -64,8 +64,10 @@ export async function POST() {
 
   const propertySlug = await getCurrentWorkspaceSlug();
   try {
-    const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug, true);
-    const summary = await getKnowledgeWorkspaceSummary(propertySlug);
+    const { knowledgeBase, summary } = await withClientDatabaseContext(access, "knowledge-website-sync", async () => ({
+      knowledgeBase: await getWebsiteKnowledgeBase(propertySlug, true),
+      summary: await getKnowledgeWorkspaceSummary(propertySlug)
+    }));
     return NextResponse.json({ ok: true, ...summary, pagesSynced: knowledgeBase.pages.length });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Knowledge sync failed." }, { status: 502 });
