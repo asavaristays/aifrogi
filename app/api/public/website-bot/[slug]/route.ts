@@ -347,7 +347,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
   if (stayCapability) {
-    const complaint = /complain|complaint|dirty|noise|broken|not working|bad service|unsafe|refund|angry|unhappy/i.test(message);
+    const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
     await persistenceDb.$transaction([
       persistenceDb.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, lastActivityAt: new Date() } }),
       persistenceDb.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL`

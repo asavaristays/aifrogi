@@ -37,7 +37,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         await tx.websiteVisitorSession.update({ where: { leadId: id }, data: { status: "AI_READY", resolutionState: { aiResumedAt: new Date().toISOString() } } });
         await tx.leadTag.deleteMany({ where: { leadId: id, value: { in: ["resolved", "closed"], mode: "insensitive" } } });
         await tx.aiOperation.updateMany({ where: { id: websiteHandoverOperationId(session.propertyId, id) }, data: { status: "COMPLETED", outcomeType: "RESOLVED", outcomeEvidence: `AI resumed by ${user.username}`, completedAt: new Date() } });
-        await tx.platformAuditLog.create({ data: { actorEmail: user.username, actorRole: user.role, action: "WEBSITE_AI_RESUMED", targetType: "LEAD", targetId: id, summary: "Owner/admin explicitly resumed AI; prior handover completed." } });
+        await tx.platformAuditLog.create({ data: { organizationId: access?.organization.id, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_AI_RESUMED", targetType: "LEAD", targetId: id, summary: "Owner/admin explicitly resumed AI; prior handover completed." } });
       });
       return NextResponse.json({ resumed: true });
     } catch { return NextResponse.json({ error: "Session is busy, revoked or expired. Refresh and retry." }, { status: 409 }); }
@@ -54,7 +54,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       // Closed means read-only until the existing capability expires, not revoked.
       await tx.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null }, data: { status: "CLOSED" } });
       await tx.aiOperation.updateMany({ where: { leadId: id, kind: "HUMAN_REVIEW", createdBy: "website-visitor", status: { in: ["OPEN", "IN_PROGRESS"] } }, data: { status: "COMPLETED", outcomeType: "RESOLVED", outcomeEvidence: `Conversation closed by ${user.username}`, completedAt: new Date() } });
-      await tx.platformAuditLog.create({ data: { actorEmail: user.username, actorRole: user.role, action: "WEBSITE_CONVERSATION_CLOSED", targetType: "LEAD", targetId: id, summary: "Operator closed conversation; final replies remain readable until visitor session expiry." } });
+      await tx.platformAuditLog.create({ data: { organizationId: access?.organization.id, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_CONVERSATION_CLOSED", targetType: "LEAD", targetId: id, summary: "Operator closed conversation; final replies remain readable until visitor session expiry." } });
     }); } catch { return NextResponse.json({ error: "Conversation is busy or unavailable. Please retry." }, { status: 409 }); }
     return NextResponse.json({ closed: true });
   }
@@ -83,7 +83,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         await tx.lead.update({ where: { id }, data: { lastActivityAt: new Date() } });
         const session = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });
         await tx.aiOperation.updateMany({ where: { id: websiteHandoverOperationId(session.propertyId, id), status: "OPEN" }, data: { status: "IN_PROGRESS", assignedTo: user.username } });
-        await tx.platformAuditLog.create({ data: { actorEmail: user.username, actorRole: user.role, action: "WEBSITE_HUMAN_REPLY", targetType: "LEAD", targetId: id, summary: "Human reply saved; AI ownership paused." } });
+        await tx.platformAuditLog.create({ data: { organizationId: access?.organization.id, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_HUMAN_REPLY", targetType: "LEAD", targetId: id, summary: "Human reply saved; AI ownership paused." } });
       });
       return NextResponse.json({ lead: await loadLead(id) });
     } catch {
