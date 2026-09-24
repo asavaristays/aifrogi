@@ -223,18 +223,30 @@ export function WhatsAppBotClient({
   integration,
   leads,
   enabledChannels = [],
-  teamMode = false
+  teamMode = false,
+  hotelMode = false,
+  initialJourney = "pre-stay",
+  initialLeadId = ""
 }: {
   integration: WhatsAppIntegration;
   leads: Lead[];
   enabledChannels?: string[];
   teamMode?: boolean;
+  hotelMode?: boolean;
+  initialJourney?: "pre-stay" | "in-stay";
+  initialLeadId?: string;
 }) {
   const router = useRouter();
   const [teamView, setTeamView] = useState("conversations");
-  const validLeads = useMemo(() => leads.filter((lead) => Boolean(lead?.id && lead?.source && lead?.stage)), [leads]);
+  const [journeyView, setJourneyView] = useState<"pre-stay" | "in-stay">(initialJourney);
+  const validLeads = useMemo(() => leads.filter((lead) => {
+    if (!Boolean(lead?.id && lead?.source && lead?.stage)) return false;
+    if (!hotelMode) return true;
+    const isInStay = lead.stay.startsWith("In-stay · Room ");
+    return journeyView === "in-stay" ? isInStay : !isInStay;
+  }), [hotelMode, journeyView, leads]);
   const whatsappEnabled = enabledChannels.includes("WHATSAPP");
-  const [activeId, setActiveId] = useState(validLeads[0]?.id ?? "");
+  const [activeId, setActiveId] = useState(initialLeadId || validLeads[0]?.id || "");
   const [draftMessage, setDraftMessage] = useState("");
   const [sendResult, setSendResult] = useState<string | null>(null);
   const [selectedAttachment, setSelectedAttachment] = useState<File | null>(null);
@@ -285,6 +297,13 @@ export function WhatsAppBotClient({
       setActiveId(latestLeadId);
     }
   }, [activeId, hasManualSelection, latestLeadId]);
+
+  useEffect(() => {
+    if (!validLeads.some((lead) => lead.id === activeId)) {
+      setActiveId(validLeads[0]?.id || "");
+      setHasManualSelection(false);
+    }
+  }, [activeId, validLeads]);
 
   useEffect(() => {
     let cancelled = false;
@@ -830,6 +849,11 @@ export function WhatsAppBotClient({
         : "Thanks for reaching out. Please share your business name, website, current tools, and the result you want to achieve so we can guide the next step.";
 
   return (
+    <div className="space-y-3">
+      {hotelMode ? <nav className="flex w-fit gap-2 rounded-xl border border-[var(--border)] bg-white p-2" aria-label="Hotel guest journey">
+        <button type="button" onClick={() => setJourneyView("pre-stay")} aria-pressed={journeyView === "pre-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "pre-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>Pre-Stay</button>
+        <button type="button" onClick={() => setJourneyView("in-stay")} aria-pressed={journeyView === "in-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "in-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>In-Stay</button>
+      </nav> : null}
     <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView}>
       {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}].map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
       <nav className={`${teamMode ? "hidden" : "flex lg:hidden"} sticky top-0 z-20 gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2`} aria-label="Inbox mobile sections">
@@ -1659,6 +1683,6 @@ export function WhatsAppBotClient({
           </Card>
         </div>
       ) : null}
-    </div>
+    </div></div>
   );
 }

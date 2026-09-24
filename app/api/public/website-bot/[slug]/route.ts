@@ -94,7 +94,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
-  if (payload?.stayAccessToken && !verifyHotelGuestStayToken(payload.stayAccessToken, slug)) return NextResponse.json({ error: "Your approved in-stay access has expired. Please scan the hotel QR and request access again." }, { status: 401, headers: responseHeaders });
+  const stayCapability = payload?.stayAccessToken ? verifyHotelGuestStayToken(payload.stayAccessToken, slug) : null;
+  if (payload?.stayAccessToken && !stayCapability) return NextResponse.json({ error: "Your approved in-stay access has expired. Please scan the hotel QR and request access again." }, { status: 401, headers: responseHeaders });
   const consentedContact = payload?.consent ? normalizeConsentedLeadPhone(payload.contact) : null;
   const consentedName = payload?.consent ? String(payload.name || "").trim().slice(0, 100) : "";
   if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });
@@ -345,6 +346,13 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   }).catch(() => null);
 
   if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Conversation could not be recorded." }, { status: 503, headers: responseHeaders });
+  if (stayCapability) {
+    const complaint = /complain|complaint|dirty|noise|broken|not working|bad service|unsafe|refund|angry|unhappy/i.test(message);
+    await persistenceDb.$transaction([
+      persistenceDb.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, lastActivityAt: new Date() } }),
+      persistenceDb.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL`
+    ]);
+  }
   if ((explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE") && handoffEnabled) {
     try { await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes }); }
     catch { return NextResponse.json({ error: "Your human-help request could not be saved. Please retry." }, { status: 503, headers: responseHeaders }); }

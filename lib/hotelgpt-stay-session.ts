@@ -1,7 +1,7 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
 const MAX_STAY_DAYS = 31;
-export type HotelGuestStayToken = { slug: string; requestId: string; roomNumber: string; guestName: string; checkIn: string; checkOut: string; exp: number };
+export type HotelGuestStayToken = { slug: string; requestId: string; roomNumber: string; guestName: string; phoneNumber: string; checkIn: string; checkOut: string; exp: number };
 export type HotelGuestRequestToken = { slug: string; requestId: string; exp: number };
 
 function secret() {
@@ -21,18 +21,20 @@ export function hashHotelGuestRequestToken(value: string) { return createHash("s
 function validDateKey(value: string) { return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`)); }
 function validExactDateTime(value: string) { return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) && !Number.isNaN(Date.parse(value)); }
 
-export function validateHotelGuestStayInput(input: { roomNumber: unknown; guestName: unknown; checkIn: unknown; checkOut: unknown }, now = new Date()) {
+export function validateHotelGuestStayInput(input: { roomNumber: unknown; guestName: unknown; phoneNumber: unknown; checkIn: unknown; checkOut: unknown }, now = new Date()) {
   const roomNumber = String(input.roomNumber || "").trim().replace(/\s+/g, " ").slice(0, 24);
   const guestName = String(input.guestName || "").trim().replace(/\s+/g, " ").slice(0, 100);
+  const phoneNumber = String(input.phoneNumber || "").replace(/[^\d+]/g, "").slice(0, 16);
   const checkIn = String(input.checkIn || "").trim(); const checkOut = String(input.checkOut || "").trim();
   if (!/^[\p{L}\p{N}][\p{L}\p{N} .\-\/]{0,23}$/u.test(roomNumber)) return { ok: false as const, error: "Enter a valid room number." };
   if (!/^[\p{L}][\p{L} .'-]{1,99}$/u.test(guestName)) return { ok: false as const, error: "Enter the guest name used for this stay." };
+  if (!/^\+?\d{7,15}$/.test(phoneNumber)) return { ok: false as const, error: "Enter a valid phone number used during check-in." };
   if (!validDateKey(checkIn) || !validExactDateTime(checkOut)) return { ok: false as const, error: "Enter a valid check-in date and checkout date and time." };
   const requestedCheckIn = new Date(`${checkIn}T00:00:00Z`); const requestedCheckOut = new Date(checkOut);
   const lengthDays = (requestedCheckOut.getTime() - requestedCheckIn.getTime()) / 86_400_000;
   if (lengthDays < 0 || lengthDays > MAX_STAY_DAYS) return { ok: false as const, error: `Stay access can cover at most ${MAX_STAY_DAYS} days.` };
   if (requestedCheckOut <= now) return { ok: false as const, error: "The submitted checkout time has already passed." };
-  return { ok: true as const, value: { roomNumber, guestName, checkIn, checkOut, requestedCheckIn, requestedCheckOut } };
+  return { ok: true as const, value: { roomNumber, guestName, phoneNumber, checkIn, checkOut, requestedCheckIn, requestedCheckOut } };
 }
 export function issueHotelGuestRequestToken(input: HotelGuestRequestToken) { return encode("hotelgpt-request", input); }
 export function verifyHotelGuestRequestToken(token: string, slug: string) { const p = decode<HotelGuestRequestToken>("hotelgpt-request", token); return p && p.slug === slug && p.requestId && p.exp > Math.floor(Date.now() / 1000) ? p : null; }

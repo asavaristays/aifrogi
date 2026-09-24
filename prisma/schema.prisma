@@ -627,6 +627,7 @@ model HotelGuestAccessRequest {
   property          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   requestTokenHash  String    @unique
   guestName         String
+  phoneNumber       String
   roomNumber        String
   requestedCheckIn  DateTime
   requestedCheckOut DateTime

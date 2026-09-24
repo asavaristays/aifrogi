@@ -17,3 +17,20 @@ test("HotelGPT exposes a Manage in-stay workspace with a safe guest QR", () => {
   assert.match(page, /No password or guest data is stored in the QR/);
   assert.match(page, /Only published, owner-approved answers/);
 });
+
+test("HotelGPT provides the approved guest and hotel operations journey", () => {
+  const resident = source("components/website-bot/hotelgpt-resident-entry.tsx");
+  const workspace = source("components/in-stay/in-stay-workspace.tsx");
+  const inbox = source("components/whatsapp/whatsapp-bot-client.tsx");
+  const session = source("app/api/public/hotelgpt-stay/[slug]/session/route.ts");
+  assert.match(resident, /Phone number/);
+  assert.match(resident, /Awaiting front desk approval/);
+  assert.match(resident, /Welcome, \{guestName\}/);
+  assert.match(resident, /Yes, resolved/);
+  assert.match(resident, /I still need help/);
+  for (const label of ["Overview", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
+  assert.match(inbox, />Pre-Stay</);
+  assert.match(inbox, />In-Stay</);
+  assert.match(session, /CONFIRM_RESOLUTION/);
+  assert.match(session, /REOPEN/);
+});

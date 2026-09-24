@@ -11,9 +11,11 @@ import type { WhatsAppIntegration } from '@/types';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {title:'Team Inbox · AiFrogi',manifest:'/team-inbox.webmanifest',robots:{index:false,follow:false}};
 const websiteOnlyIntegration: WhatsAppIntegration = {id:'',provider:'META_CLOUD_API',businessAccountId:null,phoneNumberId:null,displayPhoneNumber:null,webhookVerifyToken:null,status:'NOT_CONFIGURED',approvedBy:null,approvedAtLabel:null,lastValidatedAtLabel:null,notes:null,aiModeEnabled:false};
-export default async function TeamInboxPage(){
+export default async function TeamInboxPage({searchParams}:{searchParams:Promise<{journey?:string;lead?:string}>}){
+  const query=await searchParams;
   const access=await resolveClientWorkspaceAccess({propertySlug:await getCurrentWorkspaceSlug()});
   if(!access.ok)redirect('/login?returnTo=%2Fteam-inbox');
   const leads=await withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug));
-  return <div className={styles.page}><TeamInboxStatus/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode/></div>;
+  const hotelMode=access.organization.botProfile?.category==='STAY';
+  return <div className={styles.page}><TeamInboxStatus/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode hotelMode={hotelMode} initialJourney={query.journey==='in-stay'?'in-stay':'pre-stay'} initialLeadId={query.lead||''}/></div>;
 }

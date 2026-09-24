@@ -5,6 +5,7 @@ import { TopBar } from "@/components/layout/top-bar";
 import { getCurrentClientAccess } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { HotelGuestAccessManager } from "@/components/in-stay/hotel-guest-access-manager";
+import { InStayWorkspace } from "@/components/in-stay/in-stay-workspace";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,6 +27,7 @@ export default async function InStayPage() {
   return <div className="min-h-screen bg-[var(--background)]">
     <TopBar title="In-stay" subtitle="Guest QR access for HotelGPT" />
     <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+      <InStayWorkspace propertySlug={property.slug} view="overview" />
       <section className="overflow-hidden rounded-3xl border border-[#d8c278] bg-[#080808] text-white shadow-[0_24px_70px_rgba(16,16,16,.14)]">
         <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_340px] lg:items-center">
           <div>
@@ -44,7 +46,7 @@ export default async function InStayPage() {
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      <section id="qr-access" className="grid scroll-mt-6 gap-6 lg:grid-cols-2">
         <article className="rounded-2xl border border-[var(--border)] bg-white p-6">
           <p className="product-eyebrow">Guest QR kit</p>
           <h2 className="mt-2 text-xl font-semibold">Ready to print and place</h2>
