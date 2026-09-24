@@ -854,6 +854,7 @@ export function WhatsAppBotClient({
   const activeSource = getLeadSourceLabel(activeLead);
   const latestInbound = [...activeLead.transcript].reverse().find((message) => message.from === "guest");
   const serviceDeskMode = teamMode && hotelMode && lockJourney && journeyView === "in-stay";
+  const activeRoom = activeLead.stay.replace("In-stay · Room ", "").trim() || "Not provided";
   const serviceText = `${activeLead.intent} ${activeLead.stay} ${latestInbound?.text || ""}`.toLowerCase();
   const serviceDepartment = /tap|water|electric|light|repair|broken|maintenance|ac\b|air condition/.test(serviceText)
     ? "Maintenance"
@@ -960,7 +961,7 @@ export function WhatsAppBotClient({
             </div>
             <input
               className="mt-4 w-full rounded-md border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2.5 text-sm outline-none placeholder:text-[#9d95a7] focus:border-[var(--primary)] focus:bg-white"
-              placeholder="Search contact, phone, intent"
+              placeholder={serviceDeskMode ? "Search room, guest or request" : "Search contact, phone, intent"}
               aria-label="Search conversations"
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
@@ -971,6 +972,7 @@ export function WhatsAppBotClient({
               const state = getConversationState(lead);
               const latest = getLatestMessage(lead);
               const source = getLeadSourceLabel(lead);
+              const room = lead.stay.replace("In-stay · Room ", "").trim() || "—";
 
               return (
                 <button
@@ -993,16 +995,15 @@ export function WhatsAppBotClient({
                       ["bg-[#6d5310]", "bg-[#1b62a5]", "bg-[#d4842f]", "bg-[#8a6a16]", "bg-[#6b7280]"][index % 5]
                     }`}
                   >
-                    {lead.initials}
+                    {serviceDeskMode ? room.slice(0, 4) : lead.initials}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-start justify-between gap-2">
-                    <span className="truncate text-sm font-semibold text-[var(--text)]">{lead.name}</span>
+                    <span className="truncate text-sm font-semibold text-[var(--text)]">{serviceDeskMode ? `Room ${room}` : lead.name}</span>
                       <span className="text-[11px] text-[var(--text-muted)]">{lead.minutesAgo}m</span>
                     </span>
-                    <span className="mt-1 block truncate text-xs text-[var(--text-muted)]">
-                      {latest?.text || "No message yet"}
-                    </span>
+                    {serviceDeskMode ? <span className="mt-0.5 block truncate text-xs font-medium text-[#5e594f]">{lead.name}</span> : null}
+                    <span className="mt-1 block truncate text-xs text-[var(--text-muted)]">{latest?.text || "No message yet"}</span>
                     <span className="mt-2 flex flex-wrap items-center gap-1.5">
                       <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${state.tone}`}>{state.label}</span>
                       <span className="rounded-full bg-[#edf1f7] px-2 py-0.5 text-[10px] font-semibold text-[#4b5d78]">{source}</span>
@@ -1025,14 +1026,14 @@ export function WhatsAppBotClient({
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[var(--primary-soft)] text-sm font-semibold text-[var(--primary-strong)]">
-                  {activeLead.initials}
+                  {serviceDeskMode ? activeRoom.slice(0, 4) : activeLead.initials}
                 </span>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="truncate text-lg font-semibold text-[var(--text)]">{activeLead.name}</h2>
+                    <h2 className="truncate text-lg font-semibold text-[var(--text)]">{serviceDeskMode ? `Room ${activeRoom}` : activeLead.name}</h2>
                     <span className={`status-pill ${activeState.tone}`}>{activeState.label}</span>
                   </div>
-                  <p className="mt-1 truncate text-xs text-[var(--text-muted)]">{activeLead.phone} · {activeSource} · {activeState.helper}</p>
+                  <p className="mt-1 truncate text-xs text-[var(--text-muted)]">{serviceDeskMode ? `${activeLead.name} · ${serviceDepartment} · ${activeState.helper}` : `${activeLead.phone} · ${activeSource} · ${activeState.helper}`}</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -1073,7 +1074,7 @@ export function WhatsAppBotClient({
 
           {serviceDeskMode ? <section className="border-b border-[var(--border)] bg-white px-5 py-3" aria-label="Service request summary">
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              {[["Room",activeLead.stay.replace("In-stay · Room ","")||"Not provided"],["Department",serviceDepartment],["Request status",activeState.label],["Last guest message",latestInbound?.time||"No message"]].map(([label,value])=><div key={label} className="rounded-lg border border-[#ebe5d8] bg-[#fbfaf7] px-3 py-2"><p className="text-[10px] font-bold uppercase tracking-[.12em] text-[#817a6d]">{label}</p><p className="mt-1 truncate text-sm font-semibold text-[#24211d]">{value}</p></div>)}
+              {[["Room",activeRoom],["Guest",activeLead.name],["Department",serviceDepartment],["Request status",activeState.label]].map(([label,value])=><div key={label} className={`rounded-lg border px-3 py-2 ${label==="Room"?"border-[#d5bd6d] bg-[#fff8df]":"border-[#ebe5d8] bg-[#fbfaf7]"}`}><p className="text-[10px] font-bold uppercase tracking-[.12em] text-[#817a6d]">{label}</p><p className={`mt-1 truncate font-semibold text-[#24211d] ${label==="Room"?"text-lg":"text-sm"}`}>{value}</p></div>)}
             </div>
           </section> : activeIsWebsite ? <section className="border-b border-[var(--border)] bg-white px-5 py-4" aria-label="Lead qualification summary">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.16em] text-[var(--text-muted)]">Agentic lead qualification</p><h3 className="mt-1 text-base font-semibold text-[var(--text)]">{activeLead.score >= 75 ? "Priority follow-up recommended" : activeLead.score >= 45 ? "Qualification in progress" : "Early enquiry"}</h3></div><div className="flex items-center gap-2"><span className={`status-pill ${activeLead.score >= 75 ? "status-warning" : "status-info"}`}>{activeLead.score}/100 · {activeLead.score >= 75 ? "Hot" : activeLead.score >= 45 ? "Warm" : "Cold"}</span>{activeLead.stage.toLowerCase() === "qualified" ? <span className="status-pill status-success">Qualified</span> : null}</div></div>
