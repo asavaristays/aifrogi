@@ -102,7 +102,10 @@ export async function PATCH(request: Request, context: { params: Promise<{ slug:
     }
     const stage = action === "CONFIRM_RESOLUTION" ? "BOOKED" : "NEW";
     await db.$executeRaw`UPDATE "Lead" SET stage=${stage}::"LeadStage","updatedAt"=NOW() WHERE id=${leadId}`;
-    if (action === "REOPEN") await db.websiteVisitorSession.updateMany({ where: { leadId }, data: { status: "HUMAN_REQUESTED", revokedAt: null } });
+    if (action === "REOPEN") {
+      await db.leadTag.deleteMany({ where: { leadId, value: { startsWith: "In-stay feedback:" } } });
+      await db.websiteVisitorSession.updateMany({ where: { leadId }, data: { status: "HUMAN_REQUESTED", revokedAt: null } });
+    }
     return NextResponse.json({ ok: true, status: action === "CONFIRM_RESOLUTION" ? "RESOLVED" : "REOPENED" }, { headers });
   });
   return response || NextResponse.json({ error: "Resident access is not enabled." }, { status: 404, headers });
