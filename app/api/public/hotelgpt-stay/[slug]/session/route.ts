@@ -41,7 +41,10 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
-  if (!consumeRateLimit(`hotelgpt-status:${slug}:${ip(request)}`, 60, 15 * 60_000).allowed) return NextResponse.json({ error: "Please wait before checking again." }, { status: 429, headers });
+  // The resident page polls every five seconds while open (180 checks per
+  // 15 minutes). Leave headroom for reloads without locking guests out of
+  // resolution and feedback updates.
+  if (!consumeRateLimit(`hotelgpt-status:${slug}:${ip(request)}`, 240, 15 * 60_000).allowed) return NextResponse.json({ error: "Please wait before checking again." }, { status: 429, headers });
   const requestToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || "";
   const stayCapability = verifyHotelGuestStayToken(requestToken, slug);
   if (stayCapability) {

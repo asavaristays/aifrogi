@@ -51,6 +51,7 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(inbox, /if \(!activeLead\)[\s\S]*\{journeyNavigation\}[\s\S]*No \{hotelMode/);
   assert.match(session, /CONFIRM_RESOLUTION/);
   assert.match(session, /REOPEN/);
+  assert.match(session, /hotelgpt-status:[\s\S]*240, 15 \* 60_000/);
   const proxy = source("proxy.ts");
   assert.match(proxy, /"\/api\/public\/hotelgpt-stay"/);
   const tenantContext = source("lib/security/tenant-database-context.ts");
