@@ -9,6 +9,7 @@ export const navItems: NavItem[] = [
   { href: "/improve", label: "Improve My Bot", icon: "sparkles", tone: "tertiary" },
   { href: "/analytics", label: "Reports", icon: "bar-chart-3", tone: "secondary" },
   { href: "/setup", label: "Setup", icon: "plug", tone: "primary" },
+  { href: "/in-stay", label: "In-stay", icon: "smartphone", tone: "primary" },
   { href: "/billing", label: "Billing", icon: "bar-chart-3", tone: "neutral" },
   { href: "/support", label: "Support", icon: "help-circle", tone: "neutral" },
   { href: "/settings", label: "Settings", icon: "settings", tone: "neutral" }

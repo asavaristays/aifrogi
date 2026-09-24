@@ -15,7 +15,7 @@ import { isClientNavItemAvailable } from "@/lib/client-navigation";
 const navGroups = [
   { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/contacts", "/team-inbox"] },
   { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/knowledge", "/flow-intelligence", "/improve", "/analytics"] },
-  { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
+  { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/in-stay", "/billing", "/support", "/settings"] }
 ];
 
 type SideNavTone = "dark" | "light";
@@ -25,13 +25,15 @@ export function SideNav({
   workspaces = [],
   currentWorkspaceSlug = "",
   accessRole = "AGENT",
-  enabledChannels = []
+  enabledChannels = [],
+  botCategory = ""
 }: {
   tone?: SideNavTone;
   workspaces?: WorkspaceOption[];
   currentWorkspaceSlug?: string;
   accessRole?: ClientAccessRole;
   enabledChannels?: string[];
+  botCategory?: string;
 } = {}) {
   const pathname = usePathname();
   const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useAppState();
@@ -92,7 +94,7 @@ export function SideNav({
               <p className="text-[11px] font-semibold text-[var(--gold-300)]">{group.label}</p>
               <p className="truncate text-[10px] text-white/35">{group.helper}</p>
             </div>
-            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && isClientNavItemAvailable(item.href, enabledChannels)).map((item) => {
+            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && isClientNavItemAvailable(item.href, enabledChannels) && (item.href !== "/in-stay" || botCategory === "STAY")).map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
