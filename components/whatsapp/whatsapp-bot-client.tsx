@@ -226,6 +226,7 @@ export function WhatsAppBotClient({
   teamMode = false,
   hotelMode = false,
   initialJourney = "pre-stay",
+  lockJourney = false,
   initialLeadId = ""
 }: {
   integration: WhatsAppIntegration;
@@ -234,6 +235,7 @@ export function WhatsAppBotClient({
   teamMode?: boolean;
   hotelMode?: boolean;
   initialJourney?: "pre-stay" | "in-stay";
+  lockJourney?: boolean;
   initialLeadId?: string;
 }) {
   const router = useRouter();
@@ -472,11 +474,14 @@ export function WhatsAppBotClient({
       { key: "resolved" as const, label: "Resolved", helper: "Closed work", tone: "bg-[#6b7280]", matches: matches.resolved },
       { key: "failed_delivery" as const, label: "Failed delivery", helper: "Needs diagnosis", tone: "bg-[#d9493f]", matches: matches.failed_delivery }
     ];
-    return definitions.filter((item) => whatsappEnabled || !["campaign_replies", "failed_delivery"].includes(item.key)).map((item) => ({
+    const visibleKeys = teamMode && !whatsappEnabled
+      ? ["all", "waiting", "human_needed", "resolved"]
+      : definitions.map((item) => item.key);
+    return definitions.filter((item) => visibleKeys.includes(item.key) && (whatsappEnabled || !["campaign_replies", "failed_delivery"].includes(item.key))).map((item) => ({
       ...item,
       count: validLeads.filter(item.matches).length
     }));
-  }, [validLeads, whatsappEnabled]);
+  }, [teamMode, validLeads, whatsappEnabled]);
 
   const filteredLeads = useMemo(() => {
     const activeDefinition = queueDefinitions.find((item) => item.key === activeQueue) ?? queueDefinitions[0];
@@ -488,7 +493,7 @@ export function WhatsAppBotClient({
       .sort((left, right) => new Date(right.updatedAtIso).getTime() - new Date(left.updatedAtIso).getTime());
   }, [activeQueue, queueDefinitions, searchTerm, validLeads]);
 
-  const journeyNavigation = hotelMode ? <nav className="flex w-fit gap-2 rounded-xl border border-[var(--border)] bg-white p-2" aria-label="Hotel guest journey">
+  const journeyNavigation = hotelMode && !lockJourney ? <nav className="flex w-fit gap-2 rounded-xl border border-[var(--border)] bg-white p-2" aria-label="Hotel guest journey">
     <button type="button" onClick={() => setJourneyView("pre-stay")} aria-pressed={journeyView === "pre-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "pre-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>Pre-Stay</button>
     <button type="button" onClick={() => setJourneyView("in-stay")} aria-pressed={journeyView === "in-stay"} className={`rounded-lg px-5 py-2.5 text-sm font-bold ${journeyView === "in-stay" ? "bg-[var(--gold-600)] text-white" : "text-[var(--text-muted)]"}`}>In-Stay</button>
   </nav> : null;

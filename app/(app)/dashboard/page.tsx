@@ -74,6 +74,7 @@ async function renderDashboard({ propertySlug, user, organization }: {
     todayLabel={todayLabel}
     organizationName={organization?.name || "HotelRADAR"}
     workspaceName={workspace?.name || propertySlug}
+    propertySlug={workspace?.slug || propertySlug}
     connected={connected}
     accessRole={membership?.role || "AGENT"}
     knowledgeReady={knowledge.pages.length > 0 && knowledge.settings.status === "READY" && knowledge.settings.approvedForAi}

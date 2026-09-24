@@ -13,9 +13,16 @@ export const metadata: Metadata = {title:'Team Inbox · AiFrogi',manifest:'/team
 const websiteOnlyIntegration: WhatsAppIntegration = {id:'',provider:'META_CLOUD_API',businessAccountId:null,phoneNumberId:null,displayPhoneNumber:null,webhookVerifyToken:null,status:'NOT_CONFIGURED',approvedBy:null,approvedAtLabel:null,lastValidatedAtLabel:null,notes:null,aiModeEnabled:false};
 export default async function TeamInboxPage({searchParams}:{searchParams:Promise<{journey?:string;lead?:string}>}){
   const query=await searchParams;
+  if(query.journey==='in-stay')redirect(`/in-stay/inbox${query.lead?`?lead=${encodeURIComponent(query.lead)}`:''}`);
   const access=await resolveClientWorkspaceAccess({propertySlug:await getCurrentWorkspaceSlug()});
   if(!access.ok)redirect('/login?returnTo=%2Fteam-inbox');
   const leads=await withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug));
   const hotelMode=access.organization.botProfile?.category==='STAY';
-  return <div className={styles.page}><TeamInboxStatus/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode hotelMode={hotelMode} initialJourney={query.journey==='in-stay'?'in-stay':'pre-stay'} initialLeadId={query.lead||''}/></div>;
+  return <div className={styles.page}>
+    <div className={styles.journeyHeader}>
+      <div><p className={styles.eyebrow}>Guest journey · before arrival</p><h1>Pre-Stay Inbox</h1><p>Booking questions, planning support and enquiries—kept separate from live hotel service.</p></div>
+      {hotelMode?<a href="/in-stay/inbox" className={styles.journeyLink}>Open In-Stay service inbox →</a>:null}
+    </div>
+    <TeamInboxStatus compact/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode hotelMode={hotelMode} initialJourney="pre-stay" lockJourney initialLeadId={query.lead||''}/>
+  </div>;
 }

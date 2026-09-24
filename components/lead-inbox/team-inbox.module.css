@@ -1,5 +1,12 @@
 .page { padding: clamp(.75rem, 2vw, 1.5rem); color: #171717; }
+.journeyHeader {display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;margin-bottom:1rem;padding:1.25rem 1.35rem;border:1px solid #e7dfcd;border-radius:20px;background:linear-gradient(135deg,#fff 0%,#fbf7eb 100%);box-shadow:0 12px 36px #3d32120d;}
+.journeyHeader h1 {font-size:clamp(1.45rem,2.4vw,2rem);font-weight:700;letter-spacing:-.04em;}
+.journeyHeader p:not(.eyebrow) {margin-top:.35rem;color:#6b655b;font-size:.875rem;}
+.journeyHeader .eyebrow {margin-bottom:.35rem;color:#8a6a16;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
+.journeyLink {flex:none;display:inline-flex;min-height:42px;align-items:center;border-radius:12px;background:#171717;padding:.7rem 1rem;color:#fff;font-size:.78rem;font-weight:700;}
 .header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; padding: .5rem .25rem 1.25rem; }
+.compactStatus {padding:.1rem .25rem .9rem;}
+.compactStatus .counts {margin-top:0;}
 .header h1 {font-size:1.75rem; font-weight:650; letter-spacing:-.04em;}
 .header p {font-size:.875rem; color:#57534e; margin-top:.3rem;}
 .counts {display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem;}
@@ -14,7 +21,7 @@
 .options p {line-height:1.6; font-size:.875rem;}
 .notice {font-size:.875rem; line-height:1.6; padding:.6rem .25rem;}
 .workspace {border-radius:24px; box-shadow:0 8px 32px #00000009;}
-.workspace :global(.inbox-v2-grid) {grid-template-columns:200px minmax(240px, .8fr) minmax(0,1.5fr); min-height:0;}
+.workspace :global(.inbox-v2-grid) {grid-template-columns:190px minmax(250px, .8fr) minmax(0,1.65fr); min-height:0;}
 .workspace :global(#inbox-profile) {grid-column:1/-1; border-top:1px solid #ddd;}
 .workspace :global(#inbox-reply) {min-height:620px; background:#f6f6f4;}
 .workspace :global(#inbox-reply)>div:nth-last-child(2) {background:#f6f6f4; max-height:60vh;}
@@ -37,3 +44,4 @@
  .workspace :global(#inbox-conversations)>div:last-child {max-height:65vh;}
 }
 @media(prefers-reduced-motion:reduce) {.workspace * {transition:none!important; scroll-behavior:auto!important;}}
+@media(max-width:720px) {.journeyHeader{align-items:flex-start;flex-direction:column}.journeyLink{width:100%;justify-content:center}}

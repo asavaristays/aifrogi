@@ -13,9 +13,9 @@ import type { ClientAccessRole } from "@/lib/client-access";
 import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
-  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/contacts", "/team-inbox"] },
+  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/team-inbox", "/in-stay", "/contacts"] },
   { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/knowledge", "/flow-intelligence", "/improve", "/analytics"] },
-  { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/in-stay", "/billing", "/support", "/settings"] }
+  { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
 
 type SideNavTone = "dark" | "light";

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import styles from './team-inbox.module.css';
 type Summary = {unread:number;needsHuman:number;checkedAt:string};
 type BadgingNavigator = Navigator & {setAppBadge?:(count:number)=>Promise<void>;clearAppBadge?:()=>Promise<void>};
-export function TeamInboxStatus() {
+export function TeamInboxStatus({compact=false}:{compact?:boolean}) {
   const router = useRouter();
   const [summary,setSummary] = useState<Summary|null>(null);
   const [notice,setNotice] = useState('');
@@ -57,8 +57,8 @@ export function TeamInboxStatus() {
     } catch {setNotice('Could not mark reviewed. Your messages are unchanged. Please retry.');}
     finally {setReviewing(false);}
   }
-  return <><header className={styles.header}>
-    <div><h1>Team Inbox</h1><p>Your website conversations, ready for a human reply.</p><div className={styles.counts}><span><strong>{summary?.unread ?? '—'}</strong> messages since review</span><span><strong>{summary?.needsHuman ?? '—'}</strong> need human help</span></div></div>
+  return <><header className={`${styles.header} ${compact?styles.compactStatus:''}`}>
+    <div>{compact?null:<><h1>Team Inbox</h1><p>Your website conversations, ready for a human reply.</p></>}<div className={styles.counts}><span><strong>{summary?.unread ?? '—'}</strong> messages since review</span><span><strong>{summary?.needsHuman ?? '—'}</strong> need human help</span></div></div>
     <div className={styles.tools}><button disabled={!summary || reviewing} onClick={markSeen}>{reviewing?'Saving…':'Mark reviewed'}</button><details><summary>Inbox options</summary><div className={styles.options}><button onClick={alerts?()=>setAlerts(false):enableAlerts}>{alerts?'Disable browser alerts':'Enable browser alerts'}</button><button onClick={()=>setNotice('Use your browser menu → Add to Home Screen. Icon badges depend on device support and update while this inbox is open.')}>Add to Home Screen</button><a href="/billing">Usage & billing</a><p>Counts refresh every 20 seconds. Mark reviewed clears your account’s count, not open help requests. Alerts work while the inbox is open; closed-app push is not enabled. Alerts never show private message text.</p></div></details></div>
   </header>{notice && <p role="status" className={styles.notice}>{notice}</p>}</>;
 }

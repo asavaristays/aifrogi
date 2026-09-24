@@ -5,6 +5,7 @@ import type { BotReadinessCheck } from "@/lib/bot-readiness";
 import type { HumanResponseItem } from "@/lib/human-response-sla";
 import type { ClientSupportUpdate } from "@/lib/support-notifications";
 import { PRODUCT_RELEASE } from "@/lib/product-release";
+import { StayOperationsSnapshot } from "@/components/dashboard/stay-operations-snapshot";
 
 export type DashboardAttention = {
   title: string;
@@ -23,6 +24,7 @@ export type ClientDashboardViewProps = {
   todayLabel: string;
   organizationName: string;
   workspaceName: string;
+  propertySlug: string;
   connected: boolean;
   accessRole: string;
   knowledgeReady: boolean;
@@ -107,6 +109,8 @@ export function ClientDashboardView(props: ClientDashboardViewProps) {
             <span className={`status-pill ${props.connected ? "status-success" : "status-warning"}`}>{props.connected ? "Live" : "Setup"}</span>
           </div>
         </section>
+
+        {props.botCategory === "STAY" ? <StayOperationsSnapshot propertySlug={props.propertySlug} /> : null}
 
         <section className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Messaging overview">
           <SignalCard
