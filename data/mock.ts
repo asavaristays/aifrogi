@@ -4,6 +4,7 @@ export const navItems: NavItem[] = [
   { href: "/dashboard", label: "Today", icon: "grid", tone: "primary" },
   { href: "/contacts", label: "Leads", icon: "inbox", tone: "primary" },
   { href: "/team-inbox", label: "Pre-Stay Inbox", icon: "message-circle", tone: "secondary" },
+  { href: "/in-stay/inbox", label: "In-Stay Inbox", icon: "message-circle", tone: "secondary" },
   { href: "/knowledge", label: "Intelligence", icon: "file-text", tone: "secondary" },
   { href: "/flow-intelligence", label: "Flow Intelligence", icon: "git-branch", tone: "secondary" },
   { href: "/improve", label: "Improve My Bot", icon: "sparkles", tone: "tertiary" },

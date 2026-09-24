@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 type AppStateValue = {
   sidebarOpen: boolean;
@@ -22,20 +22,21 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     setSidebarCollapsed(window.localStorage.getItem("aifrogi-sidebar-collapsed") === "true");
   }, []);
 
-  useEffect(() => {
-    window.localStorage.setItem("aifrogi-sidebar-collapsed", String(sidebarCollapsed));
-  }, [sidebarCollapsed]);
+  const updateSidebarCollapsed = useCallback((value: boolean) => {
+    setSidebarCollapsed(value);
+    window.localStorage.setItem("aifrogi-sidebar-collapsed", String(value));
+  }, []);
 
   const value = useMemo(
     () => ({
       sidebarOpen,
       setSidebarOpen,
       sidebarCollapsed,
-      setSidebarCollapsed,
+      setSidebarCollapsed: updateSidebarCollapsed,
       preferredLanguage,
       setPreferredLanguage
     }),
-    [preferredLanguage, sidebarCollapsed, sidebarOpen]
+    [preferredLanguage, sidebarCollapsed, sidebarOpen, updateSidebarCollapsed]
   );
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

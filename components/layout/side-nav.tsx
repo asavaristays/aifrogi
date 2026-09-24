@@ -13,7 +13,7 @@ import type { ClientAccessRole } from "@/lib/client-access";
 import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
-  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/team-inbox", "/in-stay", "/contacts"] },
+  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/team-inbox", "/in-stay/inbox", "/in-stay", "/contacts"] },
   { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/knowledge", "/flow-intelligence", "/improve", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
@@ -41,7 +41,7 @@ export function SideNav({
   const canManage = accessRole === "OWNER" || accessRole === "ADMIN";
   const allowedHrefs = new Set(canManage
     ? navItems.map((item) => item.href)
-    : ["/dashboard", "/team-inbox", "/contacts", "/knowledge", "/flow-intelligence", "/improve", "/support"]);
+    : ["/dashboard", "/team-inbox", "/in-stay/inbox", "/in-stay", "/contacts", "/knowledge", "/flow-intelligence", "/improve", "/support"]);
 
   return (
     <>
@@ -94,12 +94,13 @@ export function SideNav({
               <p className="text-[11px] font-semibold text-[var(--gold-300)]">{group.label}</p>
               <p className="truncate text-[10px] text-white/35">{group.helper}</p>
             </div>
-            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && isClientNavItemAvailable(item.href, enabledChannels) && (item.href !== "/in-stay" || botCategory === "STAY")).map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && isClientNavItemAvailable(item.href, enabledChannels) && (!item.href.startsWith("/in-stay") || botCategory === "STAY")).map((item) => {
+            const active = pathname === item.href || (item.href !== "/in-stay" && pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                title={sidebarCollapsed ? item.label : undefined}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
                   "relative flex min-h-10 items-center gap-3 rounded-md border px-2.5 py-2 text-[13px] font-medium tracking-normal transition-all",
