@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getDb } from "@/lib/db";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { hasTrustedSameOrigin } from "@/lib/security/request-origin";
 
 type AccessRow = { id: string; guestName: string; phoneNumber: string; roomNumber: string; requestedCheckIn: Date; requestedCheckOut: Date; approvedCheckOut: Date | null; status: string; reviewedBy: string | null; reviewedAt: Date | null; revokedAt: Date | null; leadId: string | null; createdAt: Date };
 
@@ -20,7 +21,7 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => null) as { propertySlug?: string; requestId?: string; action?: string; approvedCheckOut?: string; reason?: string } | null;
   const access = await resolveClientWorkspaceAccess({ propertySlug: body?.propertySlug, requireManage: true });
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
-  if (request.headers.get("origin") !== new URL(request.url).origin) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
+  if (!hasTrustedSameOrigin(request)) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
   return withTenantDatabaseContext({ kind: "tenant", organizationId: access.organization.id, actor: `hotelgpt-access-review:${access.user.username}` }, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
     if (access.organization.botProfile?.category !== "STAY" || !access.organization.botProfile.stayAccessEnabled) return NextResponse.json({ error: "HotelGPT in-stay access is not enabled for this workspace." }, { status: 404 });

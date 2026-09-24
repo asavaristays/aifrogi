@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { getDb } from "@/lib/db";
+import { hasTrustedSameOrigin } from "@/lib/security/request-origin";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -19,7 +20,7 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => null) as { propertySlug?: string; caseId?: string; action?: string } | null;
   const access = await resolveClientWorkspaceAccess({ propertySlug: body?.propertySlug, requireManage: true });
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
-  if (request.headers.get("origin") !== new URL(request.url).origin) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
+  if (!hasTrustedSameOrigin(request)) return NextResponse.json({ error: "Cross-origin request denied" }, { status: 403 });
   return withTenantDatabaseContext({ kind: "tenant", organizationId: access.organization.id, actor: `in-stay-case-update:${access.user.username}` }, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
     const stage = body?.action === "RESOLVE" ? "BOOKED" : body?.action === "START" ? "CONTACTED" : body?.action === "REOPEN" ? "NEW" : null;
