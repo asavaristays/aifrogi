@@ -346,9 +346,10 @@ function ActionItem({ item, rank }: { item: DashboardAttention; rank: number }) 
 function ConversationRow({ lead }: { lead: Lead }) {
   const message = lead.transcript.at(-1);
   const needsReply = message?.from === "guest";
+  const href = lead.stay.startsWith("In-stay · Room ") ? `/in-stay/inbox?lead=${encodeURIComponent(lead.id)}` : `/team-inbox?lead=${encodeURIComponent(lead.id)}`;
 
   return (
-    <Link href="/team-inbox" className="grid gap-3 px-5 py-3.5 transition hover:bg-[var(--surface-soft)] sm:grid-cols-[36px_minmax(0,1fr)_112px] sm:items-center">
+    <Link href={href} className="grid gap-3 px-5 py-3.5 transition hover:bg-[var(--surface-soft)] sm:grid-cols-[36px_minmax(0,1fr)_112px] sm:items-center">
       <span className="flex h-9 w-9 items-center justify-center rounded-md bg-[var(--secondary-soft)] text-xs font-semibold text-[var(--secondary)]">{lead.initials}</span>
       <span className="min-w-0">
         <span className="flex items-center gap-2">

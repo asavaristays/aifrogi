@@ -853,7 +853,9 @@ export function WhatsAppBotClient({
   const activeState = getConversationState(activeLead);
   const activeSource = getLeadSourceLabel(activeLead);
   const latestInbound = [...activeLead.transcript].reverse().find((message) => message.from === "guest");
-  const aiSuggestedReply = !whatsappEnabled
+  const aiSuggestedReply = hotelMode && journeyView === "in-stay"
+    ? "Thank you. The front desk has received your request. We’ll coordinate with the right hotel team and update you here as soon as work begins."
+    : !whatsappEnabled
     ? "Thanks for reaching out. Please share the business result you want to achieve and any important requirement. I’ll use approved Webtechnosys information and involve the team when judgment is required."
     : activeSource === "AI audit"
       ? "Thanks for your interest in the AI audit. Please share your hotel name, website, city, and current booking channels. I will review visibility, conversion gaps, and WhatsApp follow-up opportunities."
