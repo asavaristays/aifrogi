@@ -3,13 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { BotConnectorPlan, type BotConnectorView } from "@/components/bot-profile/bot-connector-plan";
-import { BotProfileConfigurator } from "@/components/bot-profile/bot-profile-configurator";
+import type { BotConnectorView } from "@/components/bot-profile/bot-connector-plan";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { Button } from "@/components/ui/button";
-import { WebsiteBotInstallation } from "@/components/website-bot/website-bot-installation";
 
 type BotProfile = {
   category: string; operatingMode: string; channels: string[]; capabilities: string[];
@@ -48,11 +46,11 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
   });
 
   const status = organization?.botProfile?.status || "DRAFT";
-  const profileReady = ["CONFIGURED", "INSTALLATION_READY", "INSTALLATION_DETECTED", "REVIEW_PENDING", "LIVE", "PAUSED"].includes(status);
   const submittedOrLive = ["REVIEW_PENDING", "LIVE", "PAUSED"].includes(status);
-  const checks = [Boolean(organization), Boolean(organization), profileReady, submittedOrLive];
+  const knowledgeConfirmed = Boolean(reviewReadiness?.knowledgeReady);
+  const checks = [Boolean(organization), knowledgeConfirmed, submittedOrLive];
   const progress = Math.round((checks.filter(Boolean).length / checks.length) * 100);
-  const slug = organization?.properties[0]?.slug || "";
+  const [step, setStep] = useState(submittedOrLive ? 4 : knowledgeConfirmed ? 3 : 1);
 
   async function saveBusiness() {
     setSaving(true); setError(null); setNotice(null);
@@ -62,10 +60,11 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
     });
     const payload = await response.json().catch(() => null);
     setSaving(false);
-    if (!response.ok) { setError(payload?.error || "We could not save your business details. Please try again."); return; }
+    if (!response.ok) { setError(payload?.error || "We could not save your business details. Please try again."); return false; }
     setOrganization(payload.organization);
     setNotice("Business details saved. Continue with intelligence and bot setup below.");
     router.refresh();
+    return true;
   }
 
   return <div className="min-h-screen bg-[var(--background)] text-[var(--text)]">
@@ -75,11 +74,11 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
     </div></header>
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-8">
       <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">AI Bot onboarding</p><h1 className="mt-2 text-3xl font-black">Prepare your bot for real customers.</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">Add business basics, upload approved knowledge, define behaviour, test answers and publish as a standalone link or website widget.</p></div><strong className="rounded-full bg-[var(--primary-soft)] px-4 py-2 text-sm text-[var(--primary-strong)]">{progress}% ready</strong></div>
+        <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">Simple AI Bot onboarding</p><h1 className="mt-2 text-3xl font-black">Share and confirm your business information.</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">You provide the business details and approved answers. AiFrogi completes testing, certification and activation after submission.</p></div><strong className="rounded-full bg-[var(--primary-soft)] px-4 py-2 text-sm text-[var(--primary-strong)]">{progress}% ready</strong></div>
         <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--surface-muted)]"><div className="h-full rounded-full bg-[var(--gold-600)]" style={{ width: `${progress}%` }} /></div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-4">{["Business basics", "Knowledge", "Bot setup", "Test & publish"].map((label, index) => <div key={label} className="rounded-md border border-black/7 bg-[#fbfcfb] p-4"><span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-black ${checks[index] ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--surface-muted)] text-[var(--text-muted)]"}`}>{checks[index] ? "✓" : index + 1}</span><strong className="mt-3 block text-sm">{label}</strong></div>)}</div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">{["Business details", "Upload and confirm", "Submit to AiFrogi"].map((label, index) => <div key={label} className="rounded-md border border-black/7 bg-[#fbfcfb] p-4"><span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-black ${checks[index] ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--surface-muted)] text-[var(--text-muted)]"}`}>{checks[index] ? "✓" : index + 1}</span><strong className="mt-3 block text-sm">{label}</strong></div>)}</div>
       </section>
-      <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
+      {step === 1 ? <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
         <p className="product-eyebrow">Step 1 · business basics</p><h2 className="mt-2 text-2xl font-black">Information your bot may use</h2><p className="mt-2 text-sm text-[var(--text-muted)]">Only add public business information that customers may safely receive.</p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <Field label="Business name" value={form.name} required onChange={(value) => setForm({ ...form, name: value })} /><Field label="Industry" value={form.industry} onChange={(value) => setForm({ ...form, industry: value })} />
@@ -90,13 +89,10 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
           <div className="md:col-span-2"><Field label="Public address" value={form.publicAddress || form.businessAddress} onChange={(value) => setForm({ ...form, publicAddress: value, businessAddress: value })} /></div>
         </div>
         {error ? <p className="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}{notice ? <p className="mt-4 rounded-md bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{notice}</p> : null}
-        <Button className="mt-5" disabled={saving || !form.name || !form.ownerName} onClick={saveBusiness}>{saving ? "Saving" : "Save and continue"}</Button>
-      </section>
-      <OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => window.location.reload()} />
-      {organization ? <BotProfileConfigurator initialProfile={organization.botProfile} websiteOnly onSaved={(updated) => setOrganization(updated as CustomerOnboardingOrganization)} /> : null}
-      {organization?.botConnectors?.length ? <BotConnectorPlan connectors={organization.botConnectors} /> : null}
-      {organization && slug ? <WebsiteBotInstallation slug={slug} profile={organization.botProfile} /> : null}
-      {organization?.botProfile ? <BotReviewSubmission status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={reviewReadiness?.tested ?? false} certified={reviewReadiness?.certified ?? false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
+        <Button className="mt-5" disabled={saving || !form.name || !form.ownerName} onClick={async () => { if (await saveBusiness()) setStep(2); }}>{saving ? "Saving" : "Save and continue"}</Button>
+      </section> : null}
+      {step === 2 ? <div><OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => window.location.reload()} /><button type="button" className="mt-4 text-sm font-semibold text-[var(--primary-strong)]" onClick={() => setStep(1)}>← Back to business details</button></div> : null}
+      {step >= 3 && organization?.botProfile ? <BotReviewSubmission intakeOnly status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={false} certified={false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
     </main>
   </div>;
 }

@@ -4,11 +4,9 @@ import { CustomerOnboarding } from "@/components/onboarding/customer-onboarding"
 import { getCurrentUser } from "@/lib/auth-server";
 import { getDb } from "@/lib/db";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
-import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
-import { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } from "@/lib/tenant-intelligence/certification";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -29,29 +27,25 @@ export default async function OnboardingPage() {
     organizationId: organization.id,
     actor: `onboarding-page:${user.username}`
   }, async () => {
-    const [subscription, verification, testActivity, answerEvidence, certification, appearance] = await Promise.all([
+    const [subscription, verification, confirmedAnswers] = await Promise.all([
       getOrganizationSubscriptionAccess(organization.id),
       getKnowledgeVerificationReadiness(property.id, organization.botProfile?.category === "STAY" ? "HOSPITALITY" : organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : organization.botProfile?.category || "BUSINESS_AI"),
-      db.onboardingActivity.findFirst({ where: { organizationId: organization.id, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } }),
-      db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } }),
-      readTenantCertification(property.slug),
-      readKnowledgeSettings(property.slug)
+      db.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } })
     ]);
-    const certificationStatus = certification ? tenantCertificationStatus(certification, await getTenantKnowledgeRevision(property.slug)) : { eligible: false };
-    return { subscription, verification, testActivity, answerEvidence, certificationStatus, appearance };
-  }) : { subscription: null, verification: null, testActivity: null, answerEvidence: null, certificationStatus: { eligible: false }, appearance: null };
-  const { subscription, verification, testActivity, answerEvidence, certificationStatus, appearance } = onboardingData;
+    return { subscription, verification, confirmedAnswers };
+  }) : { subscription: null, verification: null, confirmedAnswers: 0 };
+  const { verification, confirmedAnswers } = onboardingData;
   return (
     <CustomerOnboarding
       initialOrganization={organization}
       accountEmail={user.username}
       reviewReadiness={{
-        knowledgeReady: Boolean(subscription?.planCode === "TRIAL" ? verification?.trialReady : verification?.ready),
-        tested: Boolean(testActivity || answerEvidence),
-        certified: certificationStatus.eligible,
+        knowledgeReady: confirmedAnswers > 0,
+        tested: false,
+        certified: false,
         canManage: memberRole === "OWNER" || memberRole === "ADMIN",
         evidence: {
-          pageCount: appearance?.pageCount || 0,
+          pageCount: 0,
           published: verification?.published || 0,
           coveragePercent: verification?.coverage.percentage || 0,
           freshnessRate: verification?.freshnessRate || 0,

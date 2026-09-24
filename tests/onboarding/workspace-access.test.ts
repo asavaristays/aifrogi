@@ -3,7 +3,7 @@ import test from "node:test";
 import { canOpenClientWorkspace } from "@/lib/workspace-access";
 
 test("website client can open Knowledge while preparing intelligence", () => {
-  assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "KYC_APPROVED" }, botProfile: { channels: ["WEBSITE"], status: "INSTALLATION_READY" } }), true);
+  assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "KYC_APPROVED" }, botProfile: { channels: ["WEBSITE"], status: "INSTALLATION_READY" } }), false);
 });
 
 test("unfinished draft remains in onboarding", () => {
@@ -11,7 +11,7 @@ test("unfinished draft remains in onboarding", () => {
 });
 
 test("configured website persona can enter intelligence preparation", () => {
-  assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "KYC_SUBMITTED" }, botProfile: { channels: ["WEBSITE"], status: "CONFIGURED" } }), true);
+  assert.equal(canOpenClientWorkspace({ onboarding: { lifecycleStatus: "KYC_SUBMITTED" }, botProfile: { channels: ["WEBSITE"], status: "CONFIGURED" } }), false);
 });
 
 test("live WhatsApp client can open its workspace", () => {

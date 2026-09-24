@@ -418,22 +418,20 @@ export async function submitWebsiteBotForReview(input: { organizationId: string;
   if (subscription.planCode === "TRIAL" && ["APPROVED_ACTIONS", "HUMAN_APPROVAL"].includes(profile.operatingMode)) {
     throw new Error("The 15-day trial supports the Starter Bot without connector-backed actions. Choose an eligible paid setup before enabling connectors.");
   }
-  const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true, slug: true } });
+  const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true, slug: true, organization: { select: { name: true } } } });
   if (!property) throw new Error("A business workspace is required.");
-  const category = profile.category === "PINGBOOK" ? "APPOINTMENTS" : profile.category === "STAY" ? "HOSPITALITY" : profile.category;
-  const readiness = await getKnowledgeVerificationReadiness(property.id, category);
-  if (!(subscription.planCode === "TRIAL" ? readiness.trialReady : readiness.ready)) {
-    throw new Error(subscription.planCode === "TRIAL" && readiness.essentials.missing.length ? `Approve the missing trial topics: ${readiness.essentials.missing.join(", ")}.` : "Complete the intelligence readiness checks before submission.");
-  }
-  const tested = await db.onboardingActivity.findFirst({ where: { organizationId: input.organizationId, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } });
-  if (!tested) throw new Error("Test at least one customer question before submitting the bot.");
-  const { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } = await import("@/lib/tenant-intelligence/certification");
-  const certification = await readTenantCertification(property.slug);
-  const certificationStatus = tenantCertificationStatus(certification, await getTenantKnowledgeRevision(property.slug));
-  if (!certificationStatus.eligible) throw new Error(`Tenant certification is required before submission. ${certificationStatus.blocker || "Run certification again."}`);
+  const confirmedAnswers = await db.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } });
+  if (!confirmedAnswers) throw new Error("Upload and confirm the completed onboarding workbook before submitting it to AiFrogi.");
+  const reviewReference = `ONBOARD-${input.organizationId}`;
+  const organizationName = property.organization?.name || "New client";
   await db.$transaction([
     db.botProfile.update({ where: { organizationId: input.organizationId }, data: { status: "REVIEW_PENDING", lifecycleUpdatedBy: input.actorEmail } }),
-    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "WEBSITE_BOT_SUBMITTED_FOR_REVIEW", detail: `Client approved the prepared intelligence and submitted the bot for Super Admin review after ${certification.level.toLowerCase()} certification (${certification.results.filter((result) => result.passed).length}/${certification.results.length}).` } })
+    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "WEBSITE_BOT_SUBMITTED_FOR_REVIEW", detail: `Client confirmed ${confirmedAnswers} workbook answer${confirmedAnswers === 1 ? "" : "s"} and submitted the workspace for Super Admin review. Testing, certification and delivery setup now belong to AiFrogi review.` } }),
+    db.supportTicket.upsert({
+      where: { reference: reviewReference },
+      update: { subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Super Admin must review knowledge, run technical checks and approve or return a clear correction request.`, lastActivityBy: "CUSTOMER", resolution: null, resolvedAt: null },
+      create: { organizationId: input.organizationId, reference: reviewReference, subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Super Admin must review knowledge, run technical checks and approve or return a clear correction request.`, createdByEmail: input.actorEmail, lastActivityBy: "CUSTOMER" }
+    })
   ]);
   return getOrganizationById(input.organizationId);
 }
