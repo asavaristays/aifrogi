@@ -130,7 +130,7 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
     }
     void poll();
     return () => { cancelled = true; controller.abort(); clearTimeout(timer); };
-  }, [slug, visitorToken, conversationState]);
+  }, [slug, visitorToken, conversationState, residentMode]);
 
   async function send(event: FormEvent) {
     event.preventDefault();
