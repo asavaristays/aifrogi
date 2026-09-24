@@ -12,14 +12,17 @@ export async function POST(request: Request) {
   if (!workspace.ok) return NextResponse.json({ error: workspace.error }, { status: workspace.status });
   if (question.length < 2) return NextResponse.json({ error: "Question is required." }, { status: 400 });
 
-  const result = await buildWebsiteKnowledgeAnswer({ question, propertySlug: workspace.propertySlug }).catch(() => null);
-  const answer = result?.answer || "I do not have enough approved business information to answer that confidently. Add or approve the answer in Intelligence, then test again.";
-  await withClientDatabaseContext({
+  const access = {
     user: workspace.user,
     organization: workspace.organization,
     role: workspace.role,
     membership: workspace.organization.members.find((member) => member.email.toLowerCase() === workspace.user.username.toLowerCase())
-  }, "knowledge-test-api", async () => {
+  };
+  const result = await withClientDatabaseContext(access, "knowledge-test-answer", () =>
+    buildWebsiteKnowledgeAnswer({ question, propertySlug: workspace.propertySlug })
+  ).catch(() => null);
+  const answer = result?.answer || "I do not have enough approved business information to answer that confidently. Add or approve the answer in Intelligence, then test again.";
+  await withClientDatabaseContext(access, "knowledge-test-api", async () => {
     const db = getDb();
     if (!db) throw new Error("Database unavailable.");
     await db.onboardingActivity.create({ data: {
