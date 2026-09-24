@@ -28,6 +28,8 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(resident, /Welcome, \{guestName\}/);
   assert.match(resident, /Yes, resolved/);
   assert.match(resident, /I still need help/);
+  assert.match(resident, /localStorage\.getItem/);
+  assert.match(resident, /scan the same QR on this phone/);
   for (const label of ["Overview", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
   assert.match(inbox, />Pre-Stay</);
   assert.match(inbox, />In-Stay</);
