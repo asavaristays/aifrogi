@@ -32,12 +32,13 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     try {
       await db.$transaction(async tx => {
         const session = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });
+        const property = await tx.property.findUniqueOrThrow({ where: { id: session.propertyId }, select: { organizationId: true } });
         const lock = await tx.$queryRaw<Array<{ acquired: boolean }>>`SELECT pg_try_advisory_xact_lock(hashtextextended(${`${propertySlug}:${session.sessionIdHash}`}, 0)) AS acquired`;
         if (!lock[0]?.acquired || session.revokedAt || session.expiresAt <= new Date()) throw new Error("Session unavailable");
         await tx.websiteVisitorSession.update({ where: { leadId: id }, data: { status: "AI_READY", resolutionState: { aiResumedAt: new Date().toISOString() } } });
         await tx.leadTag.deleteMany({ where: { leadId: id, value: { in: ["resolved", "closed"], mode: "insensitive" } } });
         await tx.aiOperation.updateMany({ where: { id: websiteHandoverOperationId(session.propertyId, id) }, data: { status: "COMPLETED", outcomeType: "RESOLVED", outcomeEvidence: `AI resumed by ${user.username}`, completedAt: new Date() } });
-        await tx.platformAuditLog.create({ data: { organizationId: access?.organization.id, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_AI_RESUMED", targetType: "LEAD", targetId: id, summary: "Owner/admin explicitly resumed AI; prior handover completed." } });
+        await tx.platformAuditLog.create({ data: { organizationId: property.organizationId, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_AI_RESUMED", targetType: "LEAD", targetId: id, summary: "Owner/admin explicitly resumed AI; prior handover completed." } });
       });
       return NextResponse.json({ resumed: true });
     } catch { return NextResponse.json({ error: "Session is busy, revoked or expired. Refresh and retry." }, { status: 409 }); }
@@ -48,13 +49,14 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
     try { await db.$transaction(async (tx) => {
       const session = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });
+      const property = await tx.property.findUniqueOrThrow({ where: { id: session.propertyId }, select: { organizationId: true } });
       const lock = await tx.$queryRaw<Array<{ acquired: boolean }>>`SELECT pg_try_advisory_xact_lock(hashtextextended(${`${propertySlug}:${session.sessionIdHash}`}, 0)) AS acquired`;
       if (!lock[0]?.acquired) throw new Error("Conversation update in progress; retry shortly");
       if (!lead.tags.some((tag) => ["resolved", "closed"].includes(tag.toLowerCase()))) await tx.leadTag.create({ data: { leadId: id, value: "Resolved" } });
       // Closed means read-only until the existing capability expires, not revoked.
       await tx.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null }, data: { status: "CLOSED" } });
       await tx.aiOperation.updateMany({ where: { leadId: id, kind: "HUMAN_REVIEW", createdBy: "website-visitor", status: { in: ["OPEN", "IN_PROGRESS"] } }, data: { status: "COMPLETED", outcomeType: "RESOLVED", outcomeEvidence: `Conversation closed by ${user.username}`, completedAt: new Date() } });
-      await tx.platformAuditLog.create({ data: { organizationId: access?.organization.id, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_CONVERSATION_CLOSED", targetType: "LEAD", targetId: id, summary: "Operator closed conversation; final replies remain readable until visitor session expiry." } });
+      await tx.platformAuditLog.create({ data: { organizationId: property.organizationId, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_CONVERSATION_CLOSED", targetType: "LEAD", targetId: id, summary: "Operator closed conversation; final replies remain readable until visitor session expiry." } });
     }); } catch { return NextResponse.json({ error: "Conversation is busy or unavailable. Please retry." }, { status: 409 }); }
     return NextResponse.json({ closed: true });
   }
@@ -75,6 +77,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     try {
       await db.$transaction(async (tx) => {
         const currentSession = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });
+        const property = await tx.property.findUniqueOrThrow({ where: { id: currentSession.propertyId }, select: { organizationId: true } });
         const lock = await tx.$queryRaw<Array<{ acquired: boolean }>>`SELECT pg_try_advisory_xact_lock(hashtextextended(${`${propertySlug}:${currentSession.sessionIdHash}`}, 0)) AS acquired`;
         if (!lock[0]?.acquired) throw new Error("Conversation update in progress; retry shortly");
         const claimed = await tx.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null, status: { not: "CLOSED" }, expiresAt: { gt: new Date() } }, data: { status: "HUMAN_JOINED" } });
@@ -83,10 +86,11 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         await tx.lead.update({ where: { id }, data: { lastActivityAt: new Date() } });
         const session = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });
         await tx.aiOperation.updateMany({ where: { id: websiteHandoverOperationId(session.propertyId, id), status: "OPEN" }, data: { status: "IN_PROGRESS", assignedTo: user.username } });
-        await tx.platformAuditLog.create({ data: { organizationId: access?.organization.id, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_HUMAN_REPLY", targetType: "LEAD", targetId: id, summary: "Human reply saved; AI ownership paused." } });
+        await tx.platformAuditLog.create({ data: { organizationId: property.organizationId, actorEmail: user.username, actorRole: user.role, action: "WEBSITE_HUMAN_REPLY", targetType: "LEAD", targetId: id, summary: "Human reply saved; AI ownership paused." } });
       });
       return NextResponse.json({ lead: await loadLead(id) });
-    } catch {
+    } catch (error) {
+      console.error("[lead-message] Website human reply failed", error instanceof Error ? error.message : "Unknown error");
       return NextResponse.json({ error: "Reply could not be saved. Check that the conversation is open and retry." }, { status: 409 });
     }
   }
