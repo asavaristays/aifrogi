@@ -4,8 +4,11 @@ import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-con
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { HotelGptResidentEntry } from "@/components/website-bot/hotelgpt-resident-entry";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;return {title:"HotelGPT · In-stay Assistant",manifest:`/stay/${encodeURIComponent(slug)}/manifest.webmanifest`,appleWebApp:{capable:true,title:"HotelGPT"},icons:{apple:"/brand/aifrogi-favicon-512.png"}};}
 
 export default async function HotelGptStayPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

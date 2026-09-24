@@ -13,12 +13,22 @@ function ip(request: Request) { return request.headers.get("x-forwarded-for")?.s
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
   if (!consumeRateLimit(`hotelgpt-stay:${slug}:${ip(request)}`, 8, 15 * 60_000).allowed) return NextResponse.json({ error: "Too many attempts. Please wait before trying again." }, { status: 429, headers });
-  const body = await request.json().catch(() => null) as { roomNumber?: unknown; guestName?: unknown; phoneNumber?: unknown; checkIn?: unknown; checkOut?: unknown } | null;
+  const body = await request.json().catch(() => null) as { mode?: unknown; roomNumber?: unknown; guestName?: unknown; phoneNumber?: unknown; checkIn?: unknown; checkOut?: unknown } | null;
   const response = await withPublicBotDatabaseContext(slug, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Resident access is temporarily unavailable." }, { status: 503, headers });
     const property = await db.property.findUnique({ where: { slug }, select: { id: true, organization: { select: { botProfile: { select: { category: true, status: true, channels: true, stayAccessEnabled: true } } } } } });
     const profile = property?.organization?.botProfile;
     if (!property || !profile || profile.category !== "STAY" || !profile.stayAccessEnabled || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Resident access is not enabled for this property." }, { status: 404, headers });
+    if (body?.mode === "LOGIN") {
+      const roomNumber = String(body.roomNumber || "").trim().slice(0, 24);
+      if (!roomNumber) return NextResponse.json({ error: "Enter the approved room number." }, { status: 400, headers });
+      const rows = await db.$queryRaw<Array<{ id:string; guestName:string; phoneNumber:string; roomNumber:string; requestedCheckIn:Date; approvedCheckOut:Date }>>`SELECT "id","guestName","phoneNumber","roomNumber","requestedCheckIn","approvedCheckOut" FROM "HotelGuestAccessRequest" WHERE "propertyId"=${property.id} AND LOWER("roomNumber")=LOWER(${roomNumber}) AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() ORDER BY "reviewedAt" DESC LIMIT 1`;
+      const item = rows[0];
+      if (!item) return NextResponse.json({ error: "No active approved stay matches these details. Ask the front desk to approve your registration." }, { status: 404, headers });
+      const stayAccessToken = issueHotelGuestStayToken({ slug, requestId:item.id, roomNumber:item.roomNumber, guestName:item.guestName, phoneNumber:item.phoneNumber, checkIn:item.requestedCheckIn.toISOString(), checkOut:item.approvedCheckOut.toISOString(), exp:Math.floor(item.approvedCheckOut.getTime()/1000) });
+      await db.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "activatedAt"=COALESCE("activatedAt",NOW()),"updatedAt"=NOW() WHERE id=${item.id}`;
+      return NextResponse.json({ status:"APPROVED", stayAccessToken, validUntil:item.approvedCheckOut.toISOString(), roomNumber:item.roomNumber, guestName:item.guestName }, { headers });
+    }
     const result = validateHotelGuestStayInput({ roomNumber: body?.roomNumber, guestName: body?.guestName, phoneNumber: body?.phoneNumber, checkIn: body?.checkIn, checkOut: body?.checkOut });
     if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400, headers });
     const requestId = randomUUID();
