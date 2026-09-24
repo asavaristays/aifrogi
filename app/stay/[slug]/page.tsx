@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;return {title:"HotelGPT · In-stay Assistant",manifest:`/stay/${encodeURIComponent(slug)}/manifest.webmanifest`,appleWebApp:{capable:true,title:"HotelGPT"},icons:{apple:"/brand/aifrogi-favicon-512.png"}};}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;return {title:"HotelGPT · In-stay Assistant",manifest:`/stay/${encodeURIComponent(slug)}/manifest.webmanifest`,appleWebApp:{capable:true,title:"HotelGPT"},icons:{apple:"/hotelgpt/camp-hornbill-logo.png"}};}
 
 export default async function HotelGptStayPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -21,5 +21,5 @@ export default async function HotelGptStayPage({ params }: { params: Promise<{ s
   const settings = await withPublicBotDatabaseContext(slug, () => readKnowledgeSettings(slug));
   if (!settings) notFound();
   const propertyName = property.organization?.name || property.name;
-  return <HotelGptResidentEntry slug={slug} propertyName={propertyName} botName={profile.personaName || `${propertyName} HotelGPT`} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme || "dark"} logoUrl={settings.logoUrl} menu={settings.widgetMenu || { enabled: false, heading: "", items: [] }} welcomeCardImageUrl={settings.welcomeCardImageUrl} welcomeCardTitle={settings.welcomeCardTitle} welcomeCardText={settings.welcomeCardText} showcaseItems={settings.showcaseItems} />;
+  return <HotelGptResidentEntry slug={slug} propertyName={propertyName} botName={profile.personaName || `${propertyName} HotelGPT`} themeColor={settings.themeColor} widgetTheme={settings.widgetTheme || "dark"} logoUrl={settings.logoUrl || "/hotelgpt/camp-hornbill-logo.png"} menu={settings.widgetMenu || { enabled: false, heading: "", items: [] }} welcomeCardImageUrl={settings.welcomeCardImageUrl} welcomeCardTitle={settings.welcomeCardTitle} welcomeCardText={settings.welcomeCardText} showcaseItems={settings.showcaseItems} />;
 }
