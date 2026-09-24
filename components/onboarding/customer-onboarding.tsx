@@ -34,6 +34,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
   const router = useRouter();
   const [organization, setOrganization] = useState(initialOrganization);
   const [saving, setSaving] = useState(false);
+  const [checkingWebsite, setCheckingWebsite] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -48,9 +49,9 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
   const status = organization?.botProfile?.status || "DRAFT";
   const submittedOrLive = ["REVIEW_PENDING", "LIVE", "PAUSED"].includes(status);
   const knowledgeConfirmed = Boolean(reviewReadiness?.knowledgeReady);
-  const checks = [Boolean(organization), knowledgeConfirmed, submittedOrLive];
-  const progress = Math.round((checks.filter(Boolean).length / checks.length) * 100);
   const [step, setStep] = useState(submittedOrLive ? 4 : knowledgeConfirmed ? 3 : 1);
+  const checks = [Boolean(organization), knowledgeConfirmed || step > 2 || submittedOrLive, submittedOrLive];
+  const progress = Math.round((checks.filter(Boolean).length / checks.length) * 100);
 
   async function saveBusiness() {
     setSaving(true); setError(null); setNotice(null);
@@ -65,6 +66,16 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
     setNotice("Business details saved. Continue with intelligence and bot setup below.");
     router.refresh();
     return true;
+  }
+
+  async function checkWebsiteNow() {
+    if (!organization?.website) { setStep(3); return; }
+    setCheckingWebsite(true); setError(null);
+    const response = await fetch("/api/knowledge", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: organization.website }) });
+    setCheckingWebsite(false);
+    if (!response.ok) setNotice("Website review will be completed by AiFrogi Super Admin. You can continue now.");
+    else setNotice("Website information collected. You can continue.");
+    setStep(3);
   }
 
   return <div className="min-h-screen bg-[var(--background)] text-[var(--text)]">
@@ -91,8 +102,8 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
         {error ? <p className="mt-4 rounded-md bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}{notice ? <p className="mt-4 rounded-md bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{notice}</p> : null}
         <Button className="mt-5" disabled={saving || !form.name || !form.ownerName} onClick={async () => { if (await saveBusiness()) setStep(2); }}>{saving ? "Saving" : "Save and continue"}</Button>
       </section> : null}
-      {step === 2 ? <div><OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => window.location.reload()} /><button type="button" className="mt-4 text-sm font-semibold text-[var(--primary-strong)]" onClick={() => setStep(1)}>← Back to business details</button></div> : null}
-      {step >= 3 && organization?.botProfile ? <BotReviewSubmission intakeOnly status={status} ready={reviewReadiness?.knowledgeReady ?? false} tested={false} certified={false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
+      {step === 2 ? <div className="space-y-5"><section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm"><p className="product-eyebrow">Step 2 · add information now or later</p><h2 className="mt-2 text-2xl font-black">Website and Excel are optional at this stage.</h2><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">AiFrogi can check your public website now, and you may upload the Excel sheet now or add more intelligence after approval.</p><div className="mt-5 flex flex-wrap gap-3"><Button disabled={checkingWebsite} onClick={checkWebsiteNow}>{checkingWebsite ? "Checking website…" : organization?.website ? "Check website now" : "Continue"}</Button><button type="button" className="min-h-11 rounded-md border border-black/10 px-5 text-sm font-bold" onClick={() => setStep(3)}>Do this later</button></div></section><OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => setStep(3)} /><button type="button" className="text-sm font-semibold text-[var(--primary-strong)]" onClick={() => setStep(1)}>← Back to business details</button></div> : null}
+      {step >= 3 && organization?.botProfile ? <BotReviewSubmission intakeOnly status={status} ready tested={false} certified={false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
     </main>
   </div>;
 }

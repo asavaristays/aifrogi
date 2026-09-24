@@ -12,16 +12,16 @@ export async function submitSimpleOnboardingForReview(input: { organizationId: s
   const property = await db.property.findFirst({ where: { organizationId: input.organizationId }, select: { id: true, organization: { select: { name: true } } } });
   if (!property) throw new Error("A business workspace is required.");
   const confirmedAnswers = await db.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } });
-  if (!confirmedAnswers) throw new Error("Upload and confirm the completed onboarding workbook before submitting it to AiFrogi.");
   const organizationName = property.organization?.name || "New client";
+  const knowledgeSummary = confirmedAnswers ? `${confirmedAnswers} owner-confirmed answers were supplied.` : "The client chose to add website and Excel intelligence later.";
   const reviewReference = `ONBOARD-${input.organizationId}`;
   await db.$transaction([
     db.botProfile.update({ where: { organizationId: input.organizationId }, data: { status: "REVIEW_PENDING", lifecycleUpdatedBy: input.actorEmail } }),
-    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "WEBSITE_BOT_SUBMITTED_FOR_REVIEW", detail: `Client completed simple onboarding with ${confirmedAnswers} confirmed workbook answer${confirmedAnswers === 1 ? "" : "s"}. AiFrogi Super Admin now owns website review, testing, certification and activation.` } }),
+    db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "WEBSITE_BOT_SUBMITTED_FOR_REVIEW", detail: `Client completed the three-step onboarding. ${knowledgeSummary} Super Admin must check the website and screen for fake or misleading information before approving or requesting correction.` } }),
     db.supportTicket.upsert({
       where: { reference: reviewReference },
-      update: { subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Super Admin must review the website and knowledge, run technical checks and approve or return one clear correction request.`, lastActivityBy: "CUSTOMER", resolution: null, resolvedAt: null },
-      create: { organizationId: input.organizationId, reference: reviewReference, subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Super Admin must review the website and knowledge, run technical checks and approve or return one clear correction request.`, createdByEmail: input.actorEmail, lastActivityBy: "CUSTOMER" }
+      update: { subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding. ${knowledgeSummary} Super Admin must check for fake or misleading information, review the public website when supplied, and approve or return one clear correction request.`, lastActivityBy: "CUSTOMER", resolution: null, resolvedAt: null },
+      create: { organizationId: input.organizationId, reference: reviewReference, subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding. ${knowledgeSummary} Super Admin must check for fake or misleading information, review the public website when supplied, and approve or return one clear correction request.`, createdByEmail: input.actorEmail, lastActivityBy: "CUSTOMER" }
     })
   ]);
   const notificationAlreadySent = await db.onboardingActivity.findFirst({
@@ -35,7 +35,7 @@ export async function submitSimpleOnboardingForReview(input: { organizationId: s
       reference: reviewReference,
       subject: `${organizationName} is ready for onboarding approval`,
       heading: "New client onboarding is ready for review",
-      body: `${organizationName} completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Review the website and knowledge, complete technical checks, then approve the client or return one clear correction request.`,
+      body: `${organizationName} completed the three-step onboarding. ${knowledgeSummary} Check for fake or misleading information, review the public website when supplied, then approve the client or return one clear correction request.`,
       actionLabel: "Review onboarding request"
     });
     await db.onboardingActivity.create({

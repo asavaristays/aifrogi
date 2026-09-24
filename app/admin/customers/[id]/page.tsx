@@ -44,7 +44,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
       <nav aria-label="Customer onboarding" className="mt-7 grid gap-3"><TrackLink href={`/admin/customers/${organization.id}`} active title="AI Bot Onboarding" copy="Persona, approved intelligence, connectors, installation and bot go-live" status={organization.botProfile?.status || "DRAFT"} /></nav>
 
       <section className="mt-7">
-        <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding</p><h2 className="mt-2 text-xl font-black">Prepare and activate the governed AI Bot.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Review this customer&apos;s persona, approved knowledge, connectors, website installation and go-live evidence.</p></div>
+        <div className="mb-5 rounded-lg border border-[#d8c278] bg-[#fff9e8] p-5"><p className="product-eyebrow">AI Bot onboarding</p><h2 className="mt-2 text-xl font-black">Review the client submission.</h2><p className="mt-2 text-sm leading-6 text-[#68645c]">Check for fake or misleading information, review the public website when supplied, then approve the client or request one clear correction. Website crawl and Excel intelligence may be added now or later.</p></div>
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="lg:col-span-2"><OnboardingWorkbookImport organizationId={organization.id} hotelTemplate={organization.botProfile?.category === "STAY"} /></div>
           <BotProfileConfigurator organizationId={organization.id} initialProfile={organization.botProfile} websiteOnly />
