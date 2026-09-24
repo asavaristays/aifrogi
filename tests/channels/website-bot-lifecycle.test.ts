@@ -53,6 +53,18 @@ test("client submission is required before initial Super Admin go-live", () => {
   assert.match(onboarding, /REVIEW_PENDING/);
 });
 
+test("hotel owners keep tenant authority throughout onboarding writes", () => {
+  const onboardingPage = readFileSync("app/onboarding/page.tsx", "utf8");
+  const workbookRoute = readFileSync("app/api/onboarding/workbook-import/route.ts", "utf8");
+  const profileRoute = readFileSync("app/api/onboarding/bot-profile/route.ts", "utf8");
+  assert.match(onboardingPage, /organization\?\.members\.find/);
+  assert.match(onboardingPage, /withTenantDatabaseContext/);
+  assert.match(workbookRoute, /withTenantDatabaseContext\(\{ kind: "tenant"/);
+  assert.match(profileRoute, /resolveClientWorkspaceAccess\(\{ requireManage: true \}\)/);
+  assert.match(profileRoute, /onboarding-bot-profile:/);
+  assert.match(profileRoute, /onboarding-bot-submit:/);
+});
+
 test("admin review cannot silently demote a submitted bot", () => {
   assert.equal(statusAfterBotProfileSave("REVIEW_PENDING", false, false), "REVIEW_PENDING");
   assert.equal(statusAfterBotProfileSave("REVIEW_PENDING", false, true), "INSTALLATION_READY");

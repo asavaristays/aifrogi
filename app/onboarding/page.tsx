@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import { CustomerOnboarding } from "@/components/onboarding/customer-onboarding";
 import { getCurrentUser } from "@/lib/auth-server";
 import { getDb } from "@/lib/db";
-import { getMemberRoleByEmail } from "@/lib/repositories/onboarding-repository";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } from "@/lib/tenant-intelligence/certification";
 
@@ -23,16 +23,24 @@ export default async function OnboardingPage() {
   if (organization?.onboarding?.lifecycleStatus === "LIVE") redirect("/dashboard");
   const property = organization?.properties[0];
   const db = getDb();
-  const [memberRole, subscription, verification, testActivity, answerEvidence, certification] = organization && property && db ? await Promise.all([
-    getMemberRoleByEmail(user.username),
-    getOrganizationSubscriptionAccess(organization.id),
-    getKnowledgeVerificationReadiness(property.id, organization.botProfile?.category === "STAY" ? "HOSPITALITY" : organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : organization.botProfile?.category || "BUSINESS_AI"),
-    db.onboardingActivity.findFirst({ where: { organizationId: organization.id, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } }),
-    db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } }),
-    readTenantCertification(property.slug)
-  ]) : [null, null, null, null, null, null];
-  const certificationStatus = property && certification ? tenantCertificationStatus(certification, await getTenantKnowledgeRevision(property.slug)) : { eligible: false };
-  const appearance = property ? await readKnowledgeSettings(property.slug) : null;
+  const memberRole = organization?.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase())?.role?.toUpperCase();
+  const onboardingData = organization && property && db ? await withTenantDatabaseContext({
+    kind: "tenant",
+    organizationId: organization.id,
+    actor: `onboarding-page:${user.username}`
+  }, async () => {
+    const [subscription, verification, testActivity, answerEvidence, certification, appearance] = await Promise.all([
+      getOrganizationSubscriptionAccess(organization.id),
+      getKnowledgeVerificationReadiness(property.id, organization.botProfile?.category === "STAY" ? "HOSPITALITY" : organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : organization.botProfile?.category || "BUSINESS_AI"),
+      db.onboardingActivity.findFirst({ where: { organizationId: organization.id, action: "WEBSITE_BOT_TEST_COMPLETED" }, select: { id: true } }),
+      db.sovereignAnswerEvidence.findFirst({ where: { propertyId: property.id }, select: { id: true } }),
+      readTenantCertification(property.slug),
+      readKnowledgeSettings(property.slug)
+    ]);
+    const certificationStatus = certification ? tenantCertificationStatus(certification, await getTenantKnowledgeRevision(property.slug)) : { eligible: false };
+    return { subscription, verification, testActivity, answerEvidence, certificationStatus, appearance };
+  }) : { subscription: null, verification: null, testActivity: null, answerEvidence: null, certificationStatus: { eligible: false }, appearance: null };
+  const { subscription, verification, testActivity, answerEvidence, certificationStatus, appearance } = onboardingData;
   return (
     <CustomerOnboarding
       initialOrganization={organization}

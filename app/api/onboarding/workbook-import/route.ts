@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { applyOnboardingWorkbook, parseOnboardingWorkbook } from "@/lib/services/onboarding-workbook-service";
 
 export async function POST(request: Request) {
@@ -12,7 +13,12 @@ export async function POST(request: Request) {
   try {
     if (action === "PREVIEW") return NextResponse.json({ ok: true, ...(await parseOnboardingWorkbook(file)).preview });
     if (action !== "APPLY") return NextResponse.json({ error: "Unknown import action." }, { status: 400 });
-    const result = await applyOnboardingWorkbook({ organizationId: access.organization.id, propertyId: access.propertyId, actorEmail: access.user.username, file });
+    const result = await withTenantDatabaseContext({ kind: "tenant", organizationId: access.organization.id, actor: `onboarding-workbook-import:${access.user.username}` }, () => applyOnboardingWorkbook({
+      organizationId: access.organization.id,
+      propertyId: access.propertyId,
+      actorEmail: access.user.username,
+      file
+    }));
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not import this workbook." }, { status: 400 });
