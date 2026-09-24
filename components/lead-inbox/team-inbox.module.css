@@ -22,6 +22,9 @@
 .notice {font-size:.875rem; line-height:1.6; padding:.6rem .25rem;}
 .workspace {border-radius:24px; box-shadow:0 8px 32px #00000009;}
 .workspace :global(.inbox-v2-grid) {grid-template-columns:190px minmax(250px, .8fr) minmax(0,1.65fr); min-height:0;}
+.workspace[data-service-desk=true] :global(.inbox-v2-grid) {grid-template-columns:minmax(290px,.72fr) minmax(0,1.9fr);}
+.workspace[data-service-desk=true] :global(#inbox-queues),.workspace[data-service-desk=true] :global(#inbox-profile) {display:none;}
+.workspace[data-service-desk=true] :global(#inbox-conversations)>div:last-child {max-height:720px;}
 .workspace :global(#inbox-profile) {grid-column:1/-1; border-top:1px solid #ddd;}
 .workspace :global(#inbox-reply) {min-height:620px; background:#f6f6f4;}
 .workspace :global(#inbox-reply)>div:nth-last-child(2) {background:#f6f6f4; max-height:60vh;}
@@ -41,6 +44,7 @@
  .workspace :global(.inbox-v2-grid)>* {display:none;}
  .workspace[data-view=queues] :global(#inbox-queues),.workspace[data-view=conversations] :global(#inbox-conversations),.workspace[data-view=profile] :global(#inbox-profile) {display:block;}
  .workspace[data-view=reply] :global(#inbox-reply) {display:flex; min-height:0;}
+ .workspace[data-service-desk=true][data-view=conversations] :global(#inbox-conversations) {display:block;}
  .workspace :global(#inbox-conversations)>div:last-child {max-height:65vh;}
 }
 @media(prefers-reduced-motion:reduce) {.workspace * {transition:none!important; scroll-behavior:auto!important;}}

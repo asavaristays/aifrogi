@@ -853,6 +853,17 @@ export function WhatsAppBotClient({
   const activeState = getConversationState(activeLead);
   const activeSource = getLeadSourceLabel(activeLead);
   const latestInbound = [...activeLead.transcript].reverse().find((message) => message.from === "guest");
+  const serviceDeskMode = teamMode && hotelMode && lockJourney && journeyView === "in-stay";
+  const serviceText = `${activeLead.intent} ${activeLead.stay} ${latestInbound?.text || ""}`.toLowerCase();
+  const serviceDepartment = /tap|water|electric|light|repair|broken|maintenance|ac\b|air condition/.test(serviceText)
+    ? "Maintenance"
+    : /towel|linen|clean|housekeep|toilet|room service/.test(serviceText)
+      ? "Housekeeping"
+      : /food|breakfast|lunch|dinner|restaurant|drink|tea|coffee/.test(serviceText)
+        ? "Food & Beverage"
+        : /safari|experience|tour|activity|pickup|transport|taxi/.test(serviceText)
+          ? "Experiences"
+          : "Front Desk";
   const aiSuggestedReply = hotelMode && journeyView === "in-stay"
     ? "Thank you. The front desk has received your request. We’ll coordinate with the right hotel team and update you here as soon as work begins."
     : !whatsappEnabled
@@ -866,8 +877,8 @@ export function WhatsAppBotClient({
   return (
     <div className="space-y-3">
       {journeyNavigation}
-    <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView}>
-      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}].map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
+    <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView} data-service-desk={serviceDeskMode}>
+      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{(serviceDeskMode?[{key:"conversations",label:"Requests"},{key:"reply",label:"Conversation"}]:[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}]).map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
       <nav className={`${teamMode ? "hidden" : "flex lg:hidden"} sticky top-0 z-20 gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2`} aria-label="Inbox mobile sections">
         {[
           { href: "#inbox-queues", label: "Queues" },
@@ -1060,7 +1071,11 @@ export function WhatsAppBotClient({
             </div>
           </div>
 
-          {activeIsWebsite ? <section className="border-b border-[var(--border)] bg-white px-5 py-4" aria-label="Lead qualification summary">
+          {serviceDeskMode ? <section className="border-b border-[var(--border)] bg-white px-5 py-3" aria-label="Service request summary">
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              {[["Room",activeLead.stay.replace("In-stay · Room ","")||"Not provided"],["Department",serviceDepartment],["Request status",activeState.label],["Last guest message",latestInbound?.time||"No message"]].map(([label,value])=><div key={label} className="rounded-lg border border-[#ebe5d8] bg-[#fbfaf7] px-3 py-2"><p className="text-[10px] font-bold uppercase tracking-[.12em] text-[#817a6d]">{label}</p><p className="mt-1 truncate text-sm font-semibold text-[#24211d]">{value}</p></div>)}
+            </div>
+          </section> : activeIsWebsite ? <section className="border-b border-[var(--border)] bg-white px-5 py-4" aria-label="Lead qualification summary">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.16em] text-[var(--text-muted)]">Agentic lead qualification</p><h3 className="mt-1 text-base font-semibold text-[var(--text)]">{activeLead.score >= 75 ? "Priority follow-up recommended" : activeLead.score >= 45 ? "Qualification in progress" : "Early enquiry"}</h3></div><div className="flex items-center gap-2"><span className={`status-pill ${activeLead.score >= 75 ? "status-warning" : "status-info"}`}>{activeLead.score}/100 · {activeLead.score >= 75 ? "Hot" : activeLead.score >= 45 ? "Warm" : "Cold"}</span>{activeLead.stage.toLowerCase() === "qualified" ? <span className="status-pill status-success">Qualified</span> : null}</div></div>
             <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-5">{[["Need",activeLead.intent],["Market",activeLead.stay],["Timeline",activeLead.party],["Budget",activeLead.budget],["Consented contact",activeLead.websiteSession?.consentedAt ? activeLead.websiteSession.contactValue || "Provided" : "Not provided"]].map(([label,value])=><div key={label} className="rounded-md bg-[var(--surface-soft)] px-3 py-2"><dt className="text-[10px] font-bold uppercase tracking-[.14em] text-[var(--text-muted)]">{label}</dt><dd className="mt-1 break-words font-semibold text-[var(--text)]">{value}</dd></div>)}</dl>
           </section> : null}
@@ -1163,6 +1178,11 @@ export function WhatsAppBotClient({
                 { label: "Trial intake", text: "Please share your business name, website, WhatsApp number, and the first workflow you want to improve during the trial." },
                 { label: "Book callback", text: "Please share a preferred time for a short callback. Our team will help map the right workflow and next step." },
                 { label: "Opt-out", text: "No problem. We will not send further campaign messages. You can message us anytime if you need help later." }
+              ] : serviceDeskMode ? [
+                { label: "Acknowledge", text: "Thank you. The front desk has received your request and is coordinating with the right team." },
+                { label: "Team dispatched", text: `${serviceDepartment} has been informed and is on the way. We’ll update you here.` },
+                { label: "Request update", text: "Our team is working on your request. Thank you for your patience—we’ll confirm as soon as it is completed." },
+                { label: "Check satisfaction", text: "Your request has been completed. Is everything satisfactory, or would you like further help?" }
               ] : [
                 { label: "Clarify requirement", text: "Please share the result you want to achieve and any important requirement I should consider." },
                 { label: "Request contact", text: "Please share your preferred contact details and consent for our team to follow up." },
@@ -1257,7 +1277,7 @@ export function WhatsAppBotClient({
           </div>
         </main>
 
-        <aside id="inbox-profile" className="inbox-v2-rail min-w-0 scroll-mt-12 border-t border-[var(--border)] bg-white lg:col-span-3">
+        {!serviceDeskMode ? <aside id="inbox-profile" className="inbox-v2-rail min-w-0 scroll-mt-12 border-t border-[var(--border)] bg-white lg:col-span-3">
           <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
             <div>
               <p className="text-sm font-semibold text-[var(--text)]">Lead intelligence</p>
@@ -1389,7 +1409,7 @@ export function WhatsAppBotClient({
               Check full record
             </Link>
           </div>
-        </aside>
+        </aside> : null}
       </div>
       {previewImage ? (
         <div
