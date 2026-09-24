@@ -34,3 +34,11 @@ test("homepage does not render a release marker inside the hero", () => {
   const homepage = read("app/page.tsx");
   assert.doesNotMatch(homepage, /Introducing \{PRODUCT_RELEASE\.name\}/);
 });
+
+test("homepage hero uses a static mobile poster instead of the blended video layer", () => {
+  const hero = read("components/marketing/hero-video.tsx");
+  const styles = read("components/marketing/sovereign-hero.module.css");
+  assert.match(hero, /max-width: 639px/);
+  assert.match(hero, /className=\{styles\.staticPoster\}/);
+  assert.match(styles, /@media \(min-width: 640px\) and \(prefers-reduced-motion: no-preference\)/);
+});

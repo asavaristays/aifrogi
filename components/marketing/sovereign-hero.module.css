@@ -1,5 +1,5 @@
 .video {
-  display: block;
+  display: none;
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 5;
@@ -7,7 +7,15 @@
   /* The source is black-backed; screen blending lets the hero glow show through. */
   mix-blend-mode: screen;
 }
+.staticPoster {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+}
 .motionControl {
+  display: none;
   position: absolute;
   bottom: 5%;
   right: 8%;
@@ -19,6 +27,11 @@
   color: #e2c66d;
   font-size: 11px;
   cursor: pointer;
+}
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .video { display: block; }
+  .staticPoster { display: none; }
+  .motionControl { display: block; }
 }
 @media (prefers-reduced-motion: reduce) {
   .motionControl { display: none; }

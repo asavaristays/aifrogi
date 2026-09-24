@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "./sovereign-hero.module.css";
 
@@ -17,7 +18,7 @@ export function HeroVideo() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce), (max-width: 639px)");
     const sync = () => {
       if (motion.matches) {
         video.pause();
@@ -35,6 +36,8 @@ export function HeroVideo() {
 
   return (
     <div className={`${styles.visual} relative mx-auto w-full max-w-[430px] lg:max-w-[510px]`}>
+      <Image className={styles.staticPoster} src="/media/hero/aifrogi-opening.jpg"
+        alt="Black and gold AiFrogi business bot" width={640} height={800} priority />
       <video ref={videoRef} className={styles.video} width={640} height={800}
         poster="/media/hero/aifrogi-opening.jpg" muted playsInline preload="none"
         aria-label="Animated black and gold AiFrogi business bot"
