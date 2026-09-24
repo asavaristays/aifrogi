@@ -71,11 +71,17 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
   const replyCursor = useRef("");
   const replyCursorId = useRef("");
   const [restored, setRestored] = useState(false);
+  // A browser can serve many hotel guests over time. Never restore one room's
+  // transcript into another approved stay merely because the property slug is
+  // the same. The signed stay capability supplies an opaque per-stay suffix.
+  const storageKey = residentMode && stayAccessToken
+    ? `aifrogi-resident:${slug}:${stayAccessToken.slice(-24)}`
+    : `aifrogi-visitor:${slug}`;
   const transcriptRef = useRef<HTMLElement | null>(null);
   const acknowledgedReplies = useRef(new Set<string>());
   useEffect(() => {
     try {
-      const saved = JSON.parse(sessionStorage.getItem(`aifrogi-visitor:${slug}`) || "null");
+      const saved = JSON.parse(sessionStorage.getItem(storageKey) || "null");
       if (saved?.sessionId && saved?.visitorToken) {
         setSessionId(saved.sessionId); setVisitorToken(saved.visitorToken);
         setConversationState("RECONNECTING");
@@ -87,11 +93,11 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
       }
     } catch { /* Storage may be blocked in third-party embeds. */ }
     setRestored(true);
-  }, [slug]);
+  }, [storageKey]);
   useEffect(() => {
     if (!restored || !visitorToken) return;
-    try { sessionStorage.setItem(`aifrogi-visitor:${slug}`, JSON.stringify({ sessionId, visitorToken, messages: messages.slice(-200) })); } catch { /* In-memory chat still works. */ }
-  }, [slug, sessionId, visitorToken, restored, messages]);
+    try { sessionStorage.setItem(storageKey, JSON.stringify({ sessionId, visitorToken, messages: messages.slice(-200) })); } catch { /* In-memory chat still works. */ }
+  }, [storageKey, sessionId, visitorToken, restored, messages]);
 
   useEffect(() => {
     if (!visitorToken || !transcriptRef.current) return;
@@ -182,7 +188,7 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
     if (window.parent !== window) window.parent.postMessage({ type: "AIFROGI_WIDGET_CLOSE", slug }, "*");
   }
   function startNewAiConversation() {
-    try { sessionStorage.removeItem(`aifrogi-visitor:${slug}`); } catch { /* A fresh in-memory session still works. */ }
+    try { sessionStorage.removeItem(storageKey); } catch { /* A fresh in-memory session still works. */ }
     setSessionId(crypto.randomUUID().replaceAll("-", ""));
     setVisitorToken("");
     setConversationState("AI_READY");

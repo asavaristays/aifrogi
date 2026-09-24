@@ -152,7 +152,7 @@ test("only launcher-mode embeds expose the minimize control", () => {
 test("a human-owned visitor can deliberately start a separate AI conversation", () => {
   const widget = readFileSync("components/website-bot/website-bot-embed.tsx", "utf8");
   assert.match(widget, /conversationState === "HUMAN_JOINED"[\s\S]*Start a new AI chat/);
-  assert.match(widget, /sessionStorage\.removeItem\(`aifrogi-visitor:\$\{slug\}`\)/);
+  assert.match(widget, /sessionStorage\.removeItem\(storageKey\)/);
   assert.match(widget, /setSessionId\(crypto\.randomUUID\(\)\.replaceAll\("-", ""\)\)/);
   assert.match(widget, /setVisitorToken\(""\)/);
   assert.match(widget, /setConversationState\("AI_READY"\)/);

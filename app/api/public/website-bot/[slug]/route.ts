@@ -133,6 +133,11 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
     return persistWebsiteTurn(async () => {
       if (priorToken) {
+        // A visitor capability is scoped to its approved stay, not merely the
+        // hotel. This prevents a shared browser from carrying one guest's
+        // conversation into the next room or registration.
+        const stayRows = await db.$queryRaw<Array<{ leadId: string | null }>>`SELECT "leadId" FROM "HotelGuestAccessRequest" WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() LIMIT 1`;
+        if (!stayRows[0]?.leadId || stayRows[0].leadId !== priorToken.leadId) return NextResponse.json({ error: "This conversation does not belong to the approved stay. Please reopen the guest QR." }, { status: 401, headers: responseHeaders });
         const lead = await db.lead.findFirst({ where: { id: priorToken.leadId, propertyId: property.id }, select: { id: true } });
         if (!lead) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
         await db.leadMessage.create({ data: { leadId: lead.id, sender: "GUEST", body: safety.storageText, sentAt: new Date() } });
