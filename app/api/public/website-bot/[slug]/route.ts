@@ -143,8 +143,14 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   // A human-owned conversation must not call the model or generate competing advice.
   if (sessionStatus === "HUMAN_JOINED" && priorToken) {
     return persistWebsiteTurn(async () => {
-    const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, message: safety.storageText, propertySlug: slug }).catch(() => null);
-    if (!captured?.lead || captured.lead.id !== priorToken.leadId || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Your message could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
+    const saved = await db.$transaction(async (tx) => {
+      const lead = await tx.lead.findFirst({ where: { id: priorToken.leadId, propertyId: property.id }, select: { id: true } });
+      if (!lead) return false;
+      await tx.leadMessage.create({ data: { leadId: lead.id, sender: "GUEST", body: safety.storageText, sentAt: new Date() } });
+      await tx.lead.update({ where: { id: lead.id }, data: { lastActivityAt: new Date() } });
+      return true;
+    }).catch(() => false);
+    if (!saved) return NextResponse.json({ error: "Your message could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
     return NextResponse.json({ answer: "Your message has been saved in this conversation for the human team. AI replies are paused while they assist you.", grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_JOINED", handoffAvailable: handoffEnabled, messageAccepted: true }, { headers: responseHeaders });
     });
   }
