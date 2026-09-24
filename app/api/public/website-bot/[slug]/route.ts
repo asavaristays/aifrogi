@@ -31,6 +31,7 @@ import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sov
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
 import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking, resolveApprovedStay } from "@/lib/stay-question-routing";
+import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -89,10 +90,11 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
   if (!replyEntitlement.allowed) return NextResponse.json({ error: "This AI Bot has used its available reply credits. The business account owner can add credits or activate a plan in Billing." }, { status: 402, headers: responseHeaders });
 
-  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string } | null;
+  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string; stayAccessToken?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
+  if (payload?.stayAccessToken && !verifyHotelGuestStayToken(payload.stayAccessToken, slug)) return NextResponse.json({ error: "Your approved in-stay access has expired. Please scan the hotel QR and request access again." }, { status: 401, headers: responseHeaders });
   const consentedContact = payload?.consent ? normalizeConsentedLeadPhone(payload.contact) : null;
   const consentedName = payload?.consent ? String(payload.name || "").trim().slice(0, 100) : "";
   if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });

@@ -177,6 +177,7 @@ model Property {
   readinessScans         ReadinessScan[]
   readinessWorkItems     ReadinessWorkItem[]
   readinessVerifications ReadinessVerification[]
+  hotelGuestAccess       HotelGuestAccessRequest[]
 
   @@index([organizationId])
 }
@@ -604,6 +605,7 @@ model BotProfile {
   responseSlaMinutes     Int              @default(60)
   reminderPercent        Int              @default(50)
   fallbackEnabled        Boolean          @default(false)
+  stayAccessEnabled      Boolean          @default(false)
   safeFallbackMessage    String?          @db.Text
   kbGateVersion          String?
   kbCoverageMinimum      Int              @default(80)
@@ -617,6 +619,32 @@ model BotProfile {
   configuredBy           String?
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
+}
+
+model HotelGuestAccessRequest {
+  id                String    @id
+  propertyId        String
+  property          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  requestTokenHash  String    @unique
+  guestName         String
+  roomNumber        String
+  requestedCheckIn  DateTime
+  requestedCheckOut DateTime
+  approvedCheckOut  DateTime?
+  status            String    @default("PENDING")
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  rejectionReason   String?
+  activatedAt       DateTime?
+  revokedAt         DateTime?
+  revokedBy         String?
+  leadId            String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([propertyId, status, createdAt])
+  @@index([approvedCheckOut, status])
+  @@index([leadId])
 }
 
 model BotConnectorConfiguration {

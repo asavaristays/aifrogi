@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import QRCode from "qrcode";
 import { redirect } from "next/navigation";
 import { TopBar } from "@/components/layout/top-bar";
 import { getCurrentClientAccess } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
+import { HotelGuestAccessManager } from "@/components/in-stay/hotel-guest-access-manager";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -18,13 +18,8 @@ export default async function InStayPage() {
   if (!property) redirect("/setup");
 
   const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://app.aifrogi.com").replace(/\/$/, "");
-  const guestUrl = `${baseUrl}/bot/${encodeURIComponent(property.slug)}?entry=in-stay`;
-  const qrDataUrl = await QRCode.toDataURL(guestUrl, {
-    width: 720,
-    margin: 2,
-    errorCorrectionLevel: "H",
-    color: { dark: "#111111", light: "#FFFFFF" }
-  });
+  const guestUrl = `${baseUrl}/stay/${encodeURIComponent(property.slug)}`;
+  const qrUrl = `/api/hotelgpt-stay/qr?propertySlug=${encodeURIComponent(property.slug)}`;
   const profile = access.organization.botProfile;
   const enabled = profile.status === "LIVE" && profile.channels.includes("WEBSITE");
 
@@ -42,7 +37,7 @@ export default async function InStayPage() {
             </div>
           </div>
           <div className="rounded-2xl bg-white p-5 text-center text-[#111]">
-            <Image src={qrDataUrl} alt={`In-stay QR code for ${property.name}`} width={720} height={720} unoptimized className="mx-auto h-auto w-full max-w-[280px]" />
+            <Image src={qrUrl} alt={`In-stay QR code for ${property.name}`} width={720} height={720} unoptimized className="mx-auto h-auto w-full max-w-[280px]" />
             <p className="mt-3 text-sm font-bold">Scan to ask the hotel</p>
             <p className="mt-1 text-xs text-black/55">No password or guest data is stored in the QR.</p>
           </div>
@@ -56,7 +51,7 @@ export default async function InStayPage() {
           <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Use the QR at reception, in rooms, guest directories or welcome material.</p>
           <div className="mt-5 break-all rounded-xl bg-[#f5f1e6] p-4 font-mono text-xs text-[#5f4b18]">{guestUrl}</div>
           <div className="mt-5 flex flex-wrap gap-3">
-            <a href={qrDataUrl} download={`${property.slug}-in-stay-qr.png`} className="inline-flex min-h-11 items-center rounded-md bg-[var(--gold-600)] px-5 text-sm font-bold text-white">Download QR code</a>
+            <a href={`${qrUrl}&download=1`} className="inline-flex min-h-11 items-center rounded-md bg-[var(--gold-600)] px-5 text-sm font-bold text-white">Download QR code</a>
             <a href={guestUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center rounded-md border border-black/15 px-5 text-sm font-bold">Test guest view</a>
           </div>
         </article>
@@ -74,6 +69,7 @@ export default async function InStayPage() {
           <Link href="/knowledge" className="mt-5 inline-flex text-sm font-bold text-[var(--primary-strong)]">Review hotel intelligence →</Link>
         </article>
       </section>
+      <HotelGuestAccessManager propertySlug={property.slug} canManage={["OWNER", "ADMIN"].includes(access.role)} />
     </div>
   </div>;
 }
