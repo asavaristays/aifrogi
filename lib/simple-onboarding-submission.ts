@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { sendSupportTicketMail } from "@/lib/support-mail";
 
 export async function submitSimpleOnboardingForReview(input: { organizationId: string; actorEmail: string }) {
   const db = getDb();
@@ -23,5 +24,28 @@ export async function submitSimpleOnboardingForReview(input: { organizationId: s
       create: { organizationId: input.organizationId, reference: reviewReference, subject: `${organizationName} is ready for onboarding approval`, category: "ONBOARDING", priority: "HIGH", status: "OPEN", description: `The client completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Super Admin must review the website and knowledge, run technical checks and approve or return one clear correction request.`, createdByEmail: input.actorEmail, lastActivityBy: "CUSTOMER" }
     })
   ]);
+  const notificationAlreadySent = await db.onboardingActivity.findFirst({
+    where: { organizationId: input.organizationId, action: "SUPER_ADMIN_ONBOARDING_EMAIL_SENT" },
+    select: { id: true }
+  });
+  if (!notificationAlreadySent) {
+    const adminEmail = process.env.AIFROGI_ADMIN_EMAIL?.trim() || "info@aifrogi.com";
+    const mail = await sendSupportTicketMail({
+      to: adminEmail,
+      reference: reviewReference,
+      subject: `${organizationName} is ready for onboarding approval`,
+      heading: "New client onboarding is ready for review",
+      body: `${organizationName} completed the three-step onboarding and confirmed ${confirmedAnswers} workbook answers. Review the website and knowledge, complete technical checks, then approve the client or return one clear correction request.`,
+      actionLabel: "Review onboarding request"
+    });
+    await db.onboardingActivity.create({
+      data: {
+        organizationId: input.organizationId,
+        actorEmail: input.actorEmail,
+        action: mail.error ? "SUPER_ADMIN_ONBOARDING_EMAIL_FAILED" : "SUPER_ADMIN_ONBOARDING_EMAIL_SENT",
+        detail: mail.error ? `Super Admin email delivery failed: ${mail.error}` : `Super Admin notification sent to ${adminEmail}. Message ID: ${mail.messageId || "unavailable"}.`
+      }
+    });
+  }
   return db.organization.findUnique({ where: { id: input.organizationId }, include: { botProfile: true, properties: true, botConnectors: true } });
 }
