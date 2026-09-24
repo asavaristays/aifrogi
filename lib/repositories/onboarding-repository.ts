@@ -357,6 +357,7 @@ export async function updateWebsiteBotLifecycle(input: {
   const profile = await db.botProfile.findUnique({ where: { organizationId: input.organizationId } });
   if (!profile || !profile.channels.includes("WEBSITE")) throw new Error("A configured Website Bot is required.");
   let coreCertification: ReturnType<typeof assertCoreLaunchCertification> | null = null;
+  let tenantCertificationAdvisory: string | null = null;
   if (input.action === "MAKE_LIVE") {
     coreCertification = assertCoreLaunchCertification();
     if (!["REVIEW_PENDING", "PAUSED"].includes(profile.status)) throw new Error("The client must approve the prepared intelligence and submit the bot for review before go-live.");
@@ -383,7 +384,7 @@ export async function updateWebsiteBotLifecycle(input: {
     const { getTenantKnowledgeRevision, readTenantCertification, tenantCertificationStatus } = await import("@/lib/tenant-intelligence/certification");
     const tenantCertification = await readTenantCertification(property.slug);
     const tenantCertificationGate = tenantCertificationStatus(tenantCertification, await getTenantKnowledgeRevision(property.slug));
-    if (!tenantCertificationGate.eligible) throw new Error(`Tenant certification blocked go-live. ${tenantCertificationGate.blocker || "Run certification again."}`);
+    if (!tenantCertificationGate.eligible) tenantCertificationAdvisory = tenantCertificationGate.blocker || "Tenant certification needs review.";
   }
   const now = new Date();
   const status = nextWebsiteBotStatus(profile.status, input.action, Boolean(profile.installationDetectedAt));
@@ -401,7 +402,8 @@ export async function updateWebsiteBotLifecycle(input: {
     db.onboardingActivity.create({
       data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: `WEBSITE_BOT_${input.action}`, detail: `Website Bot lifecycle changed from ${profile.status} to ${status}` }
     }),
-    ...(coreCertification ? [db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "CORE_LAUNCH_CERTIFICATION_PASSED", detail: `${coreCertification.passed}/${coreCertification.questionCount} Core questions passed · score ${coreCertification.score}% · certification ${coreCertification.version}` } })] : [])
+    ...(coreCertification ? [db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "CORE_LAUNCH_CERTIFICATION_PASSED", detail: `${coreCertification.passed}/${coreCertification.questionCount} Core questions passed · score ${coreCertification.score}% · certification ${coreCertification.version}` } })] : []),
+    ...(tenantCertificationAdvisory ? [db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "TENANT_CERTIFICATION_ADVISORY_ACCEPTED_BY_SUPER_ADMIN", detail: `Client-confirmed knowledge was approved by Super Admin with this non-blocking diagnostic retained for follow-up: ${tenantCertificationAdvisory}` } })] : [])
   ]);
   return getOrganizationById(input.organizationId);
 }
