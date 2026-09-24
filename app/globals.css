@@ -461,6 +461,8 @@ a[class~="bg-[#8a6a16]"]:hover { color: #fff; }
 .dark-primary-action:focus-visible,
 a[class~="bg-[#101010]"],
 button[class~="bg-[#101010]"],
+a[class~="bg-[#171717]"],
+button[class~="bg-[#171717]"],
 a[class~="bg-black"],
 button[class~="bg-black"] {
   color: #fff !important;
