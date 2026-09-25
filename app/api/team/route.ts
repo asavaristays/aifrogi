@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
+import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
 import { inviteTeamMember, listTeamMembers, updateTeamMember } from "@/lib/repositories/team-repository";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
@@ -9,7 +9,8 @@ export async function GET() {
   const access = await getCurrentClientAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
-  return NextResponse.json({ members: await listTeamMembers(access.organization.id) });
+  const members = await withClientDatabaseContext(access, "team-list", () => listTeamMembers(access.organization.id));
+  return NextResponse.json({ members });
 }
 
 export async function POST(request: Request) {
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
   if (!allowance.allowed) return NextResponse.json({ error: allowance.error }, { status: 402 });
   const payload = await request.json().catch(() => null) as { email?: string; name?: string; role?: string; department?: string } | null;
   try {
-    const invitation = await inviteTeamMember({ organizationId: access.organization.id, email: payload?.email || "", name: payload?.name || "", role: payload?.role || "AGENT", department: payload?.department, invitedBy: access.user.username });
+    const invitation = await withClientDatabaseContext(access, "team-invite", () => inviteTeamMember({ organizationId: access.organization.id, email: payload?.email || "", name: payload?.name || "", role: payload?.role || "AGENT", department: payload?.department, invitedBy: access.user.username }));
     const appUrl = process.env.AIFROGI_APP_URL?.trim() || new URL(request.url).origin;
     const invitationUrl = `${appUrl.replace(/\/+$/, "")}/activate?token=${encodeURIComponent(invitation.token)}`;
     let emailSent = false;
@@ -50,7 +51,7 @@ export async function PATCH(request: Request) {
   if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
   const payload = await request.json().catch(() => null) as { memberId?: string; role?: string; status?: string; department?: string | null } | null;
   try {
-    const member = await updateTeamMember({ organizationId: access.organization.id, memberId: payload?.memberId || "", role: payload?.role, status: payload?.status, department: payload?.department });
+    const member = await withClientDatabaseContext(access, "team-update", () => updateTeamMember({ organizationId: access.organization.id, memberId: payload?.memberId || "", role: payload?.role, status: payload?.status, department: payload?.department, actorEmail: access.user.username }));
     return NextResponse.json({ ok: true, member });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update this team member." }, { status: 400 });

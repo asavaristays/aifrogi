@@ -27,7 +27,8 @@ export default async function InStayPage() {
   return <div className="min-h-screen bg-[var(--background)]">
     <TopBar title="In-stay" subtitle="Guest QR access for HotelGPT" />
     <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-      <InStayWorkspace propertySlug={property.slug} view="overview" />
+      <InStayWorkspace propertySlug={property.slug} view="overview" canManage={["OWNER", "ADMIN"].includes(access.role)} />
+      {["OWNER", "ADMIN"].includes(access.role) ? <>
       <section className="overflow-hidden rounded-3xl border border-[#d8c278] bg-[#080808] text-white shadow-[0_24px_70px_rgba(16,16,16,.14)]">
         <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_340px] lg:items-center">
           <div>
@@ -72,6 +73,7 @@ export default async function InStayPage() {
         </article>
       </section>
       <HotelGuestAccessManager propertySlug={property.slug} canManage={["OWNER", "ADMIN"].includes(access.role)} />
+      </> : null}
     </div>
   </div>;
 }

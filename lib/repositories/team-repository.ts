@@ -161,7 +161,7 @@ export async function verifyTeamMemberCredential(email: string, password: string
   return { username: member.email, label: member.name || "AiFrogi Team Member", workspaceRole: normalizeRole(member.role) };
 }
 
-export async function updateTeamMember(input: { organizationId: string; memberId: string; role?: string; status?: string; department?: string | null }) {
+export async function updateTeamMember(input: { organizationId: string; memberId: string; role?: string; status?: string; department?: string | null; actorEmail?: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const member = await db.organizationMember.findFirst({ where: { id: input.memberId, organizationId: input.organizationId } });
@@ -176,5 +176,21 @@ export async function updateTeamMember(input: { organizationId: string; memberId
   const department = nextRole === "AGENT" ? input.department === undefined ? normalizeInStayDepartment(existingScope[0]?.department) : normalizeInStayDepartment(input.department) : null;
   const updated = await db.organizationMember.update({ where: { id: member.id }, data: { role: nextRole, status: nextStatus }, select: { id: true, email: true, name: true, role: true, status: true, joinedAt: true, lastLoginAt: true } });
   if (input.department !== undefined || nextRole !== "AGENT") await db.$executeRaw`UPDATE "OrganizationMember" SET "department"=${department} WHERE id=${member.id} AND "organizationId"=${input.organizationId}`;
+  if (nextStatus === "SUSPENDED" && member.status !== "SUSPENDED") {
+    await db.userSession.updateMany({
+      where: { organizationId: input.organizationId, email: member.email.toLowerCase(), revokedAt: null },
+      data: { revokedAt: new Date(), revokedBy: input.actorEmail || "workspace-admin" }
+    });
+  }
+  await db.platformAuditLog.create({ data: {
+    organizationId: input.organizationId,
+    actorEmail: input.actorEmail || "workspace-admin",
+    actorRole: "WORKSPACE_ADMIN",
+    action: "TEAM_MEMBER_ACCESS_UPDATED",
+    targetType: "OrganizationMember",
+    targetId: member.id,
+    summary: `${member.email} access updated to ${nextRole} / ${nextStatus}`,
+    metadata: { previousRole: member.role, previousStatus: member.status, role: nextRole, status: nextStatus, department }
+  } });
   return { ...updated, department };
 }
