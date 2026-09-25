@@ -9,8 +9,8 @@ test("HotelGPT exposes a Manage in-stay workspace with a safe guest QR", () => {
   const nav = source("components/layout/side-nav.tsx");
   const items = source("data/mock.ts");
   const page = source("app/(app)/in-stay/page.tsx");
-  assert.match(items, /href: "\/in-stay", label: "In-stay"/);
-  assert.match(nav, /item\.href !== "\/in-stay" \|\| botCategory === "STAY"/);
+  assert.match(items, /href: "\/in-stay", label: "In-Stay Operations"/);
+  assert.match(nav, /!item\.href\.startsWith\("\/in-stay"\) \|\| botCategory === "STAY"/);
   assert.match(page, /category !== "STAY"/);
   assert.match(page, /\/stay\/\$\{encodeURIComponent\(property\.slug\)\}/);
   assert.match(page, /\/api\/hotelgpt-stay\/qr/);
@@ -40,7 +40,7 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(embed, /aifrogi-resident:\$\{slug\}/);
   const publicBot = source("app/api/public/website-bot/[slug]/route.ts");
   assert.match(publicBot, /stayRows\[0\]\.leadId !== priorToken\.leadId/);
-  for (const label of ["Overview", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
+  for (const label of ["Operations", "Service inbox", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
   for (const step of ["Received", "Acknowledged", "In progress", "Resolved", "Feedback"]) assert.match(workspace, new RegExp(step));
   assert.match(workspace, /Request → Resolution → Feedback/);
   assert.match(workspace, /Start work/);
@@ -60,4 +60,11 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   const cases = source("app/api/hotelgpt-stay/cases/route.ts");
   assert.match(access, /hasTrustedSameOrigin\(request\)/);
   assert.match(cases, /hasTrustedSameOrigin\(request\)/);
+  assert.match(cases, /In-stay department:/);
+  assert.match(cases, /In-stay owner:/);
+  assert.match(cases, /slaState/);
+  assert.match(cases, /access\.role === "VIEWER"/);
+  assert.match(workspace, /Take ownership/);
+  assert.match(workspace, /Route to/);
+  assert.match(workspace, /Room \{item\.room\}/);
 });
