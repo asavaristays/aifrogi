@@ -32,6 +32,7 @@ import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-con
 import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
 import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking, resolveApprovedStay } from "@/lib/stay-question-routing";
 import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
+import { matchPublishedHotelFlow } from "@/lib/hotelgpt-flow-library";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -124,7 +125,14 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   })).map((item) => item.body) : [];
   const safety = guardWebsiteVisitorMessage(message);
   const handoffEnabled = profile.humanHandoffEnabled === true;
-  const inStayAcknowledgement = "Thank you. Our front desk has received your request and will start resolving it shortly. We will update you here.";
+  const knowledgeSettings = await readKnowledgeSettings(slug);
+  const inStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "IN_STAY", message) : null;
+  const inStayAcknowledgement = inStayFlow?.flow.templateKey === "HOTEL_REPORT_PROBLEM"
+    ? "Your room issue has been reported to the front desk and marked for priority review. We will update you here."
+    : inStayFlow?.flow.templateKey === "HOTEL_RESOLUTION_FEEDBACK"
+      ? "The front desk has received your request for an update and will confirm the current status here."
+      : "Thank you. Our front desk has received your request and will start resolving it shortly. We will update you here.";
+  const inStaySmartContent = inStayFlow ? { flowId:inStayFlow.flow.id,journey:"IN_STAY",kind:inStayFlow.flow.templateKey,statusLabel:"Received",quickReplies:inStayFlow.flow.templateKey==="HOTEL_REPORT_PROBLEM"?["Add more details","This is urgent","Talk to front desk"]:["Add another item","Talk to front desk"] } : undefined;
 
   // In-stay service is deliberately isolated from pre-stay sales knowledge.
   // During the human-first launch, every resident message becomes a front-desk
@@ -146,7 +154,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
         await db.lead.update({ where: { id: lead.id }, data: { intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
         await db.websiteVisitorSession.update({ where: { leadId: lead.id }, data: { status: "HUMAN_REQUESTED" } });
         await ensureWebsiteHandover({ propertyId: property.id, leadId: lead.id, responseSlaMinutes: profile.responseSlaMinutes });
-        return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: !shouldAcknowledge }, { headers: responseHeaders });
+        return NextResponse.json({ answer: inStayAcknowledgement, smartContent:inStaySmartContent, grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: !shouldAcknowledge }, { headers: responseHeaders });
       }
 
       const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, phone: stayCapability.phoneNumber, profileName: stayCapability.guestName, message: safety.storageText, aiReply: inStayAcknowledgement, propertySlug: slug }).catch(() => null);
@@ -161,7 +169,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
         create: { propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt },
         update: { capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt, revokedAt: null }
       });
-      return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true }, { headers: responseHeaders });
+      return NextResponse.json({ answer: inStayAcknowledgement, smartContent:inStaySmartContent, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true }, { headers: responseHeaders });
     });
   }
   const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
@@ -195,7 +203,6 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     });
   }
   const businessName = property.organization?.name || "the business";
-  const knowledgeSettings = await readKnowledgeSettings(slug);
   const bookingLink = approvedBookingLink(knowledgeSettings.widgetMenu);
   const bookingChoices = (bookingLink?.children || []).map((item) => {
     const [destination, stay] = item.label.split("|").map((value) => value.trim());
@@ -466,7 +473,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   }
 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
-  return NextResponse.json({ answer, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  const preStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "PRE_STAY", message) : null;
+  const preStaySmartContent = preStayFlow ? { flowId:preStayFlow.flow.id,journey:"PRE_STAY",kind:preStayFlow.flow.templateKey,quickReplies:preStayFlow.flow.templateKey==="HOTEL_DISCOVER"?["Rooms and stays","Experiences","Plan my arrival"]:preStayFlow.flow.templateKey==="HOTEL_PLAN_ARRIVAL"?["Check-in time","Directions","Request a transfer"]:["Share dates","Compare stays","Talk to reservations"] } : undefined;
+  return NextResponse.json({ answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
 }
 

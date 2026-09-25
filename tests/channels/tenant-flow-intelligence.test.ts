@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 test("every governed flow template answers before offering human or callback help", () => {
-  assert.equal(TENANT_FLOW_TEMPLATES.length, 6);
+  assert.equal(TENANT_FLOW_TEMPLATES.length, 12);
   for (const template of TENANT_FLOW_TEMPLATES.filter(item => !["CUSTOM_FLOW", "COMMERCIAL_NEGOTIATION"].includes(item.key))) {
     const flow = newTenantFlow(template.key);
     assert.deepEqual(flow.steps.map(step => step.type), ["MENU_TRIGGER", "TENANT_ANSWER", "CONDITION", "END", "HUMAN_HANDOVER", "CAPTURE_CONTACT"]);
@@ -43,7 +43,7 @@ test("journey check detects an orphan node before a flow is enabled", () => {
 });
 
 test("AI Bot families receive category-relevant flow recommendations", () => {
-  assert.deepEqual(recommendedFlowTemplateKeys("STAY"), ["BOOKING_REQUEST", "PRICING_ENQUIRY", "COMMERCIAL_NEGOTIATION", "SUPPORT_HANDOVER"]);
+  assert.deepEqual(recommendedFlowTemplateKeys("STAY"), ["HOTEL_DISCOVER", "HOTEL_FIND_STAY", "HOTEL_PLAN_ARRIVAL", "HOTEL_SERVICE_REQUEST", "HOTEL_REPORT_PROBLEM", "HOTEL_RESOLUTION_FEEDBACK"]);
   assert.deepEqual(recommendedFlowTemplateKeys("BUSINESS_AI"), ["SERVICE_ADVISOR", "PRICING_ENQUIRY", "SUPPORT_HANDOVER"]);
 });
 

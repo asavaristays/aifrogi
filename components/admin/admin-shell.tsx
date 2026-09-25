@@ -15,6 +15,7 @@ const navigation = [
   { label: "Capacity Advisor", href: "/admin/capacity", icon: "bar-chart-3" as const },
   { label: "Knowledge", href: "/admin/knowledge", icon: "file-text" as const },
   { label: "Intelligence Operations", href: "/admin/sovereign-intelligence", icon: "plug" as const },
+  { label: "Flow Library", href: "/admin/flow-library", icon: "git-branch" as const },
   { label: "TypeSafe pilot", href: "/admin/typesafe", icon: "plug" as const },
   { label: "Support", href: "/admin/support", icon: "help-circle" as const },
   { label: "Audit trail", href: "/admin/audit", icon: "refresh-cw" as const }

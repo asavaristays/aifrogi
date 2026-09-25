@@ -49,7 +49,7 @@ test("client submission is required before initial Super Admin go-live", () => {
   assert.match(setup, /BotReviewSubmission/);
   const onboarding = readFileSync("components/onboarding/customer-onboarding.tsx", "utf8");
   assert.match(onboarding, /BotReviewSubmission/);
-  assert.match(onboarding, /INSTALLATION_READY/);
+  assert.match(onboarding, /\["REVIEW_PENDING", "LIVE", "PAUSED"\]\.includes\(status\)/);
   assert.match(onboarding, /REVIEW_PENDING/);
 });
 
@@ -114,7 +114,7 @@ test("client submission presents an evidence-led demonstration gate", () => {
   assert.match(review, /Website pages/);
   assert.match(review, /Conflicting facts/);
   assert.match(review, /Knowledge freshness/);
-  assert.match(review, /const demoReady = ready && tested && certified/);
+  assert.match(review, /const demoReady = intakeOnly \? ready && blockers\.length === 0 : ready && tested && certified && blockers\.length === 0/);
 });
 
 test("JavaScript delivery uses a responsive launcher and trusted minimize message", () => {
@@ -195,13 +195,13 @@ test("widget theme flows from Setup to embedded and standalone bots", () => {
   assert.match(widget, /data-widget-theme=\{widgetTheme\}/);
 });
 
-test("client sidebar keeps Team Inbox visible for daily operations", () => {
+test("client sidebar keeps separate Pre-Stay and In-Stay inboxes visible for daily operations", () => {
   const navigation = readFileSync("data/mock.ts", "utf8");
   const sidebar = readFileSync("components/layout/side-nav.tsx", "utf8");
-  assert.match(navigation, /href: "\/team-inbox", label: "Team Inbox"/);
+  assert.match(navigation, /href: "\/team-inbox", label: "Pre-Stay Inbox"/);
+  assert.match(navigation, /href: "\/in-stay\/inbox", label: "In-Stay Inbox"/);
   assert.ok(navigation.indexOf('href: "/contacts"') < navigation.indexOf('href: "/team-inbox"'));
-  assert.match(sidebar, /hrefs: \["\/dashboard", "\/contacts", "\/team-inbox"\]/);
-  assert.match(sidebar, /\["\/dashboard", "\/team-inbox", "\/contacts", "\/knowledge"/);
+  assert.match(sidebar, /hrefs: \["\/dashboard", "\/team-inbox", "\/in-stay\/inbox", "\/in-stay", "\/contacts"\]/);
 });
 
 test("optional welcome highlight flows from Setup to every website widget", () => {

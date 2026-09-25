@@ -1,4 +1,4 @@
-export type TenantFlowTemplateKey = "CUSTOM_FLOW" | "SERVICE_ADVISOR" | "PRICING_ENQUIRY" | "BOOKING_REQUEST" | "SUPPORT_HANDOVER" | "COMMERCIAL_NEGOTIATION";
+export type TenantFlowTemplateKey = "CUSTOM_FLOW" | "SERVICE_ADVISOR" | "PRICING_ENQUIRY" | "BOOKING_REQUEST" | "SUPPORT_HANDOVER" | "COMMERCIAL_NEGOTIATION" | "HOTEL_DISCOVER" | "HOTEL_FIND_STAY" | "HOTEL_PLAN_ARRIVAL" | "HOTEL_SERVICE_REQUEST" | "HOTEL_REPORT_PROBLEM" | "HOTEL_RESOLUTION_FEEDBACK";
 export type TenantFlowStatus = "DRAFT" | "PUBLISHED" | "PAUSED";
 export type TenantFlowNodeType = "MENU_TRIGGER" | "TENANT_ANSWER" | "MESSAGE" | "CONDITION" | "VERIFY_RATE" | "NEGOTIATE_RATE" | "CREATE_QUOTE" | "CAPTURE_CONTACT" | "HUMAN_HANDOVER" | "END";
 export type TenantFlowNode = { id: string; type: TenantFlowNodeType; label: string; instruction?: string; nextId?: string; alternateNextId?: string; x?: number; y?: number };
@@ -16,13 +16,13 @@ export type NegotiationPolicy = {
   quoteExpiryMinutes: number;
   approvalMode: "AUTO_ABOVE_FLOOR" | "HUMAN_ALL";
 };
-export type TenantFlowDefinition = { id: string; name: string; templateKey: TenantFlowTemplateKey; status: TenantFlowStatus; version: number; menuLabel: string; openingQuestion: string; fallbackMode: "HUMAN_OR_CALLBACK"; steps: TenantFlowNode[]; negotiationPolicy?: NegotiationPolicy; createdAt: string; updatedAt: string; publishedAt?: string };
+export type TenantFlowDefinition = { id: string; name: string; templateKey: TenantFlowTemplateKey; status: TenantFlowStatus; version: number; menuLabel: string; openingQuestion: string; fallbackMode: "HUMAN_OR_CALLBACK"; steps: TenantFlowNode[]; negotiationPolicy?: NegotiationPolicy; botCategory?: "STAY"; journey?: "PRE_STAY" | "IN_STAY"; access?: "PUBLIC" | "VERIFIED_STAY"; templateVersion?: number; originTemplateId?: string; requiredKnowledge?: string[]; requiredConnector?: string | null; department?: string | null; smartOutputs?: string[]; createdAt: string; updatedAt: string; publishedAt?: string };
 
 export type TenantBotFamily = "BUSINESS_AI" | "STAY" | "PINGBOOK" | "FLOWCART" | "RESTAURANT" | "REAL_ESTATE" | "EDUCATION" | "CUSTOM";
 
 const FAMILY_FLOW_RECOMMENDATIONS: Record<TenantBotFamily, TenantFlowTemplateKey[]> = {
   BUSINESS_AI: ["SERVICE_ADVISOR", "PRICING_ENQUIRY", "SUPPORT_HANDOVER"],
-  STAY: ["BOOKING_REQUEST", "PRICING_ENQUIRY", "COMMERCIAL_NEGOTIATION", "SUPPORT_HANDOVER"],
+  STAY: ["HOTEL_DISCOVER", "HOTEL_FIND_STAY", "HOTEL_PLAN_ARRIVAL", "HOTEL_SERVICE_REQUEST", "HOTEL_REPORT_PROBLEM", "HOTEL_RESOLUTION_FEEDBACK"],
   PINGBOOK: ["BOOKING_REQUEST", "SERVICE_ADVISOR", "SUPPORT_HANDOVER"],
   FLOWCART: ["PRICING_ENQUIRY", "BOOKING_REQUEST", "SUPPORT_HANDOVER"],
   RESTAURANT: ["BOOKING_REQUEST", "SERVICE_ADVISOR", "SUPPORT_HANDOVER"],
@@ -71,7 +71,13 @@ export const TENANT_FLOW_TEMPLATES: Array<{ key: TenantFlowTemplateKey; name: st
   { key: "PRICING_ENQUIRY", name: "Pricing enquiry", menuLabel: "Pricing and quotation", openingQuestion: "Please explain the available pricing and quotation process.", description: "Uses approved prices or rules; otherwise routes to the team without inventing a figure." },
   { key: "BOOKING_REQUEST", name: "Booking request", menuLabel: "Book or schedule", openingQuestion: "I would like to book or schedule the appropriate service.", description: "Answers prerequisites first and then enables a consented follow-up." },
   { key: "SUPPORT_HANDOVER", name: "Customer support", menuLabel: "Get customer support", openingQuestion: "I need help from customer support with an existing enquiry.", description: "Attempts a verified answer and provides a human or callback path when unresolved." }
-  ,{ key: "COMMERCIAL_NEGOTIATION", name: "Rate negotiation", menuLabel: "Request best available rate", openingQuestion: "I would like to check whether a better approved rate is available for my selected stay.", description: "Verifies the live rate, applies the tenant’s private boundary and escalates requests outside authority." }
+  ,{ key: "COMMERCIAL_NEGOTIATION", name: "Rate negotiation", menuLabel: "Request best available rate", openingQuestion: "I would like to check whether a better approved rate is available for my selected stay.", description: "Verifies the live rate, applies the tenant’s private boundary and escalates requests outside authority." },
+  { key:"HOTEL_DISCOVER",name:"Discover hotel",menuLabel:"Discover the hotel",openingQuestion:"Please help me discover the hotel, its character and the experiences it offers.",description:"HotelGPT · public Pre-Stay discovery." },
+  { key:"HOTEL_FIND_STAY",name:"Find a stay",menuLabel:"Find a stay",openingQuestion:"Help me find the right stay. I can share my destination, dates and number of guests.",description:"HotelGPT · public Pre-Stay conversion." },
+  { key:"HOTEL_PLAN_ARRIVAL",name:"Plan arrival",menuLabel:"Plan my arrival",openingQuestion:"Help me plan my arrival, including check-in, directions, transport or an early-arrival request.",description:"HotelGPT · public Pre-Stay arrival guidance." },
+  { key:"HOTEL_SERVICE_REQUEST",name:"Request hotel service",menuLabel:"Request hotel service",openingQuestion:"I need a hotel service for my room.",description:"HotelGPT · verified In-Stay service." },
+  { key:"HOTEL_REPORT_PROBLEM",name:"Report a problem",menuLabel:"Report a problem",openingQuestion:"I need to report a problem with my room or stay.",description:"HotelGPT · verified In-Stay complaint." },
+  { key:"HOTEL_RESOLUTION_FEEDBACK",name:"Resolution and feedback",menuLabel:"My request status",openingQuestion:"Show the current status of my hotel request and let me confirm the outcome.",description:"HotelGPT · verified In-Stay outcome." }
 ];
 
 function id() { return crypto.randomUUID().replaceAll("-", "").slice(0, 16); }
@@ -79,6 +85,7 @@ function id() { return crypto.randomUUID().replaceAll("-", "").slice(0, 16); }
 export function newTenantFlow(templateKey: TenantFlowTemplateKey): TenantFlowDefinition {
   const template = TENANT_FLOW_TEMPLATES.find(item => item.key === templateKey) || TENANT_FLOW_TEMPLATES[0];
   const now = new Date().toISOString();
+  const hotelTemplate = hotelFlowTemplate(templateKey);
   const trigger = id(), answer = id(), condition = id(), end = id(), handover = id(), callbackNode = id();
   if (template.key === "CUSTOM_FLOW") {
     const trigger = id(), response = id(), end = id();
@@ -101,7 +108,7 @@ export function newTenantFlow(templateKey: TenantFlowTemplateKey): TenantFlowDef
         { id: handover, type: "HUMAN_HANDOVER", label: "Request reservations approval", x: 1160, y: 400 }
       ] };
   }
-  return { id: crypto.randomUUID(), name: template.name, templateKey: template.key, status: "DRAFT", version: 1, menuLabel: template.menuLabel, openingQuestion: template.openingQuestion, fallbackMode: "HUMAN_OR_CALLBACK", createdAt: now, updatedAt: now, steps: [
+  return { id: crypto.randomUUID(), name: template.name, templateKey: template.key, status: "DRAFT", version: 1, menuLabel: template.menuLabel, openingQuestion: template.openingQuestion, fallbackMode: "HUMAN_OR_CALLBACK", createdAt: now, updatedAt: now, ...(hotelTemplate ? { botCategory:"STAY" as const,journey:hotelTemplate.journey,access:hotelTemplate.access,templateVersion:hotelTemplate.version,originTemplateId:hotelTemplate.id,requiredKnowledge:[...hotelTemplate.requiredKnowledge],requiredConnector:hotelTemplate.requiredConnector,department:hotelTemplate.department,smartOutputs:[...hotelTemplate.smartOutputs] } : {}), steps: [
     { id: trigger, type: "MENU_TRIGGER", label: "Visitor chooses this menu option", nextId: answer, x: 50, y: 250 },
     { id: answer, type: "TENANT_ANSWER", label: "Answer from approved Intelligence", instruction: template.openingQuestion, nextId: condition, x: 330, y: 250 },
     { id: condition, type: "CONDITION", label: "Was the visitor answered accurately?", instruction: "Verified answer available", nextId: end, alternateNextId: handover, x: 610, y: 250 },
@@ -225,5 +232,6 @@ export function normalizeTenantFlow(raw: unknown): TenantFlowDefinition | null {
     quoteExpiryMinutes: Math.max(5, Math.min(1440, Math.round(Number(sourcePolicy?.quoteExpiryMinutes || 15)))),
     approvalMode: sourcePolicy?.approvalMode === "HUMAN_ALL" ? "HUMAN_ALL" as const : "AUTO_ABOVE_FLOOR" as const
   } : undefined;
-  return { ...base, id: String(value.id || base.id).replace(/[^a-z0-9_-]/gi, "").slice(0, 80) || base.id, name: String(value.name || base.name).trim().slice(0, 80) || base.name, menuLabel, openingQuestion, steps: safeSteps, ...(negotiationPolicy ? { negotiationPolicy } : {}), status: ["DRAFT", "PUBLISHED", "PAUSED"].includes(String(value.status)) ? value.status as TenantFlowStatus : "DRAFT", version: Math.max(1, Number(value.version || 1)), createdAt: String(value.createdAt || base.createdAt), updatedAt: String(value.updatedAt || base.updatedAt), ...(value.publishedAt ? { publishedAt: String(value.publishedAt) } : {}) };
+  return { ...base, id: String(value.id || base.id).replace(/[^a-z0-9_-]/gi, "").slice(0, 80) || base.id, name: String(value.name || base.name).trim().slice(0, 80) || base.name, menuLabel, openingQuestion, steps: safeSteps, ...(negotiationPolicy ? { negotiationPolicy } : {}), ...(value.botCategory === "STAY" ? { botCategory:"STAY" as const } : {}), ...(["PRE_STAY","IN_STAY"].includes(String(value.journey)) ? { journey:value.journey as "PRE_STAY"|"IN_STAY" } : {}), ...(["PUBLIC","VERIFIED_STAY"].includes(String(value.access)) ? { access:value.access as "PUBLIC"|"VERIFIED_STAY" } : {}), ...(value.templateVersion ? { templateVersion:Math.max(1,Number(value.templateVersion)) } : {}), ...(value.originTemplateId ? { originTemplateId:String(value.originTemplateId).slice(0,80) } : {}), ...(Array.isArray(value.requiredKnowledge) ? { requiredKnowledge:value.requiredKnowledge.map(String).slice(0,12) } : {}), ...(value.requiredConnector !== undefined ? { requiredConnector:value.requiredConnector ? String(value.requiredConnector).slice(0,160) : null } : {}), ...(value.department !== undefined ? { department:value.department ? String(value.department).slice(0,80) : null } : {}), ...(Array.isArray(value.smartOutputs) ? { smartOutputs:value.smartOutputs.map(String).slice(0,12) } : {}), status: ["DRAFT", "PUBLISHED", "PAUSED"].includes(String(value.status)) ? value.status as TenantFlowStatus : "DRAFT", version: Math.max(1, Number(value.version || 1)), createdAt: String(value.createdAt || base.createdAt), updatedAt: String(value.updatedAt || base.updatedAt), ...(value.publishedAt ? { publishedAt: String(value.publishedAt) } : {}) };
 }
+import { hotelFlowTemplate } from "@/lib/hotelgpt-flow-library";
