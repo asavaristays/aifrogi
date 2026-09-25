@@ -905,7 +905,7 @@ export function WhatsAppBotClient({
           </a>
         ))}
       </nav>
-      <div className="inbox-v2-grid grid min-h-[760px] grid-cols-1">
+      <div className={`inbox-v2-grid grid grid-cols-1 ${teamMode ? "h-full min-h-0" : "min-h-[760px]"}`}>
         <aside id="inbox-queues" className="min-w-0 scroll-mt-12 border-b border-[var(--border)] bg-white lg:border-b-0 lg:border-r">
           <div className="p-4">
             <div className="flex items-center justify-between gap-3">
@@ -980,7 +980,7 @@ export function WhatsAppBotClient({
               onChange={(event) => setSearchTerm(event.target.value)}
             />
           </div>
-          <div className="max-h-[650px] overflow-auto p-2">
+          <div className="inbox-conversation-list overflow-auto p-2">
             {filteredLeads.length ? filteredLeads.map((lead, index) => {
               const state = getConversationState(lead);
               const latest = getLatestMessage(lead);
@@ -1034,7 +1034,7 @@ export function WhatsAppBotClient({
           </div>
         </aside>
 
-        <main id="inbox-reply" className="flex min-h-[760px] min-w-0 scroll-mt-12 flex-col bg-[#f8f0d8]">
+        <main id="inbox-reply" className={`flex min-w-0 scroll-mt-12 flex-col bg-[#f8f0d8] ${teamMode ? "min-h-0" : "min-h-[760px]"}`}>
           <div className="border-b border-[var(--border)] bg-white px-5 py-4">
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div className="flex min-w-0 items-center gap-3">

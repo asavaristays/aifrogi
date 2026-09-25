@@ -56,9 +56,13 @@ test("Indian reservation numbers use one readable international format", () => {
 
 test("HotelGPT inbox removes the low-value qualification strip", () => {
   const inbox = readFileSync(resolve(process.cwd(), "components/whatsapp/whatsapp-bot-client.tsx"), "utf8");
+  const inboxStyles = readFileSync(resolve(process.cwd(), "components/lead-inbox/team-inbox.module.css"), "utf8");
   assert.match(inbox, /activeIsWebsite && !hotelMode/);
   assert.match(inbox, /!serviceDeskMode && !hotelMode \? <aside id="inbox-profile"/);
   assert.match(inbox, /\.\.\.\(!hotelMode \? \[\{ href: "#inbox-profile", label: "Profile" \}\] : \[\]\)/);
   assert.doesNotMatch(inbox, /Guest enquiry qualification/);
   assert.doesNotMatch(inbox, /Stay dates and guest count pending/);
+  assert.match(inboxStyles, /height:clamp\(500px,calc\(100dvh - 250px\),760px\)/);
+  assert.match(inboxStyles, /inbox-conversation-list[^}]*flex:1/);
+  assert.match(inboxStyles, /\.workspace button \{min-height:36px/);
 });
