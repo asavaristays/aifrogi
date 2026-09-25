@@ -54,9 +54,9 @@ test("Indian reservation numbers use one readable international format", () => {
   assert.equal(normalizePublicPhoneInText("Call Reservation Number 918279640517.", "+91 82796 40517"), "Call Reservation Number +91 82796 40517.");
 });
 
-test("HotelGPT inbox replaces generic CRM labels without changing stored lead data", () => {
+test("HotelGPT inbox removes the low-value qualification strip", () => {
   const inbox = readFileSync(resolve(process.cwd(), "components/whatsapp/whatsapp-bot-client.tsx"), "utf8");
-  assert.match(inbox, /Guest enquiry qualification/);
-  assert.match(inbox, /Stay or cottage preference pending/);
-  assert.match(inbox, /Stay dates and guest count pending/);
+  assert.match(inbox, /activeIsWebsite && !hotelMode/);
+  assert.doesNotMatch(inbox, /Guest enquiry qualification/);
+  assert.doesNotMatch(inbox, /Stay dates and guest count pending/);
 });
