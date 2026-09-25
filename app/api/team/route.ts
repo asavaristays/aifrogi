@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     } catch {
       emailSent = false;
     }
-    return NextResponse.json({ ok: true, member: { id: invitation.member.id, email: invitation.member.email, name: invitation.member.name, role: invitation.member.role, department: payload?.role === "AGENT" ? payload?.department || null : null, status: invitation.member.status, invitationExpiresAt: invitation.expiresAt }, invitationUrl, emailSent });
+    return NextResponse.json({ ok: true, member: { id: invitation.member.id, email: invitation.member.email, name: invitation.member.name, role: invitation.member.role, department: payload?.role === "AGENT" ? payload?.department || null : null, status: invitation.member.status, invitedAt: invitation.member.invitedAt, joinedAt: invitation.member.joinedAt, lastLoginAt: invitation.member.lastLoginAt, invitationExpiresAt: invitation.expiresAt }, invitationUrl, emailSent });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not invite this team member." }, { status: 400 });
   }

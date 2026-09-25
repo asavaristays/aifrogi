@@ -39,6 +39,15 @@ test("hotel agents cannot land on the owner dashboard", () => {
   assert.match(dashboard, /redirect\(department \? "\/in-stay\/team" : "\/in-stay\/inbox"\)/);
 });
 
+test("new team invitation rows include safe date fields", () => {
+  const route = source("app/api/team/route.ts");
+  const manager = source("components/settings/team-access-manager.tsx");
+  assert.match(route, /invitedAt: invitation\.member\.invitedAt/);
+  assert.match(route, /joinedAt: invitation\.member\.joinedAt/);
+  assert.match(manager, /if \(!value\) return "recently"/);
+  assert.match(manager, /Number\.isNaN\(date\.getTime\(\)\)/);
+});
+
 test("remaining authenticated data pages are covered by the build-time context guard", () => {
   const guard = source("scripts/verify-database-context-boundaries.mjs");
   for (const path of ["app/(app)/knowledge/page.tsx", "app/(app)/setup/page.tsx", "app/admin/audit/page.tsx", "app/admin/knowledge/page.tsx", "app/admin/support/page.tsx"]) {
