@@ -96,7 +96,7 @@ export function SideNav({
               <p className="text-[11px] font-semibold text-[var(--gold-300)]">{group.label}</p>
               <p className="truncate text-[10px] text-white/35">{group.helper}</p>
             </div>
-            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && isClientNavItemAvailable(item.href, enabledChannels) && (!item.href.startsWith("/in-stay") || botCategory === "STAY")).map((item) => {
+            <div className="space-y-0.5">{navItems.filter((item) => group.hrefs.includes(item.href) && allowedHrefs.has(item.href) && (item.href !== "/in-stay/team" || Boolean(department)) && isClientNavItemAvailable(item.href, enabledChannels) && (!item.href.startsWith("/in-stay") || botCategory === "STAY")).map((item) => {
             const active = pathname === item.href || (item.href !== "/in-stay" && pathname.startsWith(`${item.href}/`));
             return (
               <Link
