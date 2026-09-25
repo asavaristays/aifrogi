@@ -881,8 +881,9 @@ export function WhatsAppBotClient({
       : activeSource === "Trial"
         ? "Thanks for your interest in the 15-day trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first."
         : "Thanks for reaching out. Please share your business name, website, current tools, and the result you want to achieve so we can guide the next step.";
-  const contextualHotelReplies = hotelMode ? hotelQuickReplies.filter(item => item.enabled && item.journey === (journeyView === "in-stay" ? "IN_STAY" : "PRE_STAY") && item.permittedRoles.includes(operatorRole as HotelReplyRole) && (item.department === "ALL" || item.department === serviceDepartment || journeyView === "pre-stay") && (item.status !== "FEEDBACK" || isLeadResolved(activeLead)) && (item.status !== "COMPLETED" || !isLeadResolved(activeLead))).sort((a,b)=>{
-    const order=journeyView==="in-stay"?(isLeadResolved(activeLead)?["FEEDBACK"]:(activeLead.stage==="CONTACTED"?["ON_THE_WAY","DELAYED","INFORMATION_REQUIRED","COMPLETED","GUEST_UNAVAILABLE","ESCALATED"]:["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","ESCALATED"])):["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
+  const resolvedHotelCase = isLeadResolved(activeLead);
+  const contextualHotelReplies = hotelMode ? hotelQuickReplies.filter(item => item.enabled && item.journey === (journeyView === "in-stay" ? "IN_STAY" : "PRE_STAY") && item.permittedRoles.includes(operatorRole as HotelReplyRole) && (item.department === "ALL" || item.department === serviceDepartment || journeyView === "pre-stay") && (resolvedHotelCase ? item.status === "FEEDBACK" : item.status !== "FEEDBACK")).sort((a,b)=>{
+    const order=journeyView==="in-stay"?(resolvedHotelCase?["FEEDBACK"]:(activeLead.stage==="CONTACTED"?["ON_THE_WAY","DELAYED","INFORMATION_REQUIRED","COMPLETED","GUEST_UNAVAILABLE","ESCALATED"]:["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","ESCALATED"])):["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
     return order.indexOf(a.status)-order.indexOf(b.status);
   }).slice(0,4) : [];
 

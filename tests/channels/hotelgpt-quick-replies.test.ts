@@ -36,3 +36,9 @@ test("guest rendering removes duplicated front-desk prefixes and shows sender wi
   assert.match(embed,/front desk\\s\*\(\?:update\)\?/i);
   assert.match(embed,/text:`\$\{sender\} · \$\{time\}\\n\$\{cleanBody\}`/);
 });
+
+test("resolved HotelGPT cases offer feedback instead of stale operational actions",()=>{
+  const inbox=source("components/whatsapp/whatsapp-bot-client.tsx");
+  assert.match(inbox,/resolvedHotelCase \? item\.status === "FEEDBACK" : item\.status !== "FEEDBACK"/);
+  assert.match(inbox,/resolvedHotelCase\?\["FEEDBACK"\]/);
+});
