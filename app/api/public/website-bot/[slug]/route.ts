@@ -33,6 +33,7 @@ import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-run
 import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking, resolveApprovedStay } from "@/lib/stay-question-routing";
 import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 import { matchPublishedHotelFlow } from "@/lib/hotelgpt-flow-library";
+import { resolveTenantWelcomeMessage } from "@/lib/tenant-facing-copy";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -85,7 +86,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const organization = property?.organization;
   const profile = organization?.botProfile;
   if (!property || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
-  const tenantConfiguration = { ...configuration, welcomeMessage: `Welcome to ${organization.name}. How can I help with your business enquiry today?` };
+  const tenantConfiguration = { ...configuration, welcomeMessage: resolveTenantWelcomeMessage({ configuredMessage: configuration.welcomeMessage, businessName: organization.name, hotelMode: profile.category === "STAY" }) };
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
   const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
@@ -123,7 +124,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const priorQuestions = priorToken ? (await db.leadMessage.findMany({
     where: { leadId: priorToken.leadId, sender: "GUEST" }, orderBy: [{ sentAt: "desc" }, { id: "desc" }], take: 6, select: { body: true }
   })).map((item) => item.body) : [];
-  const safety = guardWebsiteVisitorMessage(message);
+  const safety = guardWebsiteVisitorMessage(message, organization.name);
   const handoffEnabled = profile.humanHandoffEnabled === true;
   const knowledgeSettings = await readKnowledgeSettings(slug);
   const inStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "IN_STAY", message) : null;
@@ -300,7 +301,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   } : requestsOnlineBooking && bookingLink ? {
     answer: liveAvailability
       ? liveAvailability.available
-        ? `Yes—live availability is confirmed in ${liveAvailability.destination} for ${liveAvailability.checkIn} to ${liveAvailability.checkOut}.\n\n${liveAvailability.properties.filter((item) => !requestedStay || item === matchingLiveStay).map((item) => `${item.name}: ${item.availableCount} room${item.availableCount === 1 ? "" : "s"} available${item.fromRate ? ` from ${item.currency} ${item.fromRate.toLocaleString("en-IN")}` : ""}\nhttps://asavaristays.com/properties/${item.id}?checkIn=${liveAvailability.checkIn}&checkOut=${liveAvailability.checkOut}&adults=2&children=0`).join("\n\n")}\n\nThe verified property card is shown below. Select the stay to continue booking.`
+        ? `Yes—live availability is confirmed in ${liveAvailability.destination} for ${liveAvailability.checkIn} to ${liveAvailability.checkOut}.\n\n${liveAvailability.properties.filter((item) => !requestedStay || item === matchingLiveStay).map((item) => `${item.name}: ${item.availableCount} room${item.availableCount === 1 ? "" : "s"} available${item.fromRate ? ` from ${item.currency} ${item.fromRate.toLocaleString("en-IN")}` : ""}${item.propertyUrl ? `\n${item.propertyUrl}` : ""}`).join("\n\n")}\n\nThe verified property card is shown below. Select the stay to continue booking.`
         : `No live availability was returned in ${liveAvailability.destination} for ${liveAvailability.checkIn} to ${liveAvailability.checkOut}. Please select different dates below.`
       : requestedDestination && destinationStays.length
       ? `${businessName} has ${destinationStays.map((item) => item.stay).join(" and ")} in ${requestedDestination}. Select check-in and check-out dates below and I’ll verify live room availability from the booking database.\n\nCheck stays: ${destinationBookingUrl}`

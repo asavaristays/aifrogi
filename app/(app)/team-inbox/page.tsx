@@ -24,6 +24,6 @@ export default async function TeamInboxPage({searchParams}:{searchParams:Promise
       <div><p className={styles.eyebrow}>Guest journey · before arrival</p><h1>Pre-Stay Inbox</h1><p>Booking questions, planning support and enquiries—kept separate from live hotel service.</p></div>
       {hotelMode?<a href="/in-stay/inbox" className={styles.journeyLink}>Open In-Stay service inbox →</a>:null}
     </div>
-    <TeamInboxStatus compact/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode hotelMode={hotelMode} initialJourney="pre-stay" lockJourney initialLeadId={query.lead||''} hotelQuickReplies={settings.hotelQuickReplies||[]} operatorRole={access.role}/>
+    <TeamInboxStatus compact/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode hotelMode={hotelMode} initialJourney="pre-stay" lockJourney initialLeadId={query.lead||''} hotelQuickReplies={settings.hotelQuickReplies||[]} operatorRole={access.role} businessName={access.organization.name}/>
   </div>;
 }

@@ -1,4 +1,5 @@
 import { WebsiteBotEmbed } from "@/components/website-bot/website-bot-embed";
+import { resolveTenantWelcomeMessage } from "@/lib/tenant-facing-copy";
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
@@ -40,6 +41,8 @@ export default async function WebsiteBotEmbedPage({ params, searchParams }: { pa
     }
     notFound();
   }
-  const embed = <WebsiteBotEmbed slug={slug} botName={loaded.profile.personaName || `${loaded.property?.organization?.name || "Business"} AI`} welcomeMessage={loaded.settings.welcomeMessage} themeColor={loaded.settings.themeColor} widgetTheme={loaded.settings.widgetTheme} logoUrl={loaded.settings.logoUrl} welcomeCardImageUrl={loaded.settings.welcomeCardImageUrl} welcomeCardTitle={loaded.settings.welcomeCardTitle} welcomeCardText={loaded.settings.welcomeCardText} showcaseItems={loaded.settings.showcaseItems} dismissible={mode === "launcher"} menu={loaded.settings.widgetMenu} journeyMode={loaded.profile.category === "STAY" ? "pre-stay" : undefined} />;
+  const businessName = loaded.property?.organization?.name || "Business";
+  const welcomeMessage = resolveTenantWelcomeMessage({ configuredMessage: loaded.settings.welcomeMessage, businessName, hotelMode: loaded.profile.category === "STAY" });
+  const embed = <WebsiteBotEmbed slug={slug} botName={loaded.profile.personaName || `${businessName} AI`} welcomeMessage={welcomeMessage} themeColor={loaded.settings.themeColor} widgetTheme={loaded.settings.widgetTheme} logoUrl={loaded.settings.logoUrl} welcomeCardImageUrl={loaded.settings.welcomeCardImageUrl} welcomeCardTitle={loaded.settings.welcomeCardTitle} welcomeCardText={loaded.settings.welcomeCardText} showcaseItems={loaded.settings.showcaseItems} dismissible={mode === "launcher"} menu={loaded.settings.widgetMenu} journeyMode={loaded.profile.category === "STAY" ? "pre-stay" : undefined} />;
   return loaded.profile.category === "STAY" ? <main className={hotel.embedStage}>{embed}</main> : embed;
 }

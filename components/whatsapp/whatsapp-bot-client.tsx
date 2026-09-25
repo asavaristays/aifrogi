@@ -10,6 +10,7 @@ import type { Asset, Lead, LeadInput, WhatsAppIntegration } from "@/types";
 import { LeadOperationsPanel } from "@/components/ai-operations/lead-operations-panel";
 import teamStyles from "@/components/lead-inbox/team-inbox.module.css";
 import type { HotelQuickReply, HotelReplyRole } from "@/lib/hotelgpt-quick-replies";
+import { suggestedInboxReply } from "@/lib/tenant-facing-copy";
 
 type QuickActionKind = "photos" | "payment" | "quote" | null;
 type TimelineMessage = Lead["transcript"][number];
@@ -230,7 +231,8 @@ export function WhatsAppBotClient({
   lockJourney = false,
   initialLeadId = "",
   hotelQuickReplies = [],
-  operatorRole = "AGENT"
+  operatorRole = "AGENT",
+  businessName = "this business"
 }: {
   integration: WhatsAppIntegration;
   leads: Lead[];
@@ -242,6 +244,7 @@ export function WhatsAppBotClient({
   initialLeadId?: string;
   hotelQuickReplies?: HotelQuickReply[];
   operatorRole?: string;
+  businessName?: string;
 }) {
   const router = useRouter();
   const [teamView, setTeamView] = useState("conversations");
@@ -872,15 +875,13 @@ export function WhatsAppBotClient({
         : /safari|experience|tour|activity|pickup|transport|taxi/.test(serviceText)
           ? "Experiences"
           : "Front Desk";
-  const aiSuggestedReply = hotelMode && journeyView === "in-stay"
-    ? "Thank you. The front desk has received your request. We’ll coordinate with the right hotel team and update you here as soon as work begins."
-    : !whatsappEnabled
-    ? "Thanks for reaching out. Please share the business result you want to achieve and any important requirement. I’ll use approved Webtechnosys information and involve the team when judgment is required."
-    : activeSource === "AI audit"
-      ? "Thanks for your interest in the AI audit. Please share your hotel name, website, city, and current booking channels. I will review visibility, conversion gaps, and WhatsApp follow-up opportunities."
-      : activeSource === "Trial"
-        ? "Thanks for your interest in the 15-day trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first."
-        : "Thanks for reaching out. Please share your business name, website, current tools, and the result you want to achieve so we can guide the next step.";
+  const aiSuggestedReply = suggestedInboxReply({
+    businessName,
+    hotelMode,
+    journey: journeyView,
+    whatsappEnabled,
+    source: activeSource
+  });
   const resolvedHotelCase = isLeadResolved(activeLead);
   const contextualHotelReplies = hotelMode ? hotelQuickReplies.filter(item => item.enabled && item.journey === (journeyView === "in-stay" ? "IN_STAY" : "PRE_STAY") && item.permittedRoles.includes(operatorRole as HotelReplyRole) && (item.department === "ALL" || item.department === serviceDepartment || journeyView === "pre-stay") && (resolvedHotelCase ? item.status === "FEEDBACK" : item.status !== "FEEDBACK")).sort((a,b)=>{
     const order=journeyView==="in-stay"?(resolvedHotelCase?["FEEDBACK"]:(activeLead.stage==="CONTACTED"?["ON_THE_WAY","DELAYED","INFORMATION_REQUIRED","COMPLETED","GUEST_UNAVAILABLE","ESCALATED"]:["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","ESCALATED"])):["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
