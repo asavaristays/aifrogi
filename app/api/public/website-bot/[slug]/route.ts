@@ -140,21 +140,30 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (stayCapability) {
     const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
     return persistWebsiteTurn(async () => {
-      if (priorToken) {
-        // A visitor capability is scoped to its approved stay, not merely the
-        // hotel. This prevents a shared browser from carrying one guest's
-        // conversation into the next room or registration.
-        const stayRows = await db.$queryRaw<Array<{ leadId: string | null }>>`SELECT "leadId" FROM "HotelGuestAccessRequest" WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() LIMIT 1`;
-        if (!stayRows[0]?.leadId || stayRows[0].leadId !== priorToken.leadId) return NextResponse.json({ error: "This conversation does not belong to the approved stay. Please reopen the guest QR." }, { status: 401, headers: responseHeaders });
-        const lead = await db.lead.findFirst({ where: { id: priorToken.leadId, propertyId: property.id }, select: { id: true } });
+      // A visitor capability is scoped to its approved stay, not merely the
+      // hotel. This also lets a resolved room case start a fresh service cycle
+      // without creating a second lead for the same approved stay.
+      const stayRows = await db.$queryRaw<Array<{ leadId: string | null }>>`SELECT "leadId" FROM "HotelGuestAccessRequest" WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL AND "approvedCheckOut">NOW() LIMIT 1`;
+      const linkedLeadId = stayRows[0]?.leadId || null;
+      if (priorToken && (!linkedLeadId || linkedLeadId !== priorToken.leadId)) return NextResponse.json({ error: "This conversation does not belong to the approved stay. Please reopen the guest QR." }, { status: 401, headers: responseHeaders });
+      const activeLeadId = priorToken?.leadId || linkedLeadId;
+      if (activeLeadId) {
+        const lead = await db.lead.findFirst({ where: { id: activeLeadId, propertyId: property.id }, select: { id: true } });
         if (!lead) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
         await db.leadMessage.create({ data: { leadId: lead.id, sender: "GUEST", body: safety.storageText, sentAt: new Date() } });
-        const shouldAcknowledge = !["HUMAN_REQUESTED", "HUMAN_JOINED"].includes(sessionStatus);
+        const shouldAcknowledge = !priorToken || !["HUMAN_REQUESTED", "HUMAN_JOINED"].includes(sessionStatus);
         if (shouldAcknowledge) await db.leadMessage.create({ data: { leadId: lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
+        await db.leadTag.deleteMany({ where: { leadId: lead.id, value: { in: ["resolved", "closed"], mode: "insensitive" } } });
         await db.lead.update({ where: { id: lead.id }, data: { intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
-        await db.websiteVisitorSession.update({ where: { leadId: lead.id }, data: { status: "HUMAN_REQUESTED" } });
         await ensureWebsiteHandover({ propertyId: property.id, leadId: lead.id, responseSlaMinutes: profile.responseSlaMinutes });
-        return NextResponse.json({ answer: inStayAcknowledgement, smartContent:inStaySmartContent, grounded: false, sources: [], visitorToken: payload?.visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: !shouldAcknowledge }, { headers: responseHeaders });
+        const visitorToken = priorToken ? String(payload?.visitorToken || "") : issueWebsiteVisitorToken({ slug, sessionId, leadId: lead.id, humanRequested: true });
+        const expiresAt = new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000);
+        await db.websiteVisitorSession.upsert({
+          where: { leadId: lead.id },
+          create: { propertyId: property.id, leadId: lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt },
+          update: { sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt, revokedAt: null }
+        });
+        return NextResponse.json({ answer: inStayAcknowledgement, smartContent:inStaySmartContent, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: !shouldAcknowledge }, { headers: responseHeaders });
       }
 
       const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, phone: stayCapability.phoneNumber, profileName: stayCapability.guestName, message: safety.storageText, aiReply: inStayAcknowledgement, propertySlug: slug }).catch(() => null);

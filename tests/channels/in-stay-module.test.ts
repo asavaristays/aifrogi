@@ -39,7 +39,10 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   const embed = source("components/website-bot/website-bot-embed.tsx");
   assert.match(embed, /aifrogi-resident:\$\{slug\}/);
   const publicBot = source("app/api/public/website-bot/[slug]/route.ts");
-  assert.match(publicBot, /stayRows\[0\]\.leadId !== priorToken\.leadId/);
+  assert.match(publicBot, /linkedLeadId !== priorToken\.leadId/);
+  assert.match(publicBot, /const activeLeadId = priorToken\?\.leadId \|\| linkedLeadId/);
+  assert.match(publicBot, /value: \{ in: \["resolved", "closed"\], mode: "insensitive" \}/);
+  assert.match(publicBot, /sessionIdHash: hashWebsiteVisitorValue\(sessionId\)/);
   for (const label of ["Operations", "Service inbox", "Queries", "Complaints", "Resolved", "Reports", "QR & Access"]) assert.match(workspace, new RegExp(label.replace("&", "&")));
   for (const step of ["Received", "Acknowledged", "In progress", "Resolved", "Feedback"]) assert.match(workspace, new RegExp(step));
   assert.match(workspace, /Request → Resolution → Feedback/);
