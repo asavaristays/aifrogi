@@ -79,7 +79,9 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
   // the same. The signed stay capability supplies an opaque per-stay suffix.
   const storageKey = residentMode && stayAccessToken
     ? `aifrogi-resident:${slug}:${stayAccessToken.slice(-24)}`
-    : `aifrogi-visitor:${slug}`;
+    : journeyMode === "pre-stay"
+      ? `aifrogi-prestay:${slug}`
+      : `aifrogi-visitor:${slug}`;
   const transcriptRef = useRef<HTMLElement | null>(null);
   const acknowledgedReplies = useRef(new Set<string>());
   useEffect(() => {

@@ -109,6 +109,14 @@ test("widget connects helpful feedback to the returned evidence id", () => {
   assert.match(widgetSource, /Authorization: `Bearer \$\{visitorToken\}`/);
 });
 
+test("pre-stay and in-stay browser sessions remain isolated", () => {
+  const widgetSource = readFileSync(resolve(process.cwd(), "components/website-bot/website-bot-embed.tsx"), "utf8");
+  assert.match(widgetSource, /`aifrogi-resident:\$\{slug\}:\$\{stayAccessToken\.slice\(-24\)\}`/);
+  assert.match(widgetSource, /journeyMode === "pre-stay"/);
+  assert.match(widgetSource, /`aifrogi-prestay:\$\{slug\}`/);
+  assert.match(widgetSource, /`aifrogi-visitor:\$\{slug\}`/);
+});
+
 test("partner responses expose governed source labels, freshness, and response SLA", () => {
   assert.match(source, /sources: result\?\.sources\.slice\(0, 3\)/);
   assert.match(source, /knowledgeAsOf:/);
