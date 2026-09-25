@@ -882,7 +882,6 @@ export function WhatsAppBotClient({
     whatsappEnabled,
     source: activeSource
   });
-  const displayedStay = hotelMode && activeLead.stay === "Business details pending" ? "Stay or cottage preference pending" : activeLead.stay;
   const resolvedHotelCase = isLeadResolved(activeLead);
   const contextualHotelReplies = hotelMode ? hotelQuickReplies.filter(item => item.enabled && item.journey === (journeyView === "in-stay" ? "IN_STAY" : "PRE_STAY") && item.permittedRoles.includes(operatorRole as HotelReplyRole) && (item.department === "ALL" || item.department === serviceDepartment || journeyView === "pre-stay") && (resolvedHotelCase ? item.status === "FEEDBACK" : item.status !== "FEEDBACK")).sort((a,b)=>{
     const order=journeyView==="in-stay"?(resolvedHotelCase?["FEEDBACK"]:(activeLead.stage==="CONTACTED"?["ON_THE_WAY","DELAYED","INFORMATION_REQUIRED","COMPLETED","GUEST_UNAVAILABLE","ESCALATED"]:["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","ESCALATED"])):["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
@@ -893,13 +892,13 @@ export function WhatsAppBotClient({
     <div className="space-y-3">
       {journeyNavigation}
     <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView} data-service-desk={serviceDeskMode}>
-      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{(serviceDeskMode?[{key:"conversations",label:"Requests"},{key:"reply",label:"Conversation"}]:[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}]).map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
+      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{(serviceDeskMode?[{key:"conversations",label:"Requests"},{key:"reply",label:"Conversation"}]:hotelMode?[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"}]:[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}]).map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
       <nav className={`${teamMode ? "hidden" : "flex lg:hidden"} sticky top-0 z-20 gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2`} aria-label="Inbox mobile sections">
         {[
           { href: "#inbox-queues", label: "Queues" },
           { href: "#inbox-conversations", label: "Chats" },
           { href: "#inbox-reply", label: "Reply" },
-          { href: "#inbox-profile", label: "Profile" }
+          ...(!hotelMode ? [{ href: "#inbox-profile", label: "Profile" }] : [])
         ].map((item) => (
           <a key={item.href} href={item.href} className="shrink-0 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2 text-xs font-semibold text-[var(--text)]">
             {item.label}
@@ -1288,7 +1287,7 @@ export function WhatsAppBotClient({
           </div>
         </main>
 
-        {!serviceDeskMode ? <aside id="inbox-profile" className="inbox-v2-rail min-w-0 scroll-mt-12 border-t border-[var(--border)] bg-white lg:col-span-3">
+        {!serviceDeskMode && !hotelMode ? <aside id="inbox-profile" className="inbox-v2-rail min-w-0 scroll-mt-12 border-t border-[var(--border)] bg-white lg:col-span-3">
           <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-4">
             <div>
               <p className="text-sm font-semibold text-[var(--text)]">Lead intelligence</p>
@@ -1318,7 +1317,7 @@ export function WhatsAppBotClient({
                 { label: activeIsWebsite ? "Consented contact" : "Phone", value: activeIsWebsite ? activeLead.websiteSession?.contactValue || "Not provided" : activeLead.phone },
                 { label: "Source", value: activeSource },
                 { label: "Intent", value: activeLead.intent || "Needs discovery" },
-                { label: hotelMode ? "Stay / cottage" : "Website / business", value: displayedStay || (hotelMode ? "Stay or cottage preference pending" : "Business details pending") },
+                { label: "Website / business", value: activeLead.stay || "Business details pending" },
                 { label: "Last inbound", value: latestInbound?.time ?? "No customer reply yet" },
                 ...(activeIsWebsite ? [
                   { label: "Handoff state", value: activeLead.websiteSession?.status?.replaceAll("_", " ") || "AI READY" },
