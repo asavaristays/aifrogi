@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 
 const sections = [
   {
+    title: "Guest communication",
+    href: "/settings/guest-communication/saved-replies",
+    description: "Manage HotelGPT Pre-Stay and In-Stay saved replies, permissions, statuses and language variants."
+  },
+  {
     title: "Team access",
     href: "/settings/users",
     description: "Control who can view website conversations, reply to contacts and manage the workspace."

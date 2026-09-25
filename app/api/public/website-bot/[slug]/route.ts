@@ -131,7 +131,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     ? "Your room issue has been reported to the front desk and marked for priority review. We will update you here."
     : inStayFlow?.flow.templateKey === "HOTEL_RESOLUTION_FEEDBACK"
       ? "The front desk has received your request for an update and will confirm the current status here."
-      : "Thank you. Our front desk has received your request and will start resolving it shortly. We will update you here.";
+      : "Thank you. Our front desk has received your request. We will update you here.";
   const inStaySmartContent = inStayFlow ? { flowId:inStayFlow.flow.id,journey:"IN_STAY",kind:inStayFlow.flow.templateKey,statusLabel:"Received",quickReplies:inStayFlow.flow.templateKey==="HOTEL_REPORT_PROBLEM"?["Add more details","This is urgent","Talk to front desk"]:["Add another item","Talk to front desk"] } : undefined;
 
   // In-stay service is deliberately isolated from pre-stay sales knowledge.
@@ -507,6 +507,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
     where: { id: token.leadId, property: { slug } },
     select: {
       stage: true,
+      stayLabel: true,
       tags: { select: { value: true } },
       messages: {
         where: { sender: "AGENT", ...(afterDate ? afterId ? { OR: [{ sentAt: { gt: afterDate } }, { sentAt: afterDate, id: { gt: afterId } }] } : { sentAt: { gt: afterDate } } : {}) },
@@ -517,17 +518,20 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
     }
   });
   if (!lead) return NextResponse.json({ error: "Conversation was not found." }, { status: 404, headers: responseHeaders });
-  const closed = ["BOOKED", "WON", "LOST"].includes(lead.stage) || lead.tags.some((tag) => ["resolved", "closed"].includes(tag.value.toLowerCase()));
+  const inStayCase=lead.stayLabel.startsWith("In-stay · Room ");
+  const closed = ["WON", "LOST"].includes(lead.stage) || (!inStayCase&&lead.stage==="BOOKED") || lead.tags.some((tag) => ["resolved", "closed"].includes(tag.value.toLowerCase()));
   const hasMore = lead.messages.length > 50;
   const page = lead.messages.slice(0, 50);
   const messageIds = page.map((message) => message.id);
+  const replyAudits = messageIds.length ? await db.platformAuditLog.findMany({where:{action:"HOTELGPT_QUICK_REPLY_SENT",targetType:"LEAD_MESSAGE",targetId:{in:messageIds}},select:{targetId:true,metadata:true}}) : [];
+  const replySenders = new Map(replyAudits.map(item=>{const metadata=item.metadata&&typeof item.metadata==="object"&&!Array.isArray(item.metadata)?item.metadata as Record<string,unknown>:{};const department=String(metadata.department||"");return [item.targetId,department==="ALL"?"Hotel team":department];}));
   if (messageIds.length) await Promise.all([
     db.leadMessage.updateMany({ where: { id: { in: messageIds }, leadId: token.leadId, deliveryStatus: null }, data: { deliveryStatus: "DELIVERED", statusUpdatedAt: new Date() } }),
     db.websiteVisitorSession.update({ where: { id: session.id }, data: { lastDeliveredAt: new Date() } })
   ]);
   // Fetching historical replies must never undo an explicit owner/admin AI resume.
   const conversationState = websiteConversationState(session.status, closed, false);
-  return NextResponse.json({ messages: page.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString() })), conversationState, hasMore }, { headers: responseHeaders });
+  return NextResponse.json({ messages: page.map((message) => ({ id: message.id, body: message.body, sentAt: message.sentAt.toISOString(), senderLabel:replySenders.get(message.id)||undefined })), conversationState, hasMore }, { headers: responseHeaders });
   });
   return scopedResponse || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
 }

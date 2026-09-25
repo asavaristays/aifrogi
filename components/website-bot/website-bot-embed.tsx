@@ -16,7 +16,7 @@ import { BookingSearchCard } from './booking-search-card';
 import type { ShowcaseItem } from '@/lib/repositories/knowledge-repository';
 
 type SmartContent = { flowId:string; journey:"PRE_STAY"|"IN_STAY"; kind:string; statusLabel?:string; quickReplies?:string[] };
-type Message = { role: "visitor" | "bot" | "human"; text: string; replyId?: string; evidenceId?: string | null; feedback?: boolean | null; feedbackNotice?: string; chooseFeedbackReason?: boolean; smartContent?:SmartContent };
+type Message = { role: "visitor" | "bot" | "human"; text: string; replyId?: string; senderLabel?:string; sentAt?:string; evidenceId?: string | null; feedback?: boolean | null; feedbackNotice?: string; chooseFeedbackReason?: boolean; smartContent?:SmartContent };
 type Qualification = { contactEligible: boolean; nextField: string | null };
 
 const negativeReasons = ["Incorrect information", "Did not answer my question", "Outdated information", "Difficult to understand", "Needed a person"];
@@ -129,10 +129,10 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
         const payload = await response.json();
         if (cancelled) return;
         if (response.ok) {
-          const replies = (payload.messages || []) as Array<{ id: string; body: string; sentAt: string }>;
+          const replies = (payload.messages || []) as Array<{ id: string; body: string; sentAt: string; senderLabel?:string }>;
           const fresh = replies.filter((item) => !receivedReplies.current.has(item.id));
           fresh.forEach((item) => receivedReplies.current.add(item.id));
-          if (fresh.length) setMessages((current) => [...current, ...fresh.map((item): Message => ({ role: "human", replyId: item.id, text: `${residentMode ? "Front desk" : "Business team"}: ${item.body}` }))]);
+          if (fresh.length) setMessages((current) => [...current, ...fresh.map((item): Message => { const sender=item.senderLabel||(residentMode?"Front desk":"Business team");const cleanBody=item.body.replace(/^(?:front desk\s*(?:update)?\s*:\s*)+/i,"");const time=new Date(item.sentAt).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});return { role:"human",replyId:item.id,senderLabel:sender,sentAt:item.sentAt,text:`${sender} · ${time}\n${cleanBody}` }; })]);
           if (replies.length) { replyCursor.current = replies[replies.length - 1].sentAt; replyCursorId.current = replies[replies.length - 1].id; }
           // Append final replies before reflecting closure in the composer.
           if (payload.conversationState && !(payload.conversationState === "CLOSED" && payload.hasMore)) setConversationState(payload.conversationState);

@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import type { Asset, Lead, LeadInput, WhatsAppIntegration } from "@/types";
 import { LeadOperationsPanel } from "@/components/ai-operations/lead-operations-panel";
 import teamStyles from "@/components/lead-inbox/team-inbox.module.css";
+import type { HotelQuickReply, HotelReplyRole } from "@/lib/hotelgpt-quick-replies";
 
 type QuickActionKind = "photos" | "payment" | "quote" | null;
 type TimelineMessage = Lead["transcript"][number];
@@ -227,7 +228,9 @@ export function WhatsAppBotClient({
   hotelMode = false,
   initialJourney = "pre-stay",
   lockJourney = false,
-  initialLeadId = ""
+  initialLeadId = "",
+  hotelQuickReplies = [],
+  operatorRole = "AGENT"
 }: {
   integration: WhatsAppIntegration;
   leads: Lead[];
@@ -237,6 +240,8 @@ export function WhatsAppBotClient({
   initialJourney?: "pre-stay" | "in-stay";
   lockJourney?: boolean;
   initialLeadId?: string;
+  hotelQuickReplies?: HotelQuickReply[];
+  operatorRole?: string;
 }) {
   const router = useRouter();
   const [teamView, setTeamView] = useState("conversations");
@@ -250,6 +255,7 @@ export function WhatsAppBotClient({
   const whatsappEnabled = enabledChannels.includes("WHATSAPP");
   const [activeId, setActiveId] = useState(initialLeadId || validLeads[0]?.id || "");
   const [draftMessage, setDraftMessage] = useState("");
+  const [selectedHotelReply, setSelectedHotelReply] = useState<HotelQuickReply | null>(null);
   const [sendResult, setSendResult] = useState<string | null>(null);
   const [selectedAttachment, setSelectedAttachment] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<{ url: string; name: string } | null>(null);
@@ -527,7 +533,7 @@ export function WhatsAppBotClient({
       const response = await fetch(`/api/leads/${activeLead.id}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sender: "AGENT", body: message })
+        body: JSON.stringify({ sender: "AGENT", body: message, ...(selectedHotelReply ? { quickReply: { id:selectedHotelReply.id, version:selectedHotelReply.version, status:selectedHotelReply.status, approvedText:selectedHotelReply.message, department:selectedHotelReply.department }, caseAction:selectedHotelReply.status==="COMPLETED"?"RESOLVE":undefined } : {}) })
       });
       const payload = await response.json();
 
@@ -614,6 +620,7 @@ export function WhatsAppBotClient({
 
     setSendResult(result.result);
     setDraftMessage("");
+    setSelectedHotelReply(null);
     setSelectedAttachment(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -874,6 +881,10 @@ export function WhatsAppBotClient({
       : activeSource === "Trial"
         ? "Thanks for your interest in the 15-day trial. Please share your business name, website, WhatsApp number, and the workflow you want to improve first."
         : "Thanks for reaching out. Please share your business name, website, current tools, and the result you want to achieve so we can guide the next step.";
+  const contextualHotelReplies = hotelMode ? hotelQuickReplies.filter(item => item.enabled && item.journey === (journeyView === "in-stay" ? "IN_STAY" : "PRE_STAY") && item.permittedRoles.includes(operatorRole as HotelReplyRole) && (item.department === "ALL" || item.department === serviceDepartment || journeyView === "pre-stay") && (item.status !== "FEEDBACK" || isLeadResolved(activeLead)) && (item.status !== "COMPLETED" || !isLeadResolved(activeLead))).sort((a,b)=>{
+    const order=journeyView==="in-stay"?(isLeadResolved(activeLead)?["FEEDBACK"]:(activeLead.stage==="CONTACTED"?["ON_THE_WAY","DELAYED","INFORMATION_REQUIRED","COMPLETED","GUEST_UNAVAILABLE","ESCALATED"]:["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","ESCALATED"])):["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
+    return order.indexOf(a.status)-order.indexOf(b.status);
+  }).slice(0,4) : [];
 
   return (
     <div className="space-y-3">
@@ -1175,15 +1186,10 @@ export function WhatsAppBotClient({
               }}
             />
             <div className="mb-3 flex flex-wrap gap-2">
-              {(whatsappEnabled ? [
+              {(hotelMode ? contextualHotelReplies.map(item=>({label:item.status==="COMPLETED"?"Resolve & send":item.label,text:item.message,reply:item})) : whatsappEnabled ? [
                 { label: "Trial intake", text: "Please share your business name, website, WhatsApp number, and the first workflow you want to improve during the trial." },
                 { label: "Book callback", text: "Please share a preferred time for a short callback. Our team will help map the right workflow and next step." },
                 { label: "Opt-out", text: "No problem. We will not send further campaign messages. You can message us anytime if you need help later." }
-              ] : serviceDeskMode ? [
-                { label: "Acknowledge", text: "Thank you. The front desk has received your request and is coordinating with the right team." },
-                { label: "Team dispatched", text: `${serviceDepartment} has been informed and is on the way. We’ll update you here.` },
-                { label: "Request update", text: "Our team is working on your request. Thank you for your patience—we’ll confirm as soon as it is completed." },
-                { label: "Check satisfaction", text: "Your request has been completed. Is everything satisfactory, or would you like further help?" }
               ] : [
                 { label: "Clarify requirement", text: "Please share the result you want to achieve and any important requirement I should consider." },
                 { label: "Request contact", text: "Please share your preferred contact details and consent for our team to follow up." },
@@ -1194,12 +1200,13 @@ export function WhatsAppBotClient({
                   key={item.label}
                   type="button"
                   className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] hover:bg-white hover:text-[var(--text)]"
-                  onClick={() => setDraftMessage(item.text)}
+                  onClick={() => {setDraftMessage(item.text);setSelectedHotelReply("reply" in item ? item.reply : null);}}
                 >
                   {item.label}
                 </button>
               ))}
             </div>
+            {selectedHotelReply?<div className="mb-3 rounded-xl border border-[#d8c278] bg-[#fffbef] p-3"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#7a621d]">Exact guest-facing preview · edit before sending</p><p className="mt-2 text-xs font-semibold">{selectedHotelReply.department==="ALL"?"Hotel team":selectedHotelReply.department} · now</p><p className="mt-1 text-sm leading-6">{draftMessage}</p>{selectedHotelReply.status==="COMPLETED"?<p className="mt-2 text-xs font-bold text-emerald-800">Send will explicitly resolve this case. Feedback is offered only afterwards.</p>:null}</div>:null}
             <div className="flex items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] px-2 py-2">
               <Button
                 tone="ghost"

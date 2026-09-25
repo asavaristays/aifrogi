@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { defaultWidgetMenu, normalizeWidgetMenu, type WidgetMenuConfig } from "@/lib/widget-menu";
 import { normalizeTenantFlow, type TenantFlowDefinition } from "@/lib/tenant-flow-intelligence";
+import { normalizeHotelQuickReply, type HotelQuickReply } from "@/lib/hotelgpt-quick-replies";
 
 export type KnowledgeSyncStatus = "DRAFT" | "SYNCING" | "READY" | "ERROR";
 export type WidgetTheme = "dark" | "light" | "system";
@@ -25,6 +26,7 @@ export type KnowledgeSettings = {
   showcaseItems: ShowcaseItem[];
   widgetMenu?: WidgetMenuConfig;
   tenantFlows?: TenantFlowDefinition[];
+  hotelQuickReplies?: HotelQuickReply[];
   lastCrawledAt: string | null;
   pageCount: number;
   buckets: string[];
@@ -71,6 +73,7 @@ function defaults(propertySlug: string): KnowledgeSettings {
     showcaseItems: [],
     widgetMenu: defaultWidgetMenu(propertySlug),
     tenantFlows: [],
+    hotelQuickReplies: [],
     lastCrawledAt: null,
     pageCount: 0,
     buckets: [],
@@ -92,7 +95,8 @@ export async function readKnowledgeSettings(propertySlug: string) {
       buckets: Array.isArray(parsed.buckets) ? parsed.buckets.filter(Boolean) : [],
       widgetMenu: normalizeWidgetMenu(parsed.widgetMenu, fallback.widgetMenu || defaultWidgetMenu(propertySlug)),
       showcaseItems: normalizeShowcaseItems(parsed.showcaseItems),
-      tenantFlows: Array.isArray(parsed.tenantFlows) ? parsed.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[] : []
+      tenantFlows: Array.isArray(parsed.tenantFlows) ? parsed.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[] : [],
+      hotelQuickReplies: Array.isArray(parsed.hotelQuickReplies) ? parsed.hotelQuickReplies.map(normalizeHotelQuickReply).filter(Boolean) as HotelQuickReply[] : []
     } satisfies KnowledgeSettings;
   } catch {
     return fallback;
@@ -140,6 +144,7 @@ export async function writeKnowledgeSettings(
     showcaseItems,
     widgetMenu: input.widgetMenu === undefined ? current.widgetMenu : normalizeWidgetMenu(input.widgetMenu, current.widgetMenu || defaultWidgetMenu(propertySlug)),
     tenantFlows: input.tenantFlows === undefined ? current.tenantFlows : input.tenantFlows.map(normalizeTenantFlow).filter(Boolean) as TenantFlowDefinition[],
+    hotelQuickReplies: input.hotelQuickReplies === undefined ? current.hotelQuickReplies : input.hotelQuickReplies.map(normalizeHotelQuickReply).filter(Boolean) as HotelQuickReply[],
     buckets: Array.isArray(input.buckets) ? [...new Set(input.buckets.map(String).filter(Boolean))].sort() : current.buckets,
     updatedAt: new Date().toISOString()
   };
