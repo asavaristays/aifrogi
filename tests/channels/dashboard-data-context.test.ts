@@ -33,6 +33,12 @@ test("team invitations evaluate subscription and allowance inside the tenant bou
   assert.match(team, /checkOrganizationEntitlement\(access\.organization\.id, "teamUsers", 1\)/);
 });
 
+test("hotel agents cannot land on the owner dashboard", () => {
+  const dashboard = source("app/(app)/dashboard/page.tsx");
+  assert.match(dashboard, /membership\?\.role\.toUpperCase\(\) === "AGENT"/);
+  assert.match(dashboard, /redirect\(department \? "\/in-stay\/team" : "\/in-stay\/inbox"\)/);
+});
+
 test("remaining authenticated data pages are covered by the build-time context guard", () => {
   const guard = source("scripts/verify-database-context-boundaries.mjs");
   for (const path of ["app/(app)/knowledge/page.tsx", "app/(app)/setup/page.tsx", "app/admin/audit/page.tsx", "app/admin/knowledge/page.tsx", "app/admin/support/page.tsx"]) {

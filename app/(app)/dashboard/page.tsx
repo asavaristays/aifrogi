@@ -15,6 +15,8 @@ import { getClientSupportUpdates } from "@/lib/support-notifications";
 import { dateLabelForTimeZone, greetingForTimeZone } from "@/lib/greeting";
 import { resolveReportPeriod, websiteLeadsForPeriod } from "@/lib/website-reporting";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { redirect } from "next/navigation";
+import { getMemberDepartment } from "@/lib/in-stay-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -23,6 +25,11 @@ export default async function DashboardPage() {
   const [propertySlug, user] = await Promise.all([getCurrentWorkspaceSlug(), getCurrentUser()]);
   const organization = user && user.role !== "admin" ? await getOrganizationForMember(user.username) : null;
   if (user && user.role !== "admin" && organization) {
+    const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
+    if (membership?.role.toUpperCase() === "AGENT" && organization.botProfile?.category === "STAY") {
+      const department = await getMemberDepartment(membership.id, organization.id);
+      redirect(department ? "/in-stay/team" : "/in-stay/inbox");
+    }
     return withTenantDatabaseContext({ kind: "tenant", organizationId: organization.id, actor: `client-dashboard:${user.username}` }, () => renderDashboard({ propertySlug, user, organization }));
   }
   return renderDashboard({ propertySlug, user, organization });
