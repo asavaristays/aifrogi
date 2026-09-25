@@ -192,6 +192,13 @@ function getConversationState(lead: Lead) {
     };
   }
 
+  if (lead.stay.startsWith("In-stay · Room ")) {
+    if (isLeadResolved(lead)) return { label: "Resolved", tone: "bg-[#e4f4ed] text-[#126452]", rail: "bg-[#27aa78]", helper: "Ticket closed" };
+    if (latest?.from === "agent") return { label: "Front desk replied", tone: "bg-[#e4f4ed] text-[#126452]", rail: "bg-[#27aa78]", helper: "Guest has an update" };
+    if (latest?.from === "guest") return { label: "Waiting for front desk", tone: "bg-[#fff1dd] text-[#8d4d10]", rail: "bg-[#d4842f]", helper: "Front desk reply needed" };
+    return { label: "Ticket received", tone: "bg-[#eff6ff] text-[#1b62a5]", rail: "bg-[#3d8be3]", helper: "Awaiting front desk response" };
+  }
+
   if (needsHuman(lead)) {
     return {
       label: "Human needed",
@@ -1054,13 +1061,13 @@ export function WhatsAppBotClient({
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-              <Button
+              {!serviceDeskMode ? <Button
                 tone="surface"
                 className="inbox-action-takeover rounded-md px-3 py-2 text-xs"
                   onClick={() => void takeOverFromAi()}
                 >
                   Human takeover
-                </Button>
+                </Button> : null}
               {whatsappEnabled ? <Button
                 tone="surface"
                 className="rounded-md px-3 py-2 text-xs"
@@ -1260,8 +1267,8 @@ export function WhatsAppBotClient({
                 {whatsappEnabled && <Badge tone={integration.aiModeEnabled ? "primary" : "neutral"}>
                   {integration.aiModeEnabled ? "AI Mode On" : "AI Mode Off"}
                 </Badge>}
-                <Badge tone="neutral">Approved knowledge</Badge>
-                <Badge tone="neutral">{whatsappEnabled ? integration.provider : "Human-controlled"}</Badge>
+                <Badge tone="neutral">{serviceDeskMode ? "Tracked ticket" : "Approved knowledge"}</Badge>
+                <Badge tone="neutral">{serviceDeskMode ? "Front desk only" : whatsappEnabled ? integration.provider : "Human-controlled"}</Badge>
                 {selectedAttachment ? <Badge tone="secondary">Attached: {selectedAttachment.name}</Badge> : null}
               </div>
               <span className="text-xs text-[#94a3b8]">Enter to send</span>
