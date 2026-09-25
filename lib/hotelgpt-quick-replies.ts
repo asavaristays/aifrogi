@@ -28,19 +28,6 @@ export const HOTELGPT_MASTER_QUICK_REPLIES: HotelQuickReply[] = [
   reply("pre-assigned","PRE_STAY","Reservations","ASSIGNED","Reservations reviewing","Our reservations team is reviewing your enquiry and will update you here."),
   reply("pre-delayed","PRE_STAY","Reservations","DELAYED","Response delayed","Thank you for your patience. We need a little more time to confirm the requested information."),
   reply("pre-escalated","PRE_STAY","Front Desk","ESCALATED","Manager review","We have asked a hotel manager to review your enquiry and reply here."),
-  reply("stay-received","IN_STAY","ALL","RECEIVED","Request received","We have received your request. The front desk will update you here.","ALL"),
-  reply("stay-assigned-frontdesk","IN_STAY","Front Desk","ASSIGNED","Front desk assigned","The front desk has accepted your request and will keep you updated here."),
-  reply("stay-assigned-housekeeping","IN_STAY","Housekeeping","ASSIGNED","Housekeeping assigned","Housekeeping has accepted your request and will update you here."),
-  reply("stay-assigned-maintenance","IN_STAY","Maintenance","ASSIGNED","Maintenance assigned","Maintenance has accepted your request and will update you here."),
-  reply("stay-assigned-food","IN_STAY","Food & Beverage","ASSIGNED","Food & Beverage assigned","Food & Beverage has accepted your request and will update you here."),
-  reply("stay-on-way","IN_STAY","ALL","ON_THE_WAY","Team on the way","Our team is on the way to your room."),
-  reply("stay-delayed","IN_STAY","ALL","DELAYED","Apologise for delay","We are sorry for the delay. Your request remains open and we will update you here."),
-  reply("stay-info","IN_STAY","ALL","INFORMATION_REQUIRED","Ask for details","Please share a little more detail so the hotel team can help with your request."),
-  reply("stay-unavailable","IN_STAY","ALL","GUEST_UNAVAILABLE","Guest unavailable","Our team visited your room but could not reach you. Please tell us when you are available."),
-  reply("stay-escalated","IN_STAY","Front Desk","ESCALATED","Escalated to manager","Your request has been escalated to the duty manager for review."),
-  reply("stay-completed","IN_STAY","ALL","COMPLETED","Resolve and confirm","Your request has been completed. Please let us know if you need any further help."),
-  reply("stay-feedback","IN_STAY","ALL","FEEDBACK","Request feedback","Was everything resolved to your satisfaction?"),
-  reply("stay-safety","IN_STAY","Front Desk","ESCALATED","Urgent review","The front desk has escalated this for urgent review. If there is immediate danger, please call the hotel emergency number."),
 ];
 
 const journeys = new Set(["PRE_STAY","IN_STAY"]);

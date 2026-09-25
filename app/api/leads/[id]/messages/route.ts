@@ -24,7 +24,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
   }
   const payload = await request.json().catch(() => null);
+  const isInStay = lead.stay.startsWith("In-stay · Room ");
   if (payload?.action === "RESUME_WEBSITE_AI") {
+    if (isInStay) return NextResponse.json({ error: "AI cannot be resumed for In-Stay tickets." }, { status: 400 });
     if (["BOOKED", "WON", "LOST"].includes(lead.stage)) return NextResponse.json({ error: "This lead is completed. Start a new conversation instead." }, { status: 409 });
     if (user.role !== "admin" && !["OWNER", "ADMIN"].includes(access?.role || "")) return NextResponse.json({ error: "Owner or admin approval is required to resume AI." }, { status: 403 });
     if (!lead.tags.includes("Website Bot")) return NextResponse.json({ error: "Not a website conversation" }, { status: 400 });
@@ -54,6 +56,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       const lock = await tx.$queryRaw<Array<{ acquired: boolean }>>`SELECT pg_try_advisory_xact_lock(hashtextextended(${`${propertySlug}:${session.sessionIdHash}`}, 0)) AS acquired`;
       if (!lock[0]?.acquired) throw new Error("Conversation update in progress; retry shortly");
       if (!lead.tags.some((tag) => ["resolved", "closed"].includes(tag.toLowerCase()))) await tx.leadTag.create({ data: { leadId: id, value: "Resolved" } });
+      if (isInStay) await tx.lead.update({ where: { id }, data: { stage: "BOOKED", lastActivityAt: new Date() } });
       // Closed means read-only until the existing capability expires, not revoked.
       await tx.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null }, data: { status: "CLOSED" } });
       await tx.aiOperation.updateMany({ where: { leadId: id, kind: "HUMAN_REVIEW", createdBy: "website-visitor", status: { in: ["OPEN", "IN_PROGRESS"] } }, data: { status: "COMPLETED", outcomeType: "RESOLVED", outcomeEvidence: `Conversation closed by ${user.username}`, completedAt: new Date() } });
@@ -77,11 +80,11 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     const db = getDb();
     if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
     try {
-      const journey = lead.stay.startsWith("In-stay · Room ") ? "IN_STAY" : "PRE_STAY";
+      const journey = isInStay ? "IN_STAY" : "PRE_STAY";
+      if (journey === "IN_STAY" && (quickReply || payload?.caseAction)) return NextResponse.json({ error: "In-Stay uses front-desk free-text replies only." }, { status: 400 });
       const settings = quickReply ? await readKnowledgeSettings(propertySlug) : null;
-      const approvedReply = quickReply ? settings?.hotelQuickReplies?.find(item => item.id === quickReply.id && item.version === Number(quickReply.version) && item.enabled && item.journey === journey && item.permittedRoles.includes((access?.role || "ADMIN") as "OWNER"|"ADMIN"|"AGENT")) : null;
+      const approvedReply = quickReply && journey === "PRE_STAY" ? settings?.hotelQuickReplies?.find(item => item.id === quickReply.id && item.version === Number(quickReply.version) && item.enabled && item.journey === "PRE_STAY" && item.permittedRoles.includes((access?.role || "ADMIN") as "OWNER"|"ADMIN"|"AGENT")) : null;
       if (quickReply && !approvedReply) return NextResponse.json({ error: "This saved reply is unavailable for the active guest journey or role. Refresh and try again." }, { status: 409 });
-      if (payload?.caseAction === "RESOLVE" && (!approvedReply || approvedReply.status !== "COMPLETED" || journey !== "IN_STAY")) return NextResponse.json({ error: "Resolution requires an approved In-Stay completion reply." }, { status: 400 });
       await db.$transaction(async (tx) => {
         const currentSession = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });
         const property = await tx.property.findUniqueOrThrow({ where: { id: currentSession.propertyId }, select: { organizationId: true } });
@@ -90,10 +93,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         const claimed = await tx.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null, status: { not: "CLOSED" }, expiresAt: { gt: new Date() } }, data: { status: "HUMAN_JOINED" } });
         if (!claimed.count) throw new Error("Conversation is closed or expired");
         const sent = await tx.leadMessage.create({ data: { leadId: id, sender: "AGENT", body: body.slice(0, 5000), sentAt: new Date() } });
-        await tx.lead.update({ where: { id }, data: { lastActivityAt: new Date(), ...(payload?.caseAction === "RESOLVE" ? { stage:"BOOKED" as const } : approvedReply?.status === "ASSIGNED" ? { stage:"CONTACTED" as const } : {}) } });
+        await tx.lead.update({ where: { id }, data: { lastActivityAt: new Date(), ...(approvedReply?.status === "ASSIGNED" ? { stage:"CONTACTED" as const } : {}) } });
         if (approvedReply) {
-          const statusPrefix="In-stay status: ";
-          if(journey==="IN_STAY"){await tx.leadTag.deleteMany({where:{leadId:id,value:{startsWith:statusPrefix}}});await tx.leadTag.create({data:{leadId:id,value:`${statusPrefix}${approvedReply.status}`}});}
           await tx.platformAuditLog.create({data:{organizationId:property.organizationId,actorEmail:user.username,actorRole:user.role,action:"HOTELGPT_QUICK_REPLY_SENT",targetType:"LEAD_MESSAGE",targetId:sent.id,summary:`${journey} saved reply sent by hotel staff.`,metadata:{templateId:approvedReply.id,masterId:approvedReply.masterId,templateVersion:approvedReply.version,originalApprovedText:approvedReply.message,finalSentText:body.slice(0,5000),requestStatus:approvedReply.status,department:approvedReply.department,journey}}});
         }
         const session = await tx.websiteVisitorSession.findUniqueOrThrow({ where: { leadId: id } });

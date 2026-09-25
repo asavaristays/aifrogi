@@ -10,6 +10,7 @@ import type { Asset, Lead, LeadInput, WhatsAppIntegration } from "@/types";
 import { LeadOperationsPanel } from "@/components/ai-operations/lead-operations-panel";
 import teamStyles from "@/components/lead-inbox/team-inbox.module.css";
 import type { HotelQuickReply, HotelReplyRole } from "@/lib/hotelgpt-quick-replies";
+import { IN_STAY_FRONT_DESK_COPY, inStayTicketReference } from "@/lib/in-stay-ticket";
 import { suggestedInboxReply } from "@/lib/tenant-facing-copy";
 
 type QuickActionKind = "photos" | "payment" | "quote" | null;
@@ -550,7 +551,7 @@ export function WhatsAppBotClient({
       const response = await fetch(`/api/leads/${activeLead.id}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sender: "AGENT", body: message, ...(selectedHotelReply ? { quickReply: { id:selectedHotelReply.id, version:selectedHotelReply.version, status:selectedHotelReply.status, approvedText:selectedHotelReply.message, department:selectedHotelReply.department }, caseAction:selectedHotelReply.status==="COMPLETED"?"RESOLVE":undefined } : {}) })
+        body: JSON.stringify({ sender: "AGENT", body: message, ...(!serviceDeskMode && selectedHotelReply ? { quickReply: { id:selectedHotelReply.id, version:selectedHotelReply.version, status:selectedHotelReply.status, approvedText:selectedHotelReply.message, department:selectedHotelReply.department } } : {}) })
       });
       const payload = await response.json();
 
@@ -879,16 +880,6 @@ export function WhatsAppBotClient({
   const latestInbound = [...activeLead.transcript].reverse().find((message) => message.from === "guest");
   const serviceDeskMode = teamMode && hotelMode && lockJourney && journeyView === "in-stay";
   const activeRoom = activeLead.stay.replace("In-stay · Room ", "").trim() || "Not provided";
-  const serviceText = `${activeLead.intent} ${activeLead.stay} ${latestInbound?.text || ""}`.toLowerCase();
-  const serviceDepartment = /tap|water|electric|light|repair|broken|maintenance|ac\b|air condition/.test(serviceText)
-    ? "Maintenance"
-    : /towel|linen|clean|housekeep|toilet|room service/.test(serviceText)
-      ? "Housekeeping"
-      : /food|breakfast|lunch|dinner|restaurant|drink|tea|coffee/.test(serviceText)
-        ? "Food & Beverage"
-        : /safari|experience|tour|activity|pickup|transport|taxi/.test(serviceText)
-          ? "Experiences"
-          : "Front Desk";
   const aiSuggestedReply = suggestedInboxReply({
     businessName,
     hotelMode,
@@ -896,9 +887,8 @@ export function WhatsAppBotClient({
     whatsappEnabled,
     source: activeSource
   });
-  const resolvedHotelCase = isLeadResolved(activeLead);
-  const contextualHotelReplies = hotelMode ? hotelQuickReplies.filter(item => item.enabled && item.journey === (journeyView === "in-stay" ? "IN_STAY" : "PRE_STAY") && item.permittedRoles.includes(operatorRole as HotelReplyRole) && (item.department === "ALL" || item.department === serviceDepartment || journeyView === "pre-stay") && (resolvedHotelCase ? item.status === "FEEDBACK" : item.status !== "FEEDBACK")).sort((a,b)=>{
-    const order=journeyView==="in-stay"?(resolvedHotelCase?["FEEDBACK"]:(activeLead.stage==="CONTACTED"?["ON_THE_WAY","DELAYED","INFORMATION_REQUIRED","COMPLETED","GUEST_UNAVAILABLE","ESCALATED"]:["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","ESCALATED"])):["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
+  const contextualHotelReplies = hotelMode && journeyView === "pre-stay" ? hotelQuickReplies.filter(item => item.enabled && item.journey === "PRE_STAY" && item.permittedRoles.includes(operatorRole as HotelReplyRole)).sort((a,b)=>{
+    const order=["RECEIVED","ASSIGNED","INFORMATION_REQUIRED","DELAYED","ESCALATED"];
     return order.indexOf(a.status)-order.indexOf(b.status);
   }).slice(0,4) : [];
 
@@ -1060,7 +1050,7 @@ export function WhatsAppBotClient({
                     <h2 className="truncate text-lg font-semibold text-[var(--text)]">{serviceDeskMode ? `Room ${activeRoom}` : activeLead.name}</h2>
                     <span className={`status-pill ${activeState.tone}`}>{activeState.label}</span>
                   </div>
-                  <p className="mt-1 truncate text-xs text-[var(--text-muted)]">{serviceDeskMode ? `${activeLead.name} · ${serviceDepartment} · ${activeState.helper}` : `${activeLead.phone} · ${activeSource} · ${activeState.helper}`}</p>
+                  <p className="mt-1 truncate text-xs text-[var(--text-muted)]">{serviceDeskMode ? `${activeLead.name} · Front Desk · ${activeState.helper}` : `${activeLead.phone} · ${activeSource} · ${activeState.helper}`}</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -1101,14 +1091,14 @@ export function WhatsAppBotClient({
 
           {serviceDeskMode ? <section className="hotel-service-summary border-b border-[var(--border)] bg-white px-5 py-3" aria-label="Service request summary">
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              {[["Room",activeRoom],["Guest",activeLead.name],["Department",serviceDepartment],["Request status",activeState.label]].map(([label,value])=><div key={label} className={`rounded-lg border px-3 py-2 ${label==="Room"?"border-[#d5bd6d] bg-[#fff8df]":"border-[#ebe5d8] bg-[#fbfaf7]"}`}><p className="text-[10px] font-bold uppercase tracking-[.12em] text-[#817a6d]">{label}</p><p className={`mt-1 truncate font-semibold text-[#24211d] ${label==="Room"?"text-lg":"text-sm"}`}>{value}</p></div>)}
+              {[["Ticket",inStayTicketReference(activeLead.id)],["Room",activeRoom],["Guest",activeLead.name],["Owner","Front Desk"]].map(([label,value])=><div key={label} className={`rounded-lg border px-3 py-2 ${label==="Ticket"?"border-[#d5bd6d] bg-[#fff8df]":"border-[#ebe5d8] bg-[#fbfaf7]"}`}><p className="text-[10px] font-bold uppercase tracking-[.12em] text-[#817a6d]">{label}</p><p className={`mt-1 truncate font-semibold text-[#24211d] ${label==="Ticket"?"text-lg":"text-sm"}`}>{value}</p></div>)}
             </div>
           </section> : activeIsWebsite && !hotelMode ? <section className="border-b border-[var(--border)] bg-white px-5 py-4" aria-label="Lead qualification summary">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"><div><p className="text-xs font-bold uppercase tracking-[.16em] text-[var(--text-muted)]">Agentic lead qualification</p><h3 className="mt-1 text-base font-semibold text-[var(--text)]">{activeLead.score >= 75 ? "Priority follow-up recommended" : activeLead.score >= 45 ? "Qualification in progress" : "Early enquiry"}</h3></div><div className="flex items-center gap-2"><span className={`status-pill ${activeLead.score >= 75 ? "status-warning" : "status-info"}`}>{activeLead.score}/100 · {activeLead.score >= 75 ? "Hot" : activeLead.score >= 45 ? "Warm" : "Cold"}</span>{activeLead.stage.toLowerCase() === "qualified" ? <span className="status-pill status-success">Qualified</span> : null}</div></div>
             <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-5">{[["Need",activeLead.intent],["Market",activeLead.stay],["Timeline",activeLead.party],["Budget",activeLead.budget],["Consented contact",activeLead.websiteSession?.consentedAt ? activeLead.websiteSession.contactValue || "Provided" : "Not provided"]].map(([label,value])=><div key={label} className="rounded-md bg-[var(--surface-soft)] px-3 py-2"><dt className="text-[10px] font-bold uppercase tracking-[.14em] text-[var(--text-muted)]">{label}</dt><dd className="mt-1 break-words font-semibold text-[var(--text)]">{value}</dd></div>)}</dl>
           </section> : null}
 
-          <div className="inbox-suggestion border-b border-[var(--border)] bg-[var(--info-soft)] px-5 py-3">
+          {!serviceDeskMode ? <div className="inbox-suggestion border-b border-[var(--border)] bg-[var(--info-soft)] px-5 py-3">
             <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div>
                 <p className="text-sm font-semibold text-[var(--info)]">AI suggested reply</p>
@@ -1122,7 +1112,7 @@ export function WhatsAppBotClient({
                 Use suggestion
               </Button>
             </div>
-          </div>
+          </div> : null}
 
           <div className="flex-1 space-y-3 overflow-auto bg-[#f8f0d8] p-5">
             {timeline.map((message) => {
@@ -1201,7 +1191,15 @@ export function WhatsAppBotClient({
                 setSelectedAttachment(nextFile);
               }}
             />
-            <div className="mb-3 flex flex-wrap gap-2">
+            {serviceDeskMode ? <details className="mb-3 rounded-lg border border-[#d8c278] bg-[#fffbef] p-3">
+              <summary className="cursor-pointer text-xs font-bold text-[#6f5715]">Front desk copy list</summary>
+              <div className="mt-3 grid gap-2">
+                {IN_STAY_FRONT_DESK_COPY.map((copy) => <div key={copy} className="flex items-start justify-between gap-3 rounded-md border border-[#e8ddba] bg-white p-2">
+                  <p className="text-xs leading-5 text-[#3f392b]">{copy}</p>
+                  <button type="button" className="shrink-0 rounded-md bg-[#1559b7] px-3 py-1.5 text-xs font-bold text-white" onClick={() => { void navigator.clipboard.writeText(copy).then(() => setSendResult("Response copied. Paste it into the message box and edit if needed.")).catch(() => { setDraftMessage(copy); setSendResult("Clipboard was unavailable, so the response was placed in the message box."); }); }}>Copy</button>
+                </div>)}
+              </div>
+            </details> : <div className="mb-3 flex flex-wrap gap-2">
               {(hotelMode ? contextualHotelReplies.map(item=>({label:item.status==="COMPLETED"?"Resolve & send":item.label,text:item.message,reply:item})) : whatsappEnabled ? [
                 { label: "Trial intake", text: "Please share your business name, website, WhatsApp number, and the first workflow you want to improve during the trial." },
                 { label: "Book callback", text: "Please share a preferred time for a short callback. Our team will help map the right workflow and next step." },
@@ -1221,8 +1219,8 @@ export function WhatsAppBotClient({
                   {item.label}
                 </button>
               ))}
-            </div>
-            {selectedHotelReply?<div className="mb-3 rounded-xl border border-[#d8c278] bg-[#fffbef] p-3"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#7a621d]">Exact guest-facing preview · edit before sending</p><p className="mt-2 text-xs font-semibold">{selectedHotelReply.department==="ALL"?"Hotel team":selectedHotelReply.department} · now</p><p className="mt-1 text-sm leading-6">{draftMessage}</p>{selectedHotelReply.status==="COMPLETED"?<p className="mt-2 text-xs font-bold text-emerald-800">Send will explicitly resolve this case. Feedback is offered only afterwards.</p>:null}</div>:null}
+            </div>}
+            {selectedHotelReply && !serviceDeskMode?<div className="mb-3 rounded-xl border border-[#d8c278] bg-[#fffbef] p-3"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#7a621d]">Exact guest-facing preview · edit before sending</p><p className="mt-2 text-xs font-semibold">{selectedHotelReply.department==="ALL"?"Hotel team":selectedHotelReply.department} · now</p><p className="mt-1 text-sm leading-6">{draftMessage}</p></div>:null}
             <div className="flex items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--surface-soft)] px-2 py-2">
               <Button
                 tone="ghost"
@@ -1276,8 +1274,8 @@ export function WhatsAppBotClient({
             {activeIsWebsite ? (
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs font-semibold text-[#1559b7]">Replies are delivered securely to this website visitor session.</p>
-                <Button className="inbox-action-close" tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? "Conversation closed" : "Close conversation"}</Button>
-                <Button className="inbox-action-resume" tone="surface" type="button" disabled={isSending} onClick={() => void closeWebsiteConversation(true)}>Resume AI · Owner/Admin</Button>
+                <Button className="inbox-action-close" tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? (serviceDeskMode ? "Ticket closed" : "Conversation closed") : (serviceDeskMode ? "Close ticket" : "Close conversation")}</Button>
+                {!serviceDeskMode ? <Button className="inbox-action-resume" tone="surface" type="button" disabled={isSending} onClick={() => void closeWebsiteConversation(true)}>Resume AI · Owner/Admin</Button> : null}
               </div>
             ) : null}
             {selectedAttachment ? (

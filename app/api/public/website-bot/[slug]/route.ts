@@ -35,6 +35,7 @@ import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 import { matchPublishedHotelFlow } from "@/lib/hotelgpt-flow-library";
 import { resolveTenantWelcomeMessage } from "@/lib/tenant-facing-copy";
 import { formatPublicPhoneForDisplay, normalizePublicPhoneInText } from "@/lib/public-phone-format";
+import { inStayTicketAcknowledgement } from "@/lib/in-stay-ticket";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -90,9 +91,6 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const tenantConfiguration = { ...configuration, welcomeMessage: resolveTenantWelcomeMessage({ configuredMessage: configuration.welcomeMessage, businessName: organization.name, hotelMode: profile.category === "STAY" }) };
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
-  const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
-  if (!replyEntitlement.allowed) return NextResponse.json({ error: "This AI Bot has used its available reply credits. The business account owner can add credits or activate a plan in Billing." }, { status: 402, headers: responseHeaders });
-
   const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string; stayAccessToken?: string } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
@@ -128,17 +126,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const safety = guardWebsiteVisitorMessage(message, organization.name);
   const handoffEnabled = profile.humanHandoffEnabled === true;
   const knowledgeSettings = await readKnowledgeSettings(slug);
-  const inStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "IN_STAY", message) : null;
-  const inStayAcknowledgement = inStayFlow?.flow.templateKey === "HOTEL_REPORT_PROBLEM"
-    ? "Your room issue has been reported to the front desk and marked for priority review. We will update you here."
-    : inStayFlow?.flow.templateKey === "HOTEL_RESOLUTION_FEEDBACK"
-      ? "The front desk has received your request for an update and will confirm the current status here."
-      : "Thank you. Our front desk has received your request. We will update you here.";
-  const inStaySmartContent = inStayFlow ? { flowId:inStayFlow.flow.id,journey:"IN_STAY",kind:inStayFlow.flow.templateKey,statusLabel:"Received",quickReplies:inStayFlow.flow.templateKey==="HOTEL_REPORT_PROBLEM"?["Add more details","This is urgent","Talk to front desk"]:["Add another item","Talk to front desk"] } : undefined;
-
   // In-stay service is deliberately isolated from pre-stay sales knowledge.
-  // During the human-first launch, every resident message becomes a front-desk
-  // case and no model-generated advice is returned.
+  // Every resident message becomes a tracked front-desk ticket. No model,
+  // published flow, retrieval answer or dynamic promise may answer the guest.
   if (stayCapability) {
     const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
     return persistWebsiteTurn(async () => {
@@ -153,8 +143,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
         const lead = await db.lead.findFirst({ where: { id: activeLeadId, propertyId: property.id }, select: { id: true } });
         if (!lead) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
         await db.leadMessage.create({ data: { leadId: lead.id, sender: "GUEST", body: safety.storageText, sentAt: new Date() } });
-        const shouldAcknowledge = !priorToken || !["HUMAN_REQUESTED", "HUMAN_JOINED"].includes(sessionStatus);
-        if (shouldAcknowledge) await db.leadMessage.create({ data: { leadId: lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
+        const inStayAcknowledgement = inStayTicketAcknowledgement(lead.id);
+        await db.leadMessage.create({ data: { leadId: lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
         await db.leadTag.deleteMany({ where: { leadId: lead.id, value: { in: ["resolved", "closed"], mode: "insensitive" } } });
         await db.lead.update({ where: { id: lead.id }, data: { intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
         await ensureWebsiteHandover({ propertyId: property.id, leadId: lead.id, responseSlaMinutes: profile.responseSlaMinutes });
@@ -165,11 +155,13 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
           create: { propertyId: property.id, leadId: lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt },
           update: { sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt, revokedAt: null }
         });
-        return NextResponse.json({ answer: inStayAcknowledgement, smartContent:inStaySmartContent, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true, messageAccepted: !shouldAcknowledge }, { headers: responseHeaders });
+        return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true }, { headers: responseHeaders });
       }
 
-      const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, phone: stayCapability.phoneNumber, profileName: stayCapability.guestName, message: safety.storageText, aiReply: inStayAcknowledgement, propertySlug: slug }).catch(() => null);
+      const captured = await captureIncomingAiBotMessage({ conversationId: `website:${sessionId}`, phone: stayCapability.phoneNumber, profileName: stayCapability.guestName, message: safety.storageText, propertySlug: slug }).catch(() => null);
       if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
+      const inStayAcknowledgement = inStayTicketAcknowledgement(captured.lead.id);
+      await db.leadMessage.create({ data: { leadId: captured.lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
       await db.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
       await db.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL`;
       await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes });
@@ -180,9 +172,11 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
         create: { propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt },
         update: { capabilityHash: hashWebsiteVisitorValue(visitorToken), status: "HUMAN_REQUESTED", resolutionState: { journey: "IN_STAY", owner: "FRONT_DESK" }, expiresAt, revokedAt: null }
       });
-      return NextResponse.json({ answer: inStayAcknowledgement, smartContent:inStaySmartContent, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true }, { headers: responseHeaders });
+      return NextResponse.json({ answer: inStayAcknowledgement, grounded: false, sources: [], visitorToken, conversationState: "HUMAN_REQUESTED", handoffAvailable: true }, { headers: responseHeaders });
     });
   }
+  const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
+  if (!replyEntitlement.allowed) return NextResponse.json({ error: "This AI Bot has used its available reply credits. The business account owner can add credits or activate a plan in Billing." }, { status: 402, headers: responseHeaders });
   const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   const acceptedCallbackOffer = acceptedHumanOffer(message, lastAssistantAnswer);
   const typesafeReviewRef = hashWebsiteVisitorValue(sessionId);

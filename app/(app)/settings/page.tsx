@@ -7,7 +7,7 @@ const sections = [
   {
     title: "Guest communication",
     href: "/settings/guest-communication/saved-replies",
-    description: "Manage HotelGPT Pre-Stay and In-Stay saved replies, permissions, statuses and language variants."
+    description: "Manage Pre-Stay saved replies. In-Stay uses tracked tickets and direct front-desk responses."
   },
   {
     title: "Team access",
