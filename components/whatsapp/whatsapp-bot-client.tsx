@@ -125,6 +125,20 @@ function getDeliveryMeta(status?: string | null) {
   return { label: normalized, ticks: "✓", tone: "bg-[#eef2ff] text-[#4f46e5]" };
 }
 
+function getHotelReplyActionClass(status?: string) {
+  switch (status) {
+    case "RECEIVED": return "inbox-action-blue";
+    case "ASSIGNED":
+    case "ON_THE_WAY": return "inbox-action-amber";
+    case "INFORMATION_REQUIRED": return "inbox-action-violet";
+    case "DELAYED":
+    case "ESCALATED": return "inbox-action-red";
+    case "COMPLETED":
+    case "FEEDBACK": return "inbox-action-green";
+    default: return "inbox-action-neutral";
+  }
+}
+
 function getLatestMessage(lead: Lead) {
   return lead.transcript[lead.transcript.length - 1] ?? null;
 }
@@ -889,7 +903,7 @@ export function WhatsAppBotClient({
   }).slice(0,4) : [];
 
   return (
-    <div className="space-y-3">
+    <div className={teamMode ? "flex min-h-0 flex-1 flex-col" : "space-y-3"}>
       {journeyNavigation}
     <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView} data-service-desk={serviceDeskMode}>
       {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{(serviceDeskMode?[{key:"conversations",label:"Requests"},{key:"reply",label:"Conversation"}]:hotelMode?[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"}]:[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}]).map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
@@ -1035,7 +1049,7 @@ export function WhatsAppBotClient({
         </aside>
 
         <main id="inbox-reply" className={`flex min-w-0 scroll-mt-12 flex-col bg-[#f8f0d8] ${teamMode ? "min-h-0" : "min-h-[760px]"}`}>
-          <div className="border-b border-[var(--border)] bg-white px-5 py-4">
+          <div className="inbox-contact-header border-b border-[var(--border)] bg-white px-5 py-4">
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[var(--primary-soft)] text-sm font-semibold text-[var(--primary-strong)]">
@@ -1052,7 +1066,7 @@ export function WhatsAppBotClient({
               <div className="flex flex-wrap items-center gap-2">
               <Button
                 tone="surface"
-                className="rounded-md px-3 py-2 text-xs"
+                className="inbox-action-takeover rounded-md px-3 py-2 text-xs"
                   onClick={() => void takeOverFromAi()}
                 >
                   Human takeover
@@ -1085,7 +1099,7 @@ export function WhatsAppBotClient({
             </div>
           </div>
 
-          {serviceDeskMode ? <section className="border-b border-[var(--border)] bg-white px-5 py-3" aria-label="Service request summary">
+          {serviceDeskMode ? <section className="hotel-service-summary border-b border-[var(--border)] bg-white px-5 py-3" aria-label="Service request summary">
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
               {[["Room",activeRoom],["Guest",activeLead.name],["Department",serviceDepartment],["Request status",activeState.label]].map(([label,value])=><div key={label} className={`rounded-lg border px-3 py-2 ${label==="Room"?"border-[#d5bd6d] bg-[#fff8df]":"border-[#ebe5d8] bg-[#fbfaf7]"}`}><p className="text-[10px] font-bold uppercase tracking-[.12em] text-[#817a6d]">{label}</p><p className={`mt-1 truncate font-semibold text-[#24211d] ${label==="Room"?"text-lg":"text-sm"}`}>{value}</p></div>)}
             </div>
@@ -1094,7 +1108,7 @@ export function WhatsAppBotClient({
             <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-5">{[["Need",activeLead.intent],["Market",activeLead.stay],["Timeline",activeLead.party],["Budget",activeLead.budget],["Consented contact",activeLead.websiteSession?.consentedAt ? activeLead.websiteSession.contactValue || "Provided" : "Not provided"]].map(([label,value])=><div key={label} className="rounded-md bg-[var(--surface-soft)] px-3 py-2"><dt className="text-[10px] font-bold uppercase tracking-[.14em] text-[var(--text-muted)]">{label}</dt><dd className="mt-1 break-words font-semibold text-[var(--text)]">{value}</dd></div>)}</dl>
           </section> : null}
 
-          <div className="border-b border-[var(--border)] bg-[var(--info-soft)] px-5 py-3">
+          <div className="inbox-suggestion border-b border-[var(--border)] bg-[var(--info-soft)] px-5 py-3">
             <div className="flex flex-col gap-3 2xl:flex-row 2xl:items-center 2xl:justify-between">
               <div>
                 <p className="text-sm font-semibold text-[var(--info)]">AI suggested reply</p>
@@ -1102,7 +1116,7 @@ export function WhatsAppBotClient({
               </div>
               <Button
                 tone="surface"
-                className="shrink-0 rounded-md px-3 py-2 text-xs"
+                className="inbox-action-suggest shrink-0 rounded-md px-3 py-2 text-xs"
                 onClick={() => setDraftMessage(aiSuggestedReply)}
               >
                 Use suggestion
@@ -1176,7 +1190,7 @@ export function WhatsAppBotClient({
             ) : null}
           </div>
 
-          <div className="border-t border-[var(--border)] bg-white px-4 py-3">
+          <div className="inbox-composer border-t border-[var(--border)] bg-white px-4 py-3">
             <input
               ref={fileInputRef}
               type="file"
@@ -1201,7 +1215,7 @@ export function WhatsAppBotClient({
                 <button
                   key={item.label}
                   type="button"
-                  className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--text-muted)] hover:bg-white hover:text-[var(--text)]"
+                  className={`inbox-quick-action rounded-md border px-3 py-1.5 text-xs font-semibold ${"reply" in item ? getHotelReplyActionClass(item.reply.status) : "inbox-action-neutral"}`}
                   onClick={() => {setDraftMessage(item.text);setSelectedHotelReply("reply" in item ? item.reply : null);}}
                 >
                   {item.label}
@@ -1262,8 +1276,8 @@ export function WhatsAppBotClient({
             {activeIsWebsite ? (
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs font-semibold text-[#1559b7]">Replies are delivered securely to this website visitor session.</p>
-                <Button tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? "Conversation closed" : "Close conversation"}</Button>
-                <Button tone="surface" type="button" disabled={isSending} onClick={() => void closeWebsiteConversation(true)}>Resume AI · Owner/Admin</Button>
+                <Button className="inbox-action-close" tone="surface" type="button" disabled={isSending || isLeadResolved(activeLead)} onClick={() => void closeWebsiteConversation()}>{isLeadResolved(activeLead) ? "Conversation closed" : "Close conversation"}</Button>
+                <Button className="inbox-action-resume" tone="surface" type="button" disabled={isSending} onClick={() => void closeWebsiteConversation(true)}>Resume AI · Owner/Admin</Button>
               </div>
             ) : null}
             {selectedAttachment ? (

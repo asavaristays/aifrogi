@@ -62,7 +62,13 @@ test("HotelGPT inbox removes the low-value qualification strip", () => {
   assert.match(inbox, /\.\.\.\(!hotelMode \? \[\{ href: "#inbox-profile", label: "Profile" \}\] : \[\]\)/);
   assert.doesNotMatch(inbox, /Guest enquiry qualification/);
   assert.doesNotMatch(inbox, /Stay dates and guest count pending/);
-  assert.match(inboxStyles, /height:clamp\(500px,calc\(100dvh - 250px\),760px\)/);
+  assert.match(inboxStyles, /height:100dvh/);
+  assert.match(inboxStyles, /\.page>:last-child \{min-height:0;flex:1;\}/);
   assert.match(inboxStyles, /inbox-conversation-list[^}]*flex:1/);
-  assert.match(inboxStyles, /\.workspace button \{min-height:36px/);
+  assert.match(inboxStyles, /\.workspace button \{min-height:34px/);
+  assert.match(inboxStyles, /inbox-action-blue/);
+  assert.match(inboxStyles, /inbox-action-amber/);
+  assert.match(inboxStyles, /inbox-action-violet/);
+  assert.match(inboxStyles, /inbox-action-red/);
+  assert.match(inboxStyles, /inbox-action-green/);
 });

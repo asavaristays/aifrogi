@@ -1,4 +1,5 @@
-.page { padding: clamp(.75rem, 2vw, 1.5rem); color: #171717; }
+.page {box-sizing:border-box;display:flex;height:100dvh;min-height:0;flex-direction:column;overflow:hidden;padding:clamp(.65rem,1.5vw,1.15rem);color:#171717;}
+.page>:last-child {min-height:0;flex:1;}
 .journeyHeader {display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;margin-bottom:1rem;padding:1.25rem 1.35rem;border:1px solid #e7dfcd;border-radius:20px;background:linear-gradient(135deg,#fff 0%,#fbf7eb 100%);box-shadow:0 12px 36px #3d32120d;}
 .journeyHeader h1 {font-size:clamp(1.45rem,2.4vw,2rem);font-weight:700;letter-spacing:-.04em;}
 .journeyHeader p:not(.eyebrow) {margin-top:.35rem;color:#6b655b;font-size:.875rem;}
@@ -20,24 +21,44 @@
 .options button,.options a {margin-bottom:.5rem; width:100%;}
 .options p {line-height:1.6; font-size:.875rem;}
 .notice {font-size:.875rem; line-height:1.6; padding:.6rem .25rem;}
-.workspace {height:clamp(500px,calc(100dvh - 250px),760px);overflow:hidden;border-radius:20px;box-shadow:0 8px 32px #00000009;}
+.workspace {height:auto;min-height:0;flex:1;overflow:hidden;border-radius:16px;box-shadow:0 8px 32px #00000009;}
 .workspace :global(.inbox-v2-grid) {height:100%;grid-template-columns:190px minmax(250px, .8fr) minmax(0,1.65fr); min-height:0;}
 .workspace :global(.inbox-v2-grid)>* {min-height:0;overflow:hidden;}
 .workspace[data-service-desk=true] :global(.inbox-v2-grid) {grid-template-columns:minmax(290px,.72fr) minmax(0,1.9fr);}
 .workspace[data-service-desk=true] :global(#inbox-queues),.workspace[data-service-desk=true] :global(#inbox-profile) {display:none;}
 .workspace[data-service-desk=true] :global(#inbox-conversations)>div:last-child {max-height:none;}
 .workspace :global(#inbox-profile) {grid-column:1/-1; border-top:1px solid #ddd;}
-.workspace :global(#inbox-reply) {background:#f6f6f4;}
+.workspace :global(#inbox-reply) {position:relative;background:#f6f6f4;}
 .workspace :global(#inbox-reply)>div:nth-last-child(2) {background:#f6f6f4;}
 .workspace :global(#inbox-conversations) {display:flex;min-height:0;flex-direction:column;background:#f7f7f5;}
 .workspace :global(.inbox-conversation-list) {min-height:0;max-height:none;flex:1;}
-.workspace button {min-height:36px;border-radius:10px;font-size:.8rem;}
+.workspace :global(.inbox-contact-header) {padding:.7rem 1rem;}
+.workspace :global(.hotel-service-summary) {padding:.55rem 1rem;}
+.workspace :global(.hotel-service-summary)>div {grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;}
+.workspace :global(.hotel-service-summary)>div>div {min-height:54px;padding:.5rem .7rem;}
+.workspace :global(.inbox-suggestion) {padding:.65rem 1rem;}
+.workspace :global(.inbox-suggestion p) {line-height:1.35;}
+.workspace :global(.inbox-composer) {position:sticky;bottom:0;z-index:5;padding:.65rem 1rem;box-shadow:0 -8px 24px #0000000a;}
+.workspace button {min-height:34px;border-radius:8px;font-size:.78rem;}
 .workspace input {min-height:42px;font-size:.9rem;}
+.workspace :global(.inbox-quick-action) {box-shadow:none;transition:filter .15s ease,transform .15s ease;}
+.workspace :global(.inbox-quick-action:hover) {filter:brightness(.97);transform:translateY(-1px);}
+.workspace :global(.inbox-action-blue) {border-color:#93c5fd;background:#eff6ff;color:#1d4ed8;}
+.workspace :global(.inbox-action-amber) {border-color:#f6c453;background:#fff8e1;color:#8a5600;}
+.workspace :global(.inbox-action-violet) {border-color:#c4b5fd;background:#f5f3ff;color:#6d28d9;}
+.workspace :global(.inbox-action-red) {border-color:#fca5a5;background:#fff1f2;color:#b42318;}
+.workspace :global(.inbox-action-green) {border-color:#86d7b0;background:#ecfdf3;color:#087a55;}
+.workspace :global(.inbox-action-neutral) {border-color:#d6d3cd;background:#f8f7f4;color:#57534e;}
+.workspace :global(.inbox-action-takeover) {border-color:#f2c166!important;background:#fff8e7!important;color:#7a4b00!important;}
+.workspace :global(.inbox-action-suggest) {border-color:#93c5fd!important;background:#fff!important;color:#1559b7!important;}
+.workspace :global(.inbox-action-close) {border-color:#f0b6b2!important;color:#a3322c!important;}
+.workspace :global(.inbox-action-resume) {border-color:#86d7b0!important;background:#ecfdf3!important;color:#087a55!important;}
 .workspace :global(.text-xs) {font-size:.875rem;}
 .workspace :global(.text-\[10px\]),.workspace :global(.text-\[11px\]) {font-size:.75rem;}
 .page :is(button,a,input,summary):focus-visible {outline:3px solid #8a6a16; outline-offset:3px;}
 .mobileNav {display:none;}
 @media(max-width:1200px) {
+ .page {height:auto;min-height:100dvh;overflow:visible;}
  .workspace {height:auto;min-height:0;overflow:hidden;}
  .workspace :global(.inbox-v2-grid) {display:block;}
  .mobileNav {display:flex; gap:.4rem; padding:.6rem; overflow-x:auto; border-bottom:1px solid #ddd; background:white;}
@@ -50,4 +71,4 @@
  .workspace :global(.inbox-conversation-list) {max-height:65vh;}
 }
 @media(prefers-reduced-motion:reduce) {.workspace * {transition:none!important; scroll-behavior:auto!important;}}
-@media(max-width:720px) {.journeyHeader{align-items:flex-start;flex-direction:column}.journeyLink{width:100%;justify-content:center}.workspace button{min-height:44px}}
+@media(max-width:720px) {.journeyHeader{align-items:flex-start;flex-direction:column}.journeyLink{width:100%;justify-content:center}.workspace button{min-height:44px}.workspace :global(.hotel-service-summary)>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
