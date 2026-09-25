@@ -20,7 +20,7 @@ async function loadCurrentProperty() {
 export async function GET() {
   const access = await resolveClientWorkspaceAccess();
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
-  const clientAccess = { user: access.user, organization: access.organization, role: access.role, membership: access.organization.members.find((member) => member.email.toLowerCase() === access.user.username.toLowerCase()) };
+  const clientAccess = { user: access.user, organization: access.organization, role: access.role, department: access.department, membership: access.organization.members.find((member) => member.email.toLowerCase() === access.user.username.toLowerCase()) };
   const property = await withClientDatabaseContext(clientAccess, "automation-jobs-get", loadCurrentProperty);
   if (!property) return NextResponse.json({ error: "Workspace not found" }, { status: 404 });
 
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   });
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
   const property = { id: access.propertyId, name: access.property.name, slug: access.propertySlug };
-  const clientAccess = { user: access.user, organization: access.organization, role: access.role, membership: access.organization.members.find((member) => member.email.toLowerCase() === access.user.username.toLowerCase()) };
+  const clientAccess = { user: access.user, organization: access.organization, role: access.role, department: access.department, membership: access.organization.members.find((member) => member.email.toLowerCase() === access.user.username.toLowerCase()) };
   const action = typeof payload.action === "string" ? payload.action : "run_due";
 
   if (action === "enqueue_demo") {

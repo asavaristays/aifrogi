@@ -8,6 +8,7 @@ import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import type { ClientAccessRole } from "@/lib/client-access";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { canOpenClientWorkspace } from "@/lib/workspace-access";
+import { getMemberDepartment } from "@/lib/in-stay-access";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -46,11 +47,13 @@ export default async function ProductLayout({ children }: { children: React.Reac
     : workspaces[0]?.slug ?? currentWorkspaceSlug;
   const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   const accessRole = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
+  const department = await getMemberDepartment(membership?.id);
 
   return <AppShell
     workspaces={workspaces}
     currentWorkspaceSlug={selectedSlug}
     accessRole={accessRole}
+    department={department}
     enabledChannels={organization.botProfile?.channels || []}
     botCategory={organization.botProfile?.category || ""}
     subscriptionAccess={subscriptionAccess ? {

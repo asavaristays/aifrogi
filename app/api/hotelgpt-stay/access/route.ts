@@ -7,7 +7,7 @@ import { hasTrustedSameOrigin } from "@/lib/security/request-origin";
 type AccessRow = { id: string; guestName: string; phoneNumber: string; roomNumber: string; requestedCheckIn: Date; requestedCheckOut: Date; approvedCheckOut: Date | null; status: string; reviewedBy: string | null; reviewedAt: Date | null; revokedAt: Date | null; leadId: string | null; createdAt: Date };
 
 export async function GET(request: Request) {
-  const access = await resolveClientWorkspaceAccess({ propertySlug: new URL(request.url).searchParams.get("propertySlug") });
+  const access = await resolveClientWorkspaceAccess({ propertySlug: new URL(request.url).searchParams.get("propertySlug"), requireManage: true });
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
   return withTenantDatabaseContext({ kind: "tenant", organizationId: access.organization.id, actor: `hotelgpt-access:${access.user.username}` }, async () => {
     const db = getDb(); if (!db) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });

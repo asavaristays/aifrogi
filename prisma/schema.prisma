@@ -727,6 +727,7 @@ model OrganizationMember {
   email               String
   name                String?
   role                String       @default("OWNER")
+  department          String?
   status              String       @default("ACTIVE")
   passwordHash        String?
   invitationTokenHash String?      @unique

@@ -201,7 +201,7 @@ test("client sidebar keeps separate Pre-Stay and In-Stay inboxes visible for dai
   assert.match(navigation, /href: "\/team-inbox", label: "Pre-Stay Inbox"/);
   assert.match(navigation, /href: "\/in-stay\/inbox", label: "In-Stay Inbox"/);
   assert.ok(navigation.indexOf('href: "/contacts"') < navigation.indexOf('href: "/team-inbox"'));
-  assert.match(sidebar, /hrefs: \["\/dashboard", "\/team-inbox", "\/in-stay\/inbox", "\/in-stay", "\/contacts"\]/);
+  assert.match(sidebar, /hrefs: \["\/dashboard", "\/team-inbox", "\/in-stay\/inbox", "\/in-stay\/team", "\/in-stay", "\/contacts"\]/);
 });
 
 test("optional welcome highlight flows from Setup to every website widget", () => {

@@ -32,9 +32,11 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(resident, /localStorage\.getItem/);
   assert.match(resident, /scan the same QR on this phone/);
   assert.match(resident, /Guest Login/);
-  assert.match(resident, /Already approved\? Login with room number/);
+  assert.match(resident, /Verify with your room and registered phone/);
   assert.match(resident, /Register Stay/);
-  assert.match(resident, /Enter room number/);
+  assert.match(resident, /Verify your approved stay/);
+  assert.match(resident, /Last 4 digits of registered phone/);
+  assert.match(resident, /phoneLast4/);
   assert.match(resident, /stayAccessToken/);
   const embed = source("components/website-bot/website-bot-embed.tsx");
   assert.match(embed, /aifrogi-resident:\$\{slug\}/);
@@ -67,6 +69,10 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(cases, /In-stay owner:/);
   assert.match(cases, /slaState/);
   assert.match(cases, /access\.role === "VIEWER"/);
+  assert.match(cases, /IN_STAY_COMPLETION_SUBMITTED/);
+  const departmentWorkspace = source("components/in-stay/department-mobile-workspace.tsx");
+  assert.match(departmentWorkspace, /Submit completion/);
+  assert.match(departmentWorkspace, /front desk will confirm completion and reply to the guest/i);
   assert.match(workspace, /Take ownership/);
   assert.match(workspace, /Route to/);
   assert.match(workspace, /Room \{item\.room\}/);

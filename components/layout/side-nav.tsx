@@ -13,7 +13,7 @@ import type { ClientAccessRole } from "@/lib/client-access";
 import { isClientNavItemAvailable } from "@/lib/client-navigation";
 
 const navGroups = [
-  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/team-inbox", "/in-stay/inbox", "/in-stay", "/contacts"] },
+  { label: "Operate", helper: "Daily work", hrefs: ["/dashboard", "/team-inbox", "/in-stay/inbox", "/in-stay/team", "/in-stay", "/contacts"] },
   { label: "Grow", helper: "Intelligence and reporting", hrefs: ["/knowledge", "/flow-intelligence", "/improve", "/analytics"] },
   { label: "Manage", helper: "Setup and support", hrefs: ["/setup", "/billing", "/support", "/settings"] }
 ];
@@ -25,6 +25,7 @@ export function SideNav({
   workspaces = [],
   currentWorkspaceSlug = "",
   accessRole = "AGENT",
+  department = null,
   enabledChannels = [],
   botCategory = ""
 }: {
@@ -32,6 +33,7 @@ export function SideNav({
   workspaces?: WorkspaceOption[];
   currentWorkspaceSlug?: string;
   accessRole?: ClientAccessRole;
+  department?: string | null;
   enabledChannels?: string[];
   botCategory?: string;
 } = {}) {
@@ -39,7 +41,7 @@ export function SideNav({
   const { sidebarOpen, setSidebarOpen, sidebarCollapsed, setSidebarCollapsed } = useAppState();
   const isLight = tone === "light";
   const canManage = accessRole === "OWNER" || accessRole === "ADMIN";
-  const allowedHrefs = new Set(canManage
+  const allowedHrefs = new Set(department ? ["/in-stay/team", "/support"] : canManage
     ? navItems.map((item) => item.href)
     : ["/dashboard", "/team-inbox", "/in-stay/inbox", "/in-stay", "/contacts", "/knowledge", "/flow-intelligence", "/improve", "/support"]);
 
@@ -126,7 +128,7 @@ export function SideNav({
         </nav>
 
         <div className={`mt-2 shrink-0 border-t border-white/10 px-1.5 pt-3 ${sidebarCollapsed ? "hidden" : "block"}`}>
-          <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className="text-white/45">Access</span><strong className="text-[var(--gold-300)]">{accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Agent"}</strong></div>
+          <div className="mb-2.5 flex items-center justify-between gap-2 px-2 text-xs"><span className="text-white/45">Access</span><strong className="text-right text-[var(--gold-300)]">{department || (accessRole === "OWNER" ? "Client Admin" : accessRole === "ADMIN" ? "Workspace Admin" : accessRole === "VIEWER" ? "Viewer" : "Front Desk")}</strong></div>
           {workspaces[0] ? <div className="mb-2.5 flex items-center gap-2 px-2 text-xs"><span className="h-2 w-2 rounded-full bg-[var(--success)]" /><span className="text-white/58">AI Bot workspace</span></div> : null}
           <LogoutButton variant="sidebar" className="w-full rounded-md border border-white/12 !bg-white/5 px-2.5 py-2 text-xs font-bold tracking-normal text-white/78 hover:!bg-white/10 hover:text-white" />
         </div>

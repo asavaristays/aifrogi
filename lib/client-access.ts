@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/auth-server";
 import { getOrganizationForMember } from "@/lib/repositories/onboarding-repository";
 import { getOrganizationSubscriptionAccess, type SubscriptionAccessState } from "@/lib/subscription-access";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { getMemberDepartment, type InStayDepartment } from "@/lib/in-stay-access";
 
 export type ClientAccessRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -12,7 +13,8 @@ export async function getCurrentClientAccess() {
   if (!organization) return null;
   const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   const role = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
-  return { user, organization, membership, role };
+  const department = await getMemberDepartment(membership?.id);
+  return { user, organization, membership, role, department };
 }
 
 export function canManageWorkspace(role: ClientAccessRole) {
@@ -43,6 +45,7 @@ export type ClientWorkspaceAccessResult =
       user: NonNullable<Awaited<ReturnType<typeof getCurrentClientAccess>>>["user"];
       organization: NonNullable<Awaited<ReturnType<typeof getCurrentClientAccess>>>["organization"];
       role: ClientAccessRole;
+      department: InStayDepartment | null;
       property: NonNullable<Awaited<ReturnType<typeof getCurrentClientAccess>>>["organization"]["properties"][number];
       propertySlug: string;
       propertyId: string;
@@ -91,6 +94,7 @@ export async function resolveClientWorkspaceAccess(input?: {
     user: access.user,
     organization: access.organization,
     role: access.role,
+    department: access.department,
     property,
     propertySlug: property.slug,
     propertyId: property.id,

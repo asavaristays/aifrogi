@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { hashCredentialPassword, verifyCredentialPassword } from "@/lib/credential-store";
 import { SELF_SERVICE_REGISTRATION } from "@/lib/repositories/trial-registration-repository";
 import { TRIAL_DAYS, TRIAL_UPGRADE_REMINDER_DAY } from "@/lib/trial-policy";
+import { normalizeInStayDepartment } from "@/lib/in-stay-access";
 
 export type TeamRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -18,14 +19,19 @@ function tokenHash(token: string) {
 export async function listTeamMembers(organizationId: string) {
   const db = getDb();
   if (!db) return [];
-  return db.organizationMember.findMany({
+  const members = await db.organizationMember.findMany({
     where: { organizationId },
     select: { id: true, email: true, name: true, role: true, status: true, invitedAt: true, joinedAt: true, lastLoginAt: true, invitationExpiresAt: true },
     orderBy: [{ role: "asc" }, { createdAt: "asc" }]
   });
+  const scopes = await db.$queryRaw<Array<{ id: string; department: string | null }>>`
+    SELECT id,"department" FROM "OrganizationMember" WHERE "organizationId"=${organizationId}
+  `;
+  const byId = new Map(scopes.map(item => [item.id, normalizeInStayDepartment(item.department)]));
+  return members.map(member => ({ ...member, department: byId.get(member.id) || null }));
 }
 
-export async function inviteTeamMember(input: { organizationId: string; email: string; name: string; role: string; invitedBy: string }) {
+export async function inviteTeamMember(input: { organizationId: string; email: string; name: string; role: string; department?: string | null; invitedBy: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const email = input.email.trim().toLowerCase();
@@ -33,11 +39,13 @@ export async function inviteTeamMember(input: { organizationId: string; email: s
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
   const role = normalizeRole(input.role);
+  const department = role === "AGENT" ? normalizeInStayDepartment(input.department) : null;
   const member = await db.organizationMember.upsert({
     where: { organizationId_email: { organizationId: input.organizationId, email } },
     update: { name: input.name.trim() || null, role, status: "INVITED", invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt, invitedBy: input.invitedBy, invitedAt: new Date() },
     create: { organizationId: input.organizationId, email, name: input.name.trim() || null, role, status: "INVITED", invitationTokenHash: tokenHash(token), invitationExpiresAt: expiresAt, invitedBy: input.invitedBy }
   });
+  await db.$executeRaw`UPDATE "OrganizationMember" SET "department"=${department} WHERE id=${member.id} AND "organizationId"=${input.organizationId}`;
   return { member, token, expiresAt };
 }
 
@@ -153,7 +161,7 @@ export async function verifyTeamMemberCredential(email: string, password: string
   return { username: member.email, label: member.name || "AiFrogi Team Member", workspaceRole: normalizeRole(member.role) };
 }
 
-export async function updateTeamMember(input: { organizationId: string; memberId: string; role?: string; status?: string }) {
+export async function updateTeamMember(input: { organizationId: string; memberId: string; role?: string; status?: string; department?: string | null }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
   const member = await db.organizationMember.findFirst({ where: { id: input.memberId, organizationId: input.organizationId } });
@@ -164,5 +172,9 @@ export async function updateTeamMember(input: { organizationId: string; memberId
     const activeOwners = await db.organizationMember.count({ where: { organizationId: input.organizationId, role: "OWNER", status: "ACTIVE" } });
     if (activeOwners <= 1) throw new Error("Assign another active owner before changing this account.");
   }
-  return db.organizationMember.update({ where: { id: member.id }, data: { role: nextRole, status: nextStatus }, select: { id: true, email: true, name: true, role: true, status: true, joinedAt: true, lastLoginAt: true } });
+  const existingScope = await db.$queryRaw<Array<{ department: string | null }>>`SELECT "department" FROM "OrganizationMember" WHERE id=${member.id} LIMIT 1`;
+  const department = nextRole === "AGENT" ? input.department === undefined ? normalizeInStayDepartment(existingScope[0]?.department) : normalizeInStayDepartment(input.department) : null;
+  const updated = await db.organizationMember.update({ where: { id: member.id }, data: { role: nextRole, status: nextStatus }, select: { id: true, email: true, name: true, role: true, status: true, joinedAt: true, lastLoginAt: true } });
+  if (input.department !== undefined || nextRole !== "AGENT") await db.$executeRaw`UPDATE "OrganizationMember" SET "department"=${department} WHERE id=${member.id} AND "organizationId"=${input.organizationId}`;
+  return { ...updated, department };
 }

@@ -16,6 +16,7 @@ export async function POST(request: Request) {
     user: workspace.user,
     organization: workspace.organization,
     role: workspace.role,
+    department: workspace.department,
     membership: workspace.organization.members.find((member) => member.email.toLowerCase() === workspace.user.username.toLowerCase())
   };
   const result = await withClientDatabaseContext(access, "knowledge-test-answer", () =>
