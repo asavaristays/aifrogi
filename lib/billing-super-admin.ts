@@ -152,6 +152,14 @@ export async function ensureBillingPlans() {
 export async function ensureOrganizationSubscription(organizationId: string, requestedPlan?: string) {
   const db = getDb();
   if (!db) return null;
+  // Tenant requests can read their own subscription but must not depend on
+  // visibility of the global billing-plan catalogue. Reuse the established
+  // commercial record before attempting first-time provisioning.
+  const existing = await db.subscription.findUnique({
+    where: { organizationId },
+    include: { plan: true }
+  });
+  if (existing) return existing;
   const plans = await ensureBillingPlans();
   const organization = await db.organization.findUnique({
     where: { id: organizationId },

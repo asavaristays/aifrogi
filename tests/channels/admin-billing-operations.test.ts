@@ -57,3 +57,13 @@ test("client and Super Admin billing show the effective AI credit balance", () =
   assert.match(detail, /replies\.total/);
   assert.match(websiteBot, /checkOrganizationEntitlement\(organization\.id, "aiReplies", 1\)/);
 });
+
+test("tenant allowance checks reuse an existing subscription before global plan provisioning", () => {
+  const billing = readFileSync(resolve(process.cwd(), "lib/billing-super-admin.ts"), "utf8");
+  const ensureStart = billing.indexOf("export async function ensureOrganizationSubscription");
+  const existingRead = billing.indexOf("db.subscription.findUnique", ensureStart);
+  const planProvisioning = billing.indexOf("ensureBillingPlans()", ensureStart);
+  assert.ok(existingRead > ensureStart);
+  assert.ok(planProvisioning > existingRead);
+  assert.match(billing.slice(ensureStart, planProvisioning), /if \(existing\) return existing/);
+});
