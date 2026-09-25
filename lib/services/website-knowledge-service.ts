@@ -24,6 +24,7 @@ import { buildTenantKnowledgeChangeSet, tenantKnowledgeFreshness, type TenantKno
 import { assembleAnswerContext, type AnswerReplayTrace } from "@/lib/sovereign-intelligence/answer-context";
 import { hasCompleteAnswerEnding } from "@/lib/sovereign-intelligence/answer-quality-gate";
 import { planCoreIntelligenceFrame, verifyCoreFrameAnswer, verifyCorePropertySources } from "@/lib/sovereign-intelligence/core-intelligence-frames";
+import { formatPublicPhoneForDisplay } from "@/lib/public-phone-format";
 
 export type KnowledgePage = {
   url: string;
@@ -390,7 +391,7 @@ export const classifyWebsiteQuestion = classifySovereignIntent;
 
 export function buildRequestedContactDetails(question: string, organization: { publicPhone?: string | null; publicEmail?: string | null; website?: string | null; publicAddress?: string | null; publicBusinessHours?: string | null }) {
   const requested = [
-    /\b(phone|telephone|mobile|number)\b/i.test(question) && organization.publicPhone ? `Phone: ${organization.publicPhone}` : null,
+    /\b(phone|telephone|mobile|number)\b/i.test(question) && organization.publicPhone ? `Phone: ${formatPublicPhoneForDisplay(organization.publicPhone)}` : null,
     /\bemail\b/i.test(question) && organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
     /\bwebsite\b/i.test(question) && organization.website ? `Website: ${organization.website}` : null,
     /\b(address|located|location|based)\b/i.test(question) && organization.publicAddress ? `Address: ${organization.publicAddress}` : null,

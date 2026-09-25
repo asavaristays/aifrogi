@@ -79,7 +79,7 @@ test("accepted support offers become persisted, consent-aware handovers", () => 
   assert.match(source, /buildMissingAnswerRecovery/);
   const recovery = readFileSync(resolve(process.cwd(), "lib/sovereign-intelligence/answer-quality-gate.ts"), "utf8");
   assert.match(recovery, /private consent fields below/);
-  assert.match(recovery, /You can also call \$\{input\.publicPhone\}/);
+  assert.match(recovery, /You can also call \$\{formatPublicPhoneForDisplay\(input\.publicPhone\)\}/);
   assert.match(widget, /requestHuman: true/);
 });
 

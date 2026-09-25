@@ -1,4 +1,5 @@
 import type { SovereignDecision } from "@/lib/sovereign-intelligence/decision";
+import { formatPublicPhoneForDisplay } from "@/lib/public-phone-format";
 
 export const ANSWER_QUALITY_GATE_VERSION = "1.0" as const;
 
@@ -49,7 +50,7 @@ export function buildMissingAnswerRecovery(input: {
       : input.category === "EDUCATION" ? "admissions team"
         : input.category === "REAL_ESTATE" ? "property team"
           : "business team";
-  const phone = input.publicPhone ? ` You can also call ${input.publicPhone}.` : "";
+  const phone = input.publicPhone ? ` You can also call ${formatPublicPhoneForDisplay(input.publicPhone)}.` : "";
   if (!input.handoffEnabled) return `I don’t have enough verified ${input.businessName} information to answer that accurately.${phone || " Please use the business’s published contact details."}`;
   return `I don’t have enough verified ${input.businessName} information to answer that accurately. I’ve sent your question to the ${team}. If you would like a callback, share your name and mobile number using the private consent fields below.${phone}`;
 }

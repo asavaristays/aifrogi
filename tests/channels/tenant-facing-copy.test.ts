@@ -4,6 +4,7 @@ import { resolveTenantWelcomeMessage, suggestedInboxReply } from "../../lib/tena
 import { guardWebsiteVisitorMessage } from "../../lib/website-message-safety";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { formatPublicPhoneForDisplay, normalizePublicPhoneInText } from "../../lib/public-phone-format";
 
 test("hotel tenants never inherit the generic business welcome", () => {
   assert.equal(resolveTenantWelcomeMessage({
@@ -45,4 +46,17 @@ test("shared booking surfaces contain no Asavari-specific guest consent or URL",
   const publicRoute = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]/route.ts"), "utf8");
   assert.doesNotMatch(bookingCard, /Asavari Stays may use/i);
   assert.doesNotMatch(publicRoute, /https:\/\/asavaristays\.com\/properties\/\$\{item\.id\}/i);
+});
+
+test("Indian reservation numbers use one readable international format", () => {
+  assert.equal(formatPublicPhoneForDisplay("918279640517"), "+91 82796 40517");
+  assert.equal(formatPublicPhoneForDisplay("82796-40517"), "+91 82796 40517");
+  assert.equal(normalizePublicPhoneInText("Call Reservation Number 918279640517.", "+91 82796 40517"), "Call Reservation Number +91 82796 40517.");
+});
+
+test("HotelGPT inbox replaces generic CRM labels without changing stored lead data", () => {
+  const inbox = readFileSync(resolve(process.cwd(), "components/whatsapp/whatsapp-bot-client.tsx"), "utf8");
+  assert.match(inbox, /Guest enquiry qualification/);
+  assert.match(inbox, /Stay or cottage preference pending/);
+  assert.match(inbox, /Stay dates and guest count pending/);
 });

@@ -34,6 +34,7 @@ import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking
 import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 import { matchPublishedHotelFlow } from "@/lib/hotelgpt-flow-library";
 import { resolveTenantWelcomeMessage } from "@/lib/tenant-facing-copy";
+import { formatPublicPhoneForDisplay, normalizePublicPhoneInText } from "@/lib/public-phone-format";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -335,8 +336,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     answer: handoffEnabled
       ? consentedContact
         ? `Thank you. Your callback request has been saved for the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. They will contact you ${humanResponseWindow(profile.responseSlaMinutes)}.`
-        : `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. A team member has not joined yet; they will respond here ${humanResponseWindow(profile.responseSlaMinutes)}. If you prefer a callback, share your name and mobile number using the consent fields below.${organization.publicPhone ? ` For immediate assistance, you may also call ${organization.publicPhone}.` : ""}`
-      : `Human handover is not enabled for this bot.${organization.publicPhone ? ` Please call ${organization.publicPhone}.` : " Please use the business’s published contact details."}`,
+        : `Of course. I’ve alerted the ${profile.category === "PINGBOOK" ? "clinic reception" : profile.category === "STAY" ? "reservations team" : profile.category === "EDUCATION" ? "admissions team" : profile.category === "REAL_ESTATE" ? "property team" : "support team"}. A team member has not joined yet; they will respond here ${humanResponseWindow(profile.responseSlaMinutes)}. If you prefer a callback, share your name and mobile number using the consent fields below.${organization.publicPhone ? ` For immediate assistance, you may also call ${formatPublicPhoneForDisplay(organization.publicPhone)}.` : ""}`
+      : `Human handover is not enabled for this bot.${organization.publicPhone ? ` Please call ${formatPublicPhoneForDisplay(organization.publicPhone)}.` : " Please use the business’s published contact details."}`,
     sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "HANDOVER_CONTROL",
     decision: { ...fallbackDecision, disposition: "ESCALATE", reason: handoffEnabled ? "Explicit human request; persisted before acknowledgment." : "Human handover is disabled; no connection promised." },
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
@@ -377,11 +378,11 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
-  const answer = resolution.answer;
+  const answer = normalizePublicPhoneInText(resolution.answer, organization.publicPhone);
   const evidenceDecision = resolution.decision;
   // Evidence describes the response actually served, not a discarded model answer.
   // Keep retrieval candidates for diagnosis, but never attribute their use to a breaker reply.
-  if (answer !== proposedAnswer && result) {
+  if (resolution.answer !== proposedAnswer && result) {
     result = { ...result, answer, decision: evidenceDecision, sources: [], sourceUrls: [], claimIds: [], usedOpenAi: false, model: "BOUNDED_RESOLUTION",
       retrieval: { ...result.retrieval, usedClaimIds: [] },
       reliability: { ...result.reliability, failureLayer: "CONVERSATION_STATE", failureCode: resolution.state.circuitBreakerReason || "RESOLUTION_OVERRIDE", escalationTier: "TIER_1_BUSINESS_ASYNC" }

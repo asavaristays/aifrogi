@@ -142,7 +142,7 @@ test("multi-field contact questions return every requested approved field", () =
   assert.deepEqual(buildRequestedContactDetails("What is your phone number and where are you located?", {
     publicPhone: "+91-7410582898",
     publicAddress: "Morjim, Goa"
-  }), ["Phone: +91-7410582898", "Address: Morjim, Goa"]);
+  }), ["Phone: +91 74105 82898", "Address: Morjim, Goa"]);
 });
 
 test("customer contact answers never expose internal approval language", () => {
