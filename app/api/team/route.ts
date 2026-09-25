@@ -17,10 +17,10 @@ export async function POST(request: Request) {
   const access = await getCurrentClientAccess();
   if (!access) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
-  const [subscription, allowance] = await Promise.all([
+  const [subscription, allowance] = await withClientDatabaseContext(access, "team-entitlement", () => Promise.all([
     getOrganizationSubscriptionAccess(access.organization.id),
     checkOrganizationEntitlement(access.organization.id, "teamUsers", 1)
-  ]);
+  ]));
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: subscription.message }, { status: 402 });
   if (!allowance.allowed) return NextResponse.json({ error: allowance.error }, { status: 402 });
   const payload = await request.json().catch(() => null) as { email?: string; name?: string; role?: string; department?: string } | null;

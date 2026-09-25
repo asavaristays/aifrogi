@@ -26,6 +26,13 @@ test("billing and Team Inbox keep all reads and review writes inside explicit te
   assert.doesNotMatch(billing, /return null/);
 });
 
+test("team invitations evaluate subscription and allowance inside the tenant boundary", () => {
+  const team = source("app/api/team/route.ts");
+  assert.match(team, /withClientDatabaseContext\(access, "team-entitlement"/);
+  assert.match(team, /getOrganizationSubscriptionAccess\(access\.organization\.id\)/);
+  assert.match(team, /checkOrganizationEntitlement\(access\.organization\.id, "teamUsers", 1\)/);
+});
+
 test("remaining authenticated data pages are covered by the build-time context guard", () => {
   const guard = source("scripts/verify-database-context-boundaries.mjs");
   for (const path of ["app/(app)/knowledge/page.tsx", "app/(app)/setup/page.tsx", "app/admin/audit/page.tsx", "app/admin/knowledge/page.tsx", "app/admin/support/page.tsx"]) {
