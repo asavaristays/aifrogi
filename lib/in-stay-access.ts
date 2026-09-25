@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export const IN_STAY_DEPARTMENTS = [
   "Front Desk",
@@ -15,11 +16,14 @@ export function normalizeInStayDepartment(value: unknown): InStayDepartment | nu
   return IN_STAY_DEPARTMENTS.includes(department as InStayDepartment) ? department as InStayDepartment : null;
 }
 
-export async function getMemberDepartment(memberId?: string | null) {
-  const db = getDb();
-  if (!db || !memberId) return null;
-  const rows = await db.$queryRaw<Array<{ department: string | null }>>`
-    SELECT "department" FROM "OrganizationMember" WHERE id=${memberId} LIMIT 1
-  `;
-  return normalizeInStayDepartment(rows[0]?.department);
+export async function getMemberDepartment(memberId?: string | null, organizationId?: string | null) {
+  if (!memberId || !organizationId) return null;
+  return withTenantDatabaseContext({ kind: "tenant", organizationId, actor: "in-stay-member-scope" }, async () => {
+    const db = getDb();
+    if (!db) return null;
+    const rows = await db.$queryRaw<Array<{ department: string | null }>>`
+      SELECT "department" FROM "OrganizationMember" WHERE id=${memberId} AND "organizationId"=${organizationId} LIMIT 1
+    `;
+    return normalizeInStayDepartment(rows[0]?.department);
+  });
 }

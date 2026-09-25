@@ -70,6 +70,9 @@ test("HotelGPT provides the approved guest and hotel operations journey", () => 
   assert.match(cases, /slaState/);
   assert.match(cases, /access\.role === "VIEWER"/);
   assert.match(cases, /IN_STAY_COMPLETION_SUBMITTED/);
+  const memberScope = source("lib/in-stay-access.ts");
+  assert.match(memberScope, /withTenantDatabaseContext/);
+  assert.match(memberScope, /"organizationId"=\$\{organizationId\}/);
   const departmentWorkspace = source("components/in-stay/department-mobile-workspace.tsx");
   assert.match(departmentWorkspace, /Submit completion/);
   assert.match(departmentWorkspace, /front desk will confirm completion and reply to the guest/i);

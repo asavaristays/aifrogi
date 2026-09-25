@@ -13,7 +13,7 @@ export async function getCurrentClientAccess() {
   if (!organization) return null;
   const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   const role = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
-  const department = await getMemberDepartment(membership?.id);
+  const department = await getMemberDepartment(membership?.id, organization.id);
   return { user, organization, membership, role, department };
 }
 

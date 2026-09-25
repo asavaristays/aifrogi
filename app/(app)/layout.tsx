@@ -47,7 +47,7 @@ export default async function ProductLayout({ children }: { children: React.Reac
     : workspaces[0]?.slug ?? currentWorkspaceSlug;
   const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   const accessRole = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
-  const department = await getMemberDepartment(membership?.id);
+  const department = await getMemberDepartment(membership?.id, organization.id);
 
   return <AppShell
     workspaces={workspaces}
