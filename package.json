@@ -33,6 +33,7 @@
     "verify:security-boundaries:fixtures": "tsx scripts/verify-security-boundaries-with-fixtures.ts",
     "verify:client-secrets": "tsx scripts/verify-client-bundle-secrets.ts",
     "verify:dependency-security": "node scripts/verify-dependency-security.mjs",
+    "report:resource-versions": "node scripts/report-resource-versions.mjs",
     "verify:sovereign": "node --import tsx --test tests/sovereign-intelligence/*.test.ts",
     "verify:core-fleet": "tsx scripts/verify-core-fleet-release.ts",
     "verify:release-gates": "node ops/verify-release-gates.mjs",
@@ -59,8 +60,8 @@
     "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "7.10.0",
-    "@prisma/client": "7.10.0",
+    "@prisma/adapter-pg": "7.6.0",
+    "@prisma/client": "7.6.0",
     "exceljs": "^4.4.0",
     "imapflow": "1.7.8",
     "lucide-react": "^1.23.0",
@@ -85,13 +86,15 @@
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.9",
     "postcss": "latest",
-    "prisma": "7.10.0",
+    "prisma": "7.6.0",
     "tailwindcss": "latest",
     "tsx": "latest",
     "typescript": "latest"
   },
   "overrides": {
+    "@hono/node-server": "1.19.15",
     "mysql2": "3.24.4",
-    "uuid": "11.1.1"
+    "uuid": "11.1.1",
+    "valibot": "1.4.2"
   }
 }
