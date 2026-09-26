@@ -36,6 +36,8 @@ import { matchPublishedHotelFlow } from "@/lib/hotelgpt-flow-library";
 import { resolveTenantWelcomeMessage } from "@/lib/tenant-facing-copy";
 import { formatPublicPhoneForDisplay, normalizePublicPhoneInText } from "@/lib/public-phone-format";
 import { inStayTicketAcknowledgement } from "@/lib/in-stay-ticket";
+import { formatConfirmedVoiceForStaff, normalizeConfirmedVoiceInput } from "@/lib/hotelgpt-voice-intake";
+import { translateConfirmedVoiceForStaff } from "@/lib/services/hotelgpt-voice-translation";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -91,12 +93,14 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const tenantConfiguration = { ...configuration, welcomeMessage: resolveTenantWelcomeMessage({ configuredMessage: configuration.welcomeMessage, businessName: organization.name, hotelMode: profile.category === "STAY" }) };
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
-  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string; stayAccessToken?: string } | null;
+  const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string; stayAccessToken?: string; voiceInput?: unknown } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
   const stayCapability = payload?.stayAccessToken ? verifyHotelGuestStayToken(payload.stayAccessToken, slug) : null;
   if (payload?.stayAccessToken && !stayCapability) return NextResponse.json({ error: "Your approved in-stay access has expired. Please scan the hotel QR and request access again." }, { status: 401, headers: responseHeaders });
+  const confirmedVoice = normalizeConfirmedVoiceInput(payload?.voiceInput, message);
+  if (payload?.voiceInput && !confirmedVoice) return NextResponse.json({ error: "Voice transcript confirmation was invalid. Please review and confirm it again." }, { status: 400, headers: responseHeaders });
   const consentedContact = payload?.consent ? normalizeConsentedLeadPhone(payload.contact) : null;
   const consentedName = payload?.consent ? String(payload.name || "").trim().slice(0, 100) : "";
   if (payload?.consent && (!consentedName || !consentedContact)) return NextResponse.json({ error: "Enter your name and a valid mobile number for consented follow-up." }, { status: 400, headers: responseHeaders });
@@ -123,14 +127,24 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const priorQuestions = priorToken ? (await db.leadMessage.findMany({
     where: { leadId: priorToken.leadId, sender: "GUEST" }, orderBy: [{ sentAt: "desc" }, { id: "desc" }], take: 6, select: { body: true }
   })).map((item) => item.body) : [];
-  const safety = guardWebsiteVisitorMessage(message, organization.name);
+  let operationalMessage = message;
+  if (stayCapability && confirmedVoice) {
+    try {
+      const englishTranslation = await translateConfirmedVoiceForStaff(confirmedVoice);
+      operationalMessage = formatConfirmedVoiceForStaff(confirmedVoice, englishTranslation);
+    } catch {
+      return NextResponse.json({ error: "The confirmed transcript could not be translated for the hotel team. Please retry or type the request in English or Hindi." }, { status: 503, headers: responseHeaders });
+    }
+  }
+  const safety = guardWebsiteVisitorMessage(stayCapability ? operationalMessage : message, organization.name);
   const handoffEnabled = profile.humanHandoffEnabled === true;
   const knowledgeSettings = await readKnowledgeSettings(slug);
   // In-stay service is deliberately isolated from pre-stay sales knowledge.
   // Every resident message becomes a tracked front-desk ticket. No model,
   // published flow, retrieval answer or dynamic promise may answer the guest.
   if (stayCapability) {
-    const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(message);
+    const complaint = /complain|complaint|dirty|noise|broken|not working|not cooling|air\s*condition(?:er|ing)|maintenance|leak|no (?:water|power|electricity|hot water)|bad service|unsafe|refund|angry|unhappy/i.test(operationalMessage);
+    const emergency = /\b(?:fire|smoke|gas (?:leak|smell)|medical emergency|ambulance|unconscious|security threat|intruder|assault|weapon)\b/i.test(operationalMessage);
     return persistWebsiteTurn(async () => {
       // A visitor capability is scoped to its approved stay, not merely the
       // hotel. This also lets a resolved room case start a fresh service cycle
@@ -146,7 +160,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
         const inStayAcknowledgement = inStayTicketAcknowledgement(lead.id);
         await db.leadMessage.create({ data: { leadId: lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
         await db.leadTag.deleteMany({ where: { leadId: lead.id, value: { in: ["resolved", "closed"], mode: "insensitive" } } });
-        await db.lead.update({ where: { id: lead.id }, data: { intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
+        await db.lead.update({ where: { id: lead.id }, data: { intent: emergency ? "IN_STAY_EMERGENCY" : complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: emergency || complaint, stage: "NEW", lastActivityAt: new Date() } });
         await ensureWebsiteHandover({ propertyId: property.id, leadId: lead.id, responseSlaMinutes: profile.responseSlaMinutes });
         const visitorToken = priorToken ? String(payload?.visitorToken || "") : issueWebsiteVisitorToken({ slug, sessionId, leadId: lead.id, humanRequested: true });
         const expiresAt = new Date((verifyWebsiteVisitorToken(visitorToken, slug)?.exp || 0) * 1000);
@@ -162,7 +176,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       if (!captured?.lead || captured.lead.propertySlug !== slug) return NextResponse.json({ error: "Your request could not be saved. Please retry." }, { status: 503, headers: responseHeaders });
       const inStayAcknowledgement = inStayTicketAcknowledgement(captured.lead.id);
       await db.leadMessage.create({ data: { leadId: captured.lead.id, sender: "AI", body: inStayAcknowledgement, sentAt: new Date() } });
-      await db.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: complaint, stage: "NEW", lastActivityAt: new Date() } });
+      await db.lead.update({ where: { id: captured.lead.id }, data: { name: stayCapability.guestName, phone: stayCapability.phoneNumber, stayLabel: `In-stay · Room ${stayCapability.roomNumber}`, intent: emergency ? "IN_STAY_EMERGENCY" : complaint ? "IN_STAY_COMPLAINT" : "IN_STAY_QUERY", isHighPriority: emergency || complaint, stage: "NEW", lastActivityAt: new Date() } });
       await db.$executeRaw`UPDATE "HotelGuestAccessRequest" SET "leadId"=${captured.lead.id},"updatedAt"=NOW() WHERE id=${stayCapability.requestId} AND "propertyId"=${property.id} AND status='APPROVED' AND "revokedAt" IS NULL`;
       await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes });
       const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested: true });

@@ -1,5 +1,11 @@
 # First 10 commercial bots — active launch memory
 
+## HotelGPT confirmed multilingual voice-intake candidate (2026-09-26)
+
+The user approved one compact voice-input control shared by HotelGPT Pre-Stay and verified InStay. The local candidate adds a small microphone beside the existing composer, an explicit spoken-language selector, push-to-talk browser transcription, an editable transcript, and a required guest confirmation before Send becomes a voice-confirmed request. AiFrogi does not upload or retain raw audio. Pre-Stay submits the confirmed original text into the existing governed intelligence path. Verified InStay preserves the confirmed original and adds a labelled operational English translation for hotel staff; a translation failure creates no ticket and asks the guest to retry or type in English/Hindi. Exact room numbers, dates, quantities, amounts, names and device identifiers are protected by the translation instruction. Emergency wording is routed as a high-priority `IN_STAY_EMERGENCY` case. Invalid, unconfirmed or altered voice metadata is rejected server-side.
+
+Local evidence: TypeScript passed; focused voice/InStay/security tests passed 20/20; complete channel suite passed 272/272; scoped lint reported zero errors and only pre-existing embed warnings; the complete 95-route Webpack production build passed. Chrome visually verified the small microphone and corrected inward-opening confirmation panel in both Pre-Stay and InStay development previews. This candidate is not deployed; production activation requires separate user approval and a production-derived build/rollback procedure.
+
 ## Repository cleanup and dependency-security review (2026-09-26)
 
 With user approval, completed a dry-run-first inventory and removed only the regenerable local `.next` build cache (1.5 GB) and `tsconfig.tsbuildinfo`; all existing source, generated Prisma work, evidence/output folders and unrelated modified/untracked work were preserved. A read-only production check confirmed `aifrogi-storage-maintenance.timer` enabled and active, last successful on 25 September at 03:43 UTC; that run reduced disk use from 56% to 42%, and current disk use was 51%. The 26 September run was scheduled but not yet due during the check.
