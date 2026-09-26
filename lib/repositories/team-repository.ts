@@ -70,7 +70,7 @@ export async function activateInvitation(token: string, password: string) {
       data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
       select: { email: true, name: true, role: true, organizationId: true }
     });
-    let installation: { companyName: string; propertySlug: string; installationKey: string; website: string | null } | null = null;
+    let installation: { companyName: string; propertySlug: string; installationKey: string; website: string | null; category: string } | null = null;
     if (invitation.invitedBy === SELF_SERVICE_REGISTRATION) {
       await tx.organization.update({ where: { id: invitation.organization.id }, data: { status: "ONBOARDING" } });
       await tx.onboardingProfile.update({ where: { organizationId: invitation.organization.id }, data: { lifecycleStatus: "DRAFT", currentStep: 1, progressPercent: 10 } });
@@ -78,11 +78,12 @@ export async function activateInvitation(token: string, password: string) {
       const property = await tx.property.findFirst({ where: { organizationId: invitation.organization.id }, select: { id: true } });
       if (property) {
         const fullProperty = await tx.property.findUnique({ where: { id: property.id }, select: { slug: true } });
-        const profile = await tx.botProfile.findUnique({ where: { organizationId: invitation.organization.id }, select: { installationKey: true } });
+        const profile = await tx.botProfile.findUnique({ where: { organizationId: invitation.organization.id }, select: { installationKey: true, category: true } });
         const installationKey = profile?.installationKey || randomBytes(24).toString("base64url");
         if (!profile?.installationKey) await tx.botProfile.update({ where: { organizationId: invitation.organization.id }, data: { installationKey } });
-        installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey, website: invitation.organization.website };
-        const schedule = (day: number) => new Date(invitation.organization.createdAt.getTime() + day * 24 * 60 * 60 * 1000);
+        installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey, website: invitation.organization.website, category: profile?.category || "BUSINESS_AI" };
+        const trialActivatedAt = new Date();
+        const schedule = (day: number) => new Date(trialActivatedAt.getTime() + day * 24 * 60 * 60 * 1000);
         for (const day of [TRIAL_UPGRADE_REMINDER_DAY, TRIAL_DAYS]) {
           await tx.automationJob.upsert({
             where: { idempotencyKey: `trial-conversion:${invitation.organization.id}:day-${day}` },

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { canServeWebsiteBot, nextWebsiteBotStatus, statusAfterBotProfileSave } from "../../lib/website-bot-lifecycle";
 import { acceptedHumanOffer, humanResponseWindow } from "../../lib/website-handover";
 
-test("only explicitly approved live website bots may serve visitors", () => {
+test("only live website bots—including crawl-qualified public trials—may serve visitors", () => {
   assert.equal(canServeWebsiteBot("CONFIGURED", ["WEBSITE"]), false);
   assert.equal(canServeWebsiteBot("LIVE", ["WEBSITE"]), true);
   for (const status of ["DRAFT", "INSTALLATION_READY", "INSTALLATION_DETECTED", "PAUSED", "DELETED"]) assert.equal(canServeWebsiteBot(status, ["WEBSITE"]), false);

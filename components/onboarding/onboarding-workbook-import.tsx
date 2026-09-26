@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 
-type Preview = { business: Record<string, string>; faqs: Array<{ category: string; question: string; answer: string }>; warnings: string[]; fileName: string };
+type Preview = { business: Record<string, string>; faqs: Array<{ category: string; question: string; answer: string }>; governance: { questionVariants: number; preStayApproved: number; inStayApproved: number; sourcesApproved: number; photosApproved: number; launchGatesPassed: number; launchGateTotal: number; blockers: string[] }; warnings: string[]; fileName: string };
 
 export function OnboardingWorkbookImport({ organizationId, onImported, hotelTemplate = false }: { organizationId?: string; onImported?: () => void; hotelTemplate?: boolean }) {
   const input = useRef<HTMLInputElement>(null);
@@ -46,6 +46,7 @@ export function OnboardingWorkbookImport({ organizationId, onImported, hotelTemp
     {file ? <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-md bg-[#f5f2eb] p-4"><span className="text-sm font-semibold">{file.name}</span><button type="button" disabled={busy} onClick={() => submit("PREVIEW")} className="rounded-full bg-[#9b7613] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-60">{busy ? "Checking…" : "Validate and preview"}</button></div> : null}
     {preview ? <div className="mt-5 rounded-md border border-[#d8c278] bg-[#fffaf0] p-5">
       <div className="grid gap-3 text-sm sm:grid-cols-2"><PreviewItem label="Business" value={preview.business.name} /><PreviewItem label="Website" value={preview.business.website} /><PreviewItem label="Contact" value={preview.business.ownerName} /><PreviewItem label="Approved answers found" value={String(preview.faqs.length)} /></div>
+      <div className="mt-4 grid gap-3 border-t border-black/8 pt-4 text-sm sm:grid-cols-3"><PreviewItem label="Question variants" value={String(preview.governance.questionVariants)} /><PreviewItem label="Pre-Stay SOPs" value={String(preview.governance.preStayApproved)} /><PreviewItem label="In-Stay SOPs" value={String(preview.governance.inStayApproved)} /><PreviewItem label="Current sources" value={String(preview.governance.sourcesApproved)} /><PreviewItem label="Approved photos" value={String(preview.governance.photosApproved)} /><PreviewItem label="Launch gates" value={`${preview.governance.launchGatesPassed}/${preview.governance.launchGateTotal}`} /></div>
       {preview.faqs.length ? <div className="mt-4 max-h-44 space-y-2 overflow-y-auto border-t border-black/8 pt-4">{preview.faqs.slice(0, 20).map((faq, index) => <p key={`${faq.question}-${index}`} className="text-sm"><strong>{faq.question}</strong><span className="mt-1 block text-[#68645c]">{faq.answer}</span></p>)}</div> : null}
       {preview.warnings.map((warning) => <p key={warning} className="mt-3 text-sm font-semibold text-[#8a5d00]">{warning}</p>)}
       <button type="button" disabled={busy} onClick={() => submit("APPLY")} className="mt-5 rounded-full bg-[#127451] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-60">{busy ? "Confirming and checking website…" : "Confirm information"}</button>
