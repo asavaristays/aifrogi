@@ -10,7 +10,7 @@
 
 | Resource | Version / state | Review trigger |
 | --- | --- | --- |
-| Core release before this package | `0ec6b35` | Every deployment |
+| Core production release | `3592988` | Every deployment |
 | Production Node.js | `20.20.2` | Before framework/Prisma updates |
 | Production npm | `10.8.2` | With Node maintenance |
 | Next.js | `16.3.5` | Security alert or monthly review |
