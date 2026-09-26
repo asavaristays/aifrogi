@@ -28,6 +28,16 @@ test("the first HotelGPT verification email identifies the product and crawl gat
   assert.match(route, /HotelGPT · Verified hotel intelligence/);
 });
 
+test("trial creation requires a visible legal agreement in both UI and API", () => {
+  const client = readFileSync(resolve(process.cwd(), "components/auth/register-client.tsx"), "utf8");
+  const route = readFileSync(resolve(process.cwd(), "app/api/auth/register/route.ts"), "utf8");
+  assert.match(client, /name="legalConsent" value="accepted" type="checkbox" required/);
+  assert.match(client, /Required agreement/);
+  assert.match(client, /Terms of Service/);
+  assert.match(client, /Privacy Policy/);
+  assert.match(route, /payload\.legalConsent !== "accepted"/);
+});
+
 test("HotelGPT activation keeps the branded email and attaches governed setup resources", () => {
   const route = readFileSync(resolve(process.cwd(), "app/api/auth/invitation/route.ts"), "utf8");
   assert.match(route, /HOTELGPT · 15-DAY PUBLIC TRIAL/);

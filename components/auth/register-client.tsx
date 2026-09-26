@@ -86,8 +86,12 @@ export function RegisterClient() {
                 <Field label="Time zone" wide><select name="timezone" className="product-input mt-2" defaultValue="Asia/Kolkata"><option value="Asia/Kolkata">India Standard Time</option><option value="Asia/Dubai">Gulf Standard Time</option><option value="Europe/London">United Kingdom</option><option value="America/New_York">US Eastern Time</option><option value="America/Los_Angeles">US Pacific Time</option></select></Field>
                 <input name="fax" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                 {error ? <p role="alert" className="rounded-md border border-[#b23a32]/20 bg-[#fff0ee] px-4 py-3 text-sm text-[#9b2f28] sm:col-span-2">{error}</p> : null}
+                <label className="flex cursor-pointer items-start gap-3 rounded-md border-2 border-[#d4bd77] bg-[#fff9e8] p-4 text-sm leading-6 text-[#403716] sm:col-span-2">
+                  <input name="legalConsent" value="accepted" type="checkbox" required className="mt-1 h-5 w-5 shrink-0 accent-[#8a6a16]" />
+                  <span><strong className="block text-[#101010]">Required agreement</strong>I agree to the <Link href="/terms-of-service" target="_blank" className="font-bold text-[#6d5310] underline underline-offset-2">Terms of Service</Link> and acknowledge the <Link href="/privacy-policy" target="_blank" className="font-bold text-[#6d5310] underline underline-offset-2">Privacy Policy</Link>, including the 15-day trial limit and automatic pause unless a paid plan is activated.</span>
+                </label>
                 <button disabled={saving} className="min-h-12 rounded-md bg-[#8a6a16] px-5 text-sm font-bold text-white hover:bg-[#b28728] disabled:cursor-wait disabled:opacity-60 sm:col-span-2">{saving ? "Reserving workspace..." : "Create trial workspace"}</button>
-                <p className="text-xs leading-5 text-[var(--text-muted)] sm:col-span-2">The trial lasts 15 days and then pauses automatically; it is not a free-forever plan. By continuing, you agree to the <Link href="/terms-of-service" className="font-semibold text-[#6d5310]">Terms</Link> and acknowledge the <Link href="/privacy-policy" className="font-semibold text-[#6d5310]">Privacy Policy</Link>.</p>
+                <p className="text-xs leading-5 text-[var(--text-muted)] sm:col-span-2">The trial is not a free-forever plan. You can read both policies in a new tab before agreeing.</p>
               </form>
             </>
           )}
