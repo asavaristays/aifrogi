@@ -38,6 +38,7 @@ import { formatPublicPhoneForDisplay, normalizePublicPhoneInText } from "@/lib/p
 import { inStayTicketAcknowledgement } from "@/lib/in-stay-ticket";
 import { formatConfirmedVoiceForStaff, normalizeConfirmedVoiceInput } from "@/lib/hotelgpt-voice-intake";
 import { translateConfirmedVoiceForStaff } from "@/lib/services/hotelgpt-voice-translation";
+import { resolveMultilingualVoicePilot } from "@/lib/services/hotelgpt-multilingual-voice-pilot";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -86,7 +87,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Business intelligence is temporarily unavailable." }, { status: 503, headers: responseHeaders });
-  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, timezone: true, organization: { select: { id: true, name: true, isDemo: true, publicPhone: true, botProfile: true } } } });
+  const property = await db.property.findUnique({ where: { slug }, select: { id: true, slug: true, timezone: true, organization: { select: { id: true, name: true, isDemo: true, publicPhone: true, publicEmail: true, website: true, publicAddress: true, publicBusinessHours: true, updatedAt: true, botProfile: true } } } });
   const organization = property?.organization;
   const profile = organization?.botProfile;
   if (!property || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
@@ -222,6 +223,12 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     });
   }
   const businessName = property.organization?.name || "the business";
+  const multilingualVoicePilot = confirmedVoice ? resolveMultilingualVoicePilot({
+    slug,
+    businessName,
+    voice: confirmedVoice,
+    profile: organization
+  }) : null;
   const bookingLink = approvedBookingLink(knowledgeSettings.widgetMenu);
   const bookingChoices = (bookingLink?.children || []).map((item) => {
     const [destination, stay] = item.label.split("|").map((value) => value.trim());
@@ -271,7 +278,14 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const directCommercialHandoff = /\b(?:quote|quotation|proposal|estimate)\b/i.test(message) || /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i.test(message);
   const explorationOnly = /\b(?:only|just)\s+(?:exploring|browsing|looking)|\bnot\s+(?:decided|ready)\b/i.test(message);
   const demoTurn = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
-  let result = safety.blocked ? null : categoryBoundary ? {
+  let result = safety.blocked ? null : multilingualVoicePilot ? {
+    answer: multilingualVoicePilot.answer,
+    sources: [{ title: `${businessName} approved business profile`, url: organization.website || "", crawledAt: organization.updatedAt.toISOString(), authority: "APPROVED_BUSINESS_PROFILE" as const, freshness: "CURRENT" as const }],
+    sourceUrls: organization.website ? [organization.website] : [], claimIds: [], knowledgeAsOf: organization.updatedAt.toISOString(), usedOpenAi: false, model: "HOTELGPT_MULTILINGUAL_VOICE_PILOT",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
+    decision: { ...fallbackDecision, intent: "CONTACT_INFO" as const, disposition: "ANSWER" as const, reason: `Confirmed ${multilingualVoicePilot.language} voice request matched verified public profile fields: ${multilingualVoicePilot.fields.join(", ")}.` },
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
+  } : categoryBoundary ? {
     answer: categoryBoundary.answer,
     sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CATEGORY_AUTHORITY_BOUNDARY",
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
