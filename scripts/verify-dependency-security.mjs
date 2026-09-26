@@ -2,8 +2,20 @@
 import { execFileSync } from "node:child_process";
 
 let report;
-try { report = JSON.parse(execFileSync("npm", ["audit", "--omit=dev", "--json"], { encoding: "utf8", maxBuffer: 20_000_000 })); }
-catch (error) { report = JSON.parse(String(error.stdout || "{}")); }
+try {
+  report = JSON.parse(execFileSync("npm", ["audit", "--omit=dev", "--json"], { encoding: "utf8", maxBuffer: 20_000_000 }));
+} catch (error) {
+  const output = String(error.stdout || "");
+  try {
+    report = JSON.parse(output);
+  } catch {
+    throw new Error("Dependency audit did not return valid JSON; security status is unknown.", { cause: error });
+  }
+}
+
+if (report.auditReportVersion !== 2 || !report.metadata?.vulnerabilities) {
+  throw new Error("Dependency audit was unavailable or incomplete; security status is unknown.");
+}
 const vulnerabilities = report.vulnerabilities || {};
 const exceptions = new Set(["prisma", "@hono/node-server", "@prisma/config", "@prisma/dev", "deepmerge-ts", "hono", "mysql2", "valibot"]);
 const blocked = Object.entries(vulnerabilities).filter(([name, value]) => ["critical", "high"].includes(value.severity) && !exceptions.has(name));
