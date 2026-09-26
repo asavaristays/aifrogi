@@ -20,6 +20,14 @@ test("verified HotelGPT trial activates only after a successful website crawl", 
   assert.match(route, /remains safely in setup mode/);
 });
 
+test("the first HotelGPT verification email identifies the product and crawl gate", () => {
+  const route = readFileSync(resolve(process.cwd(), "app/api/auth/register/route.ts"), "utf8");
+  assert.match(route, /const hotelMode = botCategory === "STAY"/);
+  assert.match(route, /Welcome to \$\{productName\} — activate your \$\{TRIAL_DAYS\}-day trial/);
+  assert.match(route, /A successful website crawl activates your basic public trial bot/);
+  assert.match(route, /HotelGPT · Verified hotel intelligence/);
+});
+
 test("HotelGPT activation keeps the branded email and attaches governed setup resources", () => {
   const route = readFileSync(resolve(process.cwd(), "app/api/auth/invitation/route.ts"), "utf8");
   assert.match(route, /HOTELGPT · 15-DAY PUBLIC TRIAL/);
