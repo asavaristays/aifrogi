@@ -60,21 +60,21 @@
     "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "7.6.0",
-    "@prisma/client": "7.6.0",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
     "exceljs": "^4.4.0",
     "imapflow": "1.7.8",
-    "lucide-react": "^1.23.0",
-    "mailparser": "3.9.26",
-    "mammoth": "^1.11.0",
-    "next": "16.3.5",
-    "nodemailer": "10.0.9",
+    "lucide-react": "^1.47.0",
+    "mailparser": "3.9.28",
+    "mammoth": "^1.12.3",
+    "next": "16.3.6",
+    "nodemailer": "10.0.10",
     "pdf-parse": "^1.1.1",
     "pg": "latest",
     "qrcode": "^1.5.4",
     "react": "latest",
     "react-dom": "latest",
-    "recharts": "^3.8.1"
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
