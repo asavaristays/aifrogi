@@ -102,7 +102,7 @@ export function HotelGptLaunchPage() {
             <p className={styles.lede}>HotelGPT connects the guest journey before, during and after the stay—while your hotel team remains in control.</p>
             <div className={styles.heroActions}>
               <a className={styles.primaryButton} href="https://app.aifrogi.com/register?source=hotelgpt">Start a 15-day trial <span aria-hidden="true">→</span></a>
-              <a className={styles.secondaryButton} href="/downloads/HotelGPT-Premium-eBrochure.pdf" download>Download brochure <span aria-hidden="true">↓</span></a>
+              <a className={styles.secondaryButton} href="/downloads/HotelGPT-Premium-eBrochure-v2.pdf" download>Download brochure <span aria-hidden="true">↓</span></a>
             </div>
             <div className={styles.proofLine}>
               <span>Approved knowledge</span><span>Verified guest access</span><span>Human-controlled actions</span>
@@ -167,7 +167,7 @@ export function HotelGptLaunchPage() {
         </div>
         <div className={styles.contactCard}>
           <a href="https://app.aifrogi.com/register?source=hotelgpt">Start a 15-day trial <span>→</span></a>
-          <a href="/downloads/HotelGPT-Premium-eBrochure.pdf" download>Download premium brochure <span>↓</span></a>
+          <a href="/downloads/HotelGPT-Premium-eBrochure-v2.pdf" download>Download premium brochure <span>↓</span></a>
           <div><small>Talk to AiFrogi</small><a href="mailto:info@aifrogi.com">info@aifrogi.com</a><a href="tel:+917410582898">+91 74105 82898</a></div>
         </div>
       </section>
