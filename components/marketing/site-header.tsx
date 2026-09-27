@@ -24,6 +24,7 @@ const navItems = [
       { label: "Custom Business Bot", href: "/solutions/custom-business-bot", copy: "A governed workflow built for you" }
     ]
   },
+  { label: "HotelGPT", href: "/solutions/hotelgpt" },
   { label: "How to Install", href: "/install-ai-bot" },
   { label: "Pricing", href: "/pricing" }
 ];
