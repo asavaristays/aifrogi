@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/icons";
 import { AIProductHero } from "@/components/marketing/ai-product-hero";
+import { HotelGptLaunchPage } from "@/components/marketing/hotelgpt-launch-page";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { botProducts, getBotProduct } from "@/lib/bot-products";
@@ -25,6 +26,16 @@ export default async function BotProductPage({ params }: { params: Promise<{ slu
   const product = getBotProduct((await params).slug);
   if (!product || product.slug === "flowcart") notFound();
   const registerUrl = `https://app.aifrogi.com/register?source=${product.slug}`;
+
+  if (product.slug === "hotelgpt") {
+    return (
+      <main className="bg-white text-[var(--ink-900)]">
+        <SiteHeader />
+        <HotelGptLaunchPage />
+        <SiteFooter />
+      </main>
+    );
+  }
 
   return (
     <main className="bg-white text-[var(--ink-900)]">
