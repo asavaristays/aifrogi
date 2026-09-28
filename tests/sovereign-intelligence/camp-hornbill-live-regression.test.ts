@@ -3,6 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { buildMissingAnswerRecovery } from "../../lib/sovereign-intelligence/answer-quality-gate";
 import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
+import { buildPublishedWebsiteContactAnswer } from "../../lib/services/website-knowledge-service";
 
 test("hotel missing-answer recovery is courteous and avoids generic business language", () => {
   const answer = buildMissingAnswerRecovery({ businessName: "The Camp Hornbill", category: "STAY", publicPhone: "+918279640517", handoffEnabled: true });
@@ -11,6 +12,18 @@ test("hotel missing-answer recovery is courteous and avoids generic business lan
   assert.match(answer, /reservations team/i);
   assert.doesNotMatch(answer, /verified The Camp Hornbill information/i);
   assert.doesNotMatch(answer, /What outcome or service/i);
+});
+
+test("multipart contact request returns every published website contact", () => {
+  const answer = buildPublishedWebsiteContactAnswer("Give me the full address, both phone numbers and both email addresses", "Camp Hornbill", [{
+    url: "https://thecamphornbill.com/contact-us", title: "Contact Camp Hornbill", bucket: "Contact and location", crawledAt: new Date().toISOString(),
+    text: "Address: Village Kyari, Post Office Ramnagar, District Nainital, Uttarakhand 244715, India. Phone: +91 8279640517 and +91 7983397932. Email: info@thecamphornbill.com and camphornbill@gmail.com."
+  }]);
+  assert.match(answer || "", /Village Kyari/);
+  assert.match(answer || "", /82796 40517/);
+  assert.match(answer || "", /79833 97932/);
+  assert.match(answer || "", /info@thecamphornbill\.com/);
+  assert.match(answer || "", /camphornbill@gmail\.com/);
 });
 
 test("recent guest data request is classified as sensitive", () => {

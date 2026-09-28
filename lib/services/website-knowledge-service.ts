@@ -471,6 +471,25 @@ export function buildCustomerFacingContactAnswer(question: string, businessName:
   return `You can contact ${businessName} using:\n${details.join("\n")}`;
 }
 
+export function buildPublishedWebsiteContactAnswer(question: string, businessName: string, pages: KnowledgePage[]) {
+  const contactText = pages.filter((page) => /contact|location/i.test(`${page.title} ${page.bucket} ${page.url}`)).map((page) => page.text).join(" ");
+  if (!contactText) return null;
+  const details: string[] = [];
+  if (/\b(address|located|location)\b/i.test(question)) {
+    const address = contactText.match(/(?:address|location)\s*:\s*([^.!?]+(?:\d{5,6})(?:,?\s*India)?)/i)?.[1]?.trim();
+    if (address) details.push(`Address: ${address}`);
+  }
+  if (/\b(phone|telephone|mobile|number)\b/i.test(question)) {
+    const phones = [...new Set([...contactText.matchAll(/\+?91[\s-]*\d{10}/g)].map((match) => formatPublicPhoneForDisplay(match[0])))];
+    if (phones.length) details.push(`Phone: ${phones.join(" · ")}`);
+  }
+  if (/\bemail\b/i.test(question)) {
+    const emails = [...new Set([...contactText.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].map((match) => match[0].toLowerCase()))];
+    if (emails.length) details.push(`Email: ${emails.join(" · ")}`);
+  }
+  return details.length ? buildCustomerFacingContactAnswer(question, businessName, details) : null;
+}
+
 export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
   const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
@@ -734,6 +753,18 @@ export async function buildWebsiteKnowledgeAnswer({
   const knowledgeBase = persona?.kbGateVersion
     ? await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours))
     : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
+  if (resolved.intent === "CONTACT_INFO" && knowledgeBase) {
+    const publishedContactAnswer = buildPublishedWebsiteContactAnswer(question, businessName, knowledgeBase.pages);
+    const contactPage = knowledgeBase.pages.find((page) => /contact|location/i.test(`${page.title} ${page.bucket} ${page.url}`));
+    if (publishedContactAnswer && contactPage) {
+      const answer = direct(publishedContactAnswer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned all requested contact fields from the approved first-party website snapshot." });
+      answer.sourceUrls = [contactPage.url];
+      answer.sources = [{ title: contactPage.title, url: contactPage.url, crawledAt: contactPage.crawledAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(contactPage.crawledAt) <= getTtlMs(settings.autoRefreshHours) ? "CURRENT" : "STALE" }];
+      answer.knowledgeAsOf = contactPage.crawledAt;
+      answer.model = "EXACT_WEBSITE_CONTACT";
+      return answer;
+    }
+  }
   const sessionMemory = buildSessionConversationMemory({ question: resolved.retrievalQuestion, priorQuestions, entities: knowledgeBase?.tenantEntities || [] });
   const retrievalQuestion = sessionMemory.retrievalQuestion;
   const exactAccess = knowledgeBase ? answerExactTenantAccessFact(knowledgeBase.tenantEntities || [], retrievalQuestion, sessionMemory.tenantPropertyId) : null;
