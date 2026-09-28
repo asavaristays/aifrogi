@@ -17,6 +17,7 @@ export function SiteFooter() {
           <Link className="block hover:text-white" href="/resources">Resources</Link>
           <Link className="block hover:text-white" href="/install-ai-bot">How to install AI Bot</Link>
           <Link className="block hover:text-white" href="/pricing">Pricing</Link>
+          <Link className="block hover:text-white" href="/contact">Contact</Link>
           <a className="block hover:text-white" href="https://webtechnosys.com/founder/" target="_blank" rel="noreferrer">Founder</a>
         </nav>
 
@@ -34,7 +35,7 @@ export function SiteFooter() {
         <address className="not-italic">
           <p className="text-[10px] font-normal uppercase tracking-[.16em] text-[#e2c66d]">Contact</p>
           <div className="mt-3 space-y-2 text-sm leading-6 text-white/62">
-            <p>H.No 746 - TF, New Wada, Morjim, Goa 403512, India</p>
+            <p><span className="text-white/85">Offices:</span> Gurugram <span aria-hidden="true">|</span> Goa <span aria-hidden="true">|</span> Jodhpur</p>
             <p><a className="hover:text-white" href="mailto:info@aifrogi.com"><span>info</span><span aria-hidden="true">@</span><span className="sr-only"> at </span><span>aifrogi.com</span></a></p>
           </div>
           <a href="tel:+917410582898" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-[#8a6a16] px-4 text-sm font-normal text-white shadow-[0_0_26px_rgba(138,106,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#b28728]">

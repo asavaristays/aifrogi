@@ -7,6 +7,7 @@ const pages: Array<[string, MetadataRoute.Sitemap[number]["changeFrequency"], nu
   ["/", "weekly", 1],
   ["/experience", "monthly", 0.8],
   ["/about", "monthly", 0.7],
+  ["/contact", "monthly", 0.8],
   ["/solutions", "monthly", 0.9],
   ["/solutions/clinicgpt", "monthly", 0.9],
   ["/pricing", "weekly", 0.9],
