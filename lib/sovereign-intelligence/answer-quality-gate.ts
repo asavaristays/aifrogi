@@ -51,6 +51,10 @@ export function buildMissingAnswerRecovery(input: {
         : input.category === "REAL_ESTATE" ? "property team"
           : "business team";
   const phone = input.publicPhone ? ` You can also call ${formatPublicPhoneForDisplay(input.publicPhone)}.` : "";
+  if (input.category === "STAY") {
+    if (!input.handoffEnabled) return `I’m sorry, I don’t have that stay detail confirmed yet.${phone || " The reservations team will be happy to help through the hotel’s published contact details."}`;
+    return `I’m sorry, I don’t have that stay detail confirmed yet. The ${team} can help with the exact information. If you’d prefer a callback, you can share your name and mobile number using the private consent fields below.${phone}`;
+  }
   if (!input.handoffEnabled) return `I don’t have enough verified ${input.businessName} information to answer that accurately.${phone || " Please use the business’s published contact details."}`;
   return `I don’t have enough verified ${input.businessName} information to answer that accurately. I’ve sent your question to the ${team}. If you would like a callback, share your name and mobile number using the private consent fields below.${phone}`;
 }

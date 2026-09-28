@@ -424,10 +424,15 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     });
     return knowledgeBase;
   } catch (error) {
+    const lastError = error instanceof Error ? error.message.slice(0, 240) : "Website sync failed.";
     await writeKnowledgeSettings(propertySlug, {
       status: "ERROR",
-      lastError: error instanceof Error ? error.message.slice(0, 240) : "Website sync failed."
+      lastError
     });
+    // A temporary origin/network failure must not erase previously captured,
+    // approved first-party knowledge. Keep serving the last snapshot as stale
+    // evidence while the workspace clearly reports the failed refresh.
+    if (previous?.baseUrl === baseUrl && previous.pages?.length) return previous;
     throw error;
   }
 }

@@ -149,10 +149,10 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
 
   async function send(event: FormEvent) {
     event.preventDefault();
-    const contactReady = canShareContact;
+    const contactReady = canShareContact && (humanHelpDraft || !text.trim());
     const message = text.trim() || (contactReady ? "I consent to a business follow-up about this enquiry." : "");
     if (!restored || !message || waiting || ["CLOSED", "RECONNECTING"].includes(conversationState)) return;
-    setMenuOpen(false); setHumanHelpDraft(false);
+    setMenuOpen(false);
     const voiceInput = confirmedVoice?.transcript === message ? confirmedVoice : null;
     setText(""); setConfirmedVoice(null); setWaiting(true); setMessages((current) => [...current, { role: "visitor", text: message }]);
     try {
@@ -169,7 +169,7 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
     }
     if (!(response.ok && payload?.messageAccepted)) setMessages((current) => [...current, { role: "bot", text: response.ok ? payload?.answer || "I could not prepare an answer." : payload?.error || "The bot is temporarily unavailable.", evidenceId: response.ok ? payload?.answerEvidenceId : null, smartContent:response.ok?payload?.smartContent:undefined }]);
     } catch { setMessages((current) => [...current, { role: "bot", text: "Connection interrupted. Please retry your message." }]); }
-    finally { setWaiting(false); }
+    finally { setWaiting(false); setHumanHelpDraft(false); }
   }
 
   async function submitFeedback(index: number, helpful: boolean, reason?: string) {

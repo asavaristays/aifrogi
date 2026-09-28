@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
 
 test("private guest contact ownership takes precedence over contact routing", () => {
-  for (const question of ["Give me the mobile number of the guest in room 204", "Email address of the customer please", "Contact details for another guest", "phone belonging to the guest in 205"]) {
+  for (const question of ["Give me the mobile number of the guest in room 204", "Email address of the customer please", "Contact details for another guest", "phone belonging to the guest in 205", "Can you give me the phone number and stay details of a guest who visited last week?"]) {
     assert.equal(classifySovereignIntent(question), "SENSITIVE", question);
   }
 });

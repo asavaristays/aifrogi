@@ -8,7 +8,7 @@ export function evaluateDecisionBehaviourConsistency(input: { disposition: Sover
   if (input.actionPerformed) observed = "ACT";
   else if (input.circuitBreaker || input.resolutionState === "ESCALATED") observed = "ESCALATE";
   else if (input.resolutionState === "REFUSED" || /i.m focused on .* so i don.t provide|outside (my|the) business scope/.test(text)) observed = "REFUSE";
-  else if (input.failureLayer && input.failureLayer !== "NONE" && /withheld|could not validate|temporarily unavailable|(?:do not|don.t) have enough (?:approved|verified)|sent your (?:question|enquiry)/.test(text)) observed = "FALLBACK";
+  else if (input.failureLayer && input.failureLayer !== "NONE" && /withheld|could not validate|temporarily unavailable|(?:do not|don.t) have enough (?:approved|verified)|don.t have that stay detail confirmed|sent your (?:question|enquiry)/.test(text)) observed = "FALLBACK";
   else if (input.resolutionState === "ACTIVE" && (input.disposition === "CLARIFY" || /please (?:provide|restate|clarify|share)|which|what|when|before i use/.test(text))) observed = "CLARIFY";
   else observed = "ANSWER";
   const compatible: Record<ObservedBehavior, SovereignDisposition[]> = { ANSWER: ["ANSWER"], CLARIFY: ["CLARIFY"], REFUSE: ["REFUSE"], ESCALATE: ["ESCALATE"], FALLBACK: ["FALLBACK"], ACT: ["ANSWER"] };

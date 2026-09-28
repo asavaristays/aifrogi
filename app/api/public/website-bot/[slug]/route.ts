@@ -370,7 +370,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     messages: [...priorQuestions].reverse().concat(message),
     previousState: existingResolutionState,
     contact: consentedContact || undefined,
-    enabled: (profile.capabilities || []).includes("CAPTURE_LEADS") && (profile.capabilities || []).includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
+    enabled: profile.category !== "STAY" && (profile.capabilities || []).includes("CAPTURE_LEADS") && (profile.capabilities || []).includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
   });
   if (result) {
     const quality = evaluateVisitorAnswerQuality({ question: message, answer: result.answer, decision: result.decision });
