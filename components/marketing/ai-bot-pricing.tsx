@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IntegrationPricing } from "@/components/marketing/integration-pricing";
 
 const registerUrl = "https://app.aifrogi.com/register?source=pricing";
 export function AiBotPricing() {
@@ -23,7 +24,7 @@ export function AiBotPricing() {
     </div></section>
 
     <section className="bg-white px-5 py-6 text-center"><p className="text-sm text-stone-600">No automatic top-up or silent overage. Super Admin may also grant audited free credits for approved support, pilot or service-recovery reasons.</p><a href="https://app.aifrogi.com/billing" className="mt-3 inline-block text-sm underline">View usage and billing</a></section>
-    <section className="bg-white px-5 py-10 sm:px-8"><div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 rounded-2xl border border-black/10 bg-[#fbfaf7] p-6 sm:flex-row sm:items-center sm:p-8"><p className="max-w-4xl leading-7 text-[#404040]"><strong className="text-[#101010]">Need calendar, CRM, payment, ecommerce or PMS integration?</strong> Connector pricing is quoted separately based on your requirements.</p><a href="mailto:info@aifrogi.com?subject=AiFrogi%20Connector%20Requirement" className="shrink-0 font-semibold text-[#6d5310] underline underline-offset-4">Contact us →</a></div></section>
+    <IntegrationPricing />
 
     <section className="bg-[#f3e5b5] px-5 py-14 sm:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.7fr_1.3fr]"><div><p className="text-xs uppercase tracking-[.18em] text-[#6d5310]">Before payment</p><h2 className="mt-3 text-3xl font-semibold tracking-[-.03em]">Clear commercial terms.</h2></div><div className="grid gap-5 text-sm leading-6 text-[#404040] sm:grid-cols-2"><p><strong className="block text-[#101010]">Subscriptions</strong>Paid in advance and renew until cancelled. Cancellation stops the next renewal; access continues to the paid-period end.</p><p><strong className="block text-[#101010]">Connector projects</strong>Scope, milestones, dependencies and provider access are confirmed before work begins.</p><p><strong className="block text-[#101010]">Refunds</strong>Duplicate or erroneous payments are reviewed. Activated subscriptions and completed work are generally non-refundable, subject to applicable law.</p><p><strong className="block text-[#101010]">Allowances and extras</strong>Current limits are published above. Higher usage remains stopped unless a customer-approved unit rate is recorded; taxes, provider fees and custom work remain separate.</p></div><div className="lg:col-start-2"><a href="/terms-of-service" className="inline-flex rounded-lg bg-[#8a6a16] px-5 py-3 text-sm font-semibold text-white">Read full payment and service terms</a></div></div></section>
   </>;
