@@ -1,0 +1,19 @@
+name: External website crawler egress probe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/external-website-egress-probe.yml
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify third-party website egress
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --max-time 20 --output /tmp/camp-hornbill-probe.html https://thecamphornbill.com/
+          test "$(wc -c </tmp/camp-hornbill-probe.html)" -ge 500
+          echo "Camp Hornbill public homepage fetched from independent runner."
