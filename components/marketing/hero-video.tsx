@@ -25,7 +25,7 @@ export function HeroVideo() {
         video.removeAttribute("src");
         video.load();
       } else {
-        video.src = "/media/hero/aifrogi-opening.mp4";
+        video.src = "/media/hero/aifrogi-opening.mp4?v=829fe5a";
         video.play().catch(() => { /* Poster remains if autoplay is blocked. */ });
       }
     };
@@ -36,10 +36,10 @@ export function HeroVideo() {
 
   return (
     <div className={`${styles.visual} relative mx-auto w-full max-w-[430px] lg:max-w-[510px]`}>
-      <Image className={styles.staticPoster} src="/media/hero/aifrogi-opening.jpg"
+      <Image className={styles.staticPoster} src="/media/hero/aifrogi-opening.jpg?v=829fe5a"
         alt="Black and gold AiFrogi business bot" width={640} height={800} priority />
       <video ref={videoRef} className={styles.video} width={640} height={800}
-        poster="/media/hero/aifrogi-opening.jpg" muted playsInline loop preload="auto"
+        poster="/media/hero/aifrogi-opening.jpg?v=829fe5a" muted playsInline loop preload="auto"
         aria-label="Animated black and gold AiFrogi business bot"
         onPointerEnter={(event) => {
           if (event.pointerType === "mouse" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) replay();
