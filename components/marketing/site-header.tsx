@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Icon } from "@/components/icons";
 
 const loginUrl = "https://app.aifrogi.com/login";
-const registerUrl = "https://app.aifrogi.com/register?source=site-header";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -28,6 +28,8 @@ const navItems = [
 ];
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const registerUrl = `https://app.aifrogi.com/register?source=site-header${pathname === "/solutions/hotelgpt" ? "&bot=STAY" : ""}`;
   const [menuOpen, setMenuOpen] = useState(false);
   const [botsOpen, setBotsOpen] = useState(false);
 

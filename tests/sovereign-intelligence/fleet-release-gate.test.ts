@@ -4,6 +4,10 @@ import { assessFleetRelease, type FleetTenantResult } from "../../lib/sovereign-
 
 const tenant = (overrides: Partial<FleetTenantResult> = {}): FleetTenantResult => ({ organizationId: "org-1", organizationName: "Pilot", propertySlug: "pilot", eligible: true, blocker: null, ...overrides });
 
+test("an empty tenant fleet is unverified, never a passing release", () => {
+  assert.equal(assessFleetRelease(true, []).eligible, false);
+});
+
 test("fleet release passes only when Core and every live tenant pass", () => {
   assert.equal(assessFleetRelease(true, [tenant(), tenant({ organizationId: "org-2", propertySlug: "two" })]).eligible, true);
 });

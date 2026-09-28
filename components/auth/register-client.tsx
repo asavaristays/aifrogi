@@ -9,10 +9,12 @@ const botOptions = [
   ["BUSINESS_AI", "BusinessGPT — services, leads and support"], ["STAY", "HotelGPT — stays and guest enquiries"], ["PINGBOOK", "ClinicGPT — appointments and confirmations"], ["RESTAURANT", "DineGPT — dining and reservations"], ["EDUCATION", "eduGPT — admissions and student enquiries"], ["REAL_ESTATE", "PropertyGPT — discovery and site visits"], ["CUSTOM", "Custom Business Bot — configured workflow"]
 ];
 
-export function RegisterClient() {
+export function RegisterClient({ initialCategory = "BUSINESS_AI" }: { initialCategory?: "BUSINESS_AI" | "STAY" }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [completeEmail, setCompleteEmail] = useState("");
+  const [category, setCategory] = useState<string>(initialCategory);
+  const hotelTrial = category === "STAY";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,8 +56,8 @@ export function RegisterClient() {
           <p className="mt-5 max-w-lg text-base leading-7 text-[var(--text-muted)]">Choose the AI Bot that matches your first business outcome. After email verification, AiFrogi prepares its intelligence, installation code and controlled go-live journey.</p>
           <div className="mt-9 divide-y divide-[#ded8cb] border-y border-[#ded8cb]">
             <FlowRow number="1" title="Verify ownership" copy="A private 24-hour link is sent to your work email." />
-            <FlowRow number="2" title="Prepare business intelligence" copy="Approve trusted sources, persona, customer journey and human handover rules." />
-            <FlowRow number="3" title="Submit for approval" copy="Test the prepared bot, submit it to Super Admin, then publish by standalone link, website embed, or both." />
+            <FlowRow number="2" title={hotelTrial ? "Website intelligence starts" : "Prepare business intelligence"} copy={hotelTrial ? "Sign in to watch your website capture and first-answer checks. No Excel sheet is needed to start." : "Approve trusted sources, persona, customer journey and human handover rules."} />
+            <FlowRow number="3" title={hotelTrial ? "Try your assistant, then improve it" : "Submit for approval"} copy={hotelTrial ? "Your public hotel assistant opens when checks pass. Add Excel information and corrections afterward. Live bookings stay with your reservations team." : "Test the prepared bot, submit it to Super Admin, then publish by standalone link, website embed, or both."} />
           </div>
           <p className="mt-7 text-xs leading-5 text-[var(--text-muted)]"><strong>15 days only:</strong> after the trial, widget responses and automation pause automatically until a paid plan is activated. Your data remains preserved. No email password, permanent token, or OTP is requested.</p>
         </section>
@@ -79,8 +81,8 @@ export function RegisterClient() {
                 <Field label="Owner name"><input name="ownerName" className="product-input mt-2" autoComplete="name" required /></Field>
                 <Field label="Work email"><input name="ownerEmail" className="product-input mt-2" type="email" autoComplete="email" required /></Field>
                 <Field label="Mobile"><input name="ownerMobile" className="product-input mt-2" type="tel" autoComplete="tel" placeholder="+91" required /></Field>
-                <Field label="Business website (optional)" wide><input name="website" className="product-input mt-2" type="text" inputMode="url" autoComplete="url" placeholder="https://yourbusiness.com" /><small className="mt-1 block text-[11px] text-[var(--text-muted)]">If provided, AiFrogi prepares public website knowledge after email verification. You review every answer before submission.</small></Field>
-                <Field label="Select your AI Bot" wide><select name="botCategory" className="product-input mt-2" defaultValue="BUSINESS_AI">{botOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
+                <Field label={hotelTrial ? "Official hotel website" : "Business website (optional)"} wide><input name="website" className="product-input mt-2" type="text" inputMode="url" autoComplete="url" placeholder="https://yourbusiness.com" required={hotelTrial} /><small className="mt-1 block text-[11px] text-[var(--text-muted)]">{hotelTrial ? "Used to prepare your first answers automatically after email verification. Missing or conflicting information is shown for correction." : "If provided, AiFrogi prepares public website knowledge after email verification. You review every answer before submission."}</small></Field>
+                <Field label="Select your AI Bot" wide><select name="botCategory" className="product-input mt-2" value={category} onChange={event => setCategory(event.target.value)}>{botOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
                 <Field label="Industry"><select name="industry" className="product-input mt-2" defaultValue="Hospitality">{industries.map((industry) => <option key={industry}>{industry}</option>)}</select></Field>
                 <Field label="Country"><select name="country" className="product-input mt-2" defaultValue="India"><option>India</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Other</option></select></Field>
                 <Field label="Time zone" wide><select name="timezone" className="product-input mt-2" defaultValue="Asia/Kolkata"><option value="Asia/Kolkata">India Standard Time</option><option value="Asia/Dubai">Gulf Standard Time</option><option value="Europe/London">United Kingdom</option><option value="America/New_York">US Eastern Time</option><option value="America/Los_Angeles">US Pacific Time</option></select></Field>

@@ -82,7 +82,16 @@ PATCH = module.exports.PATCH;
 });
 const realFetch = globalThis.fetch;
 test.after(() => { globalThis.fetch = realFetch; delete (globalThis as any).__bucketOne; });
-globalThis.fetch = async () => { fixture.calls++; return Response.json({ output_text: fixture.modelAnswer }); };
+globalThis.fetch = async (_url, init) => {
+  const body = JSON.parse(String(init?.body || "{}"));
+  if (body.text?.format?.name === "answer_evidence_review") {
+    const evidence = JSON.parse(body.input[1].content).evidence as Array<{ id: string; text: string }>;
+    const match = evidence.find((item) => item.text.includes(fixture.modelAnswer));
+    return Response.json({ output_text: JSON.stringify({ claims: [{ text: fixture.modelAnswer, kind: "FACT", supported: Boolean(match), evidenceIds: match ? [match.id] : [] }], complete: true, issues: match ? [] : ["Fixture answer is absent from evidence."] }) });
+  }
+  fixture.calls++;
+  return Response.json({ output_text: fixture.modelAnswer });
+};
 const link = "https://fixture.example/training-booking/";
 export function claim(status = "PUBLISHED", extra = {}) { return { id: "claim-a", propertyId: "tenant-a", claimKey: "training", question: "How can I book training?", answer: `Book training at ${link}`, category: "Training", status, conflictStatus: "NONE", version: 1, expiresAt: null, effectiveAt: new Date(0), fieldApprovedBy: "owner", previewApprovedBy: "owner", ...extra }; }
 let counter = 0;

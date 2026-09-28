@@ -4,7 +4,7 @@ export type TenantKnowledgeSection = {
 };
 
 export type TenantEntityKnowledge = {
-  entityType: "PROPERTY" | "PRODUCT" | "SERVICE";
+  entityType: "PROPERTY" | "PRODUCT" | "SERVICE" | "PAGE";
   entityId: string;
   name: string;
   aliases: string[];
@@ -73,12 +73,16 @@ export function extractDeepTenantKnowledge(url: string, html: string, observedAt
   const propertyMatch = parsed.pathname.match(/\/properties\/(\d+)/i);
   const productMatch = parsed.pathname.match(/\/products?\/([^/]+)/i);
   const serviceMatch = parsed.pathname.match(/\/services?\/([^/]+)/i);
-  const entityType = propertyMatch ? "PROPERTY" as const : productMatch ? "PRODUCT" as const : "SERVICE" as const;
-  if (!propertyMatch && !productMatch && !serviceMatch) return null;
+  const entityType = propertyMatch ? "PROPERTY" as const : productMatch ? "PRODUCT" as const : serviceMatch ? "SERVICE" as const : "PAGE" as const;
   const h1 = plain(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || "");
   const title = plain(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "").split(/[|–—]/)[0].trim();
   const name = h1 || title || `Property ${propertyMatch?.[1] || parsed.pathname}`;
   const sections = sectionBlocks(html);
+  if (!sections.length) {
+    const text = plain(html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] || html);
+    if (text.length >= 120) sections.push({ heading: h1 || title || parsed.pathname, text: text.slice(0, 6000) });
+  }
+  if (!sections.length && entityType === "PAGE") return null;
   const imageUrls = [...new Set([...html.matchAll(/<img[^>]+(?:src|data-src)=["']([^"']+)["']/gi)].map((match) => {
     try { return new URL(decode(match[1]), url).toString(); } catch { return ""; }
   }).filter(Boolean))].slice(0, 20);
@@ -88,7 +92,9 @@ export function extractDeepTenantKnowledge(url: string, html: string, observedAt
     const evidenceHint = `${heading} ${section.text.slice(0, 800).toLowerCase()}`;
     const field = /airport\s*:|railway(?: station)?\s*:|bus stand\s*:|distance.{0,20}access/.test(evidenceHint) ? "access"
       : /property amenities|in-room amenities|\bamenit|\bfacilit/.test(evidenceHint) ? "amenities"
-      : /room|accommodation/.test(heading) ? "rooms"
+      : /room|accommodation|cottage|suite/.test(heading) ? "rooms"
+      : /dining|food|meal/.test(heading) ? "dining"
+      : /experience|activit|bird|safari|cycl|walk/.test(heading) ? "experiences"
       : /price|rate|tariff/.test(heading) ? "published_rate"
       : /policy|cancel|check-in|check out|check-out/.test(heading) ? "policy" : "detail";
     facts.push({ field, value: `${section.heading}: ${section.text}`.slice(0, 3000) });
@@ -99,7 +105,7 @@ export function extractDeepTenantKnowledge(url: string, html: string, observedAt
 export function resolveTenantEntity(entities: TenantEntityKnowledge[], question: string) {
   const normalizedQuestion = normalizeEntityText(question);
   const questionTokens = entityTokens(question);
-  return entities.map((entity) => {
+  return entities.filter((entity) => entity.entityType !== "PAGE").map((entity) => {
     const aliases = entity.aliases?.length ? entity.aliases : [entity.name];
     const aliasTokens = aliases.map(entityTokens);
     const exact = aliases.some((alias) => normalizedQuestion.includes(normalizeEntityText(alias)));

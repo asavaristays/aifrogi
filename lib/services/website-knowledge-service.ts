@@ -21,10 +21,13 @@ import { answerExactTenantAccessFact, answerExactTenantStayFact, buildDeepTenant
 import { buildTenantTruthReview, type TenantTruthReview } from "@/lib/tenant-intelligence/truth-governance";
 import { buildSessionConversationMemory, routeConversationByConfidence } from "@/lib/sovereign-intelligence/conversation-confidence";
 import { buildTenantKnowledgeChangeSet, tenantKnowledgeFreshness, type TenantKnowledgeChangeSet } from "@/lib/tenant-intelligence/learning-lifecycle";
-import { assembleAnswerContext, type AnswerReplayTrace } from "@/lib/sovereign-intelligence/answer-context";
-import { hasCompleteAnswerEnding } from "@/lib/sovereign-intelligence/answer-quality-gate";
+import { assembleAnswerContext, selectRelevantPassages, type AnswerReplayTrace } from "@/lib/sovereign-intelligence/answer-context";
+import { expandKnowledgeQuestion, knowledgeConcepts, knowledgeTokens } from "@/lib/sovereign-intelligence/knowledge-language";
+import { hasCompleteAnswerEnding, evaluateVisitorAnswerQuality } from "@/lib/sovereign-intelligence/answer-quality-gate";
+import { reviewAnswerGrounding, pruneRejectedSentences } from "@/lib/sovereign-intelligence/answer-grounding";
 import { planCoreIntelligenceFrame, verifyCoreFrameAnswer, verifyCorePropertySources } from "@/lib/sovereign-intelligence/core-intelligence-frames";
 import { formatPublicPhoneForDisplay } from "@/lib/public-phone-format";
+import { fetchPublicWebsiteText } from "@/lib/security/public-website-fetch";
 
 export type KnowledgePage = {
   url: string;
@@ -86,31 +89,6 @@ const MAX_DISCOVERY_URLS = 300;
 const MAX_PAGE_CHARS = 20000;
 const MAX_CONTEXT_CHARS = 11000;
 const CRAWL_CONCURRENCY = 8;
-// Operator-approved pages that may be active without appearing in navigation or
-// the sitemap. They are verified by the crawler before becoming answer sources.
-const PRIORITY_PATHS = ["/training-booking/"];
-const SEEDED_PATHS = [
-  "/",
-  "/ai-solutions/",
-  "/ai-automation/",
-  "/ai-automation-company-india/",
-  "/ai-software-development-gurugram/",
-  "/custom-software-development-india/",
-  "/ai-products/",
-  "/training-booking/",
-  "/channel-manager/",
-  "/what-we-build/",
-  "/goa-focus/",
-  "/revenue-desk/",
-  "/pricing/",
-  "/work-proof/",
-  "/goa-hotel-villa-growth-pilot/",
-  "/hotel-website-audit-goa/",
-  "/website-developer-goa/",
-  "/hotel-website-design-goa/",
-  "/villa-rental-website-goa/",
-  "/founder/"
-];
 
 export const BOT_ANSWER_CONSTITUTION = [
   sovereignConstitutionPrompt(),
@@ -127,7 +105,7 @@ export const BOT_ANSWER_CONSTITUTION = [
   "Avoid Meta, Facebook, token, webhook, or developer jargon unless the user specifically asks about API setup.",
   "Guide the user toward one clear next action supported by the supplied knowledge, or offer a human specialist callback.",
   "Use a URL only when it appears verbatim in the supplied approved knowledge. Never substitute a different booking, training, product, or contact URL.",
-  "When the website knowledge base does not contain the answer, say that clearly and ask for the user's business name, website, location, and goal.",
+  "When information is missing, answer the supported parts first and identify only the missing detail. Do not ask the visitor for the business identity or information already supplied.",
   "Never ask for passwords, OTPs, payment card numbers, or admin access in chat.",
   "Immediately honor STOP, unsubscribe, or do-not-contact requests and do not continue selling.",
   "Route complaints, billing disputes, legal questions, sensitive personal data, and low-confidence commercial answers to a human.",
@@ -259,25 +237,7 @@ function bucketFor(url: string, title: string, text: string) {
 }
 
 async function fetchText(url: string) {
-  const response = await fetch(url, {
-    headers: {
-      Accept: "text/html,application/xml,text/xml;q=0.9,*/*;q=0.8",
-      "User-Agent": "AiFrogi-KB-Crawler/1.0"
-    },
-    cache: "no-store",
-    signal: AbortSignal.timeout(8000)
-  });
-
-  if (!response.ok) {
-    throw new Error(`Could not fetch ${url}: ${response.status}`);
-  }
-
-  const contentType = response.headers.get("content-type") || "";
-  if (contentType && !/(text\/html|application\/xml|text\/xml|text\/plain)/i.test(contentType)) {
-    throw new Error(`Unsupported content type for ${url}: ${contentType}`);
-  }
-
-  return response.text();
+  return fetchPublicWebsiteText(url);
 }
 
 function uniqueSameOriginUrls(baseUrl: string, urls: string[]) {
@@ -317,12 +277,10 @@ async function discoverUrls(baseUrl: string) {
 
   const homepage = await fetchText(baseUrl);
   const homepageLinks = Array.from(homepage.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]);
-  const priorityUrls = PRIORITY_PATHS.map((priorityPath) => new URL(priorityPath, baseUrl).toString());
-  const seedUrls = SEEDED_PATHS.map((seedPath) => new URL(seedPath, baseUrl).toString());
 
   // Sitemap pages are the current first-party inventory. Legacy seeds are only
   // fallbacks and must not consume the crawl limit before live URLs are tried.
-  return uniqueSameOriginUrls(baseUrl, [baseUrl, ...priorityUrls, ...sitemapUrls, ...homepageLinks, ...seedUrls]);
+  return uniqueSameOriginUrls(baseUrl, [baseUrl, ...sitemapUrls, ...homepageLinks]);
 }
 
 async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<KnowledgeBase> {
@@ -380,7 +338,8 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
 
     if (!pages.length) throw new Error("No readable website pages were found.");
 
-    const reconciledFacts = reconcileTenantFacts(pages.flatMap(extractWebsiteTenantFacts));
+    const ownerCorrections = previous?.baseUrl === baseUrl ? (previous.structuredFacts || []).filter((fact) => fact.sourceType === "CORRECTION") : [];
+    const reconciledFacts = reconcileTenantFacts([...pages.flatMap(extractWebsiteTenantFacts), ...ownerCorrections]);
     const structuredFacts = reconciledFacts.facts;
     const crawledAt = new Date().toISOString();
     const buckets = new Set(pages.map((page) => page.bucket));
@@ -450,7 +409,7 @@ const QUESTION_STOP_WORDS = new Set([
 ]);
 
 function questionTerms(value: string) {
-  return [...new Set(value.toLowerCase().split(/[^a-z0-9]+/).filter((term) => term.length > 2 && !QUESTION_STOP_WORDS.has(term)))];
+  return [...new Set(knowledgeTokens(expandKnowledgeQuestion(value)).filter((term) => !QUESTION_STOP_WORDS.has(term)))];
 }
 
 export type WebsiteQuestionIntent = SovereignIntent;
@@ -459,7 +418,7 @@ export const classifyWebsiteQuestion = classifySovereignIntent;
 export function buildRequestedContactDetails(question: string, organization: { publicPhone?: string | null; publicEmail?: string | null; website?: string | null; publicAddress?: string | null; publicBusinessHours?: string | null }) {
   const requested = [
     /\b(phone|telephone|mobile|number)\b/i.test(question) && organization.publicPhone ? `Phone: ${formatPublicPhoneForDisplay(organization.publicPhone)}` : null,
-    /\bemail\b/i.test(question) && organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
+    /\bemails?\b/i.test(question) && organization.publicEmail ? `Email: ${organization.publicEmail}` : null,
     /\bwebsite\b/i.test(question) && organization.website ? `Website: ${organization.website}` : null,
     /\b(address|located|location|based)\b/i.test(question) && organization.publicAddress ? `Address: ${organization.publicAddress}` : null,
     /\b(opening hours|business hours)\b/i.test(question) && organization.publicBusinessHours ? `Business hours: ${organization.publicBusinessHours}` : null
@@ -495,7 +454,7 @@ export function buildPublishedWebsiteContactAnswer(question: string, businessNam
     const phones = [...new Set([...contactText.matchAll(/(?<!\d)(?:\+?91[\s-]*)?[6-9](?:[\s-]*\d){9}(?!\d)/g)].map((match) => formatPublicPhoneForDisplay(match[0])))];
     if (phones.length) details.push(`Phone: ${phones.join(" · ")}`);
   }
-  if (/\bemail\b/i.test(question)) {
+  if (/\bemails?\b/i.test(question)) {
     const emails = [...new Set([...contactText.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].map((match) => match[0].toLowerCase()))];
     if (emails.length) details.push(`Email: ${emails.join(" · ")}`);
   }
@@ -519,7 +478,7 @@ export function cachedWebsiteSnapshotState(crawledAt: string, ttlMs: number, ref
   return refreshFailed && age <= MAX_FAILED_REFRESH_STALE_MS ? "STALE" as const : "EXPIRED" as const;
 }
 
-async function readCachedKnowledgeBase(propertySlug: string, baseUrl: string, ttlMs: number, refreshFailed = false): Promise<KnowledgeBase | null> {
+export async function readCachedKnowledgeBase(propertySlug: string, baseUrl: string, ttlMs: number, refreshFailed = false): Promise<KnowledgeBase | null> {
   try {
     const raw = await readFile(cachePath(propertySlug), "utf8");
     const parsed = JSON.parse(raw) as KnowledgeBase;
@@ -617,7 +576,7 @@ function smallTermEditDistance(left: string, right: string) {
   return row[right.length];
 }
 
-function buildContext(knowledgeBase: KnowledgeBase, question: string) {
+export function buildContext(knowledgeBase: KnowledgeBase, question: string) {
   const explicitEntity = resolveTenantEntity(knowledgeBase.tenantEntities || [], question);
   const deepContext = explicitEntity ? buildDeepTenantContext([explicitEntity], question) : "";
   const rankedPages = [...knowledgeBase.pages]
@@ -626,13 +585,20 @@ function buildContext(knowledgeBase: KnowledgeBase, question: string) {
   if ((!rankedPages.length || rankedPages[0].score === 0) && !deepContext) {
     return { context: "", sourceUrls: [] as string[], sources: [] as KnowledgeSourceEvidence[], trace: { retrievalQuestion: question, contextSourceUrls: [], contextChars: 0, validatorViolations: [] } satisfies AnswerReplayTrace };
   }
-  const bestScore = rankedPages[0]?.score || 0;
-  const relevanceFloor = Math.max(3, Math.ceil(bestScore * 0.8));
+  const relevanceFloor = 3;
+  // A strong match for one topic must not evict a weaker but necessary match
+  // for another topic in the same guest question.
+  const topicPages = new Set(knowledgeConcepts(question).flatMap((topic) => {
+    const terms = knowledgeTokens(topic);
+    const best = [...rankedPages].map((item) => ({ ...item, matches: terms.filter((term) => `${item.page.title} ${item.page.text}`.toLowerCase().includes(term)).length })).sort((a, b) => b.matches - a.matches)[0];
+    return best?.matches ? [best.page.url] : [];
+  }));
   const pages = rankedPages
     .filter(({ page }) => !explicitEntity || !/\/properties\/\d+/i.test(new URL(page.url).pathname) || page.url === explicitEntity.sourceUrl)
-    .filter((item) => item.score >= relevanceFloor)
+    .filter((item) => item.score >= relevanceFloor || topicPages.has(item.page.url))
+    .sort((a, b) => Number(topicPages.has(b.page.url)) - Number(topicPages.has(a.page.url)) || b.score - a.score)
     .slice(0, 8)
-    .map(({ page, score }) => ({ ...page, score }));
+    .map(({ page, score }) => ({ ...page, text: selectRelevantPassages(page.text, question), score }));
   const assembled = assembleAnswerContext({ retrievalQuestion: question, rankedPages: pages, explicitEntityContext: deepContext, explicitEntitySourceUrl: explicitEntity?.sourceUrl, maxChars: MAX_CONTEXT_CHARS });
   const evidenceByUrl = new Map<string, KnowledgeSourceEvidence>();
   if (explicitEntity) evidenceByUrl.set(explicitEntity.sourceUrl, { title: explicitEntity.name, url: explicitEntity.sourceUrl, crawledAt: explicitEntity.observedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(explicitEntity.observedAt) <= getTtlMs(24) ? "CURRENT" : "STALE" });
@@ -695,7 +661,8 @@ export async function buildWebsiteKnowledgeAnswer({
   priorQuestions = [],
   lastAssistantAnswer = "",
   visitorTimeZone,
-  evaluationMode = false
+  evaluationMode = false,
+  preparationSnapshot
 }: {
   question: string;
   propertySlug: string;
@@ -704,6 +671,8 @@ export async function buildWebsiteKnowledgeAnswer({
   lastAssistantAnswer?: string;
   visitorTimeZone?: string;
   evaluationMode?: boolean;
+  /** Server-only draft screening; never populated from public request data. */
+  preparationSnapshot?: KnowledgeBase;
 }): Promise<KnowledgeAnswer | null> {
   void configuration;
   if (!question.trim()) return null;
@@ -716,7 +685,8 @@ export async function buildWebsiteKnowledgeAnswer({
     getBotPersonaForPropertySlug(propertySlug),
     db ? db.property.findUnique({ where: { slug: propertySlug }, select: { timezone: true, organization: { select: { name: true, website: true, publicPhone: true, publicEmail: true, publicAddress: true, publicBusinessHours: true, updatedAt: true } } } }) : null
   ]);
-  if (!settings.approvedForAi) return null;
+  const screeningSnapshot = evaluationMode && preparationSnapshot && preparationSnapshot.baseUrl.replace(/\/+$/, "") === settings.sourceUrl.replace(/\/+$/, "") ? preparationSnapshot : null;
+  if (!settings.approvedForAi && !screeningSnapshot) return null;
 
   const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions, lastAssistantAnswer);
   const organization = business?.organization;
@@ -737,7 +707,7 @@ export async function buildWebsiteKnowledgeAnswer({
   if (resolved.intent === "HUMAN_REQUEST") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
   const stayBookingBoundary = persona?.category === "STAY" ? unverifiedStayBookingAnswer(question, businessName, organization?.publicPhone) : null;
   if (stayBookingBoundary) return direct(stayBookingBoundary, { ...resolved.decision, disposition: "ANSWER", reason: "A stay booking request cannot be confirmed by the knowledge-only answer path." });
-  const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
+  const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion, { readOnly: evaluationMode });
   if (governed.blockedState) {
     const failed = safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));
     failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
@@ -774,9 +744,9 @@ export async function buildWebsiteKnowledgeAnswer({
 
   // Governed bots may read only their prepared tenant snapshot during an answer.
   // Crawling is an explicit ingestion action and must never occur in retrieval.
-  const knowledgeBase = persona?.kbGateVersion
+  const knowledgeBase = screeningSnapshot || (persona?.kbGateVersion || evaluationMode
     ? await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours), settings.status === "ERROR")
-    : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
+    : await getWebsiteKnowledgeBase(propertySlug).catch(() => null));
   const snapshotStale = knowledgeBase && cachedWebsiteSnapshotState(knowledgeBase.crawledAt, getTtlMs(settings.autoRefreshHours), settings.status === "ERROR") === "STALE";
   const addStaleNotice = (answer: string) => snapshotStale ? `${answer}\nThese details are from the last available website capture; please confirm anything time-sensitive with the team.` : answer;
   if (resolved.intent === "CONTACT_INFO" && knowledgeBase) {
@@ -819,12 +789,15 @@ export async function buildWebsiteKnowledgeAnswer({
     sources: [] as KnowledgeSourceEvidence[],
     trace: { retrievalQuestion, contextSourceUrls: [], contextChars: 0, validatorViolations: [] } satisfies AnswerReplayTrace
   };
-  const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
+  const correctionFacts = (knowledgeBase?.structuredFacts || []).filter((fact) => fact.sourceType === "CORRECTION" && Date.now() - Date.parse(fact.observedAt) <= fact.refreshDays * 86400000 && questionTerms(retrievalQuestion).some((term) => `${fact.field} ${fact.value}`.toLowerCase().includes(term)));
+  const corrections = correctionFacts.map((fact) => `Owner-confirmed ${fact.field}: ${fact.value}`).join("\n");
+  const context = [websiteResult.context, corrections, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
+  const hotelVoice = persona?.category === "STAY";
   const confidenceRoute = routeConversationByConfidence({ intent: resolved.intent, hasApprovedContext: Boolean(context.trim()), hasResolvedEntity: Boolean(sessionMemory.entity), priorQuestions });
   if (confidenceRoute.route === "CLARIFY") return direct(`What would you like to know about ${businessName}? You can ask about rooms, facilities, location, policies, weddings or reservations.` , { ...resolved.decision, disposition: "CLARIFY", reason: confidenceRoute.reason });
   if (!context.trim()) {
     if (!evaluationMode) await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion);
-    const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);
+    const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", hotelVoice ? "I’m sorry, I don’t have that detail confirmed yet. Our reservations team can help with the exact information." : `I don’t have that detail confirmed for ${businessName} yet. The team can help with the exact information.`);
     failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
     return failed;
   }
@@ -834,7 +807,7 @@ export async function buildWebsiteKnowledgeAnswer({
     return publishedClaimFallback(governed, reliability, resolved.decision) || safeFailure("INFRASTRUCTURE", "MODEL_CREDENTIAL_UNAVAILABLE", "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.");
   }
 
-  const menu = [
+  const menu = hotelVoice ? "Stay information, cottages, dining, experiences, travel planning, policies and optional reservations-team assistance. Live availability and booking confirmation are unavailable in this knowledge-only path." : [
     "1. Business information and approved services",
     "2. Customer enquiry qualification",
     "3. Website-bot assistance and human handover"
@@ -842,6 +815,9 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const primaryModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
   const fallbackModel = process.env.OPENAI_FALLBACK_MODEL?.trim();
+  let repairIssues: string[] = [];
+  const accumulatedUsage = { inputTokens: 0, outputTokens: 0 };
+  let lastDraft = "";
   const intelligenceFrame = planCoreIntelligenceFrame(persona?.category || "CORE", question, sessionMemory.tenantPropertyId);
   const requiredHotelParts = intelligenceFrame.requestedParts;
   const frameGuidance = intelligenceFrame.frameKey === "HOTEL_POLICY"
@@ -854,29 +830,61 @@ export async function buildWebsiteKnowledgeAnswer({
   const reliable = await executeReliableModel({
     models: [primaryModel, ...(fallbackModel ? [fallbackModel] : [])],
     attemptsPerModel: 2,
-    attemptTimeoutMs: Math.max(2500, Math.min(7000, Number(process.env.OPENAI_ATTEMPT_TIMEOUT_MS) || 4500)),
-    totalBudgetMs: Math.max(6000, Math.min(12000, Number(process.env.OPENAI_TOTAL_BUDGET_MS) || 10500)),
+    attemptTimeoutMs: hotelVoice ? 12000 : Math.max(2500, Math.min(7000, Number(process.env.OPENAI_ATTEMPT_TIMEOUT_MS) || 4500)),
+    totalBudgetMs: hotelVoice ? 24000 : Math.max(6000, Math.min(12000, Number(process.env.OPENAI_TOTAL_BUDGET_MS) || 10500)),
     execute: async (model, signal) => {
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST", signal,
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, input: [
-          { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}` },
+        body: JSON.stringify({ model, ...(hotelVoice ? { temperature: 0 } : {}), input: [
+          { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}${hotelVoice ? "\nHospitality delivery: Speak as the property's assistant using we/our naturally. Answer the guest's actual question first. Never say approved knowledge, verified information, supplied context or business objective. Use the guest's language when it is enabled; Hindi and Hinglish questions should receive Hindi and Hinglish respectively when enabled. Be helpful to an annoyed guest without defending yourself. Do not insert a callback or contact request into an informational answer. Do not claim a team action was taken. For missing facts say I don’t have that detail confirmed, and preserve the supported parts. Seasonal advice must come from the provided evidence, never a live weather claim. Ask at most one question only when the answer needs it. Do not infer guided activities, dietary suitability, permissions or inclusions from nearby unrelated statements. Do not add mechanics, physical conditions or scheduling motives for named activities from general knowledge. Keep factual descriptions to what the source says; warmth should come from phrasing, not added claims. When facts are missing say I cannot confirm the specific detail, without referring to supplied or approved information." : ""}` },
           { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nCore Intelligence frame: ${intelligenceFrame.frameKey}.${frameGuidance ? ` ${frameGuidance}` : ""}${intelligenceFrame.requiresPartByPartEvidence ? ` The guest asked about ${requiredHotelParts.join(", ")}. Address each topic separately from approved evidence; if evidence is missing for one topic, say only that part cannot be confirmed.` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
+          , ...(repairIssues.length ? [
+            { role: "assistant", content: lastDraft },
+            { role: "user", content: `Correct the previous draft. These assertions or qualities are unsupported: ${repairIssues.join("; ")}. REMOVE each unsupported assertion; do not paraphrase it as another positive claim. Preserve the supported facts. If the guest explicitly asked about an unsupported detail, say you cannot confirm only that detail. If not asked, omit it. Do not add new adjectives or experiential/suitability claims. A list of activities does not transfer modifiers between them. Return only the corrected guest answer, without mentioning these checks.` }
+          ] : [])
         ], max_output_tokens: intelligenceFrame.frameKey === "HOTEL_POLICY" ? 600 : 400 })
       });
       if (!response.ok) throw modelHttpError(response.status);
       const payload = (await response.json().catch(() => null)) as Record<string, unknown> | null;
       const usage = payload?.usage && typeof payload.usage === "object" ? payload.usage as Record<string, unknown> : {};
-      return { text: payload ? extractOpenAiText(payload) : "", inputTokens: Math.max(0, Number(usage.input_tokens) || 0), outputTokens: Math.max(0, Number(usage.output_tokens) || 0) };
+      let text = payload ? extractOpenAiText(payload) : "";
+      lastDraft = text;
+      accumulatedUsage.inputTokens += Math.max(0, Number(usage.input_tokens) || 0);
+      accumulatedUsage.outputTokens += Math.max(0, Number(usage.output_tokens) || 0);
+      let claims = validateGeneratedClaims({ answer: text, approvedContext: context, connectorVerified: false });
+      let quality = evaluateVisitorAnswerQuality({ question, answer: text, decision: resolved.decision });
+      let grounding = hotelVoice && claims.valid && quality.passed ? await reviewAnswerGrounding({ apiKey, model, question, answer: text, context, signal }) : null;
+      const reviewUsage = { inputTokens: grounding?.inputTokens || 0, outputTokens: grounding?.outputTokens || 0 };
+      if (grounding && !grounding.supported) {
+        const reduced = pruneRejectedSentences(text, grounding);
+        if (reduced) {
+          text = reduced;
+          claims = validateGeneratedClaims({ answer: text, approvedContext: context, connectorVerified: false });
+          quality = evaluateVisitorAnswerQuality({ question, answer: text, decision: resolved.decision });
+          // Same bounded attempt/signal, no third generation attempt and no
+          // approval based solely on deleting a sentence.
+          grounding = await reviewAnswerGrounding({ apiKey, model, question, answer: text, context, signal });
+          reviewUsage.inputTokens += grounding.inputTokens;
+          reviewUsage.outputTokens += grounding.outputTokens;
+          lastDraft = text;
+        }
+      }
+      accumulatedUsage.inputTokens += reviewUsage.inputTokens;
+      accumulatedUsage.outputTokens += reviewUsage.outputTokens;
+      repairIssues = [...(!claims.valid ? claims.violations : []), ...quality.reasons, ...(grounding?.issues || [])];
+      return { text, grounding, verified: claims.valid && quality.passed && (!hotelVoice || Boolean(grounding?.supported && grounding.complete)), inputTokens: Math.max(0, Number(usage.input_tokens) || 0) + reviewUsage.inputTokens, outputTokens: Math.max(0, Number(usage.output_tokens) || 0) + reviewUsage.outputTokens };
     },
-    validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000 && hasCompleteAnswerEnding(value.text)
+    validate: (value) => value.verified && Boolean(value.text.trim()) && value.text.length <= 5000 && hasCompleteAnswerEnding(value.text)
       && verifyCoreFrameAnswer(intelligenceFrame, question, value.text).passed
       && verifyCorePropertySources(intelligenceFrame, websiteResult.sourceUrls)
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });
-    return publishedClaimFallback(governed, reliable.evidence, resolved.decision) || safeFailure(reliable.evidence.failureLayer, reliable.error.code, "I’m sorry—I can’t confirm that accurately right now. I’ve saved your question for the business team, so you won’t need to repeat it.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
+    const failed = (hotelVoice ? null : publishedClaimFallback(governed, reliable.evidence, resolved.decision)) || safeFailure(reliable.evidence.failureLayer, reliable.error.code, hotelVoice ? "I’m sorry, I can’t confirm that detail accurately right now. Our reservations team can help with the exact information." : "I’m sorry, I can’t confirm that accurately right now. The team can help with the exact information.", reliable.evidence.latencyMs, reliable.evidence.attemptCount, reliable.evidence.degradedMode);
+    failed.replayTrace = { ...websiteResult.trace, proposedAnswer: lastDraft, finalAnswer: failed.answer, validatorViolations: repairIssues };
+    failed.modelUsage = accumulatedUsage;
+    return failed;
   }
   const answer = reliable.value.text;
   const claimValidation = validateGeneratedClaims({ answer, approvedContext: context, connectorVerified: false });
@@ -892,7 +900,7 @@ export async function buildWebsiteKnowledgeAnswer({
   return {
     answer: addStaleNotice(answer),
     sourceUrls: websiteResult.sourceUrls,
-    sources: websiteResult.sources,
+    sources: [...websiteResult.sources, ...correctionFacts.map((fact) => ({ title: "Owner-confirmed information", url: fact.sourceUrl || "", crawledAt: fact.observedAt, authority: "APPROVED_CLIENT_CORRECTION" as const, freshness: "CURRENT" as const }))],
     knowledgeAsOf: knowledgeBase?.crawledAt || new Date().toISOString(),
     usedOpenAi: true,
     model: reliable.model,
@@ -905,7 +913,7 @@ export async function buildWebsiteKnowledgeAnswer({
       nearMissClaimIds: governed.nearMissClaimIds
     },
     reliability: reliable.evidence,
-    modelUsage: { inputTokens: reliable.value.inputTokens, outputTokens: reliable.value.outputTokens },
-    replayTrace: { ...websiteResult.trace, proposedAnswer: answer, finalAnswer: addStaleNotice(answer), validatorViolations: [] }
+    modelUsage: accumulatedUsage,
+    replayTrace: { ...websiteResult.trace, proposedAnswer: answer, finalAnswer: addStaleNotice(answer), validatorViolations: [], groundingReview: reliable.value.grounding || undefined }
   };
 }

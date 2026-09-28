@@ -8,6 +8,7 @@ import { LogoutButton } from "@/components/layout/logout-button";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { Button } from "@/components/ui/button";
+import { LevelOneProgress } from "@/components/onboarding/level-one-progress";
 
 type BotProfile = {
   category: string; operatingMode: string; channels: string[]; capabilities: string[];
@@ -27,8 +28,9 @@ export type CustomerOnboardingOrganization = {
   botConnectors: BotConnectorView[]; properties: Array<{ id: string; name: string; slug: string }>;
 };
 
-export function CustomerOnboarding({ initialOrganization, accountEmail, reviewReadiness }: {
+export function CustomerOnboarding({ initialOrganization, accountEmail, reviewReadiness, automaticPreparation = false }: {
   initialOrganization: CustomerOnboardingOrganization | null; accountEmail: string;
+  automaticPreparation?: boolean;
   reviewReadiness?: { knowledgeReady: boolean; tested: boolean; certified: boolean; canManage: boolean; evidence?: { pageCount: number; published: number; coveragePercent: number; freshnessRate: number; conflicts: number; unsigned: number; openFlags: number; previewPending: number; missingEssentials: string[] } };
 }) {
   const router = useRouter();
@@ -84,6 +86,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
       <div className="flex items-center gap-3"><div className="hidden text-right sm:block"><p className="text-xs font-bold text-white/55">Signed in as</p><p className="mt-1 text-sm font-semibold">{accountEmail}</p></div><LogoutButton variant="sidebar" className="min-h-9 w-auto rounded-md border border-white/14 px-3 text-xs" /></div>
     </div></header>
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-8">
+      {automaticPreparation ? <><LevelOneProgress /><section className="rounded-lg border bg-white p-6"><h1 className="text-xl font-semibold">Improve your assistant when you’re ready</h1><p className="mt-2 text-sm text-[var(--text-muted)]">Website preparation starts automatically after email verification. Excel enrichment is optional and does not hold up the first website-based answers.</p></section><OnboardingWorkbookImport hotelTemplate onImported={() => router.refresh()} /></> : <>
       <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="product-eyebrow">Simple AI Bot onboarding</p><h1 className="mt-2 text-3xl font-black">Share and confirm your business information.</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">You provide the business details and approved answers. AiFrogi completes testing, certification and activation after submission.</p></div><strong className="rounded-full bg-[var(--primary-soft)] px-4 py-2 text-sm text-[var(--primary-strong)]">{progress}% ready</strong></div>
         <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--surface-muted)]"><div className="h-full rounded-full bg-[var(--gold-600)]" style={{ width: `${progress}%` }} /></div>
@@ -104,6 +107,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
       </section> : null}
       {step === 2 ? <div className="space-y-5"><section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm"><p className="product-eyebrow">Step 2 · add information now or later</p><h2 className="mt-2 text-2xl font-black">Website and Excel are optional at this stage.</h2><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">AiFrogi can check your public website now, and you may upload the Excel sheet now or add more intelligence after approval.</p><div className="mt-5 flex flex-wrap gap-3"><Button disabled={checkingWebsite} onClick={checkWebsiteNow}>{checkingWebsite ? "Checking website…" : organization?.website ? "Check website now" : "Continue"}</Button><button type="button" className="min-h-11 rounded-md border border-black/10 px-5 text-sm font-bold" onClick={() => setStep(3)}>Do this later</button></div></section><OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => setStep(3)} /><button type="button" className="text-sm font-semibold text-[var(--primary-strong)]" onClick={() => setStep(1)}>← Back to business details</button></div> : null}
       {step >= 3 && organization?.botProfile ? <BotReviewSubmission intakeOnly status={status} ready tested={false} certified={false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
+      </>}
     </main>
   </div>;
 }

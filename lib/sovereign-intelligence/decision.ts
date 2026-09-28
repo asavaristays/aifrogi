@@ -1,4 +1,5 @@
 import { SOVEREIGN_CONSTITUTION_VERSION } from "@/lib/sovereign-intelligence/constitution";
+import { knowledgeConcepts, isHindiPrivateRequest, isHotelSeasonPlanning } from "@/lib/sovereign-intelligence/knowledge-language";
 
 export type SovereignIntent = "BUSINESS" | "CONTACT_INFO" | "IDENTITY" | "GREETING" | "OFF_TOPIC" | "CONTEXT_FOLLOW_UP" | "HUMAN_REQUEST" | "SENSITIVE" | "UNKNOWN";
 export type SovereignDisposition = "ANSWER" | "CLARIFY" | "REFUSE" | "ESCALATE" | "FALLBACK";
@@ -36,19 +37,24 @@ function hasTypoTolerantBusinessToken(normalized: string) {
 }
 
 export function classifySovereignIntent(question: string): SovereignIntent {
-  const normalized = question.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  const normalized = question.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{M}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
+  if (isHindiPrivateRequest(question)) return "SENSITIVE";
+  if (/^(नमस्ते|नमस्कार|हैलो|सुप्रभात)$/.test(normalized)) return "GREETING";
+  if (/(?:इंसान|व्यक्ति|स्टाफ|टीम).{0,20}(?:बात|बुला)|\b(?:insaan|staff|team) se baat\b/i.test(normalized)) return "HUMAN_REQUEST";
   if (/^(hi|hello|hey|good morning|good afternoon|good evening|good night|namaste)( there)?$/.test(normalized)) return "GREETING";
   if (/\b(who are you|what are you|your name|are you (a |an )?(bot|ai)|introduce yourself)\b/.test(normalized)) return "IDENTITY";
-  const rejectsHumanContact = /\b(?:do not|don t|dont|no|not)\s+(?:call|contact|phone|ring|message|arrange|schedule)|\b(?:do not|don t|dont)\s+(?:want|need)\s+(?:a\s+)?(?:call|callback|human|agent)\b/.test(normalized);
-  if (!rejectsHumanContact && /\b(human|real person|person to help|someone to help|team member|agent|call me|contact me|talk to someone|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
+  const rejectsHumanContact = /\b(?:do not|don t|dont|no|not)\s+(?:call|contact|phone|ring|message|arrange|schedule)|\b(?:do not|don t|dont)\s+(?:want|need)\s+(?:a\s+)?(?:call|callback|human|agent)\b|\b(?:no|not|without)\s+(?:a\s+)?(?:callback|call back|human|agent)\b/.test(normalized);
+  if (!rejectsHumanContact && /\b(human|real person|person to help|someone to help|team member|agent|call me|contact me|talk to someone|(?:speak|talk) (?:to|with) (?:a |the )?person|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
   // Privacy and credential boundaries must run before public contact routing so
   // words such as "phone number" cannot downgrade a private-data request.
   if (/\b(?:phone|mobile|email|address|contact)(?: number| details| information)?\s+(?:of|for|belonging to)\s+(?:the |a |another |previous )?(?:guest|customer)\b/.test(normalized)) return "SENSITIVE";
   if (/\b(?:previous|prior|last)\s+(?:guest|customer)\b|\b(?:guest|customer)\s+(?:who|that)\s+(?:visited|stayed|booked)\b/.test(normalized) && /\b(?:booked|booking|phone|mobile|email|address|contact|details|information|share|tell|show|stay)\b/.test(normalized)) return "SENSITIVE";
   if (/\b(password|otp|one time password|card number|cvv|medical emergency|legal dispute|complaint|system prompt|developer prompt|api key|secret key|access token|all customers|all bookings|all conversations|another (?:customer|guest)|other (?:customers|guests)|customer before me|guest before me|owner'?s? private|private (?:mobile|phone|email|address)|guest'?s? (?:booking|phone|mobile|email|address))\b/.test(normalized)) return "SENSITIVE";
   if (/\bcontact\s+(?:numbr|nmbr|number)\b/.test(normalized)) return "CONTACT_INFO";
+  if (/\b(?:phone numbers?|mobile numbers?|emails?|full address)\b/.test(normalized) && !/\b(?:my|without|don t|do not)\b/.test(normalized)) return "CONTACT_INFO";
   if (/^(address|phone|telephone|mobile|email|contact|reservation (?:number|phone|email|contact)|booking (?:number|phone|email|contact))$/.test(normalized)) return "CONTACT_INFO";
   if (/\b(contact (details|information|number|address)|phone number|mobile number|telephone( number)?|email( address)?|office address|business address|reservation (contact|number|phone|email)|booking (contact|number|phone|email)|share (your )?(contact )?address|where (are|r) (you|u) based|where (is|s) (the )?(office|business|company)|location|opening hours|business hours|website address)\b/.test(normalized)) return "CONTACT_INFO";
+  if (isHotelSeasonPlanning(question)) return "BUSINESS";
   if (/\b(weather|temperature|forecast|rain today|cricket (score|match)|football (score|match)|who won( the)? (game|match)|stock price|share price|election result|horoscope|recipe|movie showtime)\b/.test(normalized)) return "OFF_TOPIC";
   if (/^(?:no\s+)?(?:i\s+)?meant\s+\S+|^(?:tell me more|what about (?:it|that|this|there)|how about (?:it|that|this|there)|same (?:date|dates|time|details|option|room|package))$/.test(normalized)) return "CONTEXT_FOLLOW_UP";
   if (/^(?:what|who) (?:is|are) [a-z0-9][a-z0-9 '&.-]{1,80}$/.test(normalized)) return "BUSINESS";
@@ -63,6 +69,7 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   // Recognise ordinary plural and vertical vocabulary when recovering a topic.
   // This only routes retrieval; it does not confer factual or action authority.
   if (/\b(services?|website|web design|development|software|application|mobile app|ai|automation|bot|whatsapp|hotel|hospitality|channel manager|training|courses?|programmes?|programs?|workflows?|bootcamp|seo|marketing|integration|pricing|price|cost|quote|demo|consultation|build|project|appointment|booking|reservation|table|menu|cuisine|treatments?|rooms?|suites?|amenities|facilities|weddings?|events?|banquets?|conferences?|celebrations?|restaurant|dining|activities|spa|pool|parking|airport|railway|station|distance|transport|transfer|breakfast|wifi|wi fi|chec?k in|chec?k out|pets?|polic(?:y|ies)|cancell?ation|refund|accessibility|wheelchair|lift|elevator|payment|cash|card|admission|counselling|propert(?:y|ies)|site visit|products?|order|catalogue|maintenance)\b/.test(normalized) || hasTypoTolerantBusinessToken(normalized)) return "BUSINESS";
+  if (knowledgeConcepts(question).length) return "BUSINESS";
   return "UNKNOWN";
 }
 

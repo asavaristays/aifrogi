@@ -7,8 +7,9 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const metadata: Metadata = { title: "Create account | AiFrogi", robots: { index: false, follow: false } };
 
-export default async function RegisterPage() {
+export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ source?: string; bot?: string }> }) {
   const user = await getCurrentUser();
   if (user) redirect(user.role === "admin" ? "/admin/customers" : "/dashboard");
-  return <RegisterClient />;
+  const query = await searchParams;
+  return <RegisterClient initialCategory={query.bot === "STAY" || query.source?.toLowerCase().includes("hotelgpt") ? "STAY" : "BUSINESS_AI"} />;
 }

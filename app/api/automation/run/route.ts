@@ -7,6 +7,7 @@ import { importSupportEmailReplies } from "@/lib/support-email-sync";
 import { queueWebsiteHandoverNotifications } from "@/lib/website-handover-notifications";
 import { refreshDueTenantKnowledge } from "@/lib/services/website-knowledge-service";
 import { withSystemDatabaseIdentity } from "@/lib/security/tenant-database-context";
+import { runLevelOnePreparation } from "@/lib/services/level-one-preparation";
 
 export const dynamic = "force-dynamic";
 
@@ -21,15 +22,22 @@ function authorized(request: Request) {
 
 export async function POST(request: Request) {
   if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  return withSystemDatabaseIdentity("automation:cron", "run-scheduled-tenant-operations", async () => {
-  const websiteHandover = await queueWebsiteHandoverNotifications();
-  const [result, knowledgeFlagSla, subscriptions, supportEmailReplies, tenantKnowledgeRefresh] = await Promise.all([
-    runDueAutomationJobs({ workerId: `cron-${Date.now()}`, take: 25, dryRun: false }),
-    processKnowledgeFlagSla(),
-    processSubscriptionLifecycleBatch(),
-    importSupportEmailReplies(),
-    refreshDueTenantKnowledge(3)
+  // Separate identity scopes: crawling must neither hold the normal cron's
+  // transaction nor prevent handover/billing work from starting or completing.
+  const [preparation, operations] = await Promise.all([
+    runLevelOnePreparation().catch(() => ({ processed: 0, failed: true as const })),
+    withSystemDatabaseIdentity("automation:cron", "run-scheduled-tenant-operations", async () => {
+      const websiteHandover = await queueWebsiteHandoverNotifications();
+      const [result, knowledgeFlagSla, subscriptions, supportEmailReplies, tenantKnowledgeRefresh] = await Promise.all([
+        runDueAutomationJobs({ workerId: `cron-${Date.now()}`, take: 25, dryRun: false }),
+        processKnowledgeFlagSla(),
+        processSubscriptionLifecycleBatch(),
+        importSupportEmailReplies(),
+        refreshDueTenantKnowledge(3)
+      ]);
+      return { result, knowledgeFlagSla, subscriptions, supportEmailReplies, tenantKnowledgeRefresh, websiteHandover };
+    })
   ]);
-  return NextResponse.json({ status: "ok", result, knowledgeFlagSla, subscriptions, supportEmailReplies, tenantKnowledgeRefresh, websiteHandover });
-  });
+  const failed = preparation && "failed" in preparation && preparation.failed;
+  return NextResponse.json({ status: failed ? "degraded" : "ok", ...operations, preparation }, { status: failed ? 503 : 200 });
 }

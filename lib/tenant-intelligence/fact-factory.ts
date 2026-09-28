@@ -13,6 +13,7 @@ export type TenantFact = {
   authority: number;
   observedAt: string;
   refreshDays: number;
+  evidenceText?: string;
 };
 
 export type TenantFactConflict = { key: string; values: string[]; sources: TenantSourceType[] };
@@ -41,7 +42,7 @@ export function classifyTenantPage(url: string, title = "", text = ""): TenantPa
 function addFact(facts: TenantFact[], field: TenantFactField, value: string, input: { sourceType: TenantSourceType; sourceUrl?: string; pageType?: TenantPageType; observedAt: string; confidence?: number }) {
   const normalized = clean(value).slice(0, 800);
   if (normalized.length < 3) return;
-  facts.push({ key: factKey(field, normalized), field, value: normalized, sourceType: input.sourceType, sourceUrl: input.sourceUrl, pageType: input.pageType, confidence: input.confidence ?? 0.78, authority: SOURCE_AUTHORITY[input.sourceType], observedAt: input.observedAt, refreshDays: ["price", "hours", "availability"].includes(field) ? 30 : 90 });
+  facts.push({ key: factKey(field, normalized), field, value: normalized, evidenceText: value, sourceType: input.sourceType, sourceUrl: input.sourceUrl, pageType: input.pageType, confidence: input.confidence ?? 0.78, authority: SOURCE_AUTHORITY[input.sourceType], observedAt: input.observedAt, refreshDays: ["price", "hours", "availability"].includes(field) ? 30 : 90 });
 }
 
 export function extractWebsiteTenantFacts(page: { url: string; title: string; text: string; crawledAt: string }): TenantFact[] {
@@ -69,6 +70,8 @@ export function extractWebsiteTenantFacts(page: { url: string; title: string; te
   select("address", /(?:\baddress\s*:|\b(?:road|street|sector|district|campus|market)\b.{0,140}\b(?:india|goa|rajasthan|gurugram|jodhpur|jhunjhunu)\b|\b\d{6}\b)/i, 3, 0.86);
   select("amenities", /\b(?:amenit|facilit|wi-?fi|pool|parking|restaurant|spa|air condition|laundry|room service)\w*\b/i, 10, 0.82);
   select("rooms", /\b(?:room|suite|cottage|villa|tent|accommodation|occupancy)\w*\b/i, 10, 0.82);
+  select("service", /\b(?:birdwatching|birding|safari|cycling|guided walks?|forest walks?|village|body surfing|dining|buffet|Kumaoni)\b/i, 12, 0.82);
+  select("policy", /\b(?:pet[- ]friendly|pets? (?:are )?(?:allowed|welcome|not allowed)|child(?:ren)? policy)\b/i, 6, 0.84);
   select("availability", /\b(?:availability|available rooms?|sold out|minimum stay|inventory)\b/i, 6, 0.82);
   select("access", /\b(?:airport|railway|train station|bus stand|distance|kilomet(?:er|re)s?|\d+\s*kms?)\b/i, 8, 0.86);
   if (pageType === "POLICY") select("policy", /\b(?:policy|cancel|refund|privacy|terms|eligible|notice)\b/i, 8, 0.84);

@@ -7,6 +7,7 @@ import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { LEVEL_ONE_JOB, levelOneJobKey } from "@/lib/sovereign-intelligence/level-one";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -29,18 +30,20 @@ export default async function OnboardingPage() {
   }, async () => {
     const tenantDb = getDb();
     if (!tenantDb) return { subscription: null, verification: null, confirmedAnswers: 0 };
-    const [subscription, verification, confirmedAnswers] = await Promise.all([
+    const [subscription, verification, confirmedAnswers, preparation] = await Promise.all([
       getOrganizationSubscriptionAccess(organization.id),
       getKnowledgeVerificationReadiness(property.id, organization.botProfile?.category === "STAY" ? "HOSPITALITY" : organization.botProfile?.category === "PINGBOOK" ? "APPOINTMENTS" : organization.botProfile?.category || "BUSINESS_AI"),
-      tenantDb.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } })
+      tenantDb.knowledgeEntry.count({ where: { propertyId: property.id, status: { notIn: ["REJECTED", "SUPERSEDED"] } } }),
+      tenantDb.automationJob.findFirst({ where: { propertyId: property.id, actionType: LEVEL_ONE_JOB, idempotencyKey: levelOneJobKey(property.id) }, select: { id: true } })
     ]);
-    return { subscription, verification, confirmedAnswers };
+    return { subscription, verification, confirmedAnswers, preparation };
   }) : { subscription: null, verification: null, confirmedAnswers: 0 };
   const { verification, confirmedAnswers } = onboardingData;
   return (
     <CustomerOnboarding
       initialOrganization={organization}
       accountEmail={user.username}
+      automaticPreparation={"preparation" in onboardingData && Boolean(onboardingData.preparation)}
       reviewReadiness={{
         knowledgeReady: confirmedAnswers > 0,
         tested: false,

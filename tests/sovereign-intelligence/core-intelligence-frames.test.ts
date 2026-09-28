@@ -31,6 +31,13 @@ test("continuous HotelGPT journey keeps the current property through 20 turns", 
   assert.deepEqual(rows.filter((row) => !row.passed), []);
 });
 
+test("explicitly declining booking keeps a published-rate question informational", () => {
+  const plan = planCoreIntelligenceFrame("STAY", "Don't book anything; just show the published rate");
+  assert.equal(plan.frameKey, "HOTEL_PROPERTY_FACT");
+  assert.equal(plan.authority, "INFORMATION");
+  assert.deepEqual(plan.requestedParts, ["RATE"]);
+});
+
 test("deterministic quality score exposes explainable dimensions", () => {
   const strong = scoreDeterministicAnswerQuality({ question: "What is the rate and is breakfast included?", answer: "The rate is INR 10,000. Breakfast is not included.", intent: "BUSINESS", disposition: "ANSWER", grounded: true, decisionConsistent: true, safeResolution: true, personaCategory: "STAY", failureLayer: "NONE" });
   assert.equal(strong.score, 100);

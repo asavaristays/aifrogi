@@ -7,6 +7,7 @@ import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { DEFAULT_PAID_PLAN, TRIAL_DAYS } from "@/lib/trial-policy";
 import { deliverWebsiteHandoverNotification, WEBSITE_HANDOVER_EMAIL } from "@/lib/website-handover-notifications";
 import { deliverQueuedBillingNotification } from "@/lib/services/billing-notification";
+import { LEVEL_ONE_JOB } from "@/lib/sovereign-intelligence/level-one";
 
 const BILLING_NOTIFICATION_EMAIL = "BILLING_NOTIFICATION_EMAIL";
 
@@ -122,7 +123,8 @@ export async function claimDueAutomationJobs(input: ClaimAutomationJobsInput) {
   const candidates = await db.automationJob.findMany({
     where: {
       ...(input.propertyId ? { propertyId: input.propertyId } : {}),
-      ...(input.excludeActionTypes?.length ? { actionType: { notIn: input.excludeActionTypes } } : {}),
+      // Preparation owns a separate bounded claim loop on the same queue.
+      actionType: { notIn: [...new Set([LEVEL_ONE_JOB, ...(input.excludeActionTypes || [])])] },
       OR: [
         { status: { in: [AUTOMATION_JOB_STATUS.QUEUED, AUTOMATION_JOB_STATUS.RETRY] }, nextRunAt: { lte: now } },
         { status: AUTOMATION_JOB_STATUS.RUNNING, leaseExpiresAt: { lt: now } }
@@ -228,6 +230,7 @@ export async function cancelAutomationJob(jobId: string, reason: string) {
 }
 
 export async function executeAutomationJob(job: AutomationJob, options: { dryRun?: boolean } = {}) {
+  if (job.actionType === LEVEL_ONE_JOB) throw new Error("Level-1 preparation must use its dedicated lease-fenced runner.");
   if (job.actionType === BILLING_NOTIFICATION_EMAIL) {
     const payload = job.payload && typeof job.payload === "object" && !Array.isArray(job.payload) ? job.payload as Record<string, unknown> : {};
     if (options.dryRun) return completeAutomationJob(job.id, { dryRun: true, notification: "billing" });

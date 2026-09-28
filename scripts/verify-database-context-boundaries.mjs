@@ -34,6 +34,7 @@ const required = new Map([
   ,["app/api/pilot-measurement/reviews/route.ts", "withTenantDatabaseContext"]
   ,["app/api/setup/certification/route.ts", "withClientDatabaseContext"]
   ,["app/api/ai-operations/[leadId]/route.ts", "withTenantDatabaseContext"]
+  ,["app/api/onboarding/intelligence/route.ts", "withClientDatabaseContext"]
 ]);
 
 const failures = [];

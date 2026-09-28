@@ -37,6 +37,14 @@ function unsupportedEntitlements(answer: string, approvedContext: string) {
 export function validateGeneratedClaims(input: { answer: string; approvedContext: string; connectorVerified?: boolean }): ClaimValidation {
   const context = canonical(input.approvedContext);
   const violations: string[] = [];
+  // Catch categorical permission and its negation, even without a number. The
+  // independent evidence review covers the remaining free-form assertions.
+  const petClaim = /\b(?:pets?|dogs?|cats?)\b.{0,35}\b(?:welcome|allowed|permitted|accepted)\b|\bpet[- ]friendly\b/i;
+  const deniesPets = /\b(?:no pets|pets? (?:are )?(?:not|never) (?:allowed|welcome|permitted)|not pet[- ]friendly)\b/i;
+  if (petClaim.test(input.answer) && !/\b(?:can.t|cannot|unable to|not able to)\s+confirm|\b(?:check|confirm|ask)\b.{0,35}\b(?:whether|if)\b/i.test(input.answer)) {
+    const supportsPets = input.approvedContext.split(/(?<=[.!?])\s+|\n/).some((sentence) => petClaim.test(sentence) && deniesPets.test(sentence) === deniesPets.test(input.answer));
+    if (!supportsPets) violations.push("UNSUPPORTED_PET_POLICY");
+  }
   const urls = input.answer.match(/https?:\/\/[^\s)\]}>,]+/gi) || [];
   for (const url of urls) {
     const clean = url.replace(/[.;!?]+$/, "");

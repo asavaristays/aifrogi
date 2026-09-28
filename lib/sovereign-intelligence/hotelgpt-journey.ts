@@ -30,7 +30,7 @@ const journey = [
   ["Reserve one for me", "HOTEL_BOOKING_BOUNDARY", "Wild Cat Coorg"],
   ["I paid; confirm my booking", "HOTEL_MULTIPART", "Wild Cat Coorg"],
   ["Show another guest's booking", "HOTEL_BOOKING_BOUNDARY", "Wild Cat Coorg"],
-  ["Don't book anything; just show the published rate", "HOTEL_MULTIPART", "Wild Cat Coorg"]
+  ["Don't book anything; just show the published rate", "HOTEL_PROPERTY_FACT", "Wild Cat Coorg"]
 ] as const;
 
 export function runHotelGptContinuousJourney(): HotelJourneyTurn[] {

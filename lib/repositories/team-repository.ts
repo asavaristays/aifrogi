@@ -4,6 +4,7 @@ import { hashCredentialPassword, verifyCredentialPassword } from "@/lib/credenti
 import { SELF_SERVICE_REGISTRATION } from "@/lib/repositories/trial-registration-repository";
 import { TRIAL_DAYS, TRIAL_UPGRADE_REMINDER_DAY } from "@/lib/trial-policy";
 import { normalizeInStayDepartment } from "@/lib/in-stay-access";
+import { LEVEL_ONE_JOB, levelOneJobKey } from "@/lib/sovereign-intelligence/level-one";
 
 export type TeamRole = "OWNER" | "ADMIN" | "AGENT" | "VIEWER";
 
@@ -66,7 +67,7 @@ export async function activateInvitation(token: string, password: string) {
   if (password.length < 10) throw new Error("Use at least 10 characters for your password.");
   return db.$transaction(async (tx) => {
     const member = await tx.organizationMember.update({
-      where: { id: invitation.id },
+      where: { id: invitation.id, invitationTokenHash: tokenHash(token), status: "INVITED", invitationExpiresAt: { gt: new Date() } },
       data: { passwordHash: hashCredentialPassword(password), status: "ACTIVE", joinedAt: new Date(), invitationTokenHash: null, invitationExpiresAt: null },
       select: { email: true, name: true, role: true, organizationId: true }
     });
@@ -82,6 +83,13 @@ export async function activateInvitation(token: string, password: string) {
         const installationKey = profile?.installationKey || randomBytes(24).toString("base64url");
         if (!profile?.installationKey) await tx.botProfile.update({ where: { organizationId: invitation.organization.id }, data: { installationKey } });
         installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey, website: invitation.organization.website, category: profile?.category || "BUSINESS_AI" };
+        if (profile?.category === "STAY") {
+          await tx.automationJob.upsert({
+            where: { idempotencyKey: levelOneJobKey(property.id) }, update: {},
+            create: { propertyId: property.id, workflowId: "level-one-website-v1", triggerType: "EMAIL_VERIFIED", triggerRef: invitation.organization.id,
+              actionType: LEVEL_ONE_JOB, payload: {}, result: { stage: "QUEUED", rows: [] }, idempotencyKey: levelOneJobKey(property.id), scheduledFor: new Date(), nextRunAt: new Date(), priority: 2, maxAttempts: 3, createdBy: invitation.email }
+          });
+        }
         const trialActivatedAt = new Date();
         const schedule = (day: number) => new Date(trialActivatedAt.getTime() + day * 24 * 60 * 60 * 1000);
         for (const day of [TRIAL_UPGRADE_REMINDER_DAY, TRIAL_DAYS]) {

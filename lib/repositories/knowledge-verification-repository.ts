@@ -304,13 +304,13 @@ export async function getKnowledgeVerificationReadiness(propertyId: string, cate
   return { frameworkVersion: KB_FRAMEWORK_VERSION, essentials, trialReady: safe && essentials.missing.length === 0, coverage, published: claims.length, fresh, freshnessRate, conflicts, unsigned, openFlags, previewPending, ready: coverage.percentage >= KB_MINIMUM_COVERAGE && safe };
 }
 
-export async function getPublishedClaimContext(propertySlug: string, question: string) {
+export async function getPublishedClaimContext(propertySlug: string, question: string, options: { readOnly?: boolean } = {}) {
   const db = getDb();
   const empty = { context: "", claimIds: [] as string[], candidates: [] as Array<RetrievalCandidate & { answer: string }>, nearMissClaimIds: [] as string[], blockedState: null as null | "CONFLICT" | "FLAGGED" | "EXPIRED" | "PAUSED" };
   if (!db) return empty;
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
   if (!property) return empty;
-  await expirePublishedClaims(property.id);
+  if (!options.readOnly) await expirePublishedClaims(property.id);
   // Approval is an intermediate workflow state, not permission to serve a fact.
   const claims = await db.knowledgeEntry.findMany({ where: { propertyId: property.id, status: "PUBLISHED", conflictStatus: { not: "UNRESOLVED" }, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] }, take: 100 });
   const scored = claims.map((claim) => ({ claim, score: scoreRetrievalCandidate(question, claim) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score);

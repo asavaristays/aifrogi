@@ -19,10 +19,9 @@ test("unrequested filmmaking and training pages are demoted", () => {
   assert.match(source, /score -= 12/g);
 });
 
-test("current partner automation and hotel solution paths are seeded for refresh", () => {
-  assert.match(source, /"\/ai-automation\/"/);
-  assert.match(source, /"\/ai-solutions\/"/);
-  assert.match(source, /"\/channel-manager\/"/);
+test("shared discovery uses the current site inventory without client-specific seeds", () => {
+  assert.doesNotMatch(source, /const SEEDED_PATHS|const PRIORITY_PATHS/);
+  assert.match(source, /\[baseUrl, \.\.\.sitemapUrls, \.\.\.homepageLinks\]/);
 });
 
 test("training booking intent selects the active training route over the hotel booking engine", () => {
@@ -34,9 +33,9 @@ test("training booking intent selects the active training route over the hotel b
   assert.match(source, /Never substitute a different booking, training, product, or contact URL/);
 });
 
-test("citations exclude weak matches relative to the best approved source", () => {
+test("multipart retrieval retains topic evidence independently of the strongest page", () => {
   assert.match(source, /relevanceFloor/);
-  assert.match(source, /bestScore \* 0\.8/);
+  assert.match(source, /topicPages\.has/);
   assert.match(source, /item\.score >= relevanceFloor/);
 });
 
@@ -184,8 +183,8 @@ test("when-and-where follow-up ranks a complete schedule claim above a bare link
   assert.ok(complete > linkOnly);
 });
 
-test("crawler prioritizes sitemap inventory before legacy seeds", () => {
-  assert.match(source, /baseUrl, \.\.\.priorityUrls, \.\.\.sitemapUrls, \.\.\.homepageLinks, \.\.\.seedUrls/);
+test("crawler follows sitemap and linked-page inventory with bounded discovery", () => {
+  assert.match(source, /baseUrl, \.\.\.sitemapUrls, \.\.\.homepageLinks/);
   assert.match(source, /MAX_DISCOVERY_URLS = 300/);
   assert.match(source, /pages\.length >= MAX_PAGES/);
   assert.match(source, /Deep discovery follows same-origin links/);

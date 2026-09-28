@@ -9,6 +9,9 @@ import type { ClientAccessRole } from "@/lib/client-access";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { canOpenClientWorkspace } from "@/lib/workspace-access";
 import { getMemberDepartment } from "@/lib/in-stay-access";
+import { getDb } from "@/lib/db";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { LEVEL_ONE_JOB } from "@/lib/sovereign-intelligence/level-one";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,7 +29,12 @@ export default async function ProductLayout({ children }: { children: React.Reac
   }
 
   const organization = await loadOnboardingForUser(user.username);
-  if (!organization || !canOpenClientWorkspace(organization)) {
+  // Verified automatic trials need access to Intelligence to repair a failed
+  // capture before the public bot is live. This does not grant serving rights.
+  const automaticTrial = organization?.status === "ONBOARDING" && organization.botProfile?.category === "STAY" && organization.members.some(member => member.email.toLowerCase() === user.username.toLowerCase() && member.status === "ACTIVE")
+    ? await withTenantDatabaseContext({ kind: "tenant", organizationId: organization.id, actor: `trial-workspace:${user.username}` }, () => getDb()!.automationJob.findFirst({ where: { actionType: LEVEL_ONE_JOB, property: { organizationId: organization.id } }, select: { id: true } }))
+    : null;
+  if (!organization || (!canOpenClientWorkspace(organization) && !automaticTrial)) {
     redirect("/onboarding");
   }
 

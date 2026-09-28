@@ -12,6 +12,7 @@ export type FleetTenantResult = {
 
 export function assessFleetRelease(coreEligible: boolean, tenants: FleetTenantResult[]) {
   const blockers = [
+    ...(!tenants.length ? ["No live tenant evidence was evaluated; fleet coverage is unverified."] : []),
     ...(!coreEligible ? ["Core Intelligence certification failed."] : []),
     ...tenants.filter((tenant) => !tenant.eligible).map((tenant) => `${tenant.organizationName} (${tenant.propertySlug}): ${tenant.blocker || "Golden certification failed."}`)
   ];

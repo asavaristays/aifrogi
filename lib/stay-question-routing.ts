@@ -40,7 +40,8 @@ function editDistance(left: string, right: string) {
 }
 
 export function hotelQuestionParts(question: string) {
-  return HOTEL_PART_PATTERNS.filter(([, pattern]) => pattern.test(question)).map(([part]) => part);
+  const subject = question.replace(/\b(?:do not|don't|don’t|dont|no need to)\s+(?:book|reserve)\b/gi, "");
+  return HOTEL_PART_PATTERNS.filter(([, pattern]) => pattern.test(subject)).map(([part]) => part);
 }
 
 export function resolveApprovedStay(question: string, choices: ApprovedStayChoice[]) {
