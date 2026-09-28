@@ -80,6 +80,7 @@ const emptyRetrieval = () => ({ candidates: [] as RetrievalCandidate[], retrieve
 const publicRetrievalCandidates = (candidates: Array<RetrievalCandidate & { answer: string }>): RetrievalCandidate[] => candidates.map((candidate) => ({ claimId: candidate.claimId, claimKey: candidate.claimKey, score: candidate.score, selected: candidate.selected, status: candidate.status }));
 
 const DEFAULT_TTL_MS = 6 * 60 * 60 * 1000;
+const MAX_FAILED_REFRESH_STALE_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_PAGES = 120;
 const MAX_DISCOVERY_URLS = 300;
 const MAX_PAGE_CHARS = 20000;
@@ -504,15 +505,19 @@ export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
 }
 
-async function readCachedKnowledgeBase(propertySlug: string, baseUrl: string, ttlMs: number): Promise<KnowledgeBase | null> {
+export function cachedWebsiteSnapshotState(crawledAt: string, ttlMs: number, refreshFailed: boolean, now = Date.now()) {
+  const age = now - Date.parse(crawledAt);
+  if (!Number.isFinite(age) || age < 0) return "EXPIRED" as const;
+  if (age <= ttlMs) return "CURRENT" as const;
+  return refreshFailed && age <= MAX_FAILED_REFRESH_STALE_MS ? "STALE" as const : "EXPIRED" as const;
+}
+
+async function readCachedKnowledgeBase(propertySlug: string, baseUrl: string, ttlMs: number, refreshFailed = false): Promise<KnowledgeBase | null> {
   try {
     const raw = await readFile(cachePath(propertySlug), "utf8");
     const parsed = JSON.parse(raw) as KnowledgeBase;
-    const crawledAt = Date.parse(parsed.crawledAt);
     if (parsed.baseUrl.replace(/\/+$/, "") !== baseUrl.replace(/\/+$/, "")) return null;
-    if (!Number.isFinite(crawledAt) || Date.now() - crawledAt > ttlMs) {
-      return null;
-    }
+    if (cachedWebsiteSnapshotState(parsed.crawledAt, ttlMs, refreshFailed) === "EXPIRED") return null;
     return parsed;
   } catch {
     return null;
@@ -522,7 +527,7 @@ async function readCachedKnowledgeBase(propertySlug: string, baseUrl: string, tt
 export async function getWebsiteKnowledgeBase(propertySlug: string, forceRefresh = false) {
   const settings = await readKnowledgeSettings(propertySlug);
   if (!forceRefresh) {
-    const cached = await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours));
+    const cached = await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours), settings.status === "ERROR");
     if (cached) return cached;
   }
 
@@ -761,13 +766,15 @@ export async function buildWebsiteKnowledgeAnswer({
   // Governed bots may read only their prepared tenant snapshot during an answer.
   // Crawling is an explicit ingestion action and must never occur in retrieval.
   const knowledgeBase = persona?.kbGateVersion
-    ? await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours))
+    ? await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours), settings.status === "ERROR")
     : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
+  const snapshotStale = knowledgeBase && cachedWebsiteSnapshotState(knowledgeBase.crawledAt, getTtlMs(settings.autoRefreshHours), settings.status === "ERROR") === "STALE";
+  const addStaleNotice = (answer: string) => snapshotStale ? `${answer}\nThese details are from the last available website capture; please confirm anything time-sensitive with the team.` : answer;
   if (resolved.intent === "CONTACT_INFO" && knowledgeBase) {
     const publishedContactAnswer = buildPublishedWebsiteContactAnswer(question, businessName, knowledgeBase.pages, knowledgeBase.structuredFacts);
     const contactPage = knowledgeBase.pages.find((page) => /contact|location/i.test(`${page.title} ${page.bucket} ${page.url}`));
     if (publishedContactAnswer && contactPage) {
-      const answer = direct(publishedContactAnswer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned all requested contact fields from the approved first-party website snapshot." });
+      const answer = direct(addStaleNotice(publishedContactAnswer), { ...resolved.decision, disposition: "ANSWER", reason: "Returned all requested contact fields from the approved first-party website snapshot." });
       answer.sourceUrls = [contactPage.url];
       answer.sources = [{ title: contactPage.title, url: contactPage.url, crawledAt: contactPage.crawledAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(contactPage.crawledAt) <= getTtlMs(settings.autoRefreshHours) ? "CURRENT" : "STALE" }];
       const receptionCorrection = knowledgeBase.structuredFacts.find((fact) => fact.sourceType === "CORRECTION" && fact.field === "access" && /mobile reception can be weak/i.test(fact.value));
@@ -781,7 +788,7 @@ export async function buildWebsiteKnowledgeAnswer({
   const retrievalQuestion = sessionMemory.retrievalQuestion;
   const exactAccess = knowledgeBase ? answerExactTenantAccessFact(knowledgeBase.tenantEntities || [], retrievalQuestion, sessionMemory.tenantPropertyId) : null;
   if (exactAccess) {
-    const answer = direct(exactAccess.answer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped access evidence without model inference." });
+    const answer = direct(addStaleNotice(exactAccess.answer), { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped access evidence without model inference." });
     answer.sourceUrls = [exactAccess.entity.sourceUrl];
     answer.sources = [{ title: exactAccess.entity.name, url: exactAccess.entity.sourceUrl, crawledAt: exactAccess.entity.observedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(exactAccess.entity.observedAt) <= getTtlMs(24) ? "CURRENT" : "STALE" }];
     answer.knowledgeAsOf = exactAccess.entity.observedAt;
@@ -790,7 +797,7 @@ export async function buildWebsiteKnowledgeAnswer({
   }
   const exactStayFact = persona?.category === "STAY" && knowledgeBase ? answerExactTenantStayFact(knowledgeBase.tenantEntities || [], retrievalQuestion, sessionMemory.tenantPropertyId) : null;
   if (exactStayFact) {
-    const answer = direct(exactStayFact.answer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped hotel commercial evidence without model inference." });
+    const answer = direct(addStaleNotice(exactStayFact.answer), { ...resolved.decision, disposition: "ANSWER", reason: "Returned exact tenant-scoped hotel commercial evidence without model inference." });
     answer.sourceUrls = [exactStayFact.entity.sourceUrl];
     answer.sources = [{ title: exactStayFact.entity.name, url: exactStayFact.entity.sourceUrl, crawledAt: exactStayFact.entity.observedAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(exactStayFact.entity.observedAt) <= getTtlMs(24) ? "CURRENT" : "STALE" }];
     answer.knowledgeAsOf = exactStayFact.entity.observedAt;
@@ -874,7 +881,7 @@ export async function buildWebsiteKnowledgeAnswer({
   }
 
   return {
-    answer,
+    answer: addStaleNotice(answer),
     sourceUrls: websiteResult.sourceUrls,
     sources: websiteResult.sources,
     knowledgeAsOf: knowledgeBase?.crawledAt || new Date().toISOString(),
@@ -890,6 +897,6 @@ export async function buildWebsiteKnowledgeAnswer({
     },
     reliability: reliable.evidence,
     modelUsage: { inputTokens: reliable.value.inputTokens, outputTokens: reliable.value.outputTokens },
-    replayTrace: { ...websiteResult.trace, proposedAnswer: answer, finalAnswer: answer, validatorViolations: [] }
+    replayTrace: { ...websiteResult.trace, proposedAnswer: answer, finalAnswer: addStaleNotice(answer), validatorViolations: [] }
   };
 }

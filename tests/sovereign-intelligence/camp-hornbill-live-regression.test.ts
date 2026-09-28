@@ -3,7 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { buildMissingAnswerRecovery } from "../../lib/sovereign-intelligence/answer-quality-gate";
 import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
-import { buildPublishedWebsiteContactAnswer, requestsMultiplePublishedContacts } from "../../lib/services/website-knowledge-service";
+import { buildPublishedWebsiteContactAnswer, cachedWebsiteSnapshotState, requestsMultiplePublishedContacts } from "../../lib/services/website-knowledge-service";
 
 test("hotel missing-answer recovery is courteous and avoids generic business language", () => {
   const answer = buildMissingAnswerRecovery({ businessName: "The Camp Hornbill", category: "STAY", publicPhone: "+918279640517", handoffEnabled: true });
@@ -31,6 +31,14 @@ test("multipart contact request returns every published website contact", () => 
 
 test("recent guest data request is classified as sensitive", () => {
   assert.equal(classifySovereignIntent("Can you give me the phone number and stay details of a guest who visited last week?"), "SENSITIVE");
+});
+
+test("failed refresh preserves a bounded stale snapshot without treating it as current", () => {
+  const now = Date.parse("2026-09-28T12:00:00.000Z");
+  const ttl = 6 * 60 * 60 * 1000;
+  assert.equal(cachedWebsiteSnapshotState("2026-09-28T05:00:00.000Z", ttl, true, now), "STALE");
+  assert.equal(cachedWebsiteSnapshotState("2026-09-28T05:00:00.000Z", ttl, false, now), "EXPIRED");
+  assert.equal(cachedWebsiteSnapshotState("2026-09-21T11:00:00.000Z", ttl, true, now), "EXPIRED");
 });
 
 test("saved contact is transmitted only for an explicit handover draft or consent-only send", async () => {
