@@ -59,7 +59,7 @@ export type KnowledgeBase = {
   crawledAt: string;
 };
 
-export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE" | "APPROVED_BUSINESS_PROFILE"; freshness: "CURRENT" | "STALE" };
+export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE" | "APPROVED_BUSINESS_PROFILE" | "APPROVED_CLIENT_CORRECTION"; freshness: "CURRENT" | "STALE" };
 
 export type KnowledgeAnswer = {
   answer: string;
@@ -471,7 +471,11 @@ export function buildCustomerFacingContactAnswer(question: string, businessName:
   return `You can contact ${businessName} using:\n${details.join("\n")}`;
 }
 
-export function buildPublishedWebsiteContactAnswer(question: string, businessName: string, pages: KnowledgePage[]) {
+export function requestsMultiplePublishedContacts(question: string) {
+  return /\b(?:both|all|every|multiple)\b.{0,35}\b(?:phone|mobile|number|email)s?\b|\b(?:phone|mobile|number|email)s?\b.{0,35}\b(?:both|all|every|multiple)\b/i.test(question);
+}
+
+export function buildPublishedWebsiteContactAnswer(question: string, businessName: string, pages: KnowledgePage[], approvedFacts: TenantFact[] = []) {
   const contactText = pages.filter((page) => /contact|location/i.test(`${page.title} ${page.bucket} ${page.url}`)).map((page) => page.text).join(" ");
   if (!contactText) return null;
   const details: string[] = [];
@@ -480,14 +484,19 @@ export function buildPublishedWebsiteContactAnswer(question: string, businessNam
     if (address) details.push(`Address: ${address}`);
   }
   if (/\b(phone|telephone|mobile|number)\b/i.test(question)) {
-    const phones = [...new Set([...contactText.matchAll(/\+?91[\s-]*\d{10}/g)].map((match) => formatPublicPhoneForDisplay(match[0])))];
+    const phones = [...new Set([...contactText.matchAll(/(?<!\d)(?:\+?91[\s-]*)?[6-9](?:[\s-]*\d){9}(?!\d)/g)].map((match) => formatPublicPhoneForDisplay(match[0])))];
     if (phones.length) details.push(`Phone: ${phones.join(" · ")}`);
   }
   if (/\bemail\b/i.test(question)) {
     const emails = [...new Set([...contactText.matchAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)].map((match) => match[0].toLowerCase()))];
     if (emails.length) details.push(`Email: ${emails.join(" · ")}`);
   }
-  return details.length ? buildCustomerFacingContactAnswer(question, businessName, details) : null;
+  if (!details.length) return null;
+  const answer = buildCustomerFacingContactAnswer(question, businessName, details);
+  const weakReceptionConfirmed = approvedFacts.some((fact) => fact.sourceType === "CORRECTION" && fact.field === "access" && /mobile reception can be weak/i.test(fact.value));
+  return weakReceptionConfirmed && /\b(phone|telephone|mobile|number)\b/i.test(question)
+    ? `${answer}\nMobile reception can be patchy at the property, so please try another published number if one doesn't connect.`
+    : answer;
 }
 
 export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
@@ -532,7 +541,7 @@ export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
   return {
     settings,
     pages: snapshot?.baseUrl === settings.sourceUrl ? snapshot.pages.map(({ url, title, bucket, crawledAt }) => ({ url, title, bucket, crawledAt })) : [],
-    tenantProfileDraft: snapshot?.baseUrl === settings.sourceUrl ? snapshot.tenantProfileDraft || buildTenantProfileDraft(snapshot.structuredFacts || []) : null,
+    tenantProfileDraft: snapshot?.baseUrl === settings.sourceUrl ? buildTenantProfileDraft(snapshot.structuredFacts || []) : null,
     tenantEntities: snapshot?.baseUrl === settings.sourceUrl ? snapshot.tenantEntities || [] : [],
     truthReview: snapshot?.baseUrl === settings.sourceUrl ? snapshot.truthReview || buildTenantTruthReview(snapshot.structuredFacts || [], reconcileTenantFacts(snapshot.structuredFacts || []).conflicts) : null,
     changeSet: snapshot?.baseUrl === settings.sourceUrl ? snapshot.changeSet || null : null,
@@ -731,6 +740,7 @@ export async function buildWebsiteKnowledgeAnswer({
   if (resolved.intent === "CONTACT_INFO") {
     // Published knowledge must not be hidden by a partial business profile.
     const requestedFieldMissing = organization && (
+      requestsMultiplePublishedContacts(question) ||
       (/\b(phone|telephone|mobile|number)\b/i.test(question) && !organization.publicPhone) ||
       (/\bemail\b/i.test(question) && !organization.publicEmail) ||
       (/\b(address|located|location)\b/i.test(question) && !organization.publicAddress)
@@ -754,12 +764,14 @@ export async function buildWebsiteKnowledgeAnswer({
     ? await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours))
     : await getWebsiteKnowledgeBase(propertySlug).catch(() => null);
   if (resolved.intent === "CONTACT_INFO" && knowledgeBase) {
-    const publishedContactAnswer = buildPublishedWebsiteContactAnswer(question, businessName, knowledgeBase.pages);
+    const publishedContactAnswer = buildPublishedWebsiteContactAnswer(question, businessName, knowledgeBase.pages, knowledgeBase.structuredFacts);
     const contactPage = knowledgeBase.pages.find((page) => /contact|location/i.test(`${page.title} ${page.bucket} ${page.url}`));
     if (publishedContactAnswer && contactPage) {
       const answer = direct(publishedContactAnswer, { ...resolved.decision, disposition: "ANSWER", reason: "Returned all requested contact fields from the approved first-party website snapshot." });
       answer.sourceUrls = [contactPage.url];
       answer.sources = [{ title: contactPage.title, url: contactPage.url, crawledAt: contactPage.crawledAt, authority: "APPROVED_FIRST_PARTY_WEBSITE", freshness: Date.now() - Date.parse(contactPage.crawledAt) <= getTtlMs(settings.autoRefreshHours) ? "CURRENT" : "STALE" }];
+      const receptionCorrection = knowledgeBase.structuredFacts.find((fact) => fact.sourceType === "CORRECTION" && fact.field === "access" && /mobile reception can be weak/i.test(fact.value));
+      if (receptionCorrection && /\b(phone|telephone|mobile|number)\b/i.test(question)) answer.sources.push({ title: "Client-confirmed reception guidance", url: "", crawledAt: receptionCorrection.observedAt, authority: "APPROVED_CLIENT_CORRECTION", freshness: Date.now() - Date.parse(receptionCorrection.observedAt) <= getTtlMs(24 * receptionCorrection.refreshDays) ? "CURRENT" : "STALE" });
       answer.knowledgeAsOf = contactPage.crawledAt;
       answer.model = "EXACT_WEBSITE_CONTACT";
       return answer;
