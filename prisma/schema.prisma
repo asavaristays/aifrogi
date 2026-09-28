@@ -934,6 +934,15 @@ model SovereignAnswerEvidence {
   attemptCount            Int                      @default(0)
   escalationTier          String                   @default("TIER_0_SELF_RESOLVE")
   degradedMode            Boolean                  @default(false)
+  executionContractVersion String                  @default("1.0")
+  terminalOutcome         String                   @default("ANSWERED")
+  authorityLevel          String                   @default("INFORMATION")
+  flowId                  String?
+  flowVersion             Int?
+  flowNodeId              String?
+  endpointKey             String?
+  endpointVerified        Boolean                  @default(false)
+  completionClaimAllowed  Boolean                  @default(false)
   createdAt               DateTime                 @default(now())
   feedback                SovereignAnswerFeedback?
   replayCase              SovereignReplayCase?
@@ -944,6 +953,8 @@ model SovereignAnswerEvidence {
   @@index([propertyId, circuitBreaker, createdAt])
   @@index([propertyId, failureLayer, createdAt])
   @@index([propertyId, escalationTier, createdAt])
+  @@index([propertyId, terminalOutcome, createdAt])
+  @@index([propertyId, endpointVerified, createdAt])
   @@index([personaCategory, safeResolution, createdAt])
   @@index([propertyId, failureClassification, createdAt])
   @@index([leadId, createdAt])

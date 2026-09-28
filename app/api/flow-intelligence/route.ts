@@ -6,6 +6,7 @@ import { newTenantFlow, normalizeTenantFlow, TENANT_FLOW_TEMPLATES, validateTena
 import { defaultWidgetMenu } from "@/lib/widget-menu";
 import { HOTELGPT_FLOW_LIBRARY } from "@/lib/hotelgpt-flow-library";
 import { hasTrustedSameOrigin } from "@/lib/security/request-origin";
+import { flowContainsUnboundedCycle, validateFlowEndpointContracts } from "@/lib/sovereign-intelligence/execution-contract";
 
 export async function GET() {
   const access = await getCurrentClientAccess();
@@ -55,6 +56,8 @@ export async function POST(request: Request) {
       const current = flows.find(item => item.id === payload.id);
       if (!current) throw new Error("Flow was not found.");
       const validationErrors = validateTenantFlow(current);
+      validationErrors.push(...validateFlowEndpointContracts(current));
+      if (flowContainsUnboundedCycle(current) && current.templateKey !== "COMMERCIAL_NEGOTIATION") validationErrors.push("Flow contains an unbounded cycle. Add a terminal end or human handover before publishing.");
       if (validationErrors.length) throw new Error(validationErrors[0]);
       const published = { ...current, status: "PUBLISHED" as const, version: current.version + 1, updatedAt: new Date().toISOString(), publishedAt: new Date().toISOString() };
       flows = flows.map(item => item.id === current.id ? published : item);

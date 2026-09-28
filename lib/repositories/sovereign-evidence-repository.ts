@@ -6,6 +6,7 @@ import type { ReliabilityEvidence } from "@/lib/reliability/runtime";
 import { evaluateDecisionBehaviourConsistency } from "@/lib/sovereign-intelligence/evidence-consistency";
 import { classifyEvidenceFailure, INTELLIGENCE_EVIDENCE_VERSION, isSafeResolution, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 import { summarizeDeterministicQuality } from "@/lib/sovereign-intelligence/deterministic-quality-score";
+import type { IntelligenceExecutionContract } from "@/lib/sovereign-intelligence/execution-contract";
 
 export async function recordSovereignAnswerEvidence(input: {
   propertyId: string;
@@ -31,6 +32,7 @@ export async function recordSovereignAnswerEvidence(input: {
   personaCategory?: string;
   personaVersion?: string;
   retrieval?: { candidates: RetrievalCandidate[]; retrievedClaimIds: string[]; usedClaimIds: string[]; nearMissClaimIds: string[] };
+  executionContract?: IntelligenceExecutionContract;
 }) {
   const db = getDb();
   if (!db) return null;
@@ -56,6 +58,15 @@ export async function recordSovereignAnswerEvidence(input: {
     failureLayer: input.reliability?.failureLayer || "NONE", failureCode: input.reliability?.failureCode || null,
     latencyMs: Math.max(0, Math.round(input.reliability?.latencyMs || 0)), attemptCount: Math.max(0, Math.round(input.reliability?.attemptCount || 0)),
     escalationTier: input.reliability?.escalationTier || "TIER_0_SELF_RESOLVE", degradedMode: Boolean(input.reliability?.degradedMode)
+    ,executionContractVersion: input.executionContract?.version || "1.0",
+    terminalOutcome: input.executionContract?.terminalOutcome || "ANSWERED",
+    authorityLevel: input.executionContract?.authority || "INFORMATION",
+    flowId: input.executionContract?.flow.flowId || null,
+    flowVersion: input.executionContract?.flow.flowVersion || null,
+    flowNodeId: input.executionContract?.flow.nodeId || null,
+    endpointKey: input.executionContract?.flow.endpoint?.key || null,
+    endpointVerified: Boolean(input.executionContract?.terminalOutcome === "COMPLETED_AND_VERIFIED"),
+    completionClaimAllowed: Boolean(input.executionContract?.completionClaimAllowed)
   } });
 }
 

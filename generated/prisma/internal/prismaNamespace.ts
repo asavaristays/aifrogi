@@ -6664,6 +6664,15 @@ export const SovereignAnswerEvidenceScalarFieldEnum = {
   attemptCount: 'attemptCount',
   escalationTier: 'escalationTier',
   degradedMode: 'degradedMode',
+  executionContractVersion: 'executionContractVersion',
+  terminalOutcome: 'terminalOutcome',
+  authorityLevel: 'authorityLevel',
+  flowId: 'flowId',
+  flowVersion: 'flowVersion',
+  flowNodeId: 'flowNodeId',
+  endpointKey: 'endpointKey',
+  endpointVerified: 'endpointVerified',
+  completionClaimAllowed: 'completionClaimAllowed',
   createdAt: 'createdAt'
 } as const
 

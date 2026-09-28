@@ -39,6 +39,7 @@ import { inStayTicketAcknowledgement } from "@/lib/in-stay-ticket";
 import { formatConfirmedVoiceForStaff, normalizeConfirmedVoiceInput } from "@/lib/hotelgpt-voice-intake";
 import { translateConfirmedVoiceForStaff } from "@/lib/services/hotelgpt-voice-translation";
 import { resolveMultilingualVoicePilot } from "@/lib/services/hotelgpt-multilingual-voice-pilot";
+import { enforceExecutionResponse, evaluateExecutionContract, matchPublishedFlow } from "@/lib/sovereign-intelligence/execution-contract";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -400,7 +401,22 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
-  const answer = normalizePublicPhoneInText(resolution.answer, organization.publicPhone);
+  const matchedFlow = matchPublishedFlow(knowledgeSettings.tenantFlows || [], message);
+  const actionRequested = Boolean(demoTurn && demoTurn.status !== "CLARIFY");
+  const actionPerformed = demoTurn?.status === "SUCCEEDED";
+  const endpointVerified = demoTurn?.status === "SUCCEEDED";
+  const preliminaryExecutionContract = evaluateExecutionContract({
+    decision: resolution.decision,
+    flow: matchedFlow,
+    safetyBlocked: safety.blocked,
+    humanRequested: explicitHumanRequest || assistedFallback || resolution.decision.disposition === "ESCALATE",
+    handoffPersisted: false,
+    actionRequested,
+    actionPerformed,
+    endpointVerified,
+    clarifyCount: resolution.state.clarifyCount
+  });
+  const answer = normalizePublicPhoneInText(enforceExecutionResponse(preliminaryExecutionContract, resolution.answer), organization.publicPhone);
   const evidenceDecision = resolution.decision;
   // Evidence describes the response actually served, not a discarded model answer.
   // Keep retrieval candidates for diagnosis, but never attribute their use to a breaker reply.
@@ -436,6 +452,17 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     try { await ensureWebsiteHandover({ propertyId: property.id, leadId: captured.lead.id, responseSlaMinutes: profile.responseSlaMinutes }); }
     catch { return NextResponse.json({ error: "Your human-help request could not be saved. Please retry." }, { status: 503, headers: responseHeaders }); }
   }
+  const executionContract = evaluateExecutionContract({
+    decision: evidenceDecision,
+    flow: matchedFlow,
+    safetyBlocked: safety.blocked,
+    humanRequested: explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE",
+    handoffPersisted: handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE"),
+    actionRequested,
+    actionPerformed,
+    endpointVerified,
+    clarifyCount: resolution.state.clarifyCount
+  });
   const evidence = await recordSovereignAnswerEvidence({
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
     answer, decision: evidenceDecision, grounded: Boolean(result?.sources.length || result?.claimIds.length), model: result?.model || (safety.blocked ? "SAFETY_GUARD" : "FALLBACK"),
@@ -452,7 +479,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     personaCategory: profile.category,
     personaVersion: profile.personaPackVersion,
     retrieval: result?.retrieval || { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
-    reliability
+    reliability,
+    executionContract
   }).catch(() => null);
   if (!evidence?.id) return NextResponse.json({ error: "Answer verification could not be recorded. Please try again shortly." }, { status: 503, headers: responseHeaders });
   await recordTenantAnswerUsage({ organizationId: organization.id, evidenceId: evidence.id, usage: { inputTokens: result?.modelUsage?.inputTokens || 0, outputTokens: result?.modelUsage?.outputTokens || 0, model: result?.model || "NON_MODEL", attempts: reliability.attemptCount, latencyMs: reliability.latencyMs } }).catch((error) => console.error("Tenant usage metering failed", { organizationId: organization.id, evidenceId: evidence.id, error }));
@@ -472,7 +500,16 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const sessionResolutionState = {
     ...((baseResolutionState && typeof baseResolutionState === "object" && !Array.isArray(baseResolutionState)) ? baseResolutionState : {}),
     ...(qualification.state ? { qualification: qualification.state } : {}),
-    intelligenceRouter: { version: INTELLIGENCE_ROUTER_VERSION, layer: intelligenceLayer }
+    intelligenceRouter: { version: INTELLIGENCE_ROUTER_VERSION, layer: intelligenceLayer },
+    executionContract: {
+      version: executionContract.version,
+      terminalOutcome: executionContract.terminalOutcome,
+      authority: executionContract.authority,
+      flowId: executionContract.flow.flowId,
+      flowVersion: executionContract.flow.flowVersion,
+      nodeId: executionContract.flow.nodeId,
+      endpointKey: executionContract.flow.endpoint?.key || null
+    }
   } as Prisma.InputJsonValue;
   await persistenceDb.websiteVisitorSession.upsert({
     where: { leadId: captured.lead.id },
@@ -508,7 +545,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   const preStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "PRE_STAY", message) : null;
   const preStaySmartContent = preStayFlow ? { flowId:preStayFlow.flow.id,journey:"PRE_STAY",kind:preStayFlow.flow.templateKey,quickReplies:preStayFlow.flow.templateKey==="HOTEL_DISCOVER"?["Rooms and stays","Experiences","Plan my arrival"]:preStayFlow.flow.templateKey==="HOTEL_PLAN_ARRIVAL"?["Check-in time","Directions","Request a transfer"]:["Share dates","Compare stays","Talk to reservations"] } : undefined;
-  return NextResponse.json({ answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  return NextResponse.json({ answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
   });
 }
 

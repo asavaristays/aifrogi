@@ -31,6 +31,7 @@ export type SovereignAnswerEvidenceAvgAggregateOutputType = {
   clarifyCount: number | null
   latencyMs: number | null
   attemptCount: number | null
+  flowVersion: number | null
 }
 
 export type SovereignAnswerEvidenceSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type SovereignAnswerEvidenceSumAggregateOutputType = {
   clarifyCount: number | null
   latencyMs: number | null
   attemptCount: number | null
+  flowVersion: number | null
 }
 
 export type SovereignAnswerEvidenceMinAggregateOutputType = {
@@ -79,6 +81,15 @@ export type SovereignAnswerEvidenceMinAggregateOutputType = {
   attemptCount: number | null
   escalationTier: string | null
   degradedMode: boolean | null
+  executionContractVersion: string | null
+  terminalOutcome: string | null
+  authorityLevel: string | null
+  flowId: string | null
+  flowVersion: number | null
+  flowNodeId: string | null
+  endpointKey: string | null
+  endpointVerified: boolean | null
+  completionClaimAllowed: boolean | null
   createdAt: Date | null
 }
 
@@ -121,6 +132,15 @@ export type SovereignAnswerEvidenceMaxAggregateOutputType = {
   attemptCount: number | null
   escalationTier: string | null
   degradedMode: boolean | null
+  executionContractVersion: string | null
+  terminalOutcome: string | null
+  authorityLevel: string | null
+  flowId: string | null
+  flowVersion: number | null
+  flowNodeId: string | null
+  endpointKey: string | null
+  endpointVerified: boolean | null
+  completionClaimAllowed: boolean | null
   createdAt: Date | null
 }
 
@@ -169,6 +189,15 @@ export type SovereignAnswerEvidenceCountAggregateOutputType = {
   attemptCount: number
   escalationTier: number
   degradedMode: number
+  executionContractVersion: number
+  terminalOutcome: number
+  authorityLevel: number
+  flowId: number
+  flowVersion: number
+  flowNodeId: number
+  endpointKey: number
+  endpointVerified: number
+  completionClaimAllowed: number
   createdAt: number
   _all: number
 }
@@ -179,6 +208,7 @@ export type SovereignAnswerEvidenceAvgAggregateInputType = {
   clarifyCount?: true
   latencyMs?: true
   attemptCount?: true
+  flowVersion?: true
 }
 
 export type SovereignAnswerEvidenceSumAggregateInputType = {
@@ -186,6 +216,7 @@ export type SovereignAnswerEvidenceSumAggregateInputType = {
   clarifyCount?: true
   latencyMs?: true
   attemptCount?: true
+  flowVersion?: true
 }
 
 export type SovereignAnswerEvidenceMinAggregateInputType = {
@@ -227,6 +258,15 @@ export type SovereignAnswerEvidenceMinAggregateInputType = {
   attemptCount?: true
   escalationTier?: true
   degradedMode?: true
+  executionContractVersion?: true
+  terminalOutcome?: true
+  authorityLevel?: true
+  flowId?: true
+  flowVersion?: true
+  flowNodeId?: true
+  endpointKey?: true
+  endpointVerified?: true
+  completionClaimAllowed?: true
   createdAt?: true
 }
 
@@ -269,6 +309,15 @@ export type SovereignAnswerEvidenceMaxAggregateInputType = {
   attemptCount?: true
   escalationTier?: true
   degradedMode?: true
+  executionContractVersion?: true
+  terminalOutcome?: true
+  authorityLevel?: true
+  flowId?: true
+  flowVersion?: true
+  flowNodeId?: true
+  endpointKey?: true
+  endpointVerified?: true
+  completionClaimAllowed?: true
   createdAt?: true
 }
 
@@ -317,6 +366,15 @@ export type SovereignAnswerEvidenceCountAggregateInputType = {
   attemptCount?: true
   escalationTier?: true
   degradedMode?: true
+  executionContractVersion?: true
+  terminalOutcome?: true
+  authorityLevel?: true
+  flowId?: true
+  flowVersion?: true
+  flowNodeId?: true
+  endpointKey?: true
+  endpointVerified?: true
+  completionClaimAllowed?: true
   createdAt?: true
   _all?: true
 }
@@ -452,6 +510,15 @@ export type SovereignAnswerEvidenceGroupByOutputType = {
   attemptCount: number
   escalationTier: string
   degradedMode: boolean
+  executionContractVersion: string
+  terminalOutcome: string
+  authorityLevel: string
+  flowId: string | null
+  flowVersion: number | null
+  flowNodeId: string | null
+  endpointKey: string | null
+  endpointVerified: boolean
+  completionClaimAllowed: boolean
   createdAt: Date
   _count: SovereignAnswerEvidenceCountAggregateOutputType | null
   _avg: SovereignAnswerEvidenceAvgAggregateOutputType | null
@@ -523,6 +590,15 @@ export type SovereignAnswerEvidenceWhereInput = {
   attemptCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
   escalationTier?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   degradedMode?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  executionContractVersion?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  terminalOutcome?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  authorityLevel?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  flowId?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  flowVersion?: Prisma.IntNullableFilter<"SovereignAnswerEvidence"> | number | null
+  flowNodeId?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  endpointKey?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  endpointVerified?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  completionClaimAllowed?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   feedback?: Prisma.XOR<Prisma.SovereignAnswerFeedbackNullableScalarRelationFilter, Prisma.SovereignAnswerFeedbackWhereInput> | null
@@ -574,6 +650,15 @@ export type SovereignAnswerEvidenceOrderByWithRelationInput = {
   attemptCount?: Prisma.SortOrder
   escalationTier?: Prisma.SortOrder
   degradedMode?: Prisma.SortOrder
+  executionContractVersion?: Prisma.SortOrder
+  terminalOutcome?: Prisma.SortOrder
+  authorityLevel?: Prisma.SortOrder
+  flowId?: Prisma.SortOrderInput | Prisma.SortOrder
+  flowVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  flowNodeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  endpointKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  endpointVerified?: Prisma.SortOrder
+  completionClaimAllowed?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
   feedback?: Prisma.SovereignAnswerFeedbackOrderByWithRelationInput
@@ -628,6 +713,15 @@ export type SovereignAnswerEvidenceWhereUniqueInput = Prisma.AtLeast<{
   attemptCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
   escalationTier?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   degradedMode?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  executionContractVersion?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  terminalOutcome?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  authorityLevel?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  flowId?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  flowVersion?: Prisma.IntNullableFilter<"SovereignAnswerEvidence"> | number | null
+  flowNodeId?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  endpointKey?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  endpointVerified?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  completionClaimAllowed?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   feedback?: Prisma.XOR<Prisma.SovereignAnswerFeedbackNullableScalarRelationFilter, Prisma.SovereignAnswerFeedbackWhereInput> | null
@@ -679,6 +773,15 @@ export type SovereignAnswerEvidenceOrderByWithAggregationInput = {
   attemptCount?: Prisma.SortOrder
   escalationTier?: Prisma.SortOrder
   degradedMode?: Prisma.SortOrder
+  executionContractVersion?: Prisma.SortOrder
+  terminalOutcome?: Prisma.SortOrder
+  authorityLevel?: Prisma.SortOrder
+  flowId?: Prisma.SortOrderInput | Prisma.SortOrder
+  flowVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  flowNodeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  endpointKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  endpointVerified?: Prisma.SortOrder
+  completionClaimAllowed?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.SovereignAnswerEvidenceCountOrderByAggregateInput
   _avg?: Prisma.SovereignAnswerEvidenceAvgOrderByAggregateInput
@@ -735,6 +838,15 @@ export type SovereignAnswerEvidenceScalarWhereWithAggregatesInput = {
   attemptCount?: Prisma.IntWithAggregatesFilter<"SovereignAnswerEvidence"> | number
   escalationTier?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
   degradedMode?: Prisma.BoolWithAggregatesFilter<"SovereignAnswerEvidence"> | boolean
+  executionContractVersion?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  terminalOutcome?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  authorityLevel?: Prisma.StringWithAggregatesFilter<"SovereignAnswerEvidence"> | string
+  flowId?: Prisma.StringNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | string | null
+  flowVersion?: Prisma.IntNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | number | null
+  flowNodeId?: Prisma.StringNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | string | null
+  endpointKey?: Prisma.StringNullableWithAggregatesFilter<"SovereignAnswerEvidence"> | string | null
+  endpointVerified?: Prisma.BoolWithAggregatesFilter<"SovereignAnswerEvidence"> | boolean
+  completionClaimAllowed?: Prisma.BoolWithAggregatesFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SovereignAnswerEvidence"> | Date | string
 }
 
@@ -782,6 +894,15 @@ export type SovereignAnswerEvidenceCreateInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
   feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
@@ -833,6 +954,15 @@ export type SovereignAnswerEvidenceUncheckedCreateInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
   replayCase?: Prisma.SovereignReplayCaseUncheckedCreateNestedOneWithoutSourceEvidenceInput
@@ -882,6 +1012,15 @@ export type SovereignAnswerEvidenceUpdateInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
   feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
@@ -933,6 +1072,15 @@ export type SovereignAnswerEvidenceUncheckedUpdateInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
   replayCase?: Prisma.SovereignReplayCaseUncheckedUpdateOneWithoutSourceEvidenceNestedInput
@@ -983,6 +1131,15 @@ export type SovereignAnswerEvidenceCreateManyInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
 }
 
@@ -1030,6 +1187,15 @@ export type SovereignAnswerEvidenceUpdateManyMutationInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1078,6 +1244,15 @@ export type SovereignAnswerEvidenceUncheckedUpdateManyInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1136,6 +1311,15 @@ export type SovereignAnswerEvidenceCountOrderByAggregateInput = {
   attemptCount?: Prisma.SortOrder
   escalationTier?: Prisma.SortOrder
   degradedMode?: Prisma.SortOrder
+  executionContractVersion?: Prisma.SortOrder
+  terminalOutcome?: Prisma.SortOrder
+  authorityLevel?: Prisma.SortOrder
+  flowId?: Prisma.SortOrder
+  flowVersion?: Prisma.SortOrder
+  flowNodeId?: Prisma.SortOrder
+  endpointKey?: Prisma.SortOrder
+  endpointVerified?: Prisma.SortOrder
+  completionClaimAllowed?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -1144,6 +1328,7 @@ export type SovereignAnswerEvidenceAvgOrderByAggregateInput = {
   clarifyCount?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
+  flowVersion?: Prisma.SortOrder
 }
 
 export type SovereignAnswerEvidenceMaxOrderByAggregateInput = {
@@ -1185,6 +1370,15 @@ export type SovereignAnswerEvidenceMaxOrderByAggregateInput = {
   attemptCount?: Prisma.SortOrder
   escalationTier?: Prisma.SortOrder
   degradedMode?: Prisma.SortOrder
+  executionContractVersion?: Prisma.SortOrder
+  terminalOutcome?: Prisma.SortOrder
+  authorityLevel?: Prisma.SortOrder
+  flowId?: Prisma.SortOrder
+  flowVersion?: Prisma.SortOrder
+  flowNodeId?: Prisma.SortOrder
+  endpointKey?: Prisma.SortOrder
+  endpointVerified?: Prisma.SortOrder
+  completionClaimAllowed?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -1227,6 +1421,15 @@ export type SovereignAnswerEvidenceMinOrderByAggregateInput = {
   attemptCount?: Prisma.SortOrder
   escalationTier?: Prisma.SortOrder
   degradedMode?: Prisma.SortOrder
+  executionContractVersion?: Prisma.SortOrder
+  terminalOutcome?: Prisma.SortOrder
+  authorityLevel?: Prisma.SortOrder
+  flowId?: Prisma.SortOrder
+  flowVersion?: Prisma.SortOrder
+  flowNodeId?: Prisma.SortOrder
+  endpointKey?: Prisma.SortOrder
+  endpointVerified?: Prisma.SortOrder
+  completionClaimAllowed?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -1235,6 +1438,7 @@ export type SovereignAnswerEvidenceSumOrderByAggregateInput = {
   clarifyCount?: Prisma.SortOrder
   latencyMs?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
+  flowVersion?: Prisma.SortOrder
 }
 
 export type SovereignAnswerEvidenceScalarRelationFilter = {
@@ -1400,6 +1604,15 @@ export type SovereignAnswerEvidenceCreateWithoutPropertyInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
   replayCase?: Prisma.SovereignReplayCaseCreateNestedOneWithoutSourceEvidenceInput
@@ -1449,6 +1662,15 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutPropertyInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
   replayCase?: Prisma.SovereignReplayCaseUncheckedCreateNestedOneWithoutSourceEvidenceInput
@@ -1528,6 +1750,15 @@ export type SovereignAnswerEvidenceScalarWhereInput = {
   attemptCount?: Prisma.IntFilter<"SovereignAnswerEvidence"> | number
   escalationTier?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
   degradedMode?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  executionContractVersion?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  terminalOutcome?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  authorityLevel?: Prisma.StringFilter<"SovereignAnswerEvidence"> | string
+  flowId?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  flowVersion?: Prisma.IntNullableFilter<"SovereignAnswerEvidence"> | number | null
+  flowNodeId?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  endpointKey?: Prisma.StringNullableFilter<"SovereignAnswerEvidence"> | string | null
+  endpointVerified?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
+  completionClaimAllowed?: Prisma.BoolFilter<"SovereignAnswerEvidence"> | boolean
   createdAt?: Prisma.DateTimeFilter<"SovereignAnswerEvidence"> | Date | string
 }
 
@@ -1575,6 +1806,15 @@ export type SovereignAnswerEvidenceCreateWithoutFeedbackInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
   replayCase?: Prisma.SovereignReplayCaseCreateNestedOneWithoutSourceEvidenceInput
@@ -1625,6 +1865,15 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutFeedbackInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   replayCase?: Prisma.SovereignReplayCaseUncheckedCreateNestedOneWithoutSourceEvidenceInput
 }
@@ -1689,6 +1938,15 @@ export type SovereignAnswerEvidenceUpdateWithoutFeedbackInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
   replayCase?: Prisma.SovereignReplayCaseUpdateOneWithoutSourceEvidenceNestedInput
@@ -1739,6 +1997,15 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutFeedbackInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   replayCase?: Prisma.SovereignReplayCaseUncheckedUpdateOneWithoutSourceEvidenceNestedInput
 }
@@ -1787,6 +2054,15 @@ export type SovereignAnswerEvidenceCreateWithoutReplayCaseInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   property: Prisma.PropertyCreateNestedOneWithoutSovereignEvidenceInput
   feedback?: Prisma.SovereignAnswerFeedbackCreateNestedOneWithoutEvidenceInput
@@ -1837,6 +2113,15 @@ export type SovereignAnswerEvidenceUncheckedCreateWithoutReplayCaseInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedCreateNestedOneWithoutEvidenceInput
 }
@@ -1901,6 +2186,15 @@ export type SovereignAnswerEvidenceUpdateWithoutReplayCaseInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   property?: Prisma.PropertyUpdateOneRequiredWithoutSovereignEvidenceNestedInput
   feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
@@ -1951,6 +2245,15 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutReplayCaseInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
 }
@@ -1999,6 +2302,15 @@ export type SovereignAnswerEvidenceCreateManyPropertyInput = {
   attemptCount?: number
   escalationTier?: string
   degradedMode?: boolean
+  executionContractVersion?: string
+  terminalOutcome?: string
+  authorityLevel?: string
+  flowId?: string | null
+  flowVersion?: number | null
+  flowNodeId?: string | null
+  endpointKey?: string | null
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: Date | string
 }
 
@@ -2046,6 +2358,15 @@ export type SovereignAnswerEvidenceUpdateWithoutPropertyInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUpdateOneWithoutEvidenceNestedInput
   replayCase?: Prisma.SovereignReplayCaseUpdateOneWithoutSourceEvidenceNestedInput
@@ -2095,6 +2416,15 @@ export type SovereignAnswerEvidenceUncheckedUpdateWithoutPropertyInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedback?: Prisma.SovereignAnswerFeedbackUncheckedUpdateOneWithoutEvidenceNestedInput
   replayCase?: Prisma.SovereignReplayCaseUncheckedUpdateOneWithoutSourceEvidenceNestedInput
@@ -2144,6 +2474,15 @@ export type SovereignAnswerEvidenceUncheckedUpdateManyWithoutPropertyInput = {
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   escalationTier?: Prisma.StringFieldUpdateOperationsInput | string
   degradedMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  executionContractVersion?: Prisma.StringFieldUpdateOperationsInput | string
+  terminalOutcome?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  flowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  flowVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  flowNodeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  endpointVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  completionClaimAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -2194,6 +2533,15 @@ export type SovereignAnswerEvidenceSelect<ExtArgs extends runtime.Types.Extensio
   attemptCount?: boolean
   escalationTier?: boolean
   degradedMode?: boolean
+  executionContractVersion?: boolean
+  terminalOutcome?: boolean
+  authorityLevel?: boolean
+  flowId?: boolean
+  flowVersion?: boolean
+  flowNodeId?: boolean
+  endpointKey?: boolean
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
@@ -2245,6 +2593,15 @@ export type SovereignAnswerEvidenceSelectCreateManyAndReturn<ExtArgs extends run
   attemptCount?: boolean
   escalationTier?: boolean
   degradedMode?: boolean
+  executionContractVersion?: boolean
+  terminalOutcome?: boolean
+  authorityLevel?: boolean
+  flowId?: boolean
+  flowVersion?: boolean
+  flowNodeId?: boolean
+  endpointKey?: boolean
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sovereignAnswerEvidence"]>
@@ -2294,6 +2651,15 @@ export type SovereignAnswerEvidenceSelectUpdateManyAndReturn<ExtArgs extends run
   attemptCount?: boolean
   escalationTier?: boolean
   degradedMode?: boolean
+  executionContractVersion?: boolean
+  terminalOutcome?: boolean
+  authorityLevel?: boolean
+  flowId?: boolean
+  flowVersion?: boolean
+  flowNodeId?: boolean
+  endpointKey?: boolean
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sovereignAnswerEvidence"]>
@@ -2343,10 +2709,19 @@ export type SovereignAnswerEvidenceSelectScalar = {
   attemptCount?: boolean
   escalationTier?: boolean
   degradedMode?: boolean
+  executionContractVersion?: boolean
+  terminalOutcome?: boolean
+  authorityLevel?: boolean
+  flowId?: boolean
+  flowVersion?: boolean
+  flowNodeId?: boolean
+  endpointKey?: boolean
+  endpointVerified?: boolean
+  completionClaimAllowed?: boolean
   createdAt?: boolean
 }
 
-export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "observedBehavior" | "decisionConsistent" | "consistencyReason" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "personaCategory" | "personaVersion" | "retrievalCandidates" | "retrievedClaimIds" | "usedClaimIds" | "nearMissClaimIds" | "failureClassification" | "safeResolution" | "evidencePipelineVersion" | "failureLayer" | "failureCode" | "latencyMs" | "attemptCount" | "escalationTier" | "degradedMode" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
+export type SovereignAnswerEvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "leadId" | "sessionIdHash" | "constitutionVersion" | "blueprintVersion" | "intent" | "disposition" | "contextUsed" | "confidence" | "safetyClassification" | "permittedOperation" | "observedBehavior" | "decisionConsistent" | "consistencyReason" | "resolutionState" | "clarifyCount" | "circuitBreaker" | "circuitBreakerReason" | "evaluationVersion" | "decisionReason" | "question" | "resolvedQuestion" | "answer" | "grounded" | "model" | "sources" | "knowledgeAsOf" | "knowledgeClaimIds" | "personaCategory" | "personaVersion" | "retrievalCandidates" | "retrievedClaimIds" | "usedClaimIds" | "nearMissClaimIds" | "failureClassification" | "safeResolution" | "evidencePipelineVersion" | "failureLayer" | "failureCode" | "latencyMs" | "attemptCount" | "escalationTier" | "degradedMode" | "executionContractVersion" | "terminalOutcome" | "authorityLevel" | "flowId" | "flowVersion" | "flowNodeId" | "endpointKey" | "endpointVerified" | "completionClaimAllowed" | "createdAt", ExtArgs["result"]["sovereignAnswerEvidence"]>
 export type SovereignAnswerEvidenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   feedback?: boolean | Prisma.SovereignAnswerEvidence$feedbackArgs<ExtArgs>
@@ -2411,6 +2786,15 @@ export type $SovereignAnswerEvidencePayload<ExtArgs extends runtime.Types.Extens
     attemptCount: number
     escalationTier: string
     degradedMode: boolean
+    executionContractVersion: string
+    terminalOutcome: string
+    authorityLevel: string
+    flowId: string | null
+    flowVersion: number | null
+    flowNodeId: string | null
+    endpointKey: string | null
+    endpointVerified: boolean
+    completionClaimAllowed: boolean
     createdAt: Date
   }, ExtArgs["result"]["sovereignAnswerEvidence"]>
   composites: {}
@@ -2882,6 +3266,15 @@ export interface SovereignAnswerEvidenceFieldRefs {
   readonly attemptCount: Prisma.FieldRef<"SovereignAnswerEvidence", 'Int'>
   readonly escalationTier: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
   readonly degradedMode: Prisma.FieldRef<"SovereignAnswerEvidence", 'Boolean'>
+  readonly executionContractVersion: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly terminalOutcome: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly authorityLevel: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly flowId: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly flowVersion: Prisma.FieldRef<"SovereignAnswerEvidence", 'Int'>
+  readonly flowNodeId: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly endpointKey: Prisma.FieldRef<"SovereignAnswerEvidence", 'String'>
+  readonly endpointVerified: Prisma.FieldRef<"SovereignAnswerEvidence", 'Boolean'>
+  readonly completionClaimAllowed: Prisma.FieldRef<"SovereignAnswerEvidence", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"SovereignAnswerEvidence", 'DateTime'>
 }
     

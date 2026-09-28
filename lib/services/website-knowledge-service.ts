@@ -43,6 +43,19 @@ export type KnowledgeBase = {
   tenantEntities: TenantEntityKnowledge[];
   truthReview: TenantTruthReview;
   changeSet?: TenantKnowledgeChangeSet;
+  crawlReport: {
+    version: "2.0";
+    discoveredUrls: number;
+    attemptedUrls: number;
+    readablePages: number;
+    failedUrls: Array<{ url: string; reason: string }>;
+    duplicatePages: number;
+    structuredFacts: number;
+    tenantEntities: number;
+    coverageScore: number;
+    readiness: "READY" | "REVIEW_REQUIRED";
+    reasons: string[];
+  };
   crawledAt: string;
 };
 
@@ -71,6 +84,7 @@ const MAX_PAGES = 120;
 const MAX_DISCOVERY_URLS = 300;
 const MAX_PAGE_CHARS = 20000;
 const MAX_CONTEXT_CHARS = 11000;
+const CRAWL_CONCURRENCY = 8;
 // Operator-approved pages that may be active without appearing in navigation or
 // the sitemap. They are verified by the crawler before becoming answer sources.
 const PRIORITY_PATHS = ["/training-booking/"];
@@ -315,31 +329,44 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     const queued = new Set(urls);
     const pages: KnowledgePage[] = [];
     const tenantEntities: TenantEntityKnowledge[] = [];
+    const failedUrls: Array<{ url: string; reason: string }> = [];
+    const contentFingerprints = new Set<string>();
+    let duplicatePages = 0;
+    let attemptedUrls = 0;
 
-    for (let cursor = 0; cursor < urls.length; cursor += 1) {
-      const url = urls[cursor];
+    for (let cursor = 0; cursor < urls.length && pages.length < MAX_PAGES; cursor += CRAWL_CONCURRENCY) {
       if (pages.length >= MAX_PAGES) break;
-      try {
-        const html = await fetchText(url);
-        // Deep discovery follows same-origin links exposed by listing/detail pages.
-        // This covers tenant inventories that are intentionally absent from sitemap.xml.
-        const discovered = uniqueSameOriginUrls(baseUrl, Array.from(html.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]));
-        discovered.sort((left, right) => Number(/\/properties\/\d+/i.test(right)) - Number(/\/properties\/\d+/i.test(left)));
-        for (const link of discovered) if (!queued.has(link) && urls.length < MAX_DISCOVERY_URLS) { queued.add(link); urls.push(link); }
-        const { title, text } = stripHtml(html);
-        if (text.length < 160) continue;
-        const entity = extractDeepTenantKnowledge(url, html);
+      const batch = urls.slice(cursor, cursor + CRAWL_CONCURRENCY);
+      const results = await Promise.all(batch.map(async (url) => {
+        attemptedUrls += 1;
+        try {
+          const html = await fetchText(url);
+          // Deep discovery follows same-origin links exposed by listing/detail pages.
+          const discovered = uniqueSameOriginUrls(baseUrl, Array.from(html.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]));
+          const { title, text } = stripHtml(html);
+          return { url, html, title, text, discovered, error: null as string | null };
+        } catch (error) {
+          return { url, html: "", title: "", text: "", discovered: [] as string[], error: error instanceof Error ? error.message.slice(0, 160) : "Fetch failed" };
+        }
+      }));
+      for (const result of results) {
+        if (result.error) { failedUrls.push({ url: result.url, reason: result.error }); continue; }
+        result.discovered.sort((left, right) => Number(/\/properties\/\d+/i.test(right)) - Number(/\/properties\/\d+/i.test(left)));
+        for (const link of result.discovered) if (!queued.has(link) && urls.length < MAX_DISCOVERY_URLS) { queued.add(link); urls.push(link); }
+        if (result.text.length < 160) { failedUrls.push({ url: result.url, reason: "Page contained insufficient readable text." }); continue; }
+        const fingerprint = result.text.toLowerCase().replace(/\s+/g, " ").slice(0, 1600);
+        if (contentFingerprints.has(fingerprint)) { duplicatePages += 1; continue; }
+        contentFingerprints.add(fingerprint);
+        const entity = extractDeepTenantKnowledge(result.url, result.html);
         if (entity) tenantEntities.push(entity);
-        pages.push({
-          url,
-          title,
-          bucket: bucketFor(url, title, text),
-          text: text.slice(0, MAX_PAGE_CHARS),
+        if (pages.length < MAX_PAGES) pages.push({
+          url: result.url,
+          title: result.title,
+          bucket: bucketFor(result.url, result.title, result.text),
+          text: result.text.slice(0, MAX_PAGE_CHARS),
           sections: entity?.sections,
           crawledAt: new Date().toISOString()
         });
-      } catch {
-        continue;
       }
     }
 
@@ -348,6 +375,20 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     const reconciledFacts = reconcileTenantFacts(pages.flatMap(extractWebsiteTenantFacts));
     const structuredFacts = reconciledFacts.facts;
     const crawledAt = new Date().toISOString();
+    const buckets = new Set(pages.map((page) => page.bucket));
+    const reasons: string[] = [];
+    if (pages.length < 2) reasons.push("Fewer than two readable public pages were found.");
+    if (!structuredFacts.length && !tenantEntities.length) reasons.push("No structured facts or tenant entities were extracted.");
+    if (reconciledFacts.conflicts.length) reasons.push(`${reconciledFacts.conflicts.length} conflicting fact set${reconciledFacts.conflicts.length === 1 ? " requires" : "s require"} review.`);
+    if (failedUrls.length > Math.max(3, attemptedUrls * 0.35)) reasons.push("More than 35% of attempted pages failed or were unreadable.");
+    const coverageScore = Math.max(0, Math.min(100, Math.round(
+      Math.min(35, pages.length * 4) +
+      Math.min(30, structuredFacts.length * 3) +
+      Math.min(20, tenantEntities.length * 5) +
+      Math.min(15, buckets.size * 3) -
+      Math.min(25, reconciledFacts.conflicts.length * 5)
+    )));
+    if (coverageScore < 70) reasons.push(`Website intelligence coverage is ${coverageScore}%; review is required before relying on the crawl alone.`);
     const knowledgeBase: KnowledgeBase = {
       baseUrl,
       pages,
@@ -355,6 +396,19 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
       tenantProfileDraft: buildTenantProfileDraft(structuredFacts),
       tenantEntities,
       truthReview: buildTenantTruthReview(structuredFacts, reconciledFacts.conflicts),
+      crawlReport: {
+        version: "2.0",
+        discoveredUrls: urls.length,
+        attemptedUrls,
+        readablePages: pages.length,
+        failedUrls: failedUrls.slice(0, 50),
+        duplicatePages,
+        structuredFacts: structuredFacts.length,
+        tenantEntities: tenantEntities.length,
+        coverageScore,
+        readiness: reasons.length ? "REVIEW_REQUIRED" : "READY",
+        reasons
+      },
       crawledAt
     };
     knowledgeBase.changeSet = buildTenantKnowledgeChangeSet(previous?.baseUrl === baseUrl ? previous : null, knowledgeBase);
@@ -458,6 +512,7 @@ export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
     tenantEntities: snapshot?.baseUrl === settings.sourceUrl ? snapshot.tenantEntities || [] : [],
     truthReview: snapshot?.baseUrl === settings.sourceUrl ? snapshot.truthReview || buildTenantTruthReview(snapshot.structuredFacts || [], reconcileTenantFacts(snapshot.structuredFacts || []).conflicts) : null,
     changeSet: snapshot?.baseUrl === settings.sourceUrl ? snapshot.changeSet || null : null,
+    crawlReport: snapshot?.baseUrl === settings.sourceUrl ? snapshot.crawlReport || null : null,
     freshness: tenantKnowledgeFreshness(settings.lastCrawledAt, settings.autoRefreshHours)
   };
 }
