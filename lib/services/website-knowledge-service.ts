@@ -148,6 +148,13 @@ export function buildCustomerFacingIdentity(assistantName: string, businessName:
   return `I’m ${assistantName}, the online assistant for ${businessName}. I can answer questions about the business, help you explore the right option, and bring in the team when personal assistance is useful.`;
 }
 
+export function unverifiedStayBookingAnswer(question: string, businessName: string, publicPhone?: string | null) {
+  const requestsBooking = /^(?:please\s+)?(?:book|reserve|confirm)\b|\b(?:can you|could you|i want to|i would like to|i'd like to)\s+(?:book|reserve|confirm)\b/i.test(question.trim());
+  if (!requestsBooking) return null;
+  const contact = publicPhone ? ` You can reach the reservations team at ${formatPublicPhoneForDisplay(publicPhone)}.` : " Please use the hotel’s published contact details or request the reservations team here.";
+  return `I’d be happy to help with your stay enquiry at ${businessName}. I can share cottage details, but I can’t check live availability or confirm a reservation in this chat.${contact}`;
+}
+
 function personaInstructions(persona: Awaited<ReturnType<typeof getBotPersonaForPropertySlug>>) {
   if (!persona) return "No governed persona is configured. Use the neutral AiFrogi business-assistant identity and hand off uncertain requests.";
   const pack = getBotPersonaPack(persona.category);
@@ -728,6 +735,8 @@ export async function buildWebsiteKnowledgeAnswer({
   if (resolved.intent === "OFF_TOPIC") return direct(`I’m here to help with ${businessName}. Ask me about its services, products, availability, or how to get started.`);
   if (resolved.intent === "SENSITIVE") return direct(`I can’t provide private customer, guest, owner, booking, credential or payment information. I can share ${businessName}’s public contact details or help with general business information.` , { ...resolved.decision, disposition: "REFUSE", reason: "Private-data and credential boundary enforced before public contact routing." });
   if (resolved.intent === "HUMAN_REQUEST") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
+  const stayBookingBoundary = persona?.category === "STAY" ? unverifiedStayBookingAnswer(question, businessName, organization?.publicPhone) : null;
+  if (stayBookingBoundary) return direct(stayBookingBoundary, { ...resolved.decision, disposition: "ANSWER", reason: "A stay booking request cannot be confirmed by the knowledge-only answer path." });
   const governed = await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion);
   if (governed.blockedState) {
     const failed = safeFailure("KNOWLEDGE", `CLAIM_${governed.blockedState}`, unavailableKnowledgeMessage(governed.blockedState, businessName));

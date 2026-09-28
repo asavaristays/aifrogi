@@ -3,7 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { buildMissingAnswerRecovery } from "../../lib/sovereign-intelligence/answer-quality-gate";
 import { classifySovereignIntent } from "../../lib/sovereign-intelligence/decision";
-import { buildPublishedWebsiteContactAnswer, cachedWebsiteSnapshotState, requestsMultiplePublishedContacts } from "../../lib/services/website-knowledge-service";
+import { buildPublishedWebsiteContactAnswer, cachedWebsiteSnapshotState, requestsMultiplePublishedContacts, unverifiedStayBookingAnswer } from "../../lib/services/website-knowledge-service";
 
 test("hotel missing-answer recovery is courteous and avoids generic business language", () => {
   const answer = buildMissingAnswerRecovery({ businessName: "The Camp Hornbill", category: "STAY", publicPhone: "+918279640517", handoffEnabled: true });
@@ -39,6 +39,14 @@ test("failed refresh preserves a bounded stale snapshot without treating it as c
   assert.equal(cachedWebsiteSnapshotState("2026-09-28T05:00:00.000Z", ttl, true, now), "STALE");
   assert.equal(cachedWebsiteSnapshotState("2026-09-28T05:00:00.000Z", ttl, false, now), "EXPIRED");
   assert.equal(cachedWebsiteSnapshotState("2026-09-21T11:00:00.000Z", ttl, true, now), "EXPIRED");
+});
+
+test("knowledge-only hotel booking path does not promise later confirmation", () => {
+  const answer = unverifiedStayBookingAnswer("Book the stone cottage for tomorrow and confirm it is complete.", "The Camp Hornbill", "+918279640517");
+  assert.match(answer || "", /can’t check live availability or confirm a reservation in this chat/);
+  assert.match(answer || "", /82796 40517/);
+  assert.doesNotMatch(answer || "", /I’ll confirm|once .*verified/i);
+  assert.equal(unverifiedStayBookingAnswer("What types of cottages are there?", "The Camp Hornbill"), null);
 });
 
 test("saved contact is transmitted only for an explicit handover draft or consent-only send", async () => {
