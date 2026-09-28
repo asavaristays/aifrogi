@@ -134,30 +134,36 @@
 }
 
 :root {
-  --ink-950: #050505;
-  --ink-900: #101010;
-  --ink-800: #1c1c1c;
-  --ink-700: #2b2b2b;
-  --ink-600: #404040;
-  --gold-700: #6d5310;
-  --gold-600: #8a6a16;
-  --gold-500: #b28728;
-  --gold-400: #d4af37;
-  --gold-300: #e2c66d;
-  --gold-100: #f3e5b5;
-  --warm-50: #f7f4ed;
-  --warm-25: #fbfaf7;
+  --brand-ink: #090908;
+  --brand-paper: #f4f3ed;
+  --brand-lime: #d8ff63;
+  --brand-lime-strong: #9fbd32;
+  --brand-muted: #6c6c65;
+  --ink-950: #080807;
+  --ink-900: #11110f;
+  --ink-800: #1a1a17;
+  --ink-700: #292925;
+  --ink-600: #3f3f39;
+  /* Compatibility aliases: the former gold scale now carries AiFrogi lime. */
+  --gold-700: #526313;
+  --gold-600: #79951f;
+  --gold-500: #9fbd32;
+  --gold-400: #bedf4b;
+  --gold-300: #d8ff63;
+  --gold-100: #efffc0;
+  --warm-50: #f4f3ed;
+  --warm-25: #faf9f4;
   --white: #ffffff;
   --background: var(--warm-50);
   --surface: var(--white);
   --surface-soft: var(--warm-25);
   --surface-muted: #eee9de;
   --text: var(--ink-900);
-  --text-muted: #68645c;
-  --border: #ded8cb;
+  --text-muted: #6c6c65;
+  --border: #d8d7ce;
   --primary: var(--gold-500);
   --primary-strong: var(--gold-600);
-  --primary-soft: #f8f0d8;
+  --primary-soft: #f0f8d7;
   --secondary: var(--ink-900);
   --secondary-soft: #eceae5;
   --info: #2674d9;
@@ -192,14 +198,29 @@ body {
   min-height: 100vh;
   background: var(--background);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 15px;
+  font-family: var(--font-body), "DM Sans", Arial, sans-serif;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display), "Manrope", sans-serif;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(3rem, 7vw, 7.25rem); font-weight: 500; line-height: .94; letter-spacing: -.06em; }
+h2 { font-size: clamp(2.35rem, 5vw, 5rem); font-weight: 500; line-height: .98; letter-spacing: -.05em; }
+h3 { font-size: clamp(1.35rem, 2.2vw, 2rem); font-weight: 600; line-height: 1.08; letter-spacing: -.035em; }
+h4, h5, h6 { font-weight: 650; line-height: 1.18; letter-spacing: -.02em; }
+
+.type-display { font-family: var(--font-display), "Manrope", sans-serif; font-size: clamp(3.75rem, 9vw, 9rem); font-weight: 500; line-height: .86; letter-spacing: -.075em; }
+.type-lead { font-size: clamp(1.08rem, 1.5vw, 1.35rem); line-height: 1.6; }
+.type-label { font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.type-meta { font-size: .8125rem; line-height: 1.45; }
 
 a {
   color: inherit;
@@ -215,7 +236,7 @@ select {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(138, 106, 22, 0.72);
+  outline: 3px solid rgba(216, 255, 99, 0.8);
   outline-offset: 2px;
 }
 
@@ -338,11 +359,11 @@ select {
 
 .product-eyebrow,
 .field-label {
-  color: var(--text-muted);
+  color: var(--gold-600);
   font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0;
-  text-transform: none;
+  font-weight: 750;
+  letter-spacing: .14em;
+  text-transform: uppercase;
 }
 
 .product-input {

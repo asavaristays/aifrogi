@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="HotelGPT concept presentation — one AI layer for every guest conversation and hotel workflow." />
+  <title>HotelGPT — Every stay, intelligently handled</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23070606'/%3E%3Cpath d='M17 43V21h8v8h14v-8h8v22h-8v-8H25v8z' fill='%23d9ff66'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <div class="announcement">HotelGPT is now expanding from pre-stay conversations to the complete guest journey. <a href="#experience">Explore the experience ↗</a></div>
+  <header class="nav shell">
+    <a class="brand" href="#top" aria-label="HotelGPT home"><span>H</span> HotelGPT</a>
+    <nav aria-label="Main navigation">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#workflow">How it works</a>
+      <a href="#impact">Impact</a>
+    </nav>
+    <a class="pill pill-light" href="#contact">Book a walkthrough <b>↗</b></a>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span></span> AI for modern hospitality</p>
+        <h1>Every stay,<br><em>intelligently</em> handled.</h1>
+        <p class="lede">HotelGPT turns guest conversations into completed work—before arrival, during the stay, and after checkout.</p>
+        <div class="actions">
+          <a class="pill pill-accent" href="#experience">See it in action <b>↓</b></a>
+          <a class="text-button" href="HotelGPT-eBrochure.pdf" download>Download e-brochure <span>↓</span></a>
+        </div>
+        <div class="hero-scenes" aria-label="Hero story controls"><button aria-label="Previous story">‹</button><button class="pause" aria-label="Pause story">Ⅱ</button><button aria-label="Next story">›</button><span>01 / 04</span></div>
+      </div>
+
+      <div class="hero-stage reveal" aria-label="Guest request handled by HotelGPT">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="phone">
+          <div class="phone-top"><span class="avatar"><i></i></span><div><strong>HotelGPT Concierge</strong><small><b></b> Live at your property</small></div><button aria-label="Conversation options">•••</button></div>
+          <div class="messages" aria-live="polite">
+            <p class="message guest" id="guestMessage">Can I check in early tomorrow? My flight lands at 9.</p>
+            <p class="message ai" id="aiMessage">Your room is available from 10:30. I’ve arranged early check-in and sent directions from the airport.</p>
+            <p class="message guest" id="followupMessage">Perfect. Can you book a quiet table for two at 8?</p>
+            <p class="message ai typing" id="typingMessage"><span></span><span></span><span></span></p>
+          </div>
+          <div class="in-chat-actions">
+            <div class="task-card task-one"><small id="actionOneLabel">EARLY CHECK-IN</small><strong id="actionOneTitle">Room 508 · 10:30</strong><span id="actionOneMeta">Housekeeping notified ✓</span></div>
+            <div class="task-card task-two"><small id="actionTwoLabel">DINING</small><strong id="actionTwoTitle">Table for 2 · 8:00 PM</strong><span id="actionTwoMeta">Terrace · quiet table</span></div>
+          </div>
+          <div class="composer"><span>Message HotelGPT</span><button class="bot-audio" id="botAudio" aria-label="Start voice conversation"><i></i></button><button class="send-button" aria-label="Send message">↑</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-band">
+      <div class="shell trust-inner"><p>One intelligence layer across</p><div class="wordmark-row"><span>Front Desk</span><span>Reservations</span><span>Housekeeping</span><span>F&amp;B</span><span>Guest Relations</span></div></div>
+    </section>
+
+    <section class="voice-language shell" id="voice-language">
+      <div class="voice-copy reveal">
+        <p class="eyebrow dark"><span></span> Voice + live translation</p>
+        <h2>Every guest<br><em>feels understood.</em></h2>
+        <p>Guests can speak naturally. HotelGPT transcribes, understands and responds in their language while your team receives a clear operational summary.</p>
+        <div class="language-pills" role="group" aria-label="Choose translation language">
+          <button class="language-pill active" data-language="en" onclick="setLanguage('en',this)">English</button>
+          <button class="language-pill" data-language="hi" onclick="setLanguage('hi',this)">हिन्दी</button>
+          <button class="language-pill" data-language="fr" onclick="setLanguage('fr',this)">Français</button>
+          <button class="language-pill" data-language="es" onclick="setLanguage('es',this)">Español</button>
+        </div>
+      </div>
+      <div class="voice-console reveal">
+        <div class="voice-top"><div><small>LIVE VOICE CONCIERGE</small><strong id="voiceLanguage">English detected</strong></div><span>00:08</span></div>
+        <button class="voice-play" id="voicePlay" aria-label="Play voice demonstration"><i>▶</i></button>
+        <div class="voice-wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="voice-transcript">
+          <small>GUEST SAID</small><p id="guestTranscript">“Could you arrange an airport pickup for tomorrow morning?”</p>
+        </div>
+        <div class="translation-result"><div class="translation-icon">文</div><div><small>TEAM SUMMARY · ENGLISH</small><p id="teamTranscript">Airport transfer requested · Tomorrow morning · Confirm pickup time</p></div><b>Ready</b></div>
+      </div>
+    </section>
+
+    <section class="experience shell" id="experience">
+      <div class="section-heading reveal"><p class="eyebrow dark"><span></span> One conversation, complete execution</p><h2>Ask once.<br><em>Consider it done.</em></h2></div>
+      <div class="story-grid">
+        <article class="story-card dark-card reveal">
+          <div class="card-index">01</div><p class="card-label">BEFORE THE STAY</p>
+          <h3>Never miss a reservation.</h3><p>Voice, web and messaging enquiries become confirmed bookings—with availability, policy and upsell logic built in.</p>
+          <div class="call-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="call-status"><i></i> Call resolved · ₹34,800 booking</div>
+        </article>
+        <article class="story-card lime-card reveal">
+          <div class="card-index">02</div><p class="card-label">DURING THE STAY</p>
+          <h3>Turn requests into workflows.</h3><p>A guest asks. HotelGPT coordinates the right team, tracks completion and closes the loop automatically.</p>
+          <div class="workflow-mini"><div><b>Guest request</b><span>Extra towels</span></div><i>→</i><div><b>Auto-routed</b><span>Housekeeping</span></div><i>→</i><div><b>Completed</b><span>6 min</span></div></div>
+        </article>
+        <article class="story-card feedback-card reveal">
+          <div class="feedback-copy"><div class="card-index">03</div><p class="card-label">GUEST FEEDBACK</p>
+            <h3>See what guests feel.<br><span>Act before it repeats.</span></h3>
+            <p>HotelGPT organises feedback by guest, property and issue—then tracks every follow-up through resolution.</p>
+            <div class="feedback-tags"><span>Sentiment</span><span>Owner</span><span>Resolution</span></div>
+          </div>
+          <div class="feedback-board" aria-label="Client feedback tracking preview">
+            <div class="board-top"><div><small>GUEST PULSE</small><strong>Feedback tracker</strong></div><button>This week⌄</button></div>
+            <div class="score-row"><div class="score-ring"><strong>4.7</strong><span>Guest score</span></div><div class="trend"><small>RECOVERY RATE</small><b>92%</b><span>↑ 14% this month</span></div></div>
+            <div class="feedback-list">
+              <div><i class="positive"></i><p><b>Breakfast service</b><span>Delight · 18 mentions</span></p><strong>+24</strong></div>
+              <div><i class="attention"></i><p><b>Check-in waiting time</b><span>Assigned to Front Desk</span></p><em>In progress</em></div>
+              <div><i class="resolved"></i><p><b>Room 408 · AC noise</b><span>Guest contacted · issue closed</span></p><em>Resolved</em></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="capabilities" id="capabilities">
+      <div class="shell">
+        <div class="section-heading light reveal"><p class="eyebrow"><span></span> Always-on hotel intelligence</p><h2>One AI team.<br><em>Four jobs.</em></h2></div>
+        <div class="cap-layout">
+          <div class="tabs" role="tablist" aria-label="HotelGPT capabilities">
+            <button class="tab active" role="tab" aria-selected="true" data-tab="revenue"><b>01</b><span>Capture revenue</span><i>↗</i></button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="guests"><b>02</b><span>Delight guests</span><i>↗</i></button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="operations"><b>03</b><span>Run operations</span><i>↗</i></button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="insights"><b>04</b><span>Surface insights</span><i>↗</i></button>
+          </div>
+          <div class="cap-panel reveal" id="capPanel">
+            <p class="panel-kicker">CAPTURE REVENUE</p><h3>Convert every enquiry—even at 2 AM.</h3><p>HotelGPT answers naturally, checks live inventory, applies your rate rules and completes the reservation without waiting for staff.</p>
+            <ul><li>Voice, WhatsApp and web</li><li>Real-time availability</li><li>Contextual room and service upsells</li></ul>
+            <div class="metric"><strong>24 / 7</strong><span>every guest enquiry<br>answered instantly</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workflow shell" id="workflow">
+      <div class="section-heading reveal"><p class="eyebrow dark"><span></span> Designed around your hotel</p><h2>From your knowledge<br>to <em>guest-ready.</em></h2></div>
+      <ol class="timeline">
+        <li class="reveal"><span>01</span><small>DISCOVER</small><h3>Map the journey</h3><p>Define guest journeys, systems, service standards and escalation rules.</p></li>
+        <li class="reveal"><span>02</span><small>PREPARE</small><h3>Build intelligence</h3><p>Bring in approved policies, FAQs, room data and operating knowledge.</p></li>
+        <li class="reveal"><span>03</span><small>CALIBRATE</small><h3>Test together</h3><p>Use real scenarios to tune HotelGPT to your property and brand.</p></li>
+        <li class="reveal"><span>04</span><small>LAUNCH</small><h3>Go live when ready</h3><p>Begin with one proven journey, measure the outcome, then expand.</p></li>
+      </ol>
+    </section>
+
+    <section class="impact" id="impact">
+      <div class="shell impact-grid">
+        <div class="impact-copy reveal"><p class="eyebrow"><span></span> The operating leverage</p><h2>More hospitality.<br><em>Less busywork.</em></h2><p>Let your team focus on the moments that need a human. HotelGPT handles the repetition, coordination and follow-through.</p></div>
+        <div class="numbers reveal">
+          <div><small>Guest response</small><strong>&lt; 5 sec</strong><span>Across every channel</span></div>
+          <div><small>Availability</small><strong>24 / 7</strong><span>No missed enquiries</span></div>
+          <div><small>Handoffs</small><strong>100%</strong><span>Tracked to completion</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact shell" id="contact">
+      <div class="contact-card reveal">
+        <p class="eyebrow dark"><span></span> Start with one high-impact journey</p>
+        <h2>Ready to put your hotel<br><em>on autopilot?</em></h2>
+        <p>See how HotelGPT would handle reservations, requests and operations at your property.</p>
+        <a class="pill pill-dark" href="mailto:info@aifrogi.com?subject=HotelGPT%20walkthrough">Book a walkthrough <b>↗</b></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell"><a class="brand" href="#top"><span>H</span> HotelGPT</a><p>AI hospitality concept presentation · Powered by AiFrogi</p><a href="#top">Back to top ↑</a></footer>
+  <script src="script.js?v=4"></script>
+  <script>
+    (() => {
+      const reportHeight = () => parent.postMessage({ type: 'hotelgpt-presentation-height', height: document.documentElement.scrollHeight }, location.origin);
+      addEventListener('load', reportHeight);
+      addEventListener('resize', reportHeight);
+      new ResizeObserver(reportHeight).observe(document.body);
+      reportHeight();
+    })();
+  </script>
+</body>
+</html>

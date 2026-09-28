@@ -10,21 +10,19 @@ const registerUrl = "https://app.aifrogi.com/register?source=site-header";
 
 const navItems = [
   { label: "Home", href: "/" },
+  { label: "HotelGPT", href: "/solutions/hotelgpt" },
   {
     label: "AI Bot",
     href: "/solutions",
     children: [
-      { label: "Experience AiFrogi", href: "/experience", copy: "Watch the 45-second interactive story" },
       { label: "HotelGPT", href: "/solutions/hotelgpt", copy: "Hospitality and guest intelligence" },
       { label: "ClinicGPT", href: "/solutions/clinicgpt", copy: "Appointments and confirmations" },
       { label: "DineGPT", href: "/solutions/dinegpt", copy: "Dining and reservation intelligence" },
       { label: "eduGPT", href: "/solutions/edugpt", copy: "Admissions and student enquiry intelligence" },
       { label: "PropertyGPT", href: "/solutions/propertygpt", copy: "Discovery, qualification and visits" },
-      { label: "BusinessGPT", href: "/solutions/businessgpt", copy: "Services, leads and support" },
-      { label: "Custom Business Bot", href: "/solutions/custom-business-bot", copy: "A governed workflow built for you" }
+      { label: "BusinessGPT", href: "/solutions/businessgpt", copy: "Services, leads and support" }
     ]
   },
-  { label: "HotelGPT", href: "/solutions/hotelgpt" },
   { label: "How to Install", href: "/install-ai-bot" },
   { label: "Pricing", href: "/pricing" }
 ];
@@ -64,14 +62,14 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="ml-5 hidden items-center gap-3 lg:flex">
             <a href={loginUrl} className="text-sm font-semibold text-white/70 hover:text-white">Login</a>
-            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 15-day trial</a>
+            <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-4 text-sm font-bold text-[var(--ink-600)] shadow-sm transition hover:bg-[var(--gold-500)] hover:text-[var(--ink-600)]">Start 15 Days trial</a>
           </div>
 
           <div className="ml-auto flex items-center gap-2 lg:hidden">
             <a href={registerUrl} className="inline-flex min-h-10 items-center rounded-md bg-[var(--gold-600)] px-3 text-xs font-bold text-[var(--ink-600)] shadow-sm">
-              Start trial
+              Start 15 Days trial
             </a>
             <button
               type="button"
