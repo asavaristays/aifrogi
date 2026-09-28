@@ -142,3 +142,47 @@ export const BotOperatingMode = {
 } as const
 
 export type BotOperatingMode = (typeof BotOperatingMode)[keyof typeof BotOperatingMode]
+
+
+export const ReadinessScanStatus = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED'
+} as const
+
+export type ReadinessScanStatus = (typeof ReadinessScanStatus)[keyof typeof ReadinessScanStatus]
+
+
+export const ReadinessEvidenceStatus = {
+  PASS: 'PASS',
+  FAIL: 'FAIL',
+  INSUFFICIENT_EVIDENCE: 'INSUFFICIENT_EVIDENCE',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
+} as const
+
+export type ReadinessEvidenceStatus = (typeof ReadinessEvidenceStatus)[keyof typeof ReadinessEvidenceStatus]
+
+
+export const ReadinessIssueStatus = {
+  DETECTED: 'DETECTED',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+  APPROVED: 'APPROVED',
+  DECLINED: 'DECLINED',
+  NOT_APPLICABLE: 'NOT_APPLICABLE',
+  IN_PROGRESS: 'IN_PROGRESS',
+  IMPLEMENTED: 'IMPLEMENTED',
+  VERIFIED: 'VERIFIED'
+} as const
+
+export type ReadinessIssueStatus = (typeof ReadinessIssueStatus)[keyof typeof ReadinessIssueStatus]
+
+
+export const ReadinessDeliveryRoute = {
+  AIFROGI_MANAGED: 'AIFROGI_MANAGED',
+  AGENCY_HANDOFF: 'AGENCY_HANDOFF',
+  CLIENT_GUIDANCE: 'CLIENT_GUIDANCE'
+} as const
+
+export type ReadinessDeliveryRoute = (typeof ReadinessDeliveryRoute)[keyof typeof ReadinessDeliveryRoute]

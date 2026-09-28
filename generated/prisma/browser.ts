@@ -23,6 +23,34 @@ export * from './enums';
  */
 export type Property = Prisma.PropertyModel
 /**
+ * Model ReadinessScan
+ * *
+ *  * Durable, internal-only scan request and execution record. A scan is never
+ *  * created by a public bot route; its state is advanced by a controlled worker.
+ */
+export type ReadinessScan = Prisma.ReadinessScanModel
+/**
+ * Model ReadinessEvidence
+ * *
+ *  * Immutable observation captured by one scan/check; scan text is evidence, never tenant authority.
+ */
+export type ReadinessEvidence = Prisma.ReadinessEvidenceModel
+/**
+ * Model ReadinessIssue
+ * 
+ */
+export type ReadinessIssue = Prisma.ReadinessIssueModel
+/**
+ * Model ReadinessWorkItem
+ * 
+ */
+export type ReadinessWorkItem = Prisma.ReadinessWorkItemModel
+/**
+ * Model ReadinessVerification
+ * 
+ */
+export type ReadinessVerification = Prisma.ReadinessVerificationModel
+/**
  * Model KnowledgeDocument
  * 
  */
@@ -78,6 +106,11 @@ export type WhatsAppBotConfiguration = Prisma.WhatsAppBotConfigurationModel
  */
 export type BotProfile = Prisma.BotProfileModel
 /**
+ * Model HotelGuestAccessRequest
+ * 
+ */
+export type HotelGuestAccessRequest = Prisma.HotelGuestAccessRequestModel
+/**
  * Model BotConnectorConfiguration
  * 
  */
@@ -87,6 +120,11 @@ export type BotConnectorConfiguration = Prisma.BotConnectorConfigurationModel
  * 
  */
 export type BotConnectorCredential = Prisma.BotConnectorCredentialModel
+/**
+ * Model AgentGatewayClient
+ * 
+ */
+export type AgentGatewayClient = Prisma.AgentGatewayClientModel
 /**
  * Model OrganizationMember
  * 

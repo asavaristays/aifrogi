@@ -52,6 +52,11 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Property: 'Property',
+  ReadinessScan: 'ReadinessScan',
+  ReadinessEvidence: 'ReadinessEvidence',
+  ReadinessIssue: 'ReadinessIssue',
+  ReadinessWorkItem: 'ReadinessWorkItem',
+  ReadinessVerification: 'ReadinessVerification',
   KnowledgeDocument: 'KnowledgeDocument',
   KnowledgeEntry: 'KnowledgeEntry',
   KnowledgePreview: 'KnowledgePreview',
@@ -63,8 +68,10 @@ export const ModelName = {
   UserSession: 'UserSession',
   WhatsAppBotConfiguration: 'WhatsAppBotConfiguration',
   BotProfile: 'BotProfile',
+  HotelGuestAccessRequest: 'HotelGuestAccessRequest',
   BotConnectorConfiguration: 'BotConnectorConfiguration',
   BotConnectorCredential: 'BotConnectorCredential',
+  AgentGatewayClient: 'AgentGatewayClient',
   OrganizationMember: 'OrganizationMember',
   OnboardingProfile: 'OnboardingProfile',
   OnboardingCredential: 'OnboardingCredential',
@@ -149,6 +156,116 @@ export const PropertyScalarFieldEnum = {
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
+export const ReadinessScanScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  propertyId: 'propertyId',
+  rubricVersion: 'rubricVersion',
+  sourceUrl: 'sourceUrl',
+  status: 'status',
+  idempotencyKey: 'idempotencyKey',
+  requestPayload: 'requestPayload',
+  result: 'result',
+  requestedBy: 'requestedBy',
+  attemptCount: 'attemptCount',
+  maxAttempts: 'maxAttempts',
+  nextRunAt: 'nextRunAt',
+  lockedAt: 'lockedAt',
+  lockedBy: 'lockedBy',
+  leaseExpiresAt: 'leaseExpiresAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  canceledAt: 'canceledAt',
+  canceledBy: 'canceledBy',
+  cancellationReason: 'cancellationReason',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReadinessScanScalarFieldEnum = (typeof ReadinessScanScalarFieldEnum)[keyof typeof ReadinessScanScalarFieldEnum]
+
+
+export const ReadinessEvidenceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  scanId: 'scanId',
+  pillar: 'pillar',
+  checkKey: 'checkKey',
+  status: 'status',
+  observedValue: 'observedValue',
+  canonicalComparison: 'canonicalComparison',
+  sourceUrl: 'sourceUrl',
+  capturedAt: 'capturedAt',
+  evidenceHash: 'evidenceHash',
+  createdAt: 'createdAt'
+} as const
+
+export type ReadinessEvidenceScalarFieldEnum = (typeof ReadinessEvidenceScalarFieldEnum)[keyof typeof ReadinessEvidenceScalarFieldEnum]
+
+
+export const ReadinessIssueScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  scanId: 'scanId',
+  evidenceId: 'evidenceId',
+  pillar: 'pillar',
+  checkKey: 'checkKey',
+  severity: 'severity',
+  status: 'status',
+  summary: 'summary',
+  proposedRemedy: 'proposedRemedy',
+  remediationType: 'remediationType',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  decisionReason: 'decisionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReadinessIssueScalarFieldEnum = (typeof ReadinessIssueScalarFieldEnum)[keyof typeof ReadinessIssueScalarFieldEnum]
+
+
+export const ReadinessWorkItemScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  propertyId: 'propertyId',
+  issueId: 'issueId',
+  deliveryRoute: 'deliveryRoute',
+  owner: 'owner',
+  dueAt: 'dueAt',
+  acceptanceCriterion: 'acceptanceCriterion',
+  status: 'status',
+  approvedBy: 'approvedBy',
+  approvedAt: 'approvedAt',
+  completedBy: 'completedBy',
+  completedAt: 'completedAt',
+  completionRecord: 'completionRecord',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReadinessWorkItemScalarFieldEnum = (typeof ReadinessWorkItemScalarFieldEnum)[keyof typeof ReadinessWorkItemScalarFieldEnum]
+
+
+export const ReadinessVerificationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  propertyId: 'propertyId',
+  workItemId: 'workItemId',
+  beforeScanId: 'beforeScanId',
+  afterScanId: 'afterScanId',
+  rubricVersion: 'rubricVersion',
+  status: 'status',
+  evidenceRefs: 'evidenceRefs',
+  verifiedBy: 'verifiedBy',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReadinessVerificationScalarFieldEnum = (typeof ReadinessVerificationScalarFieldEnum)[keyof typeof ReadinessVerificationScalarFieldEnum]
 
 
 export const KnowledgeDocumentScalarFieldEnum = {
@@ -387,6 +504,7 @@ export const BotProfileScalarFieldEnum = {
   responseSlaMinutes: 'responseSlaMinutes',
   reminderPercent: 'reminderPercent',
   fallbackEnabled: 'fallbackEnabled',
+  stayAccessEnabled: 'stayAccessEnabled',
   safeFallbackMessage: 'safeFallbackMessage',
   kbGateVersion: 'kbGateVersion',
   kbCoverageMinimum: 'kbCoverageMinimum',
@@ -403,6 +521,31 @@ export const BotProfileScalarFieldEnum = {
 } as const
 
 export type BotProfileScalarFieldEnum = (typeof BotProfileScalarFieldEnum)[keyof typeof BotProfileScalarFieldEnum]
+
+
+export const HotelGuestAccessRequestScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  requestTokenHash: 'requestTokenHash',
+  guestName: 'guestName',
+  phoneNumber: 'phoneNumber',
+  roomNumber: 'roomNumber',
+  requestedCheckIn: 'requestedCheckIn',
+  requestedCheckOut: 'requestedCheckOut',
+  approvedCheckOut: 'approvedCheckOut',
+  status: 'status',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  rejectionReason: 'rejectionReason',
+  activatedAt: 'activatedAt',
+  revokedAt: 'revokedAt',
+  revokedBy: 'revokedBy',
+  leadId: 'leadId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HotelGuestAccessRequestScalarFieldEnum = (typeof HotelGuestAccessRequestScalarFieldEnum)[keyof typeof HotelGuestAccessRequestScalarFieldEnum]
 
 
 export const BotConnectorConfigurationScalarFieldEnum = {
@@ -450,6 +593,25 @@ export const BotConnectorCredentialScalarFieldEnum = {
 } as const
 
 export type BotConnectorCredentialScalarFieldEnum = (typeof BotConnectorCredentialScalarFieldEnum)[keyof typeof BotConnectorCredentialScalarFieldEnum]
+
+
+export const AgentGatewayClientScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  label: 'label',
+  tokenHash: 'tokenHash',
+  scopes: 'scopes',
+  enabled: 'enabled',
+  lastUsedAt: 'lastUsedAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedBy: 'revokedBy',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgentGatewayClientScalarFieldEnum = (typeof AgentGatewayClientScalarFieldEnum)[keyof typeof AgentGatewayClientScalarFieldEnum]
 
 
 export const OrganizationMemberScalarFieldEnum = {
@@ -1536,19 +1698,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

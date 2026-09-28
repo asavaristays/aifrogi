@@ -52,6 +52,7 @@ export type BotProfileMinAggregateOutputType = {
   responseSlaMinutes: number | null
   reminderPercent: number | null
   fallbackEnabled: boolean | null
+  stayAccessEnabled: boolean | null
   safeFallbackMessage: string | null
   kbGateVersion: string | null
   kbCoverageMinimum: number | null
@@ -81,6 +82,7 @@ export type BotProfileMaxAggregateOutputType = {
   responseSlaMinutes: number | null
   reminderPercent: number | null
   fallbackEnabled: boolean | null
+  stayAccessEnabled: boolean | null
   safeFallbackMessage: string | null
   kbGateVersion: string | null
   kbCoverageMinimum: number | null
@@ -115,6 +117,7 @@ export type BotProfileCountAggregateOutputType = {
   responseSlaMinutes: number
   reminderPercent: number
   fallbackEnabled: number
+  stayAccessEnabled: number
   safeFallbackMessage: number
   kbGateVersion: number
   kbCoverageMinimum: number
@@ -158,6 +161,7 @@ export type BotProfileMinAggregateInputType = {
   responseSlaMinutes?: true
   reminderPercent?: true
   fallbackEnabled?: true
+  stayAccessEnabled?: true
   safeFallbackMessage?: true
   kbGateVersion?: true
   kbCoverageMinimum?: true
@@ -187,6 +191,7 @@ export type BotProfileMaxAggregateInputType = {
   responseSlaMinutes?: true
   reminderPercent?: true
   fallbackEnabled?: true
+  stayAccessEnabled?: true
   safeFallbackMessage?: true
   kbGateVersion?: true
   kbCoverageMinimum?: true
@@ -221,6 +226,7 @@ export type BotProfileCountAggregateInputType = {
   responseSlaMinutes?: true
   reminderPercent?: true
   fallbackEnabled?: true
+  stayAccessEnabled?: true
   safeFallbackMessage?: true
   kbGateVersion?: true
   kbCoverageMinimum?: true
@@ -342,6 +348,7 @@ export type BotProfileGroupByOutputType = {
   responseSlaMinutes: number
   reminderPercent: number
   fallbackEnabled: boolean
+  stayAccessEnabled: boolean
   safeFallbackMessage: string | null
   kbGateVersion: string | null
   kbCoverageMinimum: number
@@ -399,6 +406,7 @@ export type BotProfileWhereInput = {
   responseSlaMinutes?: Prisma.IntFilter<"BotProfile"> | number
   reminderPercent?: Prisma.IntFilter<"BotProfile"> | number
   fallbackEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
+  stayAccessEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
   safeFallbackMessage?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   kbGateVersion?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   kbCoverageMinimum?: Prisma.IntFilter<"BotProfile"> | number
@@ -434,6 +442,7 @@ export type BotProfileOrderByWithRelationInput = {
   responseSlaMinutes?: Prisma.SortOrder
   reminderPercent?: Prisma.SortOrder
   fallbackEnabled?: Prisma.SortOrder
+  stayAccessEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   kbGateVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   kbCoverageMinimum?: Prisma.SortOrder
@@ -473,6 +482,7 @@ export type BotProfileWhereUniqueInput = Prisma.AtLeast<{
   responseSlaMinutes?: Prisma.IntFilter<"BotProfile"> | number
   reminderPercent?: Prisma.IntFilter<"BotProfile"> | number
   fallbackEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
+  stayAccessEnabled?: Prisma.BoolFilter<"BotProfile"> | boolean
   safeFallbackMessage?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   kbGateVersion?: Prisma.StringNullableFilter<"BotProfile"> | string | null
   kbCoverageMinimum?: Prisma.IntFilter<"BotProfile"> | number
@@ -507,6 +517,7 @@ export type BotProfileOrderByWithAggregationInput = {
   responseSlaMinutes?: Prisma.SortOrder
   reminderPercent?: Prisma.SortOrder
   fallbackEnabled?: Prisma.SortOrder
+  stayAccessEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   kbGateVersion?: Prisma.SortOrderInput | Prisma.SortOrder
   kbCoverageMinimum?: Prisma.SortOrder
@@ -549,6 +560,7 @@ export type BotProfileScalarWhereWithAggregatesInput = {
   responseSlaMinutes?: Prisma.IntWithAggregatesFilter<"BotProfile"> | number
   reminderPercent?: Prisma.IntWithAggregatesFilter<"BotProfile"> | number
   fallbackEnabled?: Prisma.BoolWithAggregatesFilter<"BotProfile"> | boolean
+  stayAccessEnabled?: Prisma.BoolWithAggregatesFilter<"BotProfile"> | boolean
   safeFallbackMessage?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   kbGateVersion?: Prisma.StringNullableWithAggregatesFilter<"BotProfile"> | string | null
   kbCoverageMinimum?: Prisma.IntWithAggregatesFilter<"BotProfile"> | number
@@ -582,6 +594,7 @@ export type BotProfileCreateInput = {
   responseSlaMinutes?: number
   reminderPercent?: number
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: string | null
   kbGateVersion?: string | null
   kbCoverageMinimum?: number
@@ -617,6 +630,7 @@ export type BotProfileUncheckedCreateInput = {
   responseSlaMinutes?: number
   reminderPercent?: number
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: string | null
   kbGateVersion?: string | null
   kbCoverageMinimum?: number
@@ -650,6 +664,7 @@ export type BotProfileUpdateInput = {
   responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stayAccessEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbGateVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbCoverageMinimum?: Prisma.IntFieldUpdateOperationsInput | number
@@ -685,6 +700,7 @@ export type BotProfileUncheckedUpdateInput = {
   responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stayAccessEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbGateVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbCoverageMinimum?: Prisma.IntFieldUpdateOperationsInput | number
@@ -719,6 +735,7 @@ export type BotProfileCreateManyInput = {
   responseSlaMinutes?: number
   reminderPercent?: number
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: string | null
   kbGateVersion?: string | null
   kbCoverageMinimum?: number
@@ -752,6 +769,7 @@ export type BotProfileUpdateManyMutationInput = {
   responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stayAccessEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbGateVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbCoverageMinimum?: Prisma.IntFieldUpdateOperationsInput | number
@@ -786,6 +804,7 @@ export type BotProfileUncheckedUpdateManyInput = {
   responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stayAccessEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbGateVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbCoverageMinimum?: Prisma.IntFieldUpdateOperationsInput | number
@@ -833,6 +852,7 @@ export type BotProfileCountOrderByAggregateInput = {
   responseSlaMinutes?: Prisma.SortOrder
   reminderPercent?: Prisma.SortOrder
   fallbackEnabled?: Prisma.SortOrder
+  stayAccessEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrder
   kbGateVersion?: Prisma.SortOrder
   kbCoverageMinimum?: Prisma.SortOrder
@@ -868,6 +888,7 @@ export type BotProfileMaxOrderByAggregateInput = {
   responseSlaMinutes?: Prisma.SortOrder
   reminderPercent?: Prisma.SortOrder
   fallbackEnabled?: Prisma.SortOrder
+  stayAccessEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrder
   kbGateVersion?: Prisma.SortOrder
   kbCoverageMinimum?: Prisma.SortOrder
@@ -897,6 +918,7 @@ export type BotProfileMinOrderByAggregateInput = {
   responseSlaMinutes?: Prisma.SortOrder
   reminderPercent?: Prisma.SortOrder
   fallbackEnabled?: Prisma.SortOrder
+  stayAccessEnabled?: Prisma.SortOrder
   safeFallbackMessage?: Prisma.SortOrder
   kbGateVersion?: Prisma.SortOrder
   kbCoverageMinimum?: Prisma.SortOrder
@@ -1017,6 +1039,7 @@ export type BotProfileCreateWithoutOrganizationInput = {
   responseSlaMinutes?: number
   reminderPercent?: number
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: string | null
   kbGateVersion?: string | null
   kbCoverageMinimum?: number
@@ -1050,6 +1073,7 @@ export type BotProfileUncheckedCreateWithoutOrganizationInput = {
   responseSlaMinutes?: number
   reminderPercent?: number
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: string | null
   kbGateVersion?: string | null
   kbCoverageMinimum?: number
@@ -1099,6 +1123,7 @@ export type BotProfileUpdateWithoutOrganizationInput = {
   responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stayAccessEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbGateVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbCoverageMinimum?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1132,6 +1157,7 @@ export type BotProfileUncheckedUpdateWithoutOrganizationInput = {
   responseSlaMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   reminderPercent?: Prisma.IntFieldUpdateOperationsInput | number
   fallbackEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stayAccessEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safeFallbackMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbGateVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kbCoverageMinimum?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1168,6 +1194,7 @@ export type BotProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   responseSlaMinutes?: boolean
   reminderPercent?: boolean
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: boolean
   kbGateVersion?: boolean
   kbCoverageMinimum?: boolean
@@ -1203,6 +1230,7 @@ export type BotProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   responseSlaMinutes?: boolean
   reminderPercent?: boolean
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: boolean
   kbGateVersion?: boolean
   kbCoverageMinimum?: boolean
@@ -1238,6 +1266,7 @@ export type BotProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   responseSlaMinutes?: boolean
   reminderPercent?: boolean
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: boolean
   kbGateVersion?: boolean
   kbCoverageMinimum?: boolean
@@ -1273,6 +1302,7 @@ export type BotProfileSelectScalar = {
   responseSlaMinutes?: boolean
   reminderPercent?: boolean
   fallbackEnabled?: boolean
+  stayAccessEnabled?: boolean
   safeFallbackMessage?: boolean
   kbGateVersion?: boolean
   kbCoverageMinimum?: boolean
@@ -1288,7 +1318,7 @@ export type BotProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "personaPackVersion" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "responseSlaMinutes" | "reminderPercent" | "fallbackEnabled" | "safeFallbackMessage" | "kbGateVersion" | "kbCoverageMinimum" | "status" | "installationKey" | "installationDetectedAt" | "liveAt" | "pausedAt" | "deletedAt" | "lifecycleUpdatedBy" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
+export type BotProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "category" | "personaPackVersion" | "operatingMode" | "channels" | "capabilities" | "humanHandoffEnabled" | "actionApprovalNeeded" | "personaName" | "businessObjective" | "tone" | "languages" | "prohibitedClaims" | "escalationTriggers" | "responseSlaMinutes" | "reminderPercent" | "fallbackEnabled" | "stayAccessEnabled" | "safeFallbackMessage" | "kbGateVersion" | "kbCoverageMinimum" | "status" | "installationKey" | "installationDetectedAt" | "liveAt" | "pausedAt" | "deletedAt" | "lifecycleUpdatedBy" | "configuredBy" | "createdAt" | "updatedAt", ExtArgs["result"]["botProfile"]>
 export type BotProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -1323,6 +1353,7 @@ export type $BotProfilePayload<ExtArgs extends runtime.Types.Extensions.Internal
     responseSlaMinutes: number
     reminderPercent: number
     fallbackEnabled: boolean
+    stayAccessEnabled: boolean
     safeFallbackMessage: string | null
     kbGateVersion: string | null
     kbCoverageMinimum: number
@@ -1778,6 +1809,7 @@ export interface BotProfileFieldRefs {
   readonly responseSlaMinutes: Prisma.FieldRef<"BotProfile", 'Int'>
   readonly reminderPercent: Prisma.FieldRef<"BotProfile", 'Int'>
   readonly fallbackEnabled: Prisma.FieldRef<"BotProfile", 'Boolean'>
+  readonly stayAccessEnabled: Prisma.FieldRef<"BotProfile", 'Boolean'>
   readonly safeFallbackMessage: Prisma.FieldRef<"BotProfile", 'String'>
   readonly kbGateVersion: Prisma.FieldRef<"BotProfile", 'String'>
   readonly kbCoverageMinimum: Prisma.FieldRef<"BotProfile", 'Int'>

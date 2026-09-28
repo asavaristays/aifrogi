@@ -325,6 +325,12 @@ export type OrganizationWhereInput = {
   botConfiguration?: Prisma.XOR<Prisma.WhatsAppBotConfigurationNullableScalarRelationFilter, Prisma.WhatsAppBotConfigurationWhereInput> | null
   botProfile?: Prisma.XOR<Prisma.BotProfileNullableScalarRelationFilter, Prisma.BotProfileWhereInput> | null
   botConnectors?: Prisma.BotConnectorConfigurationListRelationFilter
+  agentGatewayClients?: Prisma.AgentGatewayClientListRelationFilter
+  readinessScans?: Prisma.ReadinessScanListRelationFilter
+  readinessEvidence?: Prisma.ReadinessEvidenceListRelationFilter
+  readinessIssues?: Prisma.ReadinessIssueListRelationFilter
+  readinessWorkItems?: Prisma.ReadinessWorkItemListRelationFilter
+  readinessVerifications?: Prisma.ReadinessVerificationListRelationFilter
   demoSandbox?: Prisma.XOR<Prisma.DemoSandboxNullableScalarRelationFilter, Prisma.DemoSandboxWhereInput> | null
   documents?: Prisma.OnboardingDocumentListRelationFilter
   activities?: Prisma.OnboardingActivityListRelationFilter
@@ -369,6 +375,12 @@ export type OrganizationOrderByWithRelationInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationOrderByWithRelationInput
   botProfile?: Prisma.BotProfileOrderByWithRelationInput
   botConnectors?: Prisma.BotConnectorConfigurationOrderByRelationAggregateInput
+  agentGatewayClients?: Prisma.AgentGatewayClientOrderByRelationAggregateInput
+  readinessScans?: Prisma.ReadinessScanOrderByRelationAggregateInput
+  readinessEvidence?: Prisma.ReadinessEvidenceOrderByRelationAggregateInput
+  readinessIssues?: Prisma.ReadinessIssueOrderByRelationAggregateInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemOrderByRelationAggregateInput
+  readinessVerifications?: Prisma.ReadinessVerificationOrderByRelationAggregateInput
   demoSandbox?: Prisma.DemoSandboxOrderByWithRelationInput
   documents?: Prisma.OnboardingDocumentOrderByRelationAggregateInput
   activities?: Prisma.OnboardingActivityOrderByRelationAggregateInput
@@ -416,6 +428,12 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   botConfiguration?: Prisma.XOR<Prisma.WhatsAppBotConfigurationNullableScalarRelationFilter, Prisma.WhatsAppBotConfigurationWhereInput> | null
   botProfile?: Prisma.XOR<Prisma.BotProfileNullableScalarRelationFilter, Prisma.BotProfileWhereInput> | null
   botConnectors?: Prisma.BotConnectorConfigurationListRelationFilter
+  agentGatewayClients?: Prisma.AgentGatewayClientListRelationFilter
+  readinessScans?: Prisma.ReadinessScanListRelationFilter
+  readinessEvidence?: Prisma.ReadinessEvidenceListRelationFilter
+  readinessIssues?: Prisma.ReadinessIssueListRelationFilter
+  readinessWorkItems?: Prisma.ReadinessWorkItemListRelationFilter
+  readinessVerifications?: Prisma.ReadinessVerificationListRelationFilter
   demoSandbox?: Prisma.XOR<Prisma.DemoSandboxNullableScalarRelationFilter, Prisma.DemoSandboxWhereInput> | null
   documents?: Prisma.OnboardingDocumentListRelationFilter
   activities?: Prisma.OnboardingActivityListRelationFilter
@@ -516,6 +534,12 @@ export type OrganizationCreateInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -560,6 +584,12 @@ export type OrganizationUncheckedCreateInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -604,6 +634,12 @@ export type OrganizationUpdateInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -648,6 +684,12 @@ export type OrganizationUncheckedUpdateInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -742,6 +784,11 @@ export type OrganizationNullableScalarRelationFilter = {
   isNot?: Prisma.OrganizationWhereInput | null
 }
 
+export type OrganizationScalarRelationFilter = {
+  is?: Prisma.OrganizationWhereInput
+  isNot?: Prisma.OrganizationWhereInput
+}
+
 export type OrganizationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -817,11 +864,6 @@ export type OrganizationMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type OrganizationScalarRelationFilter = {
-  is?: Prisma.OrganizationWhereInput
-  isNot?: Prisma.OrganizationWhereInput
-}
-
 export type OrganizationCreateNestedOneWithoutPropertiesInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutPropertiesInput, Prisma.OrganizationUncheckedCreateWithoutPropertiesInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutPropertiesInput
@@ -836,6 +878,76 @@ export type OrganizationUpdateOneWithoutPropertiesNestedInput = {
   delete?: Prisma.OrganizationWhereInput | boolean
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutPropertiesInput, Prisma.OrganizationUpdateWithoutPropertiesInput>, Prisma.OrganizationUncheckedUpdateWithoutPropertiesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutReadinessScansInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessScansInput, Prisma.OrganizationUncheckedCreateWithoutReadinessScansInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessScansInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutReadinessScansNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessScansInput, Prisma.OrganizationUncheckedCreateWithoutReadinessScansInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessScansInput
+  upsert?: Prisma.OrganizationUpsertWithoutReadinessScansInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReadinessScansInput, Prisma.OrganizationUpdateWithoutReadinessScansInput>, Prisma.OrganizationUncheckedUpdateWithoutReadinessScansInput>
+}
+
+export type OrganizationCreateNestedOneWithoutReadinessEvidenceInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessEvidenceInput, Prisma.OrganizationUncheckedCreateWithoutReadinessEvidenceInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessEvidenceInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutReadinessEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessEvidenceInput, Prisma.OrganizationUncheckedCreateWithoutReadinessEvidenceInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessEvidenceInput
+  upsert?: Prisma.OrganizationUpsertWithoutReadinessEvidenceInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReadinessEvidenceInput, Prisma.OrganizationUpdateWithoutReadinessEvidenceInput>, Prisma.OrganizationUncheckedUpdateWithoutReadinessEvidenceInput>
+}
+
+export type OrganizationCreateNestedOneWithoutReadinessIssuesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessIssuesInput, Prisma.OrganizationUncheckedCreateWithoutReadinessIssuesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessIssuesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutReadinessIssuesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessIssuesInput, Prisma.OrganizationUncheckedCreateWithoutReadinessIssuesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessIssuesInput
+  upsert?: Prisma.OrganizationUpsertWithoutReadinessIssuesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReadinessIssuesInput, Prisma.OrganizationUpdateWithoutReadinessIssuesInput>, Prisma.OrganizationUncheckedUpdateWithoutReadinessIssuesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutReadinessWorkItemsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessWorkItemsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessWorkItemsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessWorkItemsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutReadinessWorkItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessWorkItemsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessWorkItemsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessWorkItemsInput
+  upsert?: Prisma.OrganizationUpsertWithoutReadinessWorkItemsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReadinessWorkItemsInput, Prisma.OrganizationUpdateWithoutReadinessWorkItemsInput>, Prisma.OrganizationUncheckedUpdateWithoutReadinessWorkItemsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutReadinessVerificationsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessVerificationsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessVerificationsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessVerificationsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutReadinessVerificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessVerificationsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessVerificationsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReadinessVerificationsInput
+  upsert?: Prisma.OrganizationUpsertWithoutReadinessVerificationsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReadinessVerificationsInput, Prisma.OrganizationUpdateWithoutReadinessVerificationsInput>, Prisma.OrganizationUncheckedUpdateWithoutReadinessVerificationsInput>
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -912,6 +1024,20 @@ export type OrganizationUpdateOneRequiredWithoutBotConnectorsNestedInput = {
   upsert?: Prisma.OrganizationUpsertWithoutBotConnectorsInput
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutBotConnectorsInput, Prisma.OrganizationUpdateWithoutBotConnectorsInput>, Prisma.OrganizationUncheckedUpdateWithoutBotConnectorsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutAgentGatewayClientsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAgentGatewayClientsInput, Prisma.OrganizationUncheckedCreateWithoutAgentGatewayClientsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAgentGatewayClientsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAgentGatewayClientsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAgentGatewayClientsInput, Prisma.OrganizationUncheckedCreateWithoutAgentGatewayClientsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAgentGatewayClientsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAgentGatewayClientsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAgentGatewayClientsInput, Prisma.OrganizationUpdateWithoutAgentGatewayClientsInput>, Prisma.OrganizationUncheckedUpdateWithoutAgentGatewayClientsInput>
 }
 
 export type OrganizationCreateNestedOneWithoutMembersInput = {
@@ -1129,6 +1255,12 @@ export type OrganizationCreateWithoutPropertiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -1172,6 +1304,12 @@ export type OrganizationUncheckedCreateWithoutPropertiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1231,6 +1369,12 @@ export type OrganizationUpdateWithoutPropertiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -1274,6 +1418,1072 @@ export type OrganizationUncheckedUpdateWithoutPropertiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutReadinessScansInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutReadinessScansInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutReadinessScansInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessScansInput, Prisma.OrganizationUncheckedCreateWithoutReadinessScansInput>
+}
+
+export type OrganizationUpsertWithoutReadinessScansInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessScansInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessScansInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessScansInput, Prisma.OrganizationUncheckedCreateWithoutReadinessScansInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutReadinessScansInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessScansInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessScansInput>
+}
+
+export type OrganizationUpdateWithoutReadinessScansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutReadinessScansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutReadinessEvidenceInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutReadinessEvidenceInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutReadinessEvidenceInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessEvidenceInput, Prisma.OrganizationUncheckedCreateWithoutReadinessEvidenceInput>
+}
+
+export type OrganizationUpsertWithoutReadinessEvidenceInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessEvidenceInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessEvidenceInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessEvidenceInput, Prisma.OrganizationUncheckedCreateWithoutReadinessEvidenceInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutReadinessEvidenceInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessEvidenceInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessEvidenceInput>
+}
+
+export type OrganizationUpdateWithoutReadinessEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutReadinessEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutReadinessIssuesInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutReadinessIssuesInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutReadinessIssuesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessIssuesInput, Prisma.OrganizationUncheckedCreateWithoutReadinessIssuesInput>
+}
+
+export type OrganizationUpsertWithoutReadinessIssuesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessIssuesInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessIssuesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessIssuesInput, Prisma.OrganizationUncheckedCreateWithoutReadinessIssuesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutReadinessIssuesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessIssuesInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessIssuesInput>
+}
+
+export type OrganizationUpdateWithoutReadinessIssuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutReadinessIssuesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutReadinessWorkItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutReadinessWorkItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutReadinessWorkItemsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessWorkItemsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessWorkItemsInput>
+}
+
+export type OrganizationUpsertWithoutReadinessWorkItemsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessWorkItemsInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessWorkItemsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessWorkItemsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessWorkItemsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutReadinessWorkItemsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessWorkItemsInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessWorkItemsInput>
+}
+
+export type OrganizationUpdateWithoutReadinessWorkItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutReadinessWorkItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutReadinessVerificationsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutReadinessVerificationsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutReadinessVerificationsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessVerificationsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessVerificationsInput>
+}
+
+export type OrganizationUpsertWithoutReadinessVerificationsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessVerificationsInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessVerificationsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReadinessVerificationsInput, Prisma.OrganizationUncheckedCreateWithoutReadinessVerificationsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutReadinessVerificationsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutReadinessVerificationsInput, Prisma.OrganizationUncheckedUpdateWithoutReadinessVerificationsInput>
+}
+
+export type OrganizationUpdateWithoutReadinessVerificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutReadinessVerificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1318,6 +2528,12 @@ export type OrganizationCreateWithoutDemoSandboxInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -1361,6 +2577,12 @@ export type OrganizationUncheckedCreateWithoutDemoSandboxInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1420,6 +2642,12 @@ export type OrganizationUpdateWithoutDemoSandboxInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -1463,6 +2691,12 @@ export type OrganizationUncheckedUpdateWithoutDemoSandboxInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1506,6 +2740,12 @@ export type OrganizationCreateWithoutUserSessionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -1549,6 +2789,12 @@ export type OrganizationUncheckedCreateWithoutUserSessionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1608,6 +2854,12 @@ export type OrganizationUpdateWithoutUserSessionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -1651,6 +2903,12 @@ export type OrganizationUncheckedUpdateWithoutUserSessionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1693,6 +2951,12 @@ export type OrganizationCreateWithoutBotConfigurationInput = {
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -1736,6 +3000,12 @@ export type OrganizationUncheckedCreateWithoutBotConfigurationInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1795,6 +3065,12 @@ export type OrganizationUpdateWithoutBotConfigurationInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -1838,6 +3114,12 @@ export type OrganizationUncheckedUpdateWithoutBotConfigurationInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1881,6 +3163,12 @@ export type OrganizationCreateWithoutBotProfileInput = {
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -1924,6 +3212,12 @@ export type OrganizationUncheckedCreateWithoutBotProfileInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1983,6 +3277,12 @@ export type OrganizationUpdateWithoutBotProfileInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -2026,6 +3326,12 @@ export type OrganizationUncheckedUpdateWithoutBotProfileInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2069,6 +3375,12 @@ export type OrganizationCreateWithoutBotConnectorsInput = {
   onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -2112,6 +3424,12 @@ export type OrganizationUncheckedCreateWithoutBotConnectorsInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2171,6 +3489,12 @@ export type OrganizationUpdateWithoutBotConnectorsInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -2214,6 +3538,224 @@ export type OrganizationUncheckedUpdateWithoutBotConnectorsInput = {
   onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUncheckedUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUncheckedUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAgentGatewayClientsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAgentGatewayClientsInput = {
+  id?: string
+  name: string
+  slug: string
+  industry?: string | null
+  website?: string | null
+  country?: string
+  timezone?: string
+  gstNumber?: string | null
+  businessAddress?: string | null
+  ownerName: string
+  ownerEmail: string
+  ownerMobile?: string | null
+  publicPhone?: string | null
+  publicEmail?: string | null
+  publicAddress?: string | null
+  publicBusinessHours?: string | null
+  status?: string
+  plan?: string
+  isDemo?: boolean
+  demoKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.OrganizationMemberUncheckedCreateNestedManyWithoutOrganizationInput
+  onboarding?: Prisma.OnboardingProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedCreateNestedOneWithoutOrganizationInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
+  botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
+  demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
+  documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
+  supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutOrganizationInput
+  invoices?: Prisma.BillingInvoiceUncheckedCreateNestedManyWithoutOrganizationInput
+  billingAddons?: Prisma.BillingAddonUncheckedCreateNestedManyWithoutOrganizationInput
+  usageRecords?: Prisma.UsageRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  incidents?: Prisma.PlatformIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutOrganizationInput
+  userSessions?: Prisma.UserSessionUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAgentGatewayClientsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAgentGatewayClientsInput, Prisma.OrganizationUncheckedCreateWithoutAgentGatewayClientsInput>
+}
+
+export type OrganizationUpsertWithoutAgentGatewayClientsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAgentGatewayClientsInput, Prisma.OrganizationUncheckedUpdateWithoutAgentGatewayClientsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAgentGatewayClientsInput, Prisma.OrganizationUncheckedCreateWithoutAgentGatewayClientsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAgentGatewayClientsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAgentGatewayClientsInput, Prisma.OrganizationUncheckedUpdateWithoutAgentGatewayClientsInput>
+}
+
+export type OrganizationUpdateWithoutAgentGatewayClientsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
+  demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
+  documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
+  activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
+  supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutOrganizationNestedInput
+  invoices?: Prisma.BillingInvoiceUpdateManyWithoutOrganizationNestedInput
+  billingAddons?: Prisma.BillingAddonUpdateManyWithoutOrganizationNestedInput
+  usageRecords?: Prisma.UsageRecordUpdateManyWithoutOrganizationNestedInput
+  aiCreditTransactions?: Prisma.AiCreditTransactionUpdateManyWithoutOrganizationNestedInput
+  incidents?: Prisma.PlatformIncidentUpdateManyWithoutOrganizationNestedInput
+  auditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutOrganizationNestedInput
+  userSessions?: Prisma.UserSessionUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAgentGatewayClientsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  gstNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerName?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerMobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publicBusinessHours?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
+  isDemo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  demoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  onboarding?: Prisma.OnboardingProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  onboardingCredential?: Prisma.OnboardingCredentialUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
+  botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
+  botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2257,6 +3799,12 @@ export type OrganizationCreateWithoutMembersInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -2300,6 +3848,12 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2359,6 +3913,12 @@ export type OrganizationUpdateWithoutMembersInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -2402,6 +3962,12 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2445,6 +4011,12 @@ export type OrganizationCreateWithoutOnboardingInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -2488,6 +4060,12 @@ export type OrganizationUncheckedCreateWithoutOnboardingInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2547,6 +4125,12 @@ export type OrganizationUpdateWithoutOnboardingInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -2590,6 +4174,12 @@ export type OrganizationUncheckedUpdateWithoutOnboardingInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2633,6 +4223,12 @@ export type OrganizationCreateWithoutOnboardingCredentialInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -2676,6 +4272,12 @@ export type OrganizationUncheckedCreateWithoutOnboardingCredentialInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2735,6 +4337,12 @@ export type OrganizationUpdateWithoutOnboardingCredentialInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -2778,6 +4386,12 @@ export type OrganizationUncheckedUpdateWithoutOnboardingCredentialInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2822,6 +4436,12 @@ export type OrganizationCreateWithoutDocumentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -2865,6 +4485,12 @@ export type OrganizationUncheckedCreateWithoutDocumentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2924,6 +4550,12 @@ export type OrganizationUpdateWithoutDocumentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -2967,6 +4599,12 @@ export type OrganizationUncheckedUpdateWithoutDocumentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3010,6 +4648,12 @@ export type OrganizationCreateWithoutActivitiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketCreateNestedManyWithoutOrganizationInput
@@ -3053,6 +4697,12 @@ export type OrganizationUncheckedCreateWithoutActivitiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   supportTickets?: Prisma.SupportTicketUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3112,6 +4762,12 @@ export type OrganizationUpdateWithoutActivitiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUpdateManyWithoutOrganizationNestedInput
@@ -3155,6 +4811,12 @@ export type OrganizationUncheckedUpdateWithoutActivitiesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   supportTickets?: Prisma.SupportTicketUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3198,6 +4860,12 @@ export type OrganizationCreateWithoutSubscriptionInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -3241,6 +4909,12 @@ export type OrganizationUncheckedCreateWithoutSubscriptionInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3300,6 +4974,12 @@ export type OrganizationUpdateWithoutSubscriptionInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -3343,6 +5023,12 @@ export type OrganizationUncheckedUpdateWithoutSubscriptionInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3386,6 +5072,12 @@ export type OrganizationCreateWithoutBillingAddonsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -3429,6 +5121,12 @@ export type OrganizationUncheckedCreateWithoutBillingAddonsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3488,6 +5186,12 @@ export type OrganizationUpdateWithoutBillingAddonsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -3531,6 +5235,12 @@ export type OrganizationUncheckedUpdateWithoutBillingAddonsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3574,6 +5284,12 @@ export type OrganizationCreateWithoutInvoicesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -3617,6 +5333,12 @@ export type OrganizationUncheckedCreateWithoutInvoicesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3676,6 +5398,12 @@ export type OrganizationUpdateWithoutInvoicesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -3719,6 +5447,12 @@ export type OrganizationUncheckedUpdateWithoutInvoicesInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3762,6 +5496,12 @@ export type OrganizationCreateWithoutUsageRecordsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -3805,6 +5545,12 @@ export type OrganizationUncheckedCreateWithoutUsageRecordsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3864,6 +5610,12 @@ export type OrganizationUpdateWithoutUsageRecordsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -3907,6 +5659,12 @@ export type OrganizationUncheckedUpdateWithoutUsageRecordsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3950,6 +5708,12 @@ export type OrganizationCreateWithoutAiCreditTransactionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -3993,6 +5757,12 @@ export type OrganizationUncheckedCreateWithoutAiCreditTransactionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4052,6 +5822,12 @@ export type OrganizationUpdateWithoutAiCreditTransactionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -4095,6 +5871,12 @@ export type OrganizationUncheckedUpdateWithoutAiCreditTransactionsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4138,6 +5920,12 @@ export type OrganizationCreateWithoutIncidentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -4181,6 +5969,12 @@ export type OrganizationUncheckedCreateWithoutIncidentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4240,6 +6034,12 @@ export type OrganizationUpdateWithoutIncidentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -4283,6 +6083,12 @@ export type OrganizationUncheckedUpdateWithoutIncidentsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4326,6 +6132,12 @@ export type OrganizationCreateWithoutAuditLogsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -4369,6 +6181,12 @@ export type OrganizationUncheckedCreateWithoutAuditLogsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4428,6 +6246,12 @@ export type OrganizationUpdateWithoutAuditLogsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -4471,6 +6295,12 @@ export type OrganizationUncheckedUpdateWithoutAuditLogsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4514,6 +6344,12 @@ export type OrganizationCreateWithoutSupportTicketsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityCreateNestedManyWithoutOrganizationInput
@@ -4557,6 +6393,12 @@ export type OrganizationUncheckedCreateWithoutSupportTicketsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedCreateNestedOneWithoutOrganizationInput
   botProfile?: Prisma.BotProfileUncheckedCreateNestedOneWithoutOrganizationInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedCreateNestedManyWithoutOrganizationInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessScans?: Prisma.ReadinessScanUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedCreateNestedManyWithoutOrganizationInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedCreateNestedManyWithoutOrganizationInput
   demoSandbox?: Prisma.DemoSandboxUncheckedCreateNestedOneWithoutOrganizationInput
   documents?: Prisma.OnboardingDocumentUncheckedCreateNestedManyWithoutOrganizationInput
   activities?: Prisma.OnboardingActivityUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4616,6 +6458,12 @@ export type OrganizationUpdateWithoutSupportTicketsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUpdateManyWithoutOrganizationNestedInput
@@ -4659,6 +6507,12 @@ export type OrganizationUncheckedUpdateWithoutSupportTicketsInput = {
   botConfiguration?: Prisma.WhatsAppBotConfigurationUncheckedUpdateOneWithoutOrganizationNestedInput
   botProfile?: Prisma.BotProfileUncheckedUpdateOneWithoutOrganizationNestedInput
   botConnectors?: Prisma.BotConnectorConfigurationUncheckedUpdateManyWithoutOrganizationNestedInput
+  agentGatewayClients?: Prisma.AgentGatewayClientUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessScans?: Prisma.ReadinessScanUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessEvidence?: Prisma.ReadinessEvidenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessIssues?: Prisma.ReadinessIssueUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessWorkItems?: Prisma.ReadinessWorkItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  readinessVerifications?: Prisma.ReadinessVerificationUncheckedUpdateManyWithoutOrganizationNestedInput
   demoSandbox?: Prisma.DemoSandboxUncheckedUpdateOneWithoutOrganizationNestedInput
   documents?: Prisma.OnboardingDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
   activities?: Prisma.OnboardingActivityUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4681,6 +6535,12 @@ export type OrganizationCountOutputType = {
   properties: number
   members: number
   botConnectors: number
+  agentGatewayClients: number
+  readinessScans: number
+  readinessEvidence: number
+  readinessIssues: number
+  readinessWorkItems: number
+  readinessVerifications: number
   documents: number
   activities: number
   supportTickets: number
@@ -4697,6 +6557,12 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   properties?: boolean | OrganizationCountOutputTypeCountPropertiesArgs
   members?: boolean | OrganizationCountOutputTypeCountMembersArgs
   botConnectors?: boolean | OrganizationCountOutputTypeCountBotConnectorsArgs
+  agentGatewayClients?: boolean | OrganizationCountOutputTypeCountAgentGatewayClientsArgs
+  readinessScans?: boolean | OrganizationCountOutputTypeCountReadinessScansArgs
+  readinessEvidence?: boolean | OrganizationCountOutputTypeCountReadinessEvidenceArgs
+  readinessIssues?: boolean | OrganizationCountOutputTypeCountReadinessIssuesArgs
+  readinessWorkItems?: boolean | OrganizationCountOutputTypeCountReadinessWorkItemsArgs
+  readinessVerifications?: boolean | OrganizationCountOutputTypeCountReadinessVerificationsArgs
   documents?: boolean | OrganizationCountOutputTypeCountDocumentsArgs
   activities?: boolean | OrganizationCountOutputTypeCountActivitiesArgs
   supportTickets?: boolean | OrganizationCountOutputTypeCountSupportTicketsArgs
@@ -4738,6 +6604,48 @@ export type OrganizationCountOutputTypeCountMembersArgs<ExtArgs extends runtime.
  */
 export type OrganizationCountOutputTypeCountBotConnectorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.BotConnectorConfigurationWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAgentGatewayClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AgentGatewayClientWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountReadinessScansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReadinessScanWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountReadinessEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReadinessEvidenceWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountReadinessIssuesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReadinessIssueWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountReadinessWorkItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReadinessWorkItemWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountReadinessVerificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReadinessVerificationWhereInput
 }
 
 /**
@@ -4841,6 +6749,12 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   botConfiguration?: boolean | Prisma.Organization$botConfigurationArgs<ExtArgs>
   botProfile?: boolean | Prisma.Organization$botProfileArgs<ExtArgs>
   botConnectors?: boolean | Prisma.Organization$botConnectorsArgs<ExtArgs>
+  agentGatewayClients?: boolean | Prisma.Organization$agentGatewayClientsArgs<ExtArgs>
+  readinessScans?: boolean | Prisma.Organization$readinessScansArgs<ExtArgs>
+  readinessEvidence?: boolean | Prisma.Organization$readinessEvidenceArgs<ExtArgs>
+  readinessIssues?: boolean | Prisma.Organization$readinessIssuesArgs<ExtArgs>
+  readinessWorkItems?: boolean | Prisma.Organization$readinessWorkItemsArgs<ExtArgs>
+  readinessVerifications?: boolean | Prisma.Organization$readinessVerificationsArgs<ExtArgs>
   demoSandbox?: boolean | Prisma.Organization$demoSandboxArgs<ExtArgs>
   documents?: boolean | Prisma.Organization$documentsArgs<ExtArgs>
   activities?: boolean | Prisma.Organization$activitiesArgs<ExtArgs>
@@ -4940,6 +6854,12 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   botConfiguration?: boolean | Prisma.Organization$botConfigurationArgs<ExtArgs>
   botProfile?: boolean | Prisma.Organization$botProfileArgs<ExtArgs>
   botConnectors?: boolean | Prisma.Organization$botConnectorsArgs<ExtArgs>
+  agentGatewayClients?: boolean | Prisma.Organization$agentGatewayClientsArgs<ExtArgs>
+  readinessScans?: boolean | Prisma.Organization$readinessScansArgs<ExtArgs>
+  readinessEvidence?: boolean | Prisma.Organization$readinessEvidenceArgs<ExtArgs>
+  readinessIssues?: boolean | Prisma.Organization$readinessIssuesArgs<ExtArgs>
+  readinessWorkItems?: boolean | Prisma.Organization$readinessWorkItemsArgs<ExtArgs>
+  readinessVerifications?: boolean | Prisma.Organization$readinessVerificationsArgs<ExtArgs>
   demoSandbox?: boolean | Prisma.Organization$demoSandboxArgs<ExtArgs>
   documents?: boolean | Prisma.Organization$documentsArgs<ExtArgs>
   activities?: boolean | Prisma.Organization$activitiesArgs<ExtArgs>
@@ -4967,6 +6887,12 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     botConfiguration: Prisma.$WhatsAppBotConfigurationPayload<ExtArgs> | null
     botProfile: Prisma.$BotProfilePayload<ExtArgs> | null
     botConnectors: Prisma.$BotConnectorConfigurationPayload<ExtArgs>[]
+    agentGatewayClients: Prisma.$AgentGatewayClientPayload<ExtArgs>[]
+    readinessScans: Prisma.$ReadinessScanPayload<ExtArgs>[]
+    readinessEvidence: Prisma.$ReadinessEvidencePayload<ExtArgs>[]
+    readinessIssues: Prisma.$ReadinessIssuePayload<ExtArgs>[]
+    readinessWorkItems: Prisma.$ReadinessWorkItemPayload<ExtArgs>[]
+    readinessVerifications: Prisma.$ReadinessVerificationPayload<ExtArgs>[]
     demoSandbox: Prisma.$DemoSandboxPayload<ExtArgs> | null
     documents: Prisma.$OnboardingDocumentPayload<ExtArgs>[]
     activities: Prisma.$OnboardingActivityPayload<ExtArgs>[]
@@ -5404,6 +7330,12 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   botConfiguration<T extends Prisma.Organization$botConfigurationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$botConfigurationArgs<ExtArgs>>): Prisma.Prisma__WhatsAppBotConfigurationClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppBotConfigurationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   botProfile<T extends Prisma.Organization$botProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$botProfileArgs<ExtArgs>>): Prisma.Prisma__BotProfileClient<runtime.Types.Result.GetResult<Prisma.$BotProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   botConnectors<T extends Prisma.Organization$botConnectorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$botConnectorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BotConnectorConfigurationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  agentGatewayClients<T extends Prisma.Organization$agentGatewayClientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$agentGatewayClientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgentGatewayClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  readinessScans<T extends Prisma.Organization$readinessScansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$readinessScansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadinessScanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  readinessEvidence<T extends Prisma.Organization$readinessEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$readinessEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadinessEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  readinessIssues<T extends Prisma.Organization$readinessIssuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$readinessIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadinessIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  readinessWorkItems<T extends Prisma.Organization$readinessWorkItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$readinessWorkItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadinessWorkItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  readinessVerifications<T extends Prisma.Organization$readinessVerificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$readinessVerificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReadinessVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   demoSandbox<T extends Prisma.Organization$demoSandboxArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$demoSandboxArgs<ExtArgs>>): Prisma.Prisma__DemoSandboxClient<runtime.Types.Result.GetResult<Prisma.$DemoSandboxPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   documents<T extends Prisma.Organization$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.Organization$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6005,6 +7937,150 @@ export type Organization$botConnectorsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.BotConnectorConfigurationScalarFieldEnum | Prisma.BotConnectorConfigurationScalarFieldEnum[]
+}
+
+/**
+ * Organization.agentGatewayClients
+ */
+export type Organization$agentGatewayClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AgentGatewayClient
+   */
+  select?: Prisma.AgentGatewayClientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AgentGatewayClient
+   */
+  omit?: Prisma.AgentGatewayClientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgentGatewayClientInclude<ExtArgs> | null
+  where?: Prisma.AgentGatewayClientWhereInput
+  orderBy?: Prisma.AgentGatewayClientOrderByWithRelationInput | Prisma.AgentGatewayClientOrderByWithRelationInput[]
+  cursor?: Prisma.AgentGatewayClientWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AgentGatewayClientScalarFieldEnum | Prisma.AgentGatewayClientScalarFieldEnum[]
+}
+
+/**
+ * Organization.readinessScans
+ */
+export type Organization$readinessScansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReadinessScan
+   */
+  select?: Prisma.ReadinessScanSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReadinessScan
+   */
+  omit?: Prisma.ReadinessScanOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReadinessScanInclude<ExtArgs> | null
+  where?: Prisma.ReadinessScanWhereInput
+  orderBy?: Prisma.ReadinessScanOrderByWithRelationInput | Prisma.ReadinessScanOrderByWithRelationInput[]
+  cursor?: Prisma.ReadinessScanWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReadinessScanScalarFieldEnum | Prisma.ReadinessScanScalarFieldEnum[]
+}
+
+/**
+ * Organization.readinessEvidence
+ */
+export type Organization$readinessEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReadinessEvidence
+   */
+  select?: Prisma.ReadinessEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReadinessEvidence
+   */
+  omit?: Prisma.ReadinessEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReadinessEvidenceInclude<ExtArgs> | null
+  where?: Prisma.ReadinessEvidenceWhereInput
+  orderBy?: Prisma.ReadinessEvidenceOrderByWithRelationInput | Prisma.ReadinessEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.ReadinessEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReadinessEvidenceScalarFieldEnum | Prisma.ReadinessEvidenceScalarFieldEnum[]
+}
+
+/**
+ * Organization.readinessIssues
+ */
+export type Organization$readinessIssuesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReadinessIssue
+   */
+  select?: Prisma.ReadinessIssueSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReadinessIssue
+   */
+  omit?: Prisma.ReadinessIssueOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReadinessIssueInclude<ExtArgs> | null
+  where?: Prisma.ReadinessIssueWhereInput
+  orderBy?: Prisma.ReadinessIssueOrderByWithRelationInput | Prisma.ReadinessIssueOrderByWithRelationInput[]
+  cursor?: Prisma.ReadinessIssueWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReadinessIssueScalarFieldEnum | Prisma.ReadinessIssueScalarFieldEnum[]
+}
+
+/**
+ * Organization.readinessWorkItems
+ */
+export type Organization$readinessWorkItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReadinessWorkItem
+   */
+  select?: Prisma.ReadinessWorkItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReadinessWorkItem
+   */
+  omit?: Prisma.ReadinessWorkItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReadinessWorkItemInclude<ExtArgs> | null
+  where?: Prisma.ReadinessWorkItemWhereInput
+  orderBy?: Prisma.ReadinessWorkItemOrderByWithRelationInput | Prisma.ReadinessWorkItemOrderByWithRelationInput[]
+  cursor?: Prisma.ReadinessWorkItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReadinessWorkItemScalarFieldEnum | Prisma.ReadinessWorkItemScalarFieldEnum[]
+}
+
+/**
+ * Organization.readinessVerifications
+ */
+export type Organization$readinessVerificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReadinessVerification
+   */
+  select?: Prisma.ReadinessVerificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReadinessVerification
+   */
+  omit?: Prisma.ReadinessVerificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReadinessVerificationInclude<ExtArgs> | null
+  where?: Prisma.ReadinessVerificationWhereInput
+  orderBy?: Prisma.ReadinessVerificationOrderByWithRelationInput | Prisma.ReadinessVerificationOrderByWithRelationInput[]
+  cursor?: Prisma.ReadinessVerificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReadinessVerificationScalarFieldEnum | Prisma.ReadinessVerificationScalarFieldEnum[]
 }
 
 /**

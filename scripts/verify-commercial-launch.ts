@@ -2,6 +2,7 @@ import { access, readFile, stat } from "node:fs/promises";
 import { constants } from "node:fs";
 import { loadEnvConfig } from "@next/env";
 import { helpArticles } from "@/lib/help-center";
+import { assertCommercialLaunchInventory, readCommercialLaunchInventory } from "@/lib/commercial-launch-checks";
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -13,7 +14,7 @@ async function exists(path: string) {
 
 async function main() {
   loadEnvConfig(process.cwd());
-  const [{ getPlatformReadiness }, { getDb }] = await Promise.all([
+  const [{ getPlatformReadiness }, { getBootstrapDb }] = await Promise.all([
     import("@/lib/platform-health"),
     import("@/lib/db")
   ]);
@@ -49,20 +50,16 @@ async function main() {
     assert(readiness.status === "ok", "Production readiness checks are degraded.");
   }
 
-  const db = getDb();
+  const db = getBootstrapDb();
   assert(db, "DATABASE_URL is required.");
-  const [organizations, openIncidents, deadJobs] = await Promise.all([
-    db.organization.count(),
-    db.platformIncident.count({ where: { status: { in: ["OPEN", "INVESTIGATING", "MONITORING"] } } }),
-    db.automationJob.count({ where: { status: "DEAD" } })
-  ]);
-  if (process.env.NODE_ENV === "production") {
-    assert(organizations >= 1, "At least one organization is required for production launch.");
+  try {
+    const inventory = await readCommercialLaunchInventory(db);
+    assertCommercialLaunchInventory(inventory);
+    console.log("Commercial launch foundation verification passed; customer acceptance and journey checks remain separate.");
+    console.log(JSON.stringify({ ...inventory, readiness: readiness.status }));
+  } finally {
+    await db.$disconnect();
   }
-
-  console.log("Commercial launch verification passed.");
-  console.log(JSON.stringify({ organizations, openIncidents, deadJobs, readiness: readiness.status }));
-  await db.$disconnect();
 }
 
 main().catch((error) => {
