@@ -39,12 +39,11 @@ export function HeroVideo() {
       <Image className={styles.staticPoster} src="/media/hero/aifrogi-opening.jpg"
         alt="Black and gold AiFrogi business bot" width={640} height={800} priority />
       <video ref={videoRef} className={styles.video} width={640} height={800}
-        poster="/media/hero/aifrogi-opening.jpg" muted playsInline preload="none"
+        poster="/media/hero/aifrogi-opening.jpg" muted playsInline loop preload="auto"
         aria-label="Animated black and gold AiFrogi business bot"
         onPointerEnter={(event) => {
           if (event.pointerType === "mouse" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) replay();
         }}
-        onEnded={() => { const video = videoRef.current; if (video) { video.pause(); video.currentTime = 0; } setPlaying(false); }}
         onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
         onError={() => { const video = videoRef.current; if (video?.hasAttribute("src")) { video.removeAttribute("src"); video.load(); } }} />
       <button type="button" className={styles.motionControl}
