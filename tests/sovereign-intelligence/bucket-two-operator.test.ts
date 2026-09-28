@@ -27,6 +27,7 @@ test.beforeEach(() => {
   const tx = {
     $queryRaw: async () => [{ acquired: !f.busy }],
     websiteVisitorSession: { update: async ({ data }: any) => Object.assign(f, data), updateMany: async ({ data }: any) => { if (f.status === "CLOSED") return { count: 0 }; Object.assign(f, data); return { count: 1 }; }, findUniqueOrThrow: async () => ({ propertyId: "p-a", sessionIdHash: "fixture-session", revokedAt: f.revokedAt, expiresAt: new Date(Date.now() + 60000) }) },
+    property: { findUniqueOrThrow: async () => ({ organizationId: "org-a" }) },
     leadMessage: { create: async ({ data }: any) => { f.replies.push(data); } }, lead: { update: async () => ({}) }, leadTag: { create: async () => ({}), deleteMany: async () => ({ count: 1 }) },
     aiOperation: { updateMany: async ({ data }: any) => Object.assign(f.operation, data) }, platformAuditLog: { create: async ({ data }: any) => { f.audit.push(data); } }
   };

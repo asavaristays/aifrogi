@@ -542,7 +542,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
     }
   });
   if (!lead) return NextResponse.json({ error: "Conversation was not found." }, { status: 404, headers: responseHeaders });
-  const inStayCase=lead.stayLabel.startsWith("In-stay · Room ");
+  const inStayCase=typeof lead.stayLabel === "string" && lead.stayLabel.startsWith("In-stay · Room ");
   const closed = ["WON", "LOST"].includes(lead.stage) || (!inStayCase&&lead.stage==="BOOKED") || lead.tags.some((tag) => ["resolved", "closed"].includes(tag.value.toLowerCase()));
   const hasMore = lead.messages.length > 50;
   const page = lead.messages.slice(0, 50);

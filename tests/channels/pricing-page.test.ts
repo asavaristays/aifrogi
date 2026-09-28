@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const pricing = readFileSync(resolve(process.cwd(), "components/marketing/ai-bot-pricing.tsx"), "utf8");
+const integrationPricing = readFileSync(resolve(process.cwd(), "components/marketing/integration-pricing.tsx"), "utf8");
 const page = readFileSync(resolve(process.cwd(), "app/pricing/page.tsx"), "utf8");
 const terms = readFileSync(resolve(process.cwd(), "app/terms-of-service/page.tsx"), "utf8");
 
@@ -51,8 +52,10 @@ test("connector estimates and payment boundaries remain visible", () => {
     assert.ok(guide.prepare.length >= 4 && guide.fee && guide.excludes && guide.bots);
     assert.equal(readFileSync(resolve(process.cwd(), `public/downloads/AiFrogi-${guide.id}-Checklist.pdf`)).subarray(0, 4).toString(), '%PDF');
   }
-  assert.match(pricing, /Need calendar, CRM, payment, ecommerce or PMS integration/);
-  assert.match(pricing, /Connector pricing is quoted separately/);
+  assert.match(pricing, /<IntegrationPricing \/>/);
+  assert.match(integrationPricing, /Standard connector/);
+  assert.match(integrationPricing, /Audio \+ Translator/);
+  assert.match(integrationPricing, /Integration work is separate from the AiFrogi subscription/);
   assert.match(pricing, /Read full payment and service terms/);
   assert.match(terms, /Refunds and billing corrections/);
   assert.match(terms, /third-party charges/);

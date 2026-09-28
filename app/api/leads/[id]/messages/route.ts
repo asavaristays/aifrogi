@@ -24,7 +24,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
   }
   const payload = await request.json().catch(() => null);
-  const isInStay = lead.stay.startsWith("In-stay · Room ");
+  const isInStay = typeof lead.stay === "string" && lead.stay.startsWith("In-stay · Room ");
   if (payload?.action === "RESUME_WEBSITE_AI") {
     if (isInStay) return NextResponse.json({ error: "AI cannot be resumed for In-Stay tickets." }, { status: 400 });
     if (["BOOKED", "WON", "LOST"].includes(lead.stage)) return NextResponse.json({ error: "This lead is completed. Start a new conversation instead." }, { status: 409 });

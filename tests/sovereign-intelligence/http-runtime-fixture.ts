@@ -45,11 +45,12 @@ fixture.db = {
     findFirst: async ({ where }: any) => ({ stage: "NEW", tags: fixture.closed ? [{ value: "Resolved" }] : [], messages: fixture.agentMessages.filter((m: any) => m.leadId === where.id) }),
     update: async ({ where, data }: any) => ({ id: where.id, ...data })
   },
-  leadMessage: { findMany: async ({ where }: any) => fixture.messages.filter((m: any) => m.leadId === where.leadId).slice().reverse(), updateMany: async ({ where, data }: any) => { const found = fixture.agentMessages.filter((m: any) => matches(m, where)); found.forEach((m: any) => Object.assign(m, data)); return { count: found.length }; } },
+  leadMessage: { create: async ({ data }: any) => { const row = { id: `m-${fixture.messages.length + 1}`, ...data }; fixture.messages.push(row); return row; }, findMany: async ({ where }: any) => fixture.messages.filter((m: any) => m.leadId === where.leadId).slice().reverse(), updateMany: async ({ where, data }: any) => { const found = fixture.agentMessages.filter((m: any) => matches(m, where)); found.forEach((m: any) => Object.assign(m, data)); return { count: found.length }; } },
   sovereignAnswerEvidence: {
     findFirst: async ({ where }: any) => fixture.evidence.filter((e: any) => matches(e, where)).at(-1) || null,
     create: async ({ data }: any) => { if (fixture.failEvidence) throw new Error("Synthetic evidence outage"); const row = { id: `e-${fixture.evidence.length + 1}`, ...data }; fixture.evidence.push(row); return row; }
   },
+  platformAuditLog: { findMany: async () => [] },
   websiteVisitorSession: {
     findFirst: async ({ where }: any) => [...fixture.sessions.values()].find((s: any) => matches(s, where)) || null,
     update: async ({ where, data }: any) => { const s: any = [...fixture.sessions.values()].find((v: any) => v.id === where.id); Object.assign(s, data); return s; },

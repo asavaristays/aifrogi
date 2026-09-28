@@ -6469,6 +6469,7 @@ export const OrganizationMemberScalarFieldEnum = {
   email: 'email',
   name: 'name',
   role: 'role',
+  department: 'department',
   status: 'status',
   passwordHash: 'passwordHash',
   invitationTokenHash: 'invitationTokenHash',

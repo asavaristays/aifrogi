@@ -30,6 +30,7 @@ export type OrganizationMemberMinAggregateOutputType = {
   email: string | null
   name: string | null
   role: string | null
+  department: string | null
   status: string | null
   passwordHash: string | null
   invitationTokenHash: string | null
@@ -48,6 +49,7 @@ export type OrganizationMemberMaxAggregateOutputType = {
   email: string | null
   name: string | null
   role: string | null
+  department: string | null
   status: string | null
   passwordHash: string | null
   invitationTokenHash: string | null
@@ -66,6 +68,7 @@ export type OrganizationMemberCountAggregateOutputType = {
   email: number
   name: number
   role: number
+  department: number
   status: number
   passwordHash: number
   invitationTokenHash: number
@@ -86,6 +89,7 @@ export type OrganizationMemberMinAggregateInputType = {
   email?: true
   name?: true
   role?: true
+  department?: true
   status?: true
   passwordHash?: true
   invitationTokenHash?: true
@@ -104,6 +108,7 @@ export type OrganizationMemberMaxAggregateInputType = {
   email?: true
   name?: true
   role?: true
+  department?: true
   status?: true
   passwordHash?: true
   invitationTokenHash?: true
@@ -122,6 +127,7 @@ export type OrganizationMemberCountAggregateInputType = {
   email?: true
   name?: true
   role?: true
+  department?: true
   status?: true
   passwordHash?: true
   invitationTokenHash?: true
@@ -213,6 +219,7 @@ export type OrganizationMemberGroupByOutputType = {
   email: string
   name: string | null
   role: string
+  department: string | null
   status: string
   passwordHash: string | null
   invitationTokenHash: string | null
@@ -252,6 +259,7 @@ export type OrganizationMemberWhereInput = {
   email?: Prisma.StringFilter<"OrganizationMember"> | string
   name?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringFilter<"OrganizationMember"> | string
+  department?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   status?: Prisma.StringFilter<"OrganizationMember"> | string
   passwordHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   invitationTokenHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
@@ -271,6 +279,7 @@ export type OrganizationMemberOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  department?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   invitationTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -295,6 +304,7 @@ export type OrganizationMemberWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringFilter<"OrganizationMember"> | string
   name?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringFilter<"OrganizationMember"> | string
+  department?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   status?: Prisma.StringFilter<"OrganizationMember"> | string
   passwordHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   invitationExpiresAt?: Prisma.DateTimeNullableFilter<"OrganizationMember"> | Date | string | null
@@ -313,6 +323,7 @@ export type OrganizationMemberOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  department?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   invitationTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -337,6 +348,7 @@ export type OrganizationMemberScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"OrganizationMember"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringWithAggregatesFilter<"OrganizationMember"> | string
+  department?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"OrganizationMember"> | string
   passwordHash?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
   invitationTokenHash?: Prisma.StringNullableWithAggregatesFilter<"OrganizationMember"> | string | null
@@ -354,6 +366,7 @@ export type OrganizationMemberCreateInput = {
   email: string
   name?: string | null
   role?: string
+  department?: string | null
   status?: string
   passwordHash?: string | null
   invitationTokenHash?: string | null
@@ -373,6 +386,7 @@ export type OrganizationMemberUncheckedCreateInput = {
   email: string
   name?: string | null
   role?: string
+  department?: string | null
   status?: string
   passwordHash?: string | null
   invitationTokenHash?: string | null
@@ -390,6 +404,7 @@ export type OrganizationMemberUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -409,6 +424,7 @@ export type OrganizationMemberUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -427,6 +443,7 @@ export type OrganizationMemberCreateManyInput = {
   email: string
   name?: string | null
   role?: string
+  department?: string | null
   status?: string
   passwordHash?: string | null
   invitationTokenHash?: string | null
@@ -444,6 +461,7 @@ export type OrganizationMemberUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -462,6 +480,7 @@ export type OrganizationMemberUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -495,6 +514,7 @@ export type OrganizationMemberCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  department?: Prisma.SortOrder
   status?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   invitationTokenHash?: Prisma.SortOrder
@@ -513,6 +533,7 @@ export type OrganizationMemberMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  department?: Prisma.SortOrder
   status?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   invitationTokenHash?: Prisma.SortOrder
@@ -531,6 +552,7 @@ export type OrganizationMemberMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  department?: Prisma.SortOrder
   status?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   invitationTokenHash?: Prisma.SortOrder
@@ -590,6 +612,7 @@ export type OrganizationMemberCreateWithoutOrganizationInput = {
   email: string
   name?: string | null
   role?: string
+  department?: string | null
   status?: string
   passwordHash?: string | null
   invitationTokenHash?: string | null
@@ -607,6 +630,7 @@ export type OrganizationMemberUncheckedCreateWithoutOrganizationInput = {
   email: string
   name?: string | null
   role?: string
+  department?: string | null
   status?: string
   passwordHash?: string | null
   invitationTokenHash?: string | null
@@ -654,6 +678,7 @@ export type OrganizationMemberScalarWhereInput = {
   email?: Prisma.StringFilter<"OrganizationMember"> | string
   name?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   role?: Prisma.StringFilter<"OrganizationMember"> | string
+  department?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   status?: Prisma.StringFilter<"OrganizationMember"> | string
   passwordHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
   invitationTokenHash?: Prisma.StringNullableFilter<"OrganizationMember"> | string | null
@@ -671,6 +696,7 @@ export type OrganizationMemberCreateManyOrganizationInput = {
   email: string
   name?: string | null
   role?: string
+  department?: string | null
   status?: string
   passwordHash?: string | null
   invitationTokenHash?: string | null
@@ -688,6 +714,7 @@ export type OrganizationMemberUpdateWithoutOrganizationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -705,6 +732,7 @@ export type OrganizationMemberUncheckedUpdateWithoutOrganizationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -722,6 +750,7 @@ export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -742,6 +771,7 @@ export type OrganizationMemberSelect<ExtArgs extends runtime.Types.Extensions.In
   email?: boolean
   name?: boolean
   role?: boolean
+  department?: boolean
   status?: boolean
   passwordHash?: boolean
   invitationTokenHash?: boolean
@@ -761,6 +791,7 @@ export type OrganizationMemberSelectCreateManyAndReturn<ExtArgs extends runtime.
   email?: boolean
   name?: boolean
   role?: boolean
+  department?: boolean
   status?: boolean
   passwordHash?: boolean
   invitationTokenHash?: boolean
@@ -780,6 +811,7 @@ export type OrganizationMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.
   email?: boolean
   name?: boolean
   role?: boolean
+  department?: boolean
   status?: boolean
   passwordHash?: boolean
   invitationTokenHash?: boolean
@@ -799,6 +831,7 @@ export type OrganizationMemberSelectScalar = {
   email?: boolean
   name?: boolean
   role?: boolean
+  department?: boolean
   status?: boolean
   passwordHash?: boolean
   invitationTokenHash?: boolean
@@ -811,7 +844,7 @@ export type OrganizationMemberSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrganizationMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "email" | "name" | "role" | "status" | "passwordHash" | "invitationTokenHash" | "invitationExpiresAt" | "invitedBy" | "invitedAt" | "joinedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMember"]>
+export type OrganizationMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "email" | "name" | "role" | "department" | "status" | "passwordHash" | "invitationTokenHash" | "invitationExpiresAt" | "invitedBy" | "invitedAt" | "joinedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMember"]>
 export type OrganizationMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
 }
@@ -833,6 +866,7 @@ export type $OrganizationMemberPayload<ExtArgs extends runtime.Types.Extensions.
     email: string
     name: string | null
     role: string
+    department: string | null
     status: string
     passwordHash: string | null
     invitationTokenHash: string | null
@@ -1272,6 +1306,7 @@ export interface OrganizationMemberFieldRefs {
   readonly email: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly name: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly role: Prisma.FieldRef<"OrganizationMember", 'String'>
+  readonly department: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly status: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly passwordHash: Prisma.FieldRef<"OrganizationMember", 'String'>
   readonly invitationTokenHash: Prisma.FieldRef<"OrganizationMember", 'String'>

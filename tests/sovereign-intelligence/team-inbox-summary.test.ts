@@ -11,7 +11,7 @@ test.before(async()=>{
  const stubs:Record<string,string>={
  '@/lib/client-access':'export const resolveClientWorkspaceAccess=async()=>globalThis.__teamTest.allowed?{ok:true,propertyId:"owned",organization:{id:"org"},user:{username:"owner@test.invalid"}}:{ok:false,status:401,error:"Sign in"};',
  '@/lib/workspace':'export const getCurrentWorkspaceSlug=async()=>"owned";',
- '@/lib/db':'export const getDb=()=>globalThis.__teamTest.db;',
+ '@/lib/db':'export const getDb=()=>globalThis.__teamTest.db;export const getProtectedDb=()=>globalThis.__teamTest.db;',
  '@/lib/security/tenant-database-context':'export const withTenantDatabaseContext=async(identity,work)=>{globalThis.__teamTest.identity=identity;return work();};',
  '@/lib/sovereign-intelligence/pilot-origin':'export const isPilotReviewOriginAllowed=()=>globalThis.__teamTest.origin;'
  };

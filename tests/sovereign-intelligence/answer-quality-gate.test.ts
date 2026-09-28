@@ -24,7 +24,7 @@ test("missing answer recovery is category-aware, consented and contact-capable",
   const answer = buildMissingAnswerRecovery({ businessName: "Asavari Stays", category: "STAY", publicPhone: "8800507181", handoffEnabled: true });
   assert.match(answer, /reservations team/);
   assert.match(answer, /private consent fields/);
-  assert.match(answer, /8800507181/);
+  assert.match(answer, /88005 07181/);
   assert.doesNotMatch(answer, /approved knowledge|review dataset/i);
 });
 
