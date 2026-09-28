@@ -1,21 +1,8 @@
 import type { Metadata } from "next";
-import { DM_Sans, Manrope } from "next/font/google";
 import Script from "next/script";
 import "@/app/globals.css";
 import { AppStateProvider } from "@/components/providers/app-state-provider";
 import { siteUrl, socialImage } from "@/lib/seo";
-
-const bodyFont = DM_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-body",
-});
-
-const displayFont = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-display",
-});
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
@@ -101,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" className={`${bodyFont.variable} ${displayFont.variable}`}>
+    <html lang="en">
       <body>
         <Script src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`} strategy="afterInteractive" />
         <Script id="aifrogi-google-analytics" strategy="afterInteractive">
