@@ -36,7 +36,7 @@ export function HeroVideo() {
 
   return (
     <div className={`${styles.visual} relative mx-auto w-full max-w-[430px] lg:max-w-[510px]`}>
-      <Image className={styles.staticPoster} src="/media/hero/aifrogi-opening.jpg?v=829fe5a"
+      <Image className={styles.staticPoster} src="/media/hero/aifrogi-opening.jpg"
         alt="Black and gold AiFrogi business bot" width={640} height={800} priority />
       <video ref={videoRef} className={styles.video} width={640} height={800}
         poster="/media/hero/aifrogi-opening.jpg?v=829fe5a" muted playsInline loop preload="auto"
