@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${DATABASE_URL:?DATABASE_URL is required}"
+: "${AIFROGI_BACKUP_DATABASE_URL:?Explicit administrative backup target is required}"
+: "${AIFROGI_BACKUP_EXPECTED_DATABASE:?Expected database name is required}"
+: "${AIFROGI_BACKUP_EXPECTED_SERVER_ADDR:?Expected inet_server_addr is required (or LOCAL_SOCKET)}"
+: "${AIFROGI_BACKUP_EXPECTED_ROLE:?Expected backup session_user is required}"
 : "${BACKUP_ENCRYPTION_PASSPHRASE:?BACKUP_ENCRYPTION_PASSPHRASE is required}"
 
 BACKUP_DIR="${AIFROGI_BACKUP_DIR:-/var/backups/aifrogi}"
@@ -10,24 +13,25 @@ timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
 base="${BACKUP_DIR}/aifrogi-${timestamp}.dump"
 encrypted="${base}.gz.enc"
 temporary="${base}.tmp"
-pg_database_url="$(node -e 'const url=new URL(process.argv[1]); url.searchParams.delete("schema"); process.stdout.write(url.toString())' "$DATABASE_URL")"
-pg_schema="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.searchParams.get("schema") || "public")' "$DATABASE_URL")"
-pg_database="$(node -e 'const url=new URL(process.argv[1]); process.stdout.write(url.pathname.slice(1))' "$DATABASE_URL")"
+pg_database_url="$(node -e 'const url=new URL(process.argv[1]); url.searchParams.delete("schema"); process.stdout.write(url.toString())' "$AIFROGI_BACKUP_DATABASE_URL")"
+
+actual_identity="$(psql "$pg_database_url" -X -v ON_ERROR_STOP=1 -At -F $'\t' -c "SELECT current_database(),COALESCE(inet_server_addr()::text,'LOCAL_SOCKET'),session_user")"
+IFS=$'\t' read -r actual_database actual_server_addr actual_role <<<"$actual_identity"
+[[ "$actual_database" == "$AIFROGI_BACKUP_EXPECTED_DATABASE" ]] || { echo "Refusing backup: connected database identity mismatch" >&2; exit 65; }
+[[ "$actual_server_addr" == "$AIFROGI_BACKUP_EXPECTED_SERVER_ADDR" ]] || { echo "Refusing backup: connected server address mismatch" >&2; exit 66; }
+[[ "$actual_role" == "$AIFROGI_BACKUP_EXPECTED_ROLE" ]] || { echo "Refusing backup: connected role mismatch" >&2; exit 67; }
 
 mkdir -p "$BACKUP_DIR"
 umask 077
 trap 'rm -f "$temporary" "${base}.gz"' EXIT
 
-# Forced RLS deliberately prevents the application role from extracting every
-# tenant row. On a root-operated local PostgreSQL host, use the local database
-# administrator solely for the encrypted backup; regular environments retain
-# the configured application connection path.
-if [[ "$(id -u)" == "0" ]] && id postgres >/dev/null 2>&1; then
-  sudo -u postgres pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" "$pg_database" > "$temporary"
-else
-  pg_dump --format=custom --no-owner --no-privileges --schema "$pg_schema" --file "$temporary" "$pg_database_url"
-fi
-pg_restore --list "$temporary" >/dev/null
+# The explicitly supplied and verified administrative target is always used.
+# There is no root/local-postgres fallback. Grants, owners and role memberships
+# are captured separately because this portable dump intentionally omits them.
+pg_dump --format=custom --no-owner --no-privileges --schema public --schema aifrogi_security --file "$temporary" "$pg_database_url"
+restore_list="$(pg_restore --list "$temporary")"
+grep -Eq 'SCHEMA - public ' <<<"$restore_list" || { echo "Refusing incomplete backup: public schema missing" >&2; exit 68; }
+grep -Eq 'SCHEMA - aifrogi_security ' <<<"$restore_list" || { echo "Refusing incomplete backup: aifrogi_security schema missing" >&2; exit 69; }
 gzip -c "$temporary" > "${base}.gz"
 openssl enc -aes-256-cbc -pbkdf2 -salt -in "${base}.gz" -out "$encrypted" -pass env:BACKUP_ENCRYPTION_PASSPHRASE
 shasum -a 256 "$encrypted" > "${encrypted}.sha256"

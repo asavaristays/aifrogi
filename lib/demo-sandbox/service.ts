@@ -3,6 +3,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { getDb } from "@/lib/db";
 import { getBotPersonaPack } from "@/lib/bot-persona-packs";
 import { DEMO_FIXTURE_VERSION, listDemoFixtures, matchDemoAction, missingDemoActionRequirements, type DemoFixture } from "@/lib/demo-sandbox/fixtures";
+import { confirmTransaction, previewTransaction } from "@/lib/transaction-capability-gateway";
 
 const SYSTEM_ACTOR = "demo-sandbox@aifrogi.com";
 
@@ -82,6 +83,8 @@ export async function resolveDemoConnectorTurn(input: { organizationId: string; 
   if (missing.length) return { answer: `Certainly. Please share ${missing.join(" and ")}, and I’ll guide you through the next step.`, connectorKey: action.connectorKey, operation: action.operation, status: "CLARIFY" };
   const forcedFailure = /\b(unavailable|offline|failure|fail|down)\b/.test(normalized);
   const idempotencyKey = createHash("sha256").update(`${input.sessionId}:${action.connectorKey}:${action.operation}:${normalized.replace(/\s+/g, " ").trim()}`).digest("hex");
+  const preview = previewTransaction({ propertyId: input.organizationId, capability: action.operation, connector: action.connectorKey, payload: { question: input.question, sessionId: input.sessionId }, enabled: [{ capability: action.operation, connector: action.connectorKey, requiresConfirmation: true, idempotencyRequired: true }] });
+  confirmTransaction({ preview, payload: { question: input.question, sessionId: input.sessionId }, confirmationId: input.question, idempotencyKey });
   const status = forcedFailure ? "SAFE_FAILURE" : "SUCCEEDED";
   const answer = forcedFailure ? `${getBotPersonaPack(input.category).connectors.find((item) => item.key === action.connectorKey)?.unavailableBehavior || "The mock connector is unavailable, so no action was performed."} DEMO: no external system was contacted.` : action.answer;
   const response = forcedFailure ? { demo: true, performed: false, reason: "SIMULATED_CONNECTOR_UNAVAILABLE" } : { demo: true, performed: true, ...action.response };

@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Properties
- * const properties = await prisma.property.findMany()
+ * // Fetch zero or more KnowledgeClaimIdentities
+ * const knowledgeClaimIdentities = await prisma.knowledgeClaimIdentity.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,10 +42,225 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
+ * Model KnowledgeClaimIdentity
+ * 
+ */
+export type KnowledgeClaimIdentity = Prisma.KnowledgeClaimIdentityModel
+/**
+ * Model KnowledgeSource
+ * 
+ */
+export type KnowledgeSource = Prisma.KnowledgeSourceModel
+/**
+ * Model KnowledgeSourceRevision
+ * 
+ */
+export type KnowledgeSourceRevision = Prisma.KnowledgeSourceRevisionModel
+/**
+ * Model SourceCapture
+ * 
+ */
+export type SourceCapture = Prisma.SourceCaptureModel
+/**
+ * Model KnowledgeObject
+ * 
+ */
+export type KnowledgeObject = Prisma.KnowledgeObjectModel
+/**
+ * Model KnowledgeObjectReference
+ * 
+ */
+export type KnowledgeObjectReference = Prisma.KnowledgeObjectReferenceModel
+/**
+ * Model CaptureVersion
+ * 
+ */
+export type CaptureVersion = Prisma.CaptureVersionModel
+/**
+ * Model KnowledgeExtractionRun
+ * 
+ */
+export type KnowledgeExtractionRun = Prisma.KnowledgeExtractionRunModel
+/**
+ * Model KnowledgeClaimEvidence
+ * 
+ */
+export type KnowledgeClaimEvidence = Prisma.KnowledgeClaimEvidenceModel
+/**
+ * Model KnowledgeRevisionEvidenceBinding
+ * 
+ */
+export type KnowledgeRevisionEvidenceBinding = Prisma.KnowledgeRevisionEvidenceBindingModel
+/**
+ * Model KnowledgeClaimConflict
+ * 
+ */
+export type KnowledgeClaimConflict = Prisma.KnowledgeClaimConflictModel
+/**
+ * Model KnowledgeApprovalEvidence
+ * 
+ */
+export type KnowledgeApprovalEvidence = Prisma.KnowledgeApprovalEvidenceModel
+/**
+ * Model KnowledgePublication
+ * 
+ */
+export type KnowledgePublication = Prisma.KnowledgePublicationModel
+/**
+ * Model KnowledgePublicationClaim
+ * 
+ */
+export type KnowledgePublicationClaim = Prisma.KnowledgePublicationClaimModel
+/**
+ * Model KnowledgeServingPointer
+ * 
+ */
+export type KnowledgeServingPointer = Prisma.KnowledgeServingPointerModel
+/**
+ * Model KnowledgePolicyVersion
+ * 
+ */
+export type KnowledgePolicyVersion = Prisma.KnowledgePolicyVersionModel
+/**
+ * Model PropertyIntelligencePolicy
+ * 
+ */
+export type PropertyIntelligencePolicy = Prisma.PropertyIntelligencePolicyModel
+/**
+ * Model BotMachinePolicyArtifact
+ * 
+ */
+export type BotMachinePolicyArtifact = Prisma.BotMachinePolicyArtifactModel
+/**
+ * Model BotReleaseArtifact
+ * 
+ */
+export type BotReleaseArtifact = Prisma.BotReleaseArtifactModel
+/**
+ * Model BotReleasePointer
+ * 
+ */
+export type BotReleasePointer = Prisma.BotReleasePointerModel
+/**
+ * Model KnowledgeReleaseApproval
+ * 
+ */
+export type KnowledgeReleaseApproval = Prisma.KnowledgeReleaseApprovalModel
+/**
+ * Model KnowledgeReleaseArtifact
+ * 
+ */
+export type KnowledgeReleaseArtifact = Prisma.KnowledgeReleaseArtifactModel
+/**
+ * Model KnowledgeReleaseMember
+ * 
+ */
+export type KnowledgeReleaseMember = Prisma.KnowledgeReleaseMemberModel
+/**
+ * Model KnowledgeReleaseActivePointer
+ * 
+ */
+export type KnowledgeReleaseActivePointer = Prisma.KnowledgeReleaseActivePointerModel
+/**
+ * Model KnowledgePreviewSession
+ * 
+ */
+export type KnowledgePreviewSession = Prisma.KnowledgePreviewSessionModel
+/**
+ * Model KnowledgePreviewClaim
+ * 
+ */
+export type KnowledgePreviewClaim = Prisma.KnowledgePreviewClaimModel
+/**
+ * Model KnowledgeGuestSession
+ * 
+ */
+export type KnowledgeGuestSession = Prisma.KnowledgeGuestSessionModel
+/**
+ * Model KnowledgeRevisionEvent
+ * 
+ */
+export type KnowledgeRevisionEvent = Prisma.KnowledgeRevisionEventModel
+/**
+ * Model KnowledgeAnswerAudit
+ * 
+ */
+export type KnowledgeAnswerAudit = Prisma.KnowledgeAnswerAuditModel
+/**
+ * Model KnowledgeAnswerOutcome
+ * 
+ */
+export type KnowledgeAnswerOutcome = Prisma.KnowledgeAnswerOutcomeModel
+/**
+ * Model KnowledgeHandoverRequest
+ * 
+ */
+export type KnowledgeHandoverRequest = Prisma.KnowledgeHandoverRequestModel
+/**
+ * Model KnowledgeHandoverEvent
+ * 
+ */
+export type KnowledgeHandoverEvent = Prisma.KnowledgeHandoverEventModel
+/**
+ * Model KnowledgeOutboxEvent
+ * 
+ */
+export type KnowledgeOutboxEvent = Prisma.KnowledgeOutboxEventModel
+/**
+ * Model AutomationJobAttempt
+ * 
+ */
+export type AutomationJobAttempt = Prisma.AutomationJobAttemptModel
+/**
+ * Model KnowledgeCertificationRun
+ * 
+ */
+export type KnowledgeCertificationRun = Prisma.KnowledgeCertificationRunModel
+/**
+ * Model KnowledgeRetentionDecision
+ * 
+ */
+export type KnowledgeRetentionDecision = Prisma.KnowledgeRetentionDecisionModel
+/**
+ * Model KnowledgePayloadDisposalAudit
+ * 
+ */
+export type KnowledgePayloadDisposalAudit = Prisma.KnowledgePayloadDisposalAuditModel
+/**
+ * Model BotFactualServingControl
+ * 
+ */
+export type BotFactualServingControl = Prisma.BotFactualServingControlModel
+/**
+ * Model BotFactualServingControlEvent
+ * 
+ */
+export type BotFactualServingControlEvent = Prisma.BotFactualServingControlEventModel
+/**
+ * Model KnowledgeMigrationDecision
+ * 
+ */
+export type KnowledgeMigrationDecision = Prisma.KnowledgeMigrationDecisionModel
+/**
+ * Model KnowledgeMigrationArtifactDecision
+ * 
+ */
+export type KnowledgeMigrationArtifactDecision = Prisma.KnowledgeMigrationArtifactDecisionModel
+/**
+ * Model KnowledgeRuntimePrincipalGrant
+ * 
+ */
+export type KnowledgeRuntimePrincipalGrant = Prisma.KnowledgeRuntimePrincipalGrantModel
+/**
  * Model Property
  * 
  */
 export type Property = Prisma.PropertyModel
+/**
+ * Model WebsiteSourceConsent
+ * 
+ */
+export type WebsiteSourceConsent = Prisma.WebsiteSourceConsentModel
 /**
  * Model ReadinessScan
  * *
@@ -294,6 +509,26 @@ export type PlatformIncident = Prisma.PlatformIncidentModel
  * 
  */
 export type PlatformAuditLog = Prisma.PlatformAuditLogModel
+/**
+ * Model GovernanceControlRecord
+ * 
+ */
+export type GovernanceControlRecord = Prisma.GovernanceControlRecordModel
+/**
+ * Model MaterialApproval
+ * 
+ */
+export type MaterialApproval = Prisma.MaterialApprovalModel
+/**
+ * Model GovernedRepairCommand
+ * 
+ */
+export type GovernedRepairCommand = Prisma.GovernedRepairCommandModel
+/**
+ * Model BreakGlassGrant
+ * 
+ */
+export type BreakGlassGrant = Prisma.BreakGlassGrantModel
 /**
  * Model AutomationJob
  * 

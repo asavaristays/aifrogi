@@ -63,17 +63,23 @@ export async function registerTrialOrganization(input: {
       await tx.onboardingActivity.create({
         data: { organizationId: existing.organization.id, actorEmail: email, action: "ACTIVATION_LINK_REISSUED", detail: "Owner requested a new email activation link" }
       });
-      return { organizationId: existing.organization.id, email, token, expiresAt, resumed: true };
+      const property = await tx.property.findFirstOrThrow({ where: { organizationId: existing.organization.id }, orderBy: { createdAt: "asc" }, select: { id: true } });
+      return { organizationId: existing.organization.id, propertyId: property.id, email, token, expiresAt, resumed: true };
     }
 
     const websiteHost = input.website ? new URL(input.website).hostname.toLowerCase().replace(/^www\./, "") : "";
+    const emailDomain = email.split("@")[1]?.toLowerCase().replace(/^www\./, "") || "";
     const candidates = await tx.organization.findMany({
       where: { status: { not: "REMOVED" }, OR: [
         ...(websiteHost ? [{ website: { not: null } }] : [])
       ] },
       select: { website: true },
     });
-    if (websiteHost && candidates.some((item) => { try { return new URL(item.website || "").hostname.toLowerCase().replace(/^www\./, "") === websiteHost; } catch { return false; } })) throw new Error("An AiFrogi workspace already uses this business website. Sign in or contact support.");
+    const websiteAlreadyRegistered = websiteHost && candidates.some((item) => { try { return new URL(item.website || "").hostname.toLowerCase().replace(/^www\./, "") === websiteHost; } catch { return false; } });
+    // A verified mailbox on the exact business domain may create a clean,
+    // isolated replacement trial without deleting or importing the preserved
+    // workspace. Everyone else remains blocked from claiming the same site.
+    if (websiteAlreadyRegistered && emailDomain !== websiteHost) throw new Error("An AiFrogi workspace already uses this business website. Sign in or contact support.");
 
     const slug = `${slugBase(input.companyName)}-${randomBytes(3).toString("hex")}`;
     const organization = await tx.organization.create({
@@ -113,9 +119,11 @@ export async function registerTrialOrganization(input: {
           create: { actorEmail: email, action: "TRIAL_REGISTERED", detail: `Trial workspace reserved; source=${input.source || "direct"}; email verification required` }
         }
       },
-      select: { id: true }
+      select: { id: true, properties: { take: 1, select: { id: true } } }
     });
-    return { organizationId: organization.id, email, token, expiresAt, resumed: false };
+    const propertyId = organization.properties[0]?.id;
+    if (!propertyId) throw new Error("Trial property was not created.");
+    return { organizationId: organization.id, propertyId, email, token, expiresAt, resumed: false };
   });
 }
 

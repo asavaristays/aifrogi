@@ -950,10 +950,6 @@ export type OrganizationUpdateOneRequiredWithoutReadinessVerificationsNestedInpu
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReadinessVerificationsInput, Prisma.OrganizationUpdateWithoutReadinessVerificationsInput>, Prisma.OrganizationUncheckedUpdateWithoutReadinessVerificationsInput>
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type OrganizationCreateNestedOneWithoutDemoSandboxInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutDemoSandboxInput, Prisma.OrganizationUncheckedCreateWithoutDemoSandboxInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutDemoSandboxInput

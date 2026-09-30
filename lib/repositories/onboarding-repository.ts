@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import { getDb } from "@/lib/db";
+import { getDatabaseIdentity, getDb } from "@/lib/db";
 import { resolveMemberOrganization, withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { encryptSecretValue } from "@/lib/field-encryption";
 import { nextWebsiteBotStatus, statusAfterBotProfileSave, type WebsiteBotLifecycleAction } from "@/lib/website-bot-lifecycle";
@@ -52,9 +52,10 @@ const organizationInclude = {
   }
 };
 
-export async function getOrganizationForMember(email: string) {
+export async function getOrganizationForMember(email: string, expectedOrganizationId?: string) {
   const normalizedEmail = email.trim().toLowerCase();
-  const organizationId = await resolveMemberOrganization(normalizedEmail);
+  const sessionOrganizationId = getDatabaseIdentity()?.organizationId?.trim();
+  const organizationId = expectedOrganizationId?.trim() || sessionOrganizationId || await resolveMemberOrganization(normalizedEmail);
   if (!organizationId) return null;
 
   return withTenantDatabaseContext({
@@ -385,6 +386,9 @@ export async function updateWebsiteBotLifecycle(input: {
     const tenantCertification = await readTenantCertification(property.slug);
     const tenantCertificationGate = tenantCertificationStatus(tenantCertification, await getTenantKnowledgeRevision(property.slug));
     if (!tenantCertificationGate.eligible) tenantCertificationAdvisory = tenantCertificationGate.blocker || "Tenant certification needs review.";
+    const { assertCanonicalPublicServingPointer, publishCurrentOwnerApprovedKnowledge } = await import("@/lib/canonical-publication");
+    await publishCurrentOwnerApprovedKnowledge({ organizationId: input.organizationId, propertyId: property.id, platformActor: input.actorEmail });
+    await assertCanonicalPublicServingPointer(property.id);
   }
   const now = new Date();
   const status = nextWebsiteBotStatus(profile.status, input.action, Boolean(profile.installationDetectedAt));

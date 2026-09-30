@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "profile": {
+    "bots": 1000,
+    "chunksPerBot": 20,
+    "retrievalRequests": 2000,
+    "burstConcurrency": 100,
+    "auditRows": 50000,
+    "crawlJobs": 1000,
+    "workers": 20
+  },
+  "measuredAt": "2026-09-30T02:47:41.345Z",
+  "results": {
+    "rolePool": {
+      "attempts": 1000,
+      "errors": 0,
+      "errorRatePercent": 0,
+      "elapsedMs": 38.91233299999999
+    },
+    "canonicalRolePools": [
+      {
+        "role": "aifrogi_web",
+        "attempts": 100,
+        "errors": 0,
+        "elapsedMs": 5.069165999999996
+      },
+      {
+        "role": "aifrogi_public",
+        "attempts": 100,
+        "errors": 0,
+        "elapsedMs": 4.1922910000000115
+      },
+      {
+        "role": "aifrogi_worker",
+        "attempts": 100,
+        "errors": 0,
+        "elapsedMs": 4.326041999999973
+      },
+      {
+        "role": "aifrogi_publisher",
+        "attempts": 100,
+        "errors": 0,
+        "elapsedMs": 3.7461250000000064
+      }
+    ],
+    "retrieval": {
+      "requests": 2000,
+      "p50Ms": 1.8374580000000265,
+      "p95Ms": 5.417166999999949,
+      "p99Ms": 8.301333
+    },
+    "crawlLeases": {
+      "claimed": 1000,
+      "unique": 1000,
+      "duplicateClaims": 0,
+      "workers": 20
+    },
+    "auditGrowth": {
+      "rows": 50000,
+      "p50Ms": 0.09695899999996982,
+      "p95Ms": 0.125583000000006,
+      "p99Ms": 0.1538749999999709
+    },
+    "burst": {
+      "concurrency": 100,
+      "p50Ms": 0.93587500000001,
+      "p95Ms": 1.3840419999999085,
+      "p99Ms": 1.4030420000000277
+    },
+    "seedMs": 192.25604199999998
+  },
+  "limits": {
+    "retrievalP95Ms": 100,
+    "poolErrorRatePercent": 0,
+    "crawlDuplicateClaims": 0,
+    "auditLookupP95Ms": 100,
+    "burstP95Ms": 250
+  },
+  "pass": true
+}

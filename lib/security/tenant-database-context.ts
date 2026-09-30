@@ -38,6 +38,23 @@ export async function withTenantDatabaseContext<T>(identity: TenantDatabaseIdent
   }, { maxWait: 5000, timeout: 60000 });
 }
 
+/** Runs an authenticated owner workflow with both tenant and property RLS keys. */
+export async function withTenantPropertyDatabaseContext<T>(identity: { organizationId: string; propertyId: string; actor: string }, work: () => Promise<T>) {
+  const db = getBootstrapDb();
+  if (!db) throw new Error("Database unavailable.");
+  const organizationId = clean(identity.organizationId, "organization");
+  const propertyId = clean(identity.propertyId, "property");
+  const actor = clean(identity.actor, "actor");
+  return db.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT set_config('app.organization_id', ${organizationId}, true)`;
+    await tx.$queryRaw`SELECT set_config('app.property_id', ${propertyId}, true)`;
+    await tx.$queryRaw`SELECT set_config('app.platform_authority', 'false', true)`;
+    await tx.$queryRaw`SELECT set_config('app.security_actor', ${actor}, true)`;
+    await tx.$queryRaw`SELECT set_config('app.system_purpose', 'knowledge-owner-workflow', true)`;
+    return withDatabaseTransaction(tx as Prisma.TransactionClient, work);
+  }, { maxWait: 5000, timeout: 60000 });
+}
+
 async function resolveOrganization(query: (db: NonNullable<ReturnType<typeof getDb>>) => Promise<OrganizationResolution[]>) {
   const db = getBootstrapDb();
   if (!db) throw new Error("Database unavailable.");
@@ -84,7 +101,14 @@ export function resolveMemberOrganization(email: string) {
 export async function withPublicBotDatabaseContext<T>(slug: string, work: () => Promise<T>) {
   const organizationId = await resolvePublicBotOrganization(slug);
   if (!organizationId) return null;
-  return withTenantDatabaseContext({ kind: "tenant", organizationId, actor: `public-bot:${slug}` }, work);
+  return withTenantDatabaseContext({ kind: "tenant", organizationId, actor: `public-bot:${slug}` }, async () => {
+    const db = getDb();
+    if (!db) return null;
+    const property = await db.property.findUnique({ where: { slug }, select: { id: true } });
+    if (!property) return null;
+    await db.$queryRaw`SELECT set_config('app.property_id', ${property.id}, true)`;
+    return work();
+  });
 }
 
 export async function withPropertyDatabaseContext<T>(slug: string, actor: string, work: () => Promise<T>) {

@@ -1,0 +1,70 @@
+{
+  "payload": {
+    "schemaVersion": 1,
+    "releaseId": "p2b-remaining-controls-20260930",
+    "gitCommit": "99fb911ab008d92d91bf6f66c9f9cb5033f4e657",
+    "files": [
+      {
+        "path": "app/api/admin/fleet-health/route.ts",
+        "sha256": "731b73fe3a3fce5bf889aa19b5289ffed34a019415174d7d9d4f84a6a3701962"
+      },
+      {
+        "path": "app/api/public/website-bot/[slug]/route.ts",
+        "sha256": "83bd4f3d48e19c300569e1e9b9fc86696bbae08c96c46bb68724dd029aa2d090"
+      },
+      {
+        "path": "lib/bot-machine-policy.ts",
+        "sha256": "afb57246ac7ff580bfd8869740a6a954ba9a096f1406cddcd1bb91297284f45c"
+      },
+      {
+        "path": "lib/canonical-answer-delivery.ts",
+        "sha256": "3be0e632a5bcd93f43f15a8186e0f1c957e76e7368787274e033cd60f3a69c5a"
+      },
+      {
+        "path": "lib/canonical-bot-release.ts",
+        "sha256": "6bd5cbb62e92639f82a1dc40fb8f0790251f04f00e4e5ebd120b9f4b6fadbb0c"
+      },
+      {
+        "path": "lib/canonical-serving-gate.ts",
+        "sha256": "d1ce077dc38ecd9ed8676e8eb30064cf1c6b6cfba6223dffd1dbe05f5c2c3ba8"
+      },
+      {
+        "path": "lib/fleet-knowledge-observability.ts",
+        "sha256": "fcdabbc7921fb4c637407be5df9b525bfae62fd634933ce670adc2d89766638b"
+      },
+      {
+        "path": "lib/pre-persistence-redaction.ts",
+        "sha256": "98188a3d021e361f170d312b90e98a4b3e8e4a7dacfa9fda253b75ce1e33e64c"
+      },
+      {
+        "path": "lib/release-integrity.ts",
+        "sha256": "ef737a01e419f7b7186eafed749cc68e0d38a330a3e7b8624220ef1ba35995b1"
+      },
+      {
+        "path": "lib/source-authority-resolution.ts",
+        "sha256": "36cb811274f773f78003973834b4828921ac9dfdd1775550e3a7ce90644c2bf4"
+      },
+      {
+        "path": "lib/transaction-capability-gateway.ts",
+        "sha256": "041a48489063750019545702d83c694ff29cee6ac7a6fe18ad4a36e3e400dae7"
+      },
+      {
+        "path": "prisma/migrations/20260929090000_p2a_v6_canonical_authority/migration.sql",
+        "sha256": "35c1182fcc45c56867980f63028537962e13193e05a66c16ec509efdfe8b2496"
+      },
+      {
+        "path": "prisma/migrations/20260929233000_signed_bot_release_activation/migration.sql",
+        "sha256": "595214bb59483b1a0f3f8c4854ffd2f953b8ab03dad3593ad4565dd950c1e59a"
+      },
+      {
+        "path": "prisma/migrations/20260929234500_multisource_knowledge_release/migration.sql",
+        "sha256": "2dfcb22228509b251c03985ebbf1dec28b14dc432d519793cb51bba736bb8bf6"
+      },
+      {
+        "path": "prisma/migrations/20260930006500_per_bot_factual_closure/migration.sql",
+        "sha256": "5e8990f3305921b98a3e2abb09db6ca28f4a222f84abbef4347a06725dca52ab"
+      }
+    ]
+  },
+  "manifestHash": "41fb293954e3df96ed7654fc5766fdf4995087c84cb98af9b5f08c4a683ab220"
+}

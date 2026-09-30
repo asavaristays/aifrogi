@@ -26,6 +26,7 @@ export type AggregateConversationParticipant = {
 
 export type ConversationParticipantMinAggregateOutputType = {
   id: string | null
+  propertyId: string | null
   conversationId: string | null
   participantId: string | null
   role: string | null
@@ -35,6 +36,7 @@ export type ConversationParticipantMinAggregateOutputType = {
 
 export type ConversationParticipantMaxAggregateOutputType = {
   id: string | null
+  propertyId: string | null
   conversationId: string | null
   participantId: string | null
   role: string | null
@@ -44,6 +46,7 @@ export type ConversationParticipantMaxAggregateOutputType = {
 
 export type ConversationParticipantCountAggregateOutputType = {
   id: number
+  propertyId: number
   conversationId: number
   participantId: number
   role: number
@@ -55,6 +58,7 @@ export type ConversationParticipantCountAggregateOutputType = {
 
 export type ConversationParticipantMinAggregateInputType = {
   id?: true
+  propertyId?: true
   conversationId?: true
   participantId?: true
   role?: true
@@ -64,6 +68,7 @@ export type ConversationParticipantMinAggregateInputType = {
 
 export type ConversationParticipantMaxAggregateInputType = {
   id?: true
+  propertyId?: true
   conversationId?: true
   participantId?: true
   role?: true
@@ -73,6 +78,7 @@ export type ConversationParticipantMaxAggregateInputType = {
 
 export type ConversationParticipantCountAggregateInputType = {
   id?: true
+  propertyId?: true
   conversationId?: true
   participantId?: true
   role?: true
@@ -155,6 +161,7 @@ export type ConversationParticipantGroupByArgs<ExtArgs extends runtime.Types.Ext
 
 export type ConversationParticipantGroupByOutputType = {
   id: string
+  propertyId: string
   conversationId: string
   participantId: string
   role: string
@@ -185,6 +192,7 @@ export type ConversationParticipantWhereInput = {
   OR?: Prisma.ConversationParticipantWhereInput[]
   NOT?: Prisma.ConversationParticipantWhereInput | Prisma.ConversationParticipantWhereInput[]
   id?: Prisma.StringFilter<"ConversationParticipant"> | string
+  propertyId?: Prisma.StringFilter<"ConversationParticipant"> | string
   conversationId?: Prisma.StringFilter<"ConversationParticipant"> | string
   participantId?: Prisma.StringFilter<"ConversationParticipant"> | string
   role?: Prisma.StringFilter<"ConversationParticipant"> | string
@@ -196,6 +204,7 @@ export type ConversationParticipantWhereInput = {
 
 export type ConversationParticipantOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -207,10 +216,11 @@ export type ConversationParticipantOrderByWithRelationInput = {
 
 export type ConversationParticipantWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  conversationId_participantId?: Prisma.ConversationParticipantConversationIdParticipantIdCompoundUniqueInput
+  propertyId_conversationId_participantId?: Prisma.ConversationParticipantPropertyIdConversationIdParticipantIdCompoundUniqueInput
   AND?: Prisma.ConversationParticipantWhereInput | Prisma.ConversationParticipantWhereInput[]
   OR?: Prisma.ConversationParticipantWhereInput[]
   NOT?: Prisma.ConversationParticipantWhereInput | Prisma.ConversationParticipantWhereInput[]
+  propertyId?: Prisma.StringFilter<"ConversationParticipant"> | string
   conversationId?: Prisma.StringFilter<"ConversationParticipant"> | string
   participantId?: Prisma.StringFilter<"ConversationParticipant"> | string
   role?: Prisma.StringFilter<"ConversationParticipant"> | string
@@ -218,10 +228,11 @@ export type ConversationParticipantWhereUniqueInput = Prisma.AtLeast<{
   leftAt?: Prisma.DateTimeNullableFilter<"ConversationParticipant"> | Date | string | null
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   participant?: Prisma.XOR<Prisma.ParticipantScalarRelationFilter, Prisma.ParticipantWhereInput>
-}, "id" | "conversationId_participantId">
+}, "id" | "propertyId_conversationId_participantId">
 
 export type ConversationParticipantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -237,6 +248,7 @@ export type ConversationParticipantScalarWhereWithAggregatesInput = {
   OR?: Prisma.ConversationParticipantScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ConversationParticipantScalarWhereWithAggregatesInput | Prisma.ConversationParticipantScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ConversationParticipant"> | string
+  propertyId?: Prisma.StringWithAggregatesFilter<"ConversationParticipant"> | string
   conversationId?: Prisma.StringWithAggregatesFilter<"ConversationParticipant"> | string
   participantId?: Prisma.StringWithAggregatesFilter<"ConversationParticipant"> | string
   role?: Prisma.StringWithAggregatesFilter<"ConversationParticipant"> | string
@@ -255,6 +267,7 @@ export type ConversationParticipantCreateInput = {
 
 export type ConversationParticipantUncheckedCreateInput = {
   id?: string
+  propertyId: string
   conversationId: string
   participantId: string
   role?: string
@@ -273,6 +286,7 @@ export type ConversationParticipantUpdateInput = {
 
 export type ConversationParticipantUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
@@ -282,6 +296,7 @@ export type ConversationParticipantUncheckedUpdateInput = {
 
 export type ConversationParticipantCreateManyInput = {
   id?: string
+  propertyId: string
   conversationId: string
   participantId: string
   role?: string
@@ -298,6 +313,7 @@ export type ConversationParticipantUpdateManyMutationInput = {
 
 export type ConversationParticipantUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.StringFieldUpdateOperationsInput | string
@@ -315,13 +331,15 @@ export type ConversationParticipantOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type ConversationParticipantConversationIdParticipantIdCompoundUniqueInput = {
+export type ConversationParticipantPropertyIdConversationIdParticipantIdCompoundUniqueInput = {
+  propertyId: string
   conversationId: string
   participantId: string
 }
 
 export type ConversationParticipantCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -331,6 +349,7 @@ export type ConversationParticipantCountOrderByAggregateInput = {
 
 export type ConversationParticipantMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -340,6 +359,7 @@ export type ConversationParticipantMaxOrderByAggregateInput = {
 
 export type ConversationParticipantMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -478,6 +498,7 @@ export type ConversationParticipantScalarWhereInput = {
   OR?: Prisma.ConversationParticipantScalarWhereInput[]
   NOT?: Prisma.ConversationParticipantScalarWhereInput | Prisma.ConversationParticipantScalarWhereInput[]
   id?: Prisma.StringFilter<"ConversationParticipant"> | string
+  propertyId?: Prisma.StringFilter<"ConversationParticipant"> | string
   conversationId?: Prisma.StringFilter<"ConversationParticipant"> | string
   participantId?: Prisma.StringFilter<"ConversationParticipant"> | string
   role?: Prisma.StringFilter<"ConversationParticipant"> | string
@@ -595,6 +616,7 @@ export type ConversationParticipantUncheckedUpdateManyWithoutConversationInput =
 
 export type ConversationParticipantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  propertyId?: boolean
   conversationId?: boolean
   participantId?: boolean
   role?: boolean
@@ -606,6 +628,7 @@ export type ConversationParticipantSelect<ExtArgs extends runtime.Types.Extensio
 
 export type ConversationParticipantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  propertyId?: boolean
   conversationId?: boolean
   participantId?: boolean
   role?: boolean
@@ -617,6 +640,7 @@ export type ConversationParticipantSelectCreateManyAndReturn<ExtArgs extends run
 
 export type ConversationParticipantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  propertyId?: boolean
   conversationId?: boolean
   participantId?: boolean
   role?: boolean
@@ -628,6 +652,7 @@ export type ConversationParticipantSelectUpdateManyAndReturn<ExtArgs extends run
 
 export type ConversationParticipantSelectScalar = {
   id?: boolean
+  propertyId?: boolean
   conversationId?: boolean
   participantId?: boolean
   role?: boolean
@@ -635,7 +660,7 @@ export type ConversationParticipantSelectScalar = {
   leftAt?: boolean
 }
 
-export type ConversationParticipantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "conversationId" | "participantId" | "role" | "joinedAt" | "leftAt", ExtArgs["result"]["conversationParticipant"]>
+export type ConversationParticipantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "conversationId" | "participantId" | "role" | "joinedAt" | "leftAt", ExtArgs["result"]["conversationParticipant"]>
 export type ConversationParticipantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
@@ -657,6 +682,7 @@ export type $ConversationParticipantPayload<ExtArgs extends runtime.Types.Extens
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    propertyId: string
     conversationId: string
     participantId: string
     role: string
@@ -1088,6 +1114,7 @@ export interface Prisma__ConversationParticipantClient<T, Null = never, ExtArgs 
  */
 export interface ConversationParticipantFieldRefs {
   readonly id: Prisma.FieldRef<"ConversationParticipant", 'String'>
+  readonly propertyId: Prisma.FieldRef<"ConversationParticipant", 'String'>
   readonly conversationId: Prisma.FieldRef<"ConversationParticipant", 'String'>
   readonly participantId: Prisma.FieldRef<"ConversationParticipant", 'String'>
   readonly role: Prisma.FieldRef<"ConversationParticipant", 'String'>

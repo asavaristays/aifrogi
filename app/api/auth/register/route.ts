@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { consumeRateLimit } from "@/lib/rate-limit";
 import { recordRegistrationEmailResult, registerTrialOrganization } from "@/lib/repositories/trial-registration-repository";
+import { authorizeTrialWebsiteSource } from "@/lib/repositories/website-source-consent-repository";
+import { createHash } from "node:crypto";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { TRIAL_DAYS } from "@/lib/trial-policy";
 import QRCode from "qrcode";
@@ -81,6 +83,17 @@ export async function POST(request: Request) {
 
   try {
     const registration = await registerTrialOrganization({ companyName, ownerName, ownerEmail, ownerMobile, website, industry, country, timezone, source, botCategory });
+    if (website) {
+      await authorizeTrialWebsiteSource({
+        organizationId: registration.organizationId,
+        propertyId: registration.propertyId,
+        sourceUrl: website,
+        ownerEmail,
+        acceptedIpHash: ip === "unknown" ? null : createHash("sha256").update(ip).digest("hex"),
+        authorizedAt: new Date(),
+        trialExpiresAt: registration.expiresAt
+      });
+    }
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === "production" ? "https://app.aifrogi.com" : origin || requestUrl.origin)).replace(/\/$/, "");
     const activationUrl = `${appUrl}/activate?token=${encodeURIComponent(registration.token)}`;
     let emailDelivered = false;

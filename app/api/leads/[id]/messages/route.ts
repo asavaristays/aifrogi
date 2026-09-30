@@ -7,6 +7,7 @@ import { getCurrentClientAccess } from "@/lib/client-access";
 import { websiteHandoverOperationId } from "@/lib/website-handover";
 import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
+import { redactBeforePersistence } from "@/lib/pre-persistence-redaction";
 
 const allowedSenders = new Set(["GUEST", "AGENT", "AI"]);
 
@@ -92,7 +93,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         if (!lock[0]?.acquired) throw new Error("Conversation update in progress; retry shortly");
         const claimed = await tx.websiteVisitorSession.updateMany({ where: { leadId: id, revokedAt: null, status: { not: "CLOSED" }, expiresAt: { gt: new Date() } }, data: { status: "HUMAN_JOINED" } });
         if (!claimed.count) throw new Error("Conversation is closed or expired");
-        const sent = await tx.leadMessage.create({ data: { leadId: id, sender: "AGENT", body: body.slice(0, 5000), sentAt: new Date() } });
+        const persistedBody = redactBeforePersistence(body.slice(0, 5000)).redacted;
+        const sent = await tx.leadMessage.create({ data: { leadId: id, sender: "AGENT", body: persistedBody, sentAt: new Date() } });
         await tx.lead.update({ where: { id }, data: { lastActivityAt: new Date(), ...(approvedReply?.status === "ASSIGNED" ? { stage:"CONTACTED" as const } : {}) } });
         if (approvedReply) {
           await tx.platformAuditLog.create({data:{organizationId:property.organizationId,actorEmail:user.username,actorRole:user.role,action:"HOTELGPT_QUICK_REPLY_SENT",targetType:"LEAD_MESSAGE",targetId:sent.id,summary:`${journey} saved reply sent by hotel staff.`,metadata:{templateId:approvedReply.id,masterId:approvedReply.masterId,templateVersion:approvedReply.version,originalApprovedText:approvedReply.message,finalSentText:body.slice(0,5000),requestStatus:approvedReply.status,department:approvedReply.department,journey}}});

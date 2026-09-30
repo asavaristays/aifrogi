@@ -186,3 +186,200 @@ export const ReadinessDeliveryRoute = {
 } as const
 
 export type ReadinessDeliveryRoute = (typeof ReadinessDeliveryRoute)[keyof typeof ReadinessDeliveryRoute]
+
+
+export const KnowledgeSourceType = {
+  WEBSITE: 'WEBSITE',
+  PDF: 'PDF',
+  SPREADSHEET: 'SPREADSHEET',
+  FORM: 'FORM',
+  OWNER_CORRECTION: 'OWNER_CORRECTION',
+  CONNECTOR: 'CONNECTOR'
+} as const
+
+export type KnowledgeSourceType = (typeof KnowledgeSourceType)[keyof typeof KnowledgeSourceType]
+
+
+export const KnowledgeSourceState = {
+  DRAFT: 'DRAFT',
+  AUTHORIZED: 'AUTHORIZED',
+  PAUSED: 'PAUSED',
+  REVOKED: 'REVOKED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type KnowledgeSourceState = (typeof KnowledgeSourceState)[keyof typeof KnowledgeSourceState]
+
+
+export const KnowledgeAudience = {
+  PUBLIC: 'PUBLIC',
+  STAFF: 'STAFF',
+  RESTRICTED: 'RESTRICTED'
+} as const
+
+export type KnowledgeAudience = (typeof KnowledgeAudience)[keyof typeof KnowledgeAudience]
+
+
+export const ClaimRevisionState = {
+  DRAFT: 'DRAFT',
+  SEALED: 'SEALED'
+} as const
+
+export type ClaimRevisionState = (typeof ClaimRevisionState)[keyof typeof ClaimRevisionState]
+
+
+export const ClaimVerificationStatus = {
+  SUPPORTED: 'SUPPORTED',
+  PARTIAL: 'PARTIAL',
+  CONTRADICTED: 'CONTRADICTED',
+  UNSUPPORTED: 'UNSUPPORTED'
+} as const
+
+export type ClaimVerificationStatus = (typeof ClaimVerificationStatus)[keyof typeof ClaimVerificationStatus]
+
+
+export const CaptureState = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED'
+} as const
+
+export type CaptureState = (typeof CaptureState)[keyof typeof CaptureState]
+
+
+export const KnowledgeObjectState = {
+  STAGED: 'STAGED',
+  USABLE: 'USABLE',
+  QUARANTINED: 'QUARANTINED',
+  RETAINED_ORPHAN: 'RETAINED_ORPHAN'
+} as const
+
+export type KnowledgeObjectState = (typeof KnowledgeObjectState)[keyof typeof KnowledgeObjectState]
+
+
+export const ApprovalPurpose = {
+  PREVIEW_ACKNOWLEDGEMENT: 'PREVIEW_ACKNOWLEDGEMENT',
+  PUBLICATION_AUTHORIZATION: 'PUBLICATION_AUTHORIZATION',
+  PUBLICATION_REVOCATION: 'PUBLICATION_REVOCATION',
+  SOURCE_CORRECTION: 'SOURCE_CORRECTION'
+} as const
+
+export type ApprovalPurpose = (typeof ApprovalPurpose)[keyof typeof ApprovalPurpose]
+
+
+export const ApprovalDecision = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type ApprovalDecision = (typeof ApprovalDecision)[keyof typeof ApprovalDecision]
+
+
+export const PublicationState = {
+  CANDIDATE: 'CANDIDATE',
+  SEALED: 'SEALED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type PublicationState = (typeof PublicationState)[keyof typeof PublicationState]
+
+
+export const PreviewState = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type PreviewState = (typeof PreviewState)[keyof typeof PreviewState]
+
+
+export const KnowledgePolicyMode = {
+  LEGACY: 'LEGACY',
+  CLAIMS_ONLY: 'CLAIMS_ONLY',
+  BLOCKED: 'BLOCKED'
+} as const
+
+export type KnowledgePolicyMode = (typeof KnowledgePolicyMode)[keyof typeof KnowledgePolicyMode]
+
+
+export const KnowledgeEventType = {
+  SUPERSEDED: 'SUPERSEDED',
+  WITHDRAWN: 'WITHDRAWN',
+  AUTHORITY_REVOKED: 'AUTHORITY_REVOKED'
+} as const
+
+export type KnowledgeEventType = (typeof KnowledgeEventType)[keyof typeof KnowledgeEventType]
+
+
+export const OutboxState = {
+  PENDING: 'PENDING',
+  LEASED: 'LEASED',
+  DISPATCHED: 'DISPATCHED',
+  DEAD_LETTER: 'DEAD_LETTER'
+} as const
+
+export type OutboxState = (typeof OutboxState)[keyof typeof OutboxState]
+
+
+export const JobAttemptState = {
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ABANDONED: 'ABANDONED'
+} as const
+
+export type JobAttemptState = (typeof JobAttemptState)[keyof typeof JobAttemptState]
+
+
+export const AnswerDeliveryState = {
+  PENDING: 'PENDING',
+  DELIVERED: 'DELIVERED',
+  SUPPRESSED: 'SUPPRESSED',
+  FAILED: 'FAILED',
+  HANDOVER: 'HANDOVER'
+} as const
+
+export type AnswerDeliveryState = (typeof AnswerDeliveryState)[keyof typeof AnswerDeliveryState]
+
+
+export const HandoverState = {
+  RECORDED: 'RECORDED',
+  QUEUED: 'QUEUED',
+  PROVIDER_ACCEPTED: 'PROVIDER_ACCEPTED',
+  STAFF_ACKNOWLEDGED: 'STAFF_ACKNOWLEDGED',
+  RESOLVED: 'RESOLVED',
+  REOPENED: 'REOPENED',
+  CANCELED: 'CANCELED'
+} as const
+
+export type HandoverState = (typeof HandoverState)[keyof typeof HandoverState]
+
+
+export const RetentionState = {
+  RETAIN: 'RETAIN',
+  DISPOSAL_PROPOSED: 'DISPOSAL_PROPOSED',
+  DISPOSAL_APPROVED: 'DISPOSAL_APPROVED',
+  DISPOSED: 'DISPOSED'
+} as const
+
+export type RetentionState = (typeof RetentionState)[keyof typeof RetentionState]
+
+
+export const WebsiteSourceConsentStatus = {
+  TRIAL_AUTHORIZED: 'TRIAL_AUTHORIZED',
+  POST_TRIAL_APPROVED: 'POST_TRIAL_APPROVED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type WebsiteSourceConsentStatus = (typeof WebsiteSourceConsentStatus)[keyof typeof WebsiteSourceConsentStatus]
+
+
+export const WebsiteSourceApprovalMethod = {
+  EMAIL: 'EMAIL',
+  SIGNED_LETTER: 'SIGNED_LETTER'
+} as const
+
+export type WebsiteSourceApprovalMethod = (typeof WebsiteSourceApprovalMethod)[keyof typeof WebsiteSourceApprovalMethod]

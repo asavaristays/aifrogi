@@ -51,7 +51,50 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  KnowledgeClaimIdentity: 'KnowledgeClaimIdentity',
+  KnowledgeSource: 'KnowledgeSource',
+  KnowledgeSourceRevision: 'KnowledgeSourceRevision',
+  SourceCapture: 'SourceCapture',
+  KnowledgeObject: 'KnowledgeObject',
+  KnowledgeObjectReference: 'KnowledgeObjectReference',
+  CaptureVersion: 'CaptureVersion',
+  KnowledgeExtractionRun: 'KnowledgeExtractionRun',
+  KnowledgeClaimEvidence: 'KnowledgeClaimEvidence',
+  KnowledgeRevisionEvidenceBinding: 'KnowledgeRevisionEvidenceBinding',
+  KnowledgeClaimConflict: 'KnowledgeClaimConflict',
+  KnowledgeApprovalEvidence: 'KnowledgeApprovalEvidence',
+  KnowledgePublication: 'KnowledgePublication',
+  KnowledgePublicationClaim: 'KnowledgePublicationClaim',
+  KnowledgeServingPointer: 'KnowledgeServingPointer',
+  KnowledgePolicyVersion: 'KnowledgePolicyVersion',
+  PropertyIntelligencePolicy: 'PropertyIntelligencePolicy',
+  BotMachinePolicyArtifact: 'BotMachinePolicyArtifact',
+  BotReleaseArtifact: 'BotReleaseArtifact',
+  BotReleasePointer: 'BotReleasePointer',
+  KnowledgeReleaseApproval: 'KnowledgeReleaseApproval',
+  KnowledgeReleaseArtifact: 'KnowledgeReleaseArtifact',
+  KnowledgeReleaseMember: 'KnowledgeReleaseMember',
+  KnowledgeReleaseActivePointer: 'KnowledgeReleaseActivePointer',
+  KnowledgePreviewSession: 'KnowledgePreviewSession',
+  KnowledgePreviewClaim: 'KnowledgePreviewClaim',
+  KnowledgeGuestSession: 'KnowledgeGuestSession',
+  KnowledgeRevisionEvent: 'KnowledgeRevisionEvent',
+  KnowledgeAnswerAudit: 'KnowledgeAnswerAudit',
+  KnowledgeAnswerOutcome: 'KnowledgeAnswerOutcome',
+  KnowledgeHandoverRequest: 'KnowledgeHandoverRequest',
+  KnowledgeHandoverEvent: 'KnowledgeHandoverEvent',
+  KnowledgeOutboxEvent: 'KnowledgeOutboxEvent',
+  AutomationJobAttempt: 'AutomationJobAttempt',
+  KnowledgeCertificationRun: 'KnowledgeCertificationRun',
+  KnowledgeRetentionDecision: 'KnowledgeRetentionDecision',
+  KnowledgePayloadDisposalAudit: 'KnowledgePayloadDisposalAudit',
+  BotFactualServingControl: 'BotFactualServingControl',
+  BotFactualServingControlEvent: 'BotFactualServingControlEvent',
+  KnowledgeMigrationDecision: 'KnowledgeMigrationDecision',
+  KnowledgeMigrationArtifactDecision: 'KnowledgeMigrationArtifactDecision',
+  KnowledgeRuntimePrincipalGrant: 'KnowledgeRuntimePrincipalGrant',
   Property: 'Property',
+  WebsiteSourceConsent: 'WebsiteSourceConsent',
   ReadinessScan: 'ReadinessScan',
   ReadinessEvidence: 'ReadinessEvidence',
   ReadinessIssue: 'ReadinessIssue',
@@ -101,6 +144,10 @@ export const ModelName = {
   AiCreditTransaction: 'AiCreditTransaction',
   PlatformIncident: 'PlatformIncident',
   PlatformAuditLog: 'PlatformAuditLog',
+  GovernanceControlRecord: 'GovernanceControlRecord',
+  MaterialApproval: 'MaterialApproval',
+  GovernedRepairCommand: 'GovernedRepairCommand',
+  BreakGlassGrant: 'BreakGlassGrant',
   AutomationJob: 'AutomationJob',
   SupportTicket: 'SupportTicket',
   SupportTicketMessage: 'SupportTicketMessage',
@@ -143,6 +190,664 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const KnowledgeClaimIdentityScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  stableKey: 'stableKey',
+  entityKey: 'entityKey',
+  fieldKey: 'fieldKey',
+  qualifiers: 'qualifiers',
+  keyVersion: 'keyVersion',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeClaimIdentityScalarFieldEnum = (typeof KnowledgeClaimIdentityScalarFieldEnum)[keyof typeof KnowledgeClaimIdentityScalarFieldEnum]
+
+
+export const KnowledgeSourceScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  sourceType: 'sourceType',
+  canonicalIdentity: 'canonicalIdentity',
+  canonicalIdentityHash: 'canonicalIdentityHash',
+  state: 'state',
+  audienceCeiling: 'audienceCeiling',
+  currentRevision: 'currentRevision',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeSourceScalarFieldEnum = (typeof KnowledgeSourceScalarFieldEnum)[keyof typeof KnowledgeSourceScalarFieldEnum]
+
+
+export const KnowledgeSourceRevisionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  sourceId: 'sourceId',
+  revision: 'revision',
+  configuration: 'configuration',
+  configurationHash: 'configurationHash',
+  consentId: 'consentId',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeSourceRevisionScalarFieldEnum = (typeof KnowledgeSourceRevisionScalarFieldEnum)[keyof typeof KnowledgeSourceRevisionScalarFieldEnum]
+
+
+export const SourceCaptureScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  sourceId: 'sourceId',
+  sourceRevisionId: 'sourceRevisionId',
+  requestedGeneration: 'requestedGeneration',
+  operationKey: 'operationKey',
+  status: 'status',
+  requestedAt: 'requestedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type SourceCaptureScalarFieldEnum = (typeof SourceCaptureScalarFieldEnum)[keyof typeof SourceCaptureScalarFieldEnum]
+
+
+export const KnowledgeObjectScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  storageNamespace: 'storageNamespace',
+  objectKey: 'objectKey',
+  checksum: 'checksum',
+  byteSize: 'byteSize',
+  mediaType: 'mediaType',
+  state: 'state',
+  stagingTokenHash: 'stagingTokenHash',
+  finalizedByJobId: 'finalizedByJobId',
+  finalizedFence: 'finalizedFence',
+  retainUntil: 'retainUntil',
+  legalHold: 'legalHold',
+  createdAt: 'createdAt',
+  usableAt: 'usableAt',
+  payloadDisposedAt: 'payloadDisposedAt',
+  payloadDisposedBy: 'payloadDisposedBy',
+  disposalOperationKey: 'disposalOperationKey',
+  originalObjectKeyHash: 'originalObjectKeyHash'
+} as const
+
+export type KnowledgeObjectScalarFieldEnum = (typeof KnowledgeObjectScalarFieldEnum)[keyof typeof KnowledgeObjectScalarFieldEnum]
+
+
+export const KnowledgeObjectReferenceScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  objectId: 'objectId',
+  sourceId: 'sourceId',
+  purpose: 'purpose',
+  retainUntil: 'retainUntil',
+  legalHold: 'legalHold',
+  releasedAt: 'releasedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeObjectReferenceScalarFieldEnum = (typeof KnowledgeObjectReferenceScalarFieldEnum)[keyof typeof KnowledgeObjectReferenceScalarFieldEnum]
+
+
+export const CaptureVersionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  captureId: 'captureId',
+  objectId: 'objectId',
+  checksum: 'checksum',
+  manifest: 'manifest',
+  capturedAt: 'capturedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CaptureVersionScalarFieldEnum = (typeof CaptureVersionScalarFieldEnum)[keyof typeof CaptureVersionScalarFieldEnum]
+
+
+export const KnowledgeExtractionRunScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  captureVersionId: 'captureVersionId',
+  extractorVersion: 'extractorVersion',
+  normalizationVersion: 'normalizationVersion',
+  operationKey: 'operationKey',
+  status: 'status',
+  resultManifestHash: 'resultManifestHash',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+} as const
+
+export type KnowledgeExtractionRunScalarFieldEnum = (typeof KnowledgeExtractionRunScalarFieldEnum)[keyof typeof KnowledgeExtractionRunScalarFieldEnum]
+
+
+export const KnowledgeClaimEvidenceScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  entryId: 'entryId',
+  captureVersionId: 'captureVersionId',
+  locator: 'locator',
+  locatorHash: 'locatorHash',
+  quotation: 'quotation',
+  quotationHash: 'quotationHash',
+  supportedComponents: 'supportedComponents',
+  bindingHash: 'bindingHash',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeClaimEvidenceScalarFieldEnum = (typeof KnowledgeClaimEvidenceScalarFieldEnum)[keyof typeof KnowledgeClaimEvidenceScalarFieldEnum]
+
+
+export const KnowledgeRevisionEvidenceBindingScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  entryId: 'entryId',
+  evidenceId: 'evidenceId',
+  bindingHash: 'bindingHash',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeRevisionEvidenceBindingScalarFieldEnum = (typeof KnowledgeRevisionEvidenceBindingScalarFieldEnum)[keyof typeof KnowledgeRevisionEvidenceBindingScalarFieldEnum]
+
+
+export const KnowledgeClaimConflictScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  lowerEntryId: 'lowerEntryId',
+  higherEntryId: 'higherEntryId',
+  reason: 'reason',
+  blocking: 'blocking',
+  resolvedAt: 'resolvedAt',
+  resolvedBy: 'resolvedBy',
+  resolution: 'resolution',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeClaimConflictScalarFieldEnum = (typeof KnowledgeClaimConflictScalarFieldEnum)[keyof typeof KnowledgeClaimConflictScalarFieldEnum]
+
+
+export const KnowledgeApprovalEvidenceScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  purpose: 'purpose',
+  decision: 'decision',
+  scopeManifest: 'scopeManifest',
+  scopeHash: 'scopeHash',
+  audience: 'audience',
+  policyVersion: 'policyVersion',
+  actorId: 'actorId',
+  actorEmailHash: 'actorEmailHash',
+  authority: 'authority',
+  supersedesId: 'supersedesId',
+  decidedAt: 'decidedAt'
+} as const
+
+export type KnowledgeApprovalEvidenceScalarFieldEnum = (typeof KnowledgeApprovalEvidenceScalarFieldEnum)[keyof typeof KnowledgeApprovalEvidenceScalarFieldEnum]
+
+
+export const KnowledgePublicationScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  audience: 'audience',
+  manifestHash: 'manifestHash',
+  policyVersion: 'policyVersion',
+  evidencePolicyVersion: 'evidencePolicyVersion',
+  approvalId: 'approvalId',
+  state: 'state',
+  sealedAt: 'sealedAt',
+  membershipClosedAt: 'membershipClosedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgePublicationScalarFieldEnum = (typeof KnowledgePublicationScalarFieldEnum)[keyof typeof KnowledgePublicationScalarFieldEnum]
+
+
+export const KnowledgePublicationClaimScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  publicationId: 'publicationId',
+  claimIdentityId: 'claimIdentityId',
+  entryId: 'entryId',
+  sealManifestHash: 'sealManifestHash',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgePublicationClaimScalarFieldEnum = (typeof KnowledgePublicationClaimScalarFieldEnum)[keyof typeof KnowledgePublicationClaimScalarFieldEnum]
+
+
+export const KnowledgeServingPointerScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  audience: 'audience',
+  publicationId: 'publicationId',
+  pointerGeneration: 'pointerGeneration',
+  eligibilityGeneration: 'eligibilityGeneration',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeServingPointerScalarFieldEnum = (typeof KnowledgeServingPointerScalarFieldEnum)[keyof typeof KnowledgeServingPointerScalarFieldEnum]
+
+
+export const KnowledgePolicyVersionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  version: 'version',
+  mode: 'mode',
+  owner: 'owner',
+  expiresAt: 'expiresAt',
+  publicationAutomation: 'publicationAutomation',
+  freshnessRules: 'freshnessRules',
+  evidenceRules: 'evidenceRules',
+  policyHash: 'policyHash',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgePolicyVersionScalarFieldEnum = (typeof KnowledgePolicyVersionScalarFieldEnum)[keyof typeof KnowledgePolicyVersionScalarFieldEnum]
+
+
+export const PropertyIntelligencePolicyScalarFieldEnum = {
+  propertyId: 'propertyId',
+  currentPolicyVersionId: 'currentPolicyVersionId',
+  eligibilityGeneration: 'eligibilityGeneration',
+  reviewRequired: 'reviewRequired',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyIntelligencePolicyScalarFieldEnum = (typeof PropertyIntelligencePolicyScalarFieldEnum)[keyof typeof PropertyIntelligencePolicyScalarFieldEnum]
+
+
+export const BotMachinePolicyArtifactScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  schemaVersion: 'schemaVersion',
+  constitutionVersion: 'constitutionVersion',
+  canonicalPayload: 'canonicalPayload',
+  policy: 'policy',
+  policyHash: 'policyHash',
+  algorithm: 'algorithm',
+  signature: 'signature',
+  signerKeyId: 'signerKeyId',
+  state: 'state',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  activatedAt: 'activatedAt'
+} as const
+
+export type BotMachinePolicyArtifactScalarFieldEnum = (typeof BotMachinePolicyArtifactScalarFieldEnum)[keyof typeof BotMachinePolicyArtifactScalarFieldEnum]
+
+
+export const BotReleaseArtifactScalarFieldEnum = {
+  id: 'id',
+  releaseId: 'releaseId',
+  propertyId: 'propertyId',
+  policyArtifactId: 'policyArtifactId',
+  canonicalPayload: 'canonicalPayload',
+  manifest: 'manifest',
+  manifestHash: 'manifestHash',
+  policyHash: 'policyHash',
+  knowledgeReleaseHash: 'knowledgeReleaseHash',
+  applicationBuildId: 'applicationBuildId',
+  databaseSchemaVersion: 'databaseSchemaVersion',
+  servingContract: 'servingContract',
+  retrievalVersion: 'retrievalVersion',
+  algorithm: 'algorithm',
+  signature: 'signature',
+  signerKeyId: 'signerKeyId',
+  state: 'state',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  activatedAt: 'activatedAt'
+} as const
+
+export type BotReleaseArtifactScalarFieldEnum = (typeof BotReleaseArtifactScalarFieldEnum)[keyof typeof BotReleaseArtifactScalarFieldEnum]
+
+
+export const BotReleasePointerScalarFieldEnum = {
+  propertyId: 'propertyId',
+  releaseArtifactId: 'releaseArtifactId',
+  pointerGeneration: 'pointerGeneration',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BotReleasePointerScalarFieldEnum = (typeof BotReleasePointerScalarFieldEnum)[keyof typeof BotReleasePointerScalarFieldEnum]
+
+
+export const KnowledgeReleaseApprovalScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  manifestHash: 'manifestHash',
+  decision: 'decision',
+  actorId: 'actorId',
+  authority: 'authority',
+  decidedAt: 'decidedAt'
+} as const
+
+export type KnowledgeReleaseApprovalScalarFieldEnum = (typeof KnowledgeReleaseApprovalScalarFieldEnum)[keyof typeof KnowledgeReleaseApprovalScalarFieldEnum]
+
+
+export const KnowledgeReleaseArtifactScalarFieldEnum = {
+  id: 'id',
+  releaseId: 'releaseId',
+  propertyId: 'propertyId',
+  approvalId: 'approvalId',
+  canonicalPayload: 'canonicalPayload',
+  manifest: 'manifest',
+  manifestHash: 'manifestHash',
+  policyHash: 'policyHash',
+  state: 'state',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  membershipClosedAt: 'membershipClosedAt',
+  sealedAt: 'sealedAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type KnowledgeReleaseArtifactScalarFieldEnum = (typeof KnowledgeReleaseArtifactScalarFieldEnum)[keyof typeof KnowledgeReleaseArtifactScalarFieldEnum]
+
+
+export const KnowledgeReleaseMemberScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  releaseArtifactId: 'releaseArtifactId',
+  sourceId: 'sourceId',
+  sourceRevisionId: 'sourceRevisionId',
+  captureId: 'captureId',
+  captureVersionId: 'captureVersionId',
+  sourceType: 'sourceType',
+  contentDigest: 'contentDigest',
+  authorityRank: 'authorityRank',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeReleaseMemberScalarFieldEnum = (typeof KnowledgeReleaseMemberScalarFieldEnum)[keyof typeof KnowledgeReleaseMemberScalarFieldEnum]
+
+
+export const KnowledgeReleaseActivePointerScalarFieldEnum = {
+  propertyId: 'propertyId',
+  releaseArtifactId: 'releaseArtifactId',
+  pointerGeneration: 'pointerGeneration',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeReleaseActivePointerScalarFieldEnum = (typeof KnowledgeReleaseActivePointerScalarFieldEnum)[keyof typeof KnowledgeReleaseActivePointerScalarFieldEnum]
+
+
+export const KnowledgePreviewSessionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  propertyId: 'propertyId',
+  createdByMemberId: 'createdByMemberId',
+  accessScope: 'accessScope',
+  accessScopeHash: 'accessScopeHash',
+  candidateGeneration: 'candidateGeneration',
+  state: 'state',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgePreviewSessionScalarFieldEnum = (typeof KnowledgePreviewSessionScalarFieldEnum)[keyof typeof KnowledgePreviewSessionScalarFieldEnum]
+
+
+export const KnowledgePreviewClaimScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  previewSessionId: 'previewSessionId',
+  entryId: 'entryId',
+  candidateGeneration: 'candidateGeneration',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgePreviewClaimScalarFieldEnum = (typeof KnowledgePreviewClaimScalarFieldEnum)[keyof typeof KnowledgePreviewClaimScalarFieldEnum]
+
+
+export const KnowledgeGuestSessionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  conversationId: 'conversationId',
+  sessionHash: 'sessionHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeGuestSessionScalarFieldEnum = (typeof KnowledgeGuestSessionScalarFieldEnum)[keyof typeof KnowledgeGuestSessionScalarFieldEnum]
+
+
+export const KnowledgeRevisionEventScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  entryId: 'entryId',
+  eventType: 'eventType',
+  relatedEntryId: 'relatedEntryId',
+  reason: 'reason',
+  actorId: 'actorId',
+  occurredAt: 'occurredAt'
+} as const
+
+export type KnowledgeRevisionEventScalarFieldEnum = (typeof KnowledgeRevisionEventScalarFieldEnum)[keyof typeof KnowledgeRevisionEventScalarFieldEnum]
+
+
+export const KnowledgeAnswerAuditScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  conversationId: 'conversationId',
+  guestSessionId: 'guestSessionId',
+  publicationId: 'publicationId',
+  pointerGeneration: 'pointerGeneration',
+  eligibilityGeneration: 'eligibilityGeneration',
+  selectedManifest: 'selectedManifest',
+  selectedManifestHash: 'selectedManifestHash',
+  validationResult: 'validationResult',
+  deliveryState: 'deliveryState',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeAnswerAuditScalarFieldEnum = (typeof KnowledgeAnswerAuditScalarFieldEnum)[keyof typeof KnowledgeAnswerAuditScalarFieldEnum]
+
+
+export const KnowledgeAnswerOutcomeScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  answerAuditId: 'answerAuditId',
+  deliveryKey: 'deliveryKey',
+  state: 'state',
+  detail: 'detail',
+  occurredAt: 'occurredAt'
+} as const
+
+export type KnowledgeAnswerOutcomeScalarFieldEnum = (typeof KnowledgeAnswerOutcomeScalarFieldEnum)[keyof typeof KnowledgeAnswerOutcomeScalarFieldEnum]
+
+
+export const KnowledgeHandoverRequestScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  conversationId: 'conversationId',
+  guestSessionId: 'guestSessionId',
+  requestHash: 'requestHash',
+  recordedAt: 'recordedAt'
+} as const
+
+export type KnowledgeHandoverRequestScalarFieldEnum = (typeof KnowledgeHandoverRequestScalarFieldEnum)[keyof typeof KnowledgeHandoverRequestScalarFieldEnum]
+
+
+export const KnowledgeHandoverEventScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  requestId: 'requestId',
+  state: 'state',
+  sequence: 'sequence',
+  attemptNumber: 'attemptNumber',
+  provider: 'provider',
+  deliveryId: 'deliveryId',
+  errorCode: 'errorCode',
+  actorId: 'actorId',
+  occurredAt: 'occurredAt'
+} as const
+
+export type KnowledgeHandoverEventScalarFieldEnum = (typeof KnowledgeHandoverEventScalarFieldEnum)[keyof typeof KnowledgeHandoverEventScalarFieldEnum]
+
+
+export const KnowledgeOutboxEventScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  operationKey: 'operationKey',
+  eventType: 'eventType',
+  schemaVersion: 'schemaVersion',
+  payload: 'payload',
+  state: 'state',
+  availableAt: 'availableAt',
+  leaseOwner: 'leaseOwner',
+  leaseExpiresAt: 'leaseExpiresAt',
+  attempts: 'attempts',
+  dispatchedAt: 'dispatchedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeOutboxEventScalarFieldEnum = (typeof KnowledgeOutboxEventScalarFieldEnum)[keyof typeof KnowledgeOutboxEventScalarFieldEnum]
+
+
+export const AutomationJobAttemptScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  jobId: 'jobId',
+  attemptNumber: 'attemptNumber',
+  workerId: 'workerId',
+  fencingToken: 'fencingToken',
+  state: 'state',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  errorCode: 'errorCode'
+} as const
+
+export type AutomationJobAttemptScalarFieldEnum = (typeof AutomationJobAttemptScalarFieldEnum)[keyof typeof AutomationJobAttemptScalarFieldEnum]
+
+
+export const KnowledgeCertificationRunScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  policyVersionId: 'policyVersionId',
+  publicationId: 'publicationId',
+  suiteVersion: 'suiteVersion',
+  caseManifestHash: 'caseManifestHash',
+  resultManifest: 'resultManifest',
+  resultHash: 'resultHash',
+  passed: 'passed',
+  executedAt: 'executedAt'
+} as const
+
+export type KnowledgeCertificationRunScalarFieldEnum = (typeof KnowledgeCertificationRunScalarFieldEnum)[keyof typeof KnowledgeCertificationRunScalarFieldEnum]
+
+
+export const KnowledgeRetentionDecisionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  objectReferenceId: 'objectReferenceId',
+  state: 'state',
+  policyVersion: 'policyVersion',
+  legalHold: 'legalHold',
+  decidedBy: 'decidedBy',
+  reason: 'reason',
+  decidedAt: 'decidedAt'
+} as const
+
+export type KnowledgeRetentionDecisionScalarFieldEnum = (typeof KnowledgeRetentionDecisionScalarFieldEnum)[keyof typeof KnowledgeRetentionDecisionScalarFieldEnum]
+
+
+export const KnowledgePayloadDisposalAuditScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  objectId: 'objectId',
+  operationKey: 'operationKey',
+  objectKeyHash: 'objectKeyHash',
+  checksum: 'checksum',
+  policyVersion: 'policyVersion',
+  disposedBy: 'disposedBy',
+  disposedAt: 'disposedAt'
+} as const
+
+export type KnowledgePayloadDisposalAuditScalarFieldEnum = (typeof KnowledgePayloadDisposalAuditScalarFieldEnum)[keyof typeof KnowledgePayloadDisposalAuditScalarFieldEnum]
+
+
+export const BotFactualServingControlScalarFieldEnum = {
+  propertyId: 'propertyId',
+  isClosed: 'isClosed',
+  version: 'version',
+  incidentId: 'incidentId',
+  reason: 'reason',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BotFactualServingControlScalarFieldEnum = (typeof BotFactualServingControlScalarFieldEnum)[keyof typeof BotFactualServingControlScalarFieldEnum]
+
+
+export const BotFactualServingControlEventScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  version: 'version',
+  isClosed: 'isClosed',
+  incidentId: 'incidentId',
+  reason: 'reason',
+  actorId: 'actorId',
+  occurredAt: 'occurredAt'
+} as const
+
+export type BotFactualServingControlEventScalarFieldEnum = (typeof BotFactualServingControlEventScalarFieldEnum)[keyof typeof BotFactualServingControlEventScalarFieldEnum]
+
+
+export const KnowledgeMigrationDecisionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  legacyEntryId: 'legacyEntryId',
+  batchId: 'batchId',
+  decision: 'decision',
+  reasonCode: 'reasonCode',
+  proposedStableKey: 'proposedStableKey',
+  sourceHash: 'sourceHash',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeMigrationDecisionScalarFieldEnum = (typeof KnowledgeMigrationDecisionScalarFieldEnum)[keyof typeof KnowledgeMigrationDecisionScalarFieldEnum]
+
+
+export const KnowledgeMigrationArtifactDecisionScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  batchId: 'batchId',
+  artifactType: 'artifactType',
+  legacyId: 'legacyId',
+  sourcePathHash: 'sourcePathHash',
+  contentHash: 'contentHash',
+  decision: 'decision',
+  reasonCode: 'reasonCode',
+  sourceId: 'sourceId',
+  objectId: 'objectId',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeMigrationArtifactDecisionScalarFieldEnum = (typeof KnowledgeMigrationArtifactDecisionScalarFieldEnum)[keyof typeof KnowledgeMigrationArtifactDecisionScalarFieldEnum]
+
+
+export const KnowledgeRuntimePrincipalGrantScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  principalId: 'principalId',
+  databaseRole: 'databaseRole',
+  purpose: 'purpose',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type KnowledgeRuntimePrincipalGrantScalarFieldEnum = (typeof KnowledgeRuntimePrincipalGrantScalarFieldEnum)[keyof typeof KnowledgeRuntimePrincipalGrantScalarFieldEnum]
+
+
 export const PropertyScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -152,10 +857,44 @@ export const PropertyScalarFieldEnum = {
   state: 'state',
   timezone: 'timezone',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  websiteConsentEnforcedAt: 'websiteConsentEnforcedAt'
 } as const
 
 export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
+export const WebsiteSourceConsentScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  sourceUrl: 'sourceUrl',
+  sourceUrlHash: 'sourceUrlHash',
+  termsVersion: 'termsVersion',
+  status: 'status',
+  trialAuthorizedAt: 'trialAuthorizedAt',
+  trialExpiresAt: 'trialExpiresAt',
+  acceptedByEmail: 'acceptedByEmail',
+  acceptedIpHash: 'acceptedIpHash',
+  postTrialMethod: 'postTrialMethod',
+  postTrialApprovedBy: 'postTrialApprovedBy',
+  postTrialApprovedAt: 'postTrialApprovedAt',
+  approvalEvidenceRef: 'approvalEvidenceRef',
+  revokedAt: 'revokedAt',
+  revokedBy: 'revokedBy',
+  revocationReason: 'revocationReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  sourceType: 'sourceType',
+  canonicalIdentity: 'canonicalIdentity',
+  canonicalIdentityHash: 'canonicalIdentityHash',
+  sourceId: 'sourceId',
+  authorityScope: 'authorityScope',
+  audienceCeiling: 'audienceCeiling',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil'
+} as const
+
+export type WebsiteSourceConsentScalarFieldEnum = (typeof WebsiteSourceConsentScalarFieldEnum)[keyof typeof WebsiteSourceConsentScalarFieldEnum]
 
 
 export const ReadinessScanScalarFieldEnum = {
@@ -323,7 +1062,22 @@ export const KnowledgeEntryScalarFieldEnum = {
   approvedBy: 'approvedBy',
   approvedAt: 'approvedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  claimIdentityId: 'claimIdentityId',
+  revisionNumber: 'revisionNumber',
+  normalizedValue: 'normalizedValue',
+  valueHash: 'valueHash',
+  quoteText: 'quoteText',
+  audience: 'audience',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  verificationStatus: 'verificationStatus',
+  revisionState: 'revisionState',
+  requiredComponents: 'requiredComponents',
+  sealManifestHash: 'sealManifestHash',
+  sealPolicyVersion: 'sealPolicyVersion',
+  sealedAt: 'sealedAt',
+  sealedBy: 'sealedBy'
 } as const
 
 export type KnowledgeEntryScalarFieldEnum = (typeof KnowledgeEntryScalarFieldEnum)[keyof typeof KnowledgeEntryScalarFieldEnum]
@@ -946,6 +1700,7 @@ export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[k
 
 export const ConversationParticipantScalarFieldEnum = {
   id: 'id',
+  propertyId: 'propertyId',
   conversationId: 'conversationId',
   participantId: 'participantId',
   role: 'role',
@@ -1239,6 +1994,74 @@ export const PlatformAuditLogScalarFieldEnum = {
 export type PlatformAuditLogScalarFieldEnum = (typeof PlatformAuditLogScalarFieldEnum)[keyof typeof PlatformAuditLogScalarFieldEnum]
 
 
+export const GovernanceControlRecordScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  ownerEmail: 'ownerEmail',
+  approverEmail: 'approverEmail',
+  affectedControls: 'affectedControls',
+  rationale: 'rationale',
+  compatibilityImpact: 'compatibilityImpact',
+  evidence: 'evidence',
+  expiresAt: 'expiresAt',
+  remediationAt: 'remediationAt',
+  digest: 'digest',
+  createdAt: 'createdAt'
+} as const
+
+export type GovernanceControlRecordScalarFieldEnum = (typeof GovernanceControlRecordScalarFieldEnum)[keyof typeof GovernanceControlRecordScalarFieldEnum]
+
+
+export const MaterialApprovalScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  target: 'target',
+  payloadHash: 'payloadHash',
+  requestedBy: 'requestedBy',
+  approvedBy: 'approvedBy',
+  state: 'state',
+  expiresAt: 'expiresAt',
+  executedAt: 'executedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type MaterialApprovalScalarFieldEnum = (typeof MaterialApprovalScalarFieldEnum)[keyof typeof MaterialApprovalScalarFieldEnum]
+
+
+export const GovernedRepairCommandScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  commandType: 'commandType',
+  idempotencyKey: 'idempotencyKey',
+  expectedVersion: 'expectedVersion',
+  reason: 'reason',
+  payload: 'payload',
+  payloadHash: 'payloadHash',
+  status: 'status',
+  requestedBy: 'requestedBy',
+  result: 'result',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+} as const
+
+export type GovernedRepairCommandScalarFieldEnum = (typeof GovernedRepairCommandScalarFieldEnum)[keyof typeof GovernedRepairCommandScalarFieldEnum]
+
+
+export const BreakGlassGrantScalarFieldEnum = {
+  id: 'id',
+  incidentId: 'incidentId',
+  actorEmail: 'actorEmail',
+  scopes: 'scopes',
+  reason: 'reason',
+  expiresAt: 'expiresAt',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type BreakGlassGrantScalarFieldEnum = (typeof BreakGlassGrantScalarFieldEnum)[keyof typeof BreakGlassGrantScalarFieldEnum]
+
+
 export const AutomationJobScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
@@ -1264,7 +2087,13 @@ export const AutomationJobScalarFieldEnum = {
   createdBy: 'createdBy',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  operationKey: 'operationKey',
+  operationType: 'operationType',
+  operationVersion: 'operationVersion',
+  inputGeneration: 'inputGeneration',
+  canonicalInputHash: 'canonicalInputHash',
+  fencingToken: 'fencingToken'
 } as const
 
 export type AutomationJobScalarFieldEnum = (typeof AutomationJobScalarFieldEnum)[keyof typeof AutomationJobScalarFieldEnum]
@@ -1708,19 +2537,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1731,14 +2560,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -1746,4 +2567,12 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

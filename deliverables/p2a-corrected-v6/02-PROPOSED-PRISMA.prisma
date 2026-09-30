@@ -1,0 +1,2758 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+// P2-A v6 additive knowledge authority. This file is a complete proposed
+// schema and is validated independently; it is not the active schema.
+model KnowledgeClaimIdentity {
+  id                String                      @id @default(cuid())
+  propertyId        String
+  property          Property                    @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  stableKey         String
+  entityKey         String
+  fieldKey          String
+  qualifiers        Json
+  keyVersion        Int
+  createdAt         DateTime                    @default(now())
+  entries           KnowledgeEntry[]
+  publicationClaims KnowledgePublicationClaim[]
+
+  @@unique([propertyId, stableKey])
+  @@unique([propertyId, id])
+  @@index([propertyId, entityKey, fieldKey])
+}
+
+model KnowledgeSource {
+  id                    String                     @id @default(cuid())
+  propertyId            String
+  property              Property                   @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  sourceType            KnowledgeSourceType
+  canonicalIdentity     String                     @db.Text
+  canonicalIdentityHash String
+  state                 KnowledgeSourceState       @default(DRAFT)
+  audienceCeiling       KnowledgeAudience
+  currentRevision       Int                        @default(0)
+  revokedAt             DateTime?
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  revisions             KnowledgeSourceRevision[]
+  captures              SourceCapture[]
+  consents              WebsiteSourceConsent[]
+  objectReferences      KnowledgeObjectReference[]
+
+  @@unique([propertyId, sourceType, canonicalIdentityHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, state])
+}
+
+model KnowledgeSourceRevision {
+  id                String               @id @default(cuid())
+  propertyId        String
+  sourceId          String
+  revision          Int
+  configuration     Json
+  configurationHash String
+  consentId         String
+  createdBy         String
+  createdAt         DateTime             @default(now())
+  source            KnowledgeSource      @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  consent           WebsiteSourceConsent @relation(fields: [propertyId, consentId], references: [propertyId, id], onDelete: Restrict)
+  captures          SourceCapture[]
+
+  @@unique([propertyId, sourceId, revision])
+  @@unique([propertyId, sourceId, id])
+  @@unique([propertyId, id])
+}
+
+model SourceCapture {
+  id                  String                  @id @default(cuid())
+  propertyId          String
+  sourceId            String
+  sourceRevisionId    String
+  requestedGeneration BigInt
+  operationKey        String                  @unique
+  status              CaptureState            @default(QUEUED)
+  requestedAt         DateTime                @default(now())
+  startedAt           DateTime?
+  completedAt         DateTime?
+  source              KnowledgeSource         @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  sourceRevision      KnowledgeSourceRevision @relation(fields: [propertyId, sourceId, sourceRevisionId], references: [propertyId, sourceId, id], onDelete: Restrict)
+  versions            CaptureVersion[]
+
+  @@unique([propertyId, sourceId, requestedGeneration])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeObject {
+  id               String                     @id @default(cuid())
+  propertyId       String
+  property         Property                   @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  storageNamespace String
+  objectKey        String
+  checksum         String
+  byteSize         BigInt
+  mediaType        String
+  state            KnowledgeObjectState       @default(STAGED)
+  stagingTokenHash String
+  finalizedByJobId String?
+  finalizedFence   BigInt?
+  retainUntil      DateTime?
+  legalHold        Boolean                    @default(false)
+  createdAt        DateTime                   @default(now())
+  usableAt         DateTime?
+  finalizedByJob   AutomationJob?             @relation(fields: [propertyId, finalizedByJobId], references: [propertyId, id], onDelete: Restrict)
+  references       KnowledgeObjectReference[]
+  captureVersions  CaptureVersion[]
+
+  @@unique([propertyId, objectKey])
+  @@unique([propertyId, checksum])
+  @@unique([propertyId, id])
+  @@index([propertyId, state, createdAt])
+}
+
+model KnowledgeObjectReference {
+  id                 String                       @id @default(cuid())
+  propertyId         String
+  objectId           String
+  sourceId           String
+  purpose            String
+  retainUntil        DateTime?
+  legalHold          Boolean                      @default(false)
+  releasedAt         DateTime?
+  createdAt          DateTime                     @default(now())
+  object             KnowledgeObject              @relation(fields: [propertyId, objectId], references: [propertyId, id], onDelete: Restrict)
+  source             KnowledgeSource              @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  retentionDecisions KnowledgeRetentionDecision[]
+
+  @@unique([propertyId, objectId, sourceId, purpose])
+  @@unique([propertyId, id])
+}
+
+model CaptureVersion {
+  id             String                   @id @default(cuid())
+  propertyId     String
+  captureId      String
+  objectId       String
+  checksum       String
+  manifest       Json
+  capturedAt     DateTime
+  createdAt      DateTime                 @default(now())
+  capture        SourceCapture            @relation(fields: [propertyId, captureId], references: [propertyId, id], onDelete: Restrict)
+  object         KnowledgeObject          @relation(fields: [propertyId, objectId], references: [propertyId, id], onDelete: Restrict)
+  extractionRuns KnowledgeExtractionRun[]
+  evidence       KnowledgeClaimEvidence[]
+
+  @@unique([propertyId, captureId, checksum])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeExtractionRun {
+  id                   String         @id @default(cuid())
+  propertyId           String
+  captureVersionId     String
+  extractorVersion     String
+  normalizationVersion String
+  operationKey         String         @unique
+  status               CaptureState   @default(QUEUED)
+  resultManifestHash   String?
+  createdAt            DateTime       @default(now())
+  completedAt          DateTime?
+  captureVersion       CaptureVersion @relation(fields: [propertyId, captureVersionId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, captureVersionId, extractorVersion, normalizationVersion])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeClaimEvidence {
+  id                  String                             @id @default(cuid())
+  propertyId          String
+  entryId             String
+  captureVersionId    String
+  locator             Json
+  locatorHash         String
+  quotation           String                             @db.Text
+  quotationHash       String
+  supportedComponents String[]
+  bindingHash         String
+  createdAt           DateTime                           @default(now())
+  entry               KnowledgeEntry                     @relation(fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+  captureVersion      CaptureVersion                     @relation(fields: [propertyId, captureVersionId], references: [propertyId, id], onDelete: Restrict)
+  bindings            KnowledgeRevisionEvidenceBinding[]
+
+  @@unique([propertyId, entryId, captureVersionId, locatorHash])
+  @@unique([propertyId, entryId, id])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeRevisionEvidenceBinding {
+  id          String                 @id @default(cuid())
+  propertyId  String
+  entryId     String
+  evidenceId  String
+  bindingHash String
+  createdAt   DateTime               @default(now())
+  entry       KnowledgeEntry         @relation(fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+  evidence    KnowledgeClaimEvidence @relation(fields: [propertyId, entryId, evidenceId], references: [propertyId, entryId, id], onDelete: Restrict)
+
+  @@unique([propertyId, entryId, evidenceId])
+  @@unique([propertyId, entryId, bindingHash])
+}
+
+model KnowledgeClaimConflict {
+  id            String         @id @default(cuid())
+  propertyId    String
+  lowerEntryId  String
+  higherEntryId String
+  reason        String         @db.Text
+  blocking      Boolean        @default(true)
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  resolution    String?        @db.Text
+  createdAt     DateTime       @default(now())
+  lowerEntry    KnowledgeEntry @relation("ConflictLower", fields: [propertyId, lowerEntryId], references: [propertyId, id], onDelete: Restrict)
+  higherEntry   KnowledgeEntry @relation("ConflictHigher", fields: [propertyId, higherEntryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, lowerEntryId, higherEntryId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeApprovalEvidence {
+  id             String                      @id @default(cuid())
+  propertyId     String
+  purpose        ApprovalPurpose
+  decision       ApprovalDecision
+  scopeManifest  Json
+  scopeHash      String
+  audience       KnowledgeAudience?
+  policyVersion  String
+  actorId        String
+  actorEmailHash String
+  authority      String
+  supersedesId   String?
+  decidedAt      DateTime                    @default(now())
+  supersedes     KnowledgeApprovalEvidence?  @relation("ApprovalSupersession", fields: [propertyId, supersedesId], references: [propertyId, id], onDelete: Restrict)
+  supersededBy   KnowledgeApprovalEvidence[] @relation("ApprovalSupersession")
+  publications   KnowledgePublication[]
+
+  @@unique([propertyId, purpose, scopeHash, decision, policyVersion])
+  @@unique([propertyId, id])
+}
+
+model KnowledgePublication {
+  id                    String                      @id @default(cuid())
+  propertyId            String
+  audience              KnowledgeAudience
+  manifestHash          String
+  policyVersion         String
+  evidencePolicyVersion String
+  approvalId            String
+  state                 PublicationState            @default(CANDIDATE)
+  sealedAt              DateTime?
+  membershipClosedAt    DateTime?
+  revokedAt             DateTime?
+  createdAt             DateTime                    @default(now())
+  approval              KnowledgeApprovalEvidence   @relation(fields: [propertyId, approvalId], references: [propertyId, id], onDelete: Restrict)
+  claims                KnowledgePublicationClaim[]
+  pointers              KnowledgeServingPointer[]
+  answerAudits          KnowledgeAnswerAudit[]
+  certificationRuns     KnowledgeCertificationRun[]
+
+  @@unique([propertyId, audience, manifestHash, policyVersion])
+  @@unique([propertyId, audience, id])
+  @@unique([propertyId, id])
+}
+
+model KnowledgePublicationClaim {
+  id               String                 @id @default(cuid())
+  propertyId       String
+  publicationId    String
+  claimIdentityId  String
+  entryId          String
+  sealManifestHash String
+  createdAt        DateTime               @default(now())
+  publication      KnowledgePublication   @relation(fields: [propertyId, publicationId], references: [propertyId, id], onDelete: Restrict)
+  claimIdentity    KnowledgeClaimIdentity @relation(fields: [propertyId, claimIdentityId], references: [propertyId, id], onDelete: Restrict)
+  entry            KnowledgeEntry         @relation(fields: [propertyId, claimIdentityId, entryId, sealManifestHash], references: [propertyId, claimIdentityId, id, sealManifestHash], onDelete: Restrict)
+
+  @@unique([propertyId, publicationId, claimIdentityId])
+  @@unique([propertyId, publicationId, entryId])
+}
+
+model KnowledgeServingPointer {
+  id                    String               @id @default(cuid())
+  propertyId            String
+  audience              KnowledgeAudience
+  publicationId         String
+  pointerGeneration     BigInt               @default(1)
+  eligibilityGeneration BigInt               @default(1)
+  updatedBy             String
+  updatedAt             DateTime             @updatedAt
+  publication           KnowledgePublication @relation(fields: [propertyId, audience, publicationId], references: [propertyId, audience, id], onDelete: Restrict)
+
+  @@unique([propertyId, audience])
+}
+
+model KnowledgePolicyVersion {
+  id                    String                      @id @default(cuid())
+  propertyId            String
+  property              Property                    @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  version               Int
+  mode                  KnowledgePolicyMode
+  owner                 String
+  expiresAt             DateTime?
+  publicationAutomation Boolean                     @default(false)
+  freshnessRules        Json
+  evidenceRules         Json
+  policyHash            String
+  createdAt             DateTime                    @default(now())
+  currentFor            PropertyIntelligencePolicy?
+  certificationRuns     KnowledgeCertificationRun[]
+
+  @@unique([propertyId, version])
+  @@unique([propertyId, id])
+}
+
+model PropertyIntelligencePolicy {
+  propertyId             String                 @id
+  currentPolicyVersionId String
+  eligibilityGeneration  BigInt                 @default(1)
+  reviewRequired         Boolean                @default(true)
+  updatedAt              DateTime               @updatedAt
+  property               Property               @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  currentPolicy          KnowledgePolicyVersion @relation(fields: [propertyId, currentPolicyVersionId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, currentPolicyVersionId])
+}
+
+model KnowledgePreviewSession {
+  id                  String                  @id @default(cuid())
+  organizationId      String
+  propertyId          String
+  createdByMemberId   String
+  accessScope         Json
+  accessScopeHash     String
+  candidateGeneration BigInt
+  state               PreviewState            @default(ACTIVE)
+  expiresAt           DateTime
+  revokedAt           DateTime?
+  createdAt           DateTime                @default(now())
+  property            Property                @relation(fields: [propertyId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  member              OrganizationMember      @relation(fields: [organizationId, createdByMemberId], references: [organizationId, id], onDelete: Restrict)
+  claims              KnowledgePreviewClaim[]
+
+  @@unique([propertyId, id])
+  @@unique([propertyId, id, candidateGeneration])
+}
+
+model KnowledgePreviewClaim {
+  id                  String                  @id @default(cuid())
+  propertyId          String
+  previewSessionId    String
+  entryId             String
+  candidateGeneration BigInt
+  createdAt           DateTime                @default(now())
+  session             KnowledgePreviewSession @relation(fields: [propertyId, previewSessionId, candidateGeneration], references: [propertyId, id, candidateGeneration], onDelete: Cascade)
+  entry               KnowledgeEntry          @relation(fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, previewSessionId, entryId])
+}
+
+model KnowledgeGuestSession {
+  id               String                     @id @default(cuid())
+  propertyId       String
+  conversationId   String
+  sessionHash      String
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime                   @default(now())
+  property         Property                   @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  conversation     Conversation               @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Restrict)
+  answerAudits     KnowledgeAnswerAudit[]
+  handoverRequests KnowledgeHandoverRequest[]
+
+  @@unique([propertyId, sessionHash])
+  @@unique([propertyId, conversationId, id])
+}
+
+model KnowledgeRevisionEvent {
+  id             String             @id @default(cuid())
+  propertyId     String
+  entryId        String
+  eventType      KnowledgeEventType
+  relatedEntryId String?
+  reason         String             @db.Text
+  actorId        String
+  occurredAt     DateTime           @default(now())
+  entry          KnowledgeEntry     @relation("RevisionEventEntry", fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+  relatedEntry   KnowledgeEntry?    @relation("RevisionEventRelated", fields: [propertyId, relatedEntryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, entryId, eventType, relatedEntryId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeAnswerAudit {
+  id                    String                   @id @default(cuid())
+  propertyId            String
+  conversationId        String
+  guestSessionId        String
+  publicationId         String
+  pointerGeneration     BigInt
+  eligibilityGeneration BigInt
+  selectedManifest      Json
+  selectedManifestHash  String
+  validationResult      Json
+  deliveryState         AnswerDeliveryState      @default(PENDING)
+  createdAt             DateTime                 @default(now())
+  property              Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  conversation          Conversation             @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Restrict)
+  guestSession          KnowledgeGuestSession    @relation(fields: [propertyId, conversationId, guestSessionId], references: [propertyId, conversationId, id], onDelete: Restrict)
+  publication           KnowledgePublication     @relation(fields: [propertyId, publicationId], references: [propertyId, id], onDelete: Restrict)
+  outcomes              KnowledgeAnswerOutcome[]
+
+  @@unique([propertyId, id])
+  @@index([propertyId, conversationId, createdAt])
+}
+
+model KnowledgeAnswerOutcome {
+  id            String               @id @default(cuid())
+  propertyId    String
+  answerAuditId String
+  deliveryKey   String
+  state         AnswerDeliveryState
+  detail        Json?
+  occurredAt    DateTime             @default(now())
+  answerAudit   KnowledgeAnswerAudit @relation(fields: [propertyId, answerAuditId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, answerAuditId, deliveryKey])
+}
+
+model KnowledgeHandoverRequest {
+  id             String                   @id @default(cuid())
+  propertyId     String
+  conversationId String
+  guestSessionId String
+  requestHash    String
+  recordedAt     DateTime                 @default(now())
+  property       Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  conversation   Conversation             @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Restrict)
+  guestSession   KnowledgeGuestSession    @relation(fields: [propertyId, conversationId, guestSessionId], references: [propertyId, conversationId, id], onDelete: Restrict)
+  events         KnowledgeHandoverEvent[]
+
+  @@unique([propertyId, requestHash])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeHandoverEvent {
+  id            String                   @id @default(cuid())
+  propertyId    String
+  requestId     String
+  state         HandoverState
+  sequence      Int
+  attemptNumber Int?
+  provider      String?
+  deliveryId    String?
+  errorCode     String?
+  actorId       String
+  occurredAt    DateTime                 @default(now())
+  request       KnowledgeHandoverRequest @relation(fields: [propertyId, requestId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, requestId, sequence])
+  @@unique([provider, deliveryId])
+}
+
+model KnowledgeOutboxEvent {
+  id             String      @id @default(cuid())
+  propertyId     String
+  operationKey   String
+  eventType      String
+  schemaVersion  Int
+  payload        Json
+  state          OutboxState @default(PENDING)
+  availableAt    DateTime    @default(now())
+  leaseOwner     String?
+  leaseExpiresAt DateTime?
+  attempts       Int         @default(0)
+  dispatchedAt   DateTime?
+  createdAt      DateTime    @default(now())
+
+  @@unique([propertyId, operationKey, eventType, schemaVersion])
+  @@unique([propertyId, id])
+}
+
+model AutomationJobAttempt {
+  id            String          @id @default(cuid())
+  propertyId    String
+  jobId         String
+  attemptNumber Int
+  workerId      String
+  fencingToken  BigInt
+  state         JobAttemptState @default(RUNNING)
+  startedAt     DateTime        @default(now())
+  finishedAt    DateTime?
+  errorCode     String?
+  job           AutomationJob   @relation(fields: [propertyId, jobId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, jobId, attemptNumber])
+  @@unique([propertyId, jobId, fencingToken])
+}
+
+model KnowledgeCertificationRun {
+  id               String                 @id @default(cuid())
+  propertyId       String
+  policyVersionId  String
+  publicationId    String?
+  suiteVersion     String
+  caseManifestHash String
+  resultManifest   Json
+  resultHash       String
+  passed           Boolean
+  executedAt       DateTime
+  property         Property               @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  policyVersion    KnowledgePolicyVersion @relation(fields: [propertyId, policyVersionId], references: [propertyId, id], onDelete: Restrict)
+  publication      KnowledgePublication?  @relation(fields: [propertyId, publicationId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, policyVersionId, publicationId, suiteVersion, caseManifestHash])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeRetentionDecision {
+  id                String                   @id @default(cuid())
+  propertyId        String
+  objectReferenceId String
+  state             RetentionState           @default(RETAIN)
+  policyVersion     String
+  legalHold         Boolean                  @default(false)
+  decidedBy         String
+  reason            String                   @db.Text
+  decidedAt         DateTime                 @default(now())
+  property          Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  objectReference   KnowledgeObjectReference @relation(fields: [propertyId, objectReferenceId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, objectReferenceId, policyVersion, state])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeMigrationDecision {
+  id                String         @id
+  propertyId        String
+  legacyEntryId     String
+  batchId           String
+  decision          String
+  reasonCode        String
+  proposedStableKey String?
+  sourceHash        String
+  createdAt         DateTime       @default(now())
+  property          Property       @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  legacyEntry       KnowledgeEntry @relation(fields: [propertyId, legacyEntryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([batchId, legacyEntryId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeMigrationArtifactDecision {
+  id             String   @id
+  propertyId     String
+  batchId        String
+  artifactType   String
+  legacyId       String
+  sourcePathHash String?
+  contentHash    String
+  decision       String
+  reasonCode     String
+  sourceId       String?
+  objectId       String?
+  createdAt      DateTime @default(now())
+  property       Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  @@unique([batchId, artifactType, legacyId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeRuntimePrincipalGrant {
+  id           String    @id
+  propertyId   String
+  principalId  String
+  databaseRole String
+  purpose      String
+  expiresAt    DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  property     Property  @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  @@unique([propertyId, principalId, databaseRole, purpose])
+  @@unique([propertyId, id])
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadLanguage {
+  HI
+  EN
+}
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  BOOKED
+  LOST
+}
+
+enum MessageSender {
+  GUEST
+  AGENT
+  AI
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO_LINK
+  PDF
+  INVOICE_LINK
+  PAYMENT_LINK
+  BROCHURE_LINK
+  DOCUMENT_LINK
+}
+
+enum AssetCategory {
+  ROOM
+  EXPERIENCE
+  PROPERTY
+  WEDDING
+  DINING
+  BROCHURE
+  INVOICE
+  PAYMENT
+  OTHER
+}
+
+enum ChannelKind {
+  WHATSAPP
+  WEBSITE
+  EMAIL
+  INSTAGRAM
+  API
+  VOICE
+}
+
+enum ChannelConnectionStatus {
+  DRAFT
+  CONNECTING
+  CONNECTED
+  DEGRADED
+  DISABLED
+  ERROR
+}
+
+enum ParticipantKind {
+  CUSTOMER
+  HUMAN
+  BOT
+  SYSTEM
+}
+
+enum ConversationStatus {
+  OPEN
+  BOT_ACTIVE
+  HUMAN_OWNED
+  RESOLVED
+  CLOSED
+}
+
+enum NeutralMessageDirection {
+  INBOUND
+  OUTBOUND
+  SYSTEM
+}
+
+enum BotCategory {
+  BUSINESS_AI
+  PINGBOOK
+  FLOWCART
+  STAY
+  RESTAURANT
+  REAL_ESTATE
+  EDUCATION
+  CUSTOM
+}
+
+enum BotOperatingMode {
+  ANSWER_ONLY
+  LEAD_CAPTURE
+  APPROVED_ACTIONS
+  HUMAN_APPROVAL
+}
+
+// AI Readiness is an internal, evidence-led product line. These enums are
+// deliberately separate from bot lifecycle state so a readiness observation
+// can never make a bot live or change customer-facing behaviour.
+enum ReadinessScanStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum ReadinessEvidenceStatus {
+  PASS
+  FAIL
+  INSUFFICIENT_EVIDENCE
+  NOT_APPLICABLE
+}
+
+enum ReadinessIssueStatus {
+  DETECTED
+  REVIEW_REQUIRED
+  APPROVED
+  DECLINED
+  NOT_APPLICABLE
+  IN_PROGRESS
+  IMPLEMENTED
+  VERIFIED
+}
+
+enum ReadinessDeliveryRoute {
+  AIFROGI_MANAGED
+  AGENCY_HANDOFF
+  CLIENT_GUIDANCE
+}
+
+enum KnowledgeSourceType {
+  WEBSITE
+  PDF
+  SPREADSHEET
+  FORM
+  OWNER_CORRECTION
+  CONNECTOR
+}
+
+enum KnowledgeSourceState {
+  DRAFT
+  AUTHORIZED
+  PAUSED
+  REVOKED
+  ARCHIVED
+}
+
+enum KnowledgeAudience {
+  PUBLIC
+  STAFF
+  RESTRICTED
+}
+
+enum ClaimRevisionState {
+  DRAFT
+  SEALED
+}
+
+enum ClaimVerificationStatus {
+  SUPPORTED
+  PARTIAL
+  CONTRADICTED
+  UNSUPPORTED
+}
+
+enum CaptureState {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum KnowledgeObjectState {
+  STAGED
+  USABLE
+  QUARANTINED
+  RETAINED_ORPHAN
+}
+
+enum ApprovalPurpose {
+  PREVIEW_ACKNOWLEDGEMENT
+  PUBLICATION_AUTHORIZATION
+  PUBLICATION_REVOCATION
+  SOURCE_CORRECTION
+}
+
+enum ApprovalDecision {
+  APPROVED
+  REJECTED
+  REVOKED
+}
+
+enum PublicationState {
+  CANDIDATE
+  SEALED
+  REVOKED
+}
+
+enum PreviewState {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum KnowledgePolicyMode {
+  LEGACY
+  CLAIMS_ONLY
+  BLOCKED
+}
+
+enum KnowledgeEventType {
+  SUPERSEDED
+  WITHDRAWN
+  AUTHORITY_REVOKED
+}
+
+enum OutboxState {
+  PENDING
+  LEASED
+  DISPATCHED
+  DEAD_LETTER
+}
+
+enum JobAttemptState {
+  RUNNING
+  SUCCEEDED
+  FAILED
+  ABANDONED
+}
+
+enum AnswerDeliveryState {
+  PENDING
+  DELIVERED
+  SUPPRESSED
+  FAILED
+  HANDOVER
+}
+
+enum HandoverState {
+  RECORDED
+  QUEUED
+  PROVIDER_ACCEPTED
+  STAFF_ACKNOWLEDGED
+  RESOLVED
+  REOPENED
+  CANCELED
+}
+
+enum RetentionState {
+  RETAIN
+  DISPOSAL_PROPOSED
+  DISPOSAL_APPROVED
+  DISPOSED
+}
+
+model Property {
+  id                       String                       @id @default(cuid())
+  organizationId           String?
+  organization             Organization?                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name                     String
+  slug                     String                       @unique
+  city                     String?
+  state                    String?
+  timezone                 String                       @default("Asia/Kolkata")
+  createdAt                DateTime                     @default(now())
+  updatedAt                DateTime                     @updatedAt
+  websiteConsentEnforcedAt DateTime?
+  leads                    Lead[]
+  metrics                  MetricDaily[]
+  campaigns                Campaign[]
+  automationJobs           AutomationJob[]
+  assets                   Asset[]
+  whatsappIntegration      WhatsAppIntegration?
+  appointmentTenants       AppointmentTenant[]
+  commerceTenants          CommerceTenant[]
+  knowledgeDocuments       KnowledgeDocument[]
+  knowledgeEntries         KnowledgeEntry[]
+  knowledgeGaps            KnowledgeGap[]
+  knowledgePreviews        KnowledgePreview[]
+  knowledgeFlags           KnowledgeAnswerFlag[]
+  channelConnections       ChannelConnection[]
+  participants             Participant[]
+  conversations            Conversation[]
+  neutralMessages          Message[]
+  aiOperations             AiOperation[]
+  websiteSessions          WebsiteVisitorSession[]
+  sovereignEvidence        SovereignAnswerEvidence[]
+  answerFeedback           SovereignAnswerFeedback[]
+  sovereignReplayCases     SovereignReplayCase[]
+  readinessScans           ReadinessScan[]
+  readinessWorkItems       ReadinessWorkItem[]
+  readinessVerifications   ReadinessVerification[]
+  hotelGuestAccess         HotelGuestAccessRequest[]
+  websiteSourceConsents    WebsiteSourceConsent[]
+  knowledgeClaimIdentities KnowledgeClaimIdentity[]
+  knowledgeSources         KnowledgeSource[]
+  knowledgeObjects         KnowledgeObject[]
+  knowledgePolicies        KnowledgePolicyVersion[]
+  intelligencePolicy       PropertyIntelligencePolicy?
+  previewSessions          KnowledgePreviewSession[]
+  guestSessions            KnowledgeGuestSession[]
+  answerAudits             KnowledgeAnswerAudit[]
+  handoverRequests         KnowledgeHandoverRequest[]
+  certificationRuns        KnowledgeCertificationRun[]
+  retentionDecisions       KnowledgeRetentionDecision[]
+  migrationDecisions       KnowledgeMigrationDecision[]
+  migrationArtifactDecisions KnowledgeMigrationArtifactDecision[]
+  runtimePrincipalGrants   KnowledgeRuntimePrincipalGrant[]
+
+  @@unique([id, organizationId])
+  @@index([organizationId])
+}
+
+enum WebsiteSourceConsentStatus {
+  TRIAL_AUTHORIZED
+  POST_TRIAL_APPROVED
+  REVOKED
+}
+
+enum WebsiteSourceApprovalMethod {
+  EMAIL
+  SIGNED_LETTER
+}
+
+model WebsiteSourceConsent {
+  id                    String                       @id @default(cuid())
+  propertyId            String
+  property              Property                     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  sourceUrl             String?                      @db.Text
+  sourceUrlHash         String?
+  termsVersion          String
+  status                WebsiteSourceConsentStatus   @default(TRIAL_AUTHORIZED)
+  trialAuthorizedAt     DateTime
+  trialExpiresAt        DateTime
+  acceptedByEmail       String
+  acceptedIpHash        String?
+  postTrialMethod       WebsiteSourceApprovalMethod?
+  postTrialApprovedBy   String?
+  postTrialApprovedAt   DateTime?
+  approvalEvidenceRef   String?
+  revokedAt             DateTime?
+  revokedBy             String?
+  revocationReason      String?                      @db.Text
+  createdAt             DateTime                     @default(now())
+  updatedAt             DateTime                     @updatedAt
+  sourceType            KnowledgeSourceType          @default(WEBSITE)
+  canonicalIdentity     String?                      @db.Text
+  canonicalIdentityHash String?
+  sourceId              String?
+  authorityScope        Json?
+  audienceCeiling       KnowledgeAudience            @default(RESTRICTED)
+  effectiveFrom         DateTime?
+  effectiveUntil        DateTime?
+  source                KnowledgeSource?             @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  sourceRevisions       KnowledgeSourceRevision[]
+
+  @@unique([propertyId, sourceUrlHash])
+  @@unique([propertyId, sourceType, canonicalIdentityHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, status, trialExpiresAt])
+}
+
+/**
+ * Durable, internal-only scan request and execution record. A scan is never
+ * created by a public bot route; its state is advanced by a controlled worker.
+ */
+model ReadinessScan {
+  id                 String                  @id @default(cuid())
+  organizationId     String
+  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  propertyId         String
+  property           Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  rubricVersion      String
+  sourceUrl          String
+  status             ReadinessScanStatus     @default(QUEUED)
+  idempotencyKey     String                  @unique
+  requestPayload     Json?
+  result             Json?
+  requestedBy        String
+  attemptCount       Int                     @default(0)
+  maxAttempts        Int                     @default(3)
+  nextRunAt          DateTime                @default(now())
+  lockedAt           DateTime?
+  lockedBy           String?
+  leaseExpiresAt     DateTime?
+  startedAt          DateTime?
+  completedAt        DateTime?
+  canceledAt         DateTime?
+  canceledBy         String?
+  cancellationReason String?                 @db.Text
+  lastError          String?                 @db.Text
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  evidence           ReadinessEvidence[]
+  issues             ReadinessIssue[]
+  verificationAfter  ReadinessVerification[] @relation("ReadinessVerificationAfter")
+  verificationBefore ReadinessVerification[] @relation("ReadinessVerificationBefore")
+
+  @@index([organizationId, status, nextRunAt])
+  @@index([propertyId, createdAt])
+  @@index([status, leaseExpiresAt])
+}
+
+/**
+ * Immutable observation captured by one scan/check; scan text is evidence, never tenant authority.
+ */
+model ReadinessEvidence {
+  id                  String                  @id @default(cuid())
+  organizationId      String
+  organization        Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  scanId              String
+  scan                ReadinessScan           @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  pillar              String
+  checkKey            String
+  status              ReadinessEvidenceStatus
+  observedValue       Json?
+  canonicalComparison Json?
+  sourceUrl           String?
+  capturedAt          DateTime                @default(now())
+  evidenceHash        String
+  createdAt           DateTime                @default(now())
+  issue               ReadinessIssue?
+
+  @@unique([scanId, checkKey])
+  @@index([organizationId, pillar, status])
+}
+
+model ReadinessIssue {
+  id              String               @id @default(cuid())
+  organizationId  String
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  scanId          String
+  scan            ReadinessScan        @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  evidenceId      String?              @unique
+  evidence        ReadinessEvidence?   @relation(fields: [evidenceId], references: [id], onDelete: SetNull)
+  pillar          String
+  checkKey        String
+  severity        String
+  status          ReadinessIssueStatus @default(DETECTED)
+  summary         String               @db.Text
+  proposedRemedy  String?              @db.Text
+  remediationType String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  decisionReason  String?              @db.Text
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  workItems       ReadinessWorkItem[]
+
+  @@index([organizationId, status, severity])
+  @@index([scanId, pillar])
+}
+
+model ReadinessWorkItem {
+  id                  String                 @id @default(cuid())
+  organizationId      String
+  organization        Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  propertyId          String
+  property            Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  issueId             String
+  issue               ReadinessIssue         @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  deliveryRoute       ReadinessDeliveryRoute
+  owner               String
+  dueAt               DateTime?
+  acceptanceCriterion String                 @db.Text
+  status              String                 @default("OPEN")
+  approvedBy          String?
+  approvedAt          DateTime?
+  completedBy         String?
+  completedAt         DateTime?
+  completionRecord    Json?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  verification        ReadinessVerification?
+
+  @@index([organizationId, status, dueAt])
+  @@index([propertyId, createdAt])
+  @@index([issueId])
+}
+
+model ReadinessVerification {
+  id             String            @id @default(cuid())
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  propertyId     String
+  property       Property          @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  workItemId     String            @unique
+  workItem       ReadinessWorkItem @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+  beforeScanId   String
+  beforeScan     ReadinessScan     @relation("ReadinessVerificationBefore", fields: [beforeScanId], references: [id], onDelete: Restrict)
+  afterScanId    String
+  afterScan      ReadinessScan     @relation("ReadinessVerificationAfter", fields: [afterScanId], references: [id], onDelete: Restrict)
+  rubricVersion  String
+  status         String
+  evidenceRefs   Json
+  verifiedBy     String
+  verifiedAt     DateTime          @default(now())
+  createdAt      DateTime          @default(now())
+
+  @@index([organizationId, verifiedAt])
+  @@index([propertyId, rubricVersion])
+}
+
+model KnowledgeDocument {
+  id              String           @id @default(cuid())
+  propertyId      String
+  property        Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  fileName        String
+  mimeType        String
+  sizeBytes       Int
+  content         Bytes
+  extractedText   String           @db.Text
+  status          String           @default("PENDING")
+  conflictSummary String?          @db.Text
+  uploadedBy      String
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  entries         KnowledgeEntry[]
+
+  @@index([propertyId, status])
+}
+
+model KnowledgeEntry {
+  id                    String                             @id @default(cuid())
+  propertyId            String
+  property              Property                           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  documentId            String?
+  document              KnowledgeDocument?                 @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  question              String                             @db.Text
+  answer                String                             @db.Text
+  category              String                             @default("General")
+  status                String                             @default("DRAFT")
+  conflictSummary       String?                            @db.Text
+  claimKey              String?
+  claimType             String                             @default("FACT")
+  valueType             String                             @default("TEXT")
+  currency              String?
+  effectiveAt           DateTime?
+  expiresAt             DateTime?
+  refreshDays           Int                                @default(90)
+  reliability           String                             @default("CLIENT_CONFIRMED")
+  authorityLevel        String                             @default("CLIENT_APPROVED_STRUCTURED")
+  version               Int                                @default(1)
+  supersedesId          String?
+  supersedes            KnowledgeEntry?                    @relation("KnowledgeSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
+  supersededBy          KnowledgeEntry[]                   @relation("KnowledgeSupersession")
+  validationStatus      String                             @default("PENDING")
+  validationErrors      String[]                           @default([])
+  conflictStatus        String                             @default("CLEAR")
+  fieldApprovedBy       String?
+  fieldApprovedAt       DateTime?
+  previewApprovedBy     String?
+  previewApprovedAt     DateTime?
+  publishedAt           DateTime?
+  pausedAt              DateTime?
+  pauseReason           String?
+  lastConfirmedAt       DateTime?
+  createdBy             String
+  approvedBy            String?
+  approvedAt            DateTime?
+  createdAt             DateTime                           @default(now())
+  updatedAt             DateTime                           @updatedAt
+  resolvedGaps          KnowledgeGap[]
+  previews              KnowledgePreview[]
+  answerFlags           KnowledgeAnswerFlag[]
+  claimIdentityId       String?
+  claimIdentity         KnowledgeClaimIdentity?            @relation(fields: [propertyId, claimIdentityId], references: [propertyId, id], onDelete: Restrict)
+  revisionNumber        Int?
+  normalizedValue       Json?
+  valueHash             String?
+  quoteText             String?                            @db.Text
+  audience              KnowledgeAudience?
+  effectiveFrom         DateTime?
+  effectiveUntil        DateTime?
+  verificationStatus    ClaimVerificationStatus?
+  revisionState         ClaimRevisionState                 @default(DRAFT)
+  requiredComponents    String[]                           @default([])
+  sealManifestHash      String?
+  sealPolicyVersion     String?
+  sealedAt              DateTime?
+  sealedBy              String?
+  evidence              KnowledgeClaimEvidence[]
+  evidenceBindings      KnowledgeRevisionEvidenceBinding[]
+  revisionEvents        KnowledgeRevisionEvent[]           @relation("RevisionEventEntry")
+  relatedRevisionEvents KnowledgeRevisionEvent[]           @relation("RevisionEventRelated")
+  lowerConflicts        KnowledgeClaimConflict[]           @relation("ConflictLower")
+  higherConflicts       KnowledgeClaimConflict[]           @relation("ConflictHigher")
+  migrationDecisions    KnowledgeMigrationDecision[]
+  publicationClaims     KnowledgePublicationClaim[]
+  previewClaims         KnowledgePreviewClaim[]
+
+  @@unique([propertyId, id])
+  @@unique([propertyId, claimIdentityId, revisionNumber])
+  @@unique([propertyId, claimIdentityId, id, sealManifestHash])
+  @@index([propertyId, status])
+  @@index([propertyId, claimKey, version])
+  @@index([propertyId, expiresAt, status])
+  @@index([supersedesId])
+  @@index([documentId])
+  @@index([propertyId, claimIdentityId, sealedAt])
+}
+
+model KnowledgePreview {
+  id              String         @id @default(cuid())
+  propertyId      String
+  property        Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  entryId         String
+  entry           KnowledgeEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  question        String         @db.Text
+  generatedAnswer String         @db.Text
+  status          String         @default("PENDING")
+  generatedAt     DateTime       @default(now())
+  approvedBy      String?
+  approvedAt      DateTime?
+  rejectedReason  String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([propertyId, status, createdAt])
+  @@index([entryId, status])
+}
+
+model KnowledgeAnswerFlag {
+  id               String          @id @default(cuid())
+  propertyId       String
+  property         Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  entryId          String?
+  entry            KnowledgeEntry? @relation(fields: [entryId], references: [id], onDelete: SetNull)
+  evidenceId       String?
+  reporterType     String          @default("CLIENT_ADMIN")
+  reporterId       String?
+  reason           String          @db.Text
+  status           String          @default("OPEN")
+  acknowledgeDueAt DateTime
+  resolveDueAt     DateTime
+  acknowledgedAt   DateTime?
+  acknowledgedBy   String?
+  resolvedAt       DateTime?
+  resolvedBy       String?
+  resolution       String?         @db.Text
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([propertyId, status, resolveDueAt])
+  @@index([entryId, status])
+  @@index([evidenceId])
+}
+
+model KnowledgeGap {
+  id                 String          @id @default(cuid())
+  propertyId         String
+  property           Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  question           String          @db.Text
+  normalizedQuestion String
+  occurrenceCount    Int             @default(1)
+  status             String          @default("OPEN")
+  lastAskedAt        DateTime        @default(now())
+  resolutionEntryId  String?
+  resolutionEntry    KnowledgeEntry? @relation(fields: [resolutionEntryId], references: [id], onDelete: SetNull)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@unique([propertyId, normalizedQuestion])
+  @@index([propertyId, status, occurrenceCount])
+}
+
+model Organization {
+  id                     String                      @id @default(cuid())
+  name                   String
+  slug                   String                      @unique
+  industry               String?
+  website                String?
+  country                String                      @default("India")
+  timezone               String                      @default("Asia/Kolkata")
+  gstNumber              String?
+  businessAddress        String?
+  ownerName              String
+  ownerEmail             String
+  ownerMobile            String?
+  publicPhone            String?
+  publicEmail            String?
+  publicAddress          String?
+  publicBusinessHours    String?
+  status                 String                      @default("DRAFT")
+  plan                   String                      @default("TRIAL")
+  isDemo                 Boolean                     @default(false)
+  demoKey                String?                     @unique
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  properties             Property[]
+  members                OrganizationMember[]
+  onboarding             OnboardingProfile?
+  onboardingCredential   OnboardingCredential?
+  botConfiguration       WhatsAppBotConfiguration?
+  botProfile             BotProfile?
+  botConnectors          BotConnectorConfiguration[]
+  agentGatewayClients    AgentGatewayClient[]
+  readinessScans         ReadinessScan[]
+  readinessEvidence      ReadinessEvidence[]
+  readinessIssues        ReadinessIssue[]
+  readinessWorkItems     ReadinessWorkItem[]
+  readinessVerifications ReadinessVerification[]
+  demoSandbox            DemoSandbox?
+  documents              OnboardingDocument[]
+  activities             OnboardingActivity[]
+  supportTickets         SupportTicket[]
+  subscription           Subscription?
+  invoices               BillingInvoice[]
+  billingAddons          BillingAddon[]
+  usageRecords           UsageRecord[]
+  aiCreditTransactions   AiCreditTransaction[]
+  incidents              PlatformIncident[]
+  auditLogs              PlatformAuditLog[]
+  userSessions           UserSession[]
+
+  @@index([ownerEmail])
+  @@index([status])
+}
+
+model DemoSandbox {
+  id              String               @id @default(cuid())
+  organizationId  String               @unique
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category        BotCategory
+  fixtureVersion  String               @default("1.0")
+  fixture         Json
+  status          String               @default("READY")
+  resetCount      Int                  @default(0)
+  lastResetAt     DateTime?
+  lastResetBy     String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  connectorEvents DemoConnectorEvent[]
+
+  @@index([category, status])
+}
+
+model DemoConnectorEvent {
+  id             String      @id @default(cuid())
+  demoSandboxId  String
+  demoSandbox    DemoSandbox @relation(fields: [demoSandboxId], references: [id], onDelete: Cascade)
+  connectorKey   String
+  operation      String
+  idempotencyKey String
+  status         String
+  request        Json
+  response       Json
+  createdAt      DateTime    @default(now())
+
+  @@unique([demoSandboxId, idempotencyKey])
+  @@index([demoSandboxId, createdAt])
+  @@index([connectorKey, status])
+}
+
+model UserSession {
+  id             String        @id @default(cuid())
+  sessionId      String        @unique
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String
+  authSource     String        @default("local")
+  userAgent      String?
+  ipAddress      String?
+  createdAt      DateTime      @default(now())
+  lastSeenAt     DateTime      @default(now())
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  revokedBy      String?
+
+  @@index([email, revokedAt, expiresAt])
+  @@index([organizationId, revokedAt])
+}
+
+model WhatsAppBotConfiguration {
+  id                  String       @id @default(cuid())
+  organizationId      String       @unique
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  enabled             Boolean      @default(true)
+  language            String       @default("EN")
+  welcomeEnabled      Boolean      @default(true)
+  welcomeMessage      String       @db.Text
+  serviceBuckets      String[]
+  auditEnabled        Boolean      @default(true)
+  trialEnabled        Boolean      @default(true)
+  humanHandoffEnabled Boolean      @default(true)
+  collectLeadDetails  Boolean      @default(true)
+  updatedBy           String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+model BotProfile {
+  id                     String           @id @default(cuid())
+  organizationId         String           @unique
+  organization           Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category               BotCategory      @default(BUSINESS_AI)
+  personaPackVersion     String           @default("1.0")
+  operatingMode          BotOperatingMode @default(LEAD_CAPTURE)
+  channels               ChannelKind[]    @default([WEBSITE])
+  capabilities           String[]         @default(["ANSWER_QUESTIONS", "CAPTURE_LEADS", "QUALIFY_LEADS"])
+  humanHandoffEnabled    Boolean          @default(true)
+  actionApprovalNeeded   Boolean          @default(true)
+  personaName            String?
+  businessObjective      String?          @db.Text
+  tone                   String           @default("Professional, clear and helpful")
+  languages              String[]         @default(["English"])
+  prohibitedClaims       String[]         @default([])
+  escalationTriggers     String[]         @default([])
+  responseSlaMinutes     Int              @default(60)
+  reminderPercent        Int              @default(50)
+  fallbackEnabled        Boolean          @default(false)
+  stayAccessEnabled      Boolean          @default(false)
+  safeFallbackMessage    String?          @db.Text
+  kbGateVersion          String?
+  kbCoverageMinimum      Int              @default(80)
+  status                 String           @default("DRAFT")
+  installationKey        String?          @unique
+  installationDetectedAt DateTime?
+  liveAt                 DateTime?
+  pausedAt               DateTime?
+  deletedAt              DateTime?
+  lifecycleUpdatedBy     String?
+  configuredBy           String?
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+}
+
+model HotelGuestAccessRequest {
+  id                String    @id
+  propertyId        String
+  property          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  requestTokenHash  String    @unique
+  guestName         String
+  phoneNumber       String
+  roomNumber        String
+  requestedCheckIn  DateTime
+  requestedCheckOut DateTime
+  approvedCheckOut  DateTime?
+  status            String    @default("PENDING")
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  rejectionReason   String?
+  activatedAt       DateTime?
+  revokedAt         DateTime?
+  revokedBy         String?
+  leadId            String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([propertyId, status, createdAt])
+  @@index([approvedCheckOut, status])
+  @@index([leadId])
+}
+
+model BotConnectorConfiguration {
+  id                  String                  @id @default(cuid())
+  organizationId      String
+  organization        Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connectorKey        String
+  name                String
+  provider            String?
+  requiredFor         String
+  required            Boolean                 @default(false)
+  enabled             Boolean                 @default(false)
+  lifecycle           String                  @default("REQUESTED")
+  readOperations      String[]                @default([])
+  writeOperations     String[]                @default([])
+  unavailableBehavior String                  @db.Text
+  lastVerifiedAt      DateTime?
+  apiBaseUrl          String?
+  authType            String                  @default("BEARER")
+  operationMapping    Json?
+  lastHealthStatus    String?
+  lastHealthCode      Int?
+  lastHealthAt        DateTime?
+  lastError           String?
+  configuredBy        String?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  credential          BotConnectorCredential?
+
+  @@unique([organizationId, connectorKey])
+  @@index([organizationId, lifecycle])
+  @@index([organizationId, required, enabled])
+}
+
+model BotConnectorCredential {
+  id              String                    @id @default(cuid())
+  connectorId     String                    @unique
+  connector       BotConnectorConfiguration @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  secretEncrypted String
+  keyVersion      Int                       @default(1)
+  rotatedAt       DateTime                  @default(now())
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  revokedBy       String?
+  lastUsedAt      DateTime?
+  updatedBy       String
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+
+  @@index([expiresAt, revokedAt])
+}
+
+// External AI agents receive a tenant-scoped, revocable read-only credential.
+// Secrets are stored as one-way hashes and are shown only at creation time.
+model AgentGatewayClient {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  label          String
+  tokenHash      String       @unique
+  scopes         String[]     @default(["profile:read", "availability:read"])
+  enabled        Boolean      @default(true)
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  revokedAt      DateTime?
+  revokedBy      String?
+  createdBy      String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId, enabled, revokedAt])
+  @@index([expiresAt, revokedAt])
+}
+
+model OrganizationMember {
+  id                  String                    @id @default(cuid())
+  organizationId      String
+  organization        Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email               String
+  name                String?
+  role                String                    @default("OWNER")
+  department          String?
+  status              String                    @default("ACTIVE")
+  passwordHash        String?
+  invitationTokenHash String?                   @unique
+  invitationExpiresAt DateTime?
+  invitedBy           String?
+  invitedAt           DateTime                  @default(now())
+  joinedAt            DateTime?
+  lastLoginAt         DateTime?
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  previewSessions     KnowledgePreviewSession[]
+
+  @@unique([organizationId, email])
+  @@unique([organizationId, id])
+  @@index([email, status])
+}
+
+model OnboardingProfile {
+  id                       String       @id @default(cuid())
+  organizationId           String       @unique
+  organization             Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  currentStep              Int          @default(1)
+  progressPercent          Int          @default(10)
+  lifecycleStatus          String       @default("DRAFT")
+  legalName                String?
+  registrationNumber       String?
+  facebookPage             String?
+  googleMapsUrl            String?
+  googleBusinessProfileUrl String?
+  instagramUrl             String?
+  photoUrls                String[]     @default([])
+  businessCategory         String?
+  logoUrl                  String?
+  kycStatus                String       @default("NOT_SUBMITTED")
+  kycSubmittedAt           DateTime?
+  kycReviewedAt            DateTime?
+  kycReviewedBy            String?
+  kycRejectionReason       String?
+  phoneCountryCode         String       @default("+91")
+  phoneNumber              String?
+  whatsappActiveOnNumber   Boolean?
+  numberConnectionPath     String?
+  phoneVerificationStatus  String       @default("NOT_STARTED")
+  facebookStatus           String       @default("NOT_CONNECTED")
+  metaStatus               String       @default("NOT_STARTED")
+  metaBusinessId           String?
+  wabaId                   String?
+  phoneNumberId            String?
+  displayPhoneNumber       String?
+  qualityRating            String?
+  webhookStatus            String       @default("NOT_CONFIGURED")
+  tokenStatus              String       @default("NOT_CONFIGURED")
+  metaBillingStatus        String       @default("NOT_CONFIRMED")
+  templateStatus           String       @default("NOT_STARTED")
+  firstMessageStatus       String       @default("NOT_STARTED")
+  lastStatusCheckAt        DateTime?
+  lastError                String?
+  completedAt              DateTime?
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
+
+  @@index([lifecycleStatus])
+  @@index([kycStatus])
+  @@index([metaStatus])
+}
+
+model OnboardingCredential {
+  id              String       @id @default(cuid())
+  organizationId  String       @unique
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  registrationPin String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model OnboardingDocument {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  type           String
+  fileName       String
+  mimeType       String
+  sizeBytes      Int
+  content        Bytes
+  status         String       @default("UPLOADED")
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId, type])
+}
+
+model OnboardingActivity {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actorEmail     String?
+  action         String
+  detail         String?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, createdAt])
+}
+
+model Lead {
+  id             String                 @id @default(cuid())
+  propertyId     String
+  property       Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name           String
+  initials       String
+  score          Int
+  source         String
+  stage          LeadStage
+  language       LeadLanguage           @default(EN)
+  intent         String
+  stayLabel      String
+  partyLabel     String
+  budgetLabel    String
+  phone          String
+  lastActivityAt DateTime               @default(now())
+  isHighPriority Boolean                @default(false)
+  tags           LeadTag[]
+  messages       LeadMessage[]
+  assetShares    LeadAssetShare[]
+  conversations  Conversation[]
+  aiOperations   AiOperation[]
+  websiteSession WebsiteVisitorSession?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@unique([propertyId, phone])
+  @@index([propertyId, stage])
+  @@index([propertyId, score])
+}
+
+model WebsiteVisitorSession {
+  id              String    @id @default(cuid())
+  propertyId      String
+  property        Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId          String    @unique
+  lead            Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sessionIdHash   String
+  capabilityHash  String    @unique
+  status          String    @default("AI_READY")
+  contactName     String?
+  contactValue    String?
+  consentText     String?   @db.Text
+  consentedAt     DateTime?
+  expiresAt       DateTime
+  lastDeliveredAt DateTime?
+  lastReadAt      DateTime?
+  resolutionState Json?
+  revokedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([propertyId, sessionIdHash])
+  @@index([propertyId, status, updatedAt])
+  @@index([expiresAt, revokedAt])
+}
+
+model SovereignAnswerEvidence {
+  id                       String                   @id @default(cuid())
+  propertyId               String
+  property                 Property                 @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId                   String?
+  sessionIdHash            String
+  constitutionVersion      String
+  blueprintVersion         String
+  intent                   String
+  disposition              String
+  contextUsed              Boolean                  @default(false)
+  confidence               Float                    @default(0)
+  safetyClassification     String                   @default("STANDARD")
+  permittedOperation       String                   @default("ANSWER")
+  observedBehavior         String                   @default("UNKNOWN")
+  decisionConsistent       Boolean                  @default(false)
+  consistencyReason        String?                  @db.Text
+  resolutionState          String                   @default("RESOLVED")
+  clarifyCount             Int                      @default(0)
+  circuitBreaker           Boolean                  @default(false)
+  circuitBreakerReason     String?
+  evaluationVersion        String                   @default("1.1")
+  decisionReason           String                   @db.Text
+  question                 String                   @db.Text
+  resolvedQuestion         String                   @db.Text
+  answer                   String                   @db.Text
+  grounded                 Boolean                  @default(false)
+  model                    String
+  sources                  Json
+  knowledgeAsOf            DateTime?
+  knowledgeClaimIds        String[]                 @default([])
+  personaCategory          String                   @default("UNKNOWN")
+  personaVersion           String                   @default("UNKNOWN")
+  retrievalCandidates      Json                     @default("[]")
+  retrievedClaimIds        String[]                 @default([])
+  usedClaimIds             String[]                 @default([])
+  nearMissClaimIds         String[]                 @default([])
+  failureClassification    String                   @default("NONE")
+  safeResolution           Boolean                  @default(false)
+  evidencePipelineVersion  String                   @default("1.0")
+  failureLayer             String                   @default("NONE")
+  failureCode              String?
+  latencyMs                Int                      @default(0)
+  attemptCount             Int                      @default(0)
+  escalationTier           String                   @default("TIER_0_SELF_RESOLVE")
+  degradedMode             Boolean                  @default(false)
+  executionContractVersion String                   @default("1.0")
+  terminalOutcome          String                   @default("ANSWERED")
+  authorityLevel           String                   @default("INFORMATION")
+  flowId                   String?
+  flowVersion              Int?
+  flowNodeId               String?
+  endpointKey              String?
+  endpointVerified         Boolean                  @default(false)
+  completionClaimAllowed   Boolean                  @default(false)
+  createdAt                DateTime                 @default(now())
+  feedback                 SovereignAnswerFeedback?
+  replayCase               SovereignReplayCase?
+
+  @@index([propertyId, createdAt])
+  @@index([propertyId, intent, disposition])
+  @@index([propertyId, decisionConsistent, createdAt])
+  @@index([propertyId, circuitBreaker, createdAt])
+  @@index([propertyId, failureLayer, createdAt])
+  @@index([propertyId, escalationTier, createdAt])
+  @@index([propertyId, terminalOutcome, createdAt])
+  @@index([propertyId, endpointVerified, createdAt])
+  @@index([personaCategory, safeResolution, createdAt])
+  @@index([propertyId, failureClassification, createdAt])
+  @@index([leadId, createdAt])
+}
+
+model SovereignAnswerFeedback {
+  id         String                  @id @default(cuid())
+  propertyId String
+  property   Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  evidenceId String                  @unique
+  evidence   SovereignAnswerEvidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  leadId     String?
+  helpful    Boolean
+  reason     String?                 @db.Text
+  source     String                  @default("WEBSITE_WIDGET")
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+
+  @@index([propertyId, helpful, createdAt])
+  @@index([leadId, createdAt])
+}
+
+model SovereignReplayCase {
+  id                    String                  @id @default(cuid())
+  propertyId            String
+  property              Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  sourceEvidenceId      String                  @unique
+  sourceEvidence        SovereignAnswerEvidence @relation(fields: [sourceEvidenceId], references: [id], onDelete: Cascade)
+  personaCategory       String
+  personaVersion        String
+  anonymizedQuestion    String                  @db.Text
+  anonymizedPriorTurns  Json                    @default("[]")
+  expectedDisposition   String
+  expectedClaimIds      String[]                @default([])
+  failureClassification String
+  status                String                  @default("PENDING_REVIEW")
+  anonymizationVersion  String                  @default("1.0")
+  createdAt             DateTime                @default(now())
+  reviewedAt            DateTime?
+
+  @@index([propertyId, status, createdAt])
+  @@index([personaCategory, status, createdAt])
+}
+
+model LeadTag {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  value     String
+  createdAt DateTime @default(now())
+}
+
+model LeadMessage {
+  id                String        @id @default(cuid())
+  leadId            String
+  lead              Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  sender            MessageSender
+  body              String
+  externalMessageId String?       @unique
+  deliveryStatus    String?
+  statusUpdatedAt   DateTime?
+  sentAt            DateTime
+  createdAt         DateTime      @default(now())
+  neutralMessage    Message?
+
+  @@index([leadId, sentAt])
+}
+
+model ChannelConnection {
+  id                   String                  @id @default(cuid())
+  propertyId           String
+  property             Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  kind                 ChannelKind
+  externalId           String?
+  displayName          String?
+  status               ChannelConnectionStatus @default(DRAFT)
+  enabled              Boolean                 @default(false)
+  configuration        Json?
+  credentialsReference String?
+  lastHealthyAt        DateTime?
+  lastErrorAt          DateTime?
+  lastErrorCode        String?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  conversations        Conversation[]
+
+  @@unique([propertyId, kind, externalId])
+  @@index([propertyId, kind, enabled])
+  @@index([status, lastHealthyAt])
+}
+
+model Participant {
+  id            String                    @id @default(cuid())
+  propertyId    String
+  property      Property                  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  kind          ParticipantKind           @default(CUSTOMER)
+  externalKey   String
+  displayName   String?
+  phone         String?
+  email         String?
+  metadata      Json?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  conversations ConversationParticipant[]
+  sentMessages  Message[]
+
+  @@unique([propertyId, kind, externalKey])
+  @@unique([propertyId, id])
+  @@index([propertyId, phone])
+  @@index([propertyId, email])
+}
+
+model Conversation {
+  id                     String                     @id @default(cuid())
+  propertyId             String
+  property               Property                   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  channelConnectionId    String?
+  channelConnection      ChannelConnection?         @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
+  legacyLeadId           String?
+  legacyLead             Lead?                      @relation(fields: [legacyLeadId], references: [id], onDelete: SetNull)
+  externalConversationId String?
+  status                 ConversationStatus         @default(OPEN)
+  botPaused              Boolean                    @default(false)
+  humanOwnerEmail        String?
+  lastMessageAt          DateTime                   @default(now())
+  metadata               Json?
+  createdAt              DateTime                   @default(now())
+  updatedAt              DateTime                   @updatedAt
+  participants           ConversationParticipant[]
+  messages               Message[]
+  guestSessions          KnowledgeGuestSession[]
+  answerAudits           KnowledgeAnswerAudit[]
+  handoverRequests       KnowledgeHandoverRequest[]
+
+  @@unique([channelConnectionId, externalConversationId])
+  @@unique([propertyId, id])
+  @@index([propertyId, status, lastMessageAt])
+  @@index([legacyLeadId])
+  @@index([humanOwnerEmail, status])
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  propertyId     String
+  conversationId String
+  conversation   Conversation @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Cascade)
+  participantId  String
+  participant    Participant  @relation(fields: [propertyId, participantId], references: [propertyId, id], onDelete: Cascade)
+  role           String       @default("CUSTOMER")
+  joinedAt       DateTime     @default(now())
+  leftAt         DateTime?
+
+  @@unique([propertyId, conversationId, participantId])
+  @@index([participantId, joinedAt])
+}
+
+model Message {
+  id                  String                  @id @default(cuid())
+  propertyId          String
+  property            Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  conversationId      String
+  conversation        Conversation            @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Cascade)
+  legacyLeadMessageId String?                 @unique
+  legacyLeadMessage   LeadMessage?            @relation(fields: [legacyLeadMessageId], references: [id], onDelete: SetNull)
+  externalMessageId   String?
+  idempotencyKey      String
+  direction           NeutralMessageDirection
+  senderParticipantId String?
+  senderParticipant   Participant?            @relation(fields: [propertyId, senderParticipantId], references: [propertyId, id], onDelete: Restrict)
+  body                String                  @db.Text
+  contentType         String                  @default("text")
+  deliveryStatus      String?
+  occurredAt          DateTime
+  metadata            Json?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+
+  @@unique([propertyId, idempotencyKey])
+  @@unique([conversationId, externalMessageId])
+  @@index([propertyId, occurredAt])
+  @@index([conversationId, occurredAt])
+  @@index([senderParticipantId])
+}
+
+model AiOperation {
+  id                String    @id @default(cuid())
+  propertyId        String
+  property          Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId            String
+  lead              Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  kind              String    @default("FOLLOW_UP")
+  status            String    @default("OPEN")
+  title             String
+  notes             String?   @db.Text
+  assignedTo        String?
+  dueAt             DateTime?
+  outcomeType       String?
+  outcomeValuePaisa Int?
+  outcomeEvidence   String?   @db.Text
+  completedAt       DateTime?
+  createdBy         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([propertyId, status, dueAt])
+  @@index([leadId, createdAt])
+  @@index([propertyId, outcomeType, completedAt])
+}
+
+model MetricDaily {
+  id                   String   @id @default(cuid())
+  propertyId           String
+  property             Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  date                 DateTime
+  totalLeads           Int      @default(0)
+  confirmedRevenue     Int      @default(0)
+  otaCommissionSaved   Int      @default(0)
+  averageLeadScore     Float    @default(0)
+  highScoreLeadCount   Int      @default(0)
+  confirmedBookings    Int      @default(0)
+  directGuestsAcquired Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([propertyId, date])
+  @@index([propertyId, date])
+}
+
+model Campaign {
+  id                 String              @id @default(cuid())
+  propertyId         String
+  property           Property            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name               String
+  festivalName       String              @default("")
+  templateName       String?
+  languageCode       String              @default("en_US")
+  messageType        String              @default("TEMPLATE")
+  metaChargeCategory String?
+  scheduledFor       DateTime?
+  estimatedReach     Int                 @default(0)
+  estimatedRevenue   Int                 @default(0)
+  estimatedCostPaisa Int                 @default(0)
+  requestedCount     Int                 @default(0)
+  sentCount          Int                 @default(0)
+  deliveredCount     Int                 @default(0)
+  readCount          Int                 @default(0)
+  failedCount        Int                 @default(0)
+  templateStatus     String              @default("UNKNOWN")
+  consentSource      String?
+  consentProof       String?             @db.Text
+  consentConfirmedAt DateTime?
+  consentConfirmedBy String?
+  audienceSnapshot   String?             @db.Text
+  testMode           Boolean             @default(false)
+  createdBy          String?
+  errorSummary       String?
+  status             String              @default("DRAFT")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  recipients         CampaignRecipient[]
+
+  @@index([propertyId, createdAt])
+  @@index([status])
+}
+
+model CampaignRecipient {
+  id                String    @id @default(cuid())
+  campaignId        String
+  campaign          Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  phone             String
+  status            String    @default("QUEUED")
+  externalMessageId String?   @unique
+  error             String?
+  consentStatus     String    @default("UNVERIFIED")
+  consentSource     String?
+  consentProof      String?   @db.Text
+  suppressionReason String?
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  readAt            DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([campaignId, phone])
+  @@index([campaignId, status])
+}
+
+model BillingPlan {
+  id              String         @id @default(cuid())
+  code            String         @unique
+  name            String
+  description     String?
+  billingInterval String         @default("QUARTERLY")
+  amountPaisa     Int            @default(0)
+  currency        String         @default("INR")
+  trialDays       Int            @default(0)
+  limits          Json
+  isActive        Boolean        @default(true)
+  sortOrder       Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  subscriptions   Subscription[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Subscription {
+  id                     String           @id @default(cuid())
+  organizationId         String           @unique
+  organization           Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planId                 String
+  plan                   BillingPlan      @relation(fields: [planId], references: [id])
+  status                 String           @default("TRIALING")
+  paymentProvider        String           @default("MANUAL")
+  externalSubscriptionId String?
+  startedAt              DateTime         @default(now())
+  trialEndsAt            DateTime?
+  currentPeriodStart     DateTime         @default(now())
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean          @default(false)
+  graceEndsAt            DateTime?
+  complimentaryEndsAt    DateTime?
+  complimentaryReason    String?          @db.Text
+  complimentaryGrantedBy String?
+  messageLimitOverride   Int?
+  aiReplyLimitOverride   Int?
+  messageOveragePaisa    Int              @default(0)
+  aiReplyOveragePaisa    Int              @default(0)
+  overageApproved        Boolean          @default(false)
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+  invoices               BillingInvoice[]
+
+  @@index([status, currentPeriodEnd])
+  @@index([planId])
+}
+
+model BillingAddon {
+  id                 String       @id @default(cuid())
+  organizationId     String
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category           String
+  name               String
+  setupFeePaisa      Int          @default(0)
+  recurringFeePaisa  Int          @default(0)
+  externalFeeNote    String?      @db.Text
+  billingInterval    String       @default("ONE_TIME")
+  provisioningStatus String       @default("REQUESTED")
+  paymentStatus      String       @default("UNBILLED")
+  activatedAt        DateTime?
+  notes              String?      @db.Text
+  createdBy          String
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([organizationId, provisioningStatus])
+  @@index([paymentStatus])
+}
+
+model BillingInvoice {
+  id               String        @id @default(cuid())
+  organizationId   String
+  organization     Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscriptionId   String?
+  subscription     Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  invoiceNumber    String        @unique
+  status           String        @default("DRAFT")
+  currency         String        @default("INR")
+  periodStart      DateTime
+  periodEnd        DateTime
+  platformFeePaisa Int           @default(0)
+  metaChargesPaisa Int           @default(0)
+  aiOveragePaisa   Int           @default(0)
+  servicesPaisa    Int           @default(0)
+  taxPaisa         Int           @default(0)
+  adjustmentPaisa  Int           @default(0)
+  totalPaisa       Int           @default(0)
+  dueAt            DateTime?
+  paidAt           DateTime?
+  paymentReference String?
+  notes            String?       @db.Text
+  createdBy        String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([organizationId, status])
+  @@index([dueAt, status])
+}
+
+model UsageRecord {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  metric         String
+  quantity       Int          @default(0)
+  unit           String       @default("COUNT")
+  periodStart    DateTime
+  periodEnd      DateTime
+  sourceRef      String?
+  idempotencyKey String       @unique
+  recordedAt     DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, metric, periodStart])
+}
+
+model AiCreditTransaction {
+  id               String       @id @default(cuid())
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  kind             String
+  credits          Int
+  packCode         String?
+  amountPaisa      Int          @default(0)
+  currency         String       @default("INR")
+  expiresAt        DateTime?
+  paymentReference String?      @unique
+  reason           String?      @db.Text
+  createdBy        String
+  createdAt        DateTime     @default(now())
+
+  @@index([organizationId, expiresAt])
+  @@index([organizationId, kind, createdAt])
+}
+
+model PlatformIncident {
+  id             String        @id @default(cuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  severity       String        @default("MEDIUM")
+  status         String        @default("OPEN")
+  category       String
+  title          String
+  description    String        @db.Text
+  ownerEmail     String?
+  startedAt      DateTime      @default(now())
+  resolvedAt     DateTime?
+  resolution     String?       @db.Text
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, severity])
+  @@index([organizationId, status])
+}
+
+model PlatformAuditLog {
+  id             String        @id @default(cuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  actorEmail     String
+  actorRole      String
+  action         String
+  targetType     String
+  targetId       String?
+  summary        String        @db.Text
+  metadata       Json?
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([action, createdAt])
+  @@index([actorEmail, createdAt])
+}
+
+model AutomationJob {
+  id                 String                 @id @default(cuid())
+  propertyId         String
+  property           Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  workflowId         String
+  workflowVersion    Int                    @default(1)
+  triggerType        String
+  triggerRef         String?
+  actionType         String
+  status             String                 @default("QUEUED")
+  priority           Int                    @default(5)
+  payload            Json
+  result             Json?
+  idempotencyKey     String                 @unique
+  scheduledFor       DateTime               @default(now())
+  nextRunAt          DateTime               @default(now())
+  maxAttempts        Int                    @default(3)
+  attemptCount       Int                    @default(0)
+  lockedAt           DateTime?
+  lockedBy           String?
+  leaseExpiresAt     DateTime?
+  lastError          String?                @db.Text
+  deadLetterReason   String?                @db.Text
+  createdBy          String?
+  completedAt        DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  operationKey       String?                @unique
+  operationType      String?
+  operationVersion   Int                    @default(1)
+  inputGeneration    BigInt                 @default(1)
+  canonicalInputHash String?
+  fencingToken       BigInt                 @default(0)
+  attempts           AutomationJobAttempt[]
+  finalizedObjects   KnowledgeObject[]
+
+  @@unique([propertyId, id])
+  @@index([propertyId, status, nextRunAt])
+  @@index([workflowId, status])
+  @@index([leaseExpiresAt])
+}
+
+model SupportTicket {
+  id                 String                 @id @default(cuid())
+  organizationId     String
+  organization       Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reference          String                 @unique
+  subject            String
+  category           String
+  priority           String                 @default("NORMAL")
+  status             String                 @default("OPEN")
+  description        String                 @db.Text
+  createdByEmail     String
+  assignedToEmail    String?
+  resolution         String?                @db.Text
+  resolvedAt         DateTime?
+  lastActivityBy     String                 @default("CUSTOMER")
+  lastClientViewedAt DateTime?
+  lastAdminViewedAt  DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  messages           SupportTicketMessage[]
+
+  @@index([organizationId, status])
+  @@index([status, priority])
+  @@index([createdAt])
+}
+
+model SupportTicketMessage {
+  id          String        @id @default(cuid())
+  ticketId    String
+  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorEmail String
+  authorRole  String
+  body        String        @db.Text
+  createdAt   DateTime      @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+model Asset {
+  id           String           @id @default(cuid())
+  propertyId   String
+  property     Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  type         AssetType
+  category     AssetCategory
+  url          String
+  thumbnailUrl String?
+  tags         String[]
+  isActive     Boolean          @default(true)
+  createdBy    String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  shares       LeadAssetShare[]
+
+  @@index([propertyId, category])
+  @@index([propertyId, type])
+}
+
+model LeadAssetShare {
+  id        String    @id @default(cuid())
+  leadId    String
+  lead      Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  assetId   String
+  asset     Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  channel   String    @default("WHATSAPP")
+  note      String?
+  sharedBy  String?
+  sharedAt  DateTime  @default(now())
+  openedAt  DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([leadId, sharedAt])
+  @@index([assetId, sharedAt])
+}
+
+model WhatsAppIntegration {
+  id                 String    @id @default(cuid())
+  propertyId         String    @unique
+  property           Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  provider           String    @default("META_CLOUD_API")
+  businessAccountId  String?
+  phoneNumberId      String?
+  displayPhoneNumber String?
+  webhookVerifyToken String?
+  accessToken        String?
+  status             String    @default("DISCONNECTED")
+  approvedBy         String?
+  approvedAt         DateTime?
+  lastValidatedAt    DateTime?
+  notes              String?
+  aiModeEnabled      Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model AppointmentTenant {
+  id                    String                      @id @default(cuid())
+  propertyId            String                      @unique
+  property              Property                    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  aifrogiTenantId       String                      @unique
+  name                  String
+  status                String                      @default("PROVISIONED")
+  timezone              String                      @default("Asia/Kolkata")
+  googleRefreshTokenEnc String?                     @db.Text
+  calendarId            String?
+  sheetId               String?
+  razorpayEnabled       Boolean                     @default(false)
+  workingHours          Json?
+  reviewLink            String?
+  lastSyncedAt          DateTime?
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+  services              AppointmentService[]
+  bookings              AppointmentBooking[]
+  sessions              AppointmentSession[]
+  messageLogs           AppointmentMessageLog[]
+  payments              AppointmentPayment[]
+  jobs                  AppointmentJob[]
+  sheetSyncStates       AppointmentSheetSyncState[]
+
+  @@index([status])
+}
+
+model AppointmentService {
+  id          String               @id @default(cuid())
+  tenantId    String
+  tenant      AppointmentTenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  durationMin Int                  @default(30)
+  priceInr    Int                  @default(0)
+  active      Boolean              @default(true)
+  sortOrder   Int                  @default(0)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  bookings    AppointmentBooking[]
+
+  @@index([tenantId, active, sortOrder])
+}
+
+model AppointmentBooking {
+  id              String                  @id @default(cuid())
+  tenantId        String
+  tenant          AppointmentTenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  serviceId       String?
+  service         AppointmentService?     @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  customerPhone   String
+  customerName    String
+  slotStart       DateTime
+  slotEnd         DateTime
+  activeSlotKey   String?                 @unique
+  gcalEventId     String?
+  status          String                  @default("HOLD")
+  paymentStatus   String                  @default("NOT_REQUIRED")
+  paymentLinkId   String?
+  sourceMessageId String?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  payments        AppointmentPayment[]
+  messageLogs     AppointmentMessageLog[]
+  jobs            AppointmentJob[]
+
+  @@index([tenantId, customerPhone, createdAt])
+  @@index([tenantId, status, slotStart])
+  @@index([serviceId])
+}
+
+model AppointmentSession {
+  id                   String            @id @default(cuid())
+  tenantId             String
+  tenant               AppointmentTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerPhone        String
+  status               String            @default("IDLE")
+  selectedServiceId    String?
+  customerName         String?
+  selectedSlotStartIso String?
+  data                 Json?
+  lastInboundMessageId String?
+  expiresAt            DateTime
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@unique([tenantId, customerPhone])
+  @@index([tenantId, status, expiresAt])
+}
+
+model AppointmentMessageLog {
+  id               String              @id @default(cuid())
+  tenantId         String
+  tenant           AppointmentTenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingId        String?
+  booking          AppointmentBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  direction        String
+  eventType        String
+  template         String?
+  body             String?             @db.Text
+  inboundMessageId String?             @unique
+  idempotencyKey   String?             @unique
+  metadata         Json?
+  sentAt           DateTime            @default(now())
+  createdAt        DateTime            @default(now())
+
+  @@index([tenantId, sentAt])
+  @@index([bookingId])
+}
+
+model AppointmentPayment {
+  id                String             @id @default(cuid())
+  tenantId          String
+  tenant            AppointmentTenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingId         String
+  booking           AppointmentBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  provider          String             @default("RAZORPAY")
+  paymentLinkId     String?            @unique
+  externalPaymentId String?            @unique
+  amountPaisa       Int                @default(0)
+  status            String             @default("PENDING")
+  rawPayload        Json?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([tenantId, status])
+  @@index([bookingId])
+}
+
+model AppointmentJob {
+  id             String              @id @default(cuid())
+  tenantId       String
+  tenant         AppointmentTenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bookingId      String?
+  booking        AppointmentBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  jobType        String
+  status         String              @default("QUEUED")
+  idempotencyKey String              @unique
+  payload        Json?
+  scheduledFor   DateTime
+  nextRunAt      DateTime
+  attemptCount   Int                 @default(0)
+  maxAttempts    Int                 @default(3)
+  lastError      String?             @db.Text
+  completedAt    DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([tenantId, status, nextRunAt])
+  @@index([bookingId, jobType])
+}
+
+model AppointmentSheetSyncState {
+  id           String            @id @default(cuid())
+  tenantId     String
+  tenant       AppointmentTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tabName      String
+  cursor       String?
+  lastSyncedAt DateTime?
+  lastError    String?           @db.Text
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([tenantId, tabName])
+}
+
+model CommerceTenant {
+  id                String                 @id @default(cuid())
+  propertyId        String                 @unique
+  property          Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  aifrogiTenantId   String                 @unique
+  name              String
+  brandName         String
+  status            String                 @default("PROVISIONED")
+  timezone          String                 @default("Asia/Kolkata")
+  currency          String                 @default("INR")
+  storeProvider     String                 @default("DEMO")
+  storeBaseUrl      String?
+  googleSheetId     String?
+  razorpayEnabled   Boolean                @default(false)
+  whatsappFlowId    String?
+  fulfillmentModes  String[]
+  settings          Json?
+  lastCatalogSyncAt DateTime?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  products          CommerceProduct[]
+  addons            CommerceAddon[]
+  customers         CommerceCustomer[]
+  orders            CommerceOrder[]
+  sessions          CommerceFlowSession[]
+  conversations     CommerceConversation[]
+  payments          CommercePayment[]
+
+  @@index([status])
+  @@index([storeProvider])
+}
+
+model CommerceProduct {
+  id             String                   @id @default(cuid())
+  tenantId       String
+  tenant         CommerceTenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  externalId     String?
+  name           String
+  slug           String
+  description    String                   @db.Text
+  category       String
+  imageUrl       String?
+  basePricePaisa Int                      @default(0)
+  active         Boolean                  @default(true)
+  sortOrder      Int                      @default(0)
+  metadata       Json?
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  variants       CommerceProductVariant[]
+  addons         CommerceAddon[]
+  orderItems     CommerceOrderItem[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, active, sortOrder])
+  @@index([tenantId, category])
+}
+
+model CommerceProductVariant {
+  id              String              @id @default(cuid())
+  productId       String
+  product         CommerceProduct     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  externalId      String?
+  name            String
+  sku             String?
+  priceDeltaPaisa Int                 @default(0)
+  active          Boolean             @default(true)
+  sortOrder       Int                 @default(0)
+  metadata        Json?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  orderItems      CommerceOrderItem[]
+
+  @@index([productId, active, sortOrder])
+}
+
+model CommerceAddon {
+  id         String           @id @default(cuid())
+  tenantId   String
+  tenant     CommerceTenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  productId  String?
+  product    CommerceProduct? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String
+  category   String           @default("general")
+  pricePaisa Int              @default(0)
+  active     Boolean          @default(true)
+  sortOrder  Int              @default(0)
+  metadata   Json?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@index([tenantId, active, sortOrder])
+  @@index([productId])
+}
+
+model CommerceCustomer {
+  id            String                 @id @default(cuid())
+  tenantId      String
+  tenant        CommerceTenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  phone         String
+  name          String?
+  email         String?
+  lastAddress   Json?
+  tags          String[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  orders        CommerceOrder[]
+  sessions      CommerceFlowSession[]
+  conversations CommerceConversation[]
+
+  @@unique([tenantId, phone])
+  @@index([tenantId, updatedAt])
+}
+
+model CommerceOrder {
+  id                String                 @id @default(cuid())
+  tenantId          String
+  tenant            CommerceTenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId        String?
+  customer          CommerceCustomer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  orderNumber       String                 @unique
+  status            String                 @default("DRAFT")
+  paymentStatus     String                 @default("PENDING")
+  fulfillmentStatus String                 @default("UNFULFILLED")
+  sourceChannel     String                 @default("WHATSAPP")
+  externalOrderId   String?
+  subtotalPaisa     Int                    @default(0)
+  deliveryFeePaisa  Int                    @default(0)
+  discountPaisa     Int                    @default(0)
+  totalPaisa        Int                    @default(0)
+  currency          String                 @default("INR")
+  deliveryDate      DateTime?
+  deliverySlot      String?
+  deliveryAddress   Json?
+  customization     Json?
+  notes             String?                @db.Text
+  paymentLinkId     String?
+  paymentLinkUrl    String?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  items             CommerceOrderItem[]
+  payments          CommercePayment[]
+  conversations     CommerceConversation[]
+
+  @@index([tenantId, status, createdAt])
+  @@index([tenantId, paymentStatus, createdAt])
+  @@index([customerId])
+}
+
+model CommerceOrderItem {
+  id              String                  @id @default(cuid())
+  orderId         String
+  order           CommerceOrder           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String?
+  product         CommerceProduct?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId       String?
+  variant         CommerceProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  title           String
+  variantTitle    String?
+  quantity        Int                     @default(1)
+  unitPricePaisa  Int                     @default(0)
+  addonTotalPaisa Int                     @default(0)
+  totalPaisa      Int                     @default(0)
+  customization   Json?
+  createdAt       DateTime                @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model CommercePayment {
+  id                String         @id @default(cuid())
+  tenantId          String
+  tenant            CommerceTenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  orderId           String
+  order             CommerceOrder  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider          String         @default("RAZORPAY")
+  paymentLinkId     String?        @unique
+  externalPaymentId String?        @unique
+  amountPaisa       Int            @default(0)
+  status            String         @default("PENDING")
+  rawPayload        Json?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([tenantId, status])
+  @@index([orderId])
+}
+
+model CommerceFlowSession {
+  id                   String            @id @default(cuid())
+  tenantId             String
+  tenant               CommerceTenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId           String?
+  customer             CommerceCustomer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerPhone        String
+  status               String            @default("IDLE")
+  selectedProductId    String?
+  selectedVariantId    String?
+  cartData             Json?
+  lastInboundMessageId String?
+  expiresAt            DateTime
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@unique([tenantId, customerPhone])
+  @@index([tenantId, status, expiresAt])
+}
+
+model CommerceConversation {
+  id               String            @id @default(cuid())
+  tenantId         String
+  tenant           CommerceTenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId       String?
+  customer         CommerceCustomer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  orderId          String?
+  order            CommerceOrder?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  direction        String
+  eventType        String
+  template         String?
+  body             String?           @db.Text
+  inboundMessageId String?           @unique
+  idempotencyKey   String?           @unique
+  metadata         Json?
+  sentAt           DateTime          @default(now())
+  createdAt        DateTime          @default(now())
+
+  @@index([tenantId, sentAt])
+  @@index([orderId])
+  @@index([customerId])
+}

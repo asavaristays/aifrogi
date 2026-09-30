@@ -817,14 +817,6 @@ export type BotConnectorConfigurationUpdatewriteOperationsInput = {
   push?: string | string[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type BotConnectorConfigurationCreateNestedOneWithoutCredentialInput = {
   create?: Prisma.XOR<Prisma.BotConnectorConfigurationCreateWithoutCredentialInput, Prisma.BotConnectorConfigurationUncheckedCreateWithoutCredentialInput>
   connectOrCreate?: Prisma.BotConnectorConfigurationCreateOrConnectWithoutCredentialInput

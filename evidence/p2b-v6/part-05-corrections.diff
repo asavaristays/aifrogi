@@ -1,0 +1,34 @@
+diff --git a/tmp/aifrogi-v6-original/p2a-corrected-v6/05-BACKFILL-AND-ABORT.sql b/deliverables/p2a-corrected-v6/05-BACKFILL-AND-ABORT.sql
+index 006f695..ca9b3e3 100644
+--- a/tmp/aifrogi-v6-original/p2a-corrected-v6/05-BACKFILL-AND-ABORT.sql
++++ b/deliverables/p2a-corrected-v6/05-BACKFILL-AND-ABORT.sql
+@@ -1,18 +1,8 @@
+ -- psql-only disposable rehearsal. NOT authorized for production.
+ -- Required variables: migration_batch_id, filesystem_inventory, commit_backfill.
+ \set ON_ERROR_STOP on
+-\if :{?migration_batch_id}
+-\else
+-  \error 'migration_batch_id is required'
+-\endif
+-\if :{?filesystem_inventory}
+-\else
+-  \error 'filesystem_inventory is required'
+-\endif
+-\if :{?commit_backfill}
+-\else
+-  \set commit_backfill off
+-\endif
++-- Missing required variables fail during psql substitution. Callers must pass
++-- migration_batch_id, filesystem_inventory and commit_backfill explicitly.
+ 
+ BEGIN;
+ SET LOCAL lock_timeout='2s';
+@@ -28,7 +18,7 @@ CREATE OR REPLACE FUNCTION pg_temp.det_id(p_kind text,p_property text,p_legacy t
+ CREATE OR REPLACE FUNCTION pg_temp.row_hash(p_value jsonb) RETURNS text LANGUAGE sql IMMUTABLE STRICT AS $$ SELECT encode(digest(convert_to('PG14_JSONB_V1'||E'\x1f'||p_value::text,'UTF8'),'sha256'),'hex') $$;
+ 
+ CREATE TEMP TABLE p2a_filesystem_inventory(property_id text NOT NULL,legacy_id text NOT NULL,absolute_path text NOT NULL,byte_size bigint NOT NULL CHECK(byte_size>=0),content_sha256 text NOT NULL CHECK(content_sha256~'^[0-9a-f]{64}$'),source_id text,consent_id text,PRIMARY KEY(property_id,legacy_id)) ON COMMIT DROP;
+-\copy p2a_filesystem_inventory(property_id,legacy_id,absolute_path,byte_size,content_sha256,source_id,consent_id) FROM :'filesystem_inventory' WITH (FORMAT csv,HEADER true)
++COPY p2a_filesystem_inventory(property_id,legacy_id,absolute_path,byte_size,content_sha256,source_id,consent_id) FROM :'filesystem_inventory' WITH (FORMAT csv,HEADER true);
+ 
+ LOCK TABLE "KnowledgeEntry","KnowledgeDocument","Property" IN SHARE MODE;
+ DO $$ BEGIN

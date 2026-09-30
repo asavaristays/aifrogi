@@ -3,6 +3,779 @@ generator client {
   output   = "../generated/prisma"
 }
 
+// P2-B v6 canonical knowledge authority, integrated into the active schema.
+model KnowledgeClaimIdentity {
+  id                String                      @id @default(cuid())
+  propertyId        String
+  property          Property                    @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  stableKey         String
+  entityKey         String
+  fieldKey          String
+  qualifiers        Json
+  keyVersion        Int
+  createdAt         DateTime                    @default(now())
+  entries           KnowledgeEntry[]
+  publicationClaims KnowledgePublicationClaim[]
+
+  @@unique([propertyId, stableKey])
+  @@unique([propertyId, id])
+  @@index([propertyId, entityKey, fieldKey])
+}
+
+model KnowledgeSource {
+  id                    String                     @id @default(cuid())
+  propertyId            String
+  property              Property                   @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  sourceType            KnowledgeSourceType
+  canonicalIdentity     String                     @db.Text
+  canonicalIdentityHash String
+  state                 KnowledgeSourceState       @default(DRAFT)
+  audienceCeiling       KnowledgeAudience
+  currentRevision       Int                        @default(0)
+  revokedAt             DateTime?
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
+  revisions             KnowledgeSourceRevision[]
+  captures              SourceCapture[]
+  consents              WebsiteSourceConsent[]
+  objectReferences      KnowledgeObjectReference[]
+
+  @@unique([propertyId, sourceType, canonicalIdentityHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, state])
+}
+
+model KnowledgeSourceRevision {
+  id                String                   @id @default(cuid())
+  propertyId        String
+  sourceId          String
+  revision          Int
+  configuration     Json
+  configurationHash String
+  consentId         String
+  createdBy         String
+  createdAt         DateTime                 @default(now())
+  source            KnowledgeSource          @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  consent           WebsiteSourceConsent     @relation(fields: [propertyId, consentId], references: [propertyId, id], onDelete: Restrict)
+  captures          SourceCapture[]
+  releaseMembers    KnowledgeReleaseMember[]
+
+  @@unique([propertyId, sourceId, revision])
+  @@unique([propertyId, sourceId, id])
+  @@unique([propertyId, id])
+}
+
+model SourceCapture {
+  id                  String                   @id @default(cuid())
+  propertyId          String
+  sourceId            String
+  sourceRevisionId    String
+  requestedGeneration BigInt
+  operationKey        String                   @unique
+  status              CaptureState             @default(QUEUED)
+  requestedAt         DateTime                 @default(now())
+  startedAt           DateTime?
+  completedAt         DateTime?
+  source              KnowledgeSource          @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  sourceRevision      KnowledgeSourceRevision  @relation(fields: [propertyId, sourceId, sourceRevisionId], references: [propertyId, sourceId, id], onDelete: Restrict)
+  versions            CaptureVersion[]
+  releaseMembers      KnowledgeReleaseMember[]
+
+  @@unique([propertyId, sourceId, requestedGeneration])
+  @@unique([propertyId, sourceId, sourceRevisionId, id])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeObject {
+  id                    String                          @id @default(cuid())
+  propertyId            String
+  property              Property                        @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  storageNamespace      String
+  objectKey             String
+  checksum              String
+  byteSize              BigInt
+  mediaType             String
+  state                 KnowledgeObjectState            @default(STAGED)
+  stagingTokenHash      String
+  finalizedByJobId      String?
+  finalizedFence        BigInt?
+  retainUntil           DateTime?
+  legalHold             Boolean                         @default(false)
+  createdAt             DateTime                        @default(now())
+  usableAt              DateTime?
+  payloadDisposedAt     DateTime?
+  payloadDisposedBy     String?
+  disposalOperationKey  String?
+  originalObjectKeyHash String?
+  finalizedByJob        AutomationJob?                  @relation(fields: [propertyId, finalizedByJobId], references: [propertyId, id], onDelete: Restrict)
+  references            KnowledgeObjectReference[]
+  captureVersions       CaptureVersion[]
+  disposalAudits        KnowledgePayloadDisposalAudit[]
+
+  @@unique([propertyId, objectKey])
+  @@unique([propertyId, checksum])
+  @@unique([propertyId, id])
+  @@index([propertyId, state, createdAt])
+}
+
+model KnowledgeObjectReference {
+  id                 String                       @id @default(cuid())
+  propertyId         String
+  objectId           String
+  sourceId           String
+  purpose            String
+  retainUntil        DateTime?
+  legalHold          Boolean                      @default(false)
+  releasedAt         DateTime?
+  createdAt          DateTime                     @default(now())
+  object             KnowledgeObject              @relation(fields: [propertyId, objectId], references: [propertyId, id], onDelete: Restrict)
+  source             KnowledgeSource              @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  retentionDecisions KnowledgeRetentionDecision[]
+
+  @@unique([propertyId, objectId, sourceId, purpose])
+  @@unique([propertyId, id])
+}
+
+model CaptureVersion {
+  id             String                   @id @default(cuid())
+  propertyId     String
+  captureId      String
+  objectId       String
+  checksum       String
+  manifest       Json
+  capturedAt     DateTime
+  createdAt      DateTime                 @default(now())
+  capture        SourceCapture            @relation(fields: [propertyId, captureId], references: [propertyId, id], onDelete: Restrict)
+  object         KnowledgeObject          @relation(fields: [propertyId, objectId], references: [propertyId, id], onDelete: Restrict)
+  extractionRuns KnowledgeExtractionRun[]
+  evidence       KnowledgeClaimEvidence[]
+  releaseMembers KnowledgeReleaseMember[]
+
+  @@unique([propertyId, captureId, checksum])
+  @@unique([propertyId, captureId, id])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeExtractionRun {
+  id                   String         @id @default(cuid())
+  propertyId           String
+  captureVersionId     String
+  extractorVersion     String
+  normalizationVersion String
+  operationKey         String         @unique
+  status               CaptureState   @default(QUEUED)
+  resultManifestHash   String?
+  createdAt            DateTime       @default(now())
+  completedAt          DateTime?
+  captureVersion       CaptureVersion @relation(fields: [propertyId, captureVersionId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, captureVersionId, extractorVersion, normalizationVersion])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeClaimEvidence {
+  id                  String                             @id @default(cuid())
+  propertyId          String
+  entryId             String
+  captureVersionId    String
+  locator             Json
+  locatorHash         String
+  quotation           String                             @db.Text
+  quotationHash       String
+  supportedComponents String[]
+  bindingHash         String
+  createdAt           DateTime                           @default(now())
+  entry               KnowledgeEntry                     @relation(fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+  captureVersion      CaptureVersion                     @relation(fields: [propertyId, captureVersionId], references: [propertyId, id], onDelete: Restrict)
+  bindings            KnowledgeRevisionEvidenceBinding[]
+
+  @@unique([propertyId, entryId, captureVersionId, locatorHash])
+  @@unique([propertyId, entryId, id])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeRevisionEvidenceBinding {
+  id          String                 @id @default(cuid())
+  propertyId  String
+  entryId     String
+  evidenceId  String
+  bindingHash String
+  createdAt   DateTime               @default(now())
+  entry       KnowledgeEntry         @relation(fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+  evidence    KnowledgeClaimEvidence @relation(fields: [propertyId, entryId, evidenceId], references: [propertyId, entryId, id], onDelete: Restrict)
+
+  @@unique([propertyId, entryId, evidenceId])
+  @@unique([propertyId, entryId, bindingHash])
+}
+
+model KnowledgeClaimConflict {
+  id            String         @id @default(cuid())
+  propertyId    String
+  lowerEntryId  String
+  higherEntryId String
+  reason        String         @db.Text
+  blocking      Boolean        @default(true)
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  resolution    String?        @db.Text
+  createdAt     DateTime       @default(now())
+  lowerEntry    KnowledgeEntry @relation("ConflictLower", fields: [propertyId, lowerEntryId], references: [propertyId, id], onDelete: Restrict)
+  higherEntry   KnowledgeEntry @relation("ConflictHigher", fields: [propertyId, higherEntryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, lowerEntryId, higherEntryId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeApprovalEvidence {
+  id             String                      @id @default(cuid())
+  propertyId     String
+  purpose        ApprovalPurpose
+  decision       ApprovalDecision
+  scopeManifest  Json
+  scopeHash      String
+  audience       KnowledgeAudience?
+  policyVersion  String
+  actorId        String
+  actorEmailHash String
+  authority      String
+  supersedesId   String?
+  decidedAt      DateTime                    @default(now())
+  supersedes     KnowledgeApprovalEvidence?  @relation("ApprovalSupersession", fields: [propertyId, supersedesId], references: [propertyId, id], onDelete: Restrict)
+  supersededBy   KnowledgeApprovalEvidence[] @relation("ApprovalSupersession")
+  publications   KnowledgePublication[]
+
+  @@unique([propertyId, purpose, scopeHash, decision, policyVersion])
+  @@unique([propertyId, id])
+}
+
+model KnowledgePublication {
+  id                    String                      @id @default(cuid())
+  propertyId            String
+  audience              KnowledgeAudience
+  manifestHash          String
+  policyVersion         String
+  evidencePolicyVersion String
+  approvalId            String
+  state                 PublicationState            @default(CANDIDATE)
+  sealedAt              DateTime?
+  membershipClosedAt    DateTime?
+  revokedAt             DateTime?
+  createdAt             DateTime                    @default(now())
+  approval              KnowledgeApprovalEvidence   @relation(fields: [propertyId, approvalId], references: [propertyId, id], onDelete: Restrict)
+  claims                KnowledgePublicationClaim[]
+  pointers              KnowledgeServingPointer[]
+  answerAudits          KnowledgeAnswerAudit[]
+  certificationRuns     KnowledgeCertificationRun[]
+
+  @@unique([propertyId, audience, manifestHash, policyVersion])
+  @@unique([propertyId, audience, id])
+  @@unique([propertyId, id])
+}
+
+model KnowledgePublicationClaim {
+  id               String                 @id @default(cuid())
+  propertyId       String
+  publicationId    String
+  claimIdentityId  String
+  entryId          String
+  sealManifestHash String
+  createdAt        DateTime               @default(now())
+  publication      KnowledgePublication   @relation(fields: [propertyId, publicationId], references: [propertyId, id], onDelete: Restrict)
+  claimIdentity    KnowledgeClaimIdentity @relation(fields: [propertyId, claimIdentityId], references: [propertyId, id], onDelete: Restrict)
+  entry            KnowledgeEntry         @relation(fields: [propertyId, claimIdentityId, entryId, sealManifestHash], references: [propertyId, claimIdentityId, id, sealManifestHash], onDelete: Restrict)
+
+  @@unique([propertyId, publicationId, claimIdentityId])
+  @@unique([propertyId, publicationId, entryId])
+}
+
+model KnowledgeServingPointer {
+  id                    String               @id @default(cuid())
+  propertyId            String
+  audience              KnowledgeAudience
+  publicationId         String
+  pointerGeneration     BigInt               @default(1)
+  eligibilityGeneration BigInt               @default(1)
+  updatedBy             String
+  updatedAt             DateTime             @updatedAt
+  publication           KnowledgePublication @relation(fields: [propertyId, audience, publicationId], references: [propertyId, audience, id], onDelete: Restrict)
+
+  @@unique([propertyId, audience])
+}
+
+model KnowledgePolicyVersion {
+  id                    String                      @id @default(cuid())
+  propertyId            String
+  property              Property                    @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  version               Int
+  mode                  KnowledgePolicyMode
+  owner                 String
+  expiresAt             DateTime?
+  publicationAutomation Boolean                     @default(false)
+  freshnessRules        Json
+  evidenceRules         Json
+  policyHash            String
+  createdAt             DateTime                    @default(now())
+  currentFor            PropertyIntelligencePolicy?
+  certificationRuns     KnowledgeCertificationRun[]
+
+  @@unique([propertyId, version])
+  @@unique([propertyId, id])
+}
+
+model PropertyIntelligencePolicy {
+  propertyId             String                 @id
+  currentPolicyVersionId String
+  eligibilityGeneration  BigInt                 @default(1)
+  reviewRequired         Boolean                @default(true)
+  updatedAt              DateTime               @updatedAt
+  property               Property               @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  currentPolicy          KnowledgePolicyVersion @relation(fields: [propertyId, currentPolicyVersionId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, currentPolicyVersionId])
+}
+
+model BotMachinePolicyArtifact {
+  id                  String               @id @default(cuid())
+  propertyId          String
+  property            Property             @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  schemaVersion       Int
+  constitutionVersion String
+  canonicalPayload    String               @db.Text
+  policy              Json
+  policyHash          String
+  algorithm           String
+  signature           String               @db.Text
+  signerKeyId         String
+  state               String               @default("CANDIDATE")
+  createdBy           String
+  createdAt           DateTime             @default(now())
+  activatedAt         DateTime?
+  releases            BotReleaseArtifact[]
+
+  @@unique([propertyId, policyHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, state])
+}
+
+model BotReleaseArtifact {
+  id                    String                   @id @default(cuid())
+  releaseId             String
+  propertyId            String
+  property              Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  policyArtifactId      String
+  policyArtifact        BotMachinePolicyArtifact @relation(fields: [propertyId, policyArtifactId], references: [propertyId, id], onDelete: Restrict)
+  canonicalPayload      String                   @db.Text
+  manifest              Json
+  manifestHash          String
+  policyHash            String
+  knowledgeReleaseHash  String
+  applicationBuildId    String
+  databaseSchemaVersion String
+  servingContract       Int
+  retrievalVersion      String
+  algorithm             String
+  signature             String                   @db.Text
+  signerKeyId           String
+  state                 String                   @default("CANDIDATE")
+  createdBy             String
+  createdAt             DateTime                 @default(now())
+  activatedAt           DateTime?
+  pointer               BotReleasePointer?
+
+  @@unique([propertyId, releaseId])
+  @@unique([propertyId, manifestHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, state])
+}
+
+model BotReleasePointer {
+  propertyId        String             @id
+  property          Property           @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  releaseArtifactId String
+  releaseArtifact   BotReleaseArtifact @relation(fields: [propertyId, releaseArtifactId], references: [propertyId, id], onDelete: Restrict)
+  pointerGeneration BigInt             @default(1)
+  updatedBy         String
+  updatedAt         DateTime           @updatedAt
+
+  @@unique([propertyId, releaseArtifactId])
+}
+
+model KnowledgeReleaseApproval {
+  id           String                     @id @default(cuid())
+  propertyId   String
+  property     Property                   @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  manifestHash String
+  decision     String
+  actorId      String
+  authority    String
+  decidedAt    DateTime                   @default(now())
+  releases     KnowledgeReleaseArtifact[]
+
+  @@unique([propertyId, manifestHash, decision])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeReleaseArtifact {
+  id                 String                         @id @default(cuid())
+  releaseId          String
+  propertyId         String
+  property           Property                       @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  approvalId         String
+  approval           KnowledgeReleaseApproval       @relation(fields: [propertyId, approvalId], references: [propertyId, id], onDelete: Restrict)
+  canonicalPayload   String                         @db.Text
+  manifest           Json
+  manifestHash       String
+  policyHash         String
+  state              String                         @default("CANDIDATE")
+  createdBy          String
+  createdAt          DateTime                       @default(now())
+  membershipClosedAt DateTime?
+  sealedAt           DateTime?
+  revokedAt          DateTime?
+  members            KnowledgeReleaseMember[]
+  pointer            KnowledgeReleaseActivePointer?
+
+  @@unique([propertyId, releaseId])
+  @@unique([propertyId, manifestHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, state])
+}
+
+model KnowledgeReleaseMember {
+  id                String                   @id @default(cuid())
+  propertyId        String
+  releaseArtifactId String
+  sourceId          String
+  sourceRevisionId  String
+  captureId         String?
+  captureVersionId  String?
+  sourceType        KnowledgeSourceType
+  contentDigest     String
+  authorityRank     Int
+  createdAt         DateTime                 @default(now())
+  release           KnowledgeReleaseArtifact @relation(fields: [propertyId, releaseArtifactId], references: [propertyId, id], onDelete: Restrict)
+  sourceRevision    KnowledgeSourceRevision  @relation(fields: [propertyId, sourceId, sourceRevisionId], references: [propertyId, sourceId, id], onDelete: Restrict, map: "KnowledgeReleaseMember_source_revision_fkey")
+  capture           SourceCapture?           @relation(fields: [propertyId, sourceId, sourceRevisionId, captureId], references: [propertyId, sourceId, sourceRevisionId, id], onDelete: Restrict, map: "KnowledgeReleaseMember_capture_fkey")
+  captureVersion    CaptureVersion?          @relation(fields: [propertyId, captureId, captureVersionId], references: [propertyId, captureId, id], onDelete: Restrict)
+
+  @@unique([propertyId, releaseArtifactId, sourceId, sourceRevisionId])
+  @@unique([propertyId, releaseArtifactId, authorityRank])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeReleaseActivePointer {
+  propertyId        String                   @id
+  property          Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  releaseArtifactId String
+  releaseArtifact   KnowledgeReleaseArtifact @relation(fields: [propertyId, releaseArtifactId], references: [propertyId, id], onDelete: Restrict)
+  pointerGeneration BigInt                   @default(1)
+  updatedBy         String
+  updatedAt         DateTime                 @updatedAt
+
+  @@unique([propertyId, releaseArtifactId])
+}
+
+model KnowledgePreviewSession {
+  id                  String                  @id @default(cuid())
+  organizationId      String
+  propertyId          String
+  createdByMemberId   String
+  accessScope         Json
+  accessScopeHash     String
+  candidateGeneration BigInt
+  state               PreviewState            @default(ACTIVE)
+  expiresAt           DateTime
+  revokedAt           DateTime?
+  createdAt           DateTime                @default(now())
+  property            Property                @relation(fields: [propertyId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  member              OrganizationMember      @relation(fields: [organizationId, createdByMemberId], references: [organizationId, id], onDelete: Restrict)
+  claims              KnowledgePreviewClaim[]
+
+  @@unique([propertyId, id])
+  @@unique([propertyId, id, candidateGeneration])
+}
+
+model KnowledgePreviewClaim {
+  id                  String                  @id @default(cuid())
+  propertyId          String
+  previewSessionId    String
+  entryId             String
+  candidateGeneration BigInt
+  createdAt           DateTime                @default(now())
+  session             KnowledgePreviewSession @relation(fields: [propertyId, previewSessionId, candidateGeneration], references: [propertyId, id, candidateGeneration], onDelete: Cascade)
+  entry               KnowledgeEntry          @relation(fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, previewSessionId, entryId])
+}
+
+model KnowledgeGuestSession {
+  id               String                     @id @default(cuid())
+  propertyId       String
+  conversationId   String
+  sessionHash      String
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime                   @default(now())
+  property         Property                   @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  conversation     Conversation               @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Restrict)
+  answerAudits     KnowledgeAnswerAudit[]
+  handoverRequests KnowledgeHandoverRequest[]
+
+  @@unique([propertyId, sessionHash])
+  @@unique([propertyId, conversationId, id])
+}
+
+model KnowledgeRevisionEvent {
+  id             String             @id @default(cuid())
+  propertyId     String
+  entryId        String
+  eventType      KnowledgeEventType
+  relatedEntryId String?
+  reason         String             @db.Text
+  actorId        String
+  occurredAt     DateTime           @default(now())
+  entry          KnowledgeEntry     @relation("RevisionEventEntry", fields: [propertyId, entryId], references: [propertyId, id], onDelete: Restrict)
+  relatedEntry   KnowledgeEntry?    @relation("RevisionEventRelated", fields: [propertyId, relatedEntryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, entryId, eventType, relatedEntryId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeAnswerAudit {
+  id                    String                   @id @default(cuid())
+  propertyId            String
+  conversationId        String
+  guestSessionId        String
+  publicationId         String
+  pointerGeneration     BigInt
+  eligibilityGeneration BigInt
+  selectedManifest      Json
+  selectedManifestHash  String
+  validationResult      Json
+  deliveryState         AnswerDeliveryState      @default(PENDING)
+  createdAt             DateTime                 @default(now())
+  property              Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  conversation          Conversation             @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Restrict)
+  guestSession          KnowledgeGuestSession    @relation(fields: [propertyId, conversationId, guestSessionId], references: [propertyId, conversationId, id], onDelete: Restrict)
+  publication           KnowledgePublication     @relation(fields: [propertyId, publicationId], references: [propertyId, id], onDelete: Restrict)
+  outcomes              KnowledgeAnswerOutcome[]
+
+  @@unique([propertyId, id])
+  @@index([propertyId, conversationId, createdAt])
+}
+
+model KnowledgeAnswerOutcome {
+  id            String               @id @default(cuid())
+  propertyId    String
+  answerAuditId String
+  deliveryKey   String
+  state         AnswerDeliveryState
+  detail        Json?
+  occurredAt    DateTime             @default(now())
+  answerAudit   KnowledgeAnswerAudit @relation(fields: [propertyId, answerAuditId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, answerAuditId, deliveryKey])
+}
+
+model KnowledgeHandoverRequest {
+  id             String                   @id @default(cuid())
+  propertyId     String
+  conversationId String
+  guestSessionId String
+  requestHash    String
+  recordedAt     DateTime                 @default(now())
+  property       Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  conversation   Conversation             @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Restrict)
+  guestSession   KnowledgeGuestSession    @relation(fields: [propertyId, conversationId, guestSessionId], references: [propertyId, conversationId, id], onDelete: Restrict)
+  events         KnowledgeHandoverEvent[]
+
+  @@unique([propertyId, requestHash])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeHandoverEvent {
+  id            String                   @id @default(cuid())
+  propertyId    String
+  requestId     String
+  state         HandoverState
+  sequence      Int
+  attemptNumber Int?
+  provider      String?
+  deliveryId    String?
+  errorCode     String?
+  actorId       String
+  occurredAt    DateTime                 @default(now())
+  request       KnowledgeHandoverRequest @relation(fields: [propertyId, requestId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, requestId, sequence])
+  @@unique([provider, deliveryId])
+}
+
+model KnowledgeOutboxEvent {
+  id             String      @id @default(cuid())
+  propertyId     String
+  operationKey   String
+  eventType      String
+  schemaVersion  Int
+  payload        Json
+  state          OutboxState @default(PENDING)
+  availableAt    DateTime    @default(now())
+  leaseOwner     String?
+  leaseExpiresAt DateTime?
+  attempts       Int         @default(0)
+  dispatchedAt   DateTime?
+  createdAt      DateTime    @default(now())
+
+  @@unique([propertyId, operationKey, eventType, schemaVersion])
+  @@unique([propertyId, id])
+}
+
+model AutomationJobAttempt {
+  id            String          @id @default(cuid())
+  propertyId    String
+  jobId         String
+  attemptNumber Int
+  workerId      String
+  fencingToken  BigInt
+  state         JobAttemptState @default(RUNNING)
+  startedAt     DateTime        @default(now())
+  finishedAt    DateTime?
+  errorCode     String?
+  job           AutomationJob   @relation(fields: [propertyId, jobId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, jobId, attemptNumber])
+  @@unique([propertyId, jobId, fencingToken])
+}
+
+model KnowledgeCertificationRun {
+  id               String                 @id @default(cuid())
+  propertyId       String
+  policyVersionId  String
+  publicationId    String?
+  suiteVersion     String
+  caseManifestHash String
+  resultManifest   Json
+  resultHash       String
+  passed           Boolean
+  executedAt       DateTime
+  property         Property               @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  policyVersion    KnowledgePolicyVersion @relation(fields: [propertyId, policyVersionId], references: [propertyId, id], onDelete: Restrict)
+  publication      KnowledgePublication?  @relation(fields: [propertyId, publicationId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, policyVersionId, publicationId, suiteVersion, caseManifestHash])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeRetentionDecision {
+  id                String                   @id @default(cuid())
+  propertyId        String
+  objectReferenceId String
+  state             RetentionState           @default(RETAIN)
+  policyVersion     String
+  legalHold         Boolean                  @default(false)
+  decidedBy         String
+  reason            String                   @db.Text
+  decidedAt         DateTime                 @default(now())
+  property          Property                 @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  objectReference   KnowledgeObjectReference @relation(fields: [propertyId, objectReferenceId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, objectReferenceId, policyVersion, state])
+  @@unique([propertyId, id])
+}
+
+model KnowledgePayloadDisposalAudit {
+  id            String          @id @default(cuid())
+  propertyId    String
+  objectId      String
+  operationKey  String
+  objectKeyHash String
+  checksum      String
+  policyVersion String
+  disposedBy    String
+  disposedAt    DateTime        @default(now())
+  property      Property        @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  object        KnowledgeObject @relation(fields: [propertyId, objectId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([propertyId, operationKey])
+  @@unique([propertyId, id])
+}
+
+model BotFactualServingControl {
+  propertyId String   @id
+  isClosed   Boolean  @default(false)
+  version    BigInt   @default(0)
+  incidentId String?
+  reason     String?
+  updatedBy  String
+  updatedAt  DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+}
+
+model BotFactualServingControlEvent {
+  id         String   @id @default(cuid())
+  propertyId String
+  version    BigInt
+  isClosed   Boolean
+  incidentId String
+  reason     String
+  actorId    String
+  occurredAt DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  @@unique([propertyId, version])
+}
+
+model KnowledgeMigrationDecision {
+  id                String         @id
+  propertyId        String
+  legacyEntryId     String
+  batchId           String
+  decision          String
+  reasonCode        String
+  proposedStableKey String?
+  sourceHash        String
+  createdAt         DateTime       @default(now())
+  property          Property       @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  legacyEntry       KnowledgeEntry @relation(fields: [propertyId, legacyEntryId], references: [propertyId, id], onDelete: Restrict)
+
+  @@unique([batchId, legacyEntryId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeMigrationArtifactDecision {
+  id             String   @id
+  propertyId     String
+  batchId        String
+  artifactType   String
+  legacyId       String
+  sourcePathHash String?
+  contentHash    String
+  decision       String
+  reasonCode     String
+  sourceId       String?
+  objectId       String?
+  createdAt      DateTime @default(now())
+  property       Property @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  @@unique([batchId, artifactType, legacyId])
+  @@unique([propertyId, id])
+}
+
+model KnowledgeRuntimePrincipalGrant {
+  id           String    @id
+  propertyId   String
+  principalId  String
+  databaseRole String
+  purpose      String
+  expiresAt    DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  property     Property  @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+
+  @@unique([propertyId, principalId, databaseRole, purpose])
+  @@unique([propertyId, id])
+}
+
 datasource db {
   provider = "postgresql"
 }
@@ -141,45 +914,247 @@ enum ReadinessDeliveryRoute {
   CLIENT_GUIDANCE
 }
 
-model Property {
-  id                     String                    @id @default(cuid())
-  organizationId         String?
-  organization           Organization?             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  name                   String
-  slug                   String                    @unique
-  city                   String?
-  state                  String?
-  timezone               String                    @default("Asia/Kolkata")
-  createdAt              DateTime                  @default(now())
-  updatedAt              DateTime                  @updatedAt
-  leads                  Lead[]
-  metrics                MetricDaily[]
-  campaigns              Campaign[]
-  automationJobs         AutomationJob[]
-  assets                 Asset[]
-  whatsappIntegration    WhatsAppIntegration?
-  appointmentTenants     AppointmentTenant[]
-  commerceTenants        CommerceTenant[]
-  knowledgeDocuments     KnowledgeDocument[]
-  knowledgeEntries       KnowledgeEntry[]
-  knowledgeGaps          KnowledgeGap[]
-  knowledgePreviews      KnowledgePreview[]
-  knowledgeFlags         KnowledgeAnswerFlag[]
-  channelConnections     ChannelConnection[]
-  participants           Participant[]
-  conversations          Conversation[]
-  neutralMessages        Message[]
-  aiOperations           AiOperation[]
-  websiteSessions        WebsiteVisitorSession[]
-  sovereignEvidence      SovereignAnswerEvidence[]
-  answerFeedback         SovereignAnswerFeedback[]
-  sovereignReplayCases   SovereignReplayCase[]
-  readinessScans         ReadinessScan[]
-  readinessWorkItems     ReadinessWorkItem[]
-  readinessVerifications ReadinessVerification[]
-  hotelGuestAccess       HotelGuestAccessRequest[]
+enum KnowledgeSourceType {
+  WEBSITE
+  PDF
+  SPREADSHEET
+  FORM
+  OWNER_CORRECTION
+  CONNECTOR
+}
 
+enum KnowledgeSourceState {
+  DRAFT
+  AUTHORIZED
+  PAUSED
+  REVOKED
+  ARCHIVED
+}
+
+enum KnowledgeAudience {
+  PUBLIC
+  STAFF
+  RESTRICTED
+}
+
+enum ClaimRevisionState {
+  DRAFT
+  SEALED
+}
+
+enum ClaimVerificationStatus {
+  SUPPORTED
+  PARTIAL
+  CONTRADICTED
+  UNSUPPORTED
+}
+
+enum CaptureState {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum KnowledgeObjectState {
+  STAGED
+  USABLE
+  QUARANTINED
+  RETAINED_ORPHAN
+}
+
+enum ApprovalPurpose {
+  PREVIEW_ACKNOWLEDGEMENT
+  PUBLICATION_AUTHORIZATION
+  PUBLICATION_REVOCATION
+  SOURCE_CORRECTION
+}
+
+enum ApprovalDecision {
+  APPROVED
+  REJECTED
+  REVOKED
+}
+
+enum PublicationState {
+  CANDIDATE
+  SEALED
+  REVOKED
+}
+
+enum PreviewState {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum KnowledgePolicyMode {
+  LEGACY
+  CLAIMS_ONLY
+  BLOCKED
+}
+
+enum KnowledgeEventType {
+  SUPERSEDED
+  WITHDRAWN
+  AUTHORITY_REVOKED
+}
+
+enum OutboxState {
+  PENDING
+  LEASED
+  DISPATCHED
+  DEAD_LETTER
+}
+
+enum JobAttemptState {
+  RUNNING
+  SUCCEEDED
+  FAILED
+  ABANDONED
+}
+
+enum AnswerDeliveryState {
+  PENDING
+  DELIVERED
+  SUPPRESSED
+  FAILED
+  HANDOVER
+}
+
+enum HandoverState {
+  RECORDED
+  QUEUED
+  PROVIDER_ACCEPTED
+  STAFF_ACKNOWLEDGED
+  RESOLVED
+  REOPENED
+  CANCELED
+}
+
+enum RetentionState {
+  RETAIN
+  DISPOSAL_PROPOSED
+  DISPOSAL_APPROVED
+  DISPOSED
+}
+
+model Property {
+  id                         String                               @id @default(cuid())
+  organizationId             String?
+  organization               Organization?                        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name                       String
+  slug                       String                               @unique
+  city                       String?
+  state                      String?
+  timezone                   String                               @default("Asia/Kolkata")
+  createdAt                  DateTime                             @default(now())
+  updatedAt                  DateTime                             @updatedAt
+  websiteConsentEnforcedAt   DateTime?
+  leads                      Lead[]
+  metrics                    MetricDaily[]
+  campaigns                  Campaign[]
+  automationJobs             AutomationJob[]
+  assets                     Asset[]
+  whatsappIntegration        WhatsAppIntegration?
+  appointmentTenants         AppointmentTenant[]
+  commerceTenants            CommerceTenant[]
+  knowledgeDocuments         KnowledgeDocument[]
+  knowledgeEntries           KnowledgeEntry[]
+  knowledgeGaps              KnowledgeGap[]
+  knowledgePreviews          KnowledgePreview[]
+  knowledgeFlags             KnowledgeAnswerFlag[]
+  channelConnections         ChannelConnection[]
+  participants               Participant[]
+  conversations              Conversation[]
+  neutralMessages            Message[]
+  aiOperations               AiOperation[]
+  websiteSessions            WebsiteVisitorSession[]
+  sovereignEvidence          SovereignAnswerEvidence[]
+  answerFeedback             SovereignAnswerFeedback[]
+  sovereignReplayCases       SovereignReplayCase[]
+  readinessScans             ReadinessScan[]
+  readinessWorkItems         ReadinessWorkItem[]
+  readinessVerifications     ReadinessVerification[]
+  hotelGuestAccess           HotelGuestAccessRequest[]
+  websiteSourceConsents      WebsiteSourceConsent[]
+  knowledgeClaimIdentities   KnowledgeClaimIdentity[]
+  knowledgeSources           KnowledgeSource[]
+  knowledgeObjects           KnowledgeObject[]
+  knowledgePolicies          KnowledgePolicyVersion[]
+  intelligencePolicy         PropertyIntelligencePolicy?
+  previewSessions            KnowledgePreviewSession[]
+  guestSessions              KnowledgeGuestSession[]
+  answerAudits               KnowledgeAnswerAudit[]
+  handoverRequests           KnowledgeHandoverRequest[]
+  certificationRuns          KnowledgeCertificationRun[]
+  retentionDecisions         KnowledgeRetentionDecision[]
+  payloadDisposalAudits      KnowledgePayloadDisposalAudit[]
+  factualServingControl      BotFactualServingControl?
+  factualServingEvents       BotFactualServingControlEvent[]
+  migrationDecisions         KnowledgeMigrationDecision[]
+  migrationArtifactDecisions KnowledgeMigrationArtifactDecision[]
+  runtimePrincipalGrants     KnowledgeRuntimePrincipalGrant[]
+  botMachinePolicies         BotMachinePolicyArtifact[]
+  botReleaseArtifacts        BotReleaseArtifact[]
+  botReleasePointer          BotReleasePointer?
+  knowledgeReleaseApprovals  KnowledgeReleaseApproval[]
+  knowledgeReleaseArtifacts  KnowledgeReleaseArtifact[]
+  knowledgeReleasePointer    KnowledgeReleaseActivePointer?
+  governedRepairCommands     GovernedRepairCommand[]
+
+  @@unique([id, organizationId])
   @@index([organizationId])
+}
+
+enum WebsiteSourceConsentStatus {
+  TRIAL_AUTHORIZED
+  POST_TRIAL_APPROVED
+  REVOKED
+}
+
+enum WebsiteSourceApprovalMethod {
+  EMAIL
+  SIGNED_LETTER
+}
+
+model WebsiteSourceConsent {
+  id                    String                       @id @default(cuid())
+  propertyId            String
+  property              Property                     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  sourceUrl             String?                      @db.Text
+  sourceUrlHash         String?
+  termsVersion          String
+  status                WebsiteSourceConsentStatus   @default(TRIAL_AUTHORIZED)
+  trialAuthorizedAt     DateTime
+  trialExpiresAt        DateTime
+  acceptedByEmail       String
+  acceptedIpHash        String?
+  postTrialMethod       WebsiteSourceApprovalMethod?
+  postTrialApprovedBy   String?
+  postTrialApprovedAt   DateTime?
+  approvalEvidenceRef   String?
+  revokedAt             DateTime?
+  revokedBy             String?
+  revocationReason      String?                      @db.Text
+  createdAt             DateTime                     @default(now())
+  updatedAt             DateTime                     @updatedAt
+  sourceType            KnowledgeSourceType          @default(WEBSITE)
+  canonicalIdentity     String?                      @db.Text
+  canonicalIdentityHash String?
+  sourceId              String?
+  authorityScope        Json?
+  audienceCeiling       KnowledgeAudience            @default(RESTRICTED)
+  effectiveFrom         DateTime?
+  effectiveUntil        DateTime?
+  source                KnowledgeSource?             @relation(fields: [propertyId, sourceId], references: [propertyId, id], onDelete: Restrict)
+  sourceRevisions       KnowledgeSourceRevision[]
+
+  @@unique([propertyId, sourceUrlHash])
+  @@unique([propertyId, sourceType, canonicalIdentityHash])
+  @@unique([propertyId, id])
+  @@index([propertyId, status, trialExpiresAt])
 }
 
 /**
@@ -345,54 +1320,83 @@ model KnowledgeDocument {
 }
 
 model KnowledgeEntry {
-  id                String                @id @default(cuid())
-  propertyId        String
-  property          Property              @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  documentId        String?
-  document          KnowledgeDocument?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
-  question          String                @db.Text
-  answer            String                @db.Text
-  category          String                @default("General")
-  status            String                @default("DRAFT")
-  conflictSummary   String?               @db.Text
-  claimKey          String?
-  claimType         String                @default("FACT")
-  valueType         String                @default("TEXT")
-  currency          String?
-  effectiveAt       DateTime?
-  expiresAt         DateTime?
-  refreshDays       Int                   @default(90)
-  reliability       String                @default("CLIENT_CONFIRMED")
-  authorityLevel    String                @default("CLIENT_APPROVED_STRUCTURED")
-  version           Int                   @default(1)
-  supersedesId      String?
-  supersedes        KnowledgeEntry?       @relation("KnowledgeSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
-  supersededBy      KnowledgeEntry[]      @relation("KnowledgeSupersession")
-  validationStatus  String                @default("PENDING")
-  validationErrors  String[]              @default([])
-  conflictStatus    String                @default("CLEAR")
-  fieldApprovedBy   String?
-  fieldApprovedAt   DateTime?
-  previewApprovedBy String?
-  previewApprovedAt DateTime?
-  publishedAt       DateTime?
-  pausedAt          DateTime?
-  pauseReason       String?
-  lastConfirmedAt   DateTime?
-  createdBy         String
-  approvedBy        String?
-  approvedAt        DateTime?
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  resolvedGaps      KnowledgeGap[]
-  previews          KnowledgePreview[]
-  answerFlags       KnowledgeAnswerFlag[]
+  id                    String                             @id @default(cuid())
+  propertyId            String
+  property              Property                           @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  documentId            String?
+  document              KnowledgeDocument?                 @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  question              String                             @db.Text
+  answer                String                             @db.Text
+  category              String                             @default("General")
+  status                String                             @default("DRAFT")
+  conflictSummary       String?                            @db.Text
+  claimKey              String?
+  claimType             String                             @default("FACT")
+  valueType             String                             @default("TEXT")
+  currency              String?
+  effectiveAt           DateTime?
+  expiresAt             DateTime?
+  refreshDays           Int                                @default(90)
+  reliability           String                             @default("CLIENT_CONFIRMED")
+  authorityLevel        String                             @default("CLIENT_APPROVED_STRUCTURED")
+  version               Int                                @default(1)
+  supersedesId          String?
+  supersedes            KnowledgeEntry?                    @relation("KnowledgeSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
+  supersededBy          KnowledgeEntry[]                   @relation("KnowledgeSupersession")
+  validationStatus      String                             @default("PENDING")
+  validationErrors      String[]                           @default([])
+  conflictStatus        String                             @default("CLEAR")
+  fieldApprovedBy       String?
+  fieldApprovedAt       DateTime?
+  previewApprovedBy     String?
+  previewApprovedAt     DateTime?
+  publishedAt           DateTime?
+  pausedAt              DateTime?
+  pauseReason           String?
+  lastConfirmedAt       DateTime?
+  createdBy             String
+  approvedBy            String?
+  approvedAt            DateTime?
+  createdAt             DateTime                           @default(now())
+  updatedAt             DateTime                           @updatedAt
+  resolvedGaps          KnowledgeGap[]
+  previews              KnowledgePreview[]
+  answerFlags           KnowledgeAnswerFlag[]
+  claimIdentityId       String?
+  claimIdentity         KnowledgeClaimIdentity?            @relation(fields: [propertyId, claimIdentityId], references: [propertyId, id], onDelete: Restrict)
+  revisionNumber        Int?
+  normalizedValue       Json?
+  valueHash             String?
+  quoteText             String?                            @db.Text
+  audience              KnowledgeAudience?
+  effectiveFrom         DateTime?
+  effectiveUntil        DateTime?
+  verificationStatus    ClaimVerificationStatus?
+  revisionState         ClaimRevisionState                 @default(DRAFT)
+  requiredComponents    String[]                           @default([])
+  sealManifestHash      String?
+  sealPolicyVersion     String?
+  sealedAt              DateTime?
+  sealedBy              String?
+  evidence              KnowledgeClaimEvidence[]
+  evidenceBindings      KnowledgeRevisionEvidenceBinding[]
+  revisionEvents        KnowledgeRevisionEvent[]           @relation("RevisionEventEntry")
+  relatedRevisionEvents KnowledgeRevisionEvent[]           @relation("RevisionEventRelated")
+  lowerConflicts        KnowledgeClaimConflict[]           @relation("ConflictLower")
+  higherConflicts       KnowledgeClaimConflict[]           @relation("ConflictHigher")
+  migrationDecisions    KnowledgeMigrationDecision[]
+  publicationClaims     KnowledgePublicationClaim[]
+  previewClaims         KnowledgePreviewClaim[]
 
+  @@unique([propertyId, id])
+  @@unique([propertyId, claimIdentityId, revisionNumber])
+  @@unique([propertyId, claimIdentityId, id, sealManifestHash])
   @@index([propertyId, status])
   @@index([propertyId, claimKey, version])
   @@index([propertyId, expiresAt, status])
   @@index([supersedesId])
   @@index([documentId])
+  @@index([propertyId, claimIdentityId, sealedAt])
 }
 
 model KnowledgePreview {
@@ -721,25 +1725,27 @@ model AgentGatewayClient {
 }
 
 model OrganizationMember {
-  id                  String       @id @default(cuid())
+  id                  String                    @id @default(cuid())
   organizationId      String
-  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization        Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   email               String
   name                String?
-  role                String       @default("OWNER")
+  role                String                    @default("OWNER")
   department          String?
-  status              String       @default("ACTIVE")
+  status              String                    @default("ACTIVE")
   passwordHash        String?
-  invitationTokenHash String?      @unique
+  invitationTokenHash String?                   @unique
   invitationExpiresAt DateTime?
   invitedBy           String?
-  invitedAt           DateTime     @default(now())
+  invitedAt           DateTime                  @default(now())
   joinedAt            DateTime?
   lastLoginAt         DateTime?
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  previewSessions     KnowledgePreviewSession[]
 
   @@unique([organizationId, email])
+  @@unique([organizationId, id])
   @@index([email, status])
 }
 
@@ -889,63 +1895,63 @@ model WebsiteVisitorSession {
 }
 
 model SovereignAnswerEvidence {
-  id                      String                   @id @default(cuid())
-  propertyId              String
-  property                Property                 @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  leadId                  String?
-  sessionIdHash           String
-  constitutionVersion     String
-  blueprintVersion        String
-  intent                  String
-  disposition             String
-  contextUsed             Boolean                  @default(false)
-  confidence              Float                    @default(0)
-  safetyClassification    String                   @default("STANDARD")
-  permittedOperation      String                   @default("ANSWER")
-  observedBehavior        String                   @default("UNKNOWN")
-  decisionConsistent      Boolean                  @default(false)
-  consistencyReason       String?                  @db.Text
-  resolutionState         String                   @default("RESOLVED")
-  clarifyCount            Int                      @default(0)
-  circuitBreaker          Boolean                  @default(false)
-  circuitBreakerReason    String?
-  evaluationVersion       String                   @default("1.1")
-  decisionReason          String                   @db.Text
-  question                String                   @db.Text
-  resolvedQuestion        String                   @db.Text
-  answer                  String                   @db.Text
-  grounded                Boolean                  @default(false)
-  model                   String
-  sources                 Json
-  knowledgeAsOf           DateTime?
-  knowledgeClaimIds       String[]                 @default([])
-  personaCategory         String                   @default("UNKNOWN")
-  personaVersion          String                   @default("UNKNOWN")
-  retrievalCandidates     Json                     @default("[]")
-  retrievedClaimIds       String[]                 @default([])
-  usedClaimIds            String[]                 @default([])
-  nearMissClaimIds        String[]                 @default([])
-  failureClassification   String                   @default("NONE")
-  safeResolution          Boolean                  @default(false)
-  evidencePipelineVersion String                   @default("1.0")
-  failureLayer            String                   @default("NONE")
-  failureCode             String?
-  latencyMs               Int                      @default(0)
-  attemptCount            Int                      @default(0)
-  escalationTier          String                   @default("TIER_0_SELF_RESOLVE")
-  degradedMode            Boolean                  @default(false)
-  executionContractVersion String                  @default("1.0")
-  terminalOutcome         String                   @default("ANSWERED")
-  authorityLevel          String                   @default("INFORMATION")
-  flowId                  String?
-  flowVersion             Int?
-  flowNodeId              String?
-  endpointKey             String?
-  endpointVerified        Boolean                  @default(false)
-  completionClaimAllowed  Boolean                  @default(false)
-  createdAt               DateTime                 @default(now())
-  feedback                SovereignAnswerFeedback?
-  replayCase              SovereignReplayCase?
+  id                       String                   @id @default(cuid())
+  propertyId               String
+  property                 Property                 @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  leadId                   String?
+  sessionIdHash            String
+  constitutionVersion      String
+  blueprintVersion         String
+  intent                   String
+  disposition              String
+  contextUsed              Boolean                  @default(false)
+  confidence               Float                    @default(0)
+  safetyClassification     String                   @default("STANDARD")
+  permittedOperation       String                   @default("ANSWER")
+  observedBehavior         String                   @default("UNKNOWN")
+  decisionConsistent       Boolean                  @default(false)
+  consistencyReason        String?                  @db.Text
+  resolutionState          String                   @default("RESOLVED")
+  clarifyCount             Int                      @default(0)
+  circuitBreaker           Boolean                  @default(false)
+  circuitBreakerReason     String?
+  evaluationVersion        String                   @default("1.1")
+  decisionReason           String                   @db.Text
+  question                 String                   @db.Text
+  resolvedQuestion         String                   @db.Text
+  answer                   String                   @db.Text
+  grounded                 Boolean                  @default(false)
+  model                    String
+  sources                  Json
+  knowledgeAsOf            DateTime?
+  knowledgeClaimIds        String[]                 @default([])
+  personaCategory          String                   @default("UNKNOWN")
+  personaVersion           String                   @default("UNKNOWN")
+  retrievalCandidates      Json                     @default("[]")
+  retrievedClaimIds        String[]                 @default([])
+  usedClaimIds             String[]                 @default([])
+  nearMissClaimIds         String[]                 @default([])
+  failureClassification    String                   @default("NONE")
+  safeResolution           Boolean                  @default(false)
+  evidencePipelineVersion  String                   @default("1.0")
+  failureLayer             String                   @default("NONE")
+  failureCode              String?
+  latencyMs                Int                      @default(0)
+  attemptCount             Int                      @default(0)
+  escalationTier           String                   @default("TIER_0_SELF_RESOLVE")
+  degradedMode             Boolean                  @default(false)
+  executionContractVersion String                   @default("1.0")
+  terminalOutcome          String                   @default("ANSWERED")
+  authorityLevel           String                   @default("INFORMATION")
+  flowId                   String?
+  flowVersion              Int?
+  flowNodeId               String?
+  endpointKey              String?
+  endpointVerified         Boolean                  @default(false)
+  completionClaimAllowed   Boolean                  @default(false)
+  createdAt                DateTime                 @default(now())
+  feedback                 SovereignAnswerFeedback?
+  replayCase               SovereignReplayCase?
 
   @@index([propertyId, createdAt])
   @@index([propertyId, intent, disposition])
@@ -1062,30 +2068,35 @@ model Participant {
   sentMessages  Message[]
 
   @@unique([propertyId, kind, externalKey])
+  @@unique([propertyId, id])
   @@index([propertyId, phone])
   @@index([propertyId, email])
 }
 
 model Conversation {
-  id                     String                    @id @default(cuid())
+  id                     String                     @id @default(cuid())
   propertyId             String
-  property               Property                  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  property               Property                   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   channelConnectionId    String?
-  channelConnection      ChannelConnection?        @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
+  channelConnection      ChannelConnection?         @relation(fields: [channelConnectionId], references: [id], onDelete: SetNull)
   legacyLeadId           String?
-  legacyLead             Lead?                     @relation(fields: [legacyLeadId], references: [id], onDelete: SetNull)
+  legacyLead             Lead?                      @relation(fields: [legacyLeadId], references: [id], onDelete: SetNull)
   externalConversationId String?
-  status                 ConversationStatus        @default(OPEN)
-  botPaused              Boolean                   @default(false)
+  status                 ConversationStatus         @default(OPEN)
+  botPaused              Boolean                    @default(false)
   humanOwnerEmail        String?
-  lastMessageAt          DateTime                  @default(now())
+  lastMessageAt          DateTime                   @default(now())
   metadata               Json?
-  createdAt              DateTime                  @default(now())
-  updatedAt              DateTime                  @updatedAt
+  createdAt              DateTime                   @default(now())
+  updatedAt              DateTime                   @updatedAt
   participants           ConversationParticipant[]
   messages               Message[]
+  guestSessions          KnowledgeGuestSession[]
+  answerAudits           KnowledgeAnswerAudit[]
+  handoverRequests       KnowledgeHandoverRequest[]
 
   @@unique([channelConnectionId, externalConversationId])
+  @@unique([propertyId, id])
   @@index([propertyId, status, lastMessageAt])
   @@index([legacyLeadId])
   @@index([humanOwnerEmail, status])
@@ -1093,15 +2104,16 @@ model Conversation {
 
 model ConversationParticipant {
   id             String       @id @default(cuid())
+  propertyId     String
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Cascade)
   participantId  String
-  participant    Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  participant    Participant  @relation(fields: [propertyId, participantId], references: [propertyId, id], onDelete: Cascade)
   role           String       @default("CUSTOMER")
   joinedAt       DateTime     @default(now())
   leftAt         DateTime?
 
-  @@unique([conversationId, participantId])
+  @@unique([propertyId, conversationId, participantId])
   @@index([participantId, joinedAt])
 }
 
@@ -1110,14 +2122,14 @@ model Message {
   propertyId          String
   property            Property                @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   conversationId      String
-  conversation        Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation        Conversation            @relation(fields: [propertyId, conversationId], references: [propertyId, id], onDelete: Cascade)
   legacyLeadMessageId String?                 @unique
   legacyLeadMessage   LeadMessage?            @relation(fields: [legacyLeadMessageId], references: [id], onDelete: SetNull)
   externalMessageId   String?
   idempotencyKey      String
   direction           NeutralMessageDirection
   senderParticipantId String?
-  senderParticipant   Participant?            @relation(fields: [senderParticipantId], references: [id], onDelete: SetNull)
+  senderParticipant   Participant?            @relation(fields: [propertyId, senderParticipantId], references: [propertyId, id], onDelete: Restrict)
   body                String                  @db.Text
   contentType         String                  @default("text")
   deliveryStatus      String?
@@ -1412,34 +2424,107 @@ model PlatformAuditLog {
   @@index([actorEmail, createdAt])
 }
 
-model AutomationJob {
-  id               String    @id @default(cuid())
-  propertyId       String
-  property         Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  workflowId       String
-  workflowVersion  Int       @default(1)
-  triggerType      String
-  triggerRef       String?
-  actionType       String
-  status           String    @default("QUEUED")
-  priority         Int       @default(5)
-  payload          Json
-  result           Json?
-  idempotencyKey   String    @unique
-  scheduledFor     DateTime  @default(now())
-  nextRunAt        DateTime  @default(now())
-  maxAttempts      Int       @default(3)
-  attemptCount     Int       @default(0)
-  lockedAt         DateTime?
-  lockedBy         String?
-  leaseExpiresAt   DateTime?
-  lastError        String?   @db.Text
-  deadLetterReason String?   @db.Text
-  createdBy        String?
-  completedAt      DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+model GovernanceControlRecord {
+  id                  String    @id @default(cuid())
+  kind                String
+  ownerEmail          String
+  approverEmail       String
+  affectedControls    String[]
+  rationale           String    @db.Text
+  compatibilityImpact String    @db.Text
+  evidence            Json
+  expiresAt           DateTime?
+  remediationAt       DateTime?
+  digest              String    @unique
+  createdAt           DateTime  @default(now())
+}
 
+model MaterialApproval {
+  id          String    @id @default(cuid())
+  action      String
+  target      String
+  payloadHash String
+  requestedBy String
+  approvedBy  String?
+  state       String    @default("PENDING")
+  expiresAt   DateTime
+  executedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([state, expiresAt])
+}
+
+model GovernedRepairCommand {
+  id              String    @id @default(cuid())
+  propertyId      String
+  property        Property  @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  commandType     String
+  idempotencyKey  String    @unique
+  expectedVersion Int
+  reason          String    @db.Text
+  payload         Json
+  payloadHash     String
+  status          String    @default("QUEUED")
+  requestedBy     String
+  result          Json?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+
+  @@index([propertyId, status, createdAt])
+}
+
+model BreakGlassGrant {
+  id         String    @id @default(cuid())
+  incidentId String
+  actorEmail String
+  scopes     String[]
+  reason     String    @db.Text
+  expiresAt  DateTime
+  reviewedBy String?
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([actorEmail, expiresAt])
+  @@index([incidentId])
+}
+
+model AutomationJob {
+  id                 String                 @id @default(cuid())
+  propertyId         String
+  property           Property               @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  workflowId         String
+  workflowVersion    Int                    @default(1)
+  triggerType        String
+  triggerRef         String?
+  actionType         String
+  status             String                 @default("QUEUED")
+  priority           Int                    @default(5)
+  payload            Json
+  result             Json?
+  idempotencyKey     String                 @unique
+  scheduledFor       DateTime               @default(now())
+  nextRunAt          DateTime               @default(now())
+  maxAttempts        Int                    @default(3)
+  attemptCount       Int                    @default(0)
+  lockedAt           DateTime?
+  lockedBy           String?
+  leaseExpiresAt     DateTime?
+  lastError          String?                @db.Text
+  deadLetterReason   String?                @db.Text
+  createdBy          String?
+  completedAt        DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  operationKey       String?                @unique
+  operationType      String?
+  operationVersion   Int                    @default(1)
+  inputGeneration    BigInt                 @default(1)
+  canonicalInputHash String?
+  fencingToken       BigInt                 @default(0)
+  attempts           AutomationJobAttempt[]
+  finalizedObjects   KnowledgeObject[]
+
+  @@unique([propertyId, id])
   @@index([propertyId, status, nextRunAt])
   @@index([workflowId, status])
   @@index([leaseExpiresAt])

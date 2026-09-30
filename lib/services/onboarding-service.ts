@@ -21,8 +21,8 @@ function createSlug(value: string) {
 
 export type OnboardingOrganization = NonNullable<Awaited<ReturnType<typeof getOrganizationForMember>>>;
 
-export async function loadOnboardingForUser(email: string) {
-  return getOrganizationForMember(email.trim().toLowerCase());
+export async function loadOnboardingForUser(email: string, organizationId?: string) {
+  return getOrganizationForMember(email.trim().toLowerCase(), organizationId);
 }
 
 export async function createOnboardingOrganization(email: string, payload: Record<string, unknown>) {
@@ -59,8 +59,8 @@ export async function createOnboardingOrganization(email: string, payload: Recor
   return { error: null, organization, status: 201 };
 }
 
-export async function saveOnboardingStep(email: string, payload: Record<string, unknown>) {
-  const organization = await loadOnboardingForUser(email);
+export async function saveOnboardingStep(email: string, payload: Record<string, unknown>, organizationId?: string) {
+  const organization = await loadOnboardingForUser(email, organizationId);
   if (!organization?.onboarding) {
     return { error: "Create an organization before continuing", organization: null, status: 404 };
   }

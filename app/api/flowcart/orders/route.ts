@@ -49,6 +49,9 @@ export async function POST(request: Request) {
   if (!payload.productId?.trim()) {
     return NextResponse.json({ error: "Product is required." }, { status: 400 });
   }
+  payload.confirmationId = request.headers.get("x-confirmation-id")?.trim() || payload.confirmationId;
+  payload.idempotencyKey = request.headers.get("idempotency-key")?.trim() || payload.idempotencyKey;
+  if (!payload.confirmationId || !payload.idempotencyKey) return NextResponse.json({ error: "Explicit confirmation and Idempotency-Key are required." }, { status: 400 });
 
   const propertySlug = String(payload.propertySlug || "").trim();
   const response = await withPropertyDatabaseContext(propertySlug, "flowcart:internal-order", async () => {

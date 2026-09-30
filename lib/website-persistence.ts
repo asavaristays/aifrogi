@@ -1,4 +1,5 @@
 import { getDb, withDatabaseTransaction } from "@/lib/db";
+import { redactBeforePersistence } from "@/lib/pre-persistence-redaction";
 
 class RejectedPersistence extends Error {
   constructor(readonly response: Response) { super("Website persistence was not completed"); }
@@ -18,6 +19,7 @@ export async function persistWebsiteTurn(work: () => Promise<Response>): Promise
     }), { timeout: 15000, maxWait: 3000 });
   } catch (error) {
     if (error instanceof RejectedPersistence) return error.response;
+    console.error("[website-persistence] transaction failed",redactBeforePersistence(error instanceof Error?error.message:"Unknown error").redacted);
     return Response.json({ error: "Your message could not be saved. Please retry." }, { status: 503 });
   }
 }

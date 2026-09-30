@@ -7,6 +7,7 @@ import { evaluateDecisionBehaviourConsistency } from "@/lib/sovereign-intelligen
 import { classifyEvidenceFailure, INTELLIGENCE_EVIDENCE_VERSION, isSafeResolution, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 import { summarizeDeterministicQuality } from "@/lib/sovereign-intelligence/deterministic-quality-score";
 import type { IntelligenceExecutionContract } from "@/lib/sovereign-intelligence/execution-contract";
+import { sanitizePersistencePayload } from "@/lib/pre-persistence-redaction";
 
 export async function recordSovereignAnswerEvidence(input: {
   propertyId: string;
@@ -37,6 +38,7 @@ export async function recordSovereignAnswerEvidence(input: {
   const db = getDb();
   if (!db) return null;
   const knowledgeAsOf = input.knowledgeAsOf ? new Date(input.knowledgeAsOf) : null;
+  const persisted = sanitizePersistencePayload(input);
   const consistency = evaluateDecisionBehaviourConsistency({ disposition: input.decision.disposition, answer: input.answer, resolutionState: input.resolutionState || "RESOLVED", circuitBreaker: Boolean(input.circuitBreaker), actionPerformed: input.actionPerformed, failureLayer: input.reliability?.failureLayer || "NONE" });
   const failureClassification = classifyEvidenceFailure({ decision: input.decision, grounded: input.grounded, failureLayer: input.reliability?.failureLayer, nearMissClaimIds: input.retrieval?.nearMissClaimIds, circuitBreaker: input.circuitBreaker, decisionConsistent: consistency.decisionConsistent });
   const safeResolution = isSafeResolution({ classification: failureClassification, decisionConsistent: consistency.decisionConsistent, disposition: input.decision.disposition, grounded: input.grounded, intent: input.decision.intent });
@@ -48,8 +50,8 @@ export async function recordSovereignAnswerEvidence(input: {
     permittedOperation: input.permittedOperation || input.decision.disposition, observedBehavior: consistency.observedBehavior, decisionConsistent: consistency.decisionConsistent, consistencyReason: consistency.consistencyReason, resolutionState: input.resolutionState || "RESOLVED",
     clarifyCount: Math.max(0, input.clarifyCount || 0), circuitBreaker: Boolean(input.circuitBreaker), circuitBreakerReason: input.circuitBreakerReason || null,
     evaluationVersion: SOVEREIGN_EVALUATION_VERSION,
-    decisionReason: input.decision.reason, question: input.question.slice(0, 1200), resolvedQuestion: input.decision.resolvedQuestion.slice(0, 1200),
-    answer: input.answer.slice(0, 5000), grounded: input.grounded, model: input.model.slice(0, 120), sources: input.sources,
+    decisionReason: persisted.decision.reason, question: persisted.question.slice(0, 1200), resolvedQuestion: persisted.decision.resolvedQuestion.slice(0, 1200),
+    answer: persisted.answer.slice(0, 5000), grounded: input.grounded, model: input.model.slice(0, 120), sources: persisted.sources,
     knowledgeAsOf: knowledgeAsOf && !Number.isNaN(knowledgeAsOf.getTime()) ? knowledgeAsOf : null,
     knowledgeClaimIds: input.knowledgeClaimIds || [],
     personaCategory: input.personaCategory || "UNKNOWN", personaVersion: input.personaVersion || "UNKNOWN",

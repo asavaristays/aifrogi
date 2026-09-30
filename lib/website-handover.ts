@@ -10,7 +10,15 @@ export function acceptedHumanOffer(question: string, lastAssistantAnswer: string
   return /\b(schedule|arrange|book)\b[^?\n]{0,70}\b(discovery|consultation|call|meeting)\b|\b(call(?:back)?|human|support|business)\b[^?\n]{0,55}\b(contact|connect|help|assist|speak|talk|respond)\b/i.test(lastAssistantAnswer);
 }
 
-export function humanResponseWindow(minutesInput: number | null | undefined) {
+export function humanResponseWindow(
+  minutesInput: number | null | undefined,
+  authority?: { approved: true; policyArtifactId: string },
+) {
+  // A profile value is an operational target, not a customer promise. Only a
+  // signed policy artifact may authorize time-specific public wording.
+  if (!authority?.approved || !authority.policyArtifactId.trim()) {
+    return "as soon as possible during business hours";
+  }
   const minutes = Number(minutesInput);
   if (!Number.isFinite(minutes) || minutes <= 0) return "as soon as possible during business hours";
   if (minutes < 60) return `within ${Math.round(minutes)} minutes during business hours`;

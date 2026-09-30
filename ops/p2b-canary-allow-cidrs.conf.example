@@ -1,0 +1,4 @@
+# Root-owned nginx geo entries. Replace documentation ranges with the approved
+# operator/pilot egress CIDRs. Do not install this example unchanged.
+192.0.2.10/32 1;
+198.51.100.24/32 1;

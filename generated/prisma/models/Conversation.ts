@@ -239,6 +239,9 @@ export type ConversationWhereInput = {
   legacyLead?: Prisma.XOR<Prisma.LeadNullableScalarRelationFilter, Prisma.LeadWhereInput> | null
   participants?: Prisma.ConversationParticipantListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  guestSessions?: Prisma.KnowledgeGuestSessionListRelationFilter
+  answerAudits?: Prisma.KnowledgeAnswerAuditListRelationFilter
+  handoverRequests?: Prisma.KnowledgeHandoverRequestListRelationFilter
 }
 
 export type ConversationOrderByWithRelationInput = {
@@ -259,11 +262,15 @@ export type ConversationOrderByWithRelationInput = {
   legacyLead?: Prisma.LeadOrderByWithRelationInput
   participants?: Prisma.ConversationParticipantOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  guestSessions?: Prisma.KnowledgeGuestSessionOrderByRelationAggregateInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditOrderByRelationAggregateInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestOrderByRelationAggregateInput
 }
 
 export type ConversationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   channelConnectionId_externalConversationId?: Prisma.ConversationChannelConnectionIdExternalConversationIdCompoundUniqueInput
+  propertyId_id?: Prisma.ConversationPropertyIdIdCompoundUniqueInput
   AND?: Prisma.ConversationWhereInput | Prisma.ConversationWhereInput[]
   OR?: Prisma.ConversationWhereInput[]
   NOT?: Prisma.ConversationWhereInput | Prisma.ConversationWhereInput[]
@@ -283,7 +290,10 @@ export type ConversationWhereUniqueInput = Prisma.AtLeast<{
   legacyLead?: Prisma.XOR<Prisma.LeadNullableScalarRelationFilter, Prisma.LeadWhereInput> | null
   participants?: Prisma.ConversationParticipantListRelationFilter
   messages?: Prisma.MessageListRelationFilter
-}, "id" | "channelConnectionId_externalConversationId">
+  guestSessions?: Prisma.KnowledgeGuestSessionListRelationFilter
+  answerAudits?: Prisma.KnowledgeAnswerAuditListRelationFilter
+  handoverRequests?: Prisma.KnowledgeHandoverRequestListRelationFilter
+}, "id" | "channelConnectionId_externalConversationId" | "propertyId_id">
 
 export type ConversationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -336,6 +346,9 @@ export type ConversationCreateInput = {
   legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
   participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateInput = {
@@ -353,6 +366,9 @@ export type ConversationUncheckedCreateInput = {
   updatedAt?: Date | string
   participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUpdateInput = {
@@ -370,6 +386,9 @@ export type ConversationUpdateInput = {
   legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
   participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateInput = {
@@ -387,6 +406,9 @@ export type ConversationUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationCreateManyInput = {
@@ -431,6 +453,11 @@ export type ConversationUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type ConversationScalarRelationFilter = {
+  is?: Prisma.ConversationWhereInput
+  isNot?: Prisma.ConversationWhereInput
+}
+
 export type ConversationListRelationFilter = {
   every?: Prisma.ConversationWhereInput
   some?: Prisma.ConversationWhereInput
@@ -444,6 +471,11 @@ export type ConversationOrderByRelationAggregateInput = {
 export type ConversationChannelConnectionIdExternalConversationIdCompoundUniqueInput = {
   channelConnectionId: string
   externalConversationId: string
+}
+
+export type ConversationPropertyIdIdCompoundUniqueInput = {
+  propertyId: string
+  id: string
 }
 
 export type ConversationCountOrderByAggregateInput = {
@@ -489,9 +521,46 @@ export type ConversationMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ConversationScalarRelationFilter = {
-  is?: Prisma.ConversationWhereInput
-  isNot?: Prisma.ConversationWhereInput
+export type ConversationCreateNestedOneWithoutGuestSessionsInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutGuestSessionsInput, Prisma.ConversationUncheckedCreateWithoutGuestSessionsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutGuestSessionsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+}
+
+export type ConversationUpdateOneRequiredWithoutGuestSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutGuestSessionsInput, Prisma.ConversationUncheckedCreateWithoutGuestSessionsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutGuestSessionsInput
+  upsert?: Prisma.ConversationUpsertWithoutGuestSessionsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConversationUpdateToOneWithWhereWithoutGuestSessionsInput, Prisma.ConversationUpdateWithoutGuestSessionsInput>, Prisma.ConversationUncheckedUpdateWithoutGuestSessionsInput>
+}
+
+export type ConversationCreateNestedOneWithoutAnswerAuditsInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutAnswerAuditsInput, Prisma.ConversationUncheckedCreateWithoutAnswerAuditsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutAnswerAuditsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+}
+
+export type ConversationUpdateOneRequiredWithoutAnswerAuditsNestedInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutAnswerAuditsInput, Prisma.ConversationUncheckedCreateWithoutAnswerAuditsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutAnswerAuditsInput
+  upsert?: Prisma.ConversationUpsertWithoutAnswerAuditsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConversationUpdateToOneWithWhereWithoutAnswerAuditsInput, Prisma.ConversationUpdateWithoutAnswerAuditsInput>, Prisma.ConversationUncheckedUpdateWithoutAnswerAuditsInput>
+}
+
+export type ConversationCreateNestedOneWithoutHandoverRequestsInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutHandoverRequestsInput, Prisma.ConversationUncheckedCreateWithoutHandoverRequestsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutHandoverRequestsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+}
+
+export type ConversationUpdateOneRequiredWithoutHandoverRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutHandoverRequestsInput, Prisma.ConversationUncheckedCreateWithoutHandoverRequestsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutHandoverRequestsInput
+  upsert?: Prisma.ConversationUpsertWithoutHandoverRequestsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConversationUpdateToOneWithWhereWithoutHandoverRequestsInput, Prisma.ConversationUpdateWithoutHandoverRequestsInput>, Prisma.ConversationUncheckedUpdateWithoutHandoverRequestsInput>
 }
 
 export type ConversationCreateNestedManyWithoutPropertyInput = {
@@ -652,6 +721,282 @@ export type ConversationUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ConversationUpdateToOneWithWhereWithoutMessagesInput, Prisma.ConversationUpdateWithoutMessagesInput>, Prisma.ConversationUncheckedUpdateWithoutMessagesInput>
 }
 
+export type ConversationCreateWithoutGuestSessionsInput = {
+  id?: string
+  externalConversationId?: string | null
+  status?: $Enums.ConversationStatus
+  botPaused?: boolean
+  humanOwnerEmail?: string | null
+  lastMessageAt?: Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  property: Prisma.PropertyCreateNestedOneWithoutConversationsInput
+  channelConnection?: Prisma.ChannelConnectionCreateNestedOneWithoutConversationsInput
+  legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
+  participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
+  messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationUncheckedCreateWithoutGuestSessionsInput = {
+  id?: string
+  propertyId: string
+  channelConnectionId?: string | null
+  legacyLeadId?: string | null
+  externalConversationId?: string | null
+  status?: $Enums.ConversationStatus
+  botPaused?: boolean
+  humanOwnerEmail?: string | null
+  lastMessageAt?: Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationCreateOrConnectWithoutGuestSessionsInput = {
+  where: Prisma.ConversationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutGuestSessionsInput, Prisma.ConversationUncheckedCreateWithoutGuestSessionsInput>
+}
+
+export type ConversationUpsertWithoutGuestSessionsInput = {
+  update: Prisma.XOR<Prisma.ConversationUpdateWithoutGuestSessionsInput, Prisma.ConversationUncheckedUpdateWithoutGuestSessionsInput>
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutGuestSessionsInput, Prisma.ConversationUncheckedCreateWithoutGuestSessionsInput>
+  where?: Prisma.ConversationWhereInput
+}
+
+export type ConversationUpdateToOneWithWhereWithoutGuestSessionsInput = {
+  where?: Prisma.ConversationWhereInput
+  data: Prisma.XOR<Prisma.ConversationUpdateWithoutGuestSessionsInput, Prisma.ConversationUncheckedUpdateWithoutGuestSessionsInput>
+}
+
+export type ConversationUpdateWithoutGuestSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  externalConversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  botPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  humanOwnerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneRequiredWithoutConversationsNestedInput
+  channelConnection?: Prisma.ChannelConnectionUpdateOneWithoutConversationsNestedInput
+  legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
+  participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
+}
+
+export type ConversationUncheckedUpdateWithoutGuestSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legacyLeadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalConversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  botPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  humanOwnerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
+}
+
+export type ConversationCreateWithoutAnswerAuditsInput = {
+  id?: string
+  externalConversationId?: string | null
+  status?: $Enums.ConversationStatus
+  botPaused?: boolean
+  humanOwnerEmail?: string | null
+  lastMessageAt?: Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  property: Prisma.PropertyCreateNestedOneWithoutConversationsInput
+  channelConnection?: Prisma.ChannelConnectionCreateNestedOneWithoutConversationsInput
+  legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
+  participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
+  messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationUncheckedCreateWithoutAnswerAuditsInput = {
+  id?: string
+  propertyId: string
+  channelConnectionId?: string | null
+  legacyLeadId?: string | null
+  externalConversationId?: string | null
+  status?: $Enums.ConversationStatus
+  botPaused?: boolean
+  humanOwnerEmail?: string | null
+  lastMessageAt?: Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationCreateOrConnectWithoutAnswerAuditsInput = {
+  where: Prisma.ConversationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutAnswerAuditsInput, Prisma.ConversationUncheckedCreateWithoutAnswerAuditsInput>
+}
+
+export type ConversationUpsertWithoutAnswerAuditsInput = {
+  update: Prisma.XOR<Prisma.ConversationUpdateWithoutAnswerAuditsInput, Prisma.ConversationUncheckedUpdateWithoutAnswerAuditsInput>
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutAnswerAuditsInput, Prisma.ConversationUncheckedCreateWithoutAnswerAuditsInput>
+  where?: Prisma.ConversationWhereInput
+}
+
+export type ConversationUpdateToOneWithWhereWithoutAnswerAuditsInput = {
+  where?: Prisma.ConversationWhereInput
+  data: Prisma.XOR<Prisma.ConversationUpdateWithoutAnswerAuditsInput, Prisma.ConversationUncheckedUpdateWithoutAnswerAuditsInput>
+}
+
+export type ConversationUpdateWithoutAnswerAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  externalConversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  botPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  humanOwnerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneRequiredWithoutConversationsNestedInput
+  channelConnection?: Prisma.ChannelConnectionUpdateOneWithoutConversationsNestedInput
+  legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
+  participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
+}
+
+export type ConversationUncheckedUpdateWithoutAnswerAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legacyLeadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalConversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  botPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  humanOwnerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
+}
+
+export type ConversationCreateWithoutHandoverRequestsInput = {
+  id?: string
+  externalConversationId?: string | null
+  status?: $Enums.ConversationStatus
+  botPaused?: boolean
+  humanOwnerEmail?: string | null
+  lastMessageAt?: Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  property: Prisma.PropertyCreateNestedOneWithoutConversationsInput
+  channelConnection?: Prisma.ChannelConnectionCreateNestedOneWithoutConversationsInput
+  legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
+  participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
+  messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationUncheckedCreateWithoutHandoverRequestsInput = {
+  id?: string
+  propertyId: string
+  channelConnectionId?: string | null
+  legacyLeadId?: string | null
+  externalConversationId?: string | null
+  status?: $Enums.ConversationStatus
+  botPaused?: boolean
+  humanOwnerEmail?: string | null
+  lastMessageAt?: Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationCreateOrConnectWithoutHandoverRequestsInput = {
+  where: Prisma.ConversationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutHandoverRequestsInput, Prisma.ConversationUncheckedCreateWithoutHandoverRequestsInput>
+}
+
+export type ConversationUpsertWithoutHandoverRequestsInput = {
+  update: Prisma.XOR<Prisma.ConversationUpdateWithoutHandoverRequestsInput, Prisma.ConversationUncheckedUpdateWithoutHandoverRequestsInput>
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutHandoverRequestsInput, Prisma.ConversationUncheckedCreateWithoutHandoverRequestsInput>
+  where?: Prisma.ConversationWhereInput
+}
+
+export type ConversationUpdateToOneWithWhereWithoutHandoverRequestsInput = {
+  where?: Prisma.ConversationWhereInput
+  data: Prisma.XOR<Prisma.ConversationUpdateWithoutHandoverRequestsInput, Prisma.ConversationUncheckedUpdateWithoutHandoverRequestsInput>
+}
+
+export type ConversationUpdateWithoutHandoverRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  externalConversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  botPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  humanOwnerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneRequiredWithoutConversationsNestedInput
+  channelConnection?: Prisma.ChannelConnectionUpdateOneWithoutConversationsNestedInput
+  legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
+  participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+}
+
+export type ConversationUncheckedUpdateWithoutHandoverRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legacyLeadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalConversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  botPaused?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  humanOwnerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+}
+
 export type ConversationCreateWithoutPropertyInput = {
   id?: string
   externalConversationId?: string | null
@@ -666,6 +1011,9 @@ export type ConversationCreateWithoutPropertyInput = {
   legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
   participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutPropertyInput = {
@@ -682,6 +1030,9 @@ export type ConversationUncheckedCreateWithoutPropertyInput = {
   updatedAt?: Date | string
   participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutPropertyInput = {
@@ -742,6 +1093,9 @@ export type ConversationCreateWithoutLegacyLeadInput = {
   channelConnection?: Prisma.ChannelConnectionCreateNestedOneWithoutConversationsInput
   participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutLegacyLeadInput = {
@@ -758,6 +1112,9 @@ export type ConversationUncheckedCreateWithoutLegacyLeadInput = {
   updatedAt?: Date | string
   participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutLegacyLeadInput = {
@@ -800,6 +1157,9 @@ export type ConversationCreateWithoutChannelConnectionInput = {
   legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
   participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutChannelConnectionInput = {
@@ -816,6 +1176,9 @@ export type ConversationUncheckedCreateWithoutChannelConnectionInput = {
   updatedAt?: Date | string
   participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutChannelConnectionInput = {
@@ -858,6 +1221,9 @@ export type ConversationCreateWithoutParticipantsInput = {
   channelConnection?: Prisma.ChannelConnectionCreateNestedOneWithoutConversationsInput
   legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutParticipantsInput = {
@@ -874,6 +1240,9 @@ export type ConversationUncheckedCreateWithoutParticipantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutParticipantsInput = {
@@ -906,6 +1275,9 @@ export type ConversationUpdateWithoutParticipantsInput = {
   channelConnection?: Prisma.ChannelConnectionUpdateOneWithoutConversationsNestedInput
   legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutParticipantsInput = {
@@ -922,6 +1294,9 @@ export type ConversationUncheckedUpdateWithoutParticipantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationCreateWithoutMessagesInput = {
@@ -938,6 +1313,9 @@ export type ConversationCreateWithoutMessagesInput = {
   channelConnection?: Prisma.ChannelConnectionCreateNestedOneWithoutConversationsInput
   legacyLead?: Prisma.LeadCreateNestedOneWithoutConversationsInput
   participants?: Prisma.ConversationParticipantCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -954,6 +1332,9 @@ export type ConversationUncheckedCreateWithoutMessagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   participants?: Prisma.ConversationParticipantUncheckedCreateNestedManyWithoutConversationInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedCreateNestedManyWithoutConversationInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedCreateNestedManyWithoutConversationInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -986,6 +1367,9 @@ export type ConversationUpdateWithoutMessagesInput = {
   channelConnection?: Prisma.ChannelConnectionUpdateOneWithoutConversationsNestedInput
   legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
   participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -1002,6 +1386,9 @@ export type ConversationUncheckedUpdateWithoutMessagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationCreateManyPropertyInput = {
@@ -1032,6 +1419,9 @@ export type ConversationUpdateWithoutPropertyInput = {
   legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
   participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutPropertyInput = {
@@ -1048,6 +1438,9 @@ export type ConversationUncheckedUpdateWithoutPropertyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateManyWithoutPropertyInput = {
@@ -1092,6 +1485,9 @@ export type ConversationUpdateWithoutLegacyLeadInput = {
   channelConnection?: Prisma.ChannelConnectionUpdateOneWithoutConversationsNestedInput
   participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutLegacyLeadInput = {
@@ -1108,6 +1504,9 @@ export type ConversationUncheckedUpdateWithoutLegacyLeadInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateManyWithoutLegacyLeadInput = {
@@ -1152,6 +1551,9 @@ export type ConversationUpdateWithoutChannelConnectionInput = {
   legacyLead?: Prisma.LeadUpdateOneWithoutConversationsNestedInput
   participants?: Prisma.ConversationParticipantUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutChannelConnectionInput = {
@@ -1168,6 +1570,9 @@ export type ConversationUncheckedUpdateWithoutChannelConnectionInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participants?: Prisma.ConversationParticipantUncheckedUpdateManyWithoutConversationNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  guestSessions?: Prisma.KnowledgeGuestSessionUncheckedUpdateManyWithoutConversationNestedInput
+  answerAudits?: Prisma.KnowledgeAnswerAuditUncheckedUpdateManyWithoutConversationNestedInput
+  handoverRequests?: Prisma.KnowledgeHandoverRequestUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateManyWithoutChannelConnectionInput = {
@@ -1192,11 +1597,17 @@ export type ConversationUncheckedUpdateManyWithoutChannelConnectionInput = {
 export type ConversationCountOutputType = {
   participants: number
   messages: number
+  guestSessions: number
+  answerAudits: number
+  handoverRequests: number
 }
 
 export type ConversationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   participants?: boolean | ConversationCountOutputTypeCountParticipantsArgs
   messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
+  guestSessions?: boolean | ConversationCountOutputTypeCountGuestSessionsArgs
+  answerAudits?: boolean | ConversationCountOutputTypeCountAnswerAuditsArgs
+  handoverRequests?: boolean | ConversationCountOutputTypeCountHandoverRequestsArgs
 }
 
 /**
@@ -1223,6 +1634,27 @@ export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends runtime
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * ConversationCountOutputType without action
+ */
+export type ConversationCountOutputTypeCountGuestSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeGuestSessionWhereInput
+}
+
+/**
+ * ConversationCountOutputType without action
+ */
+export type ConversationCountOutputTypeCountAnswerAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeAnswerAuditWhereInput
+}
+
+/**
+ * ConversationCountOutputType without action
+ */
+export type ConversationCountOutputTypeCountHandoverRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeHandoverRequestWhereInput
+}
+
 
 export type ConversationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1242,6 +1674,9 @@ export type ConversationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   legacyLead?: boolean | Prisma.Conversation$legacyLeadArgs<ExtArgs>
   participants?: boolean | Prisma.Conversation$participantsArgs<ExtArgs>
   messages?: boolean | Prisma.Conversation$messagesArgs<ExtArgs>
+  guestSessions?: boolean | Prisma.Conversation$guestSessionsArgs<ExtArgs>
+  answerAudits?: boolean | Prisma.Conversation$answerAuditsArgs<ExtArgs>
+  handoverRequests?: boolean | Prisma.Conversation$handoverRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.ConversationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["conversation"]>
 
@@ -1303,6 +1738,9 @@ export type ConversationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   legacyLead?: boolean | Prisma.Conversation$legacyLeadArgs<ExtArgs>
   participants?: boolean | Prisma.Conversation$participantsArgs<ExtArgs>
   messages?: boolean | Prisma.Conversation$messagesArgs<ExtArgs>
+  guestSessions?: boolean | Prisma.Conversation$guestSessionsArgs<ExtArgs>
+  answerAudits?: boolean | Prisma.Conversation$answerAuditsArgs<ExtArgs>
+  handoverRequests?: boolean | Prisma.Conversation$handoverRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.ConversationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ConversationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1324,6 +1762,9 @@ export type $ConversationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     legacyLead: Prisma.$LeadPayload<ExtArgs> | null
     participants: Prisma.$ConversationParticipantPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    guestSessions: Prisma.$KnowledgeGuestSessionPayload<ExtArgs>[]
+    answerAudits: Prisma.$KnowledgeAnswerAuditPayload<ExtArgs>[]
+    handoverRequests: Prisma.$KnowledgeHandoverRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1737,6 +2178,9 @@ export interface Prisma__ConversationClient<T, Null = never, ExtArgs extends run
   legacyLead<T extends Prisma.Conversation$legacyLeadArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$legacyLeadArgs<ExtArgs>>): Prisma.Prisma__LeadClient<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participants<T extends Prisma.Conversation$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Conversation$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  guestSessions<T extends Prisma.Conversation$guestSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$guestSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeGuestSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  answerAudits<T extends Prisma.Conversation$answerAuditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$answerAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeAnswerAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  handoverRequests<T extends Prisma.Conversation$handoverRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$handoverRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeHandoverRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2262,6 +2706,78 @@ export type Conversation$messagesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Conversation.guestSessions
+ */
+export type Conversation$guestSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeGuestSession
+   */
+  select?: Prisma.KnowledgeGuestSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeGuestSession
+   */
+  omit?: Prisma.KnowledgeGuestSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeGuestSessionInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeGuestSessionWhereInput
+  orderBy?: Prisma.KnowledgeGuestSessionOrderByWithRelationInput | Prisma.KnowledgeGuestSessionOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeGuestSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeGuestSessionScalarFieldEnum | Prisma.KnowledgeGuestSessionScalarFieldEnum[]
+}
+
+/**
+ * Conversation.answerAudits
+ */
+export type Conversation$answerAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeAnswerAudit
+   */
+  select?: Prisma.KnowledgeAnswerAuditSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeAnswerAudit
+   */
+  omit?: Prisma.KnowledgeAnswerAuditOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeAnswerAuditInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeAnswerAuditWhereInput
+  orderBy?: Prisma.KnowledgeAnswerAuditOrderByWithRelationInput | Prisma.KnowledgeAnswerAuditOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeAnswerAuditWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeAnswerAuditScalarFieldEnum | Prisma.KnowledgeAnswerAuditScalarFieldEnum[]
+}
+
+/**
+ * Conversation.handoverRequests
+ */
+export type Conversation$handoverRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeHandoverRequest
+   */
+  select?: Prisma.KnowledgeHandoverRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeHandoverRequest
+   */
+  omit?: Prisma.KnowledgeHandoverRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeHandoverRequestInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeHandoverRequestWhereInput
+  orderBy?: Prisma.KnowledgeHandoverRequestOrderByWithRelationInput | Prisma.KnowledgeHandoverRequestOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeHandoverRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeHandoverRequestScalarFieldEnum | Prisma.KnowledgeHandoverRequestScalarFieldEnum[]
 }
 
 /**

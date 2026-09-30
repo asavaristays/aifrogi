@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { Prisma } from "../../generated/prisma/client";
+import { redactBeforePersistence } from "@/lib/pre-persistence-redaction";
 
 const ticketInclude = {
   organization: {
@@ -51,6 +52,7 @@ export async function createSupportTicket(input: {
 }) {
   const db = getDb();
   if (!db) return null;
+  const safeDescription = redactBeforePersistence(input.description).redacted;
   return db.$transaction(async (tx) => {
     const ticket = await tx.supportTicket.create({
       data: {
@@ -62,7 +64,7 @@ export async function createSupportTicket(input: {
           create: {
             authorEmail: input.createdByEmail,
             authorRole: "CUSTOMER",
-            body: input.description
+            body: safeDescription
           }
         }
       },
@@ -92,8 +94,9 @@ export async function addSupportTicketMessage(input: {
 }) {
   const db = getDb();
   if (!db) return null;
+  const safeInput = { ...input, body: redactBeforePersistence(input.body).redacted };
   await db.$transaction(async (tx) => {
-    const message = await tx.supportTicketMessage.create({ data: input });
+    const message = await tx.supportTicketMessage.create({ data: safeInput });
     const ticket = await tx.supportTicket.update({
       where: { id: input.ticketId },
       data: {

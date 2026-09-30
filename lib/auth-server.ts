@@ -9,10 +9,10 @@ export async function getCurrentUser() {
   if (!user?.sessionId) return null;
   if (user.role === "admin") {
     enterPlatformDatabaseIdentity(user.username);
-    return user;
+    return { ...user, organizationId: "" };
   }
   const organizationId = await resolveSessionOrganization(user.sessionId, user.username);
   if (!organizationId) return null;
   enterTenantDatabaseIdentity(organizationId, user.username);
-  return user;
+  return { ...user, organizationId };
 }

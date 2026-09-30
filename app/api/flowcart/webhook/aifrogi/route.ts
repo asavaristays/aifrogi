@@ -45,6 +45,8 @@ export async function POST(request: Request) {
     },
     message: typeof flowData.message === "string" ? flowData.message : undefined,
     notes: typeof flowData.notes === "string" ? flowData.notes : undefined
+    ,confirmationId: typeof flowData.confirmationId === "string" ? flowData.confirmationId : "SIGNED_AIFROGI_WEBHOOK"
+    ,idempotencyKey: typeof payload.eventId === "string" ? payload.eventId : typeof flowData.idempotencyKey === "string" ? flowData.idempotencyKey : ""
   });
 
   if (result.error) return NextResponse.json({ error: result.error }, { status: result.status });

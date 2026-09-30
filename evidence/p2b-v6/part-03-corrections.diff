@@ -1,0 +1,269 @@
+diff --git a/tmp/aifrogi-v6-original/p2a-corrected-v6/03-PROPOSED-DDL.sql b/deliverables/p2a-corrected-v6/03-PROPOSED-DDL.sql
+index 0013d53..cb2afc7 100644
+--- a/tmp/aifrogi-v6-original/p2a-corrected-v6/03-PROPOSED-DDL.sql
++++ b/deliverables/p2a-corrected-v6/03-PROPOSED-DDL.sql
+@@ -1,3 +1,5 @@
++-- Generated from repository base 99fb911 to the complete v6 Prisma proposal.
++
+ -- CreateEnum
+ CREATE TYPE "KnowledgeSourceType" AS ENUM ('WEBSITE', 'PDF', 'SPREADSHEET', 'FORM', 'OWNER_CORRECTION', 'CONNECTOR');
+ 
+@@ -52,6 +54,12 @@ CREATE TYPE "HandoverState" AS ENUM ('RECORDED', 'QUEUED', 'PROVIDER_ACCEPTED',
+ -- CreateEnum
+ CREATE TYPE "RetentionState" AS ENUM ('RETAIN', 'DISPOSAL_PROPOSED', 'DISPOSAL_APPROVED', 'DISPOSED');
+ 
++-- CreateEnum
++CREATE TYPE "WebsiteSourceConsentStatus" AS ENUM ('TRIAL_AUTHORIZED', 'POST_TRIAL_APPROVED', 'REVOKED');
++
++-- CreateEnum
++CREATE TYPE "WebsiteSourceApprovalMethod" AS ENUM ('EMAIL', 'SIGNED_LETTER');
++
+ -- DropForeignKey
+ ALTER TABLE "ConversationParticipant" DROP CONSTRAINT "ConversationParticipant_conversationId_fkey";
+ 
+@@ -68,15 +76,7 @@ ALTER TABLE "Message" DROP CONSTRAINT "Message_senderParticipantId_fkey";
+ DROP INDEX "ConversationParticipant_conversationId_participantId_key";
+ 
+ -- AlterTable
+-ALTER TABLE "WebsiteSourceConsent" ADD COLUMN     "audienceCeiling" "KnowledgeAudience" NOT NULL DEFAULT 'RESTRICTED',
+-ADD COLUMN     "authorityScope" JSONB,
+-ADD COLUMN     "canonicalIdentity" TEXT,
+-ADD COLUMN     "canonicalIdentityHash" TEXT,
+-ADD COLUMN     "effectiveFrom" TIMESTAMP(3),
+-ADD COLUMN     "effectiveUntil" TIMESTAMP(3),
+-ADD COLUMN     "sourceId" TEXT,
+-ADD COLUMN     "sourceType" "KnowledgeSourceType" NOT NULL DEFAULT 'WEBSITE';
+-ALTER TABLE "WebsiteSourceConsent" ALTER COLUMN "sourceUrl" DROP NOT NULL, ALTER COLUMN "sourceUrlHash" DROP NOT NULL;
++ALTER TABLE "Property" ADD COLUMN     "websiteConsentEnforcedAt" TIMESTAMP(3);
+ 
+ -- AlterTable
+ ALTER TABLE "KnowledgeEntry" ADD COLUMN     "audience" "KnowledgeAudience",
+@@ -95,23 +95,13 @@ ADD COLUMN     "sealedBy" TEXT,
+ ADD COLUMN     "valueHash" TEXT,
+ ADD COLUMN     "verificationStatus" "ClaimVerificationStatus";
+ 
+--- AlterTable: populate the new ownership column before NOT NULL/FKs.
+-ALTER TABLE "ConversationParticipant" ADD COLUMN "propertyId" TEXT;
+-UPDATE "ConversationParticipant" cp
+-SET "propertyId" = c."propertyId"
+-FROM "Conversation" c
+-WHERE c.id = cp."conversationId";
+-DO $$ BEGIN
+-  IF EXISTS (SELECT 1 FROM "ConversationParticipant" WHERE "propertyId" IS NULL) THEN
+-    RAISE EXCEPTION 'P2_V4_CONVERSATION_PARTICIPANT_PROPERTY_BACKFILL_FAILED';
+-  END IF;
+-END $$;
+-ALTER TABLE "ConversationParticipant" ALTER COLUMN "propertyId" SET NOT NULL;
++-- AlterTable
++ALTER TABLE "ConversationParticipant" ADD COLUMN     "propertyId" TEXT NOT NULL;
+ 
+ -- AlterTable
+ ALTER TABLE "AutomationJob" ADD COLUMN     "canonicalInputHash" TEXT,
+ ADD COLUMN     "fencingToken" BIGINT NOT NULL DEFAULT 0,
+-ADD COLUMN     "inputGeneration" INTEGER NOT NULL DEFAULT 1,
++ADD COLUMN     "inputGeneration" BIGINT NOT NULL DEFAULT 1,
+ ADD COLUMN     "operationKey" TEXT,
+ ADD COLUMN     "operationType" TEXT,
+ ADD COLUMN     "operationVersion" INTEGER NOT NULL DEFAULT 1;
+@@ -168,7 +158,7 @@ CREATE TABLE "SourceCapture" (
+     "propertyId" TEXT NOT NULL,
+     "sourceId" TEXT NOT NULL,
+     "sourceRevisionId" TEXT NOT NULL,
+-    "requestedGeneration" INTEGER NOT NULL,
++    "requestedGeneration" BIGINT NOT NULL,
+     "operationKey" TEXT NOT NULL,
+     "status" "CaptureState" NOT NULL DEFAULT 'QUEUED',
+     "requestedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+@@ -578,6 +568,71 @@ CREATE TABLE "KnowledgeMigrationDecision" (
+     CONSTRAINT "KnowledgeMigrationDecision_pkey" PRIMARY KEY ("id")
+ );
+ 
++-- CreateTable
++CREATE TABLE "KnowledgeMigrationArtifactDecision" (
++    "id" TEXT NOT NULL,
++    "propertyId" TEXT NOT NULL,
++    "batchId" TEXT NOT NULL,
++    "artifactType" TEXT NOT NULL,
++    "legacyId" TEXT NOT NULL,
++    "sourcePathHash" TEXT,
++    "contentHash" TEXT NOT NULL,
++    "decision" TEXT NOT NULL,
++    "reasonCode" TEXT NOT NULL,
++    "sourceId" TEXT,
++    "objectId" TEXT,
++    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++
++    CONSTRAINT "KnowledgeMigrationArtifactDecision_pkey" PRIMARY KEY ("id")
++);
++
++-- CreateTable
++CREATE TABLE "KnowledgeRuntimePrincipalGrant" (
++    "id" TEXT NOT NULL,
++    "propertyId" TEXT NOT NULL,
++    "principalId" TEXT NOT NULL,
++    "databaseRole" TEXT NOT NULL,
++    "purpose" TEXT NOT NULL,
++    "expiresAt" TIMESTAMP(3),
++    "revokedAt" TIMESTAMP(3),
++    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++
++    CONSTRAINT "KnowledgeRuntimePrincipalGrant_pkey" PRIMARY KEY ("id")
++);
++
++-- CreateTable
++CREATE TABLE "WebsiteSourceConsent" (
++    "id" TEXT NOT NULL,
++    "propertyId" TEXT NOT NULL,
++    "sourceUrl" TEXT,
++    "sourceUrlHash" TEXT,
++    "termsVersion" TEXT NOT NULL,
++    "status" "WebsiteSourceConsentStatus" NOT NULL DEFAULT 'TRIAL_AUTHORIZED',
++    "trialAuthorizedAt" TIMESTAMP(3) NOT NULL,
++    "trialExpiresAt" TIMESTAMP(3) NOT NULL,
++    "acceptedByEmail" TEXT NOT NULL,
++    "acceptedIpHash" TEXT,
++    "postTrialMethod" "WebsiteSourceApprovalMethod",
++    "postTrialApprovedBy" TEXT,
++    "postTrialApprovedAt" TIMESTAMP(3),
++    "approvalEvidenceRef" TEXT,
++    "revokedAt" TIMESTAMP(3),
++    "revokedBy" TEXT,
++    "revocationReason" TEXT,
++    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++    "updatedAt" TIMESTAMP(3) NOT NULL,
++    "sourceType" "KnowledgeSourceType" NOT NULL DEFAULT 'WEBSITE',
++    "canonicalIdentity" TEXT,
++    "canonicalIdentityHash" TEXT,
++    "sourceId" TEXT,
++    "authorityScope" JSONB,
++    "audienceCeiling" "KnowledgeAudience" NOT NULL DEFAULT 'RESTRICTED',
++    "effectiveFrom" TIMESTAMP(3),
++    "effectiveUntil" TIMESTAMP(3),
++
++    CONSTRAINT "WebsiteSourceConsent_pkey" PRIMARY KEY ("id")
++);
++
+ -- CreateIndex
+ CREATE INDEX "KnowledgeClaimIdentity_propertyId_entityKey_fieldKey_idx" ON "KnowledgeClaimIdentity"("propertyId", "entityKey", "fieldKey");
+ 
+@@ -650,6 +705,9 @@ CREATE UNIQUE INDEX "KnowledgeExtractionRun_propertyId_id_key" ON "KnowledgeExtr
+ -- CreateIndex
+ CREATE UNIQUE INDEX "KnowledgeClaimEvidence_propertyId_entryId_captureVersionId__key" ON "KnowledgeClaimEvidence"("propertyId", "entryId", "captureVersionId", "locatorHash");
+ 
++-- CreateIndex
++CREATE UNIQUE INDEX "KnowledgeClaimEvidence_propertyId_entryId_id_key" ON "KnowledgeClaimEvidence"("propertyId", "entryId", "id");
++
+ -- CreateIndex
+ CREATE UNIQUE INDEX "KnowledgeClaimEvidence_propertyId_id_key" ON "KnowledgeClaimEvidence"("propertyId", "id");
+ 
+@@ -771,12 +829,32 @@ CREATE UNIQUE INDEX "KnowledgeMigrationDecision_batchId_legacyEntryId_key" ON "K
+ CREATE UNIQUE INDEX "KnowledgeMigrationDecision_propertyId_id_key" ON "KnowledgeMigrationDecision"("propertyId", "id");
+ 
+ -- CreateIndex
+-CREATE UNIQUE INDEX "Property_id_organizationId_key" ON "Property"("id", "organizationId");
++CREATE UNIQUE INDEX "KnowledgeMigrationArtifactDecision_batchId_artifactType_leg_key" ON "KnowledgeMigrationArtifactDecision"("batchId", "artifactType", "legacyId");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "KnowledgeMigrationArtifactDecision_propertyId_id_key" ON "KnowledgeMigrationArtifactDecision"("propertyId", "id");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "KnowledgeRuntimePrincipalGrant_propertyId_principalId_datab_key" ON "KnowledgeRuntimePrincipalGrant"("propertyId", "principalId", "databaseRole", "purpose");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "KnowledgeRuntimePrincipalGrant_propertyId_id_key" ON "KnowledgeRuntimePrincipalGrant"("propertyId", "id");
++
++-- CreateIndex
++CREATE INDEX "WebsiteSourceConsent_propertyId_status_trialExpiresAt_idx" ON "WebsiteSourceConsent"("propertyId", "status", "trialExpiresAt");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "WebsiteSourceConsent_propertyId_sourceUrlHash_key" ON "WebsiteSourceConsent"("propertyId", "sourceUrlHash");
+ 
+ -- CreateIndex
+-CREATE UNIQUE INDEX "WebsiteSourceConsent_propertyId_id_key" ON "WebsiteSourceConsent"("propertyId", "id");
+ CREATE UNIQUE INDEX "WebsiteSourceConsent_propertyId_sourceType_canonicalIdentit_key" ON "WebsiteSourceConsent"("propertyId", "sourceType", "canonicalIdentityHash");
+ 
++-- CreateIndex
++CREATE UNIQUE INDEX "WebsiteSourceConsent_propertyId_id_key" ON "WebsiteSourceConsent"("propertyId", "id");
++
++-- CreateIndex
++CREATE UNIQUE INDEX "Property_id_organizationId_key" ON "Property"("id", "organizationId");
++
+ -- CreateIndex
+ CREATE INDEX "KnowledgeEntry_propertyId_claimIdentityId_sealedAt_idx" ON "KnowledgeEntry"("propertyId", "claimIdentityId", "sealedAt");
+ 
+@@ -786,6 +864,9 @@ CREATE UNIQUE INDEX "KnowledgeEntry_propertyId_id_key" ON "KnowledgeEntry"("prop
+ -- CreateIndex
+ CREATE UNIQUE INDEX "KnowledgeEntry_propertyId_claimIdentityId_revisionNumber_key" ON "KnowledgeEntry"("propertyId", "claimIdentityId", "revisionNumber");
+ 
++-- CreateIndex
++CREATE UNIQUE INDEX "KnowledgeEntry_propertyId_claimIdentityId_id_sealManifestHa_key" ON "KnowledgeEntry"("propertyId", "claimIdentityId", "id", "sealManifestHash");
++
+ -- CreateIndex
+ CREATE UNIQUE INDEX "OrganizationMember_organizationId_id_key" ON "OrganizationMember"("organizationId", "id");
+ 
+@@ -853,7 +934,7 @@ ALTER TABLE "KnowledgeClaimEvidence" ADD CONSTRAINT "KnowledgeClaimEvidence_prop
+ ALTER TABLE "KnowledgeRevisionEvidenceBinding" ADD CONSTRAINT "KnowledgeRevisionEvidenceBinding_propertyId_entryId_fkey" FOREIGN KEY ("propertyId", "entryId") REFERENCES "KnowledgeEntry"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ 
+ -- AddForeignKey
+-ALTER TABLE "KnowledgeRevisionEvidenceBinding" ADD CONSTRAINT "KnowledgeRevisionEvidenceBinding_propertyId_evidenceId_fkey" FOREIGN KEY ("propertyId", "evidenceId") REFERENCES "KnowledgeClaimEvidence"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
++ALTER TABLE "KnowledgeRevisionEvidenceBinding" ADD CONSTRAINT "KnowledgeRevisionEvidenceBinding_propertyId_entryId_eviden_fkey" FOREIGN KEY ("propertyId", "entryId", "evidenceId") REFERENCES "KnowledgeClaimEvidence"("propertyId", "entryId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ 
+ -- AddForeignKey
+ ALTER TABLE "KnowledgeClaimConflict" ADD CONSTRAINT "KnowledgeClaimConflict_propertyId_lowerEntryId_fkey" FOREIGN KEY ("propertyId", "lowerEntryId") REFERENCES "KnowledgeEntry"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+@@ -874,7 +955,7 @@ ALTER TABLE "KnowledgePublicationClaim" ADD CONSTRAINT "KnowledgePublicationClai
+ ALTER TABLE "KnowledgePublicationClaim" ADD CONSTRAINT "KnowledgePublicationClaim_propertyId_claimIdentityId_fkey" FOREIGN KEY ("propertyId", "claimIdentityId") REFERENCES "KnowledgeClaimIdentity"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ 
+ -- AddForeignKey
+-ALTER TABLE "KnowledgePublicationClaim" ADD CONSTRAINT "KnowledgePublicationClaim_propertyId_entryId_fkey" FOREIGN KEY ("propertyId", "entryId") REFERENCES "KnowledgeEntry"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
++ALTER TABLE "KnowledgePublicationClaim" ADD CONSTRAINT "KnowledgePublicationClaim_propertyId_claimIdentityId_entry_fkey" FOREIGN KEY ("propertyId", "claimIdentityId", "entryId", "sealManifestHash") REFERENCES "KnowledgeEntry"("propertyId", "claimIdentityId", "id", "sealManifestHash") ON DELETE RESTRICT ON UPDATE CASCADE;
+ 
+ -- AddForeignKey
+ ALTER TABLE "KnowledgeServingPointer" ADD CONSTRAINT "KnowledgeServingPointer_propertyId_audience_publicationId_fkey" FOREIGN KEY ("propertyId", "audience", "publicationId") REFERENCES "KnowledgePublication"("propertyId", "audience", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+@@ -957,6 +1038,21 @@ ALTER TABLE "KnowledgeRetentionDecision" ADD CONSTRAINT "KnowledgeRetentionDecis
+ -- AddForeignKey
+ ALTER TABLE "KnowledgeRetentionDecision" ADD CONSTRAINT "KnowledgeRetentionDecision_propertyId_objectReferenceId_fkey" FOREIGN KEY ("propertyId", "objectReferenceId") REFERENCES "KnowledgeObjectReference"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ 
++-- AddForeignKey
++ALTER TABLE "KnowledgeMigrationDecision" ADD CONSTRAINT "KnowledgeMigrationDecision_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
++
++-- AddForeignKey
++ALTER TABLE "KnowledgeMigrationDecision" ADD CONSTRAINT "KnowledgeMigrationDecision_propertyId_legacyEntryId_fkey" FOREIGN KEY ("propertyId", "legacyEntryId") REFERENCES "KnowledgeEntry"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
++
++-- AddForeignKey
++ALTER TABLE "KnowledgeMigrationArtifactDecision" ADD CONSTRAINT "KnowledgeMigrationArtifactDecision_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
++
++-- AddForeignKey
++ALTER TABLE "KnowledgeRuntimePrincipalGrant" ADD CONSTRAINT "KnowledgeRuntimePrincipalGrant_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
++
++-- AddForeignKey
++ALTER TABLE "WebsiteSourceConsent" ADD CONSTRAINT "WebsiteSourceConsent_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE CASCADE ON UPDATE CASCADE;
++
+ -- AddForeignKey
+ ALTER TABLE "WebsiteSourceConsent" ADD CONSTRAINT "WebsiteSourceConsent_propertyId_sourceId_fkey" FOREIGN KEY ("propertyId", "sourceId") REFERENCES "KnowledgeSource"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ 
+@@ -974,10 +1070,6 @@ ALTER TABLE "Message" ADD CONSTRAINT "Message_propertyId_conversationId_fkey" FO
+ 
+ -- AddForeignKey
+ ALTER TABLE "Message" ADD CONSTRAINT "Message_propertyId_senderParticipantId_fkey" FOREIGN KEY ("propertyId", "senderParticipantId") REFERENCES "Participant"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-ALTER TABLE "KnowledgeMigrationDecision" ADD CONSTRAINT "KnowledgeMigrationDecision_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-ALTER TABLE "KnowledgeMigrationDecision" ADD CONSTRAINT "KnowledgeMigrationDecision_propertyId_legacyEntryId_fkey" FOREIGN KEY ("propertyId", "legacyEntryId") REFERENCES "KnowledgeEntry"("propertyId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-
+--- ---------------------------------------------------------------------------
+ -- P2-A v4 hand-written constraints, triggers, routines, RLS and privileges.
+ -- This section is part of the proposed DDL, not deferred application prose.
+ -- ---------------------------------------------------------------------------
+@@ -1023,6 +1115,14 @@ CREATE OR REPLACE FUNCTION aifrogi_security.current_property_id() RETURNS text
+ LANGUAGE sql STABLE SET search_path=pg_catalog AS $$
+   SELECT NULLIF(current_setting('app.property_id',true),'')
+ $$;
++CREATE OR REPLACE FUNCTION aifrogi_security.current_organization_id() RETURNS text
++LANGUAGE sql STABLE SET search_path=pg_catalog AS $$
++  SELECT NULLIF(current_setting('app.organization_id',true),'')
++$$;
++CREATE OR REPLACE FUNCTION aifrogi_security.has_platform_authority() RETURNS boolean
++LANGUAGE sql STABLE SET search_path=pg_catalog AS $$
++  SELECT COALESCE(NULLIF(current_setting('app.platform_authority',true),'')::boolean,false)
++$$;
+ CREATE OR REPLACE FUNCTION aifrogi_security.hash_json(p_value jsonb) RETURNS text
+ LANGUAGE sql IMMUTABLE STRICT SET search_path=pg_catalog,public AS $$
+   SELECT encode(public.digest(pg_catalog.convert_to(p_value::text,'UTF8'),'sha256'),'hex')

@@ -1,0 +1,18 @@
+\set ON_ERROR_STOP on
+INSERT INTO "KnowledgeRuntimePrincipalGrant"(id,"propertyId","principalId","databaseRole",purpose) VALUES
+ ('core-publisher-grant','delivery-property','publisher:test','aifrogi_publisher','KNOWLEDGE_PUBLISH'),
+ ('core-revoke-grant','delivery-property','publisher:test','aifrogi_publisher','KNOWLEDGE_REVOKE'),
+ ('core-worker-grant','delivery-property','worker:test','aifrogi_worker','KNOWLEDGE_CAPTURE');
+
+INSERT INTO "KnowledgeEntry"(id,"propertyId",question,answer,"createdBy","updatedAt","claimIdentityId","revisionNumber","normalizedValue","valueHash","quoteText",audience,"verificationStatus","revisionState","requiredComponents") VALUES
+ ('core-entry','delivery-property','When is checkout?','Checkout is at 11 AM.','owner',clock_timestamp(),'delivery-identity',2,'{"time":"11:00"}','core-value-hash','Checkout is at 11 AM.','PUBLIC','SUPPORTED','DRAFT',ARRAY['time','qualification']),
+ ('core-incomplete','delivery-property','Incomplete?','Incomplete answer.','owner',clock_timestamp(),'delivery-identity',3,'{"value":"x"}','incomplete-value-hash','Incomplete answer.','PUBLIC','SUPPORTED','DRAFT',ARRAY['missing']);
+INSERT INTO "KnowledgeClaimEvidence"(id,"propertyId","entryId","captureVersionId",locator,"locatorHash",quotation,"quotationHash","supportedComponents","bindingHash") VALUES
+ ('core-evidence','delivery-property','core-entry','delivery-capture-version','{"row":2}','core-locator-hash','Checkout is at 11 AM.','core-quote-hash',ARRAY['time','qualification'],'core-binding-hash');
+INSERT INTO "KnowledgeRevisionEvidenceBinding"(id,"propertyId","entryId","evidenceId","bindingHash") VALUES ('core-binding','delivery-property','core-entry','core-evidence','core-binding-hash');
+
+INSERT INTO "KnowledgeSource"(id,"propertyId","sourceType","canonicalIdentity","canonicalIdentityHash",state,"audienceCeiling","currentRevision","updatedAt") VALUES ('core-job-source','delivery-property','FORM','job-form','job-source-hash','AUTHORIZED','PUBLIC',1,clock_timestamp());
+INSERT INTO "WebsiteSourceConsent"(id,"propertyId","sourceType","canonicalIdentity","canonicalIdentityHash","sourceId","termsVersion",status,"trialAuthorizedAt","trialExpiresAt","acceptedByEmail","postTrialMethod","postTrialApprovedBy","postTrialApprovedAt","approvalEvidenceRef","authorityScope","audienceCeiling","effectiveFrom","effectiveUntil","updatedAt") VALUES ('core-job-consent','delivery-property','FORM','job-form','job-source-hash','core-job-source','v1','POST_TRIAL_APPROVED',clock_timestamp()-interval '1 day',clock_timestamp()+interval '30 days','owner@example.test','EMAIL','owner@example.test',clock_timestamp()-interval '1 day','fixture:core-job-consent','{"capture":true}','PUBLIC',clock_timestamp()-interval '1 day',clock_timestamp()+interval '30 days',clock_timestamp());
+INSERT INTO "KnowledgeSourceRevision"(id,"propertyId","sourceId",revision,configuration,"configurationHash","consentId","createdBy") VALUES ('core-job-source-rev','delivery-property','core-job-source',1,'{}','job-config-hash','core-job-consent','owner');
+INSERT INTO "SourceCapture"(id,"propertyId","sourceId","sourceRevisionId","requestedGeneration","operationKey",status) VALUES ('core-job-capture','delivery-property','core-job-source','core-job-source-rev',1,'core-job-op','QUEUED');
+INSERT INTO "AutomationJob"(id,"propertyId","workflowId","triggerType","actionType",status,payload,"idempotencyKey","updatedAt","operationKey","operationType","inputGeneration","canonicalInputHash") VALUES ('core-job','delivery-property','knowledge','TEST','CAPTURE','QUEUED','{}','core-job-idempotency',clock_timestamp(),'core-job-op','KNOWLEDGE_CAPTURE',1,'core-job-input');

@@ -29,11 +29,13 @@ export type AggregateKnowledgeEntry = {
 export type KnowledgeEntryAvgAggregateOutputType = {
   refreshDays: number | null
   version: number | null
+  revisionNumber: number | null
 }
 
 export type KnowledgeEntrySumAggregateOutputType = {
   refreshDays: number | null
   version: number | null
+  revisionNumber: number | null
 }
 
 export type KnowledgeEntryMinAggregateOutputType = {
@@ -71,6 +73,19 @@ export type KnowledgeEntryMinAggregateOutputType = {
   approvedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  claimIdentityId: string | null
+  revisionNumber: number | null
+  valueHash: string | null
+  quoteText: string | null
+  audience: $Enums.KnowledgeAudience | null
+  effectiveFrom: Date | null
+  effectiveUntil: Date | null
+  verificationStatus: $Enums.ClaimVerificationStatus | null
+  revisionState: $Enums.ClaimRevisionState | null
+  sealManifestHash: string | null
+  sealPolicyVersion: string | null
+  sealedAt: Date | null
+  sealedBy: string | null
 }
 
 export type KnowledgeEntryMaxAggregateOutputType = {
@@ -108,6 +123,19 @@ export type KnowledgeEntryMaxAggregateOutputType = {
   approvedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  claimIdentityId: string | null
+  revisionNumber: number | null
+  valueHash: string | null
+  quoteText: string | null
+  audience: $Enums.KnowledgeAudience | null
+  effectiveFrom: Date | null
+  effectiveUntil: Date | null
+  verificationStatus: $Enums.ClaimVerificationStatus | null
+  revisionState: $Enums.ClaimRevisionState | null
+  sealManifestHash: string | null
+  sealPolicyVersion: string | null
+  sealedAt: Date | null
+  sealedBy: string | null
 }
 
 export type KnowledgeEntryCountAggregateOutputType = {
@@ -146,6 +174,21 @@ export type KnowledgeEntryCountAggregateOutputType = {
   approvedAt: number
   createdAt: number
   updatedAt: number
+  claimIdentityId: number
+  revisionNumber: number
+  normalizedValue: number
+  valueHash: number
+  quoteText: number
+  audience: number
+  effectiveFrom: number
+  effectiveUntil: number
+  verificationStatus: number
+  revisionState: number
+  requiredComponents: number
+  sealManifestHash: number
+  sealPolicyVersion: number
+  sealedAt: number
+  sealedBy: number
   _all: number
 }
 
@@ -153,11 +196,13 @@ export type KnowledgeEntryCountAggregateOutputType = {
 export type KnowledgeEntryAvgAggregateInputType = {
   refreshDays?: true
   version?: true
+  revisionNumber?: true
 }
 
 export type KnowledgeEntrySumAggregateInputType = {
   refreshDays?: true
   version?: true
+  revisionNumber?: true
 }
 
 export type KnowledgeEntryMinAggregateInputType = {
@@ -195,6 +240,19 @@ export type KnowledgeEntryMinAggregateInputType = {
   approvedAt?: true
   createdAt?: true
   updatedAt?: true
+  claimIdentityId?: true
+  revisionNumber?: true
+  valueHash?: true
+  quoteText?: true
+  audience?: true
+  effectiveFrom?: true
+  effectiveUntil?: true
+  verificationStatus?: true
+  revisionState?: true
+  sealManifestHash?: true
+  sealPolicyVersion?: true
+  sealedAt?: true
+  sealedBy?: true
 }
 
 export type KnowledgeEntryMaxAggregateInputType = {
@@ -232,6 +290,19 @@ export type KnowledgeEntryMaxAggregateInputType = {
   approvedAt?: true
   createdAt?: true
   updatedAt?: true
+  claimIdentityId?: true
+  revisionNumber?: true
+  valueHash?: true
+  quoteText?: true
+  audience?: true
+  effectiveFrom?: true
+  effectiveUntil?: true
+  verificationStatus?: true
+  revisionState?: true
+  sealManifestHash?: true
+  sealPolicyVersion?: true
+  sealedAt?: true
+  sealedBy?: true
 }
 
 export type KnowledgeEntryCountAggregateInputType = {
@@ -270,6 +341,21 @@ export type KnowledgeEntryCountAggregateInputType = {
   approvedAt?: true
   createdAt?: true
   updatedAt?: true
+  claimIdentityId?: true
+  revisionNumber?: true
+  normalizedValue?: true
+  valueHash?: true
+  quoteText?: true
+  audience?: true
+  effectiveFrom?: true
+  effectiveUntil?: true
+  verificationStatus?: true
+  revisionState?: true
+  requiredComponents?: true
+  sealManifestHash?: true
+  sealPolicyVersion?: true
+  sealedAt?: true
+  sealedBy?: true
   _all?: true
 }
 
@@ -395,6 +481,21 @@ export type KnowledgeEntryGroupByOutputType = {
   approvedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  claimIdentityId: string | null
+  revisionNumber: number | null
+  normalizedValue: runtime.JsonValue | null
+  valueHash: string | null
+  quoteText: string | null
+  audience: $Enums.KnowledgeAudience | null
+  effectiveFrom: Date | null
+  effectiveUntil: Date | null
+  verificationStatus: $Enums.ClaimVerificationStatus | null
+  revisionState: $Enums.ClaimRevisionState
+  requiredComponents: string[]
+  sealManifestHash: string | null
+  sealPolicyVersion: string | null
+  sealedAt: Date | null
+  sealedBy: string | null
   _count: KnowledgeEntryCountAggregateOutputType | null
   _avg: KnowledgeEntryAvgAggregateOutputType | null
   _sum: KnowledgeEntrySumAggregateOutputType | null
@@ -456,6 +557,21 @@ export type KnowledgeEntryWhereInput = {
   approvedAt?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"KnowledgeEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeEntry"> | Date | string
+  claimIdentityId?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  revisionNumber?: Prisma.IntNullableFilter<"KnowledgeEntry"> | number | null
+  normalizedValue?: Prisma.JsonNullableFilter<"KnowledgeEntry">
+  valueHash?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  quoteText?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  audience?: Prisma.EnumKnowledgeAudienceNullableFilter<"KnowledgeEntry"> | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  effectiveUntil?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  verificationStatus?: Prisma.EnumClaimVerificationStatusNullableFilter<"KnowledgeEntry"> | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFilter<"KnowledgeEntry"> | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.StringNullableListFilter<"KnowledgeEntry">
+  sealManifestHash?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  sealPolicyVersion?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  sealedAt?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  sealedBy?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   document?: Prisma.XOR<Prisma.KnowledgeDocumentNullableScalarRelationFilter, Prisma.KnowledgeDocumentWhereInput> | null
   supersedes?: Prisma.XOR<Prisma.KnowledgeEntryNullableScalarRelationFilter, Prisma.KnowledgeEntryWhereInput> | null
@@ -463,6 +579,16 @@ export type KnowledgeEntryWhereInput = {
   resolvedGaps?: Prisma.KnowledgeGapListRelationFilter
   previews?: Prisma.KnowledgePreviewListRelationFilter
   answerFlags?: Prisma.KnowledgeAnswerFlagListRelationFilter
+  claimIdentity?: Prisma.XOR<Prisma.KnowledgeClaimIdentityNullableScalarRelationFilter, Prisma.KnowledgeClaimIdentityWhereInput> | null
+  evidence?: Prisma.KnowledgeClaimEvidenceListRelationFilter
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingListRelationFilter
+  revisionEvents?: Prisma.KnowledgeRevisionEventListRelationFilter
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventListRelationFilter
+  lowerConflicts?: Prisma.KnowledgeClaimConflictListRelationFilter
+  higherConflicts?: Prisma.KnowledgeClaimConflictListRelationFilter
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionListRelationFilter
+  publicationClaims?: Prisma.KnowledgePublicationClaimListRelationFilter
+  previewClaims?: Prisma.KnowledgePreviewClaimListRelationFilter
 }
 
 export type KnowledgeEntryOrderByWithRelationInput = {
@@ -501,6 +627,21 @@ export type KnowledgeEntryOrderByWithRelationInput = {
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  claimIdentityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  normalizedValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  quoteText?: Prisma.SortOrderInput | Prisma.SortOrder
+  audience?: Prisma.SortOrderInput | Prisma.SortOrder
+  effectiveFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  effectiveUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  verificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  revisionState?: Prisma.SortOrder
+  requiredComponents?: Prisma.SortOrder
+  sealManifestHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  sealPolicyVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  sealedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  sealedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
   document?: Prisma.KnowledgeDocumentOrderByWithRelationInput
   supersedes?: Prisma.KnowledgeEntryOrderByWithRelationInput
@@ -508,10 +649,23 @@ export type KnowledgeEntryOrderByWithRelationInput = {
   resolvedGaps?: Prisma.KnowledgeGapOrderByRelationAggregateInput
   previews?: Prisma.KnowledgePreviewOrderByRelationAggregateInput
   answerFlags?: Prisma.KnowledgeAnswerFlagOrderByRelationAggregateInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityOrderByWithRelationInput
+  evidence?: Prisma.KnowledgeClaimEvidenceOrderByRelationAggregateInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingOrderByRelationAggregateInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventOrderByRelationAggregateInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventOrderByRelationAggregateInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictOrderByRelationAggregateInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictOrderByRelationAggregateInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionOrderByRelationAggregateInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimOrderByRelationAggregateInput
+  previewClaims?: Prisma.KnowledgePreviewClaimOrderByRelationAggregateInput
 }
 
 export type KnowledgeEntryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  propertyId_id?: Prisma.KnowledgeEntryPropertyIdIdCompoundUniqueInput
+  propertyId_claimIdentityId_revisionNumber?: Prisma.KnowledgeEntryPropertyIdClaimIdentityIdRevisionNumberCompoundUniqueInput
+  propertyId_claimIdentityId_id_sealManifestHash?: Prisma.KnowledgeEntryPropertyIdClaimIdentityIdIdSealManifestHashCompoundUniqueInput
   AND?: Prisma.KnowledgeEntryWhereInput | Prisma.KnowledgeEntryWhereInput[]
   OR?: Prisma.KnowledgeEntryWhereInput[]
   NOT?: Prisma.KnowledgeEntryWhereInput | Prisma.KnowledgeEntryWhereInput[]
@@ -549,6 +703,21 @@ export type KnowledgeEntryWhereUniqueInput = Prisma.AtLeast<{
   approvedAt?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"KnowledgeEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeEntry"> | Date | string
+  claimIdentityId?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  revisionNumber?: Prisma.IntNullableFilter<"KnowledgeEntry"> | number | null
+  normalizedValue?: Prisma.JsonNullableFilter<"KnowledgeEntry">
+  valueHash?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  quoteText?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  audience?: Prisma.EnumKnowledgeAudienceNullableFilter<"KnowledgeEntry"> | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  effectiveUntil?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  verificationStatus?: Prisma.EnumClaimVerificationStatusNullableFilter<"KnowledgeEntry"> | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFilter<"KnowledgeEntry"> | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.StringNullableListFilter<"KnowledgeEntry">
+  sealManifestHash?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  sealPolicyVersion?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  sealedAt?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  sealedBy?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   document?: Prisma.XOR<Prisma.KnowledgeDocumentNullableScalarRelationFilter, Prisma.KnowledgeDocumentWhereInput> | null
   supersedes?: Prisma.XOR<Prisma.KnowledgeEntryNullableScalarRelationFilter, Prisma.KnowledgeEntryWhereInput> | null
@@ -556,7 +725,17 @@ export type KnowledgeEntryWhereUniqueInput = Prisma.AtLeast<{
   resolvedGaps?: Prisma.KnowledgeGapListRelationFilter
   previews?: Prisma.KnowledgePreviewListRelationFilter
   answerFlags?: Prisma.KnowledgeAnswerFlagListRelationFilter
-}, "id">
+  claimIdentity?: Prisma.XOR<Prisma.KnowledgeClaimIdentityNullableScalarRelationFilter, Prisma.KnowledgeClaimIdentityWhereInput> | null
+  evidence?: Prisma.KnowledgeClaimEvidenceListRelationFilter
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingListRelationFilter
+  revisionEvents?: Prisma.KnowledgeRevisionEventListRelationFilter
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventListRelationFilter
+  lowerConflicts?: Prisma.KnowledgeClaimConflictListRelationFilter
+  higherConflicts?: Prisma.KnowledgeClaimConflictListRelationFilter
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionListRelationFilter
+  publicationClaims?: Prisma.KnowledgePublicationClaimListRelationFilter
+  previewClaims?: Prisma.KnowledgePreviewClaimListRelationFilter
+}, "id" | "propertyId_id" | "propertyId_claimIdentityId_revisionNumber" | "propertyId_claimIdentityId_id_sealManifestHash">
 
 export type KnowledgeEntryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -594,6 +773,21 @@ export type KnowledgeEntryOrderByWithAggregationInput = {
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  claimIdentityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  normalizedValue?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  quoteText?: Prisma.SortOrderInput | Prisma.SortOrder
+  audience?: Prisma.SortOrderInput | Prisma.SortOrder
+  effectiveFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  effectiveUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  verificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  revisionState?: Prisma.SortOrder
+  requiredComponents?: Prisma.SortOrder
+  sealManifestHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  sealPolicyVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  sealedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  sealedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.KnowledgeEntryCountOrderByAggregateInput
   _avg?: Prisma.KnowledgeEntryAvgOrderByAggregateInput
   _max?: Prisma.KnowledgeEntryMaxOrderByAggregateInput
@@ -640,6 +834,21 @@ export type KnowledgeEntryScalarWhereWithAggregatesInput = {
   approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"KnowledgeEntry"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeEntry"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeEntry"> | Date | string
+  claimIdentityId?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeEntry"> | string | null
+  revisionNumber?: Prisma.IntNullableWithAggregatesFilter<"KnowledgeEntry"> | number | null
+  normalizedValue?: Prisma.JsonNullableWithAggregatesFilter<"KnowledgeEntry">
+  valueHash?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeEntry"> | string | null
+  quoteText?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeEntry"> | string | null
+  audience?: Prisma.EnumKnowledgeAudienceNullableWithAggregatesFilter<"KnowledgeEntry"> | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"KnowledgeEntry"> | Date | string | null
+  effectiveUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"KnowledgeEntry"> | Date | string | null
+  verificationStatus?: Prisma.EnumClaimVerificationStatusNullableWithAggregatesFilter<"KnowledgeEntry"> | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateWithAggregatesFilter<"KnowledgeEntry"> | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.StringNullableListFilter<"KnowledgeEntry">
+  sealManifestHash?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeEntry"> | string | null
+  sealPolicyVersion?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeEntry"> | string | null
+  sealedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"KnowledgeEntry"> | Date | string | null
+  sealedBy?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeEntry"> | string | null
 }
 
 export type KnowledgeEntryCreateInput = {
@@ -675,6 +884,20 @@ export type KnowledgeEntryCreateInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
@@ -682,6 +905,16 @@ export type KnowledgeEntryCreateInput = {
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateInput = {
@@ -720,10 +953,34 @@ export type KnowledgeEntryUncheckedCreateInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUpdateInput = {
@@ -759,6 +1016,20 @@ export type KnowledgeEntryUpdateInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
@@ -766,6 +1037,16 @@ export type KnowledgeEntryUpdateInput = {
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateInput = {
@@ -804,10 +1085,34 @@ export type KnowledgeEntryUncheckedUpdateInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryCreateManyInput = {
@@ -846,6 +1151,21 @@ export type KnowledgeEntryCreateManyInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
 }
 
 export type KnowledgeEntryUpdateManyMutationInput = {
@@ -881,6 +1201,20 @@ export type KnowledgeEntryUpdateManyMutationInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type KnowledgeEntryUncheckedUpdateManyInput = {
@@ -919,6 +1253,21 @@ export type KnowledgeEntryUncheckedUpdateManyInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type KnowledgeEntryListRelationFilter = {
@@ -931,17 +1280,32 @@ export type KnowledgeEntryOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringNullableListFilter<$PrismaModel = never> = {
-  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
+export type KnowledgeEntryScalarRelationFilter = {
+  is?: Prisma.KnowledgeEntryWhereInput
+  isNot?: Prisma.KnowledgeEntryWhereInput
 }
 
 export type KnowledgeEntryNullableScalarRelationFilter = {
   is?: Prisma.KnowledgeEntryWhereInput | null
   isNot?: Prisma.KnowledgeEntryWhereInput | null
+}
+
+export type KnowledgeEntryPropertyIdIdCompoundUniqueInput = {
+  propertyId: string
+  id: string
+}
+
+export type KnowledgeEntryPropertyIdClaimIdentityIdRevisionNumberCompoundUniqueInput = {
+  propertyId: string
+  claimIdentityId: string
+  revisionNumber: number
+}
+
+export type KnowledgeEntryPropertyIdClaimIdentityIdIdSealManifestHashCompoundUniqueInput = {
+  propertyId: string
+  claimIdentityId: string
+  id: string
+  sealManifestHash: string
 }
 
 export type KnowledgeEntryCountOrderByAggregateInput = {
@@ -980,11 +1344,27 @@ export type KnowledgeEntryCountOrderByAggregateInput = {
   approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  claimIdentityId?: Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrder
+  normalizedValue?: Prisma.SortOrder
+  valueHash?: Prisma.SortOrder
+  quoteText?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  effectiveFrom?: Prisma.SortOrder
+  effectiveUntil?: Prisma.SortOrder
+  verificationStatus?: Prisma.SortOrder
+  revisionState?: Prisma.SortOrder
+  requiredComponents?: Prisma.SortOrder
+  sealManifestHash?: Prisma.SortOrder
+  sealPolicyVersion?: Prisma.SortOrder
+  sealedAt?: Prisma.SortOrder
+  sealedBy?: Prisma.SortOrder
 }
 
 export type KnowledgeEntryAvgOrderByAggregateInput = {
   refreshDays?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrder
 }
 
 export type KnowledgeEntryMaxOrderByAggregateInput = {
@@ -1022,6 +1402,19 @@ export type KnowledgeEntryMaxOrderByAggregateInput = {
   approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  claimIdentityId?: Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrder
+  valueHash?: Prisma.SortOrder
+  quoteText?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  effectiveFrom?: Prisma.SortOrder
+  effectiveUntil?: Prisma.SortOrder
+  verificationStatus?: Prisma.SortOrder
+  revisionState?: Prisma.SortOrder
+  sealManifestHash?: Prisma.SortOrder
+  sealPolicyVersion?: Prisma.SortOrder
+  sealedAt?: Prisma.SortOrder
+  sealedBy?: Prisma.SortOrder
 }
 
 export type KnowledgeEntryMinOrderByAggregateInput = {
@@ -1059,16 +1452,195 @@ export type KnowledgeEntryMinOrderByAggregateInput = {
   approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  claimIdentityId?: Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrder
+  valueHash?: Prisma.SortOrder
+  quoteText?: Prisma.SortOrder
+  audience?: Prisma.SortOrder
+  effectiveFrom?: Prisma.SortOrder
+  effectiveUntil?: Prisma.SortOrder
+  verificationStatus?: Prisma.SortOrder
+  revisionState?: Prisma.SortOrder
+  sealManifestHash?: Prisma.SortOrder
+  sealPolicyVersion?: Prisma.SortOrder
+  sealedAt?: Prisma.SortOrder
+  sealedBy?: Prisma.SortOrder
 }
 
 export type KnowledgeEntrySumOrderByAggregateInput = {
   refreshDays?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  revisionNumber?: Prisma.SortOrder
 }
 
-export type KnowledgeEntryScalarRelationFilter = {
-  is?: Prisma.KnowledgeEntryWhereInput
-  isNot?: Prisma.KnowledgeEntryWhereInput
+export type KnowledgeEntryCreateNestedManyWithoutClaimIdentityInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput> | Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput[] | Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput[]
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput | Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput[]
+  createMany?: Prisma.KnowledgeEntryCreateManyClaimIdentityInputEnvelope
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+}
+
+export type KnowledgeEntryUncheckedCreateNestedManyWithoutClaimIdentityInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput> | Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput[] | Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput[]
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput | Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput[]
+  createMany?: Prisma.KnowledgeEntryCreateManyClaimIdentityInputEnvelope
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+}
+
+export type KnowledgeEntryUpdateManyWithoutClaimIdentityNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput> | Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput[] | Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput[]
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput | Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput[]
+  upsert?: Prisma.KnowledgeEntryUpsertWithWhereUniqueWithoutClaimIdentityInput | Prisma.KnowledgeEntryUpsertWithWhereUniqueWithoutClaimIdentityInput[]
+  createMany?: Prisma.KnowledgeEntryCreateManyClaimIdentityInputEnvelope
+  set?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  disconnect?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  delete?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  update?: Prisma.KnowledgeEntryUpdateWithWhereUniqueWithoutClaimIdentityInput | Prisma.KnowledgeEntryUpdateWithWhereUniqueWithoutClaimIdentityInput[]
+  updateMany?: Prisma.KnowledgeEntryUpdateManyWithWhereWithoutClaimIdentityInput | Prisma.KnowledgeEntryUpdateManyWithWhereWithoutClaimIdentityInput[]
+  deleteMany?: Prisma.KnowledgeEntryScalarWhereInput | Prisma.KnowledgeEntryScalarWhereInput[]
+}
+
+export type KnowledgeEntryUncheckedUpdateManyWithoutClaimIdentityNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput> | Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput[] | Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput[]
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput | Prisma.KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput[]
+  upsert?: Prisma.KnowledgeEntryUpsertWithWhereUniqueWithoutClaimIdentityInput | Prisma.KnowledgeEntryUpsertWithWhereUniqueWithoutClaimIdentityInput[]
+  createMany?: Prisma.KnowledgeEntryCreateManyClaimIdentityInputEnvelope
+  set?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  disconnect?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  delete?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput | Prisma.KnowledgeEntryWhereUniqueInput[]
+  update?: Prisma.KnowledgeEntryUpdateWithWhereUniqueWithoutClaimIdentityInput | Prisma.KnowledgeEntryUpdateWithWhereUniqueWithoutClaimIdentityInput[]
+  updateMany?: Prisma.KnowledgeEntryUpdateManyWithWhereWithoutClaimIdentityInput | Prisma.KnowledgeEntryUpdateManyWithWhereWithoutClaimIdentityInput[]
+  deleteMany?: Prisma.KnowledgeEntryScalarWhereInput | Prisma.KnowledgeEntryScalarWhereInput[]
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutEvidenceInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutEvidenceInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutEvidenceInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutEvidenceInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutEvidenceInput, Prisma.KnowledgeEntryUpdateWithoutEvidenceInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutEvidenceInput>
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutEvidenceBindingsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceBindingsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutEvidenceBindingsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutEvidenceBindingsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceBindingsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutEvidenceBindingsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutEvidenceBindingsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUpdateWithoutEvidenceBindingsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutEvidenceBindingsInput>
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutLowerConflictsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutLowerConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutLowerConflictsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutLowerConflictsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutHigherConflictsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutHigherConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutHigherConflictsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutHigherConflictsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutLowerConflictsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutLowerConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutLowerConflictsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutLowerConflictsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutLowerConflictsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutLowerConflictsInput, Prisma.KnowledgeEntryUpdateWithoutLowerConflictsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutLowerConflictsInput>
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutHigherConflictsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutHigherConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutHigherConflictsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutHigherConflictsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutHigherConflictsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutHigherConflictsInput, Prisma.KnowledgeEntryUpdateWithoutHigherConflictsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutHigherConflictsInput>
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutPublicationClaimsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPublicationClaimsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutPublicationClaimsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutPublicationClaimsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPublicationClaimsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutPublicationClaimsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutPublicationClaimsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUpdateWithoutPublicationClaimsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutPublicationClaimsInput>
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutPreviewClaimsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPreviewClaimsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutPreviewClaimsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutPreviewClaimsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPreviewClaimsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutPreviewClaimsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutPreviewClaimsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUpdateWithoutPreviewClaimsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutPreviewClaimsInput>
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutRevisionEventsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRevisionEventsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutRevisionEventsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutRelatedRevisionEventsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRelatedRevisionEventsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutRelatedRevisionEventsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutRevisionEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRevisionEventsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutRevisionEventsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutRevisionEventsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutRevisionEventsInput, Prisma.KnowledgeEntryUpdateWithoutRevisionEventsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutRevisionEventsInput>
+}
+
+export type KnowledgeEntryUpdateOneWithoutRelatedRevisionEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRelatedRevisionEventsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutRelatedRevisionEventsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutRelatedRevisionEventsInput
+  disconnect?: Prisma.KnowledgeEntryWhereInput | boolean
+  delete?: Prisma.KnowledgeEntryWhereInput | boolean
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUpdateWithoutRelatedRevisionEventsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutRelatedRevisionEventsInput>
+}
+
+export type KnowledgeEntryCreateNestedOneWithoutMigrationDecisionsInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutMigrationDecisionsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutMigrationDecisionsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+}
+
+export type KnowledgeEntryUpdateOneRequiredWithoutMigrationDecisionsNestedInput = {
+  create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutMigrationDecisionsInput>
+  connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutMigrationDecisionsInput
+  upsert?: Prisma.KnowledgeEntryUpsertWithoutMigrationDecisionsInput
+  connect?: Prisma.KnowledgeEntryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUpdateWithoutMigrationDecisionsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutMigrationDecisionsInput>
 }
 
 export type KnowledgeEntryCreateNestedManyWithoutPropertyInput = {
@@ -1159,6 +1731,10 @@ export type KnowledgeEntryCreatevalidationErrorsInput = {
   set: string[]
 }
 
+export type KnowledgeEntryCreaterequiredComponentsInput = {
+  set: string[]
+}
+
 export type KnowledgeEntryCreateNestedOneWithoutSupersededByInput = {
   create?: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutSupersededByInput, Prisma.KnowledgeEntryUncheckedCreateWithoutSupersededByInput>
   connectOrCreate?: Prisma.KnowledgeEntryCreateOrConnectWithoutSupersededByInput
@@ -1180,6 +1756,19 @@ export type KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput = {
 }
 
 export type KnowledgeEntryUpdatevalidationErrorsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type NullableEnumClaimVerificationStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ClaimVerificationStatus | null
+}
+
+export type EnumClaimRevisionStateFieldUpdateOperationsInput = {
+  set?: $Enums.ClaimRevisionState
+}
+
+export type KnowledgeEntryUpdaterequiredComponentsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -1268,7 +1857,7 @@ export type KnowledgeEntryUpdateOneWithoutResolvedGapsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.KnowledgeEntryUpdateToOneWithWhereWithoutResolvedGapsInput, Prisma.KnowledgeEntryUpdateWithoutResolvedGapsInput>, Prisma.KnowledgeEntryUncheckedUpdateWithoutResolvedGapsInput>
 }
 
-export type KnowledgeEntryCreateWithoutPropertyInput = {
+export type KnowledgeEntryCreateWithoutClaimIdentityInput = {
   id?: string
   question: string
   answer: string
@@ -1301,15 +1890,39 @@ export type KnowledgeEntryCreateWithoutPropertyInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
-export type KnowledgeEntryUncheckedCreateWithoutPropertyInput = {
+export type KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput = {
   id?: string
   documentId?: string | null
   question: string
@@ -1344,36 +1957,59 @@ export type KnowledgeEntryUncheckedCreateWithoutPropertyInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
-export type KnowledgeEntryCreateOrConnectWithoutPropertyInput = {
+export type KnowledgeEntryCreateOrConnectWithoutClaimIdentityInput = {
   where: Prisma.KnowledgeEntryWhereUniqueInput
-  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPropertyInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput>
 }
 
-export type KnowledgeEntryCreateManyPropertyInputEnvelope = {
-  data: Prisma.KnowledgeEntryCreateManyPropertyInput | Prisma.KnowledgeEntryCreateManyPropertyInput[]
+export type KnowledgeEntryCreateManyClaimIdentityInputEnvelope = {
+  data: Prisma.KnowledgeEntryCreateManyClaimIdentityInput | Prisma.KnowledgeEntryCreateManyClaimIdentityInput[]
   skipDuplicates?: boolean
 }
 
-export type KnowledgeEntryUpsertWithWhereUniqueWithoutPropertyInput = {
+export type KnowledgeEntryUpsertWithWhereUniqueWithoutClaimIdentityInput = {
   where: Prisma.KnowledgeEntryWhereUniqueInput
-  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPropertyInput>
-  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPropertyInput>
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutClaimIdentityInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedCreateWithoutClaimIdentityInput>
 }
 
-export type KnowledgeEntryUpdateWithWhereUniqueWithoutPropertyInput = {
+export type KnowledgeEntryUpdateWithWhereUniqueWithoutClaimIdentityInput = {
   where: Prisma.KnowledgeEntryWhereUniqueInput
-  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPropertyInput>
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutClaimIdentityInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutClaimIdentityInput>
 }
 
-export type KnowledgeEntryUpdateManyWithWhereWithoutPropertyInput = {
+export type KnowledgeEntryUpdateManyWithWhereWithoutClaimIdentityInput = {
   where: Prisma.KnowledgeEntryScalarWhereInput
-  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateManyMutationInput, Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyInput>
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateManyMutationInput, Prisma.KnowledgeEntryUncheckedUpdateManyWithoutClaimIdentityInput>
 }
 
 export type KnowledgeEntryScalarWhereInput = {
@@ -1415,6 +2051,2661 @@ export type KnowledgeEntryScalarWhereInput = {
   approvedAt?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"KnowledgeEntry"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeEntry"> | Date | string
+  claimIdentityId?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  revisionNumber?: Prisma.IntNullableFilter<"KnowledgeEntry"> | number | null
+  normalizedValue?: Prisma.JsonNullableFilter<"KnowledgeEntry">
+  valueHash?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  quoteText?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  audience?: Prisma.EnumKnowledgeAudienceNullableFilter<"KnowledgeEntry"> | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  effectiveUntil?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  verificationStatus?: Prisma.EnumClaimVerificationStatusNullableFilter<"KnowledgeEntry"> | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFilter<"KnowledgeEntry"> | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.StringNullableListFilter<"KnowledgeEntry">
+  sealManifestHash?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  sealPolicyVersion?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+  sealedAt?: Prisma.DateTimeNullableFilter<"KnowledgeEntry"> | Date | string | null
+  sealedBy?: Prisma.StringNullableFilter<"KnowledgeEntry"> | string | null
+}
+
+export type KnowledgeEntryCreateWithoutEvidenceInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutEvidenceInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutEvidenceInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceInput>
+}
+
+export type KnowledgeEntryUpsertWithoutEvidenceInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutEvidenceInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutEvidenceInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutEvidenceInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutEvidenceInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutEvidenceInput>
+}
+
+export type KnowledgeEntryUpdateWithoutEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutEvidenceBindingsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutEvidenceBindingsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutEvidenceBindingsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceBindingsInput>
+}
+
+export type KnowledgeEntryUpsertWithoutEvidenceBindingsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutEvidenceBindingsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutEvidenceBindingsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutEvidenceBindingsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutEvidenceBindingsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutEvidenceBindingsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutEvidenceBindingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutEvidenceBindingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutLowerConflictsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutLowerConflictsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutLowerConflictsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutLowerConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutLowerConflictsInput>
+}
+
+export type KnowledgeEntryCreateWithoutHigherConflictsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutHigherConflictsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutHigherConflictsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutHigherConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutHigherConflictsInput>
+}
+
+export type KnowledgeEntryUpsertWithoutLowerConflictsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutLowerConflictsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutLowerConflictsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutLowerConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutLowerConflictsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutLowerConflictsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutLowerConflictsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutLowerConflictsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutLowerConflictsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutLowerConflictsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUpsertWithoutHigherConflictsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutHigherConflictsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutHigherConflictsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutHigherConflictsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutHigherConflictsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutHigherConflictsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutHigherConflictsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutHigherConflictsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutHigherConflictsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutHigherConflictsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutPublicationClaimsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutPublicationClaimsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutPublicationClaimsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPublicationClaimsInput>
+}
+
+export type KnowledgeEntryUpsertWithoutPublicationClaimsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPublicationClaimsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPublicationClaimsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutPublicationClaimsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPublicationClaimsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPublicationClaimsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutPublicationClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutPublicationClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutPreviewClaimsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutPreviewClaimsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutPreviewClaimsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPreviewClaimsInput>
+}
+
+export type KnowledgeEntryUpsertWithoutPreviewClaimsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPreviewClaimsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPreviewClaimsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutPreviewClaimsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPreviewClaimsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPreviewClaimsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutPreviewClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutPreviewClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutRevisionEventsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutRevisionEventsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutRevisionEventsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRevisionEventsInput>
+}
+
+export type KnowledgeEntryCreateWithoutRelatedRevisionEventsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutRelatedRevisionEventsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutRelatedRevisionEventsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRelatedRevisionEventsInput>
+}
+
+export type KnowledgeEntryUpsertWithoutRevisionEventsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutRevisionEventsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutRevisionEventsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRevisionEventsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutRevisionEventsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutRevisionEventsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutRevisionEventsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutRevisionEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutRevisionEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUpsertWithoutRelatedRevisionEventsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutRelatedRevisionEventsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutRelatedRevisionEventsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutRelatedRevisionEventsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutRelatedRevisionEventsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutRelatedRevisionEventsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutRelatedRevisionEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutRelatedRevisionEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutMigrationDecisionsInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutMigrationDecisionsInput = {
+  id?: string
+  propertyId: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutMigrationDecisionsInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutMigrationDecisionsInput>
+}
+
+export type KnowledgeEntryUpsertWithoutMigrationDecisionsInput = {
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutMigrationDecisionsInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUncheckedCreateWithoutMigrationDecisionsInput>
+  where?: Prisma.KnowledgeEntryWhereInput
+}
+
+export type KnowledgeEntryUpdateToOneWithWhereWithoutMigrationDecisionsInput = {
+  where?: Prisma.KnowledgeEntryWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutMigrationDecisionsInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutMigrationDecisionsInput>
+}
+
+export type KnowledgeEntryUpdateWithoutMigrationDecisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutMigrationDecisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateWithoutPropertyInput = {
+  id?: string
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
+  supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
+  supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryUncheckedCreateWithoutPropertyInput = {
+  id?: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
+  previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
+}
+
+export type KnowledgeEntryCreateOrConnectWithoutPropertyInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPropertyInput>
+}
+
+export type KnowledgeEntryCreateManyPropertyInputEnvelope = {
+  data: Prisma.KnowledgeEntryCreateManyPropertyInput | Prisma.KnowledgeEntryCreateManyPropertyInput[]
+  skipDuplicates?: boolean
+}
+
+export type KnowledgeEntryUpsertWithWhereUniqueWithoutPropertyInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  update: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPropertyInput>
+  create: Prisma.XOR<Prisma.KnowledgeEntryCreateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedCreateWithoutPropertyInput>
+}
+
+export type KnowledgeEntryUpdateWithWhereUniqueWithoutPropertyInput = {
+  where: Prisma.KnowledgeEntryWhereUniqueInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateWithoutPropertyInput, Prisma.KnowledgeEntryUncheckedUpdateWithoutPropertyInput>
+}
+
+export type KnowledgeEntryUpdateManyWithWhereWithoutPropertyInput = {
+  where: Prisma.KnowledgeEntryScalarWhereInput
+  data: Prisma.XOR<Prisma.KnowledgeEntryUpdateManyMutationInput, Prisma.KnowledgeEntryUncheckedUpdateManyWithoutPropertyInput>
 }
 
 export type KnowledgeEntryCreateWithoutDocumentInput = {
@@ -1450,12 +4741,36 @@ export type KnowledgeEntryCreateWithoutDocumentInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateWithoutDocumentInput = {
@@ -1493,10 +4808,34 @@ export type KnowledgeEntryUncheckedCreateWithoutDocumentInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryCreateOrConnectWithoutDocumentInput = {
@@ -1558,12 +4897,36 @@ export type KnowledgeEntryCreateWithoutSupersededByInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateWithoutSupersededByInput = {
@@ -1602,9 +4965,33 @@ export type KnowledgeEntryUncheckedCreateWithoutSupersededByInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryCreateOrConnectWithoutSupersededByInput = {
@@ -1645,12 +5032,36 @@ export type KnowledgeEntryCreateWithoutSupersedesInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateWithoutSupersedesInput = {
@@ -1688,10 +5099,34 @@ export type KnowledgeEntryUncheckedCreateWithoutSupersedesInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryCreateOrConnectWithoutSupersedesInput = {
@@ -1748,12 +5183,36 @@ export type KnowledgeEntryUpdateWithoutSupersededByInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutSupersededByInput = {
@@ -1792,9 +5251,33 @@ export type KnowledgeEntryUncheckedUpdateWithoutSupersededByInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUpsertWithWhereUniqueWithoutSupersedesInput = {
@@ -1846,12 +5329,36 @@ export type KnowledgeEntryCreateWithoutPreviewsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateWithoutPreviewsInput = {
@@ -1890,9 +5397,33 @@ export type KnowledgeEntryUncheckedCreateWithoutPreviewsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryCreateOrConnectWithoutPreviewsInput = {
@@ -1944,12 +5475,36 @@ export type KnowledgeEntryUpdateWithoutPreviewsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutPreviewsInput = {
@@ -1988,9 +5543,33 @@ export type KnowledgeEntryUncheckedUpdateWithoutPreviewsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryCreateWithoutAnswerFlagsInput = {
@@ -2026,12 +5605,36 @@ export type KnowledgeEntryCreateWithoutAnswerFlagsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateWithoutAnswerFlagsInput = {
@@ -2070,9 +5673,33 @@ export type KnowledgeEntryUncheckedCreateWithoutAnswerFlagsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedCreateNestedManyWithoutResolutionEntryInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryCreateOrConnectWithoutAnswerFlagsInput = {
@@ -2124,12 +5751,36 @@ export type KnowledgeEntryUpdateWithoutAnswerFlagsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutAnswerFlagsInput = {
@@ -2168,9 +5819,33 @@ export type KnowledgeEntryUncheckedUpdateWithoutAnswerFlagsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryCreateWithoutResolvedGapsInput = {
@@ -2206,12 +5881,36 @@ export type KnowledgeEntryCreateWithoutResolvedGapsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   property: Prisma.PropertyCreateNestedOneWithoutKnowledgeEntriesInput
   document?: Prisma.KnowledgeDocumentCreateNestedOneWithoutEntriesInput
   supersedes?: Prisma.KnowledgeEntryCreateNestedOneWithoutSupersededByInput
   supersededBy?: Prisma.KnowledgeEntryCreateNestedManyWithoutSupersedesInput
   previews?: Prisma.KnowledgePreviewCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagCreateNestedManyWithoutEntryInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityCreateNestedOneWithoutEntriesInput
+  evidence?: Prisma.KnowledgeClaimEvidenceCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryUncheckedCreateWithoutResolvedGapsInput = {
@@ -2250,9 +5949,33 @@ export type KnowledgeEntryUncheckedCreateWithoutResolvedGapsInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedCreateNestedManyWithoutSupersedesInput
   previews?: Prisma.KnowledgePreviewUncheckedCreateNestedManyWithoutEntryInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedCreateNestedManyWithoutEntryInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedCreateNestedManyWithoutEntryInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedCreateNestedManyWithoutEntryInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutEntryInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedCreateNestedManyWithoutRelatedEntryInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutLowerEntryInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedCreateNestedManyWithoutHigherEntryInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedCreateNestedManyWithoutLegacyEntryInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedCreateNestedManyWithoutEntryInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedCreateNestedManyWithoutEntryInput
 }
 
 export type KnowledgeEntryCreateOrConnectWithoutResolvedGapsInput = {
@@ -2304,12 +6027,36 @@ export type KnowledgeEntryUpdateWithoutResolvedGapsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutResolvedGapsInput = {
@@ -2348,9 +6095,264 @@ export type KnowledgeEntryUncheckedUpdateWithoutResolvedGapsInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryCreateManyClaimIdentityInput = {
+  id?: string
+  documentId?: string | null
+  question: string
+  answer: string
+  category?: string
+  status?: string
+  conflictSummary?: string | null
+  claimKey?: string | null
+  claimType?: string
+  valueType?: string
+  currency?: string | null
+  effectiveAt?: Date | string | null
+  expiresAt?: Date | string | null
+  refreshDays?: number
+  reliability?: string
+  authorityLevel?: string
+  version?: number
+  supersedesId?: string | null
+  validationStatus?: string
+  validationErrors?: Prisma.KnowledgeEntryCreatevalidationErrorsInput | string[]
+  conflictStatus?: string
+  fieldApprovedBy?: string | null
+  fieldApprovedAt?: Date | string | null
+  previewApprovedBy?: string | null
+  previewApprovedAt?: Date | string | null
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  pauseReason?: string | null
+  lastConfirmedAt?: Date | string | null
+  createdBy: string
+  approvedBy?: string | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
+}
+
+export type KnowledgeEntryUpdateWithoutClaimIdentityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
+  document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
+  supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
+  supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateWithoutClaimIdentityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
+  resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
+  previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
+  answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
+}
+
+export type KnowledgeEntryUncheckedUpdateManyWithoutClaimIdentityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  answer?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimType?: Prisma.StringFieldUpdateOperationsInput | string
+  valueType?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  refreshDays?: Prisma.IntFieldUpdateOperationsInput | number
+  reliability?: Prisma.StringFieldUpdateOperationsInput | string
+  authorityLevel?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  supersedesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  validationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  validationErrors?: Prisma.KnowledgeEntryUpdatevalidationErrorsInput | string[]
+  conflictStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  fieldApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fieldApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  previewApprovedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  previewApprovedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pauseReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type KnowledgeEntryCreateManyPropertyInput = {
@@ -2388,6 +6390,21 @@ export type KnowledgeEntryCreateManyPropertyInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
 }
 
 export type KnowledgeEntryUpdateWithoutPropertyInput = {
@@ -2423,12 +6440,36 @@ export type KnowledgeEntryUpdateWithoutPropertyInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutPropertyInput = {
@@ -2466,10 +6507,34 @@ export type KnowledgeEntryUncheckedUpdateWithoutPropertyInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateManyWithoutPropertyInput = {
@@ -2507,6 +6572,21 @@ export type KnowledgeEntryUncheckedUpdateManyWithoutPropertyInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type KnowledgeEntryCreateManyDocumentInput = {
@@ -2544,6 +6624,21 @@ export type KnowledgeEntryCreateManyDocumentInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
 }
 
 export type KnowledgeEntryUpdateWithoutDocumentInput = {
@@ -2579,12 +6674,36 @@ export type KnowledgeEntryUpdateWithoutDocumentInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   supersedes?: Prisma.KnowledgeEntryUpdateOneWithoutSupersededByNestedInput
   supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutDocumentInput = {
@@ -2622,10 +6741,34 @@ export type KnowledgeEntryUncheckedUpdateWithoutDocumentInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateManyWithoutDocumentInput = {
@@ -2663,6 +6806,21 @@ export type KnowledgeEntryUncheckedUpdateManyWithoutDocumentInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type KnowledgeEntryCreateManySupersedesInput = {
@@ -2700,6 +6858,21 @@ export type KnowledgeEntryCreateManySupersedesInput = {
   approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  claimIdentityId?: string | null
+  revisionNumber?: number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: string | null
+  quoteText?: string | null
+  audience?: $Enums.KnowledgeAudience | null
+  effectiveFrom?: Date | string | null
+  effectiveUntil?: Date | string | null
+  verificationStatus?: $Enums.ClaimVerificationStatus | null
+  revisionState?: $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryCreaterequiredComponentsInput | string[]
+  sealManifestHash?: string | null
+  sealPolicyVersion?: string | null
+  sealedAt?: Date | string | null
+  sealedBy?: string | null
 }
 
 export type KnowledgeEntryUpdateWithoutSupersedesInput = {
@@ -2735,12 +6908,36 @@ export type KnowledgeEntryUpdateWithoutSupersedesInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   property?: Prisma.PropertyUpdateOneRequiredWithoutKnowledgeEntriesNestedInput
   document?: Prisma.KnowledgeDocumentUpdateOneWithoutEntriesNestedInput
   supersededBy?: Prisma.KnowledgeEntryUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUpdateManyWithoutEntryNestedInput
+  claimIdentity?: Prisma.KnowledgeClaimIdentityUpdateOneWithoutEntriesNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateWithoutSupersedesInput = {
@@ -2778,10 +6975,34 @@ export type KnowledgeEntryUncheckedUpdateWithoutSupersedesInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   supersededBy?: Prisma.KnowledgeEntryUncheckedUpdateManyWithoutSupersedesNestedInput
   resolvedGaps?: Prisma.KnowledgeGapUncheckedUpdateManyWithoutResolutionEntryNestedInput
   previews?: Prisma.KnowledgePreviewUncheckedUpdateManyWithoutEntryNestedInput
   answerFlags?: Prisma.KnowledgeAnswerFlagUncheckedUpdateManyWithoutEntryNestedInput
+  evidence?: Prisma.KnowledgeClaimEvidenceUncheckedUpdateManyWithoutEntryNestedInput
+  evidenceBindings?: Prisma.KnowledgeRevisionEvidenceBindingUncheckedUpdateManyWithoutEntryNestedInput
+  revisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutEntryNestedInput
+  relatedRevisionEvents?: Prisma.KnowledgeRevisionEventUncheckedUpdateManyWithoutRelatedEntryNestedInput
+  lowerConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutLowerEntryNestedInput
+  higherConflicts?: Prisma.KnowledgeClaimConflictUncheckedUpdateManyWithoutHigherEntryNestedInput
+  migrationDecisions?: Prisma.KnowledgeMigrationDecisionUncheckedUpdateManyWithoutLegacyEntryNestedInput
+  publicationClaims?: Prisma.KnowledgePublicationClaimUncheckedUpdateManyWithoutEntryNestedInput
+  previewClaims?: Prisma.KnowledgePreviewClaimUncheckedUpdateManyWithoutEntryNestedInput
 }
 
 export type KnowledgeEntryUncheckedUpdateManyWithoutSupersedesInput = {
@@ -2819,6 +7040,21 @@ export type KnowledgeEntryUncheckedUpdateManyWithoutSupersedesInput = {
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revisionNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  normalizedValue?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  valueHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quoteText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  audience?: Prisma.NullableEnumKnowledgeAudienceFieldUpdateOperationsInput | $Enums.KnowledgeAudience | null
+  effectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationStatus?: Prisma.NullableEnumClaimVerificationStatusFieldUpdateOperationsInput | $Enums.ClaimVerificationStatus | null
+  revisionState?: Prisma.EnumClaimRevisionStateFieldUpdateOperationsInput | $Enums.ClaimRevisionState
+  requiredComponents?: Prisma.KnowledgeEntryUpdaterequiredComponentsInput | string[]
+  sealManifestHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealPolicyVersion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sealedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sealedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -2831,6 +7067,15 @@ export type KnowledgeEntryCountOutputType = {
   resolvedGaps: number
   previews: number
   answerFlags: number
+  evidence: number
+  evidenceBindings: number
+  revisionEvents: number
+  relatedRevisionEvents: number
+  lowerConflicts: number
+  higherConflicts: number
+  migrationDecisions: number
+  publicationClaims: number
+  previewClaims: number
 }
 
 export type KnowledgeEntryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2838,6 +7083,15 @@ export type KnowledgeEntryCountOutputTypeSelect<ExtArgs extends runtime.Types.Ex
   resolvedGaps?: boolean | KnowledgeEntryCountOutputTypeCountResolvedGapsArgs
   previews?: boolean | KnowledgeEntryCountOutputTypeCountPreviewsArgs
   answerFlags?: boolean | KnowledgeEntryCountOutputTypeCountAnswerFlagsArgs
+  evidence?: boolean | KnowledgeEntryCountOutputTypeCountEvidenceArgs
+  evidenceBindings?: boolean | KnowledgeEntryCountOutputTypeCountEvidenceBindingsArgs
+  revisionEvents?: boolean | KnowledgeEntryCountOutputTypeCountRevisionEventsArgs
+  relatedRevisionEvents?: boolean | KnowledgeEntryCountOutputTypeCountRelatedRevisionEventsArgs
+  lowerConflicts?: boolean | KnowledgeEntryCountOutputTypeCountLowerConflictsArgs
+  higherConflicts?: boolean | KnowledgeEntryCountOutputTypeCountHigherConflictsArgs
+  migrationDecisions?: boolean | KnowledgeEntryCountOutputTypeCountMigrationDecisionsArgs
+  publicationClaims?: boolean | KnowledgeEntryCountOutputTypeCountPublicationClaimsArgs
+  previewClaims?: boolean | KnowledgeEntryCountOutputTypeCountPreviewClaimsArgs
 }
 
 /**
@@ -2878,6 +7132,69 @@ export type KnowledgeEntryCountOutputTypeCountAnswerFlagsArgs<ExtArgs extends ru
   where?: Prisma.KnowledgeAnswerFlagWhereInput
 }
 
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeClaimEvidenceWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountEvidenceBindingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeRevisionEvidenceBindingWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountRevisionEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeRevisionEventWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountRelatedRevisionEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeRevisionEventWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountLowerConflictsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeClaimConflictWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountHigherConflictsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeClaimConflictWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountMigrationDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeMigrationDecisionWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountPublicationClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgePublicationClaimWhereInput
+}
+
+/**
+ * KnowledgeEntryCountOutputType without action
+ */
+export type KnowledgeEntryCountOutputTypeCountPreviewClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgePreviewClaimWhereInput
+}
+
 
 export type KnowledgeEntrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2915,6 +7232,21 @@ export type KnowledgeEntrySelect<ExtArgs extends runtime.Types.Extensions.Intern
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  claimIdentityId?: boolean
+  revisionNumber?: boolean
+  normalizedValue?: boolean
+  valueHash?: boolean
+  quoteText?: boolean
+  audience?: boolean
+  effectiveFrom?: boolean
+  effectiveUntil?: boolean
+  verificationStatus?: boolean
+  revisionState?: boolean
+  requiredComponents?: boolean
+  sealManifestHash?: boolean
+  sealPolicyVersion?: boolean
+  sealedAt?: boolean
+  sealedBy?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   document?: boolean | Prisma.KnowledgeEntry$documentArgs<ExtArgs>
   supersedes?: boolean | Prisma.KnowledgeEntry$supersedesArgs<ExtArgs>
@@ -2922,6 +7254,16 @@ export type KnowledgeEntrySelect<ExtArgs extends runtime.Types.Extensions.Intern
   resolvedGaps?: boolean | Prisma.KnowledgeEntry$resolvedGapsArgs<ExtArgs>
   previews?: boolean | Prisma.KnowledgeEntry$previewsArgs<ExtArgs>
   answerFlags?: boolean | Prisma.KnowledgeEntry$answerFlagsArgs<ExtArgs>
+  claimIdentity?: boolean | Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>
+  evidence?: boolean | Prisma.KnowledgeEntry$evidenceArgs<ExtArgs>
+  evidenceBindings?: boolean | Prisma.KnowledgeEntry$evidenceBindingsArgs<ExtArgs>
+  revisionEvents?: boolean | Prisma.KnowledgeEntry$revisionEventsArgs<ExtArgs>
+  relatedRevisionEvents?: boolean | Prisma.KnowledgeEntry$relatedRevisionEventsArgs<ExtArgs>
+  lowerConflicts?: boolean | Prisma.KnowledgeEntry$lowerConflictsArgs<ExtArgs>
+  higherConflicts?: boolean | Prisma.KnowledgeEntry$higherConflictsArgs<ExtArgs>
+  migrationDecisions?: boolean | Prisma.KnowledgeEntry$migrationDecisionsArgs<ExtArgs>
+  publicationClaims?: boolean | Prisma.KnowledgeEntry$publicationClaimsArgs<ExtArgs>
+  previewClaims?: boolean | Prisma.KnowledgeEntry$previewClaimsArgs<ExtArgs>
   _count?: boolean | Prisma.KnowledgeEntryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["knowledgeEntry"]>
 
@@ -2961,9 +7303,25 @@ export type KnowledgeEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Type
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  claimIdentityId?: boolean
+  revisionNumber?: boolean
+  normalizedValue?: boolean
+  valueHash?: boolean
+  quoteText?: boolean
+  audience?: boolean
+  effectiveFrom?: boolean
+  effectiveUntil?: boolean
+  verificationStatus?: boolean
+  revisionState?: boolean
+  requiredComponents?: boolean
+  sealManifestHash?: boolean
+  sealPolicyVersion?: boolean
+  sealedAt?: boolean
+  sealedBy?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   document?: boolean | Prisma.KnowledgeEntry$documentArgs<ExtArgs>
   supersedes?: boolean | Prisma.KnowledgeEntry$supersedesArgs<ExtArgs>
+  claimIdentity?: boolean | Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>
 }, ExtArgs["result"]["knowledgeEntry"]>
 
 export type KnowledgeEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -3002,9 +7360,25 @@ export type KnowledgeEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  claimIdentityId?: boolean
+  revisionNumber?: boolean
+  normalizedValue?: boolean
+  valueHash?: boolean
+  quoteText?: boolean
+  audience?: boolean
+  effectiveFrom?: boolean
+  effectiveUntil?: boolean
+  verificationStatus?: boolean
+  revisionState?: boolean
+  requiredComponents?: boolean
+  sealManifestHash?: boolean
+  sealPolicyVersion?: boolean
+  sealedAt?: boolean
+  sealedBy?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   document?: boolean | Prisma.KnowledgeEntry$documentArgs<ExtArgs>
   supersedes?: boolean | Prisma.KnowledgeEntry$supersedesArgs<ExtArgs>
+  claimIdentity?: boolean | Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>
 }, ExtArgs["result"]["knowledgeEntry"]>
 
 export type KnowledgeEntrySelectScalar = {
@@ -3043,9 +7417,24 @@ export type KnowledgeEntrySelectScalar = {
   approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  claimIdentityId?: boolean
+  revisionNumber?: boolean
+  normalizedValue?: boolean
+  valueHash?: boolean
+  quoteText?: boolean
+  audience?: boolean
+  effectiveFrom?: boolean
+  effectiveUntil?: boolean
+  verificationStatus?: boolean
+  revisionState?: boolean
+  requiredComponents?: boolean
+  sealManifestHash?: boolean
+  sealPolicyVersion?: boolean
+  sealedAt?: boolean
+  sealedBy?: boolean
 }
 
-export type KnowledgeEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "documentId" | "question" | "answer" | "category" | "status" | "conflictSummary" | "claimKey" | "claimType" | "valueType" | "currency" | "effectiveAt" | "expiresAt" | "refreshDays" | "reliability" | "authorityLevel" | "version" | "supersedesId" | "validationStatus" | "validationErrors" | "conflictStatus" | "fieldApprovedBy" | "fieldApprovedAt" | "previewApprovedBy" | "previewApprovedAt" | "publishedAt" | "pausedAt" | "pauseReason" | "lastConfirmedAt" | "createdBy" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeEntry"]>
+export type KnowledgeEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "documentId" | "question" | "answer" | "category" | "status" | "conflictSummary" | "claimKey" | "claimType" | "valueType" | "currency" | "effectiveAt" | "expiresAt" | "refreshDays" | "reliability" | "authorityLevel" | "version" | "supersedesId" | "validationStatus" | "validationErrors" | "conflictStatus" | "fieldApprovedBy" | "fieldApprovedAt" | "previewApprovedBy" | "previewApprovedAt" | "publishedAt" | "pausedAt" | "pauseReason" | "lastConfirmedAt" | "createdBy" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt" | "claimIdentityId" | "revisionNumber" | "normalizedValue" | "valueHash" | "quoteText" | "audience" | "effectiveFrom" | "effectiveUntil" | "verificationStatus" | "revisionState" | "requiredComponents" | "sealManifestHash" | "sealPolicyVersion" | "sealedAt" | "sealedBy", ExtArgs["result"]["knowledgeEntry"]>
 export type KnowledgeEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   document?: boolean | Prisma.KnowledgeEntry$documentArgs<ExtArgs>
@@ -3054,17 +7443,29 @@ export type KnowledgeEntryInclude<ExtArgs extends runtime.Types.Extensions.Inter
   resolvedGaps?: boolean | Prisma.KnowledgeEntry$resolvedGapsArgs<ExtArgs>
   previews?: boolean | Prisma.KnowledgeEntry$previewsArgs<ExtArgs>
   answerFlags?: boolean | Prisma.KnowledgeEntry$answerFlagsArgs<ExtArgs>
+  claimIdentity?: boolean | Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>
+  evidence?: boolean | Prisma.KnowledgeEntry$evidenceArgs<ExtArgs>
+  evidenceBindings?: boolean | Prisma.KnowledgeEntry$evidenceBindingsArgs<ExtArgs>
+  revisionEvents?: boolean | Prisma.KnowledgeEntry$revisionEventsArgs<ExtArgs>
+  relatedRevisionEvents?: boolean | Prisma.KnowledgeEntry$relatedRevisionEventsArgs<ExtArgs>
+  lowerConflicts?: boolean | Prisma.KnowledgeEntry$lowerConflictsArgs<ExtArgs>
+  higherConflicts?: boolean | Prisma.KnowledgeEntry$higherConflictsArgs<ExtArgs>
+  migrationDecisions?: boolean | Prisma.KnowledgeEntry$migrationDecisionsArgs<ExtArgs>
+  publicationClaims?: boolean | Prisma.KnowledgeEntry$publicationClaimsArgs<ExtArgs>
+  previewClaims?: boolean | Prisma.KnowledgeEntry$previewClaimsArgs<ExtArgs>
   _count?: boolean | Prisma.KnowledgeEntryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type KnowledgeEntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   document?: boolean | Prisma.KnowledgeEntry$documentArgs<ExtArgs>
   supersedes?: boolean | Prisma.KnowledgeEntry$supersedesArgs<ExtArgs>
+  claimIdentity?: boolean | Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>
 }
 export type KnowledgeEntryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   document?: boolean | Prisma.KnowledgeEntry$documentArgs<ExtArgs>
   supersedes?: boolean | Prisma.KnowledgeEntry$supersedesArgs<ExtArgs>
+  claimIdentity?: boolean | Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>
 }
 
 export type $KnowledgeEntryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3077,6 +7478,16 @@ export type $KnowledgeEntryPayload<ExtArgs extends runtime.Types.Extensions.Inte
     resolvedGaps: Prisma.$KnowledgeGapPayload<ExtArgs>[]
     previews: Prisma.$KnowledgePreviewPayload<ExtArgs>[]
     answerFlags: Prisma.$KnowledgeAnswerFlagPayload<ExtArgs>[]
+    claimIdentity: Prisma.$KnowledgeClaimIdentityPayload<ExtArgs> | null
+    evidence: Prisma.$KnowledgeClaimEvidencePayload<ExtArgs>[]
+    evidenceBindings: Prisma.$KnowledgeRevisionEvidenceBindingPayload<ExtArgs>[]
+    revisionEvents: Prisma.$KnowledgeRevisionEventPayload<ExtArgs>[]
+    relatedRevisionEvents: Prisma.$KnowledgeRevisionEventPayload<ExtArgs>[]
+    lowerConflicts: Prisma.$KnowledgeClaimConflictPayload<ExtArgs>[]
+    higherConflicts: Prisma.$KnowledgeClaimConflictPayload<ExtArgs>[]
+    migrationDecisions: Prisma.$KnowledgeMigrationDecisionPayload<ExtArgs>[]
+    publicationClaims: Prisma.$KnowledgePublicationClaimPayload<ExtArgs>[]
+    previewClaims: Prisma.$KnowledgePreviewClaimPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3114,6 +7525,21 @@ export type $KnowledgeEntryPayload<ExtArgs extends runtime.Types.Extensions.Inte
     approvedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    claimIdentityId: string | null
+    revisionNumber: number | null
+    normalizedValue: runtime.JsonValue | null
+    valueHash: string | null
+    quoteText: string | null
+    audience: $Enums.KnowledgeAudience | null
+    effectiveFrom: Date | null
+    effectiveUntil: Date | null
+    verificationStatus: $Enums.ClaimVerificationStatus | null
+    revisionState: $Enums.ClaimRevisionState
+    requiredComponents: string[]
+    sealManifestHash: string | null
+    sealPolicyVersion: string | null
+    sealedAt: Date | null
+    sealedBy: string | null
   }, ExtArgs["result"]["knowledgeEntry"]>
   composites: {}
 }
@@ -3515,6 +7941,16 @@ export interface Prisma__KnowledgeEntryClient<T, Null = never, ExtArgs extends r
   resolvedGaps<T extends Prisma.KnowledgeEntry$resolvedGapsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$resolvedGapsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeGapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   previews<T extends Prisma.KnowledgeEntry$previewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$previewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgePreviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   answerFlags<T extends Prisma.KnowledgeEntry$answerFlagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$answerFlagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeAnswerFlagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  claimIdentity<T extends Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$claimIdentityArgs<ExtArgs>>): Prisma.Prisma__KnowledgeClaimIdentityClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeClaimIdentityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  evidence<T extends Prisma.KnowledgeEntry$evidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$evidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeClaimEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  evidenceBindings<T extends Prisma.KnowledgeEntry$evidenceBindingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$evidenceBindingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeRevisionEvidenceBindingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  revisionEvents<T extends Prisma.KnowledgeEntry$revisionEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$revisionEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeRevisionEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  relatedRevisionEvents<T extends Prisma.KnowledgeEntry$relatedRevisionEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$relatedRevisionEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeRevisionEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lowerConflicts<T extends Prisma.KnowledgeEntry$lowerConflictsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$lowerConflictsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeClaimConflictPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  higherConflicts<T extends Prisma.KnowledgeEntry$higherConflictsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$higherConflictsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeClaimConflictPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  migrationDecisions<T extends Prisma.KnowledgeEntry$migrationDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$migrationDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeMigrationDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  publicationClaims<T extends Prisma.KnowledgeEntry$publicationClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$publicationClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgePublicationClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  previewClaims<T extends Prisma.KnowledgeEntry$previewClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.KnowledgeEntry$previewClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgePreviewClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3579,6 +8015,21 @@ export interface KnowledgeEntryFieldRefs {
   readonly approvedAt: Prisma.FieldRef<"KnowledgeEntry", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"KnowledgeEntry", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"KnowledgeEntry", 'DateTime'>
+  readonly claimIdentityId: Prisma.FieldRef<"KnowledgeEntry", 'String'>
+  readonly revisionNumber: Prisma.FieldRef<"KnowledgeEntry", 'Int'>
+  readonly normalizedValue: Prisma.FieldRef<"KnowledgeEntry", 'Json'>
+  readonly valueHash: Prisma.FieldRef<"KnowledgeEntry", 'String'>
+  readonly quoteText: Prisma.FieldRef<"KnowledgeEntry", 'String'>
+  readonly audience: Prisma.FieldRef<"KnowledgeEntry", 'KnowledgeAudience'>
+  readonly effectiveFrom: Prisma.FieldRef<"KnowledgeEntry", 'DateTime'>
+  readonly effectiveUntil: Prisma.FieldRef<"KnowledgeEntry", 'DateTime'>
+  readonly verificationStatus: Prisma.FieldRef<"KnowledgeEntry", 'ClaimVerificationStatus'>
+  readonly revisionState: Prisma.FieldRef<"KnowledgeEntry", 'ClaimRevisionState'>
+  readonly requiredComponents: Prisma.FieldRef<"KnowledgeEntry", 'String[]'>
+  readonly sealManifestHash: Prisma.FieldRef<"KnowledgeEntry", 'String'>
+  readonly sealPolicyVersion: Prisma.FieldRef<"KnowledgeEntry", 'String'>
+  readonly sealedAt: Prisma.FieldRef<"KnowledgeEntry", 'DateTime'>
+  readonly sealedBy: Prisma.FieldRef<"KnowledgeEntry", 'String'>
 }
     
 
@@ -4111,6 +8562,241 @@ export type KnowledgeEntry$answerFlagsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.KnowledgeAnswerFlagScalarFieldEnum | Prisma.KnowledgeAnswerFlagScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.claimIdentity
+ */
+export type KnowledgeEntry$claimIdentityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeClaimIdentity
+   */
+  select?: Prisma.KnowledgeClaimIdentitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeClaimIdentity
+   */
+  omit?: Prisma.KnowledgeClaimIdentityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeClaimIdentityInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeClaimIdentityWhereInput
+}
+
+/**
+ * KnowledgeEntry.evidence
+ */
+export type KnowledgeEntry$evidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeClaimEvidence
+   */
+  select?: Prisma.KnowledgeClaimEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeClaimEvidence
+   */
+  omit?: Prisma.KnowledgeClaimEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeClaimEvidenceInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeClaimEvidenceWhereInput
+  orderBy?: Prisma.KnowledgeClaimEvidenceOrderByWithRelationInput | Prisma.KnowledgeClaimEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeClaimEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeClaimEvidenceScalarFieldEnum | Prisma.KnowledgeClaimEvidenceScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.evidenceBindings
+ */
+export type KnowledgeEntry$evidenceBindingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeRevisionEvidenceBinding
+   */
+  select?: Prisma.KnowledgeRevisionEvidenceBindingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeRevisionEvidenceBinding
+   */
+  omit?: Prisma.KnowledgeRevisionEvidenceBindingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeRevisionEvidenceBindingInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeRevisionEvidenceBindingWhereInput
+  orderBy?: Prisma.KnowledgeRevisionEvidenceBindingOrderByWithRelationInput | Prisma.KnowledgeRevisionEvidenceBindingOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeRevisionEvidenceBindingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeRevisionEvidenceBindingScalarFieldEnum | Prisma.KnowledgeRevisionEvidenceBindingScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.revisionEvents
+ */
+export type KnowledgeEntry$revisionEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeRevisionEvent
+   */
+  select?: Prisma.KnowledgeRevisionEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeRevisionEvent
+   */
+  omit?: Prisma.KnowledgeRevisionEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeRevisionEventInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeRevisionEventWhereInput
+  orderBy?: Prisma.KnowledgeRevisionEventOrderByWithRelationInput | Prisma.KnowledgeRevisionEventOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeRevisionEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeRevisionEventScalarFieldEnum | Prisma.KnowledgeRevisionEventScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.relatedRevisionEvents
+ */
+export type KnowledgeEntry$relatedRevisionEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeRevisionEvent
+   */
+  select?: Prisma.KnowledgeRevisionEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeRevisionEvent
+   */
+  omit?: Prisma.KnowledgeRevisionEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeRevisionEventInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeRevisionEventWhereInput
+  orderBy?: Prisma.KnowledgeRevisionEventOrderByWithRelationInput | Prisma.KnowledgeRevisionEventOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeRevisionEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeRevisionEventScalarFieldEnum | Prisma.KnowledgeRevisionEventScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.lowerConflicts
+ */
+export type KnowledgeEntry$lowerConflictsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeClaimConflict
+   */
+  select?: Prisma.KnowledgeClaimConflictSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeClaimConflict
+   */
+  omit?: Prisma.KnowledgeClaimConflictOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeClaimConflictInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeClaimConflictWhereInput
+  orderBy?: Prisma.KnowledgeClaimConflictOrderByWithRelationInput | Prisma.KnowledgeClaimConflictOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeClaimConflictWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeClaimConflictScalarFieldEnum | Prisma.KnowledgeClaimConflictScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.higherConflicts
+ */
+export type KnowledgeEntry$higherConflictsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeClaimConflict
+   */
+  select?: Prisma.KnowledgeClaimConflictSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeClaimConflict
+   */
+  omit?: Prisma.KnowledgeClaimConflictOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeClaimConflictInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeClaimConflictWhereInput
+  orderBy?: Prisma.KnowledgeClaimConflictOrderByWithRelationInput | Prisma.KnowledgeClaimConflictOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeClaimConflictWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeClaimConflictScalarFieldEnum | Prisma.KnowledgeClaimConflictScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.migrationDecisions
+ */
+export type KnowledgeEntry$migrationDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeMigrationDecision
+   */
+  select?: Prisma.KnowledgeMigrationDecisionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeMigrationDecision
+   */
+  omit?: Prisma.KnowledgeMigrationDecisionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeMigrationDecisionInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeMigrationDecisionWhereInput
+  orderBy?: Prisma.KnowledgeMigrationDecisionOrderByWithRelationInput | Prisma.KnowledgeMigrationDecisionOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeMigrationDecisionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeMigrationDecisionScalarFieldEnum | Prisma.KnowledgeMigrationDecisionScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.publicationClaims
+ */
+export type KnowledgeEntry$publicationClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgePublicationClaim
+   */
+  select?: Prisma.KnowledgePublicationClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgePublicationClaim
+   */
+  omit?: Prisma.KnowledgePublicationClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgePublicationClaimInclude<ExtArgs> | null
+  where?: Prisma.KnowledgePublicationClaimWhereInput
+  orderBy?: Prisma.KnowledgePublicationClaimOrderByWithRelationInput | Prisma.KnowledgePublicationClaimOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgePublicationClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgePublicationClaimScalarFieldEnum | Prisma.KnowledgePublicationClaimScalarFieldEnum[]
+}
+
+/**
+ * KnowledgeEntry.previewClaims
+ */
+export type KnowledgeEntry$previewClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgePreviewClaim
+   */
+  select?: Prisma.KnowledgePreviewClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgePreviewClaim
+   */
+  omit?: Prisma.KnowledgePreviewClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgePreviewClaimInclude<ExtArgs> | null
+  where?: Prisma.KnowledgePreviewClaimWhereInput
+  orderBy?: Prisma.KnowledgePreviewClaimOrderByWithRelationInput | Prisma.KnowledgePreviewClaimOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgePreviewClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgePreviewClaimScalarFieldEnum | Prisma.KnowledgePreviewClaimScalarFieldEnum[]
 }
 
 /**

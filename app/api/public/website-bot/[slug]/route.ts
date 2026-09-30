@@ -31,6 +31,8 @@ import { INTELLIGENCE_ROUTER_VERSION, resolveIntelligenceLayer } from "@/lib/sov
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { observeTypesafeRuntime, routeTypesafeStaging } from "@/lib/typesafe-runtime-shadow";
 import { answerStayDirectoryQuestion, propertyIdFromStayUrl, requestsStayBooking, resolveApprovedStay } from "@/lib/stay-question-routing";
+import { requireActiveBotRelease, signedBotReleaseRequired } from "@/lib/canonical-bot-release";
+import { assertCanonicalFactualEnvelope } from "@/lib/canonical-channel-boundary";
 import { verifyHotelGuestStayToken } from "@/lib/hotelgpt-stay-session";
 import { matchPublishedHotelFlow } from "@/lib/hotelgpt-flow-library";
 import { resolveTenantWelcomeMessage } from "@/lib/tenant-facing-copy";
@@ -40,6 +42,11 @@ import { formatConfirmedVoiceForStaff, normalizeConfirmedVoiceInput } from "@/li
 import { translateConfirmedVoiceForStaff } from "@/lib/services/hotelgpt-voice-translation";
 import { resolveMultilingualVoicePilot } from "@/lib/services/hotelgpt-multilingual-voice-pilot";
 import { enforceExecutionResponse, evaluateExecutionContract, matchPublishedFlow } from "@/lib/sovereign-intelligence/execution-contract";
+import { canonicalFactsRequired } from "@/lib/canonical-serving-gate";
+import { deliverCanonicalAnswer } from "@/lib/canonical-answer-delivery";
+import { ensureWebsiteCanonicalConversation } from "@/lib/repositories/conversation-repository";
+import { recordDeliveredCrawlAnswer } from "@/lib/crawl-answer-delivery";
+import { assertBotFactualServingOpen } from "@/lib/bot-factual-closure";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -50,6 +57,7 @@ const configuration: WhatsAppBotConfiguration = {
 };
 
 const responseHeaders = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
+type VisitorTurnResult=Response&{canonicalDelivery?:()=>Promise<unknown>};
 
 function bearerToken(request: Request) {
   const authorization = request.headers.get("authorization") || "";
@@ -72,10 +80,15 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   if (!sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400 });
   try {
-    const response = await withPublicBotDatabaseContext(slug, () =>
+    const turn = await withPublicBotDatabaseContext<VisitorTurnResult>(slug, () =>
       withWebsiteTurnLock(`${slug}:${hashWebsiteVisitorValue(sessionId)}`, () => handleVisitorTurn(request, context))
     );
-    return response || NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+    if(!turn) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+    // The tenant transaction must commit the lead and canonical conversation
+    // before the separate least-privilege web role can create its guest audit.
+    // Delivery remains before the HTTP response crosses the network boundary.
+    if(turn.canonicalDelivery) await turn.canonicalDelivery();
+    return turn;
   }
   catch (error) {
     console.error("[website-bot] Conversation turn failed", error instanceof Error ? error.message : "Unknown error");
@@ -83,7 +96,7 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
   }
 }
 
-async function handleVisitorTurn(request: Request, context: { params: Promise<{ slug: string }> }) {
+async function handleVisitorTurn(request: Request, context: { params: Promise<{ slug: string }> }):Promise<VisitorTurnResult> {
   const { slug } = await context.params;
   if (rateLimited(request, slug)) return NextResponse.json({ error: "Please wait a moment before sending another message." }, { status: 429, headers: responseHeaders });
   const db = getDb();
@@ -92,6 +105,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const organization = property?.organization;
   const profile = organization?.botProfile;
   if (!property || !organization || !profile || !canServeWebsiteBot(profile.status, profile.channels)) return NextResponse.json({ error: "Website bot is not enabled." }, { status: 404, headers: responseHeaders });
+  await assertBotFactualServingOpen(property.id);
   const tenantConfiguration = { ...configuration, welcomeMessage: resolveTenantWelcomeMessage({ configuredMessage: configuration.welcomeMessage, businessName: organization.name, hotelMode: profile.category === "STAY" }) };
   const subscription = await getOrganizationSubscriptionAccess(organization.id);
   if (subscription && !subscription.canUsePaidActions) return NextResponse.json({ error: "This AI Bot is temporarily suspended. The business account owner can restore it through billing." }, { status: 402, headers: responseHeaders });
@@ -276,7 +290,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const rateInquiryAnswer = tenantRateInquiry(negotiationPolicy, message);
   const categoryBoundary = evaluateCategoryHardBoundary(profile.category, message);
   const demoCommonAnswer = property.organization?.isDemo ? resolveDemoCommonAnswer(profile.category, message) : null;
-  const directCommercialHandoff = /\b(?:quote|quotation|proposal|estimate)\b/i.test(message) || /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i.test(message);
+  const directCommercialHandoff = /\b(?:i (?:need|want)|please (?:prepare|send)|send me|give me)\b[^.!?\n]{0,45}\b(?:quote|quotation|proposal|estimate)\b/i.test(message) || /\b(?:schedule|arrange|book)\b[^.!?\n]{0,45}\b(?:consultation|counselling|meeting)\b/i.test(message);
   const explorationOnly = /\b(?:only|just)\s+(?:exploring|browsing|looking)|\bnot\s+(?:decided|ready)\b/i.test(message);
   const demoTurn = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && !categoryBoundary && property.organization?.isDemo ? await resolveDemoConnectorTurn({ organizationId: property.organization.id, category: profile.category, question: message, priorQuestions, sessionId }).catch(() => null) : null;
   let result = safety.blocked ? null : multilingualVoicePilot ? {
@@ -416,8 +430,25 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     endpointVerified,
     clarifyCount: resolution.state.clarifyCount
   });
-  const answer = normalizePublicPhoneInText(enforceExecutionResponse(preliminaryExecutionContract, resolution.answer), organization.publicPhone);
+  // Once canonical serving is required, the delivered bytes must remain the
+  // exact owner-approved claim bytes. Presentation normalization would make a
+  // truthful answer fail its cryptographic delivery binding.
+  const governedExactAnswer = canonicalFactsRequired() && resolution.decision.disposition === "ANSWER" && Boolean(result?.claimIds.length) && !result?.crawlGenerationId;
+  const canonicalRows = governedExactAnswer ? await db.knowledgeEntry.findMany({
+    where: { propertyId: property.id, id: { in: [...new Set(result!.claimIds)] }, status: "PUBLISHED", sealedAt: { not: null } },
+    select: { id: true, answer: true }, orderBy: { id: "asc" }
+  }) : [];
+  if (governedExactAnswer && canonicalRows.length !== new Set(result!.claimIds).size) {
+    return NextResponse.json({ error: "Canonical factual evidence is unavailable." }, { status: 503, headers: responseHeaders });
+  }
+  const answer = governedExactAnswer
+    ? canonicalRows.map(row => row.answer.trim()).join("\n")
+    : normalizePublicPhoneInText(enforceExecutionResponse(preliminaryExecutionContract, resolution.answer), organization.publicPhone);
   const evidenceDecision = resolution.decision;
+  // Canonical evidence is mandatory for factual business answers, not for
+  // conversational protocol turns such as greetings, identity, refusals,
+  // off-topic boundaries, or human-handover acknowledgements.
+  const factualAnswerIntent = ["BUSINESS", "CONTACT_INFO", "CONTEXT_FOLLOW_UP", "UNKNOWN"].includes(evidenceDecision.intent);
   // Evidence describes the response actually served, not a discarded model answer.
   // Keep retrieval candidates for diagnosis, but never attribute their use to a breaker reply.
   if (resolution.answer !== proposedAnswer && result) {
@@ -545,7 +576,57 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   const preStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "PRE_STAY", message) : null;
   const preStaySmartContent = preStayFlow ? { flowId:preStayFlow.flow.id,journey:"PRE_STAY",kind:preStayFlow.flow.templateKey,quickReplies:preStayFlow.flow.templateKey==="HOTEL_DISCOVER"?["Rooms and stays","Experiences","Plan my arrival"]:preStayFlow.flow.templateKey==="HOTEL_PLAN_ARRIVAL"?["Check-in time","Directions","Request a transfer"]:["Share dates","Compare stays","Talk to reservations"] } : undefined;
-  return NextResponse.json({ answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" }, { headers: responseHeaders });
+  const responseBody = { answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" };
+  let canonicalDelivery:(()=>Promise<unknown>)|null=null;
+  if (canonicalFactsRequired() && factualAnswerIntent && evidenceDecision.disposition === "ANSWER") {
+    try {
+      assertCanonicalFactualEnvelope({channel:"WEBSITE",factual:true,answer,claimIds:result?.claimIds,crawlGenerationId:result?.crawlGenerationId,chunkIds:result?.chunkIds,materialClaimDecisions:result?.materialClaimDecisions});
+    } catch (error) {
+      console.error("Canonical website envelope rejected", { propertyId: property.id, error });
+      return NextResponse.json({error:"Canonical factual evidence is unavailable."},{status:503,headers:responseHeaders});
+    }
+    if (signedBotReleaseRequired()) {
+      try {
+        await requireActiveBotRelease({organizationId:organization.id,propertyId:property.id,principal:`public-bot:${slug}`,purpose:"PUBLIC_ANSWER"});
+      } catch (error) {
+        console.error("Signed bot release admission failed", { propertyId: property.id, error });
+        return NextResponse.json({error:"This bot release is not admitted for factual answers."},{status:503,headers:responseHeaders});
+      }
+    }
+    const entryIds=[...new Set(result?.claimIds || [])];
+    const chunkIds=[...new Set(result?.chunkIds || [])];
+    const crawlGenerationId=result?.crawlGenerationId;
+    if (!entryIds.length && (!crawlGenerationId || !chunkIds.length)) return NextResponse.json({error:"Canonical factual evidence is unavailable."},{status:503,headers:responseHeaders});
+    const conversation=await ensureWebsiteCanonicalConversation({propertyId:property.id,legacyLeadId:captured.lead.id,sessionHash:hashWebsiteVisitorValue(sessionId)});
+    const tokenClaims=verifyWebsiteVisitorToken(visitorToken,slug);
+    if (!tokenClaims) return NextResponse.json({error:"Canonical guest session could not be established."},{status:503,headers:responseHeaders});
+    canonicalDelivery=entryIds.length ? ()=>deliverCanonicalAnswer({
+      identity:{organizationId:organization.id,propertyId:property.id,principal:`public-bot:${slug}`,purpose:"PUBLIC_GUEST",guestSessionHash:hashWebsiteVisitorValue(sessionId)},
+      conversationId:conversation.id,
+      sessionHash:hashWebsiteVisitorValue(sessionId),
+      expiresAt:new Date(tokenClaims.exp*1000),
+      entryIds,
+      finalAnswer:answer,
+      deliveryKey:`website:${evidence.id}`,
+      timeoutMs:5000,
+      send:async()=>({accepted:true,providerDeliveryId:evidence.id,detail:{boundary:"NEXT_HTTP_RESPONSE"}})
+    }) : ()=>recordDeliveredCrawlAnswer({
+      identity:{organizationId:organization.id,propertyId:property.id,principal:`public-bot:${slug}`,purpose:"PUBLIC_GUEST",guestSessionHash:hashWebsiteVisitorValue(sessionId)},
+      conversationId:conversation.id,
+      sessionHash:hashWebsiteVisitorValue(sessionId),
+      expiresAt:new Date(tokenClaims.exp*1000),
+      generationId:crawlGenerationId!,
+      chunkIds,
+      question:message,
+      answer,
+      model:result?.model || "UNKNOWN",
+      deliveryKey:`website:${evidence.id}`,
+      materialClaimDecisions:result?.materialClaimDecisions || []
+    });
+  }
+  const response=NextResponse.json(responseBody, { headers: responseHeaders }) as VisitorTurnResult;
+  if(canonicalDelivery) response.canonicalDelivery=canonicalDelivery;
+  return response;
   });
 }
 

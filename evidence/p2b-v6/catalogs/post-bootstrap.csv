@@ -1,0 +1,361 @@
+section,object_schema,object_name,owner,detail
+SCHEMA,aifrogi_security,,postgres,
+SCHEMA,public,,postgres,
+TABLE,public,AgentGatewayClient,postgres,NO_RLS
+TABLE,public,AiCreditTransaction,postgres,NO_RLS
+TABLE,public,AiOperation,postgres,NO_RLS
+TABLE,public,AppointmentBooking,postgres,NO_RLS
+TABLE,public,AppointmentJob,postgres,NO_RLS
+TABLE,public,AppointmentMessageLog,postgres,NO_RLS
+TABLE,public,AppointmentPayment,postgres,NO_RLS
+TABLE,public,AppointmentService,postgres,NO_RLS
+TABLE,public,AppointmentSession,postgres,NO_RLS
+TABLE,public,AppointmentSheetSyncState,postgres,NO_RLS
+TABLE,public,AppointmentTenant,postgres,NO_RLS
+TABLE,public,Asset,postgres,NO_RLS
+TABLE,public,AutomationJob,postgres,RLS+FORCED
+TABLE,public,AutomationJobAttempt,postgres,RLS+FORCED
+TABLE,public,BillingAddon,postgres,NO_RLS
+TABLE,public,BillingInvoice,postgres,NO_RLS
+TABLE,public,BillingPlan,postgres,NO_RLS
+TABLE,public,BotConnectorConfiguration,postgres,NO_RLS
+TABLE,public,BotConnectorCredential,postgres,NO_RLS
+TABLE,public,BotProfile,postgres,NO_RLS
+TABLE,public,Campaign,postgres,NO_RLS
+TABLE,public,CampaignRecipient,postgres,NO_RLS
+TABLE,public,CaptureVersion,postgres,RLS+FORCED
+TABLE,public,ChannelConnection,postgres,NO_RLS
+TABLE,public,CommerceAddon,postgres,NO_RLS
+TABLE,public,CommerceConversation,postgres,NO_RLS
+TABLE,public,CommerceCustomer,postgres,NO_RLS
+TABLE,public,CommerceFlowSession,postgres,NO_RLS
+TABLE,public,CommerceOrder,postgres,NO_RLS
+TABLE,public,CommerceOrderItem,postgres,NO_RLS
+TABLE,public,CommercePayment,postgres,NO_RLS
+TABLE,public,CommerceProduct,postgres,NO_RLS
+TABLE,public,CommerceProductVariant,postgres,NO_RLS
+TABLE,public,CommerceTenant,postgres,NO_RLS
+TABLE,public,Conversation,postgres,RLS+FORCED
+TABLE,public,ConversationParticipant,postgres,RLS+FORCED
+TABLE,public,DemoConnectorEvent,postgres,NO_RLS
+TABLE,public,DemoSandbox,postgres,NO_RLS
+TABLE,public,HotelGuestAccessRequest,postgres,NO_RLS
+TABLE,public,KnowledgeAnswerAudit,postgres,RLS+FORCED
+TABLE,public,KnowledgeAnswerFlag,postgres,RLS+FORCED
+TABLE,public,KnowledgeAnswerOutcome,postgres,RLS+FORCED
+TABLE,public,KnowledgeApprovalEvidence,postgres,RLS+FORCED
+TABLE,public,KnowledgeCertificationRun,postgres,RLS+FORCED
+TABLE,public,KnowledgeClaimConflict,postgres,RLS+FORCED
+TABLE,public,KnowledgeClaimEvidence,postgres,RLS+FORCED
+TABLE,public,KnowledgeClaimIdentity,postgres,RLS+FORCED
+TABLE,public,KnowledgeDocument,postgres,RLS+FORCED
+TABLE,public,KnowledgeEntry,postgres,RLS+FORCED
+TABLE,public,KnowledgeExtractionRun,postgres,RLS+FORCED
+TABLE,public,KnowledgeGap,postgres,RLS+FORCED
+TABLE,public,KnowledgeGuestSession,postgres,RLS+FORCED
+TABLE,public,KnowledgeHandoverEvent,postgres,RLS+FORCED
+TABLE,public,KnowledgeHandoverRequest,postgres,RLS+FORCED
+TABLE,public,KnowledgeMigrationArtifactDecision,postgres,RLS+FORCED
+TABLE,public,KnowledgeMigrationDecision,postgres,RLS+FORCED
+TABLE,public,KnowledgeObject,postgres,RLS+FORCED
+TABLE,public,KnowledgeObjectReference,postgres,RLS+FORCED
+TABLE,public,KnowledgeOutboxEvent,postgres,RLS+FORCED
+TABLE,public,KnowledgePolicyVersion,postgres,RLS+FORCED
+TABLE,public,KnowledgePreview,postgres,RLS+FORCED
+TABLE,public,KnowledgePreviewClaim,postgres,RLS+FORCED
+TABLE,public,KnowledgePreviewSession,postgres,RLS+FORCED
+TABLE,public,KnowledgePublication,postgres,RLS+FORCED
+TABLE,public,KnowledgePublicationClaim,postgres,RLS+FORCED
+TABLE,public,KnowledgeRetentionDecision,postgres,RLS+FORCED
+TABLE,public,KnowledgeRevisionEvent,postgres,RLS+FORCED
+TABLE,public,KnowledgeRevisionEvidenceBinding,postgres,RLS+FORCED
+TABLE,public,KnowledgeRuntimePrincipalGrant,postgres,RLS+FORCED
+TABLE,public,KnowledgeServingPointer,postgres,RLS+FORCED
+TABLE,public,KnowledgeSource,postgres,RLS+FORCED
+TABLE,public,KnowledgeSourceRevision,postgres,RLS+FORCED
+TABLE,public,Lead,postgres,NO_RLS
+TABLE,public,LeadAssetShare,postgres,NO_RLS
+TABLE,public,LeadMessage,postgres,NO_RLS
+TABLE,public,LeadTag,postgres,NO_RLS
+TABLE,public,Message,postgres,RLS+FORCED
+TABLE,public,MetricDaily,postgres,NO_RLS
+TABLE,public,OnboardingActivity,postgres,NO_RLS
+TABLE,public,OnboardingCredential,postgres,NO_RLS
+TABLE,public,OnboardingDocument,postgres,NO_RLS
+TABLE,public,OnboardingProfile,postgres,NO_RLS
+TABLE,public,Organization,postgres,NO_RLS
+TABLE,public,OrganizationMember,postgres,NO_RLS
+TABLE,public,Participant,postgres,RLS+FORCED
+TABLE,public,PlatformAuditLog,postgres,NO_RLS
+TABLE,public,PlatformIncident,postgres,NO_RLS
+TABLE,public,Property,postgres,NO_RLS
+TABLE,public,PropertyIntelligencePolicy,postgres,RLS+FORCED
+TABLE,public,ReadinessEvidence,postgres,NO_RLS
+TABLE,public,ReadinessIssue,postgres,NO_RLS
+TABLE,public,ReadinessScan,postgres,NO_RLS
+TABLE,public,ReadinessVerification,postgres,NO_RLS
+TABLE,public,ReadinessWorkItem,postgres,NO_RLS
+TABLE,public,SourceCapture,postgres,RLS+FORCED
+TABLE,public,SovereignAnswerEvidence,postgres,NO_RLS
+TABLE,public,SovereignAnswerFeedback,postgres,NO_RLS
+TABLE,public,SovereignReplayCase,postgres,NO_RLS
+TABLE,public,Subscription,postgres,NO_RLS
+TABLE,public,SupportTicket,postgres,NO_RLS
+TABLE,public,SupportTicketMessage,postgres,NO_RLS
+TABLE,public,UsageRecord,postgres,NO_RLS
+TABLE,public,UserSession,postgres,NO_RLS
+TABLE,public,WebsiteSourceConsent,postgres,RLS+FORCED
+TABLE,public,WebsiteVisitorSession,postgres,NO_RLS
+TABLE,public,WhatsAppBotConfiguration,postgres,NO_RLS
+TABLE,public,WhatsAppIntegration,postgres,NO_RLS
+schemaname,tablename,policyname,roles,cmd,qual,with_check
+public,AutomationJob,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""AutomationJob"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""AutomationJob"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,AutomationJobAttempt,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""AutomationJobAttempt"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""AutomationJobAttempt"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,CaptureVersion,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""CaptureVersion"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""CaptureVersion"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,Conversation,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""Conversation"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""Conversation"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,ConversationParticipant,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""ConversationParticipant"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""ConversationParticipant"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeAnswerAudit,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeAnswerAudit"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeAnswerAudit"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeAnswerFlag,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeAnswerFlag"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeAnswerFlag"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeAnswerOutcome,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeAnswerOutcome"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeAnswerOutcome"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeApprovalEvidence,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeApprovalEvidence"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeApprovalEvidence"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeCertificationRun,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeCertificationRun"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeCertificationRun"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeClaimConflict,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeClaimConflict"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeClaimConflict"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeClaimEvidence,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeClaimEvidence"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeClaimEvidence"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeClaimIdentity,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeClaimIdentity"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeClaimIdentity"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeDocument,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeDocument"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeDocument"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeEntry,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeEntry"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeEntry"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeExtractionRun,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeExtractionRun"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeExtractionRun"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeGap,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeGap"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeGap"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeGuestSession,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeGuestSession"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeGuestSession"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeHandoverEvent,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeHandoverEvent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeHandoverEvent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeHandoverRequest,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeHandoverRequest"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeHandoverRequest"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeMigrationArtifactDecision,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeMigrationArtifactDecision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeMigrationArtifactDecision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeMigrationDecision,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeMigrationDecision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeMigrationDecision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeObject,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeObject"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeObject"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeObjectReference,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeObjectReference"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeObjectReference"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeOutboxEvent,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeOutboxEvent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeOutboxEvent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgePolicyVersion,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePolicyVersion"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePolicyVersion"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgePreview,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePreview"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePreview"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgePreviewClaim,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePreviewClaim"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePreviewClaim"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgePreviewSession,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePreviewSession"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePreviewSession"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgePublication,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePublication"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePublication"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgePublicationClaim,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePublicationClaim"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgePublicationClaim"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeRetentionDecision,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRetentionDecision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRetentionDecision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeRevisionEvent,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRevisionEvent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRevisionEvent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeRevisionEvidenceBinding,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRevisionEvidenceBinding"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRevisionEvidenceBinding"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeRuntimePrincipalGrant,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRuntimePrincipalGrant"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeRuntimePrincipalGrant"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeServingPointer,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeServingPointer"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeServingPointer"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeSource,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeSource"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeSource"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,KnowledgeSourceRevision,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeSourceRevision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""KnowledgeSourceRevision"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,Message,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""Message"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""Message"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,Participant,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""Participant"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""Participant"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,PropertyIntelligencePolicy,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""PropertyIntelligencePolicy"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""PropertyIntelligencePolicy"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,SourceCapture,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""SourceCapture"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""SourceCapture"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+public,WebsiteSourceConsent,aifrogi_property_isolation,{public},ALL,"(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""WebsiteSourceConsent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))","(aifrogi_security.has_platform_authority() OR ((""propertyId"" = aifrogi_security.current_property_id()) AND (EXISTS ( SELECT 1
+   FROM ""Property"" p
+  WHERE ((p.id = ""WebsiteSourceConsent"".""propertyId"") AND (p.""organizationId"" = aifrogi_security.current_organization_id()))))))"
+grantee,table_schema,table_name,privilege_type
+grantee,routine_schema,routine_name,privilege_type
+aifrogi_public,aifrogi_security,current_organization_id,EXECUTE
+aifrogi_public,aifrogi_security,current_property_id,EXECUTE
+aifrogi_public,aifrogi_security,eligible_public_claims,EXECUTE
+aifrogi_public,aifrogi_security,has_platform_authority,EXECUTE
+aifrogi_publisher,aifrogi_security,advance_serving_pointer,EXECUTE
+aifrogi_publisher,aifrogi_security,current_organization_id,EXECUTE
+aifrogi_publisher,aifrogi_security,current_property_id,EXECUTE
+aifrogi_publisher,aifrogi_security,has_platform_authority,EXECUTE
+aifrogi_publisher,aifrogi_security,revoke_source,EXECUTE
+aifrogi_publisher,aifrogi_security,seal_claim_revision,EXECUTE
+aifrogi_publisher,aifrogi_security,seal_publication,EXECUTE
+aifrogi_web,aifrogi_security,append_handover_event,EXECUTE
+aifrogi_web,aifrogi_security,authorize_guest,EXECUTE
+aifrogi_web,aifrogi_security,current_organization_id,EXECUTE
+aifrogi_web,aifrogi_security,current_property_id,EXECUTE
+aifrogi_web,aifrogi_security,ensure_guest_session,EXECUTE
+aifrogi_web,aifrogi_security,has_platform_authority,EXECUTE
+aifrogi_web,aifrogi_security,record_answer_outcome,EXECUTE
+aifrogi_web,aifrogi_security,record_answer_pending,EXECUTE
+aifrogi_web,aifrogi_security,record_handover,EXECUTE
+aifrogi_worker,aifrogi_security,claim_job,EXECUTE
+aifrogi_worker,aifrogi_security,current_organization_id,EXECUTE
+aifrogi_worker,aifrogi_security,current_property_id,EXECUTE
+aifrogi_worker,aifrogi_security,finalize_capture,EXECUTE
+aifrogi_worker,aifrogi_security,has_platform_authority,EXECUTE
+aifrogi_worker,aifrogi_security,reclaim_job,EXECUTE
+aifrogi_worker,aifrogi_security,renew_job,EXECUTE
+rolname,rolcanlogin,rolsuper,rolinherit,rolbypassrls,member_of
+aifrogi_public,t,f,f,f,
+aifrogi_publisher,t,f,f,f,
+aifrogi_web,t,f,f,f,
+aifrogi_worker,t,f,f,f,
+leados_app,t,f,f,f,

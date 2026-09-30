@@ -311,3 +311,23 @@ Requested production deletion remains blocked pending explicit scope confirmatio
 Deletion completion and homepage MP4 correction (2026-09-28): after the user explicitly confirmed the full cascade scope, the active `Asavari Stays`, active `Asavaristays`, HotelRADAR and Castle Mandawa workspaces were permanently removed in one transaction. Their owned bots and dependent customer data were cascade-deleted; platform audit history was retained with its organization reference set to null. Post-delete read-only verification found zero remaining target slugs and confirmed `Asavari Hotels` remains ONBOARDING. The encrypted pre-delete backup is `/var/backups/aifrogi/aifrogi-20260928T015638Z.dump.gz.enc`.
 
 Homepage release `85a36af` fixes the short hero MP4 appearing as the older static right-side image or ending on an empty frame. It now preloads and loops continuously on eligible screens, retains pause/replay behavior, and preserves the static reduced-motion/mobile fallback. TypeScript, targeted lint, the 93-route production Webpack build and client-secret scan passed. Live/ready health are OK, and browser screenshots more than one full 3.5-second cycle apart confirm the bot remains animated and visible. Rollback: `/var/backups/aifrogi/home-hero-85a36af-20260928020510`.
+## P2-B v6 isolated implementation candidate (2026-09-29)
+
+The user authorized continued P2-B work only in an isolated checkout and
+disposable PostgreSQL. Corrected Parts 3, 15 and 5 now apply; deterministic
+backfill dry-run/commit, clean explicit baseline, forced rollback, exact schema
+restore, runtime-role denial checks, focused form/PDF/spreadsheet/optional-site
+tests, TypeScript and the 97-route Webpack build pass. The historical first
+migration remains broken and `prisma db push` is rehearsal evidence only.
+Canonical startup/build admission and the website factual delivery boundary are
+integrated fail-closed, but full seal/publication/job/race, real edge and
+end-to-end canonical route tests remain NOT RUN. Production and
+all tenant/publication/purge/TRIAL_VERIFIED gates remain held. Evidence is in
+`evidence/p2b-v6/02-RELEASE-REPORT.md` in the isolated checkout.
+
+Delivery follow-up: the original same-transaction catch/throw defect was
+reproduced and removed. Pending audit now commits before provider I/O, delivery
+uses a narrow authenticated manifest/lock routine, and uncertain failure is
+written in a separate transaction. Disposable PostgreSQL passes timeout,
+provider-accepted/deferred-commit-failure and duplicate-key cases. Real staging
+nginx remains NOT RUN because this host has neither nginx nor staging access.

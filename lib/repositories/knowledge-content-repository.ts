@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { redactBeforePersistence } from "@/lib/pre-persistence-redaction";
 
 function normalizedTerms(value: string) {
   const stopWords = new Set(["about", "already", "and", "are", "can", "context", "does", "for", "from", "have", "how", "please", "that", "the", "this", "what", "when", "where", "which", "who", "will", "with", "would", "you", "your"]);
@@ -49,7 +50,7 @@ export async function detectDocumentConflict(propertyId: string, text: string) {
 export async function createKnowledgeDocument(input: { propertyId: string; fileName: string; mimeType: string; sizeBytes: number; content: Uint8Array<ArrayBuffer>; extractedText: string; uploadedBy: string; conflictSummary?: string | null }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
-  return db.knowledgeDocument.create({ data: { ...input, status: input.conflictSummary ? "CONFLICT" : "PENDING" }, select: { id: true, fileName: true, mimeType: true, sizeBytes: true, status: true, conflictSummary: true, uploadedBy: true, createdAt: true } });
+  return db.knowledgeDocument.create({ data: { ...input, extractedText: redactBeforePersistence(input.extractedText).redacted, status: input.conflictSummary ? "CONFLICT" : "PENDING" }, select: { id: true, fileName: true, mimeType: true, sizeBytes: true, status: true, conflictSummary: true, uploadedBy: true, createdAt: true } });
 }
 
 export async function reviewKnowledgeDocument(input: { propertyId: string; id: string; action: "APPROVE" | "REJECT" | "DELETE"; actorEmail: string; confirmConflict?: boolean }) {
@@ -65,8 +66,8 @@ export async function reviewKnowledgeDocument(input: { propertyId: string; id: s
 export async function createKnowledgeEntry(input: { propertyId: string; question: string; answer: string; category: string; createdBy: string; gapId?: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
-  const question = input.question.trim();
-  const answer = input.answer.trim();
+  const question = redactBeforePersistence(input.question.trim()).redacted;
+  const answer = redactBeforePersistence(input.answer.trim()).redacted;
   if (question.length < 4 || answer.length < 8) throw new Error("Add a clear question and answer.");
   const conflictSummary = await detectKnowledgeConflict(input.propertyId, question, answer);
   return db.$transaction(async (tx) => {
@@ -97,11 +98,12 @@ function normalizeQuestion(value: string) {
 
 export async function recordKnowledgeGap(propertySlug: string, question: string) {
   const db = getDb();
-  const normalizedQuestion = normalizeQuestion(question);
+  const safeQuestion = redactBeforePersistence(question).redacted;
+  const normalizedQuestion = normalizeQuestion(safeQuestion);
   if (!db || normalizedQuestion.length < 4) return null;
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
   if (!property) return null;
-  return db.knowledgeGap.upsert({ where: { propertyId_normalizedQuestion: { propertyId: property.id, normalizedQuestion } }, update: { question: question.trim().slice(0, 1000), occurrenceCount: { increment: 1 }, lastAskedAt: new Date(), status: "OPEN" }, create: { propertyId: property.id, question: question.trim().slice(0, 1000), normalizedQuestion, lastAskedAt: new Date() } });
+  return db.knowledgeGap.upsert({ where: { propertyId_normalizedQuestion: { propertyId: property.id, normalizedQuestion } }, update: { question: safeQuestion.trim().slice(0, 1000), occurrenceCount: { increment: 1 }, lastAskedAt: new Date(), status: "OPEN" }, create: { propertyId: property.id, question: safeQuestion.trim().slice(0, 1000), normalizedQuestion, lastAskedAt: new Date() } });
 }
 
 export async function dismissKnowledgeGap(propertyId: string, id: string) {

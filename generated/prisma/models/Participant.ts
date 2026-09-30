@@ -242,6 +242,7 @@ export type ParticipantOrderByWithRelationInput = {
 export type ParticipantWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   propertyId_kind_externalKey?: Prisma.ParticipantPropertyIdKindExternalKeyCompoundUniqueInput
+  propertyId_id?: Prisma.ParticipantPropertyIdIdCompoundUniqueInput
   AND?: Prisma.ParticipantWhereInput | Prisma.ParticipantWhereInput[]
   OR?: Prisma.ParticipantWhereInput[]
   NOT?: Prisma.ParticipantWhereInput | Prisma.ParticipantWhereInput[]
@@ -257,7 +258,7 @@ export type ParticipantWhereUniqueInput = Prisma.AtLeast<{
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   conversations?: Prisma.ConversationParticipantListRelationFilter
   sentMessages?: Prisma.MessageListRelationFilter
-}, "id" | "propertyId_kind_externalKey">
+}, "id" | "propertyId_kind_externalKey" | "propertyId_id">
 
 export type ParticipantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -403,6 +404,11 @@ export type ParticipantPropertyIdKindExternalKeyCompoundUniqueInput = {
   propertyId: string
   kind: $Enums.ParticipantKind
   externalKey: string
+}
+
+export type ParticipantPropertyIdIdCompoundUniqueInput = {
+  propertyId: string
+  id: string
 }
 
 export type ParticipantCountOrderByAggregateInput = {

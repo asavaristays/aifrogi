@@ -3,7 +3,8 @@ import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { createAtomicClaim, deleteUnpublishedClaim, editAndApproveKnowledgeClaim, editKnowledgeClaim, fieldApproveClaim, generateClaimPreview, pauseClaim, reconfirmClaim, retireKnowledgeClaim, reviewClaimPreview } from "@/lib/repositories/knowledge-verification-repository";
 import { canPerformGovernedKnowledgeAction } from "@/lib/knowledge-authority";
-import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { withCanonicalRole } from "@/lib/canonical-db-context";
+import { withDatabaseTransaction } from "@/lib/db";
 
 async function context() {
   const access = await resolveClientWorkspaceAccess({propertySlug: await getCurrentWorkspaceSlug(), requireManage: true});
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
   if (!current) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
   const payload = await request.json().catch(() => null) as { question?: string; answer?: string; category?: string; gapId?: string; claimType?: string; valueType?: string; currency?: string; effectiveAt?: string; expiresAt?: string; refreshDays?: number } | null;
   try {
-    const entry = await withTenantDatabaseContext({ kind: "tenant", organizationId: current.access.organization.id, actor: `knowledge-entry-create:${current.access.user.username}` }, () => createAtomicClaim({ propertyId: current.property.id, question: payload?.question || "", answer: payload?.answer || "", category: payload?.category || "General", gapId: payload?.gapId, createdBy: current.access.user.username, claimType: payload?.claimType, valueType: payload?.valueType, currency: payload?.currency, effectiveAt: payload?.effectiveAt ? new Date(payload.effectiveAt) : null, expiresAt: payload?.expiresAt ? new Date(payload.expiresAt) : null, refreshDays: payload?.refreshDays }));
+    const entry = await withCanonicalRole("aifrogi_web", { organizationId: current.access.organization.id, propertyId: current.property.id, principal: current.access.user.username, purpose: "knowledge-entry-create" }, tx => withDatabaseTransaction(tx, () => createAtomicClaim({ propertyId: current.property.id, question: payload?.question || "", answer: payload?.answer || "", category: payload?.category || "General", gapId: payload?.gapId, createdBy: current.access.user.username, claimType: payload?.claimType, valueType: payload?.valueType, currency: payload?.currency, effectiveAt: payload?.effectiveAt ? new Date(payload.effectiveAt) : null, expiresAt: payload?.expiresAt ? new Date(payload.expiresAt) : null, refreshDays: payload?.refreshDays })));
     return NextResponse.json({ ok: true, entry }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not save this answer." }, { status: 400 });
@@ -28,7 +29,7 @@ export async function PATCH(request: Request) {
   if (!current) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
   const payload = await request.json().catch(() => null) as { id?: string; previewId?: string; action?: "FIELD_APPROVE" | "GENERATE_PREVIEW" | "PREVIEW_APPROVE" | "PREVIEW_REJECT" | "PAUSE" | "RECONFIRM" | "EDIT" | "EDIT_AND_APPROVE" | "DELETE" | "RETIRE"; supersedesId?: string; reason?: string; question?: string; answer?: string; category?: string } | null;
   try {
-    const result = await withTenantDatabaseContext({ kind: "tenant", organizationId: current.access.organization.id, actor: `knowledge-entry-review:${current.access.user.username}` }, async () => {
+    const result = await withCanonicalRole("aifrogi_web", { organizationId: current.access.organization.id, propertyId: current.property.id, principal: current.access.user.username, purpose: "knowledge-entry-review" }, tx => withDatabaseTransaction(tx, async () => {
     const base = { propertyId: current.property.id, actorEmail: current.access.user.username };
     let result: unknown;
     if (payload?.action === "FIELD_APPROVE") result = await fieldApproveClaim({ ...base, entryId: payload.id || "", supersedesId: payload.supersedesId });
@@ -42,7 +43,7 @@ export async function PATCH(request: Request) {
     else if (payload?.action === "RETIRE") result = await retireKnowledgeClaim({ ...base, entryId: payload.id || "" });
     else throw new Error("Select a valid knowledge verification action.");
     return result;
-    });
+    }));
     return NextResponse.json({ ok: true, result });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update this answer." }, { status: 400 });

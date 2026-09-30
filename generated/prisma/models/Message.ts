@@ -900,7 +900,6 @@ export type MessageCreateWithoutSenderParticipantInput = {
 
 export type MessageUncheckedCreateWithoutSenderParticipantInput = {
   id?: string
-  propertyId: string
   conversationId: string
   legacyLeadMessageId?: string | null
   externalMessageId?: string | null
@@ -960,7 +959,6 @@ export type MessageCreateWithoutConversationInput = {
 
 export type MessageUncheckedCreateWithoutConversationInput = {
   id?: string
-  propertyId: string
   legacyLeadMessageId?: string | null
   externalMessageId?: string | null
   idempotencyKey: string
@@ -1071,7 +1069,6 @@ export type MessageUncheckedUpdateManyWithoutPropertyInput = {
 
 export type MessageCreateManySenderParticipantInput = {
   id?: string
-  propertyId: string
   conversationId: string
   legacyLeadMessageId?: string | null
   externalMessageId?: string | null
@@ -1105,7 +1102,6 @@ export type MessageUpdateWithoutSenderParticipantInput = {
 
 export type MessageUncheckedUpdateWithoutSenderParticipantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   legacyLeadMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1122,7 +1118,6 @@ export type MessageUncheckedUpdateWithoutSenderParticipantInput = {
 
 export type MessageUncheckedUpdateManyWithoutSenderParticipantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   legacyLeadMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1139,7 +1134,6 @@ export type MessageUncheckedUpdateManyWithoutSenderParticipantInput = {
 
 export type MessageCreateManyConversationInput = {
   id?: string
-  propertyId: string
   legacyLeadMessageId?: string | null
   externalMessageId?: string | null
   idempotencyKey: string
@@ -1173,7 +1167,6 @@ export type MessageUpdateWithoutConversationInput = {
 
 export type MessageUncheckedUpdateWithoutConversationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   legacyLeadMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1190,7 +1183,6 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
 
 export type MessageUncheckedUpdateManyWithoutConversationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
   legacyLeadMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string

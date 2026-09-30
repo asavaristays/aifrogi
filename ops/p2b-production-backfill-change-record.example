@@ -1,0 +1,13 @@
+# Copy to a root-owned path, replace every placeholder, obtain approval, then
+# pass it to generate-p2b-production-backfill.sh. Values are data, not shell.
+CHANGE_ID=CHG-REPLACE-ME
+TARGET_KIND=PRODUCTION
+DATABASE_NAME=replace_me
+SERVER_ADDR=203.0.113.10
+DATABASE_ROLE=replace_me_migration_owner
+WRAPPER_OWNER=root
+INVENTORY_PATH=/root/approved/p2b-filesystem-inventory.csv
+INVENTORY_OWNER=root
+INVENTORY_MODE=400
+INVENTORY_SHA256=REPLACE_WITH_64_LOWERCASE_HEX
+COMMIT_TOKEN_SHA256=REPLACE_WITH_64_LOWERCASE_HEX

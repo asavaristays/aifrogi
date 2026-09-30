@@ -31,6 +31,9 @@ export type AutomationJobAvgAggregateOutputType = {
   priority: number | null
   maxAttempts: number | null
   attemptCount: number | null
+  operationVersion: number | null
+  inputGeneration: number | null
+  fencingToken: number | null
 }
 
 export type AutomationJobSumAggregateOutputType = {
@@ -38,6 +41,9 @@ export type AutomationJobSumAggregateOutputType = {
   priority: number | null
   maxAttempts: number | null
   attemptCount: number | null
+  operationVersion: number | null
+  inputGeneration: bigint | null
+  fencingToken: bigint | null
 }
 
 export type AutomationJobMinAggregateOutputType = {
@@ -64,6 +70,12 @@ export type AutomationJobMinAggregateOutputType = {
   completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  operationKey: string | null
+  operationType: string | null
+  operationVersion: number | null
+  inputGeneration: bigint | null
+  canonicalInputHash: string | null
+  fencingToken: bigint | null
 }
 
 export type AutomationJobMaxAggregateOutputType = {
@@ -90,6 +102,12 @@ export type AutomationJobMaxAggregateOutputType = {
   completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  operationKey: string | null
+  operationType: string | null
+  operationVersion: number | null
+  inputGeneration: bigint | null
+  canonicalInputHash: string | null
+  fencingToken: bigint | null
 }
 
 export type AutomationJobCountAggregateOutputType = {
@@ -118,6 +136,12 @@ export type AutomationJobCountAggregateOutputType = {
   completedAt: number
   createdAt: number
   updatedAt: number
+  operationKey: number
+  operationType: number
+  operationVersion: number
+  inputGeneration: number
+  canonicalInputHash: number
+  fencingToken: number
   _all: number
 }
 
@@ -127,6 +151,9 @@ export type AutomationJobAvgAggregateInputType = {
   priority?: true
   maxAttempts?: true
   attemptCount?: true
+  operationVersion?: true
+  inputGeneration?: true
+  fencingToken?: true
 }
 
 export type AutomationJobSumAggregateInputType = {
@@ -134,6 +161,9 @@ export type AutomationJobSumAggregateInputType = {
   priority?: true
   maxAttempts?: true
   attemptCount?: true
+  operationVersion?: true
+  inputGeneration?: true
+  fencingToken?: true
 }
 
 export type AutomationJobMinAggregateInputType = {
@@ -160,6 +190,12 @@ export type AutomationJobMinAggregateInputType = {
   completedAt?: true
   createdAt?: true
   updatedAt?: true
+  operationKey?: true
+  operationType?: true
+  operationVersion?: true
+  inputGeneration?: true
+  canonicalInputHash?: true
+  fencingToken?: true
 }
 
 export type AutomationJobMaxAggregateInputType = {
@@ -186,6 +222,12 @@ export type AutomationJobMaxAggregateInputType = {
   completedAt?: true
   createdAt?: true
   updatedAt?: true
+  operationKey?: true
+  operationType?: true
+  operationVersion?: true
+  inputGeneration?: true
+  canonicalInputHash?: true
+  fencingToken?: true
 }
 
 export type AutomationJobCountAggregateInputType = {
@@ -214,6 +256,12 @@ export type AutomationJobCountAggregateInputType = {
   completedAt?: true
   createdAt?: true
   updatedAt?: true
+  operationKey?: true
+  operationType?: true
+  operationVersion?: true
+  inputGeneration?: true
+  canonicalInputHash?: true
+  fencingToken?: true
   _all?: true
 }
 
@@ -329,6 +377,12 @@ export type AutomationJobGroupByOutputType = {
   completedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  operationKey: string | null
+  operationType: string | null
+  operationVersion: number
+  inputGeneration: bigint
+  canonicalInputHash: string | null
+  fencingToken: bigint
   _count: AutomationJobCountAggregateOutputType | null
   _avg: AutomationJobAvgAggregateOutputType | null
   _sum: AutomationJobSumAggregateOutputType | null
@@ -380,7 +434,15 @@ export type AutomationJobWhereInput = {
   completedAt?: Prisma.DateTimeNullableFilter<"AutomationJob"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AutomationJob"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AutomationJob"> | Date | string
+  operationKey?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  operationType?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  operationVersion?: Prisma.IntFilter<"AutomationJob"> | number
+  inputGeneration?: Prisma.BigIntFilter<"AutomationJob"> | bigint | number
+  canonicalInputHash?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  fencingToken?: Prisma.BigIntFilter<"AutomationJob"> | bigint | number
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  attempts?: Prisma.AutomationJobAttemptListRelationFilter
+  finalizedObjects?: Prisma.KnowledgeObjectListRelationFilter
 }
 
 export type AutomationJobOrderByWithRelationInput = {
@@ -409,12 +471,22 @@ export type AutomationJobOrderByWithRelationInput = {
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  operationKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  operationType?: Prisma.SortOrderInput | Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  canonicalInputHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
+  attempts?: Prisma.AutomationJobAttemptOrderByRelationAggregateInput
+  finalizedObjects?: Prisma.KnowledgeObjectOrderByRelationAggregateInput
 }
 
 export type AutomationJobWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   idempotencyKey?: string
+  operationKey?: string
+  propertyId_id?: Prisma.AutomationJobPropertyIdIdCompoundUniqueInput
   AND?: Prisma.AutomationJobWhereInput | Prisma.AutomationJobWhereInput[]
   OR?: Prisma.AutomationJobWhereInput[]
   NOT?: Prisma.AutomationJobWhereInput | Prisma.AutomationJobWhereInput[]
@@ -441,8 +513,15 @@ export type AutomationJobWhereUniqueInput = Prisma.AtLeast<{
   completedAt?: Prisma.DateTimeNullableFilter<"AutomationJob"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AutomationJob"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AutomationJob"> | Date | string
+  operationType?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  operationVersion?: Prisma.IntFilter<"AutomationJob"> | number
+  inputGeneration?: Prisma.BigIntFilter<"AutomationJob"> | bigint | number
+  canonicalInputHash?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  fencingToken?: Prisma.BigIntFilter<"AutomationJob"> | bigint | number
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
-}, "id" | "idempotencyKey">
+  attempts?: Prisma.AutomationJobAttemptListRelationFilter
+  finalizedObjects?: Prisma.KnowledgeObjectListRelationFilter
+}, "id" | "idempotencyKey" | "operationKey" | "propertyId_id">
 
 export type AutomationJobOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -470,6 +549,12 @@ export type AutomationJobOrderByWithAggregationInput = {
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  operationKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  operationType?: Prisma.SortOrderInput | Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  canonicalInputHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
   _count?: Prisma.AutomationJobCountOrderByAggregateInput
   _avg?: Prisma.AutomationJobAvgOrderByAggregateInput
   _max?: Prisma.AutomationJobMaxOrderByAggregateInput
@@ -506,6 +591,12 @@ export type AutomationJobScalarWhereWithAggregatesInput = {
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AutomationJob"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AutomationJob"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AutomationJob"> | Date | string
+  operationKey?: Prisma.StringNullableWithAggregatesFilter<"AutomationJob"> | string | null
+  operationType?: Prisma.StringNullableWithAggregatesFilter<"AutomationJob"> | string | null
+  operationVersion?: Prisma.IntWithAggregatesFilter<"AutomationJob"> | number
+  inputGeneration?: Prisma.BigIntWithAggregatesFilter<"AutomationJob"> | bigint | number
+  canonicalInputHash?: Prisma.StringNullableWithAggregatesFilter<"AutomationJob"> | string | null
+  fencingToken?: Prisma.BigIntWithAggregatesFilter<"AutomationJob"> | bigint | number
 }
 
 export type AutomationJobCreateInput = {
@@ -533,7 +624,15 @@ export type AutomationJobCreateInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
   property: Prisma.PropertyCreateNestedOneWithoutAutomationJobsInput
+  attempts?: Prisma.AutomationJobAttemptCreateNestedManyWithoutJobInput
+  finalizedObjects?: Prisma.KnowledgeObjectCreateNestedManyWithoutFinalizedByJobInput
 }
 
 export type AutomationJobUncheckedCreateInput = {
@@ -562,6 +661,14 @@ export type AutomationJobUncheckedCreateInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  attempts?: Prisma.AutomationJobAttemptUncheckedCreateNestedManyWithoutJobInput
+  finalizedObjects?: Prisma.KnowledgeObjectUncheckedCreateNestedManyWithoutFinalizedByJobInput
 }
 
 export type AutomationJobUpdateInput = {
@@ -589,7 +696,15 @@ export type AutomationJobUpdateInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   property?: Prisma.PropertyUpdateOneRequiredWithoutAutomationJobsNestedInput
+  attempts?: Prisma.AutomationJobAttemptUpdateManyWithoutJobNestedInput
+  finalizedObjects?: Prisma.KnowledgeObjectUpdateManyWithoutFinalizedByJobNestedInput
 }
 
 export type AutomationJobUncheckedUpdateInput = {
@@ -618,6 +733,14 @@ export type AutomationJobUncheckedUpdateInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  attempts?: Prisma.AutomationJobAttemptUncheckedUpdateManyWithoutJobNestedInput
+  finalizedObjects?: Prisma.KnowledgeObjectUncheckedUpdateManyWithoutFinalizedByJobNestedInput
 }
 
 export type AutomationJobCreateManyInput = {
@@ -646,6 +769,12 @@ export type AutomationJobCreateManyInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
 }
 
 export type AutomationJobUpdateManyMutationInput = {
@@ -673,6 +802,12 @@ export type AutomationJobUpdateManyMutationInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
 }
 
 export type AutomationJobUncheckedUpdateManyInput = {
@@ -701,6 +836,22 @@ export type AutomationJobUncheckedUpdateManyInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+}
+
+export type AutomationJobNullableScalarRelationFilter = {
+  is?: Prisma.AutomationJobWhereInput | null
+  isNot?: Prisma.AutomationJobWhereInput | null
+}
+
+export type AutomationJobScalarRelationFilter = {
+  is?: Prisma.AutomationJobWhereInput
+  isNot?: Prisma.AutomationJobWhereInput
 }
 
 export type AutomationJobListRelationFilter = {
@@ -711,6 +862,11 @@ export type AutomationJobListRelationFilter = {
 
 export type AutomationJobOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type AutomationJobPropertyIdIdCompoundUniqueInput = {
+  propertyId: string
+  id: string
 }
 
 export type AutomationJobCountOrderByAggregateInput = {
@@ -739,6 +895,12 @@ export type AutomationJobCountOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  operationKey?: Prisma.SortOrder
+  operationType?: Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  canonicalInputHash?: Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
 }
 
 export type AutomationJobAvgOrderByAggregateInput = {
@@ -746,6 +908,9 @@ export type AutomationJobAvgOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   maxAttempts?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
 }
 
 export type AutomationJobMaxOrderByAggregateInput = {
@@ -772,6 +937,12 @@ export type AutomationJobMaxOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  operationKey?: Prisma.SortOrder
+  operationType?: Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  canonicalInputHash?: Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
 }
 
 export type AutomationJobMinOrderByAggregateInput = {
@@ -798,6 +969,12 @@ export type AutomationJobMinOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  operationKey?: Prisma.SortOrder
+  operationType?: Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  canonicalInputHash?: Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
 }
 
 export type AutomationJobSumOrderByAggregateInput = {
@@ -805,6 +982,39 @@ export type AutomationJobSumOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   maxAttempts?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
+  operationVersion?: Prisma.SortOrder
+  inputGeneration?: Prisma.SortOrder
+  fencingToken?: Prisma.SortOrder
+}
+
+export type AutomationJobCreateNestedOneWithoutFinalizedObjectsInput = {
+  create?: Prisma.XOR<Prisma.AutomationJobCreateWithoutFinalizedObjectsInput, Prisma.AutomationJobUncheckedCreateWithoutFinalizedObjectsInput>
+  connectOrCreate?: Prisma.AutomationJobCreateOrConnectWithoutFinalizedObjectsInput
+  connect?: Prisma.AutomationJobWhereUniqueInput
+}
+
+export type AutomationJobUpdateOneWithoutFinalizedObjectsNestedInput = {
+  create?: Prisma.XOR<Prisma.AutomationJobCreateWithoutFinalizedObjectsInput, Prisma.AutomationJobUncheckedCreateWithoutFinalizedObjectsInput>
+  connectOrCreate?: Prisma.AutomationJobCreateOrConnectWithoutFinalizedObjectsInput
+  upsert?: Prisma.AutomationJobUpsertWithoutFinalizedObjectsInput
+  disconnect?: Prisma.AutomationJobWhereInput | boolean
+  delete?: Prisma.AutomationJobWhereInput | boolean
+  connect?: Prisma.AutomationJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AutomationJobUpdateToOneWithWhereWithoutFinalizedObjectsInput, Prisma.AutomationJobUpdateWithoutFinalizedObjectsInput>, Prisma.AutomationJobUncheckedUpdateWithoutFinalizedObjectsInput>
+}
+
+export type AutomationJobCreateNestedOneWithoutAttemptsInput = {
+  create?: Prisma.XOR<Prisma.AutomationJobCreateWithoutAttemptsInput, Prisma.AutomationJobUncheckedCreateWithoutAttemptsInput>
+  connectOrCreate?: Prisma.AutomationJobCreateOrConnectWithoutAttemptsInput
+  connect?: Prisma.AutomationJobWhereUniqueInput
+}
+
+export type AutomationJobUpdateOneRequiredWithoutAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.AutomationJobCreateWithoutAttemptsInput, Prisma.AutomationJobUncheckedCreateWithoutAttemptsInput>
+  connectOrCreate?: Prisma.AutomationJobCreateOrConnectWithoutAttemptsInput
+  upsert?: Prisma.AutomationJobUpsertWithoutAttemptsInput
+  connect?: Prisma.AutomationJobWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AutomationJobUpdateToOneWithWhereWithoutAttemptsInput, Prisma.AutomationJobUpdateWithoutAttemptsInput>, Prisma.AutomationJobUncheckedUpdateWithoutAttemptsInput>
 }
 
 export type AutomationJobCreateNestedManyWithoutPropertyInput = {
@@ -849,6 +1059,318 @@ export type AutomationJobUncheckedUpdateManyWithoutPropertyNestedInput = {
   deleteMany?: Prisma.AutomationJobScalarWhereInput | Prisma.AutomationJobScalarWhereInput[]
 }
 
+export type AutomationJobCreateWithoutFinalizedObjectsInput = {
+  id?: string
+  workflowId: string
+  workflowVersion?: number
+  triggerType: string
+  triggerRef?: string | null
+  actionType: string
+  status?: string
+  priority?: number
+  payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey: string
+  scheduledFor?: Date | string
+  nextRunAt?: Date | string
+  maxAttempts?: number
+  attemptCount?: number
+  lockedAt?: Date | string | null
+  lockedBy?: string | null
+  leaseExpiresAt?: Date | string | null
+  lastError?: string | null
+  deadLetterReason?: string | null
+  createdBy?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  property: Prisma.PropertyCreateNestedOneWithoutAutomationJobsInput
+  attempts?: Prisma.AutomationJobAttemptCreateNestedManyWithoutJobInput
+}
+
+export type AutomationJobUncheckedCreateWithoutFinalizedObjectsInput = {
+  id?: string
+  propertyId: string
+  workflowId: string
+  workflowVersion?: number
+  triggerType: string
+  triggerRef?: string | null
+  actionType: string
+  status?: string
+  priority?: number
+  payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey: string
+  scheduledFor?: Date | string
+  nextRunAt?: Date | string
+  maxAttempts?: number
+  attemptCount?: number
+  lockedAt?: Date | string | null
+  lockedBy?: string | null
+  leaseExpiresAt?: Date | string | null
+  lastError?: string | null
+  deadLetterReason?: string | null
+  createdBy?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  attempts?: Prisma.AutomationJobAttemptUncheckedCreateNestedManyWithoutJobInput
+}
+
+export type AutomationJobCreateOrConnectWithoutFinalizedObjectsInput = {
+  where: Prisma.AutomationJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AutomationJobCreateWithoutFinalizedObjectsInput, Prisma.AutomationJobUncheckedCreateWithoutFinalizedObjectsInput>
+}
+
+export type AutomationJobUpsertWithoutFinalizedObjectsInput = {
+  update: Prisma.XOR<Prisma.AutomationJobUpdateWithoutFinalizedObjectsInput, Prisma.AutomationJobUncheckedUpdateWithoutFinalizedObjectsInput>
+  create: Prisma.XOR<Prisma.AutomationJobCreateWithoutFinalizedObjectsInput, Prisma.AutomationJobUncheckedCreateWithoutFinalizedObjectsInput>
+  where?: Prisma.AutomationJobWhereInput
+}
+
+export type AutomationJobUpdateToOneWithWhereWithoutFinalizedObjectsInput = {
+  where?: Prisma.AutomationJobWhereInput
+  data: Prisma.XOR<Prisma.AutomationJobUpdateWithoutFinalizedObjectsInput, Prisma.AutomationJobUncheckedUpdateWithoutFinalizedObjectsInput>
+}
+
+export type AutomationJobUpdateWithoutFinalizedObjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  triggerType?: Prisma.StringFieldUpdateOperationsInput | string
+  triggerRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actionType?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduledFor?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextRunAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maxAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deadLetterReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  property?: Prisma.PropertyUpdateOneRequiredWithoutAutomationJobsNestedInput
+  attempts?: Prisma.AutomationJobAttemptUpdateManyWithoutJobNestedInput
+}
+
+export type AutomationJobUncheckedUpdateWithoutFinalizedObjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  triggerType?: Prisma.StringFieldUpdateOperationsInput | string
+  triggerRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actionType?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduledFor?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextRunAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maxAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deadLetterReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  attempts?: Prisma.AutomationJobAttemptUncheckedUpdateManyWithoutJobNestedInput
+}
+
+export type AutomationJobCreateWithoutAttemptsInput = {
+  id?: string
+  workflowId: string
+  workflowVersion?: number
+  triggerType: string
+  triggerRef?: string | null
+  actionType: string
+  status?: string
+  priority?: number
+  payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey: string
+  scheduledFor?: Date | string
+  nextRunAt?: Date | string
+  maxAttempts?: number
+  attemptCount?: number
+  lockedAt?: Date | string | null
+  lockedBy?: string | null
+  leaseExpiresAt?: Date | string | null
+  lastError?: string | null
+  deadLetterReason?: string | null
+  createdBy?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  property: Prisma.PropertyCreateNestedOneWithoutAutomationJobsInput
+  finalizedObjects?: Prisma.KnowledgeObjectCreateNestedManyWithoutFinalizedByJobInput
+}
+
+export type AutomationJobUncheckedCreateWithoutAttemptsInput = {
+  id?: string
+  propertyId: string
+  workflowId: string
+  workflowVersion?: number
+  triggerType: string
+  triggerRef?: string | null
+  actionType: string
+  status?: string
+  priority?: number
+  payload: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey: string
+  scheduledFor?: Date | string
+  nextRunAt?: Date | string
+  maxAttempts?: number
+  attemptCount?: number
+  lockedAt?: Date | string | null
+  lockedBy?: string | null
+  leaseExpiresAt?: Date | string | null
+  lastError?: string | null
+  deadLetterReason?: string | null
+  createdBy?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  finalizedObjects?: Prisma.KnowledgeObjectUncheckedCreateNestedManyWithoutFinalizedByJobInput
+}
+
+export type AutomationJobCreateOrConnectWithoutAttemptsInput = {
+  where: Prisma.AutomationJobWhereUniqueInput
+  create: Prisma.XOR<Prisma.AutomationJobCreateWithoutAttemptsInput, Prisma.AutomationJobUncheckedCreateWithoutAttemptsInput>
+}
+
+export type AutomationJobUpsertWithoutAttemptsInput = {
+  update: Prisma.XOR<Prisma.AutomationJobUpdateWithoutAttemptsInput, Prisma.AutomationJobUncheckedUpdateWithoutAttemptsInput>
+  create: Prisma.XOR<Prisma.AutomationJobCreateWithoutAttemptsInput, Prisma.AutomationJobUncheckedCreateWithoutAttemptsInput>
+  where?: Prisma.AutomationJobWhereInput
+}
+
+export type AutomationJobUpdateToOneWithWhereWithoutAttemptsInput = {
+  where?: Prisma.AutomationJobWhereInput
+  data: Prisma.XOR<Prisma.AutomationJobUpdateWithoutAttemptsInput, Prisma.AutomationJobUncheckedUpdateWithoutAttemptsInput>
+}
+
+export type AutomationJobUpdateWithoutAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  triggerType?: Prisma.StringFieldUpdateOperationsInput | string
+  triggerRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actionType?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduledFor?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextRunAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maxAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deadLetterReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  property?: Prisma.PropertyUpdateOneRequiredWithoutAutomationJobsNestedInput
+  finalizedObjects?: Prisma.KnowledgeObjectUpdateManyWithoutFinalizedByJobNestedInput
+}
+
+export type AutomationJobUncheckedUpdateWithoutAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  triggerType?: Prisma.StringFieldUpdateOperationsInput | string
+  triggerRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actionType?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  result?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduledFor?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextRunAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maxAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lockedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deadLetterReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  finalizedObjects?: Prisma.KnowledgeObjectUncheckedUpdateManyWithoutFinalizedByJobNestedInput
+}
+
 export type AutomationJobCreateWithoutPropertyInput = {
   id?: string
   workflowId: string
@@ -874,6 +1396,14 @@ export type AutomationJobCreateWithoutPropertyInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  attempts?: Prisma.AutomationJobAttemptCreateNestedManyWithoutJobInput
+  finalizedObjects?: Prisma.KnowledgeObjectCreateNestedManyWithoutFinalizedByJobInput
 }
 
 export type AutomationJobUncheckedCreateWithoutPropertyInput = {
@@ -901,6 +1431,14 @@ export type AutomationJobUncheckedCreateWithoutPropertyInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
+  attempts?: Prisma.AutomationJobAttemptUncheckedCreateNestedManyWithoutJobInput
+  finalizedObjects?: Prisma.KnowledgeObjectUncheckedCreateNestedManyWithoutFinalizedByJobInput
 }
 
 export type AutomationJobCreateOrConnectWithoutPropertyInput = {
@@ -958,6 +1496,12 @@ export type AutomationJobScalarWhereInput = {
   completedAt?: Prisma.DateTimeNullableFilter<"AutomationJob"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"AutomationJob"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AutomationJob"> | Date | string
+  operationKey?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  operationType?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  operationVersion?: Prisma.IntFilter<"AutomationJob"> | number
+  inputGeneration?: Prisma.BigIntFilter<"AutomationJob"> | bigint | number
+  canonicalInputHash?: Prisma.StringNullableFilter<"AutomationJob"> | string | null
+  fencingToken?: Prisma.BigIntFilter<"AutomationJob"> | bigint | number
 }
 
 export type AutomationJobCreateManyPropertyInput = {
@@ -985,6 +1529,12 @@ export type AutomationJobCreateManyPropertyInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  operationKey?: string | null
+  operationType?: string | null
+  operationVersion?: number
+  inputGeneration?: bigint | number
+  canonicalInputHash?: string | null
+  fencingToken?: bigint | number
 }
 
 export type AutomationJobUpdateWithoutPropertyInput = {
@@ -1012,6 +1562,14 @@ export type AutomationJobUpdateWithoutPropertyInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  attempts?: Prisma.AutomationJobAttemptUpdateManyWithoutJobNestedInput
+  finalizedObjects?: Prisma.KnowledgeObjectUpdateManyWithoutFinalizedByJobNestedInput
 }
 
 export type AutomationJobUncheckedUpdateWithoutPropertyInput = {
@@ -1039,6 +1597,14 @@ export type AutomationJobUncheckedUpdateWithoutPropertyInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  attempts?: Prisma.AutomationJobAttemptUncheckedUpdateManyWithoutJobNestedInput
+  finalizedObjects?: Prisma.KnowledgeObjectUncheckedUpdateManyWithoutFinalizedByJobNestedInput
 }
 
 export type AutomationJobUncheckedUpdateManyWithoutPropertyInput = {
@@ -1066,8 +1632,52 @@ export type AutomationJobUncheckedUpdateManyWithoutPropertyInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  operationVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  inputGeneration?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  canonicalInputHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fencingToken?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
 }
 
+
+/**
+ * Count Type AutomationJobCountOutputType
+ */
+
+export type AutomationJobCountOutputType = {
+  attempts: number
+  finalizedObjects: number
+}
+
+export type AutomationJobCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  attempts?: boolean | AutomationJobCountOutputTypeCountAttemptsArgs
+  finalizedObjects?: boolean | AutomationJobCountOutputTypeCountFinalizedObjectsArgs
+}
+
+/**
+ * AutomationJobCountOutputType without action
+ */
+export type AutomationJobCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AutomationJobCountOutputType
+   */
+  select?: Prisma.AutomationJobCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AutomationJobCountOutputType without action
+ */
+export type AutomationJobCountOutputTypeCountAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AutomationJobAttemptWhereInput
+}
+
+/**
+ * AutomationJobCountOutputType without action
+ */
+export type AutomationJobCountOutputTypeCountFinalizedObjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgeObjectWhereInput
+}
 
 
 export type AutomationJobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1096,7 +1706,16 @@ export type AutomationJobSelect<ExtArgs extends runtime.Types.Extensions.Interna
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  operationKey?: boolean
+  operationType?: boolean
+  operationVersion?: boolean
+  inputGeneration?: boolean
+  canonicalInputHash?: boolean
+  fencingToken?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  attempts?: boolean | Prisma.AutomationJob$attemptsArgs<ExtArgs>
+  finalizedObjects?: boolean | Prisma.AutomationJob$finalizedObjectsArgs<ExtArgs>
+  _count?: boolean | Prisma.AutomationJobCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["automationJob"]>
 
 export type AutomationJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1125,6 +1744,12 @@ export type AutomationJobSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  operationKey?: boolean
+  operationType?: boolean
+  operationVersion?: boolean
+  inputGeneration?: boolean
+  canonicalInputHash?: boolean
+  fencingToken?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["automationJob"]>
 
@@ -1154,6 +1779,12 @@ export type AutomationJobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  operationKey?: boolean
+  operationType?: boolean
+  operationVersion?: boolean
+  inputGeneration?: boolean
+  canonicalInputHash?: boolean
+  fencingToken?: boolean
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["automationJob"]>
 
@@ -1183,11 +1814,20 @@ export type AutomationJobSelectScalar = {
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  operationKey?: boolean
+  operationType?: boolean
+  operationVersion?: boolean
+  inputGeneration?: boolean
+  canonicalInputHash?: boolean
+  fencingToken?: boolean
 }
 
-export type AutomationJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "workflowId" | "workflowVersion" | "triggerType" | "triggerRef" | "actionType" | "status" | "priority" | "payload" | "result" | "idempotencyKey" | "scheduledFor" | "nextRunAt" | "maxAttempts" | "attemptCount" | "lockedAt" | "lockedBy" | "leaseExpiresAt" | "lastError" | "deadLetterReason" | "createdBy" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["automationJob"]>
+export type AutomationJobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "workflowId" | "workflowVersion" | "triggerType" | "triggerRef" | "actionType" | "status" | "priority" | "payload" | "result" | "idempotencyKey" | "scheduledFor" | "nextRunAt" | "maxAttempts" | "attemptCount" | "lockedAt" | "lockedBy" | "leaseExpiresAt" | "lastError" | "deadLetterReason" | "createdBy" | "completedAt" | "createdAt" | "updatedAt" | "operationKey" | "operationType" | "operationVersion" | "inputGeneration" | "canonicalInputHash" | "fencingToken", ExtArgs["result"]["automationJob"]>
 export type AutomationJobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  attempts?: boolean | Prisma.AutomationJob$attemptsArgs<ExtArgs>
+  finalizedObjects?: boolean | Prisma.AutomationJob$finalizedObjectsArgs<ExtArgs>
+  _count?: boolean | Prisma.AutomationJobCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AutomationJobIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -1200,6 +1840,8 @@ export type $AutomationJobPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "AutomationJob"
   objects: {
     property: Prisma.$PropertyPayload<ExtArgs>
+    attempts: Prisma.$AutomationJobAttemptPayload<ExtArgs>[]
+    finalizedObjects: Prisma.$KnowledgeObjectPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1227,6 +1869,12 @@ export type $AutomationJobPayload<ExtArgs extends runtime.Types.Extensions.Inter
     completedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    operationKey: string | null
+    operationType: string | null
+    operationVersion: number
+    inputGeneration: bigint
+    canonicalInputHash: string | null
+    fencingToken: bigint
   }, ExtArgs["result"]["automationJob"]>
   composites: {}
 }
@@ -1622,6 +2270,8 @@ readonly fields: AutomationJobFieldRefs;
 export interface Prisma__AutomationJobClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   property<T extends Prisma.PropertyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyDefaultArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  attempts<T extends Prisma.AutomationJob$attemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AutomationJob$attemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationJobAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  finalizedObjects<T extends Prisma.AutomationJob$finalizedObjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AutomationJob$finalizedObjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeObjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1676,6 +2326,12 @@ export interface AutomationJobFieldRefs {
   readonly completedAt: Prisma.FieldRef<"AutomationJob", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AutomationJob", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AutomationJob", 'DateTime'>
+  readonly operationKey: Prisma.FieldRef<"AutomationJob", 'String'>
+  readonly operationType: Prisma.FieldRef<"AutomationJob", 'String'>
+  readonly operationVersion: Prisma.FieldRef<"AutomationJob", 'Int'>
+  readonly inputGeneration: Prisma.FieldRef<"AutomationJob", 'BigInt'>
+  readonly canonicalInputHash: Prisma.FieldRef<"AutomationJob", 'String'>
+  readonly fencingToken: Prisma.FieldRef<"AutomationJob", 'BigInt'>
 }
     
 
@@ -2074,6 +2730,54 @@ export type AutomationJobDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many AutomationJobs to delete.
    */
   limit?: number
+}
+
+/**
+ * AutomationJob.attempts
+ */
+export type AutomationJob$attemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AutomationJobAttempt
+   */
+  select?: Prisma.AutomationJobAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationJobAttempt
+   */
+  omit?: Prisma.AutomationJobAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationJobAttemptInclude<ExtArgs> | null
+  where?: Prisma.AutomationJobAttemptWhereInput
+  orderBy?: Prisma.AutomationJobAttemptOrderByWithRelationInput | Prisma.AutomationJobAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationJobAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationJobAttemptScalarFieldEnum | Prisma.AutomationJobAttemptScalarFieldEnum[]
+}
+
+/**
+ * AutomationJob.finalizedObjects
+ */
+export type AutomationJob$finalizedObjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgeObject
+   */
+  select?: Prisma.KnowledgeObjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgeObject
+   */
+  omit?: Prisma.KnowledgeObjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgeObjectInclude<ExtArgs> | null
+  where?: Prisma.KnowledgeObjectWhereInput
+  orderBy?: Prisma.KnowledgeObjectOrderByWithRelationInput | Prisma.KnowledgeObjectOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgeObjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgeObjectScalarFieldEnum | Prisma.KnowledgeObjectScalarFieldEnum[]
 }
 
 /**

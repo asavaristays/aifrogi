@@ -304,17 +304,22 @@ export async function getKnowledgeVerificationReadiness(propertyId: string, cate
   return { frameworkVersion: KB_FRAMEWORK_VERSION, essentials, trialReady: safe && essentials.missing.length === 0, coverage, published: claims.length, fresh, freshnessRate, conflicts, unsigned, openFlags, previewPending, ready: coverage.percentage >= KB_MINIMUM_COVERAGE && safe };
 }
 
-export async function getPublishedClaimContext(propertySlug: string, question: string, options: { readOnly?: boolean } = {}) {
+export async function getPublishedClaimContext(propertySlug: string, question: string, options: { readOnly?: boolean; ignorePublishedClaims?: boolean } = {}) {
   const db = getDb();
   const empty = { context: "", claimIds: [] as string[], candidates: [] as Array<RetrievalCandidate & { answer: string }>, nearMissClaimIds: [] as string[], blockedState: null as null | "CONFLICT" | "FLAGGED" | "EXPIRED" | "PAUSED" };
   if (!db) return empty;
   const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
   if (!property) return empty;
+  if (options.ignorePublishedClaims) return empty;
   if (!options.readOnly) await expirePublishedClaims(property.id);
   // Approval is an intermediate workflow state, not permission to serve a fact.
   const claims = await db.knowledgeEntry.findMany({ where: { propertyId: property.id, status: "PUBLISHED", conflictStatus: { not: "UNRESOLVED" }, OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] }, take: 100 });
-  const scored = claims.map((claim) => ({ claim, score: scoreRetrievalCandidate(question, claim) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score);
-  const ranked = scored.filter((item) => item.score >= 0.12).slice(0, 8);
+  const scored = claims.map((claim) => ({ claim, score: Math.min(2, scoreRetrievalCandidate(question, claim) + canonicalClaimIntentBoost(question, claim.question)) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score || a.claim.id.localeCompare(b.claim.id));
+  const topScore=scored[0]?.score||0;
+  // A factual response should normally bind one atomic claim. Preserve a
+  // small tie window for genuinely multipart questions, but never include a
+  // whole publication merely because the tenant name appears in every claim.
+  const ranked = scored.filter((item) => item.score >= 0.12 && item.score >= topScore-0.08).slice(0, 3);
   const selectedIds = new Set(ranked.map(({ claim }) => claim.id));
   const candidates = scored.slice(0, 12).map(({ claim, score }) => ({ claimId: claim.id, claimKey: claim.claimKey, score, selected: selectedIds.has(claim.id), status: claim.status, answer: claim.answer }));
   const nearMissClaimIds = ranked.length ? [] : candidates.filter((candidate) => candidate.score >= 0.08).slice(0, 3).map((candidate) => candidate.claimId);
@@ -322,4 +327,15 @@ export async function getPublishedClaimContext(propertySlug: string, question: s
   const blocked = unavailable.map((claim) => ({ claim, score: scoreRetrievalCandidate(question, claim) })).filter((item) => item.score > 0).sort((a,b)=>b.score-a.score)[0]?.claim;
   const blockedState = !blocked ? null : blocked.conflictStatus === "UNRESOLVED" || blocked.status === "CONFLICT" ? "CONFLICT" as const : blocked.status === "EXPIRED" ? "EXPIRED" as const : blocked.pauseReason?.toLowerCase().includes("flag") ? "FLAGGED" as const : "PAUSED" as const;
   return { context: ranked.map(({claim})=>`Approved atomic claim ${claim.claimKey || claim.id} v${claim.version}\nQuestion: ${claim.question}\nAnswer: ${claim.answer}\nEffective: ${claim.effectiveAt?.toISOString() || "not specified"}\nExpires: ${claim.expiresAt?.toISOString() || "not specified"}`).join("\n\n---\n\n").slice(0,9000), claimIds: ranked.map(({claim})=>claim.id), candidates, nearMissClaimIds, blockedState };
+}
+
+export function canonicalClaimIntentBoost(question:string,claimQuestion:string){
+  const q=question.toLowerCase();
+  const label=claimQuestion.toLowerCase();
+  if(/\b(email|phone|mobile|contact|address|located|location|where)\b/.test(q)&&/contact/.test(label))return 1;
+  if(/\b(service|services|product|products|offer|offers|provide|build|solution|solutions)\b/.test(q)&&/(service|product)/.test(label))return 1;
+  if(/\b(start|begin|book|project|engage|hire)\b/.test(q)&&/(start|book)/.test(label))return 1;
+  if(/\b(human|person|team|support|agent|representative)\b/.test(q)&&/human|support/.test(label))return 1;
+  if(/\b(who|what is|about|company|business)\b/.test(q)&&/identity/.test(label))return 1;
+  return 0;
 }

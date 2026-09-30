@@ -13,6 +13,7 @@ const navigation = [
   { label: "Customers", href: "/admin/customers", icon: "inbox" as const },
   { label: "Billing Operations", href: "/admin/billing", icon: "bar-chart-3" as const },
   { label: "Capacity Advisor", href: "/admin/capacity", icon: "bar-chart-3" as const },
+  { label: "Fleet Health", href: "/admin/fleet-health", icon: "grid" as const },
   { label: "Knowledge", href: "/admin/knowledge", icon: "file-text" as const },
   { label: "Intelligence Operations", href: "/admin/sovereign-intelligence", icon: "plug" as const },
   { label: "Flow Library", href: "/admin/flow-library", icon: "git-branch" as const },

@@ -1,0 +1,144 @@
+diff --git a/tmp/aifrogi-v6-original/p2a-corrected-v6/15-V6-BLOCKING-HARDENING.sql b/deliverables/p2a-corrected-v6/15-V6-BLOCKING-HARDENING.sql
+index 135986c..3a44844 100644
+--- a/tmp/aifrogi-v6-original/p2a-corrected-v6/15-V6-BLOCKING-HARDENING.sql
++++ b/deliverables/p2a-corrected-v6/15-V6-BLOCKING-HARDENING.sql
+@@ -19,15 +19,6 @@ LANGUAGE sql STABLE SET search_path=pg_catalog AS $$
+   SELECT NULLIF(current_setting('app.guest_session_hash',true),'')
+ $$;
+ 
+-CREATE TABLE "KnowledgeRuntimePrincipalGrant" (
+- id text PRIMARY KEY,"propertyId" text NOT NULL,"principalId" text NOT NULL,"databaseRole" text NOT NULL,purpose text NOT NULL,
+- "expiresAt" timestamptz,"revokedAt" timestamptz,"createdAt" timestamptz NOT NULL DEFAULT clock_timestamp(),
+- CONSTRAINT "KnowledgeRuntimePrincipalGrant_role_check" CHECK ("databaseRole" IN ('aifrogi_web','aifrogi_public','aifrogi_worker','aifrogi_publisher')),
+- CONSTRAINT "KnowledgeRuntimePrincipalGrant_property_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"(id) ON DELETE RESTRICT,
+- UNIQUE("propertyId","principalId","databaseRole",purpose)
+-);
+-CREATE UNIQUE INDEX "KnowledgeRuntimePrincipalGrant_property_id_key" ON "KnowledgeRuntimePrincipalGrant"("propertyId",id);
+-
+ CREATE OR REPLACE FUNCTION aifrogi_security.require_context(
+   p_property text, p_role name, p_purposes text[], p_principal text DEFAULT NULL
+ ) RETURNS void LANGUAGE plpgsql STABLE SECURITY DEFINER
+@@ -50,22 +41,7 @@ END $$;
+ 
+ REVOKE ALL ON FUNCTION aifrogi_security.current_principal(),aifrogi_security.current_purpose(),aifrogi_security.current_session_hash(),aifrogi_security.require_context(text,name,text[],text) FROM PUBLIC;
+ 
+--- Exact lineage: a binding's evidence must belong to the same entry, and a
+--- publication row must copy the identity and sealed hash of that exact entry.
+-ALTER TABLE "KnowledgeClaimEvidence" ADD CONSTRAINT "KnowledgeClaimEvidence_propertyId_entryId_id_key" UNIQUE ("propertyId","entryId",id);
+-ALTER TABLE "KnowledgeEntry" ADD CONSTRAINT "KnowledgeEntry_propertyId_claimIdentityId_id_sealManifestHash_key" UNIQUE ("propertyId","claimIdentityId",id,"sealManifestHash");
+-ALTER TABLE "KnowledgeRevisionEvidenceBinding" ADD CONSTRAINT "KnowledgeRevisionEvidenceBinding_exact_evidence_fkey" FOREIGN KEY ("propertyId","entryId","evidenceId") REFERENCES "KnowledgeClaimEvidence"("propertyId","entryId",id) ON DELETE RESTRICT ON UPDATE CASCADE;
+-ALTER TABLE "KnowledgePublicationClaim" ADD CONSTRAINT "KnowledgePublicationClaim_exact_entry_fkey" FOREIGN KEY ("propertyId","claimIdentityId","entryId","sealManifestHash") REFERENCES "KnowledgeEntry"("propertyId","claimIdentityId",id,"sealManifestHash") ON DELETE RESTRICT ON UPDATE CASCADE;
+-ALTER TABLE "SourceCapture" ALTER COLUMN "requestedGeneration" TYPE bigint;
+-ALTER TABLE "AutomationJob" ALTER COLUMN "inputGeneration" TYPE bigint;
+-CREATE TABLE "KnowledgeMigrationArtifactDecision" (
+- id text PRIMARY KEY,"propertyId" text NOT NULL,"batchId" text NOT NULL,"artifactType" text NOT NULL,"legacyId" text NOT NULL,
+- "sourcePathHash" text,"contentHash" text NOT NULL,decision text NOT NULL,"reasonCode" text NOT NULL,"sourceId" text,"objectId" text,"createdAt" timestamptz NOT NULL DEFAULT clock_timestamp(),
+- CONSTRAINT "KnowledgeMigrationArtifactDecision_decision_check" CHECK (decision IN ('MAP','QUARANTINE')),
+- CONSTRAINT "KnowledgeMigrationArtifactDecision_property_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"(id) ON DELETE RESTRICT
+-);
+-CREATE UNIQUE INDEX "KnowledgeMigrationArtifactDecision_batch_artifact_key" ON "KnowledgeMigrationArtifactDecision"("batchId","artifactType","legacyId");
+-CREATE UNIQUE INDEX "KnowledgeMigrationArtifactDecision_property_id_key" ON "KnowledgeMigrationArtifactDecision"("propertyId",id);
++-- Part 3 creates all v6 tables, bigint columns, exact composite keys and FKs.
+ 
+ CREATE OR REPLACE FUNCTION aifrogi_security.guard_sealed_evidence() RETURNS trigger
+ LANGUAGE plpgsql SET search_path=pg_catalog,public AS $$
+@@ -114,6 +90,13 @@
+    SELECT * INTO STRICT s FROM public."KnowledgeSource" WHERE "propertyId"=NEW."propertyId" AND id=NEW."sourceId" FOR UPDATE;
+    SELECT * INTO STRICT c FROM public."WebsiteSourceConsent" WHERE "propertyId"=NEW."propertyId" AND id=NEW."consentId" FOR SHARE;
+  END IF;
++ IF c."sourceId" IS DISTINCT FROM NEW."sourceId" OR c."sourceType"::text IS DISTINCT FROM s."sourceType"::text OR c."canonicalIdentityHash" IS DISTINCT FROM s."canonicalIdentityHash" THEN RAISE EXCEPTION 'CONSENT_SOURCE_IDENTITY_MISMATCH'; END IF;
++ IF TG_TABLE_NAME='WebsiteSourceConsent' THEN
++   IF NEW.status='REVOKED' THEN
++     IF NEW."revokedAt" IS NULL OR NEW."revokedBy" IS NULL OR NEW."revocationReason" IS NULL THEN RAISE EXCEPTION 'CONSENT_REVOCATION_INCOMPLETE'; END IF;
++     RETURN NEW;
++   END IF;
++ END IF;
+  IF c."sourceId" IS DISTINCT FROM NEW."sourceId" OR c."sourceType"::text IS DISTINCT FROM s."sourceType"::text
+     OR c."canonicalIdentityHash" IS DISTINCT FROM s."canonicalIdentityHash" OR c.status NOT IN ('TRIAL_AUTHORIZED','POST_TRIAL_APPROVED')
+     OR c."authorityScope" IS NULL OR NOT (c."authorityScope" @> '{"capture":true}'::jsonb)
+@@ -230,13 +206,35 @@ DECLARE oid text:=gen_random_uuid()::text; a public."KnowledgeAnswerAudit"%ROWTY
+ BEGIN
+  PERFORM aifrogi_security.require_context(p_property,'aifrogi_web',ARRAY['PUBLIC_GUEST'],NULL);
+  SELECT * INTO STRICT a FROM public."KnowledgeAnswerAudit" WHERE "propertyId"=p_property AND id=p_answer FOR SHARE;
+- IF NOT EXISTS (SELECT 1 FROM public."KnowledgeGuestSession" s WHERE s."propertyId"=p_property AND s.id=a."guestSessionId" AND s."conversationId"=a."conversationId" AND s."sessionHash"=aifrogi_security.current_session_hash() AND s."revokedAt" IS NULL AND s."expiresAt">clock_timestamp()) THEN RAISE EXCEPTION 'DELIVERY_SESSION_UNAUTHORIZED'; END IF;
++ IF NOT EXISTS (SELECT 1 FROM public."KnowledgeGuestSession" s WHERE s."propertyId"=p_property AND s.id=a."guestSessionId" AND s."conversationId"=a."conversationId" AND s."sessionHash"=aifrogi_security.current_session_hash()) THEN RAISE EXCEPTION 'DELIVERY_SESSION_UNAUTHORIZED'; END IF;
++ IF p_state='DELIVERED' AND NOT EXISTS (SELECT 1 FROM public."KnowledgeGuestSession" s WHERE s."propertyId"=p_property AND s.id=a."guestSessionId" AND s."revokedAt" IS NULL AND s."expiresAt">clock_timestamp()) THEN RAISE EXCEPTION 'DELIVERY_SESSION_INACTIVE'; END IF;
+  SELECT "eligibilityGeneration" INTO STRICT current_g FROM public."PropertyIntelligencePolicy" WHERE "propertyId"=p_property FOR SHARE;
+  IF p_state='DELIVERED' AND (current_g<>a."eligibilityGeneration" OR EXISTS (SELECT 1 FROM jsonb_array_elements(a."selectedManifest") x WHERE NOT aifrogi_security.eligible_claim(p_property,x->>'entryId','PUBLIC',clock_timestamp(),current_g))) THEN RAISE EXCEPTION 'DELIVERY_REVALIDATION_FAILED'; END IF;
+  IF p_state='PENDING' THEN RAISE EXCEPTION 'OUTCOME_CANNOT_BE_PENDING'; END IF;
+  INSERT INTO public."KnowledgeAnswerOutcome"(id,"propertyId","answerAuditId","deliveryKey",state,detail,"occurredAt") VALUES(oid,p_property,p_answer,p_delivery_key,p_state,p_detail,clock_timestamp()) ON CONFLICT ("propertyId","answerAuditId","deliveryKey") DO NOTHING; SELECT id INTO STRICT oid FROM public."KnowledgeAnswerOutcome" WHERE "propertyId"=p_property AND "answerAuditId"=p_answer AND "deliveryKey"=p_delivery_key; RETURN oid;
+ END $$;
+ 
++CREATE OR REPLACE FUNCTION aifrogi_security.answer_outcome_state(p_property text,p_answer text,p_delivery_key text)
++RETURNS public."AnswerDeliveryState" LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path=pg_catalog,public AS $$
++DECLARE result public."AnswerDeliveryState";
++BEGIN
++ PERFORM aifrogi_security.require_context(p_property,'aifrogi_web',ARRAY['PUBLIC_GUEST'],NULL);
++ IF NOT EXISTS (SELECT 1 FROM public."KnowledgeAnswerAudit" a JOIN public."KnowledgeGuestSession" s ON (s."propertyId",s.id,s."conversationId")=(a."propertyId",a."guestSessionId",a."conversationId") WHERE a."propertyId"=p_property AND a.id=p_answer AND s."sessionHash"=aifrogi_security.current_session_hash()) THEN RAISE EXCEPTION 'DELIVERY_SESSION_UNAUTHORIZED'; END IF;
++ SELECT state INTO STRICT result FROM public."KnowledgeAnswerOutcome" WHERE "propertyId"=p_property AND "answerAuditId"=p_answer AND "deliveryKey"=p_delivery_key;
++ RETURN result;
++END $$;
++
++CREATE OR REPLACE FUNCTION aifrogi_security.answer_delivery_manifest(p_property text,p_answer text)
++RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public AS $$
++DECLARE a public."KnowledgeAnswerAudit"%ROWTYPE;
++BEGIN
++ PERFORM aifrogi_security.require_context(p_property,'aifrogi_web',ARRAY['PUBLIC_GUEST'],NULL);
++ SELECT * INTO STRICT a FROM public."KnowledgeAnswerAudit" WHERE "propertyId"=p_property AND id=p_answer FOR SHARE;
++ IF NOT EXISTS (SELECT 1 FROM public."KnowledgeGuestSession" s WHERE s."propertyId"=p_property AND s.id=a."guestSessionId" AND s."conversationId"=a."conversationId" AND s."sessionHash"=aifrogi_security.current_session_hash() AND s."revokedAt" IS NULL AND s."expiresAt">clock_timestamp()) THEN RAISE EXCEPTION 'DELIVERY_SESSION_UNAUTHORIZED'; END IF;
++ PERFORM 1 FROM public."PropertyIntelligencePolicy" WHERE "propertyId"=p_property FOR SHARE;
++ RETURN a."selectedManifest";
++END $$;
++
+ ALTER FUNCTION aifrogi_security.record_handover(text,text,text,text,text) RENAME TO record_handover_unchecked;
+ ALTER FUNCTION aifrogi_security.append_handover_event(text,text,"HandoverState",int,text,text,text,text) RENAME TO append_handover_event_unchecked;
+ CREATE FUNCTION aifrogi_security.record_handover(p_property text,p_conversation text,p_session_hash text,p_request_hash text,p_actor text)
+@@ -326,9 +324,35 @@ REVOKE ALL ON ALL TABLES IN SCHEMA public FROM leados_app,aifrogi_web,aifrogi_pu
+ REVOKE ALL ON TABLE "KnowledgeServingPointer","KnowledgeAnswerAudit","KnowledgeAnswerOutcome","KnowledgeHandoverRequest","KnowledgeHandoverEvent","AutomationJobAttempt","CaptureVersion","KnowledgeOutboxEvent" FROM leados_app,aifrogi_web,aifrogi_public,aifrogi_worker,aifrogi_publisher;
+ GRANT USAGE ON SCHEMA aifrogi_security TO aifrogi_web,aifrogi_public,aifrogi_worker,aifrogi_publisher;
+ GRANT EXECUTE ON FUNCTION aifrogi_security.current_property_id(),aifrogi_security.current_organization_id(),aifrogi_security.has_platform_authority() TO aifrogi_web,aifrogi_public,aifrogi_worker,aifrogi_publisher;
+-GRANT EXECUTE ON FUNCTION aifrogi_security.authorize_guest(text,text,text),aifrogi_security.record_answer_pending(text,text,text,text[]),aifrogi_security.record_answer_outcome(text,text,text,"AnswerDeliveryState",jsonb),aifrogi_security.record_handover(text,text,text,text,text),aifrogi_security.append_handover_event(text,text,"HandoverState",int,text,text,text,text) TO aifrogi_web;
++GRANT EXECUTE ON FUNCTION aifrogi_security.authorize_guest(text,text,text),aifrogi_security.record_answer_pending(text,text,text,text[]),aifrogi_security.record_answer_outcome(text,text,text,"AnswerDeliveryState",jsonb),aifrogi_security.answer_outcome_state(text,text,text),aifrogi_security.answer_delivery_manifest(text,text),aifrogi_security.record_handover(text,text,text,text,text),aifrogi_security.append_handover_event(text,text,"HandoverState",int,text,text,text,text) TO aifrogi_web;
+ GRANT EXECUTE ON FUNCTION aifrogi_security.eligible_public_claims(text,bigint) TO aifrogi_public;
+ GRANT EXECUTE ON FUNCTION aifrogi_security.claim_job(text,text,int),aifrogi_security.renew_job(text,text,text,bigint,int),aifrogi_security.reclaim_job(text,text,text,int),aifrogi_security.finalize_capture(text,text,text,bigint,bigint,text,text,text,text,jsonb,text) TO aifrogi_worker;
+ GRANT EXECUTE ON FUNCTION aifrogi_security.seal_claim_revision(text,text,text,text),aifrogi_security.seal_publication(text,text,text,bigint),aifrogi_security.advance_serving_pointer(text,"KnowledgeAudience",text,bigint,text),aifrogi_security.revoke_source(text,text,text,text,text) TO aifrogi_publisher;
++
++-- The web role has no direct INSERT/UPDATE privilege on guest sessions. This
++-- routine creates or extends only the caller-bound session for an existing
++-- conversation in the same property; it can never reparent an existing hash.
++CREATE OR REPLACE FUNCTION aifrogi_security.ensure_guest_session(p_property text,p_conversation text,p_session_hash text,p_expires_at timestamptz,p_actor text)
++RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public AS $$
++DECLARE sid text;
++BEGIN
++ PERFORM aifrogi_security.require_context(p_property,'aifrogi_web',ARRAY['PUBLIC_GUEST'],p_actor);
++ IF aifrogi_security.current_session_hash() IS DISTINCT FROM p_session_hash THEN RAISE EXCEPTION 'GUEST_SESSION_HASH_MISMATCH'; END IF;
++ IF p_expires_at<=clock_timestamp() THEN RAISE EXCEPTION 'GUEST_SESSION_ALREADY_EXPIRED'; END IF;
++ IF p_expires_at>clock_timestamp()+interval '24 hours' THEN RAISE EXCEPTION 'GUEST_SESSION_EXPIRY_TOO_LONG'; END IF;
++ PERFORM 1 FROM public."Conversation" WHERE "propertyId"=p_property AND id=p_conversation FOR SHARE;
++ IF NOT FOUND THEN RAISE EXCEPTION 'CONVERSATION_NOT_FOUND'; END IF;
++ SELECT id INTO sid FROM public."KnowledgeGuestSession" WHERE "propertyId"=p_property AND "sessionHash"=p_session_hash FOR UPDATE;
++ IF FOUND THEN
++   IF NOT EXISTS (SELECT 1 FROM public."KnowledgeGuestSession" WHERE "propertyId"=p_property AND id=sid AND "conversationId"=p_conversation AND "revokedAt" IS NULL) THEN RAISE EXCEPTION 'GUEST_SESSION_REPARENT_FORBIDDEN'; END IF;
++   UPDATE public."KnowledgeGuestSession" SET "expiresAt"=GREATEST("expiresAt",p_expires_at) WHERE "propertyId"=p_property AND id=sid;
++   RETURN sid;
++ END IF;
++ sid:=gen_random_uuid()::text;
++ INSERT INTO public."KnowledgeGuestSession"(id,"propertyId","conversationId","sessionHash","expiresAt","createdAt") VALUES(sid,p_property,p_conversation,p_session_hash,p_expires_at,clock_timestamp());
++ RETURN sid;
++END $$;
++REVOKE ALL ON FUNCTION aifrogi_security.ensure_guest_session(text,text,text,timestamptz,text) FROM PUBLIC;
++GRANT EXECUTE ON FUNCTION aifrogi_security.ensure_guest_session(text,text,text,timestamptz,text) TO aifrogi_web;
+-- *_unchecked, require_context, and assert_capture_authorized remain executable
+-- only by the migration owner; runtime roles receive no grant.
+
+@@ application bootstrap resolver addition @@
++-- Narrow SECURITY DEFINER resolvers disclose only organization identity before
++-- the ordinary tenant context exists; their execution is granted only to the
++-- non-owner application role.
++CREATE FUNCTION aifrogi_security.resolve_public_bot_organization(text) RETURNS text ...;
++CREATE FUNCTION aifrogi_security.resolve_property_organization(text) RETURNS text ...;
++CREATE FUNCTION aifrogi_security.resolve_session_organization(text,text) RETURNS text ...;
++CREATE FUNCTION aifrogi_security.resolve_member_organization(text) RETURNS text ...;
++CREATE FUNCTION aifrogi_security.is_session_active(text) RETURNS boolean ...;
++REVOKE ALL ON FUNCTION ... FROM PUBLIC;
++GRANT EXECUTE ON FUNCTION ... TO leados_app;

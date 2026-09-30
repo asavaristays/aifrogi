@@ -6,20 +6,21 @@ import {
   saveOnboardingStep
 } from "@/lib/services/onboarding-service";
 import { WORKSPACE_COOKIE_NAME } from "@/lib/workspace";
+import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export async function GET() {
   const user = await getCurrentUser();
-  if (!user) {
+  if (!user || user.role === "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const organization = await loadOnboardingForUser(user.username);
+  const organization = await loadOnboardingForUser(user.username, user.organizationId);
   return NextResponse.json({ organization });
 }
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
-  if (!user) {
+  if (!user || user.role === "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   const user = await getCurrentUser();
-  if (!user) {
+  if (!user || user.role === "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -58,7 +59,11 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  const result = await saveOnboardingStep(user.username, payload);
+  const result = await withTenantDatabaseContext({
+    kind: "tenant",
+    organizationId: user.organizationId,
+    actor: `onboarding:${user.username}`
+  }, () => saveOnboardingStep(user.username, payload, user.organizationId));
   if (result.error) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }

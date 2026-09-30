@@ -1,5 +1,5 @@
 import { KnowledgeWorkspace } from "@/components/knowledge/knowledge-workspace";
-import { canManageWorkspace, getCurrentClientAccess, withClientDatabaseContext } from "@/lib/client-access";
+import { canManageWorkspace, getCurrentClientAccess } from "@/lib/client-access";
 import { getKnowledgeWorkspaceSummary } from "@/lib/services/website-knowledge-service";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
 import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-content-repository";
@@ -7,13 +7,16 @@ import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-
 import { getDb } from "@/lib/db";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { redirect } from "next/navigation";
+import { withTenantPropertyDatabaseContext } from "@/lib/security/tenant-database-context";
 
 export const dynamic = "force-dynamic";
 
 export default async function KnowledgePage() {
   const [access, propertySlug] = await Promise.all([getCurrentClientAccess(), getCurrentWorkspaceSlug()]);
   if (!access) redirect("/login");
-  const { summary, governance, property, verification, subscription, testActivity } = await withClientDatabaseContext(access, "client-knowledge", async () => {
+  const selectedProperty = access.organization.properties.find(item => item.slug === propertySlug) || access.organization.properties[0];
+  if (!selectedProperty) redirect("/onboarding");
+  const { summary, governance, property, verification, subscription, testActivity } = await withTenantPropertyDatabaseContext({ organizationId: access.organization.id, propertyId: selectedProperty.id, actor: `client-knowledge:${access.user.username}` }, async () => {
     const [summary, governance] = await Promise.all([getKnowledgeWorkspaceSummary(propertySlug), getKnowledgeGovernanceSummary(propertySlug)]);
     const db = getDb();
     if (!db) throw new Error("Database unavailable.");

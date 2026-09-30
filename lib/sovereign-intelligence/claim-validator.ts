@@ -1,4 +1,5 @@
 export type ClaimValidation = { valid: true; violations: [] } | { valid: false; violations: string[] };
+export type MaterialClaimDecision = { claim: string; supported: boolean; matchedTerms: string[]; missingNumbers: string[] };
 
 function canonical(value: string) {
   return value.toLowerCase().replace(/,/g, "").replace(/₹\s*/g, "₹").replace(/\s*%/g, "%").replace(/\s+/g, " ").trim();
@@ -55,7 +56,11 @@ export function validateGeneratedClaims(input: { answer: string; approvedContext
     const normalized = canonical(claim);
     if (normalized && !context.includes(normalized)) violations.push(`UNSUPPORTED_NUMBER:${claim.trim()}`);
   }
-  if (!input.connectorVerified && /\b(your|the)\s+(booking|appointment|reservation|order|payment|refund)\s+(is|has been|was)\s+(confirmed|completed|successful|placed|processed|refunded)\b/i.test(input.answer)) {
+  const unconditionalCompletionText = input.answer
+    .split(/(?<=[.!?])\s+|\n+/)
+    .filter((sentence) => !/\b(?:if|after|once|when|upon|before)\b/i.test(sentence))
+    .join(" ");
+  if (!input.connectorVerified && /\b(your|the)\s+(booking|appointment|reservation|order|payment|refund)\s+(is|has been|was)\s+(confirmed|completed|successful|placed|processed|refunded)\b/i.test(unconditionalCompletionText)) {
     violations.push("UNVERIFIED_ACTION_COMPLETION");
   }
   if (!input.connectorVerified && /\b(room|slot|table|item|product)\b.{0,30}\b(is|are)\s+(available|free|in stock)\b/i.test(input.answer)) {
@@ -63,4 +68,28 @@ export function validateGeneratedClaims(input: { answer: string; approvedContext
   }
   violations.push(...unsupportedEntitlements(input.answer, input.approvedContext));
   return violations.length ? { valid: false, violations: [...new Set(violations)] } : { valid: true, violations: [] };
+}
+
+const claimStopWords = new Set(["about","after","again","also","and","are","because","been","before","being","but","can","could","for","from","have","here","into","its","may","more","not","our","please","that","the","their","there","these","they","this","through","to","was","we","were","will","with","would","you","your"]);
+
+function claimTerms(value: string) {
+  return [...new Set((value.toLowerCase().match(/[a-z0-9@.+-]+/g) || []).filter(term => term.length >= 3 && !claimStopWords.has(term)))];
+}
+
+export function validateMaterialClaimCoverage(input: { answer: string; evidenceUnits: string[] }) {
+  const evidence = canonical(input.evidenceUnits.join("\n"));
+  const decisions: MaterialClaimDecision[] = [];
+  for (const raw of input.answer.split(/(?<=[.!?])\s+|\n+/)) {
+    const claim = raw.trim();
+    if (claim.length < 12) continue;
+    const terms = claimTerms(claim);
+    const numbers = claim.match(/\d[\d,.]*(?:\s*%|\s*(?:minutes?|hours?|days?|weeks?|months?|years?))?/gi) || [];
+    const factualShape = numbers.length > 0 || /\b(?:is|are|has|have|offers?|provides?|located|founded|serves?|speciali[sz]es?|works?|supports?|contact|email|phone|address)\b/i.test(claim);
+    if (!factualShape) continue;
+    const matchedTerms = terms.filter(term => evidence.includes(canonical(term)));
+    const missingNumbers = numbers.filter(number => !evidence.includes(canonical(number)));
+    const supported = missingNumbers.length === 0 && terms.length >= 2 && matchedTerms.length / terms.length >= 0.5;
+    decisions.push({ claim, supported, matchedTerms, missingNumbers });
+  }
+  return { valid: decisions.length > 0 && decisions.every(decision => decision.supported), decisions };
 }

@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { sanitizePersistencePayload } from "@/lib/pre-persistence-redaction";
 import type {
   ChannelConnectionStatus,
   ChannelKind,
@@ -175,11 +176,11 @@ export async function appendConversationMessage(input: {
         idempotencyKey: input.idempotencyKey,
         direction: input.direction,
         senderParticipantId: input.senderParticipantId,
-        body: input.body,
+        body: sanitizePersistencePayload(input.body),
         contentType: input.contentType || "text",
         deliveryStatus: input.deliveryStatus,
         occurredAt: input.occurredAt,
-        metadata: input.metadata
+        metadata: input.metadata ? sanitizePersistencePayload(input.metadata) : undefined
       }
     });
   });
@@ -199,6 +200,46 @@ export async function listWorkspaceConversations(input: {
     },
     orderBy: { lastMessageAt: "desc" },
     take: Math.min(Math.max(input.take || 50, 1), 100)
+  });
+}
+
+/**
+ * Establishes the canonical conversation identity used by public website
+ * delivery. The unique channel/external-conversation key makes retries and
+ * concurrent turns converge on one conversation without trusting a caller-
+ * supplied property or lead relationship.
+ */
+export async function ensureWebsiteCanonicalConversation(input: {
+  propertyId: string;
+  legacyLeadId: string;
+  sessionHash: string;
+  occurredAt?: Date;
+}) {
+  const db = database();
+  return db.$transaction(async tx=>{
+    const lead=await tx.lead.findFirst({where:{id:input.legacyLeadId,propertyId:input.propertyId},select:{id:true}});
+    if(!lead) throw new Error("Cross-workspace website conversation rejected");
+    const connection=await tx.channelConnection.upsert({
+      where:{propertyId_kind_externalId:{propertyId:input.propertyId,kind:"WEBSITE",externalId:"public-website"}},
+      update:{status:"CONNECTED",enabled:true},
+      create:{propertyId:input.propertyId,kind:"WEBSITE",externalId:"public-website",displayName:"Public website bot",status:"CONNECTED",enabled:true}
+    });
+    const participant=await tx.participant.upsert({
+      where:{propertyId_kind_externalKey:{propertyId:input.propertyId,kind:"CUSTOMER",externalKey:input.sessionHash}},
+      update:{metadata:{sessionHash:input.sessionHash}},
+      create:{propertyId:input.propertyId,kind:"CUSTOMER",externalKey:input.sessionHash,metadata:{sessionHash:input.sessionHash}}
+    });
+    const conversation=await tx.conversation.upsert({
+      where:{channelConnectionId_externalConversationId:{channelConnectionId:connection.id,externalConversationId:lead.id}},
+      update:{legacyLeadId:lead.id,lastMessageAt:input.occurredAt??new Date()},
+      create:{propertyId:input.propertyId,channelConnectionId:connection.id,externalConversationId:lead.id,legacyLeadId:lead.id,lastMessageAt:input.occurredAt??new Date(),metadata:{channel:"WEBSITE"}}
+    });
+    await tx.conversationParticipant.upsert({
+      where:{propertyId_conversationId_participantId:{propertyId:input.propertyId,conversationId:conversation.id,participantId:participant.id}},
+      update:{leftAt:null},
+      create:{propertyId:input.propertyId,conversationId:conversation.id,participantId:participant.id}
+    });
+    return conversation;
   });
 }
 
@@ -281,19 +322,20 @@ export async function mirrorLegacyWhatsAppInbound(input: {
 
     await tx.conversationParticipant.upsert({
       where: {
-        conversationId_participantId: {
+        propertyId_conversationId_participantId: {
+          propertyId: property.id,
           conversationId: conversation.id,
           participantId: participant.id
         }
       },
       update: { leftAt: null },
-      create: { conversationId: conversation.id, participantId: participant.id }
+      create: { propertyId: property.id, conversationId: conversation.id, participantId: participant.id }
     });
 
     const legacyMessage = await tx.leadMessage.findFirst({
       where: input.externalMessageId
         ? { leadId: lead.id, externalMessageId: input.externalMessageId }
-        : { leadId: lead.id, sender: "GUEST", body: input.body, sentAt: input.occurredAt },
+        : { leadId: lead.id, sender: "GUEST", body: sanitizePersistencePayload(input.body), sentAt: input.occurredAt },
       select: { id: true }
     });
     if (!legacyMessage) throw new Error("Legacy WhatsApp message was not found for shadow mapping");
@@ -315,7 +357,7 @@ export async function mirrorLegacyWhatsAppInbound(input: {
         idempotencyKey,
         direction: "INBOUND",
         senderParticipantId: participant.id,
-        body: input.body,
+        body: sanitizePersistencePayload(input.body),
         occurredAt: input.occurredAt
       }
     });

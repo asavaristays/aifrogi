@@ -271,6 +271,7 @@ export type OrganizationMemberWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
+  previewSessions?: Prisma.KnowledgePreviewSessionListRelationFilter
 }
 
 export type OrganizationMemberOrderByWithRelationInput = {
@@ -291,12 +292,14 @@ export type OrganizationMemberOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
+  previewSessions?: Prisma.KnowledgePreviewSessionOrderByRelationAggregateInput
 }
 
 export type OrganizationMemberWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   invitationTokenHash?: string
   organizationId_email?: Prisma.OrganizationMemberOrganizationIdEmailCompoundUniqueInput
+  organizationId_id?: Prisma.OrganizationMemberOrganizationIdIdCompoundUniqueInput
   AND?: Prisma.OrganizationMemberWhereInput | Prisma.OrganizationMemberWhereInput[]
   OR?: Prisma.OrganizationMemberWhereInput[]
   NOT?: Prisma.OrganizationMemberWhereInput | Prisma.OrganizationMemberWhereInput[]
@@ -315,7 +318,8 @@ export type OrganizationMemberWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OrganizationMember"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
-}, "id" | "invitationTokenHash" | "organizationId_email">
+  previewSessions?: Prisma.KnowledgePreviewSessionListRelationFilter
+}, "id" | "invitationTokenHash" | "organizationId_email" | "organizationId_id">
 
 export type OrganizationMemberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -378,6 +382,7 @@ export type OrganizationMemberCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutMembersInput
+  previewSessions?: Prisma.KnowledgePreviewSessionCreateNestedManyWithoutMemberInput
 }
 
 export type OrganizationMemberUncheckedCreateInput = {
@@ -397,6 +402,7 @@ export type OrganizationMemberUncheckedCreateInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  previewSessions?: Prisma.KnowledgePreviewSessionUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type OrganizationMemberUpdateInput = {
@@ -416,6 +422,7 @@ export type OrganizationMemberUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembersNestedInput
+  previewSessions?: Prisma.KnowledgePreviewSessionUpdateManyWithoutMemberNestedInput
 }
 
 export type OrganizationMemberUncheckedUpdateInput = {
@@ -435,6 +442,7 @@ export type OrganizationMemberUncheckedUpdateInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  previewSessions?: Prisma.KnowledgePreviewSessionUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type OrganizationMemberCreateManyInput = {
@@ -493,6 +501,11 @@ export type OrganizationMemberUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type OrganizationMemberScalarRelationFilter = {
+  is?: Prisma.OrganizationMemberWhereInput
+  isNot?: Prisma.OrganizationMemberWhereInput
+}
+
 export type OrganizationMemberListRelationFilter = {
   every?: Prisma.OrganizationMemberWhereInput
   some?: Prisma.OrganizationMemberWhereInput
@@ -506,6 +519,11 @@ export type OrganizationMemberOrderByRelationAggregateInput = {
 export type OrganizationMemberOrganizationIdEmailCompoundUniqueInput = {
   organizationId: string
   email: string
+}
+
+export type OrganizationMemberOrganizationIdIdCompoundUniqueInput = {
+  organizationId: string
+  id: string
 }
 
 export type OrganizationMemberCountOrderByAggregateInput = {
@@ -565,6 +583,20 @@ export type OrganizationMemberMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type OrganizationMemberCreateNestedOneWithoutPreviewSessionsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMemberCreateWithoutPreviewSessionsInput, Prisma.OrganizationMemberUncheckedCreateWithoutPreviewSessionsInput>
+  connectOrCreate?: Prisma.OrganizationMemberCreateOrConnectWithoutPreviewSessionsInput
+  connect?: Prisma.OrganizationMemberWhereUniqueInput
+}
+
+export type OrganizationMemberUpdateOneRequiredWithoutPreviewSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMemberCreateWithoutPreviewSessionsInput, Prisma.OrganizationMemberUncheckedCreateWithoutPreviewSessionsInput>
+  connectOrCreate?: Prisma.OrganizationMemberCreateOrConnectWithoutPreviewSessionsInput
+  upsert?: Prisma.OrganizationMemberUpsertWithoutPreviewSessionsInput
+  connect?: Prisma.OrganizationMemberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationMemberUpdateToOneWithWhereWithoutPreviewSessionsInput, Prisma.OrganizationMemberUpdateWithoutPreviewSessionsInput>, Prisma.OrganizationMemberUncheckedUpdateWithoutPreviewSessionsInput>
+}
+
 export type OrganizationMemberCreateNestedManyWithoutOrganizationInput = {
   create?: Prisma.XOR<Prisma.OrganizationMemberCreateWithoutOrganizationInput, Prisma.OrganizationMemberUncheckedCreateWithoutOrganizationInput> | Prisma.OrganizationMemberCreateWithoutOrganizationInput[] | Prisma.OrganizationMemberUncheckedCreateWithoutOrganizationInput[]
   connectOrCreate?: Prisma.OrganizationMemberCreateOrConnectWithoutOrganizationInput | Prisma.OrganizationMemberCreateOrConnectWithoutOrganizationInput[]
@@ -607,6 +639,98 @@ export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationNestedInput 
   deleteMany?: Prisma.OrganizationMemberScalarWhereInput | Prisma.OrganizationMemberScalarWhereInput[]
 }
 
+export type OrganizationMemberCreateWithoutPreviewSessionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  role?: string
+  department?: string | null
+  status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
+  invitedAt?: Date | string
+  joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutMembersInput
+}
+
+export type OrganizationMemberUncheckedCreateWithoutPreviewSessionsInput = {
+  id?: string
+  organizationId: string
+  email: string
+  name?: string | null
+  role?: string
+  department?: string | null
+  status?: string
+  passwordHash?: string | null
+  invitationTokenHash?: string | null
+  invitationExpiresAt?: Date | string | null
+  invitedBy?: string | null
+  invitedAt?: Date | string
+  joinedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OrganizationMemberCreateOrConnectWithoutPreviewSessionsInput = {
+  where: Prisma.OrganizationMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationMemberCreateWithoutPreviewSessionsInput, Prisma.OrganizationMemberUncheckedCreateWithoutPreviewSessionsInput>
+}
+
+export type OrganizationMemberUpsertWithoutPreviewSessionsInput = {
+  update: Prisma.XOR<Prisma.OrganizationMemberUpdateWithoutPreviewSessionsInput, Prisma.OrganizationMemberUncheckedUpdateWithoutPreviewSessionsInput>
+  create: Prisma.XOR<Prisma.OrganizationMemberCreateWithoutPreviewSessionsInput, Prisma.OrganizationMemberUncheckedCreateWithoutPreviewSessionsInput>
+  where?: Prisma.OrganizationMemberWhereInput
+}
+
+export type OrganizationMemberUpdateToOneWithWhereWithoutPreviewSessionsInput = {
+  where?: Prisma.OrganizationMemberWhereInput
+  data: Prisma.XOR<Prisma.OrganizationMemberUpdateWithoutPreviewSessionsInput, Prisma.OrganizationMemberUncheckedUpdateWithoutPreviewSessionsInput>
+}
+
+export type OrganizationMemberUpdateWithoutPreviewSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembersNestedInput
+}
+
+export type OrganizationMemberUncheckedUpdateWithoutPreviewSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type OrganizationMemberCreateWithoutOrganizationInput = {
   id?: string
   email: string
@@ -623,6 +747,7 @@ export type OrganizationMemberCreateWithoutOrganizationInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  previewSessions?: Prisma.KnowledgePreviewSessionCreateNestedManyWithoutMemberInput
 }
 
 export type OrganizationMemberUncheckedCreateWithoutOrganizationInput = {
@@ -641,6 +766,7 @@ export type OrganizationMemberUncheckedCreateWithoutOrganizationInput = {
   lastLoginAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  previewSessions?: Prisma.KnowledgePreviewSessionUncheckedCreateNestedManyWithoutMemberInput
 }
 
 export type OrganizationMemberCreateOrConnectWithoutOrganizationInput = {
@@ -725,6 +851,7 @@ export type OrganizationMemberUpdateWithoutOrganizationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  previewSessions?: Prisma.KnowledgePreviewSessionUpdateManyWithoutMemberNestedInput
 }
 
 export type OrganizationMemberUncheckedUpdateWithoutOrganizationInput = {
@@ -743,6 +870,7 @@ export type OrganizationMemberUncheckedUpdateWithoutOrganizationInput = {
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  previewSessions?: Prisma.KnowledgePreviewSessionUncheckedUpdateManyWithoutMemberNestedInput
 }
 
 export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationInput = {
@@ -764,6 +892,35 @@ export type OrganizationMemberUncheckedUpdateManyWithoutOrganizationInput = {
 }
 
 
+/**
+ * Count Type OrganizationMemberCountOutputType
+ */
+
+export type OrganizationMemberCountOutputType = {
+  previewSessions: number
+}
+
+export type OrganizationMemberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  previewSessions?: boolean | OrganizationMemberCountOutputTypeCountPreviewSessionsArgs
+}
+
+/**
+ * OrganizationMemberCountOutputType without action
+ */
+export type OrganizationMemberCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrganizationMemberCountOutputType
+   */
+  select?: Prisma.OrganizationMemberCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * OrganizationMemberCountOutputType without action
+ */
+export type OrganizationMemberCountOutputTypeCountPreviewSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KnowledgePreviewSessionWhereInput
+}
+
 
 export type OrganizationMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -783,6 +940,8 @@ export type OrganizationMemberSelect<ExtArgs extends runtime.Types.Extensions.In
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  previewSessions?: boolean | Prisma.OrganizationMember$previewSessionsArgs<ExtArgs>
+  _count?: boolean | Prisma.OrganizationMemberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organizationMember"]>
 
 export type OrganizationMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -847,6 +1006,8 @@ export type OrganizationMemberSelectScalar = {
 export type OrganizationMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "email" | "name" | "role" | "department" | "status" | "passwordHash" | "invitationTokenHash" | "invitationExpiresAt" | "invitedBy" | "invitedAt" | "joinedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMember"]>
 export type OrganizationMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
+  previewSessions?: boolean | Prisma.OrganizationMember$previewSessionsArgs<ExtArgs>
+  _count?: boolean | Prisma.OrganizationMemberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -859,6 +1020,7 @@ export type $OrganizationMemberPayload<ExtArgs extends runtime.Types.Extensions.
   name: "OrganizationMember"
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
+    previewSessions: Prisma.$KnowledgePreviewSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1272,6 +1434,7 @@ readonly fields: OrganizationMemberFieldRefs;
 export interface Prisma__OrganizationMemberClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  previewSessions<T extends Prisma.OrganizationMember$previewSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMember$previewSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgePreviewSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1715,6 +1878,30 @@ export type OrganizationMemberDeleteManyArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many OrganizationMembers to delete.
    */
   limit?: number
+}
+
+/**
+ * OrganizationMember.previewSessions
+ */
+export type OrganizationMember$previewSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the KnowledgePreviewSession
+   */
+  select?: Prisma.KnowledgePreviewSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the KnowledgePreviewSession
+   */
+  omit?: Prisma.KnowledgePreviewSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.KnowledgePreviewSessionInclude<ExtArgs> | null
+  where?: Prisma.KnowledgePreviewSessionWhereInput
+  orderBy?: Prisma.KnowledgePreviewSessionOrderByWithRelationInput | Prisma.KnowledgePreviewSessionOrderByWithRelationInput[]
+  cursor?: Prisma.KnowledgePreviewSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.KnowledgePreviewSessionScalarFieldEnum | Prisma.KnowledgePreviewSessionScalarFieldEnum[]
 }
 
 /**

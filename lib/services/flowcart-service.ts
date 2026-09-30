@@ -10,6 +10,7 @@ import {
   type FlowCartVariant
 } from "@/lib/flowcart-demo";
 import { getDb } from "@/lib/db";
+import { confirmTransaction, previewTransaction } from "@/lib/transaction-capability-gateway";
 
 const DEMO_DELIVERY_FEE_PAISA = 9900;
 const DEMO_PAYMENT_BASE_URL = "https://rzp.io/i/emily-cafe-demo";
@@ -31,6 +32,8 @@ export type FlowCartCreateOrderInput = {
   } | null;
   message?: string | null;
   notes?: string | null;
+  confirmationId?: string;
+  idempotencyKey?: string;
 };
 
 export type FlowCartMetrics = {
@@ -383,6 +386,10 @@ export async function getFlowCartWorkspace(propertySlug = "hotelradar"): Promise
 }
 
 export async function createFlowCartOrder(input: FlowCartCreateOrderInput) {
+  const propertySlug = input.propertySlug || "hotelradar";
+  const actionPayload = { customerName: input.customerName, customerPhone: input.customerPhone, productId: input.productId, variantId: input.variantId, addonIds: input.addonIds, quantity: input.quantity, deliveryDate: input.deliveryDate, deliverySlot: input.deliverySlot, deliveryAddress: input.deliveryAddress, message: input.message, notes: input.notes };
+  const transactionPreview = previewTransaction({ propertyId: propertySlug, capability: "CREATE_ORDER", connector: "FLOWCART", payload: actionPayload, enabled: [{ capability: "CREATE_ORDER", connector: "FLOWCART", requiresConfirmation: true, idempotencyRequired: true }] });
+  confirmTransaction({ preview: transactionPreview, payload: actionPayload, confirmationId: input.confirmationId || "", idempotencyKey: input.idempotencyKey || "" });
   const pricing = calculateDemoOrder(input);
   const db = getDb();
   const newOrderNumber = orderNumber();
@@ -418,7 +425,6 @@ export async function createFlowCartOrder(input: FlowCartCreateOrderInput) {
     };
   }
 
-  const propertySlug = input.propertySlug || "hotelradar";
   const tenantResult = await getOrCreateFlowCartTenantForProperty(propertySlug);
   if (!tenantResult.tenant) return { error: tenantResult.error || "FlowCart tenant unavailable.", status: tenantResult.status, order: null };
 

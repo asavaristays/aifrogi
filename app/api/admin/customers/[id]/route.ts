@@ -16,6 +16,7 @@ import { parseBotProfile } from "@/lib/bot-profile";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { notifyBotLive } from "@/lib/services/bot-live-notification";
 import { withPlatformAdminDatabaseContext } from "@/lib/admin-access";
+import { setBotFactualClosure } from "@/lib/bot-factual-closure";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -43,8 +44,20 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
     provider?: string;
     lifecycle?: string;
     enabled?: boolean;
+    expectedVersion?: number;
+    incidentId?: string;
   } | null;
   const action = payload?.action?.trim().toUpperCase();
+  if (action === "CLOSE_FACTUAL_SERVING" || action === "REOPEN_FACTUAL_SERVING") {
+    const propertyId=payload?.propertyId?.trim()||"";
+    const reason=payload?.reason?.trim()||"";
+    const incidentId=payload?.incidentId?.trim()||"";
+    if(!propertyId||!reason||!incidentId||!Number.isInteger(payload?.expectedVersion)) return NextResponse.json({error:"Property, incident, reason and expected version are required."},{status:400});
+    try {
+      const control=await withPlatformAdminDatabaseContext(user,"admin-bot-factual-closure",()=>setBotFactualClosure({propertyId,closed:action==="CLOSE_FACTUAL_SERVING",expectedVersion:payload!.expectedVersion!,incidentId,reason,actor:user.username}));
+      return NextResponse.json({ok:true,closed:action==="CLOSE_FACTUAL_SERVING",control});
+    } catch(error) { return NextResponse.json({error:error instanceof Error?error.message:"Factual serving control failed"},{status:409}); }
+  }
   if (action === "APPROVE_KYC" || action === "REJECT_KYC") {
     if (action === "REJECT_KYC" && !payload?.reason?.trim()) {
       return NextResponse.json({ error: "Add a clear reason for the customer" }, { status: 400 });

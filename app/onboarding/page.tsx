@@ -18,7 +18,7 @@ export default async function OnboardingPage() {
   if (!user) redirect("/login");
   if (user.role === "admin") redirect("/admin/customers");
 
-  const organization = await loadOnboardingForUser(user.username);
+  const organization = await loadOnboardingForUser(user.username, user.organizationId);
   if (organization?.onboarding?.lifecycleStatus === "LIVE") redirect("/dashboard");
   const property = organization?.properties[0];
   const db = getDb();

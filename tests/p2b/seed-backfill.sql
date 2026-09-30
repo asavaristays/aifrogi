@@ -1,0 +1,4 @@
+INSERT INTO "Organization"(id,name,slug,"ownerName","ownerEmail","updatedAt") VALUES ('org-a','Org A','org-a','Owner A','a@example.test',clock_timestamp()) ON CONFLICT DO NOTHING;
+INSERT INTO "Property"(id,"organizationId",name,slug,"updatedAt") VALUES ('property-a','org-a','Property A','property-a',clock_timestamp()) ON CONFLICT DO NOTHING;
+INSERT INTO "KnowledgeDocument"(id,"propertyId","fileName","mimeType","sizeBytes",content,"extractedText",status,"uploadedBy","updatedAt") VALUES ('doc-a','property-a','legacy.pdf','application/pdf',12,convert_to('legacy bytes','UTF8'),'legacy','APPROVED','owner',clock_timestamp());
+INSERT INTO "KnowledgeEntry"(id,"propertyId","documentId",question,answer,"claimKey",version,"createdBy","updatedAt") VALUES ('entry-a','property-a','doc-a','Check-in?','2 PM','check-in',1,'owner',clock_timestamp());

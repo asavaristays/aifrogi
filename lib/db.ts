@@ -29,6 +29,11 @@ export function enterDatabaseIdentity(identity: DatabaseIdentity) {
   identityContext.enterWith(identity);
 }
 
+/** Returns the request-scoped identity established from the signed session. */
+export function getDatabaseIdentity() {
+  return identityContext.getStore() ?? null;
+}
+
 function contextualClient(client: Prisma.TransactionClient) {
   return new Proxy(client as unknown as PrismaClient, {
     get(target, property, receiver) {

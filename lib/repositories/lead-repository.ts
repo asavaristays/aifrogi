@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { redactBeforePersistence } from "@/lib/pre-persistence-redaction";
 
 export async function getLeadsForProperty(propertySlug: string) {
   const db = getDb();
@@ -251,7 +252,7 @@ export async function appendMessageToLead(
   const messageData = {
       leadId,
       sender: input.sender,
-      body: input.body,
+      body: redactBeforePersistence(input.body).redacted,
       externalMessageId: input.externalMessageId,
       deliveryStatus: input.deliveryStatus,
       statusUpdatedAt: input.deliveryStatus ? new Date() : null,
