@@ -83,6 +83,10 @@ export type KnowledgeAnswer = {
   crawlGenerationId?: string;
   chunkIds?: string[];
   materialClaimDecisions?: MaterialClaimDecision[];
+  // Internal-only evidence bytes selected for this answer. The public route
+  // uses them to revalidate the exact response after deterministic formatting
+  // and conversation controls have produced the bytes that will be sent.
+  materialEvidenceUnits?: string[];
 };
 
 const emptyRetrieval = () => ({ candidates: [] as RetrievalCandidate[], retrievedClaimIds: [] as string[], usedClaimIds: [] as string[], nearMissClaimIds: [] as string[] });
@@ -789,6 +793,7 @@ export async function buildWebsiteKnowledgeAnswer({
         answer.crawlGenerationId = activeChunks[0].generation_id;
         answer.chunkIds = activeChunks.map((chunk) => chunk.chunk_id);
         answer.materialClaimDecisions = coverage.decisions;
+        answer.materialEvidenceUnits = activeChunks.map((chunk) => chunk.content);
         return answer;
       }
     }
@@ -972,6 +977,7 @@ export async function buildWebsiteKnowledgeAnswer({
     crawlGenerationId: activeChunks[0]?.generation_id,
     chunkIds: activeChunks.map(chunk => chunk.chunk_id),
     materialClaimDecisions: materialCoverage.decisions,
+    materialEvidenceUnits: activeChunks.map((chunk) => chunk.content),
     retrieval: {
       candidates: publicRetrievalCandidates(governed.candidates),
       retrievedClaimIds: governed.claimIds,

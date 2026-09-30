@@ -47,6 +47,7 @@ import { deliverCanonicalAnswer } from "@/lib/canonical-answer-delivery";
 import { ensureWebsiteCanonicalConversation } from "@/lib/repositories/conversation-repository";
 import { recordDeliveredCrawlAnswer } from "@/lib/crawl-answer-delivery";
 import { assertBotFactualServingOpen } from "@/lib/bot-factual-closure";
+import { validateMaterialClaimCoverage } from "@/lib/sovereign-intelligence/claim-validator";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -579,6 +580,21 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const responseBody = { answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" };
   let canonicalDelivery:(()=>Promise<unknown>)|null=null;
   if (canonicalFactsRequired() && factualAnswerIntent && evidenceDecision.disposition === "ANSWER") {
+    // Bind crawl evidence to the exact bytes crossing the HTTP boundary. The
+    // answer may have been deterministically formatted or augmented after the
+    // knowledge service validated its draft, so draft decisions cannot be
+    // reused as proof of the delivered response.
+    if (result?.crawlGenerationId && result.chunkIds?.length) {
+      const finalCoverage = validateMaterialClaimCoverage({
+        answer,
+        evidenceUnits: result.materialEvidenceUnits || []
+      });
+      if (!finalCoverage.valid) {
+        console.error("Canonical website final answer coverage rejected", { propertyId: property.id });
+        return NextResponse.json({error:"Canonical factual evidence is unavailable."},{status:503,headers:responseHeaders});
+      }
+      result.materialClaimDecisions = finalCoverage.decisions;
+    }
     try {
       assertCanonicalFactualEnvelope({channel:"WEBSITE",factual:true,answer,claimIds:result?.claimIds,crawlGenerationId:result?.crawlGenerationId,chunkIds:result?.chunkIds,materialClaimDecisions:result?.materialClaimDecisions});
     } catch (error) {

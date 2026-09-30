@@ -15,5 +15,7 @@ test("canonical website factual answers require one unambiguous evidence envelop
 
 test("website uses the shared boundary before canonical delivery",async()=>{
   const website=await readFile(new URL("../../app/api/public/website-bot/[slug]/route.ts",import.meta.url),"utf8");
+  assert.match(website,/validateMaterialClaimCoverage\(\{[\s\S]*?answer,[\s\S]*?evidenceUnits: result\.materialEvidenceUnits/);
+  assert.match(website,/result\.materialClaimDecisions = finalCoverage\.decisions/);
   assert.match(website,/assertCanonicalFactualEnvelope\(\{channel:"WEBSITE"/);
 });
