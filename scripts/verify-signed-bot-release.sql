@@ -21,9 +21,13 @@ SELECT aifrogi_security.register_bot_machine_policy(
 
 RESET SESSION AUTHORIZATION;
 SELECT "policyHash" AS policy_hash FROM "BotMachinePolicyArtifact" WHERE id=:'policy_id' \gset
+SELECT r."manifestHash" AS active_knowledge_hash
+  FROM "KnowledgeReleaseActivePointer" p
+  JOIN "KnowledgeReleaseArtifact" r
+    ON r.id=p."releaseArtifactId" AND r."propertyId"=p."propertyId"
+ WHERE p."propertyId"='property-release-test' \gset
 SET SESSION AUTHORIZATION aifrogi_publisher;
 SELECT set_config('app.organization_id','org-release-test',false),set_config('app.property_id','property-release-test',false),set_config('app.security_actor','release-tester',false),set_config('app.system_purpose','KNOWLEDGE_PUBLISH',false);
-SELECT r."manifestHash" AS active_knowledge_hash FROM "KnowledgeReleaseActivePointer" p JOIN "KnowledgeReleaseArtifact" r ON r.id=p."releaseArtifactId" AND r."propertyId"=p."propertyId" WHERE p."propertyId"='property-release-test' \gset
 SELECT '{"applicationBuildId":"build-1","channelAdapterVersions":{"WEBSITE":"1"},"createdAt":"2026-09-29T00:00:00.000Z","databaseSchemaVersion":"20260929233000","knowledgeReleaseHash":"'||:'active_knowledge_hash'||'","policyHash":"'||:'policy_hash'||'","propertyId":"property-release-test","releaseId":"release-1","retrievalVersion":"active-crawl-v1","schemaVersion":1,"servingContract":1}' AS release_payload \gset
 SELECT aifrogi_security.register_bot_release('property-release-test',:'policy_id',:'release_payload',encode(digest(convert_to(:'release_payload','UTF8'),'sha256'),'hex'),'release-signature','test-key','release-tester') AS release_id \gset
 SELECT aifrogi_security.activate_bot_release('property-release-test',:'release_id',0,'release-tester') AS generation \gset
