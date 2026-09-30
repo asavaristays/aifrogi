@@ -59,3 +59,11 @@ test("staging load gate refuses a shortened or excessive-concurrency profile", (
   assert.notEqual(result.status, 0);
   assert.match(`${result.stdout}${result.stderr}`, /STAGING_LOAD_PROFILE_INVALID/);
 });
+
+test("staging load gate sends the real route contract and requires full fleet coverage", () => {
+  const source = readFileSync(join(repository, "scripts/verify-staging-1000-bot-http.mjs"), "utf8");
+  assert.match(source, /JSON\.stringify\(\{message:/);
+  assert.doesNotMatch(source, /JSON\.stringify\(\{question:/);
+  assert.match(source, /uniqueBotsExercised/);
+  assert.match(source, /exercised\.size===new Set\(bots\)\.size/);
+});
