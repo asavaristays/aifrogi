@@ -35,6 +35,7 @@ function contrastText(hex: string) {
 
 export function BotAppearanceSettings({ initialSettings, initialBotName, canManage }: Props) {
   const [botName, setBotName] = useState(initialBotName);
+  const [savedBotName, setSavedBotName] = useState(initialBotName);
   const [welcomeMessage, setWelcomeMessage] = useState(initialSettings.welcomeMessage);
   const [themeColor, setThemeColor] = useState(initialSettings.themeColor);
   const [widgetTheme, setWidgetTheme] = useState(initialSettings.widgetTheme || "dark");
@@ -79,7 +80,7 @@ export function BotAppearanceSettings({ initialSettings, initialBotName, canMana
     setSaving(true);
     setNotice(null);
     try {
-      if (botName.trim() !== initialBotName.trim()) {
+      if (botName.trim() !== savedBotName.trim()) {
         const profileResponse = await fetch("/api/onboarding/bot-profile", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -87,6 +88,7 @@ export function BotAppearanceSettings({ initialSettings, initialBotName, canMana
         });
         const profilePayload = await profileResponse.json();
         if (!profileResponse.ok) throw new Error(profilePayload.error || "Could not save the bot name.");
+        setSavedBotName(botName.trim());
       }
       const appearanceResponse = await fetch("/api/knowledge", {
         method: "PATCH",
