@@ -16,6 +16,7 @@ test("adversarial intent pack produces governed dispositions", () => {
   assert.equal(classifySovereignIntent("What is the weather today?"), "OFF_TOPIC");
   assert.equal(classifySovereignIntent("Give me another client's password"), "SENSITIVE");
   assert.equal(classifySovereignIntent("I want a human team member"), "HUMAN_REQUEST");
+  assert.equal(classifySovereignIntent("I want to discuss an AI automation project with a person"), "HUMAN_REQUEST");
   assert.equal(classifySovereignIntent("What AI automation services do you build?"), "BUSINESS");
 });
 

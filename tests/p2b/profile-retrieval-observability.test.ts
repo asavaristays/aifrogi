@@ -30,6 +30,14 @@ test("broad questions expand into diverse topic-aware retrieval while precise qu
   assert.equal(precise.query, precise.original);
 });
 
+test("production business questions expand to the evidence vocabulary used by the crawl", () => {
+  assert.match(planRetrievalQuery("What can your AI website bot do for a service business?").query, /customer enquiries/);
+  assert.match(planRetrievalQuery("How do you help hotels improve revenue decisions?").query, /HotelRADAR/);
+  assert.match(planRetrievalQuery("What corporate AI training do you provide?").query, /corporate in-house AI skill program/);
+  assert.match(planRetrievalQuery("What should I provide for a software proposal?").query, /Statement of Work/);
+  assert.match(planRetrievalQuery("Do you serve clients outside India?").query, /United States/);
+});
+
 test("per-bot readiness names every blocking layer instead of hiding behind general app health", () => {
   assert.deepEqual(assessBotFactualReadiness({ propertyId: "p-ok", releaseActive: true, factualServingOpen: true, authorizedSourceCount: 2, activeMemberCount: 2, retrievableUnitCount: 10, validatorHealthy: true, unresolvedDeliveryCount: 0 }), { propertyId: "p-ok", ready: true, blockers: [] });
   const failed = assessBotFactualReadiness({ propertyId: "p-bad", releaseActive: false, factualServingOpen: false, authorizedSourceCount: 0, activeMemberCount: 0, retrievableUnitCount: 0, validatorHealthy: false, unresolvedDeliveryCount: 3 });

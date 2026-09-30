@@ -44,7 +44,7 @@ export function classifySovereignIntent(question: string): SovereignIntent {
   if (/^(hi|hello|hey|good morning|good afternoon|good evening|good night|namaste)( there)?$/.test(normalized)) return "GREETING";
   if (/\b(who are you|what are you|your name|are you (a |an )?(bot|ai)|introduce yourself)\b/.test(normalized)) return "IDENTITY";
   const rejectsHumanContact = /\b(?:do not|don t|dont|no|not)\s+(?:call|contact|phone|ring|message|arrange|schedule)|\b(?:do not|don t|dont)\s+(?:want|need)\s+(?:a\s+)?(?:call|callback|human|agent)\b|\b(?:no|not|without)\s+(?:a\s+)?(?:callback|call back|human|agent)\b/.test(normalized);
-  if (!rejectsHumanContact && /\b(human|real person|person to help|someone to help|team member|agent|call me|contact me|talk to someone|(?:speak|talk) (?:to|with) (?:a |the )?person|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
+  if (!rejectsHumanContact && /\b(human|real person|person to help|someone to help|team member|agent|call me|contact me|talk to someone|(?:speak|talk|discuss|connect|consult)\b.{0,45}\b(?:to|with) (?:a |the )?(?:person|human|team member|agent|specialist)|call back|callback|arrange (?:a )?call|schedule (?:a )?call|request (?:a )?call)\b/.test(normalized)) return "HUMAN_REQUEST";
   // Privacy and credential boundaries must run before public contact routing so
   // words such as "phone number" cannot downgrade a private-data request.
   if (/\b(?:phone|mobile|email|address|contact)(?: number| details| information)?\s+(?:of|for|belonging to)\s+(?:the |a |another |previous )?(?:guest|customer)\b/.test(normalized)) return "SENSITIVE";

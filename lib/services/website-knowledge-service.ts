@@ -945,9 +945,14 @@ export async function buildWebsiteKnowledgeAnswer({
       const usage = payload?.usage && typeof payload.usage === "object" ? payload.usage as Record<string, unknown> : {};
       return { text: payload ? extractOpenAiText(payload) : "", inputTokens: Math.max(0, Number(usage.input_tokens) || 0), outputTokens: Math.max(0, Number(usage.output_tokens) || 0) };
     },
-    validate: (value) => Boolean(value.text.trim()) && value.text.length <= 5000 && hasCompleteAnswerEnding(value.text)
-      && verifyCoreFrameAnswer(intelligenceFrame, question, value.text).passed
-      && verifyCorePropertySources(intelligenceFrame, websiteResult.sourceUrls)
+    validate: (value) => {
+      const candidate = enforceConstitutionalAnswerStyle(value.text);
+      if (!candidate || candidate.length > 5000 || !hasCompleteAnswerEnding(candidate)) return false;
+      if (!verifyCoreFrameAnswer(intelligenceFrame, question, candidate).passed || !verifyCorePropertySources(intelligenceFrame, websiteResult.sourceUrls)) return false;
+      const claims = validateGeneratedClaims({ answer: candidate, approvedContext: context, connectorVerified: false });
+      if (!claims.valid) return false;
+      return !canonicalOnly || validateMaterialClaimCoverage({ answer: candidate, evidenceUnits: activeChunks.map(chunk => chunk.content) }).valid;
+    }
   });
   if (!reliable.ok) {
     console.error("Reliable model execution exhausted", { propertySlug, code: reliable.error.code, attempts: reliable.evidence.attemptCount });
