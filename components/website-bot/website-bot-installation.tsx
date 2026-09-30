@@ -44,7 +44,7 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
       <CodeCard title="JavaScript" helper="Recommended for HTML, React, Shopify and most websites." value={script} onCopy={() => copy(script, "JavaScript")} disabled={!profile.installationKey} />
       <CodeCard title="iFrame" helper="Use when scripts are restricted. Super Admin approval still controls live access." value={iframe} onCopy={() => copy(iframe, "iFrame")} />
       <CodeCard title="WordPress" helper="Add the JavaScript in a Custom HTML block before the closing body tag." value={script} onCopy={() => copy(script, "WordPress code")} disabled={!profile.installationKey} />
-      <CodeCard title="Standalone web app" helper="Use for QR codes, social profiles, SMS or businesses without a website. It uses the same bot and knowledge base." value={standalone} onCopy={() => copy(standalone, "Standalone link")} />
+      <CodeCard title="Standalone web app" helper="Use for QR codes, social profiles, SMS or businesses without a website. It uses the same bot and knowledge base." value={standalone} href={!superAdmin ? standalone : undefined} onCopy={() => copy(standalone, "Standalone link")} />
     </div>
     <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-black/7 bg-black/7 sm:grid-cols-4">{[
       ["1", "Delivery links generated", Boolean(profile.installationKey)], ["2", "Submitted for review", ["REVIEW_PENDING", "LIVE", "PAUSED"].includes(status)], ["3", "Super Admin approved", live], ["4", "AI Bot live", live]
@@ -57,8 +57,8 @@ export function WebsiteBotInstallation({ organizationId, slug, profile, superAdm
   </section>;
 }
 
-function CodeCard({ title, helper, value, onCopy, disabled = false }: { title: string; helper: string; value: string; onCopy: () => void; disabled?: boolean }) {
-  return <div className="rounded-lg border border-black/8 bg-[#101010] p-5 text-white"><p className="text-sm font-black text-[#e2c66d]">{title}</p><p className="mt-2 min-h-10 text-xs leading-5 text-white/55">{helper}</p><pre className="mt-4 max-h-28 overflow-auto whitespace-pre-wrap break-all rounded-md bg-white/7 p-3 text-[10px] leading-5 text-white/72">{value}</pre><button disabled={disabled} onClick={onCopy} className="mt-4 min-h-10 rounded-md bg-[#8a6a16] px-4 text-xs font-bold text-white disabled:opacity-40">Copy code</button></div>;
+function CodeCard({ title, helper, value, href, onCopy, disabled = false }: { title: string; helper: string; value: string; href?: string; onCopy: () => void; disabled?: boolean }) {
+  return <div className="rounded-lg border border-black/8 bg-[#101010] p-5 text-white"><p className="text-sm font-black text-[#e2c66d]">{title}</p><p className="mt-2 min-h-10 text-xs leading-5 text-white/55">{helper}</p><pre className="mt-4 max-h-28 overflow-auto whitespace-pre-wrap break-all rounded-md bg-white/7 p-3 text-[10px] leading-5 text-white/72">{href ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label="Open standalone web app in a new tab" className="cursor-pointer underline decoration-white/40 underline-offset-4 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4">{value} ↗</a> : value}</pre><button disabled={disabled} onClick={onCopy} className="mt-4 min-h-10 rounded-md bg-[#8a6a16] px-4 text-xs font-bold text-white disabled:opacity-40">{href ? "Copy link" : "Copy code"}</button></div>;
 }
 
 function Action({ children, onClick, disabled, danger = false }: { children: React.ReactNode; onClick: () => void; disabled?: boolean; danger?: boolean }) {

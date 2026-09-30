@@ -52,7 +52,7 @@ export default async function SetupPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="min-h-screen bg-[var(--background)] [&_a[href]]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_button:disabled]:cursor-not-allowed [&_summary]:cursor-pointer [&_select:not(:disabled)]:cursor-pointer [&_input[type=checkbox]:not(:disabled)]:cursor-pointer [&_input[type=radio]:not(:disabled)]:cursor-pointer [&_input[type=file]:not(:disabled)]:cursor-pointer [&_input[type=file]::file-selector-button]:cursor-pointer">
       <TopBar title="AI Bot setup" subtitle="Configure, teach, test and install your website bot" />
       <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         {subscription?.planCode === "TRIAL" ? <section className="rounded-2xl border border-[#d7c27d] bg-[#fff9e8] p-5"><p className="product-eyebrow">15-day trial boundary</p><h2 className="mt-1 text-lg font-semibold">Starter Bot without connectors</h2><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Your trial includes approved business answers, lead capture, human handover, standalone web app and website widget. Connector-backed bookings, payments or external actions require an eligible paid setup after the trial.</p></section> : null}
