@@ -903,7 +903,7 @@ export function WhatsAppBotClient({
     <div className={teamMode ? "flex min-h-0 flex-1 flex-col" : "space-y-3"}>
       {journeyNavigation}
     <div className={`${teamMode ? teamStyles.workspace : ""} overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[var(--shadow-card)]`} data-view={teamView} data-service-desk={serviceDeskMode}>
-      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{(serviceDeskMode?[{key:"conversations",label:"Requests"},{key:"reply",label:"Conversation"}]:hotelMode?[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"}]:[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Reply"},{key:"profile",label:"Details"}]).map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
+      {teamMode && <nav className={teamStyles.mobileNav} aria-label="Inbox sections">{(serviceDeskMode?[{key:"conversations",label:"Requests"},{key:"reply",label:"Conversation"}]:hotelMode?[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Conversation"}]:[{key:"queues",label:"Queues"},{key:"conversations",label:"Conversations"},{key:"reply",label:"Conversation"},{key:"profile",label:"Details"}]).map(item=><button key={item.key} type="button" aria-pressed={teamView===item.key} aria-controls={`inbox-${item.key}`} onClick={()=>setTeamView(item.key)}>{item.label}</button>)}</nav>}
       <nav className={`${teamMode ? "hidden" : "flex lg:hidden"} sticky top-0 z-20 gap-2 overflow-x-auto border-b border-[var(--border)] bg-white p-2`} aria-label="Inbox mobile sections">
         {[
           { href: "#inbox-queues", label: "Queues" },
@@ -1121,7 +1121,7 @@ export function WhatsAppBotClient({
             </div>
           </div> : null}
 
-          <div className="flex-1 space-y-3 overflow-auto bg-[#f8f0d8] p-5">
+          <div className="inboxTimeline flex-1 space-y-3 overflow-auto bg-[#f8f0d8] p-5">
             {timeline.map((message) => {
               const outgoing = message.from !== "guest";
               const delivery = outgoing ? getDeliveryMeta(message.status) : null;
@@ -1336,6 +1336,9 @@ export function WhatsAppBotClient({
                 { label: activeIsWebsite ? "Consented contact" : "Phone", value: activeIsWebsite ? activeLead.websiteSession?.contactValue || "Not provided" : activeLead.phone },
                 { label: "Source", value: activeSource },
                 { label: "Intent", value: activeLead.intent || "Needs discovery" },
+                { label: "Qualification", value: `${activeLead.score}/100 · ${activeLead.stage}` },
+                { label: "Timeline", value: activeLead.party || "Not provided" },
+                { label: "Budget", value: activeLead.budget || "Not provided" },
                 { label: "Website / business", value: activeLead.stay || "Business details pending" },
                 { label: "Last inbound", value: latestInbound?.time ?? "No customer reply yet" },
                 ...(activeIsWebsite ? [

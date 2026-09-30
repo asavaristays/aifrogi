@@ -102,7 +102,7 @@ export function SideNav({
               <Link
                 key={item.href}
                 href={item.href}
-                title={sidebarCollapsed ? item.label : undefined}
+                title={sidebarCollapsed ? (item.href === "/team-inbox" && botCategory !== "STAY" ? "Team Inbox" : item.label) : undefined}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
                   "relative flex min-h-10 items-center gap-3 rounded-md border px-2.5 py-2 text-[13px] font-medium tracking-normal transition-all",
@@ -121,7 +121,7 @@ export function SideNav({
                 >
                   <Icon name={item.icon as never} className="h-4 w-4" />
                 </span>
-                {!sidebarCollapsed ? <span>{item.label}</span> : null}
+                {!sidebarCollapsed ? <span>{item.href === "/team-inbox" && botCategory !== "STAY" ? "Team Inbox" : item.label}</span> : null}
               </Link>
             );
           })}</div></section>)}

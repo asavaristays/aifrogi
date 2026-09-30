@@ -1,3 +1,5 @@
+import { getBotBlueprint } from '@/lib/bot-blueprints';
+import type { BotProfileInput } from '@/lib/bot-profile';
 import type { Metadata } from 'next';
 import { TeamInboxStatus } from '@/components/lead-inbox/team-inbox-status';
 import { WhatsAppBotClient } from '@/components/whatsapp/whatsapp-bot-client';
@@ -19,9 +21,10 @@ export default async function TeamInboxPage({searchParams}:{searchParams:Promise
   if(!access.ok)redirect('/login?returnTo=%2Fteam-inbox');
   const [leads,settings]=await Promise.all([withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug)),readKnowledgeSettings(access.propertySlug)]);
   const hotelMode=access.organization.botProfile?.category==='STAY';
+  const familyName=getBotBlueprint((access.organization.botProfile?.category || 'BUSINESS_AI') as BotProfileInput['category'])?.productName || 'AiFrogi';
   return <div className={styles.page}>
     <div className={styles.journeyHeader}>
-      <div><p className={styles.eyebrow}>Guest journey · before arrival</p><h1>Pre-Stay Inbox</h1><p>Booking questions, planning support and enquiries—kept separate from live hotel service.</p></div>
+      <div><p className={styles.eyebrow}>{familyName} · {access.organization.name}</p><h1>{hotelMode ? "Pre-Stay Inbox" : "Team Inbox"}</h1><p>{hotelMode ? "Booking questions and guest enquiries before arrival." : "Customer conversations, AI replies and human follow-ups in one place."}</p></div>
       {hotelMode?<a href="/in-stay/inbox" className={styles.journeyLink}>Open In-Stay service inbox →</a>:null}
     </div>
     <TeamInboxStatus compact/><WhatsAppBotClient leads={leads.filter(lead=>Boolean(lead.websiteSession))} integration={websiteOnlyIntegration} enabledChannels={[]} teamMode hotelMode={hotelMode} initialJourney="pre-stay" lockJourney initialLeadId={query.lead||''} hotelQuickReplies={settings.hotelQuickReplies||[]} operatorRole={access.role} businessName={access.organization.name}/>
