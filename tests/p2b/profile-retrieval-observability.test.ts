@@ -38,6 +38,13 @@ test("production business questions expand to the evidence vocabulary used by th
   assert.match(planRetrievalQuery("Do you serve clients outside India?").query, /United States/);
 });
 
+test("active website answering preserves exact and expanded retrieval paths", async () => {
+  const source = readFileSync(new URL("../../lib/services/website-knowledge-service.ts", import.meta.url), "utf8");
+  assert.match(source, /query: retrievalPlan\.original/);
+  assert.match(source, /query: retrievalPlan\.query/);
+  assert.match(source, /new Map\(\[\.\.\.exact, \.\.\.expanded\]/);
+});
+
 test("per-bot readiness names every blocking layer instead of hiding behind general app health", () => {
   assert.deepEqual(assessBotFactualReadiness({ propertyId: "p-ok", releaseActive: true, factualServingOpen: true, authorizedSourceCount: 2, activeMemberCount: 2, retrievableUnitCount: 10, validatorHealthy: true, unresolvedDeliveryCount: 0 }), { propertyId: "p-ok", ready: true, blockers: [] });
   const failed = assessBotFactualReadiness({ propertyId: "p-bad", releaseActive: false, factualServingOpen: false, authorizedSourceCount: 0, activeMemberCount: 0, retrievableUnitCount: 0, validatorHealthy: false, unresolvedDeliveryCount: 3 });

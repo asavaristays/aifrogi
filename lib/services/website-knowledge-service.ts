@@ -732,7 +732,21 @@ export async function buildWebsiteKnowledgeAnswer({
   const exactContactRequest = /\b(contact|phone|telephone|email|address|located|location|offices?)\b/i.test(question);
   const activeCrawlStatus = business?.organizationId ? await readActiveWebsiteCrawlStatus({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}` }).catch(() => null) : null;
   const retrievalPlan = planRetrievalQuery(exactContactRequest ? `${resolved.retrievalQuestion} contact email phone PostalAddress Goa Gurgaon` : resolved.retrievalQuestion);
-  const activeChunks = activeCrawlStatus && business?.organizationId ? await retrieveActiveWebsiteChunks({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}`, query: retrievalPlan.query, limit: retrievalPlan.diversityRequired ? 10 : 6 }).catch(() => []) : [];
+  const activeChunks = activeCrawlStatus && business?.organizationId ? await (async () => {
+    const retrievalIdentity = { organizationId: business.organizationId!, propertyId: business.id, principal: `public-bot:${propertySlug}` };
+    const limit = retrievalPlan.diversityRequired || retrievalPlan.topics.length ? 10 : 6;
+    // Preserve exact lexical matches while also benefiting from controlled
+    // domain expansion. A single expanded query can dilute the customer's key
+    // phrase and displace the best chunk; merging both result sets avoids that
+    // failure without crossing tenant or active-generation boundaries.
+    const [exact, expanded] = await Promise.all([
+      retrieveActiveWebsiteChunks({ ...retrievalIdentity, query: retrievalPlan.original, limit }),
+      retrievalPlan.query === retrievalPlan.original
+        ? Promise.resolve([])
+        : retrieveActiveWebsiteChunks({ ...retrievalIdentity, query: retrievalPlan.query, limit })
+    ]);
+    return [...new Map([...exact, ...expanded].map((chunk) => [chunk.chunk_id, chunk])).values()].slice(0, 12);
+  })().catch(() => []) : [];
   const organization = business?.organization;
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
