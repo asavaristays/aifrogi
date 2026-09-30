@@ -22,11 +22,13 @@ const roleUrls: Record<CanonicalRole,string> = {
 };
 
 export function initializeCanonicalRoleClients(env:NodeJS.ProcessEnv=process.env) {
+  const configuredPoolSize=Number.parseInt(env.AIFROGI_CANONICAL_DATABASE_POOL_MAX||"10",10);
+  const poolSize=Number.isFinite(configuredPoolSize)?Math.min(25,Math.max(2,configuredPoolSize)):10;
   for (const role of Object.keys(roleUrls) as CanonicalRole[]) {
     if (clients[role]) continue;
     const connectionString=env[roleUrls[role]];
     if (!connectionString) throw new Error(`CANONICAL_ROLE_DATABASE_URL_MISSING:${role}`);
-    clients[role]=new PrismaClient({adapter:new PrismaPg({connectionString,connectionTimeoutMillis:5000})});
+    clients[role]=new PrismaClient({adapter:new PrismaPg({connectionString,connectionTimeoutMillis:5000,max:poolSize})});
   }
 }
 

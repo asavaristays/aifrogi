@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "uniqueBots": 1000,
+    "durationSeconds": 300,
+    "concurrency": 30
+  },
+  "completed": 1015,
+  "uniqueBotsExercised": 1000,
+  "errors": 0,
+  "timeouts": 20,
+  "errorRate": 0.019704433497536946,
+  "latencyMs": {
+    "p50": 8935.434290000005,
+    "p95": 11731.88838399999,
+    "p99": 14321.530341000005
+  },
+  "pass": false
+}

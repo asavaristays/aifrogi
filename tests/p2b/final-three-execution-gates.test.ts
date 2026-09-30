@@ -67,3 +67,19 @@ test("staging load gate sends the real route contract and requires full fleet co
   assert.match(source, /uniqueBotsExercised/);
   assert.match(source, /exercised\.size===new Set\(bots\)\.size/);
 });
+
+test("database pools have explicit bounded fleet capacity", () => {
+  const applicationDb = readFileSync(join(repository, "lib/db.ts"), "utf8");
+  const canonicalDb = readFileSync(join(repository, "lib/canonical-db-context.ts"), "utf8");
+  assert.match(applicationDb, /AIFROGI_DATABASE_POOL_MAX/);
+  assert.match(applicationDb, /Math\.min\(100, Math\.max\(5, configuredPoolSize\)\)/);
+  assert.match(canonicalDb, /AIFROGI_CANONICAL_DATABASE_POOL_MAX/);
+  assert.match(canonicalDb, /Math\.min\(25,Math\.max\(2,configuredPoolSize\)\)/);
+});
+
+test("provider service tier is allowlisted before it reaches the model request", () => {
+  const source = readFileSync(join(repository, "lib/services/website-knowledge-service.ts"), "utf8");
+  assert.match(source, /OPENAI_SERVICE_TIER/);
+  assert.match(source, /\["auto", "default", "flex", "priority"\]\.includes/);
+  assert.match(source, /service_tier: serviceTier/);
+});

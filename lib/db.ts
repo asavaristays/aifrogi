@@ -63,9 +63,14 @@ declare global {
 function baseDb(): PrismaClient | null {
   if (!hasDatabaseUrl()) return null;
   if (!globalThis.__prisma__) {
+    const configuredPoolSize = Number.parseInt(process.env.AIFROGI_DATABASE_POOL_MAX || "40", 10);
+    const poolSize = Number.isFinite(configuredPoolSize)
+      ? Math.min(100, Math.max(5, configuredPoolSize))
+      : 40;
     const adapter = new PrismaPg({
       connectionString: process.env.DATABASE_URL!,
-      connectionTimeoutMillis: 5000
+      connectionTimeoutMillis: 5000,
+      max: poolSize
     });
     globalThis.__prisma__ = new PrismaClient({ adapter });
   }

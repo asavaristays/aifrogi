@@ -908,6 +908,10 @@ export async function buildWebsiteKnowledgeAnswer({
 
   const primaryModel = process.env.OPENAI_MODEL || "gpt-4.1-mini";
   const fallbackModel = process.env.OPENAI_FALLBACK_MODEL?.trim();
+  const configuredServiceTier = process.env.OPENAI_SERVICE_TIER?.trim().toLowerCase();
+  const serviceTier = configuredServiceTier && ["auto", "default", "flex", "priority"].includes(configuredServiceTier)
+    ? configuredServiceTier
+    : undefined;
   const intelligenceFrame = planCoreIntelligenceFrame(persona?.category || "CORE", question, sessionMemory.tenantPropertyId);
   const requiredHotelParts = intelligenceFrame.requestedParts;
   const frameGuidance = intelligenceFrame.frameKey === "HOTEL_POLICY"
@@ -926,7 +930,7 @@ export async function buildWebsiteKnowledgeAnswer({
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST", signal,
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, input: [
+        body: JSON.stringify({ model, ...(serviceTier ? { service_tier: serviceTier } : {}), input: [
           { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}` },
           { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nCore Intelligence frame: ${intelligenceFrame.frameKey}.${frameGuidance ? ` ${frameGuidance}` : ""}${intelligenceFrame.requiresPartByPartEvidence ? ` The guest asked about ${requiredHotelParts.join(", ")}. Address each topic separately from approved evidence; if evidence is missing for one topic, say only that part cannot be confirmed.` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
         ], max_output_tokens: intelligenceFrame.frameKey === "HOTEL_POLICY" ? 600 : 400 })
