@@ -4,16 +4,45 @@ import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { recordWebsiteBotInstallation } from "@/lib/repositories/onboarding-repository";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
 import { publicAppOrigin } from "@/lib/public-app-origin";
+import { normalizeWebsiteOrigin, websiteWidgetCorsHeaders } from "@/lib/website-widget-cors";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
 
+async function corsHeadersFor(slug: string, requestOrigin: string | null) {
+  const registeredWebsite = await withPublicBotDatabaseContext(slug, async () => {
+    const property = await getDb()?.property.findUnique({
+      where: { slug },
+      select: { organization: { select: { website: true } } }
+    });
+    return property?.organization?.website || null;
+  });
+  return websiteWidgetCorsHeaders(requestOrigin, registeredWebsite);
+}
+
+export async function OPTIONS(request: Request, context: { params: Promise<{ slug: string }> }) {
+  const { slug } = await context.params;
+  const corsHeaders = await corsHeadersFor(slug, request.headers.get("origin"));
+  if (!corsHeaders) {
+    return NextResponse.json({ error: "Origin is not authorised for this bot." }, { status: 403, headers });
+  }
+  return new Response(null, { status: 204, headers: { ...headers, ...corsHeaders } });
+}
+
 export async function POST(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
+  const requestOrigin = request.headers.get("origin");
+  const corsHeaders = await corsHeadersFor(slug, requestOrigin);
+  if (!corsHeaders) {
+    return NextResponse.json({ error: "Origin is not authorised for this bot." }, { status: 403, headers });
+  }
   const payload = await request.json().catch(() => null) as { key?: string; origin?: string } | null;
+  if (normalizeWebsiteOrigin(payload?.origin) !== normalizeWebsiteOrigin(requestOrigin)) {
+    return NextResponse.json({ error: "Installation origin does not match the browser origin." }, { status: 403, headers: { ...headers, ...corsHeaders } });
+  }
   const response = await withPublicBotDatabaseContext(slug, async () => {
-  const result = await recordWebsiteBotInstallation(slug, String(payload?.key || ""), payload?.origin || request.headers.get("origin"));
-  if (!result) return NextResponse.json({ error: "Installation code is invalid." }, { status: 404, headers });
-  if (result.status !== "LIVE") return NextResponse.json(result, { headers });
+  const result = await recordWebsiteBotInstallation(slug, String(payload?.key || ""), requestOrigin);
+  if (!result) return NextResponse.json({ error: "Installation code is invalid." }, { status: 404, headers: { ...headers, ...corsHeaders } });
+  if (result.status !== "LIVE") return NextResponse.json(result, { headers: { ...headers, ...corsHeaders } });
 
   const [settings, property] = await Promise.all([
     readKnowledgeSettings(slug),
@@ -32,9 +61,9 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
       welcomeCardText: settings.welcomeCardText,
       showcaseItems: settings.showcaseItems
     }
-  }, { headers });
+  }, { headers: { ...headers, ...corsHeaders } });
   });
-  return response || NextResponse.json({ error: "Installation code is invalid." }, { status: 404, headers });
+  return response || NextResponse.json({ error: "Installation code is invalid." }, { status: 404, headers: { ...headers, ...corsHeaders } });
 }
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
