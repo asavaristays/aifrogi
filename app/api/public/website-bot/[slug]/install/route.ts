@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { recordWebsiteBotInstallation } from "@/lib/repositories/onboarding-repository";
 import { withPublicBotDatabaseContext } from "@/lib/security/tenant-database-context";
+import { publicAppOrigin } from "@/lib/public-app-origin";
 
 const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
 
@@ -40,7 +41,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const { slug } = await context.params;
   const url = new URL(request.url);
   const key = url.searchParams.get("key") || "";
-  const origin = url.origin;
+  const origin = publicAppOrigin(request.url);
   const script = `(()=>{
     const s=document.currentScript;
     if(!s||s.dataset.aifrogiLoaded||document.getElementById("aifrogi-widget-${slug}"))return;

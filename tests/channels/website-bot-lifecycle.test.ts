@@ -119,6 +119,7 @@ test("client submission presents an evidence-led demonstration gate", () => {
 
 test("JavaScript delivery uses a responsive launcher and trusted minimize message", () => {
   const installer = readFileSync("app/api/public/website-bot/[slug]/install/route.ts", "utf8");
+  assert.match(installer, /publicAppOrigin\(request\.url\)/);
   assert.match(installer, /aria-expanded/);
   assert.match(installer, /a\.logoUrl/);
   assert.match(installer, /a\.themeColor/);
