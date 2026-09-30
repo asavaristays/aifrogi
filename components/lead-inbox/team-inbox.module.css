@@ -81,7 +81,7 @@
  .mobileNav {display:flex; gap:.4rem; padding:.6rem; overflow-x:auto; border-bottom:1px solid #ddd; background:white;}
  .mobileNav button {display:block!important;white-space:nowrap; padding:.6rem .9rem; background:#f4f4f2; color:#333;}
  .mobileNav button[aria-pressed=true] {background:#171717; color:#fff;}
- .workspace :global(.inbox-v2-grid)>* {display:none;height:100%;overflow-y:auto;}
+ .workspace :global(#inbox-queues),.workspace :global(#inbox-conversations),.workspace :global(#inbox-reply),.workspace :global(#inbox-profile) {display:none;height:100%;overflow-y:auto;}
  .workspace[data-view=queues] :global(#inbox-queues),.workspace[data-view=conversations] :global(#inbox-conversations),.workspace[data-view=profile] :global(#inbox-profile) {display:block;}
  .workspace[data-view=reply] :global(#inbox-reply) {display:flex; min-height:0;}
  .workspace[data-service-desk=true][data-view=conversations] :global(#inbox-conversations) {display:flex;}
