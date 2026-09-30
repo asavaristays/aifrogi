@@ -1,0 +1,238 @@
+{
+  "release": "p2b-v6-20260930-rc7",
+  "createdAt": "2026-09-30T05:26:15.666Z",
+  "summary": {
+    "passed": 14,
+    "total": 20,
+    "p95": 2167
+  },
+  "results": [
+    {
+      "number": 1,
+      "question": "What services does Webtechnosys provide?",
+      "status": 200,
+      "ms": 2115,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Webtechnosys provides AI software development, custom software development, mobile app development, AI automation, and digital transformation services. They specialize in practical AI solutions for hospitality, services, real estate, and growth-stage companies across India.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 2,
+      "question": "How can I contact Webtechnosys?",
+      "status": 200,
+      "ms": 1466,
+      "grounded": true,
+      "sources": 3,
+      "answer": "You can contact Webtechnosys by phone at +91 74105 82898 or email at info@webtechnosys.com. They have offices in Goa and Gurgaon, India.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 3,
+      "question": "Where are the Webtechnosys offices located?",
+      "status": 200,
+      "ms": 1795,
+      "grounded": false,
+      "sources": 0,
+      "answer": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. I’ve sent your question to the business team. If you would like a callback, share your name and mobile number using the private consent fields below. You can also call +91 74105 82898.",
+      "error": null,
+      "pass": false
+    },
+    {
+      "number": 4,
+      "question": "Does Webtechnosys develop mobile applications?",
+      "status": 200,
+      "ms": 1734,
+      "grounded": false,
+      "sources": 0,
+      "answer": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. I’ve sent your question to the business team. If you would like a callback, share your name and mobile number using the private consent fields below. You can also call +91 74105 82898.",
+      "error": null,
+      "pass": false
+    },
+    {
+      "number": 5,
+      "question": "Does Webtechnosys build custom software for Indian companies?",
+      "status": 200,
+      "ms": 2074,
+      "grounded": false,
+      "sources": 0,
+      "answer": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. I’ve sent your question to the business team. If you would like a callback, share your name and mobile number using the private consent fields below. You can also call +91 74105 82898.",
+      "error": null,
+      "pass": false
+    },
+    {
+      "number": 6,
+      "question": "What AI automation services are available?",
+      "status": 200,
+      "ms": 2167,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Webtechnosys offers AI automation services including custom AI-powered software development, mobile app development, and AI automation solutions for hospitality, services, real estate, and growth-stage companies. These services focus on digital transformation and building platforms you own, tailored to your business workflows and needs.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 7,
+      "question": "What hospitality AI solutions does Webtechnosys offer?",
+      "status": 200,
+      "ms": 1805,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Webtechnosys offers hospitality AI solutions including HotelRADAR Frontdesk, Booking Engine, Hotel PMS, and Channel Manager. They also provide AI filmmaking services to create cinematic brand and commercial videos for hotels and resorts, integrating practical AI production with hospitality expertise. Training programs for practical AI adoption in hospitality workflows are also available.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 8,
+      "question": "What is HotelRADAR?",
+      "status": 200,
+      "ms": 1453,
+      "grounded": false,
+      "sources": 0,
+      "answer": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. I’ve sent your question to the business team. If you would like a callback, share your name and mobile number using the private consent fields below. You can also call +91 74105 82898.",
+      "error": null,
+      "pass": false
+    },
+    {
+      "number": 9,
+      "question": "Does Webtechnosys provide AI training?",
+      "status": 200,
+      "ms": 2009,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Yes, Webtechnosys offers AI training programs including a practical AI Tool Universe Bootcamp and a Corporate In-House AI Skill Program for teams. The bootcamp covers AI tools and workflows with hands-on projects, while the corporate program focuses on practical AI adoption tailored to a company’s business context and needs.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 10,
+      "question": "How can I book the AI Tool Universe Bootcamp?",
+      "status": 200,
+      "ms": 1864,
+      "grounded": true,
+      "sources": 3,
+      "answer": "You can book a seat for the AI Tool Universe Bootcamp by selecting a Saturday cohort in September or October 2026 at the Webtechnosys booking page. After choosing the cohort, you provide trainee details and complete the full seat payment of ₹1,650 online via Razorpay. The venue details and confirmation are shared once payment is verified.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 11,
+      "question": "Does Webtechnosys create AI films or commercial videos?",
+      "status": 200,
+      "ms": 1704,
+      "grounded": false,
+      "sources": 0,
+      "answer": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. I’ve sent your question to the business team. If you would like a callback, share your name and mobile number using the private consent fields below. You can also call +91 74105 82898.",
+      "error": null,
+      "pass": false
+    },
+    {
+      "number": 12,
+      "question": "Who founded Webtechnosys?",
+      "status": 200,
+      "ms": 1369,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Webtechnosys was founded by Manish Purohit.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 13,
+      "question": "How does a new software project begin?",
+      "status": 200,
+      "ms": 1864,
+      "grounded": true,
+      "sources": 3,
+      "answer": "A new software project begins with a discovery session to understand your requirements. This is followed by preparing a detailed proposal, Statement of Work, project timeline, and commercial agreement before development starts.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 14,
+      "question": "What happens before software development starts?",
+      "status": 200,
+      "ms": 1578,
+      "grounded": false,
+      "sources": 0,
+      "answer": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. I’ve sent your question to the business team. If you would like a callback, share your name and mobile number using the private consent fields below. You can also call +91 74105 82898.",
+      "error": null,
+      "pass": false
+    },
+    {
+      "number": 15,
+      "question": "Which industries does Webtechnosys work with?",
+      "status": 200,
+      "ms": 1733,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Webtechnosys primarily works with the hospitality industry, including hotels, heritage hotels, cultural retreats, and independent properties in India and the United States. They also provide AI automation, custom software, and mobile app development services for businesses across India.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 16,
+      "question": "Does Webtechnosys serve hotels and resorts?",
+      "status": 200,
+      "ms": 6158,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Yes, Webtechnosys provides AI solutions specifically for hotels and resorts, including demand intelligence, leakage control, and AI consulting tailored for the hospitality industry in India.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 17,
+      "question": "Can Webtechnosys help with digital transformation?",
+      "status": 200,
+      "ms": 1403,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Yes, Webtechnosys provides digital transformation services, including AI automation, custom software development, and AI-powered solutions tailored for businesses across India. They support structured project management and ensure secure communication throughout the transformation process.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 18,
+      "question": "Does Webtechnosys work with businesses outside Goa?",
+      "status": 200,
+      "ms": 1719,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Yes, Webtechnosys works with businesses across India, not just in Goa. They provide AI, web, mobile application, and custom software development services to Indian businesses in multiple cities including Mumbai, Bengaluru, and Gurugram.",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 19,
+      "question": "What is the Webtechnosys email address and phone number?",
+      "status": 200,
+      "ms": 497,
+      "grounded": true,
+      "sources": 3,
+      "answer": "Contact details:\nPhone: +91 74105 82898\nEmail: info@webtechnosys.com",
+      "error": null,
+      "pass": true
+    },
+    {
+      "number": 20,
+      "question": "How can I request a project proposal?",
+      "status": 200,
+      "ms": 1675,
+      "grounded": true,
+      "sources": 3,
+      "answer": "To request a project proposal, you start with a discovery session where your project needs are discussed. After that, you'll receive a detailed proposal, Statement of Work, project timeline, and commercial agreement before development begins.\n\nIf you’d like the business team to help you further, please share your name and mobile number below. Your details will be kept private and used only for this enquiry.",
+      "error": null,
+      "pass": true
+    }
+  ],
+  "handover": {
+    "status": 200,
+    "conversationState": "HUMAN_REQUESTED",
+    "handoffAvailable": true,
+    "answer": "Of course. I’ve alerted the support team. A team member has not joined yet; they will respond here as soon as possible during business hours. If you prefer a callback, share your name and mobile number using the consent fields below. For immediate assistance, you may also call +91 74105 82898.",
+    "pass": true
+  }
+}
