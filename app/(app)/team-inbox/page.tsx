@@ -22,7 +22,7 @@ export default async function TeamInboxPage({searchParams}:{searchParams:Promise
   const [leads,settings]=await Promise.all([withTenantDatabaseContext({kind:'tenant',organizationId:access.organization.id,actor:`team-inbox:${access.user.username}`},()=>loadLeads(access.propertySlug)),readKnowledgeSettings(access.propertySlug)]);
   const hotelMode=access.organization.botProfile?.category==='STAY';
   const familyName=getBotBlueprint((access.organization.botProfile?.category || 'BUSINESS_AI') as BotProfileInput['category'])?.productName || 'AiFrogi';
-  return <div className={styles.page}>
+  return <div className={styles.page} data-team-inbox="true">
     <div className={styles.journeyHeader}>
       <div><p className={styles.eyebrow}>{familyName} · {access.organization.name}</p><h1>{hotelMode ? "Pre-Stay Inbox" : "Team Inbox"}</h1><p>{hotelMode ? "Booking questions and guest enquiries before arrival." : "Customer conversations, AI replies and human follow-ups in one place."}</p></div>
       {hotelMode?<a href="/in-stay/inbox" className={styles.journeyLink}>Open In-Stay service inbox →</a>:null}

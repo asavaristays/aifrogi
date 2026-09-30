@@ -4,6 +4,11 @@
 .journeyHeader h1 {font-size:clamp(1.3rem,2vw,1.65rem);font-weight:700;letter-spacing:-.04em;}
 .journeyHeader p:not(.eyebrow) {margin-top:.35rem;color:#6b655b;font-size:.875rem;}
 .journeyHeader .eyebrow {margin-bottom:.35rem;color:#8a6a16;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;}
+.page[data-team-inbox=true] {--inbox-page-padding:clamp(.65rem,1.5vw,1.15rem);}
+.page[data-team-inbox=true] .journeyHeader {flex-shrink:0;align-items:center;margin:calc(-1 * var(--inbox-page-padding)) calc(-1 * var(--inbox-page-padding)) 1rem;padding:1rem 2rem;border:0;border-bottom:1px solid #0000000d;border-radius:0;background:#fff;box-shadow:none;}
+.page[data-team-inbox=true] .journeyHeader h1 {font-size:1.5rem;font-weight:600;letter-spacing:normal;}
+.page[data-team-inbox=true] .journeyHeader p:not(.eyebrow) {margin-top:.25rem;color:var(--text-muted);}
+@media(max-width:639px) {.page[data-team-inbox=true] .journeyHeader {align-items:flex-start;padding:1rem 1.25rem;}}
 .journeyLink {flex:none;display:inline-flex;min-height:42px;align-items:center;border-radius:12px;background:#171717;padding:.7rem 1rem;color:#fff;font-size:.78rem;font-weight:700;}
 .header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; padding: .5rem .25rem 1.25rem; }
 .compactStatus {padding:.1rem .25rem .9rem;}
