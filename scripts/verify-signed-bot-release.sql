@@ -35,9 +35,9 @@ SELECT aifrogi_security.activate_bot_release('property-release-test',:'release_i
 
 SELECT replace(:'release_payload','release-1','release-2') AS release_payload_2 \gset
 SELECT aifrogi_security.register_bot_release('property-release-test',:'policy_id',:'release_payload_2',encode(digest(convert_to(:'release_payload_2','UTF8'),'sha256'),'hex'),'release-signature-2','test-key','release-tester') AS release_id_2 \gset
-SELECT set_config('test.release_id_2',:'release_id_2',false);
+SELECT set_config('test.release_id_2',:'release_id_2',false),set_config('test.initial_generation',:'initial_generation',false);
 DO $$ BEGIN
-  PERFORM aifrogi_security.activate_bot_release('property-release-test',current_setting('test.release_id_2'),:'initial_generation','release-tester');
+  PERFORM aifrogi_security.activate_bot_release('property-release-test',current_setting('test.release_id_2'),current_setting('test.initial_generation')::bigint,'release-tester');
   RAISE EXCEPTION 'STALE_POINTER_ACCEPTED';
 EXCEPTION WHEN OTHERS THEN IF SQLERRM <> 'BOT_RELEASE_POINTER_STALE' THEN RAISE; END IF; END $$;
 DO $$ BEGIN
@@ -52,7 +52,7 @@ DO $$ DECLARE n int; BEGIN SELECT count(*) INTO n FROM aifrogi_security.active_b
 RESET SESSION AUTHORIZATION;
 
 DO $$ BEGIN
-  IF (SELECT "pointerGeneration" FROM "BotReleasePointer" WHERE "propertyId"='property-release-test')<>:'initial_generation'::bigint+1 THEN RAISE EXCEPTION 'ACTIVATION_GENERATION_WRONG'; END IF;
+  IF (SELECT "pointerGeneration" FROM "BotReleasePointer" WHERE "propertyId"='property-release-test')<>current_setting('test.initial_generation')::bigint+1 THEN RAISE EXCEPTION 'ACTIVATION_GENERATION_WRONG'; END IF;
   IF (SELECT count(*) FROM "BotReleaseArtifact" WHERE "propertyId"='property-release-test' AND state='ACTIVE')<>1 THEN RAISE EXCEPTION 'ACTIVE_RELEASE_CARDINALITY_WRONG'; END IF;
 END $$;
 SELECT 'SIGNED_BOT_RELEASE_BEHAVIOR_PASS' AS result;
