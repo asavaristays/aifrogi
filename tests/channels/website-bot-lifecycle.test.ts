@@ -119,6 +119,9 @@ test("client submission presents an evidence-led demonstration gate", () => {
 
 test("JavaScript delivery uses a responsive launcher and trusted minimize message", () => {
   const installer = readFileSync("app/api/public/website-bot/[slug]/install/route.ts", "utf8");
+  const setupDelivery = readFileSync("components/website-bot/website-bot-installation.tsx", "utf8");
+  assert.match(setupDelivery, /const base = "https:\/\/app\.aifrogi\.com"/);
+  assert.match(setupDelivery, /\$\{base\}\/api\/public\/website-bot\/\$\{slug\}\/install/);
   assert.match(installer, /publicAppOrigin\(request\.url\)/);
   assert.match(installer, /aria-expanded/);
   assert.match(installer, /a\.logoUrl/);
