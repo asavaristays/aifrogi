@@ -25,6 +25,42 @@ export type GovernedEvidenceUnit = {
   locator: EvidenceLocator;
 };
 
+export type DeliverableEvidenceCandidate = {
+  unit: GovernedEvidenceUnit;
+  claimId: string;
+  claimQuestion: string;
+  canonicalAnswer: string;
+  score: number;
+};
+
+function terms(value: string) {
+  return new Set(value.toLowerCase().normalize("NFKC").match(/[\p{L}\p{N}]+/gu)?.filter((item) => item.length > 1) ?? []);
+}
+
+/** Deterministic, source-neutral ranking. Authority breaks relevance ties; it
+ * never permits evidence from another tenant or release. */
+export function rankDeliverableEvidence(input: {
+  organizationId: string;
+  propertyId: string;
+  releaseId: string;
+  question: string;
+  candidates: Omit<DeliverableEvidenceCandidate, "score">[];
+  maximumClaims?: number;
+}) {
+  const queryTerms = terms(input.question);
+  const ranked = input.candidates.map((candidate) => {
+    assertEvidenceEligible(candidate.unit, input);
+    if (!candidate.claimId || !candidate.canonicalAnswer.trim()) throw new Error("EVIDENCE_CLAIM_BINDING_INCOMPLETE");
+    const candidateTerms = terms(`${candidate.claimQuestion} ${candidate.canonicalAnswer} ${candidate.unit.content}`);
+    const overlap = [...queryTerms].filter((term) => candidateTerms.has(term)).length;
+    const score = queryTerms.size ? overlap / queryTerms.size : 0;
+    return { ...candidate, score };
+  }).filter((candidate) => candidate.score > 0)
+    .sort((left, right) => right.score - left.score || left.unit.authorityRank - right.unit.authorityRank || left.claimId.localeCompare(right.claimId));
+  const top = ranked[0]?.score ?? 0;
+  return ranked.filter((candidate) => candidate.score >= Math.max(0.12, top - 0.08)).slice(0, Math.max(1, Math.min(input.maximumClaims ?? 3, 3)));
+}
+
 export type RequestedAnswerPart = { key: string; question: string; required: boolean };
 export type PartEvidence = { part: RequestedAnswerPart; evidence: GovernedEvidenceUnit[] };
 

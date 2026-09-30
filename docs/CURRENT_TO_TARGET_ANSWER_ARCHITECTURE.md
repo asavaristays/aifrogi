@@ -1,5 +1,7 @@
 # Current-to-target answer architecture
 
+Implementation status (2026-09-30): the common release-scoped retrieval and sealed-claim serving path is implemented in application code. Website crawl remains a compatibility bridge for tenants without an active multi-source release. Disposable PostgreSQL and HTTP fixtures for the new query remain a release gate and are not represented as completed here.
+
 ## Release objective
 
 Every configured bot must achieve at least 8/10 correct grounded answers, zero unsafe answers, and correct selective routing. HTTP success is not an answer-quality pass.

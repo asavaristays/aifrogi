@@ -3,6 +3,7 @@ import path from "path";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { recordKnowledgeGap } from "@/lib/repositories/knowledge-content-repository";
 import { getPublishedClaimContext } from "@/lib/repositories/knowledge-verification-repository";
+import { getActiveReleaseEvidence } from "@/lib/repositories/source-neutral-evidence-repository";
 import { readActiveWebsiteCrawlStatus, retrieveActiveWebsiteChunks } from "@/lib/active-website-crawl-retrieval";
 import { planRetrievalQuery } from "@/lib/retrieval-query-plan";
 import { getBotPersonaForPropertySlug } from "@/lib/repositories/bot-profile-repository";
@@ -65,7 +66,7 @@ export type KnowledgeBase = {
   crawledAt: string;
 };
 
-export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE" | "APPROVED_BUSINESS_PROFILE" | "APPROVED_CLIENT_CORRECTION"; freshness: "CURRENT" | "STALE" };
+export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE" | "APPROVED_BUSINESS_PROFILE" | "APPROVED_CLIENT_CORRECTION" | "APPROVED_RELEASE_EVIDENCE"; freshness: "CURRENT" | "STALE" };
 
 export type KnowledgeAnswer = {
   answer: string;
@@ -732,7 +733,7 @@ export async function buildWebsiteKnowledgeAnswer({
   const exactContactRequest = /\b(contact|phone|telephone|email|address|located|location|offices?)\b/i.test(question);
   const activeCrawlStatus = business?.organizationId ? await readActiveWebsiteCrawlStatus({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}` }).catch(() => null) : null;
   const retrievalPlan = planRetrievalQuery(exactContactRequest ? `${resolved.retrievalQuestion} contact email phone PostalAddress Goa Gurgaon` : resolved.retrievalQuestion);
-  const activeChunks = activeCrawlStatus && business?.organizationId ? await (async () => {
+  const retrievedActiveChunks = activeCrawlStatus && business?.organizationId ? await (async () => {
     const retrievalIdentity = { organizationId: business.organizationId!, propertyId: business.id, principal: `public-bot:${propertySlug}` };
     const limit = retrievalPlan.diversityRequired || retrievalPlan.topics.length ? 10 : 6;
     // Preserve exact lexical matches while also benefiting from controlled
@@ -747,6 +748,19 @@ export async function buildWebsiteKnowledgeAnswer({
     ]);
     return [...new Map([...exact, ...expanded].map((chunk) => [chunk.chunk_id, chunk])).values()].slice(0, 12);
   })().catch(() => []) : [];
+  // Query the source-neutral release in parallel with the website compatibility
+  // path. Only evidence already bound to a sealed active-publication claim is
+  // returned, so claim delivery remains byte-for-byte auditable.
+  const releasedEvidence = business?.organizationId ? await getActiveReleaseEvidence({
+    organizationId: business.organizationId,
+    propertyId: business.id,
+    principal: `public-bot:${propertySlug}`,
+    question: resolved.retrievalQuestion
+  }).catch(() => ({ releaseId: null, candidates: [] })) : { releaseId: null, candidates: [] };
+  // An active multi-source release is authoritative. The crawl index remains a
+  // bridge only for tenants that have not yet activated such a release; never
+  // mix two delivery-envelope types in one answer.
+  const activeChunks = releasedEvidence.candidates.length ? [] : retrievedActiveChunks;
   const organization = business?.organization;
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
@@ -768,9 +782,16 @@ export async function buildWebsiteKnowledgeAnswer({
   // An active crawl generation is a complete authority path of its own. Never
   // consult the legacy claim/pointer index when fresh tenant chunks matched.
   const canonicalOnly = canonicalFactsRequired();
-  const governed = activeCrawlStatus || canonicalOnly
+  const releaseGoverned = releasedEvidence.candidates.length ? {
+    context: releasedEvidence.candidates.map(({ claimId, claimQuestion, canonicalAnswer, unit }) => `Approved sealed claim ${claimId}\nSource: ${unit.sourceType}\nQuestion: ${claimQuestion}\nAnswer: ${canonicalAnswer}\nEvidence: ${unit.content}`).join("\n\n---\n\n").slice(0, 9000),
+    claimIds: releasedEvidence.candidates.map((candidate) => candidate.claimId),
+    candidates: releasedEvidence.candidates.map((candidate) => ({ claimId: candidate.claimId, claimKey: `release:${releasedEvidence.releaseId}:${candidate.unit.sourceType}`, score: candidate.score, selected: true, status: "PUBLISHED", answer: candidate.canonicalAnswer })),
+    nearMissClaimIds: [] as string[],
+    blockedState: null
+  } : null;
+  const governed = releaseGoverned || (activeCrawlStatus || canonicalOnly
     ? { context: "", claimIds: [] as string[], candidates: [], nearMissClaimIds: [] as string[], blockedState: null }
-    : await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion, { readOnly: evaluationMode, ignorePublishedClaims: Boolean(screeningSnapshot) });
+    : await getPublishedClaimContext(propertySlug, resolved.retrievalQuestion, { readOnly: evaluationMode, ignorePublishedClaims: Boolean(screeningSnapshot) }));
   // Private preparation evaluation must screen the explicitly supplied fresh
   // snapshot even when no public publication is currently eligible. Public
   // requests still fail closed on the canonical serving state.
@@ -892,13 +913,25 @@ export async function buildWebsiteKnowledgeAnswer({
     answer.model = "EXACT_TENANT_FACT";
     return answer;
   }
+  const releasedSources: KnowledgeSourceEvidence[] = releasedEvidence.candidates.map(({ unit }) => ({
+    title: `${unit.sourceType.toLowerCase()} approved evidence`,
+    url: unit.locator.sourceType === "WEBSITE" ? unit.locator.url : "",
+    crawledAt: unit.observedAt,
+    authority: "APPROVED_RELEASE_EVIDENCE",
+    freshness: "CURRENT"
+  }));
   const indexedWebsiteResult = activeChunks.length ? {
     context: activeChunks.map((chunk, index) => `[Fresh crawl source ${index + 1}]\nURL: ${chunk.url}\nTitle: ${chunk.title}\n${chunk.content}`).join("\n\n---\n\n").slice(0, MAX_CONTEXT_CHARS),
     sourceUrls: [...new Set(activeChunks.map(chunk => chunk.url))],
     sources: [...new Map(activeChunks.map(chunk => [chunk.url, { title: chunk.title, url: chunk.url, crawledAt: knowledgeBase?.crawledAt || new Date().toISOString(), authority: "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness: "CURRENT" as const }])).values()],
     trace: { retrievalQuestion, contextSourceUrls: [...new Set(activeChunks.map(chunk => chunk.url))], contextChars: activeChunks.reduce((sum, chunk) => sum + chunk.content.length, 0), validatorViolations: [] } satisfies AnswerReplayTrace
   } : null;
-  const websiteResult = indexedWebsiteResult || (!activeCrawlStatus && knowledgeBase ? buildContext(knowledgeBase, retrievalQuestion) : {
+  const websiteResult = indexedWebsiteResult || (releaseGoverned ? {
+    context: "",
+    sourceUrls: releasedSources.map((source) => source.url).filter(Boolean),
+    sources: releasedSources,
+    trace: { retrievalQuestion, contextSourceUrls: releasedSources.map((source) => source.url).filter(Boolean), contextChars: releaseGoverned.context.length, validatorViolations: [] } satisfies AnswerReplayTrace
+  } : !activeCrawlStatus && knowledgeBase ? buildContext(knowledgeBase, retrievalQuestion) : {
     context: "",
     sourceUrls: [] as string[],
     sources: [] as KnowledgeSourceEvidence[],
@@ -912,6 +945,28 @@ export async function buildWebsiteKnowledgeAnswer({
     const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);
     failed.retrieval = { candidates: publicRetrievalCandidates(governed.candidates), retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: governed.nearMissClaimIds };
     return failed;
+  }
+
+  // Release-backed claims are already owner-approved answer bytes. Serving the
+  // highest-ranked canonical answer avoids an unnecessary model paraphrase and
+  // lets answer_delivery_manifest prove the exact bytes before provider I/O.
+  if (releaseGoverned) {
+    const exact = publishedClaimFallback(governed, {
+      frameworkVersion: RELIABILITY_FRAMEWORK_VERSION,
+      failureLayer: "NONE",
+      failureCode: null,
+      latencyMs: 0,
+      attemptCount: 0,
+      escalationTier: "TIER_0_SELF_RESOLVE",
+      degradedMode: false
+    }, resolved.decision);
+    if (exact) {
+      exact.model = "ACTIVE_RELEASE_SEALED_CLAIM";
+      exact.sources = releasedSources;
+      exact.sourceUrls = releasedSources.map((source) => source.url).filter(Boolean);
+      exact.knowledgeAsOf = releasedSources[0]?.crawledAt || new Date().toISOString();
+      return exact;
+    }
   }
 
   if (!apiKey) {

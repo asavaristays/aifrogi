@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { evaluateAnswerReleaseGate, fuseSourceEvidence, planPartialAnswer, type GovernedEvidenceUnit } from "../../lib/source-neutral-answer-framework";
+import { evaluateAnswerReleaseGate, fuseSourceEvidence, planPartialAnswer, rankDeliverableEvidence, type GovernedEvidenceUnit } from "../../lib/source-neutral-answer-framework";
+import { normalizeEvidenceLocator } from "../../lib/repositories/source-neutral-evidence-repository";
 
 const base = { organizationId:"o1",propertyId:"p1",releaseId:"r1",authorizationId:"a1",sourceVersionId:"v1",contentDigest:"a".repeat(64),authorityRank:1,observedAt:"2026-09-30T00:00:00.000Z",effectiveUntil:null };
 const units:GovernedEvidenceUnit[]=[
@@ -30,4 +31,20 @@ test("release gate requires 8 of 10 grounded correct, zero unsafe, and correct r
   assert.equal(pass.passed,true);
   assert.equal(evaluateAnswerReleaseGate([...Array(7)].map(()=>({correct:true,grounded:true,safe:true,routingCorrect:true})).concat([...Array(3)].map(()=>({correct:false,grounded:false,safe:true,routingCorrect:true})))).passed,false);
   assert.equal(evaluateAnswerReleaseGate([...Array(9)].map(()=>({correct:true,grounded:true,safe:true,routingCorrect:true})).concat([{correct:false,grounded:false,safe:false,routingCorrect:true}])).passed,false);
+});
+
+test("deliverable ranking rejects unbound evidence and selects relevant sealed claims",()=>{
+  const ranked=rankDeliverableEvidence({organizationId:"o1",propertyId:"p1",releaseId:"r1",question:"What hotel services are available?",candidates:[
+    {unit:units[1],claimId:"claim-services",claimQuestion:"What services are available?",canonicalAnswer:"Hotel services are listed in the brochure."},
+    {unit:units[2],claimId:"claim-rate",claimQuestion:"What is the room rate?",canonicalAnswer:"The approved rate is in the rate sheet."}
+  ]});
+  assert.equal(ranked[0].claimId,"claim-services");
+  assert.throws(()=>rankDeliverableEvidence({organizationId:"o1",propertyId:"p1",releaseId:"r1",question:"services",candidates:[{unit:units[0],claimId:"",claimQuestion:"services",canonicalAnswer:"answer"}]}),/CLAIM_BINDING_INCOMPLETE/);
+});
+
+test("source adapters preserve stable website PDF spreadsheet and form locators",()=>{
+  assert.equal(normalizeEvidenceLocator("WEBSITE",{url:"https://example.com",pageId:"p",chunkId:"c"},"x").sourceType,"WEBSITE");
+  assert.deepEqual(normalizeEvidenceLocator("PDF",{fileId:"f",pageNumber:3,blockId:"b"},"x"),{sourceType:"PDF",fileId:"f",page:3,blockId:"b"});
+  assert.deepEqual(normalizeEvidenceLocator("SPREADSHEET",{fileId:"s",sheetName:"Rates",rowNumber:4,rowKey:"R4"},"x"),{sourceType:"SPREADSHEET",fileId:"s",sheet:"Rates",row:4,stableKey:"R4"});
+  assert.deepEqual(normalizeEvidenceLocator("FORM",{formId:"profile",field:"phone"},"x"),{sourceType:"FORM",formId:"profile",field:"phone"});
 });
