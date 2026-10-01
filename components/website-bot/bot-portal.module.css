@@ -88,3 +88,9 @@
 .answerActions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
 .answerActions a { display: inline-flex; align-items: center; min-height: 40px; padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; }
 .root[data-mobile] > [role="group"] { flex-shrink: 0; }
+
+.mobileIdentity { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.mobileIdentity h1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 650; }
+.mobileIdentity > span { display: inline-flex; align-items: center; gap: 5px; color: var(--widget-muted); font-size: 10px; line-height: 1.2; }
+.mobileIdentity > span i { width: 6px; height: 6px; border-radius: 50%; background: #45b97c; box-shadow: 0 0 0 2px color-mix(in srgb, #45b97c 18%, transparent); }
+@media (max-width: 640px) { .root[data-mobile]:not([data-launcher]) { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--widget-accent) 32%, transparent); } }
