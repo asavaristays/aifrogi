@@ -65,7 +65,7 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
   const hotelJourney = residentMode ? "in-stay" : journeyMode;
   const isHotelGuest = Boolean(hotelJourney);
   // Restore the original direct chat/menu journey; keep compact mobile controls.
-  const portalEnabled = false;
+  const portalEnabled = isWebtechnosys;
   const [portalView, setPortalView] = useState<"home" | "messages" | "help" | "updates" | "chat">("home");
   const [menuOpen, setMenuOpen] = useState(menu.enabled);
   const [welcomePending, setWelcomePending] = useState(false);
@@ -297,12 +297,12 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
   if(guidedHospitality&&['showcase-hotelgpt','showcase-dinegpt'].includes(slug)) return <HospitalityDemoJourney mode={slug==='showcase-hotelgpt'?'hotel':'dine'} onChat={()=>setGuidedHospitality(false)}/>;
   const themeClass = isHotelGuest ? "" : widgetTheme === "light" ? shell.themeLight : widgetTheme === "system" ? shell.themeSystem : shell.themeDark;
   const widgetColors = { "--widget-accent": accent, "--widget-accent-text": accentText, ...(isWebtechnosys ? {} : { borderColor: accent }) } as CSSProperties;
-  return <main data-mobile={mobileViewport || undefined} data-mobile-chat={!demo && !menuOpen && !bookingItem || undefined} data-keyboard-open={keyboardOpen || undefined} data-bot-portal={portalEnabled || undefined} data-launcher={dismissible || undefined} data-widget-theme={widgetTheme} data-journey={hotelJourney} className={`${!demo ? portal.root : ""} ${isWebtechnosys ? shell.shell : isHotelGuest ? hotel.shell : "flex h-dvh min-h-0 flex-col overflow-hidden rounded-[22px] border bg-[#101010] text-white max-[520px]:rounded-none"} ${themeClass}`} style={widgetColors}>
+  return <main data-mobile={mobileViewport || undefined} data-mobile-chat={!demo && (!portalEnabled || portalView === "chat") && !menuOpen && !bookingItem || undefined} data-keyboard-open={keyboardOpen || undefined} data-bot-portal={portalEnabled || undefined} data-launcher={dismissible || undefined} data-widget-theme={widgetTheme} data-journey={hotelJourney} className={`${!demo ? portal.root : ""} ${isWebtechnosys ? shell.shell : isHotelGuest ? hotel.shell : "flex h-dvh min-h-0 flex-col overflow-hidden rounded-[22px] border bg-[#101010] text-white max-[520px]:rounded-none"} ${themeClass}`} style={widgetColors}>
     {guidedPersonas[slug]&&<button className="px-5 py-3 text-left text-sm" style={{background:'#e8c866',color:'#111'}} onClick={()=>setGuidedPersona(true)}>Start guided demo →</button>}
     {['showcase-hotelgpt','showcase-dinegpt'].includes(slug)&&<button className="px-5 py-3 text-left text-sm" style={{background:'#e8c866',color:'#111'}} onClick={()=>setGuidedHospitality(true)}>Start a guided demo booking →</button>}
     {slug==='showcase-clinicgpt'&&<button className="px-5 py-3 text-left text-sm" style={{background:'#e8c866',color:'#111'}} onClick={()=>setGuidedClinic(true)}>Book a demo appointment →</button>}
     {demo && <a href="/ai-bot-demos" target="_blank" rel="noopener noreferrer" className="block border-b border-white/10 px-5 py-3 text-sm font-semibold" style={{color:'#f3e5b5',background:'#161616'}}>Explore AI Bot Demos ↗</a>}
-    {!demo && !menuOpen && !bookingItem && <header className={portal.mobileChatHeader}>
+    {!demo && (!portalEnabled || portalView === "chat") && !menuOpen && !bookingItem && <header className={portal.mobileChatHeader}>
       {menu.enabled && <button type="button" aria-label="Show options" onClick={() => { composerRef.current?.blur(); setMobileInfoOpen(false); setMenuOpen(true); }}><LayoutGrid size={20} /></button>}
       <span className={portal.mobileLogo} aria-hidden="true" style={{backgroundColor:accent,color:accentText}}><SafeBotLogo src={logoUrl} fallback={botName.slice(0, 1).toUpperCase()} /></span><div className={portal.mobileIdentity}><h1>{botName}</h1><span><i aria-hidden="true" />AI ready</span></div>
       <button type="button" aria-label="Bot information" aria-expanded={mobileInfoOpen} onClick={() => setMobileInfoOpen(value => !value)}><Info size={19} /></button>

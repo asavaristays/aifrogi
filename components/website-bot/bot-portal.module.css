@@ -94,3 +94,16 @@
 .mobileIdentity > span { display: inline-flex; align-items: center; gap: 5px; color: var(--widget-muted); font-size: 10px; line-height: 1.2; }
 .mobileIdentity > span i { width: 6px; height: 6px; border-radius: 50%; background: #45b97c; box-shadow: 0 0 0 2px color-mix(in srgb, #45b97c 18%, transparent); }
 @media (max-width: 640px) { .root[data-mobile]:not([data-launcher]) { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--widget-accent) 32%, transparent); } }
+
+/* Focused mobile chat: navigation belongs to the home screen, not the active conversation. */
+@media (max-width: 640px) {
+  .root[data-mobile][data-mobile-chat] > .navigation { display: none; }
+  .root[data-mobile][data-mobile-chat] > .footer { display: none; }
+  .root[data-mobile][data-mobile-chat] form[data-portal-composer] { padding: 10px 12px max(10px, env(safe-area-inset-bottom)); }
+  .root[data-mobile][data-mobile-chat] .composerRow > input { height: 52px; padding-inline: 14px; border-radius: 16px; }
+  .root[data-mobile][data-mobile-chat] .composerRow > button { height: 48px; border-radius: 15px; }
+  .root[data-mobile]:not([data-mobile-chat]) .content { padding: 26px 18px 18px; }
+  .root[data-mobile]:not([data-mobile-chat]) .title { max-width: 300px; margin: 8px 0 8px; font-size: 32px; line-height: 1.08; }
+  .root[data-mobile]:not([data-mobile-chat]) .primary { min-height: 72px; justify-content: space-between; padding-inline: 18px; border: 1px solid color-mix(in srgb, var(--widget-accent) 42%, var(--widget-line)); }
+  .root[data-mobile]:not([data-mobile-chat]) .conversation { min-height: 104px; }
+}
