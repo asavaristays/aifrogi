@@ -781,17 +781,19 @@ export async function buildWebsiteKnowledgeAnswer({
     if (resolved.intent === "OFF_TOPIC") return direct(`I’m here to help with ${businessName}. Ask me about its services, products, availability, or how to get started.`);
     if (resolved.intent === "SENSITIVE") return direct(`I can’t provide private customer, guest, owner, booking, credential or payment information. I can share ${businessName}’s public contact details or help with general business information.` , { ...resolved.decision, disposition: "REFUSE", reason: "Private-data and credential boundary enforced before public contact routing." });
     if (resolved.intent === "HUMAN_REQUEST") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
+    const identity={organizationId:business.organizationId,propertyId:business.id,principal:`public-bot:${propertySlug}`,purpose:"PUBLIC_ANSWER"};
     const proof = await answerFromSharedCrawl({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}`, purpose: "PUBLIC_ANSWER" }, resolved.retrievalQuestion);
     const factual = proof.disposition === "ANSWER" || proof.disposition === "PARTIAL";
     const disposition: SovereignDecision["disposition"] = factual ? "ANSWER" : proof.disposition === "LIVE_ACTION_REQUIRED" ? "ESCALATE" : proof.disposition === "TECHNICAL_FAILURE" ? "FALLBACK" : "CLARIFY";
     const decision = { ...resolved.decision, disposition, reason: proof.failureCode || `Crawl-only ${proof.disposition}` };
     const sourceUrls = [...new Set(proof.evidence.map(e => e.url))];
+    const crawlEvidence = proof.retrievedEvidence.filter(e => !e.id.startsWith("sheet:"));
     const asOf = proof.capturedAt || new Date().toISOString();
     return { answer: proof.answer, sharedProof: proof, sourceUrls,
-      sources: sourceUrls.map(url => ({ url, title: proof.evidence.find(e => e.url === url)!.title, crawledAt: asOf, authority: "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness: "CURRENT" as const })),
+      sources: sourceUrls.map(url => { const item=proof.evidence.find(e => e.url === url)!; return { url, title:item.title, crawledAt:asOf, authority:item.id.startsWith("sheet:") ? "APPROVED_CLIENT_CORRECTION" as const : "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness:"CURRENT" as const }; }),
       knowledgeAsOf: asOf, usedOpenAi: proof.modelUsage.inputTokens > 0, model: process.env.OPENAI_MODEL || "gpt-4.1-mini", decision, claimIds: [], retrieval: emptyRetrieval(), modelUsage: proof.modelUsage,
-      crawlGenerationId: proof.evidence[0]?.generationId, chunkIds: proof.evidence.map(e => e.id),
-      materialEvidenceUnits: proof.evidence.map(e => e.content),
+      crawlGenerationId: crawlEvidence[0]?.generationId, chunkIds: crawlEvidence.map(e => e.id),
+      materialEvidenceUnits: crawlEvidence.map(e => e.content),
       materialClaimDecisions: proof.factualClaims.map(claim => ({ claim, supported: true, matchedTerms: [], missingNumbers: [] })),
       replayTrace: { retrievalQuestion: resolved.retrievalQuestion, contextSourceUrls: sourceUrls, contextChars: proof.evidence.reduce((n,e) => n + e.content.length,0), finalAnswer: proof.answer, validatorViolations: proof.failureCode ? [proof.failureCode] : [], sharedEngine: proof.trace },
       reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: proof.disposition === "TECHNICAL_FAILURE" ? "MODEL" : "NONE", failureCode: proof.failureCode, latencyMs: proof.trace.stages.reduce((n,s) => n + s.elapsedMs,0), attemptCount: proof.trace.stages.filter(s => s.stage === "COMPOSITION").length, escalationTier: escalationTierFor({disposition}), degradedMode: false }

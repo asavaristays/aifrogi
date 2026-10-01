@@ -1,0 +1,572 @@
+{
+  "summary": {
+    "runAt": "2026-10-01T12:15:24.056Z",
+    "endpoint": "https://app.aifrogi.com/api/public/website-bot/webtechnosys-fresh-ai-bot-03e89f",
+    "passed": 15,
+    "failed": 0,
+    "total": 15,
+    "medianLatencyMs": 3103
+  },
+  "results": [
+    {
+      "number": 1,
+      "question": "Can you tell me about AI Filmmaking?",
+      "actualReply": "AI Filmmaking by Webtechnosys creates cinematic films, commercials, and social-media videos for hotels and tourism brands by starting with real property assets like architecture, rooms, and guest experiences, then enhancing the story with AI to build an emotional guest journey.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "film",
+        "video"
+      ],
+      "matchedSignals": [
+        "film",
+        "video"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: AI Filmmaking",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-filmmaking/",
+          "title": "AI Filmmaking and Commercial Videos in Goa",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphwlqk000krrkxrkvv7aup",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3582,
+      "httpStatus": 200
+    },
+    {
+      "number": 2,
+      "question": "What video outputs can you create?",
+      "actualReply": "You can create cinematic AI films, commercials, and social-media videos including commercial films, reels, campaign cuts, website visuals, and social content.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "video",
+        "commercial",
+        "social"
+      ],
+      "matchedSignals": [
+        "video",
+        "commercial",
+        "social"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/ai-filmmaking/",
+          "title": "AI Filmmaking and Commercial Videos in Goa",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphws0g000zrrkxrnsqdygi",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 2923,
+      "httpStatus": 200
+    },
+    {
+      "number": 3,
+      "question": "What training does Webtechnosys offer?",
+      "actualReply": "Webtechnosys offers a Corporate In-House AI Skill Program providing practical AI adoption, workflow experiments, and applied team training within companies' own workflows and business problems. They also provide an AI Tool Universe Bootcamp with paid Saturday cohorts where attendees can learn various AI tools and techniques.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "training",
+        "corporate",
+        "bootcamp"
+      ],
+      "matchedSignals": [
+        "training",
+        "corporate",
+        "bootcamp"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/training/ai-build-accelerator/",
+          "title": "Corporate In-House AI Skill Program | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/training-booking/",
+          "title": "Book AI Tool Universe Bootcamp Seat | Webtechnosys Training",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphwyp2001errkximh2zz0f",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3656,
+      "httpStatus": 200
+    },
+    {
+      "number": 4,
+      "question": "Who is the corporate AI training for?",
+      "actualReply": "The Corporate In-House AI Skill Program is for companies and their internal teams, including founders, managers, operations teams, sales teams, and departments who want practical AI adoption and applied AI capability in daily work.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "team",
+        "compan",
+        "manager"
+      ],
+      "matchedSignals": [
+        "team",
+        "compan",
+        "manager"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/training/ai-build-accelerator/",
+          "title": "Corporate In-House AI Skill Program | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphx51r001trrkxtoerj5t8",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3222,
+      "httpStatus": 200
+    },
+    {
+      "number": 5,
+      "question": "Do you develop mobile apps?",
+      "actualReply": "Yes, Webtechnosys develops custom mobile applications across multiple Indian cities including Mumbai, Gurugram, Bengaluru, and Goa, building polished iOS and Android products that are client-owned and integrated with business operations.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "ios",
+        "android",
+        "mobile"
+      ],
+      "matchedSignals": [
+        "ios",
+        "android",
+        "mobile"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: Software Development",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphxb4x0028rrkxwrwrymi4",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3055,
+      "httpStatus": 200
+    },
+    {
+      "number": 6,
+      "question": "Which platforms do those apps support?",
+      "actualReply": "The apps and software developed by Webtechnosys support iOS and Android mobile platforms as well as web platforms.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "matchedSignals": [
+        "ios",
+        "android"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: Software Development",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+          "title": "AI Software Development Gurugram | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-mumbai/",
+          "title": "AI Software Development Mumbai | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphxh1x002nrrkx393w21wb",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 2575,
+      "httpStatus": 200
+    },
+    {
+      "number": 7,
+      "question": "Where are your offices?",
+      "actualReply": "Webtechnosys operates from an office in Gurgaon (Gurugram), India, and also has a registered address at H.No 746 - TF, New Wada, Morjim, Goa 403512, India.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "goa",
+        "gurgaon"
+      ],
+      "matchedSignals": [
+        "goa",
+        "gurgaon"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+          "title": "AI Software Development Gurugram | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/terms-of-service/",
+          "title": "Terms of Service | Webtechnosys AI Agency",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphxnb20032rrkxz2r6xhnq",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3090,
+      "httpStatus": 200
+    },
+    {
+      "number": 8,
+      "question": "How can I contact Webtechnosys?",
+      "actualReply": "You can contact Webtechnosys by emailing info@webtechnosys.com or addressing mail to Webtechnosys AI Agency at their Goa address.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "matchedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/terms-of-service/",
+          "title": "Terms of Service | Webtechnosys AI Agency",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/disclaimer/",
+          "title": "Disclaimer | Webtechnosys AI Agency",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphxtlm003hrrkx48c0tp0l",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3103,
+      "httpStatus": 200
+    },
+    {
+      "number": 9,
+      "question": "How do you start a project?",
+      "actualReply": "Every project at Webtechnosys starts with a discovery session, followed by a detailed proposal, Statement of Work (SOW), project timeline, and commercial agreement before development begins.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "discovery",
+        "proposal",
+        "statement of work"
+      ],
+      "matchedSignals": [
+        "discovery",
+        "proposal",
+        "statement of work"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/",
+          "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphxzhm003wrrkxsxs5i4dt",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 2626,
+      "httpStatus": 200
+    },
+    {
+      "number": 10,
+      "question": "Who owns the source code after delivery?",
+      "actualReply": "After successful completion of the project and receipt of full payment, the agreed source code and deliverables are transferred to the client, making the client the owner of the source code unless otherwise specified in the agreement.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "client",
+        "source code",
+        "payment"
+      ],
+      "matchedSignals": [
+        "client",
+        "source code",
+        "payment"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/",
+          "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-goa/",
+          "title": "AI Software Development Goa | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-mumbai/",
+          "title": "AI Software Development Mumbai | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphy6ga004brrkxzn1p95kj",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 4024,
+      "httpStatus": 200
+    },
+    {
+      "number": 11,
+      "question": "Do you sign NDAs?",
+      "actualReply": "Yes, Webtechnosys signs Non-Disclosure Agreements (NDAs), Master Service Agreements (MSAs), Statements of Work (SOWs), and Software Development Agreements to protect both parties.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "nda",
+        "non-disclosure"
+      ],
+      "matchedSignals": [
+        "nda",
+        "non-disclosure"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: General Services",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/",
+          "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphycez004qrrkxxg46fxgn",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 2755,
+      "httpStatus": 200
+    },
+    {
+      "number": 12,
+      "question": "How are project payments structured?",
+      "actualReply": "Project payments at Webtechnosys are typically structured around agreed delivery milestones to ensure transparency and reduce risk for both client and provider.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "milestone",
+        "payment"
+      ],
+      "matchedSignals": [
+        "milestone",
+        "payment"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: Software Development",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/",
+          "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-bengaluru/",
+          "title": "AI Software Development Bengaluru | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphyixc0055rrkxtexnvhoh",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3437,
+      "httpStatus": 200
+    },
+    {
+      "number": 13,
+      "question": "Do you provide post-launch support?",
+      "actualReply": "Yes, Webtechnosys provides post-launch support through maintenance, enhancements, and AI optimization available via flexible support plans after project launch.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "support",
+        "maintenance"
+      ],
+      "matchedSignals": [
+        "support",
+        "maintenance"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: Software Development",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/",
+          "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-bengaluru/",
+          "title": "AI Software Development Bengaluru | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphyp73005krrkxotsm2lz4",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3100,
+      "httpStatus": 200
+    },
+    {
+      "number": 14,
+      "question": "What is the exact price of an AI filmmaking project?",
+      "actualReply": "The exact price of an AI filmmaking project is not published as it depends on property assets, campaign needs, and final formats, with pricing available on request for specific commercial films such as 30-second AI commercials and 60-second AI brand films.\n\nWhat outcome or service would you like help with?",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "not",
+        "price",
+        "scope"
+      ],
+      "matchedSignals": [
+        "not",
+        "price"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: AI Filmmaking",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-filmmaking/",
+          "title": "AI Filmmaking and Commercial Videos in Goa",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphyvtl005zrrkxanzwtbmu",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3692,
+      "httpStatus": 200
+    },
+    {
+      "number": 15,
+      "question": "Do you guarantee that your software will double my revenue?",
+      "actualReply": "Webtechnosys does not guarantee that their software will double your revenue; their custom AI software development focuses on building software tied to measurable operating outcomes with focused scope and milestone delivery, but specific results like doubling revenue are not explicitly guaranteed.",
+      "correctness": "PASS",
+      "reasons": [],
+      "expectedSignals": [
+        "not",
+        "guarantee",
+        "revenue"
+      ],
+      "matchedSignals": [
+        "not",
+        "guarantee",
+        "revenue"
+      ],
+      "sources": [
+        {
+          "url": "https://webtechnosys.com/#approved-excel",
+          "title": "Approved Excel: Software Development",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_CLIENT_CORRECTION",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+          "title": "AI Software Development Gurugram | Webtechnosys",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        },
+        {
+          "url": "https://webtechnosys.com/terms-of-service/",
+          "title": "Terms of Service | Webtechnosys AI Agency",
+          "crawledAt": "2026-09-30T23:18:42.165Z",
+          "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+          "freshness": "CURRENT"
+        }
+      ],
+      "grounded": true,
+      "evidenceId": "cmuphz2ab006errkxkhr2h689",
+      "disposition": "ANSWER",
+      "totalLatencyMs": 3293,
+      "httpStatus": 200
+    }
+  ]
+}
