@@ -39,61 +39,18 @@ export function normalizeEvidenceLocator(sourceType: GovernedSourceType, raw: un
  * bound to a sealed claim in the active PUBLICATION. This makes the returned
  * claim IDs acceptable to the existing exact-answer delivery audit. */
 export async function getActiveReleaseEvidence(input: { organizationId: string; propertyId: string; principal: string; question: string }) {
-  const rows = await withCanonicalRole("aifrogi_public", { ...input, purpose: "PUBLIC_ANSWER" }, tx => tx.$queryRaw<EvidenceRow[]>`
-    SELECT p."organizationId" AS organization_id,
-           p.id AS property_id,
-           release."releaseId" AS release_id,
-           revision."consentId" AS consent_id,
-           member."sourceRevisionId" AS source_revision_id,
-           CASE WHEN member."sourceType"='OWNER_CORRECTION'::"KnowledgeSourceType" THEN 'FORM' ELSE member."sourceType"::text END AS source_type,
-           member."authorityRank" AS authority_rank,
-           evidence.id AS evidence_id,
-           evidence.quotation,
-           evidence."quotationHash" AS quotation_hash,
-           evidence.locator,
-           capture."capturedAt" AS observed_at,
-           consent."effectiveUntil" AS effective_until,
-           entry.id AS entry_id,
-           entry.question AS claim_question,
-           entry.answer AS canonical_answer
-      FROM "KnowledgeReleaseActivePointer" active
-      JOIN "KnowledgeReleaseArtifact" release
-        ON release."propertyId"=active."propertyId" AND release.id=active."releaseArtifactId"
-      JOIN "Property" p ON p.id=active."propertyId"
-      JOIN "KnowledgeReleaseMember" member
-        ON member."propertyId"=release."propertyId" AND member."releaseArtifactId"=release.id
-      JOIN "KnowledgeSource" source
-        ON source."propertyId"=member."propertyId" AND source.id=member."sourceId"
-      JOIN "KnowledgeSourceRevision" revision
-        ON revision."propertyId"=member."propertyId" AND revision.id=member."sourceRevisionId"
-      JOIN "WebsiteSourceConsent" consent
-        ON consent."propertyId"=revision."propertyId" AND consent.id=revision."consentId"
-      JOIN "CaptureVersion" capture
-        ON capture."propertyId"=member."propertyId" AND capture.id=member."captureVersionId"
-      JOIN "KnowledgeClaimEvidence" evidence
-        ON evidence."propertyId"=capture."propertyId" AND evidence."captureVersionId"=capture.id
-      JOIN "KnowledgeEntry" entry
-        ON entry."propertyId"=evidence."propertyId" AND entry.id=evidence."entryId"
-      JOIN "KnowledgeServingPointer" serving
-        ON serving."propertyId"=entry."propertyId" AND serving.audience='PUBLIC'::"KnowledgeAudience"
-      JOIN "KnowledgePublication" publication
-        ON publication."propertyId"=serving."propertyId" AND publication.id=serving."publicationId"
-      JOIN "KnowledgePublicationClaim" published
-        ON published."propertyId"=publication."propertyId" AND published."publicationId"=publication.id AND published."entryId"=entry.id
-     WHERE active."propertyId"=${input.propertyId}
-       AND p."organizationId"=${input.organizationId}
-       AND release.state='ACTIVE' AND release."revokedAt" IS NULL
-       AND source.state='AUTHORIZED'::"KnowledgeSourceState" AND source."revokedAt" IS NULL
-       AND consent.status IN ('TRIAL_AUTHORIZED','POST_TRIAL_APPROVED')
-       AND consent."effectiveFrom" <= clock_timestamp()
-       AND (consent."effectiveUntil" IS NULL OR consent."effectiveUntil" > clock_timestamp())
-       AND publication.state='SEALED'::"PublicationState" AND publication."revokedAt" IS NULL
-       AND entry.status='PUBLISHED' AND entry."revisionState"='SEALED'::"ClaimRevisionState"
-       AND entry."sealedAt" IS NOT NULL
-       AND (entry."effectiveUntil" IS NULL OR entry."effectiveUntil" > clock_timestamp())
-     ORDER BY member."authorityRank", evidence.id
-     LIMIT 200
-  `);
+  const rows = await withCanonicalRole("aifrogi_public", { ...input, purpose: "PUBLIC_ANSWER" }, async tx => {
+    // A crawl-only bot legitimately has no sealed multi-source release. Check
+    // the existing guarded pointer operation before requesting its evidence.
+    // Errors still propagate; absence is not a permissions-error fallback.
+    const active = await tx.$queryRaw<Array<{ releaseId: string }>>`
+      SELECT "releaseId" FROM aifrogi_security.active_knowledge_release(${input.propertyId})
+    `;
+    if (!active.length) return [];
+    return tx.$queryRaw<EvidenceRow[]>`
+      SELECT * FROM aifrogi_security.public_active_release_evidence(${input.propertyId})
+    `;
+  });
   if (!rows.length) return { releaseId: null, candidates: [] };
   const releaseId = rows[0].release_id;
   if (rows.some((row) => row.release_id !== releaseId)) throw new Error("MULTIPLE_ACTIVE_KNOWLEDGE_RELEASES");

@@ -22,10 +22,10 @@ test("PreStay and verified InStay share a compact confirmed voice control", () =
   const embed = readFileSync(resolve(process.cwd(), "components/website-bot/website-bot-embed.tsx"), "utf8");
   const control = readFileSync(resolve(process.cwd(), "components/website-bot/voice-intake-control.tsx"), "utf8");
   const route = readFileSync(resolve(process.cwd(), "app/api/public/website-bot/[slug]/route.ts"), "utf8");
-  assert.match(embed, /isHotelGuest \? <VoiceIntakeControl/);
+  assert.match(embed, /isHotelGuest && demo \? <VoiceIntakeControl/);
   assert.match(control, /Speak your message/);
   assert.match(control, /I confirm this transcript matches what I said/);
-  assert.match(control, /audio is not stored by AiFrogi/);
+  assert.match(control, /AiFrogi receives only the transcript you confirm and send/);
   assert.match(route, /translateConfirmedVoiceForStaff/);
   assert.match(route, /formatConfirmedVoiceForStaff/);
   assert.match(route, /IN_STAY_EMERGENCY/);

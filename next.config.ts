@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         ]
       },
       {
+        source: "/bot/:slug",
+        headers: [{ key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=()" }]
+      },
+      {
         source: "/embed/:path*",
         headers: [
           { key: "X-Frame-Options", value: "ALLOWALL" },

@@ -76,7 +76,7 @@ function claimTerms(value: string) {
   return [...new Set((value.toLowerCase().match(/[a-z0-9@.+-]+/g) || []).filter(term => term.length >= 3 && !claimStopWords.has(term)))];
 }
 
-export function validateMaterialClaimCoverage(input: { answer: string; evidenceUnits: string[] }) {
+export function validateMaterialClaimCoverage(input: { answer: string; evidenceUnits: string[] }, includeDescriptions = false) {
   const evidence = canonical(input.evidenceUnits.join("\n"));
   const decisions: MaterialClaimDecision[] = [];
   for (const raw of input.answer.split(/(?<=[.!?])\s+|\n+/)) {
@@ -84,7 +84,10 @@ export function validateMaterialClaimCoverage(input: { answer: string; evidenceU
     if (claim.length < 12) continue;
     const terms = claimTerms(claim);
     const numbers = claim.match(/\d[\d,.]*(?:\s*%|\s*(?:minutes?|hours?|days?|weeks?|months?|years?))?/gi) || [];
-    const factualShape = numbers.length > 0 || /\b(?:is|are|has|have|offers?|provides?|located|founded|serves?|speciali[sz]es?|works?|supports?|contact|email|phone|address)\b/i.test(claim);
+    if (includeDescriptions && !numbers.length && (claim.endsWith("?") || /^I\s+(?:(?:cannot|can’t|can't) confirm|(?:could not|couldn’t|couldn't|did not|didn’t|didn't) find)\b/i.test(claim))) continue;
+    // Website descriptions can say "develops apps" or "creates films" without
+    // a copula. Check those assertions too; never lower numeric/support rules.
+    const factualShape = includeDescriptions && terms.length >= 2 && !claim.endsWith("?") || numbers.length > 0 || /\b(?:is|are|has|have|offers?|provides?|located|founded|serves?|speciali[sz]es?|works?|supports?|contact|email|phone|address)\b/i.test(claim);
     if (!factualShape) continue;
     const matchedTerms = terms.filter(term => evidence.includes(canonical(term)));
     const missingNumbers = numbers.filter(number => !evidence.includes(canonical(number)));
@@ -92,4 +95,8 @@ export function validateMaterialClaimCoverage(input: { answer: string; evidenceU
     decisions.push({ claim, supported, matchedTerms, missingNumbers });
   }
   return { valid: decisions.length > 0 && decisions.every(decision => decision.supported), decisions };
+}
+
+export function validateWebsiteMaterialClaimCoverage(input: { answer: string; evidenceUnits: string[] }) {
+  return validateMaterialClaimCoverage(input, true);
 }

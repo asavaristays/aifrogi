@@ -42,7 +42,8 @@ test("active website answering preserves exact and expanded retrieval paths", as
   const source = readFileSync(new URL("../../lib/services/website-knowledge-service.ts", import.meta.url), "utf8");
   assert.match(source, /query: retrievalPlan\.original/);
   assert.match(source, /query: retrievalPlan\.query/);
-  assert.match(source, /new Map\(\[\.\.\.exact, \.\.\.expanded\]/);
+  assert.match(source, /focusedWebsiteRetrievalQuery\(retrievalPlan\.original\)/);
+  assert.match(source, /new Map\(\[\.\.\.exact, \.\.\.expanded, \.\.\.focused\]/);
 });
 
 test("per-bot readiness names every blocking layer instead of hiding behind general app health", () => {

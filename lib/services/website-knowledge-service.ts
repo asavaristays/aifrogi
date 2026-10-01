@@ -1,3 +1,8 @@
+import { websiteNeedsRendering, renderApprovedWebsite } from '@/lib/rendered-website-crawl';
+import { sharedCrawlEnabled } from "@/lib/shared-crawl-mode";
+import { answerFromSharedCrawl, resolveSharedCrawlSource } from "@/lib/shared-answer-runtime";
+import type { SharedAnswerResult } from "@/lib/shared-answer-engine";
+import { websiteBotClarification } from "@/lib/website-bot-conversation";
 import { mkdir, readFile, readdir, writeFile } from "fs/promises";
 import path from "path";
 import { readKnowledgeSettings, writeKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
@@ -69,6 +74,7 @@ export type KnowledgeBase = {
 export type KnowledgeSourceEvidence = { title: string; url: string; crawledAt: string; authority: "APPROVED_FIRST_PARTY_WEBSITE" | "APPROVED_BUSINESS_PROFILE" | "APPROVED_CLIENT_CORRECTION" | "APPROVED_RELEASE_EVIDENCE"; freshness: "CURRENT" | "STALE" };
 
 export type KnowledgeAnswer = {
+  sharedProof?: SharedAnswerResult;
   answer: string;
   sourceUrls: string[];
   sources: KnowledgeSourceEvidence[];
@@ -208,20 +214,24 @@ function structuredDataText(html: string) {
   return [...values].join(" ");
 }
 
-function stripHtml(html: string) {
+function stripHtml(html: string, cleanMain = false) {
   const title = decodeHtml(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || "Website page");
   const description = decodeHtml(html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]?.trim() || "");
+  const mainHtml = cleanMain ? (html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] || html)
+    .replace(/<(header|footer|nav|aside)\b[^>]*>[\s\S]*?<\/\1>/gi, " ") : html;
   const bodyText = decodeHtml(
-    html
+    mainHtml
       .replace(/<script[\s\S]*?<\/script>/gi, " ")
       .replace(/<style[\s\S]*?<\/style>/gi, " ")
       .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
       .replace(/<svg[\s\S]*?<\/svg>/gi, " ")
+      .replace(/<\/(?:h[1-6]|p|div|li|section|article|tr)>|<br\s*\/?>(?:)/gi, cleanMain ? "\n" : " ")
       .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
+      .replace(cleanMain ? /[^\S\n]+/g : /\s+/g, " ")
       .trim()
   );
-  const text = [description, structuredDataText(html), bodyText].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+  const text = cleanMain ? [description, bodyText].filter(Boolean).join("\n").replace(/\n[ \t]*/g, "\n").replace(/\n{3,}/g, "\n\n").trim()
+    : [description, structuredDataText(html), bodyText].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 
   return { title, text };
 }
@@ -269,6 +279,13 @@ async function fetchText(url: string) {
   return response.text();
 }
 
+async function fetchCrawlHtml(url: string, baseUrl: string, renderShells: boolean) {
+  const html = await fetchText(url);
+  if (!renderShells || !websiteNeedsRendering(html)) return html;
+  // A renderer failure remains a crawl failure; an empty shell is never indexed.
+  return renderApprovedWebsite(url, new URL(baseUrl).origin);
+}
+
 function uniqueSameOriginUrls(baseUrl: string, urls: string[]) {
   const base = new URL(baseUrl);
   const seen = new Set<string>();
@@ -292,7 +309,7 @@ function uniqueSameOriginUrls(baseUrl: string, urls: string[]) {
   return result.slice(0, MAX_DISCOVERY_URLS);
 }
 
-async function discoverUrls(baseUrl: string) {
+async function discoverUrls(baseUrl: string, renderShells = false) {
   const sitemapUrls: string[] = [];
 
   try {
@@ -304,23 +321,28 @@ async function discoverUrls(baseUrl: string) {
     // Fall back to the homepage links below.
   }
 
-  const homepage = await fetchText(baseUrl);
+  const homepage = await fetchCrawlHtml(baseUrl, baseUrl, renderShells);
   const homepageLinks = Array.from(homepage.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]);
   // Discovery is tenant-neutral. A page may enter an approved generation only
   // when it is present in that tenant's current sitemap or linked inventory.
   return uniqueSameOriginUrls(baseUrl, [baseUrl, ...sitemapUrls, ...homepageLinks]);
 }
 
-async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<KnowledgeBase> {
+type WebsiteCaptureScope = { organizationId: string; propertyId: string };
+
+async function crawlWebsiteKnowledgeBase(propertySlug: string, captureScope?: WebsiteCaptureScope): Promise<KnowledgeBase> {
   const settings = await readKnowledgeSettings(propertySlug);
-  const baseUrl = settings.sourceUrl;
-  await requireWebsiteSourceAuthorization(propertySlug, baseUrl);
+  if(captureScope && !sharedCrawlEnabled(captureScope.propertyId)) throw new Error("CAPTURE_SCOPE_NOT_ENABLED");
+  const baseUrl = captureScope ? await resolveSharedCrawlSource({ ...captureScope, principal: "website-capture-worker", purpose: "KNOWLEDGE_CAPTURE" }) : settings.sourceUrl;
+  if (!captureScope) await requireWebsiteSourceAuthorization(propertySlug, baseUrl);
   let previous: KnowledgeBase | null = null;
   try { previous = JSON.parse(await readFile(cachePath(propertySlug), "utf8")) as KnowledgeBase; } catch { previous = null; }
   await writeKnowledgeSettings(propertySlug, { status: "SYNCING", lastError: null });
 
   try {
-    const urls = await discoverUrls(baseUrl);
+    const sourceProperty = captureScope ? { id: captureScope.propertyId } : await getDb()?.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
+    const cleanMain = Boolean(sourceProperty && sharedCrawlEnabled(sourceProperty.id));
+    const urls = await discoverUrls(baseUrl, Boolean(captureScope));
     const queued = new Set(urls);
     const pages: KnowledgePage[] = [];
     const tenantEntities: TenantEntityKnowledge[] = [];
@@ -329,16 +351,17 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     let duplicatePages = 0;
     let attemptedUrls = 0;
 
-    for (let cursor = 0; cursor < urls.length && pages.length < MAX_PAGES; cursor += CRAWL_CONCURRENCY) {
+    const concurrency = captureScope ? 2 : CRAWL_CONCURRENCY;
+    for (let cursor = 0; cursor < urls.length && pages.length < MAX_PAGES; cursor += concurrency) {
       if (pages.length >= MAX_PAGES) break;
-      const batch = urls.slice(cursor, cursor + CRAWL_CONCURRENCY);
+      const batch = urls.slice(cursor, cursor + concurrency);
       const results = await Promise.all(batch.map(async (url) => {
         attemptedUrls += 1;
         try {
-          const html = await fetchText(url);
+          const html = await fetchCrawlHtml(url, baseUrl, Boolean(captureScope));
           // Deep discovery follows same-origin links exposed by listing/detail pages.
           const discovered = uniqueSameOriginUrls(baseUrl, Array.from(html.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]));
-          const { title, text } = stripHtml(html);
+          const { title, text } = stripHtml(html, cleanMain);
           return { url, html, title, text, discovered, error: null as string | null };
         } catch (error) {
           return { url, html: "", title: "", text: "", discovered: [] as string[], error: error instanceof Error ? error.message.slice(0, 160) : "Fetch failed" };
@@ -411,6 +434,7 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     await mkdir(runtimeDir(), { recursive: true });
     await writeFile(cachePath(propertySlug), JSON.stringify(knowledgeBase, null, 2));
     await writeKnowledgeSettings(propertySlug, {
+      ...(captureScope ? { sourceUrl: baseUrl } : {}),
       status: "READY",
       lastCrawledAt: knowledgeBase.crawledAt,
       pageCount: pages.length,
@@ -427,7 +451,7 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string): Promise<Knowledg
     // A temporary origin/network failure must not erase previously captured,
     // approved first-party knowledge. Keep serving the last snapshot as stale
     // evidence while the workspace clearly reports the failed refresh.
-    if (previous?.baseUrl === baseUrl && previous.pages?.length) return previous;
+    if (!captureScope && previous?.baseUrl === baseUrl && previous.pages?.length) return previous;
     throw error;
   }
 }
@@ -507,6 +531,19 @@ export function buildPublishedWebsiteContactAnswer(question: string, businessNam
 
 export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
   const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
+  // Only server-validated tenant/session history reaches this service. History
+  // identifies a subject; it never becomes factual evidence or action consent.
+  const dependent = /\b(?:it|its|they|their|them|those|these|that|this|such|same)\b/i.test(question)
+    || /\b(?:outputs?|formats?|platforms?)\b/i.test(question) && !/\b(?:filmmaking|training|software|mobile|application|service|project)\b/i.test(question);
+  if (!decision.contextUsed && dependent && ['BUSINESS','UNKNOWN','CONTEXT_FOLLOW_UP'].includes(decision.intent)) {
+    const prior = priorQuestions.slice(0,6).find(q => ['BUSINESS','CONTACT_INFO'].includes(resolveSovereignQuestion(q).intent));
+    if (prior) {
+      decision.resolvedQuestion = `Previous subject question (context only): ${prior.slice(0,1000)}\nCURRENT visitor question: ${question.trim()}`;
+      decision.contextUsed = true;
+      decision.intent = 'CONTEXT_FOLLOW_UP';
+      decision.reason = 'Resolved a dependent question using the latest relevant tenant-session subject; history is not evidence.';
+    }
+  }
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
 }
 
@@ -529,14 +566,14 @@ export async function readCachedKnowledgeBase(propertySlug: string, baseUrl: str
   }
 }
 
-export async function getWebsiteKnowledgeBase(propertySlug: string, forceRefresh = false) {
+export async function getWebsiteKnowledgeBase(propertySlug: string, forceRefresh = false, captureScope?: WebsiteCaptureScope) {
   const settings = await readKnowledgeSettings(propertySlug);
   if (!forceRefresh) {
     const cached = await readCachedKnowledgeBase(propertySlug, settings.sourceUrl, getTtlMs(settings.autoRefreshHours), settings.status === "ERROR");
     if (cached) return cached;
   }
 
-  return crawlWebsiteKnowledgeBase(propertySlug);
+  return crawlWebsiteKnowledgeBase(propertySlug, captureScope);
 }
 
 export async function getKnowledgeWorkspaceSummary(propertySlug: string) {
@@ -730,6 +767,36 @@ export async function buildWebsiteKnowledgeAnswer({
   if (!settings.approvedForAi && !screeningSnapshot) return null;
 
   const resolved = resolveWebsiteKnowledgeQuestion(question, priorQuestions, lastAssistantAnswer);
+  const organization = business?.organization;
+  const businessName = organization?.name || "the business";
+  const assistantName = persona?.personaName || `${businessName} AI`;
+  const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], retrieval: emptyRetrieval(), reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
+  // An opted-in bot never falls through to manual entries, historical releases,
+  // profile facts or general model knowledge when retrieval fails.
+  if (business?.organizationId && sharedCrawlEnabled(business.id)) {
+    const categoryBoundary = persona ? evaluateCategoryHardBoundary(persona.category, question) : null;
+    if (categoryBoundary) return direct(categoryBoundary.answer, { ...resolved.decision, intent: "SENSITIVE", disposition: "ESCALATE", reason: `Hard category boundary ${categoryBoundary.code}.` });
+    if (resolved.intent === "GREETING") return direct(buildWarmGreeting(question, assistantName, validTimeZone(visitorTimeZone, business?.timezone || "Asia/Kolkata")));
+    if (resolved.intent === "IDENTITY") return direct(buildCustomerFacingIdentity(assistantName, businessName));
+    if (resolved.intent === "OFF_TOPIC") return direct(`I’m here to help with ${businessName}. Ask me about its services, products, availability, or how to get started.`);
+    if (resolved.intent === "SENSITIVE") return direct(`I can’t provide private customer, guest, owner, booking, credential or payment information. I can share ${businessName}’s public contact details or help with general business information.` , { ...resolved.decision, disposition: "REFUSE", reason: "Private-data and credential boundary enforced before public contact routing." });
+    if (resolved.intent === "HUMAN_REQUEST") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
+    const proof = await answerFromSharedCrawl({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}`, purpose: "PUBLIC_ANSWER" }, resolved.retrievalQuestion);
+    const factual = proof.disposition === "ANSWER" || proof.disposition === "PARTIAL";
+    const disposition: SovereignDecision["disposition"] = factual ? "ANSWER" : proof.disposition === "LIVE_ACTION_REQUIRED" ? "ESCALATE" : proof.disposition === "TECHNICAL_FAILURE" ? "FALLBACK" : "CLARIFY";
+    const decision = { ...resolved.decision, disposition, reason: proof.failureCode || `Crawl-only ${proof.disposition}` };
+    const sourceUrls = [...new Set(proof.evidence.map(e => e.url))];
+    const asOf = proof.capturedAt || new Date().toISOString();
+    return { answer: proof.answer, sharedProof: proof, sourceUrls,
+      sources: sourceUrls.map(url => ({ url, title: proof.evidence.find(e => e.url === url)!.title, crawledAt: asOf, authority: "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness: "CURRENT" as const })),
+      knowledgeAsOf: asOf, usedOpenAi: proof.modelUsage.inputTokens > 0, model: process.env.OPENAI_MODEL || "gpt-4.1-mini", decision, claimIds: [], retrieval: emptyRetrieval(), modelUsage: proof.modelUsage,
+      crawlGenerationId: proof.evidence[0]?.generationId, chunkIds: proof.evidence.map(e => e.id),
+      materialEvidenceUnits: proof.evidence.map(e => e.content),
+      materialClaimDecisions: proof.factualClaims.map(claim => ({ claim, supported: true, matchedTerms: [], missingNumbers: [] })),
+      replayTrace: { retrievalQuestion: resolved.retrievalQuestion, contextSourceUrls: sourceUrls, contextChars: proof.evidence.reduce((n,e) => n + e.content.length,0), finalAnswer: proof.answer, validatorViolations: proof.failureCode ? [proof.failureCode] : [], sharedEngine: proof.trace },
+      reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: proof.disposition === "TECHNICAL_FAILURE" ? "MODEL" : "NONE", failureCode: proof.failureCode, latencyMs: proof.trace.stages.reduce((n,s) => n + s.elapsedMs,0), attemptCount: proof.trace.stages.filter(s => s.stage === "COMPOSITION").length, escalationTier: escalationTierFor({disposition}), degradedMode: false }
+    };
+  }
   const exactContactRequest = /\b(contact|phone|telephone|email|address|located|location|offices?)\b/i.test(question);
   const activeCrawlStatus = business?.organizationId ? await readActiveWebsiteCrawlStatus({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}` }).catch(() => null) : null;
   const retrievalPlan = planRetrievalQuery(exactContactRequest ? `${resolved.retrievalQuestion} contact email phone PostalAddress Goa Gurgaon` : resolved.retrievalQuestion);
@@ -761,10 +828,6 @@ export async function buildWebsiteKnowledgeAnswer({
   // bridge only for tenants that have not yet activated such a release; never
   // mix two delivery-envelope types in one answer.
   const activeChunks = releasedEvidence.candidates.length ? [] : retrievedActiveChunks;
-  const organization = business?.organization;
-  const businessName = organization?.name || "the business";
-  const assistantName = persona?.personaName || `${businessName} AI`;
-  const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], retrieval: emptyRetrieval(), reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
   const safeFailure = (failureLayer: ReliabilityEvidence["failureLayer"], failureCode: string, answer: string, latencyMs = 0, attemptCount = 0, degradedMode = false): KnowledgeAnswer => ({
     answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "SAFE_RELIABILITY_FALLBACK",
     decision: { ...resolved.decision, disposition: failureLayer === "KNOWLEDGE" ? "ESCALATE" : "FALLBACK", reason: `${failureLayer} reliability control returned ${failureCode}.` }, claimIds: [], retrieval: emptyRetrieval(),
@@ -939,7 +1002,7 @@ export async function buildWebsiteKnowledgeAnswer({
   });
   const context = [websiteResult.context, governed.context].filter(Boolean).join("\n\n=== APPROVED WORKSPACE KNOWLEDGE ===\n\n");
   const confidenceRoute = routeConversationByConfidence({ intent: resolved.intent, hasApprovedContext: Boolean(context.trim()), hasResolvedEntity: Boolean(sessionMemory.entity), priorQuestions });
-  if (confidenceRoute.route === "CLARIFY") return direct(`What would you like to know about ${businessName}? You can ask about rooms, facilities, location, policies, weddings or reservations.` , { ...resolved.decision, disposition: "CLARIFY", reason: confidenceRoute.reason });
+  if (confidenceRoute.route === "CLARIFY") return direct(websiteBotClarification(businessName, persona?.category), { ...resolved.decision, disposition: "CLARIFY", reason: confidenceRoute.reason });
   if (!context.trim()) {
     if (!evaluationMode) await recordKnowledgeGap(propertySlug, resolved.retrievalQuestion).catch(() => null);
     const failed = safeFailure("KNOWLEDGE", "NO_APPROVED_CONTEXT", `I don’t yet have approved ${businessName} information for that specific question. I’ve recorded the knowledge gap so the business team can answer asynchronously without making you repeat the request.`);

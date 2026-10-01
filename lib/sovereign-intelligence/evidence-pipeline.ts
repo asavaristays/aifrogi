@@ -8,6 +8,11 @@ export type RetrievalCandidate = {
   score: number;
   selected: boolean;
   status: string;
+  sourceType?: "WEBSITE_CHUNK";
+  sourceUrl?: string;
+  generationId?: string;
+  chunkId?: string;
+  validatorViolations?: string[];
 };
 
 const aliases: Record<string, string[]> = {

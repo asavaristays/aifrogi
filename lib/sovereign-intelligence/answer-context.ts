@@ -16,6 +16,7 @@ export type AnswerReplayTrace = {
   finalAnswer?: string;
   validatorViolations: string[];
   groundingReview?: { supported: boolean; complete: boolean; issues: string[] };
+  sharedEngine?: unknown;
 };
 
 const SEPARATOR = "\n\n---\n\n";
