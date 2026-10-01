@@ -1,6 +1,7 @@
+import { emojiAcknowledgement, resolveWebsiteBotQuestion } from "@/lib/website-bot-conversation";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { buildWebsiteKnowledgeAnswer } from "@/lib/services/website-knowledge-service";
+import { buildWebsiteKnowledgeAnswer, type KnowledgeAnswer } from "@/lib/services/website-knowledge-service";
 import { recordTenantAnswerUsage } from "@/lib/tenant-usage-metering";
 import { captureIncomingAiBotMessage } from "@/lib/services/lead-service";
 import type { WhatsAppBotConfiguration } from "@/lib/whatsapp-bot-config";
@@ -8,7 +9,6 @@ import { hashWebsiteVisitorValue, issueWebsiteVisitorToken, verifyWebsiteVisitor
 import { guardWebsiteVisitorMessage } from "@/lib/website-message-safety";
 import { canServeWebsiteBot } from "@/lib/website-bot-lifecycle";
 import { recordSovereignAnswerEvidence } from "@/lib/repositories/sovereign-evidence-repository";
-import { resolveSovereignQuestion } from "@/lib/sovereign-intelligence/decision";
 import { CATEGORY_BLUEPRINT_VERSION } from "@/lib/sovereign-intelligence/registry";
 import { CUSTOMER_SEMANTIC_REPEAT_THRESHOLD, governResolutionOutcome, semanticSimilarity } from "@/lib/sovereign-intelligence/resolution";
 import { escalationTierFor, RELIABILITY_FRAMEWORK_VERSION } from "@/lib/reliability/runtime";
@@ -22,6 +22,7 @@ import { persistWebsiteTurn } from "@/lib/website-persistence";
 import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "@/lib/lead-qualification";
 import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
 import { buildMissingAnswerRecovery, evaluateVisitorAnswerQuality } from "@/lib/sovereign-intelligence/answer-quality-gate";
+import { technicalAnswerFailure, websiteAnswerActions, websiteFailureMessage } from "@/lib/website-answer-presentation";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { approvedBookingLink } from "@/lib/widget-menu";
 import { checkTenantStayAvailability } from "@/lib/tenant-availability";
@@ -47,7 +48,7 @@ import { deliverCanonicalAnswer } from "@/lib/canonical-answer-delivery";
 import { ensureWebsiteCanonicalConversation } from "@/lib/repositories/conversation-repository";
 import { recordDeliveredCrawlAnswer } from "@/lib/crawl-answer-delivery";
 import { assertBotFactualServingOpen } from "@/lib/bot-factual-closure";
-import { validateMaterialClaimCoverage } from "@/lib/sovereign-intelligence/claim-validator";
+import { validateWebsiteMaterialClaimCoverage as validateMaterialClaimCoverage } from "@/lib/sovereign-intelligence/claim-validator";
 
 const buckets = new Map<string, { count: number; resetAt: number }>();
 const configuration: WhatsAppBotConfiguration = {
@@ -113,7 +114,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const payload = await request.json().catch(() => null) as { message?: string; sessionId?: string; name?: string; contact?: string; consent?: boolean; requestHuman?: boolean; visitorToken?: string; visitorTimeZone?: string; stayAccessToken?: string; voiceInput?: unknown } | null;
   const message = String(payload?.message || "").trim().slice(0, 1200);
   const sessionId = String(payload?.sessionId || "").trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
-  if (message.length < 2 || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
+  const emojiReply = emojiAcknowledgement(message);
+  if ((message.length < 2 && !emojiReply) || !sessionId) return NextResponse.json({ error: "Message and session are required." }, { status: 400, headers: responseHeaders });
   const stayCapability = payload?.stayAccessToken ? verifyHotelGuestStayToken(payload.stayAccessToken, slug) : null;
   if (payload?.stayAccessToken && !stayCapability) return NextResponse.json({ error: "Your approved in-stay access has expired. Please scan the hotel QR and request access again." }, { status: 401, headers: responseHeaders });
   const confirmedVoice = normalizeConfirmedVoiceInput(payload?.voiceInput, message);
@@ -208,7 +210,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   }
   const replyEntitlement = await checkOrganizationEntitlement(organization.id, "aiReplies", 1);
   if (!replyEntitlement.allowed) return NextResponse.json({ error: "This AI Bot has used its available reply credits. The business account owner can add credits or activate a plan in Billing." }, { status: 402, headers: responseHeaders });
-  const fallbackDecision = resolveSovereignQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
+  const initialDecision = resolveWebsiteBotQuestion(message, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
+  const fallbackDecision = emojiReply ? { ...initialDecision, intent: "GREETING" as const, disposition: "ANSWER" as const, contextUsed: false, reason: "Emoji-only social acknowledgement; no factual or action authority granted." } : initialDecision;
   const acceptedCallbackOffer = acceptedHumanOffer(message, lastAssistantAnswer);
   const typesafeReviewRef = hashWebsiteVisitorValue(sessionId);
   const typesafeStaging = !safety.blocked && profile.category === "STAY"
@@ -307,6 +310,10 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, intent: "SENSITIVE" as const, disposition: "ESCALATE" as const, reason: `Hard category boundary ${categoryBoundary.code}.` },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_1_BUSINESS_ASYNC" as const, degradedMode: false }
+  } : emojiReply ? {
+    answer: emojiReply, sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "EMOJI_ACKNOWLEDGEMENT",
+    retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] }, decision: fallbackDecision,
+    reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE" as const, failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: "TIER_0_SELF_RESOLVE" as const, degradedMode: false }
   } : unsupportedAffirmative ? {
     answer: `Please tell me what you would like to do next about ${businessName}—for example, ask another question or name the option you want to check.`,
     sources: [], sourceUrls: [], claimIds: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONTEXT_CLARIFICATION",
@@ -369,7 +376,16 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     retrieval: { candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: [] },
     decision: { ...fallbackDecision, disposition: demoTurn.status === "SUCCEEDED" ? "ANSWER" as const : demoTurn.status === "CLARIFY" ? "CLARIFY" as const : "ESCALATE" as const, reason: `Isolated demo connector ${demoTurn.connectorKey}/${demoTurn.operation} returned ${demoTurn.status}.` },
     reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: demoTurn.status === "SAFE_FAILURE" ? "CONNECTOR" as const : "NONE" as const, failureCode: demoTurn.status === "SAFE_FAILURE" ? "DEMO_CONNECTOR_UNAVAILABLE" : null, latencyMs: 0, attemptCount: demoTurn.status === "CLARIFY" ? 0 : 1, escalationTier: demoTurn.status === "SAFE_FAILURE" ? "TIER_1_BUSINESS_ASYNC" as const : "TIER_0_SELF_RESOLVE" as const, degradedMode: demoTurn.status === "SAFE_FAILURE" }
-  } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer, visitorTimeZone: payload?.visitorTimeZone || property.timezone }).catch(() => null);
+  } : explicitHumanRequest && !safety.blocked ? null : await buildWebsiteKnowledgeAnswer({ question: message, propertySlug: slug, configuration: tenantConfiguration, priorQuestions, lastAssistantAnswer, visitorTimeZone: payload?.visitorTimeZone || property.timezone }).catch((error): KnowledgeAnswer => {
+    console.error("Website answer pipeline failed", { slug, errorType: error instanceof Error ? error.name : "UNKNOWN" });
+    return {
+      answer: websiteFailureMessage("INFRASTRUCTURE", handoffEnabled), sources: [], sourceUrls: [], claimIds: [],
+      knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "SAFE_RUNTIME_FAILURE",
+      decision: {...fallbackDecision, disposition: "FALLBACK" as const, reason: "Website answer pipeline could not complete."},
+      retrieval: {candidates: [], retrievedClaimIds: [], usedClaimIds: [], nearMissClaimIds: []},
+      reliability: {frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "INFRASTRUCTURE" as const, failureCode: "WEBSITE_ANSWER_PIPELINE_FAILED", latencyMs: 0, attemptCount: 0, escalationTier: "TIER_2_AIFROGI_ASYNC" as const, degradedMode: false}
+    };
+  });
   if (explicitHumanRequest && !safety.blocked) result = {
     answer: handoffEnabled
       ? consentedContact
@@ -389,12 +405,18 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   });
   if (result) {
     const quality = evaluateVisitorAnswerQuality({ question: message, answer: result.answer, decision: result.decision });
-    if (!quality.passed) result = null;
+    if (!quality.passed) result = {
+      ...result, answer: websiteFailureMessage(result.reliability.failureLayer === "NONE" ? "MODEL" : result.reliability.failureLayer), sources: [], sourceUrls: [], claimIds: [],
+      decision: {...result.decision, disposition: "FALLBACK", reason: `Visitor answer quality rejected: ${quality.reasons.join(", ")}.`},
+      retrieval: {...result.retrieval, usedClaimIds: [], candidates: result.retrieval.candidates.map(candidate => ({...candidate, validatorViolations: [...(candidate.validatorViolations || []), ...quality.reasons]}))},
+      reliability: result.reliability.failureLayer === "NONE" ? {...result.reliability, failureLayer: "MODEL", failureCode: "VISITOR_ANSWER_QUALITY_REJECTED", escalationTier: "TIER_2_AIFROGI_ASYNC"} : result.reliability
+    };
   }
+  const technicalFailure = Boolean(result && technicalAnswerFailure(result.reliability.failureLayer));
+  const fallbackContactPath = buildMissingAnswerRecovery({ businessName, category: profile.category, publicPhone: organization.publicPhone, handoffEnabled });
   // REFUSE is a complete governed response (for example, protecting guest PII),
   // not a missing answer. Preserve it instead of replacing it with handover copy.
-  const verifiedResultAnswer = explicitHumanRequest || (result && ["ANSWER", "CLARIFY", "ESCALATE", "REFUSE"].includes(result.decision.disposition)) || negotiation.kind === "HUMAN_APPROVAL" ? result?.answer : "";
-  const fallbackContactPath = buildMissingAnswerRecovery({ businessName, category: profile.category, publicPhone: organization.publicPhone, handoffEnabled });
+  const verifiedResultAnswer = technicalFailure ? fallbackContactPath : explicitHumanRequest || (result && ["ANSWER", "CLARIFY", "ESCALATE", "REFUSE"].includes(result.decision.disposition)) || negotiation.kind === "HUMAN_APPROVAL" ? result?.answer : "";
   const baseAnswer = safety.answer || verifiedResultAnswer || (fallbackDecision.intent === "OFF_TOPIC"
     ? `I’m focused on ${businessName} services and cannot provide weather, sports, market, entertainment, or other unrelated live information. Please ask me about this business.`
     : fallbackDecision.disposition === "CLARIFY"
@@ -407,12 +429,12 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     : fallbackDecision.intent === "OFF_TOPIC" || fallbackDecision.disposition === "CLARIFY" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
   // Only a genuine missing-answer/escalation path creates assisted handover.
   // Governed refusals and clarification questions remain AI-controlled outcomes.
-  const assistedFallback = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && ["FALLBACK", "ESCALATE"].includes(proposedDecision.disposition);
+  const assistedFallback = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && (technicalFailure || ["FALLBACK", "ESCALATE"].includes(proposedDecision.disposition));
   const resolution = governResolutionOutcome({
     question: message,
     answer: proposedAnswer,
     decision: proposedDecision,
-    previousState: existingResolutionState,
+    previousState: technicalFailure ? undefined : existingResolutionState,
     maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
@@ -458,7 +480,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       reliability: { ...result.reliability, failureLayer: "CONVERSATION_STATE", failureCode: resolution.state.circuitBreakerReason || "RESOLUTION_OVERRIDE", escalationTier: "TIER_1_BUSINESS_ASYNC" }
     };
   }
-  const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "INFRASTRUCTURE" as const, failureCode: safety.blocked ? null : "UNATTRIBUTED_RUNTIME_FAILURE", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
+  const reliability = result?.reliability || { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: safety.blocked ? "NONE" as const : "KNOWLEDGE" as const, failureCode: safety.blocked ? null : "ANSWER_ENGINE_NOT_READY", latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ failureLayer: safety.blocked ? "NONE" : "INFRASTRUCTURE", disposition: evidenceDecision.disposition }), degradedMode: false };
   const typesafeShadow = !typesafeStaging && !safety.blocked && profile.category === "STAY"
     ? await observeTypesafeRuntime({ organizationId: organization.id, message, primaryIntent: evidenceDecision.intent, reviewRef: typesafeReviewRef }).catch(() => null)
     : null;
@@ -519,7 +541,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const humanRequested = handoffEnabled && Boolean(explicitHumanRequest || assistedFallback || evidenceDecision.disposition === "ESCALATE" || sessionStatus === "HUMAN_REQUESTED");
   const visitorToken = issueWebsiteVisitorToken({ slug, sessionId, leadId: captured.lead.id, humanRequested });
   const consented = Boolean(consentedContact);
-  const preserveActiveState = ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent) && Boolean(existingResolutionState);
+  const preserveActiveState = (technicalFailure || ["OFF_TOPIC", "GREETING", "IDENTITY"].includes(evidenceDecision.intent)) && Boolean(existingResolutionState);
   const baseResolutionState = preserveActiveState ? existingResolutionState : resolution.state;
   const intelligenceLayer = resolveIntelligenceLayer({
     safetyBlocked: safety.blocked,
@@ -577,7 +599,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   const preStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "PRE_STAY", message) : null;
   const preStaySmartContent = preStayFlow ? { flowId:preStayFlow.flow.id,journey:"PRE_STAY",kind:preStayFlow.flow.templateKey,quickReplies:preStayFlow.flow.templateKey==="HOTEL_DISCOVER"?["Rooms and stays","Experiences","Plan my arrival"]:preStayFlow.flow.templateKey==="HOTEL_PLAN_ARRIVAL"?["Check-in time","Directions","Request a transfer"]:["Share dates","Compare stays","Talk to reservations"] } : undefined;
-  const responseBody = { answer, smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" };
+  const responseBody = { answer, answerActions: websiteAnswerActions(message, evidenceDecision.disposition, result?.sources || []), smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact && handoffEnabled ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" };
   let canonicalDelivery:(()=>Promise<unknown>)|null=null;
   if (canonicalFactsRequired() && factualAnswerIntent && evidenceDecision.disposition === "ANSWER") {
     // Bind crawl evidence to the exact bytes crossing the HTTP boundary. The

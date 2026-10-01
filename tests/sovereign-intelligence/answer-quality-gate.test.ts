@@ -23,7 +23,7 @@ test("visitor answer gate blocks premature qualification but allows commercial f
 test("missing answer recovery is category-aware, consented and contact-capable", () => {
   const answer = buildMissingAnswerRecovery({ businessName: "Asavari Stays", category: "STAY", publicPhone: "8800507181", handoffEnabled: true });
   assert.match(answer, /reservations team/);
-  assert.match(answer, /private consent fields/);
+  assert.match(answer, /share your name and mobile number below/);
   assert.match(answer, /88005 07181/);
   assert.doesNotMatch(answer, /approved knowledge|review dataset/i);
 });

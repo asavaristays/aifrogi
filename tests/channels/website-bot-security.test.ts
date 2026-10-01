@@ -78,13 +78,15 @@ test("accepted support offers become persisted, consent-aware handovers", () => 
   assert.match(source, /\(explicitHumanRequest \|\| assistedFallback\) && !consentedContact/);
   assert.match(source, /buildMissingAnswerRecovery/);
   const recovery = readFileSync(resolve(process.cwd(), "lib/sovereign-intelligence/answer-quality-gate.ts"), "utf8");
-  assert.match(recovery, /private consent fields below/);
+  assert.match(recovery, /share your name and mobile number below/);
   assert.match(recovery, /You can also call \$\{formatPublicPhoneForDisplay\(input\.publicPhone\)\}/);
   assert.match(widget, /requestHuman: true/);
 });
 
 test("a missing verified answer always becomes a lead and human route", () => {
-  assert.match(source, /verifiedResultAnswer = explicitHumanRequest \|\| \(result && \["ANSWER", "CLARIFY", "ESCALATE", "REFUSE"\]\.includes\(result\.decision\.disposition\)\)/);
+  assert.match(source, /verifiedResultAnswer = technicalFailure \? fallbackContactPath/);
+  assert.match(source, /technicalFailure \|\| \["FALLBACK", "ESCALATE"\]\.includes\(proposedDecision\.disposition\)/);
+  assert.match(source, /!consentedContact && handoffEnabled \? \{ contactEligible: true, nextField: "contact" \}/);
   assert.match(source, /explicitHumanRequest \|\| assistedFallback \|\| evidenceDecision\.disposition === "ESCALATE"/);
   assert.match(source, /captureIncomingAiBotMessage\([\s\S]*phone: consentedContact/);
   assert.match(source, /ensureWebsiteHandover/);
