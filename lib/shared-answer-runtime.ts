@@ -20,12 +20,24 @@ export async function answerFromSharedCrawl(identity:CanonicalIdentity,question:
     if(new URL(row.url).origin !== new URL(sourceUrl!).origin) throw new Error('SOURCE_ORIGIN_MISMATCH');
     return {...scope,generationId:row.generation_id,id:row.chunk_id,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title};
   });
+  const spreadsheetEvidence=async(scope:AnswerScope,query:string)=>withCanonicalRole('aifrogi_public',identity,async tx=>{
+    const rows=await tx.$queryRaw<Array<{evidence_id:string;content:string;source_url:string;title:string}>>`SELECT * FROM aifrogi_security.shared_answer_spreadsheet_evidence(${identity.propertyId},${query},24)`;
+    return rows.map(row=>({...scope,id:`sheet:${row.evidence_id}`,content:row.content,digest:evidenceDigest(row.content),url:row.source_url,title:row.title}));
+  });
   const result=await runSharedAnswer(question,{
     state:async()=>{
       try {const active=await state();return active.state==='READY' && active.generation_id?{state:'READY',scope:{organizationId:identity.organizationId,propertyId:identity.propertyId,generationId:active.generation_id}}:{state:active.state as 'NO_ACTIVE_SOURCE'|'REVOKED'|'EXPIRED'|'INDEX_NOT_READY'};}
       catch{return {state:'ACCESS_ERROR'};}
     },
-    lexical:async (scope,query)=>evidence(scope,await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${query},24)`)),
+    lexical:async (scope,query)=>{
+      const [sheet,website]=await Promise.all([
+        spreadsheetEvidence(scope,query),
+        withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${query},24)`)
+      ]);
+      // Approved spreadsheet rows are owner-controlled and therefore precede
+      // crawl passages. The shared engine still verifies every delivered fact.
+      return [...sheet,...evidence(scope,website)];
+    },
     semantic:async (scope,query)=>{
       const [vector]=await getProvider().embed([query]);
       return evidence(scope,await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.shared_answer_semantic_chunks(${identity.propertyId},${scope.generationId},${vector}::double precision[],24)`));
