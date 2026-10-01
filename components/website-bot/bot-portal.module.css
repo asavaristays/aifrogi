@@ -107,3 +107,4 @@
   .root[data-mobile]:not([data-mobile-chat]) .primary { min-height: 72px; justify-content: space-between; padding-inline: 18px; border: 1px solid color-mix(in srgb, var(--widget-accent) 42%, var(--widget-line)); }
   .root[data-mobile]:not([data-mobile-chat]) .conversation { min-height: 104px; }
 }
+.sectionLabel { margin: 20px 2px 8px; color: var(--widget-ink); font-size: 13px; font-weight: 700; }
