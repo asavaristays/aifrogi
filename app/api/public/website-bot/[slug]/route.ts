@@ -21,7 +21,7 @@ import { withWebsiteTurnLock } from "@/lib/website-turn-lock";
 import { persistWebsiteTurn } from "@/lib/website-persistence";
 import { appendQualificationPrompt, normalizeConsentedLeadPhone, qualifyLeadConversation } from "@/lib/lead-qualification";
 import { checkOrganizationEntitlement } from "@/lib/billing-super-admin";
-import { buildMissingAnswerRecovery, evaluateVisitorAnswerQuality } from "@/lib/sovereign-intelligence/answer-quality-gate";
+import { buildMissingAnswerRecovery, evaluateVisitorAnswerQuality, normalizeVisitorAnswerLanguage } from "@/lib/sovereign-intelligence/answer-quality-gate";
 import { technicalAnswerFailure, websiteAnswerActions, websiteFailureMessage } from "@/lib/website-answer-presentation";
 import { readKnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 import { approvedBookingLink } from "@/lib/widget-menu";
@@ -404,6 +404,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     enabled: profile.category !== "STAY" && (profile.capabilities || []).includes("CAPTURE_LEADS") && (profile.capabilities || []).includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
   });
   if (result) {
+    result.answer = normalizeVisitorAnswerLanguage(result.answer);
     const quality = evaluateVisitorAnswerQuality({ question: message, answer: result.answer, decision: result.decision });
     if (!quality.passed) result = {
       ...result, answer: websiteFailureMessage(result.reliability.failureLayer === "NONE" ? "MODEL" : result.reliability.failureLayer), sources: [], sourceUrls: [], claimIds: [],

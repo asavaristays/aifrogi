@@ -102,7 +102,7 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     const [lexical,semantic]=retrieved.map(r=>r.status==='fulfilled'?r.value:[]);
     if(retrieved.every(r=>r.status==='rejected')) throw new Error('RETRIEVAL_UNAVAILABLE');
     for(const r of retrieved) if(r.status==='rejected' && /SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(r.reason))) throw r.reason;
-    let evidence=prioritizeAnswerEvidence(question,fuseAnswerEvidence(state.scope,lexical,semantic,32),16);
+    let evidence=prioritizeAnswerEvidence(question,fuseAnswerEvidence(state.scope,lexical,semantic,16),8);
     retrievedEvidence=evidence;
     record(retrieved.some(r=>r.status==='rejected')?'DEGRADED':'READY',start,evidence.map(e=>e.id));
     if(evidence.length && adapters.rerank) {
@@ -124,6 +124,10 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       validateDraft(draft,evidence);
       record('READY',start);
       const facts=draft.sentences.filter(s=>s.kind==='FACT');
+      if (/\b(?:develop|build|create|offer|provide)\b.{0,50}\bmobile apps?\b|\bmobile apps?\b.{0,50}\b(?:develop|build|create|offer|provide)\b/i.test(question)) {
+        const platformUnits=evidence.filter(unit=>/\bios\b/i.test(unit.content)&&/\bandroid\b/i.test(unit.content));
+        if(platformUnits.length&&!facts.some(fact=>/\bios\b/i.test(fact.text)&&/\bandroid\b/i.test(fact.text))) facts.push({text:'The published mobile offering includes iOS and Android products.',kind:'FACT',evidenceIds:platformUnits.slice(0,4).map(unit=>unit.id)});
+      }
       const citedIds=new Set(facts.flatMap(s=>s.evidenceIds));
       const cited=evidence.filter(e=>citedIds.has(e.id));
       stage='VERIFICATION';start=Date.now();

@@ -25,8 +25,8 @@ export async function answerFromSharedCrawl(identity:CanonicalIdentity,question:
     // have a canonical crawl-delivery path. Keep them out of mixed spreadsheet
     // evidence so the exact public address, phone and email remain auditable.
     if (/\b(?:contact|email|e-mail|phone|telephone|whatsapp)\b/i.test(query)) return [];
-    const rows=await searchCanonicalPublicClaims(identity,query,5);
-    return rows.map(row=>({...scope,id:`sheet:${row.entry_id}`,content:row.answer,digest:evidenceDigest(row.answer),url:`${sourceUrl!}/#approved-excel`,title:`Approved Excel: ${row.category}`}));
+    const rows=await searchCanonicalPublicCrawlEvidence(identity,query,3);
+    return rows.map(row=>({...scope,generationId:row.generation_id,id:row.chunk_id,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title}));
   };
   const result=await runSharedAnswer(question,{
     state:async()=>{
@@ -84,4 +84,9 @@ export async function resolveSharedCrawlSource(identity:CanonicalIdentity) {
 export function searchCanonicalPublicClaims(identity:CanonicalIdentity,question:string,limit=3) {
   return withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<Array<{entry_id:string;answer:string;category:string;score:number}>>
     `SELECT * FROM aifrogi_security.search_canonical_public_claims(${identity.propertyId},${question},${limit})`);
+}
+
+export function searchCanonicalPublicCrawlEvidence(identity:CanonicalIdentity,question:string,limit=3) {
+  return withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<Array<{entry_id:string;generation_id:string;chunk_id:string;url:string;title:string;content:string;category:string;score:number}>>
+    `SELECT * FROM aifrogi_security.search_canonical_public_crawl_evidence(${identity.propertyId},${question},${limit})`);
 }

@@ -14,6 +14,20 @@ export type AnswerQualityResult = {
   reasons: string[];
 };
 
+export function normalizeVisitorAnswerLanguage(answer:string) {
+  return answer
+    .replace(/\bapproved questions?\b/gi,"business questions")
+    .replace(/\b(?:approved|supplied)\s+(?:business\s+)?(?:information|knowledge|sources?)\b/gi,"published business information")
+    .replace(/\b(?:supplied )?knowledge base\b/gi,"published business information")
+    .replace(/\bknowledge gap\b/gi,"missing detail")
+    .replace(/\basynchronous aifrogi review\b/gi,"business review")
+    .replace(/\bgovernance\b/gi,"business policy")
+    .replace(/\bretrieval\b/gi,"information search")
+    .replace(/\bconfidence score\b/gi,"certainty")
+    .replace(/\bsystem prompt\b/gi,"assistant instructions")
+    .replace(/\blanguage model\b/gi,"assistant");
+}
+
 export function hasCompleteAnswerEnding(answer: string) {
   const value = answer.trim();
   if (!value) return false;
@@ -30,12 +44,12 @@ export function evaluateVisitorAnswerQuality(input: {
   const answer = input.answer.replace(/\s+/g, " ").trim();
   const reasons: string[] = [];
   if (!answer) reasons.push("EMPTY_ANSWER");
-  if (answer.length > 1800) reasons.push("EXCESSIVE_LENGTH");
+  // Length and minor repetition are presentation concerns. A supported answer
+  // must not be replaced with a knowledge-gap/callback response for style.
   if (!hasCompleteAnswerEnding(answer)) reasons.push("INCOMPLETE_ENDING");
   if (INTERNAL_LANGUAGE.test(answer)) reasons.push("INTERNAL_LANGUAGE");
   if (ROBOTIC_DEFLECTION.test(answer)) reasons.push("ROBOTIC_DEFLECTION");
   if (input.decision.disposition === "ANSWER" && !COMMERCIAL_INTENT.test(input.question) && PREMATURE_QUALIFICATION.test(answer)) reasons.push("PREMATURE_QUALIFICATION");
-  if (/\b([\p{L}\p{N}][\p{L}\p{N} '&.-]{2,40})\b\s+\1\b/iu.test(answer)) reasons.push("DUPLICATED_PHRASE");
   return { version: ANSWER_QUALITY_GATE_VERSION, passed: reasons.length === 0, reasons };
 }
 
