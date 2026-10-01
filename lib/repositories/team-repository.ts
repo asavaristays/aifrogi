@@ -83,7 +83,7 @@ export async function activateInvitation(token: string, password: string) {
         const installationKey = profile?.installationKey || randomBytes(24).toString("base64url");
         if (!profile?.installationKey) await tx.botProfile.update({ where: { organizationId: invitation.organization.id }, data: { installationKey } });
         installation = { companyName: invitation.organization.name, propertySlug: fullProperty!.slug, installationKey, website: invitation.organization.website, category: profile?.category || "BUSINESS_AI" };
-        if (profile?.category === "STAY") {
+        if (profile) {
           await tx.automationJob.upsert({
             where: { idempotencyKey: levelOneJobKey(property.id) }, update: {},
             create: { propertyId: property.id, workflowId: "level-one-website-v1", triggerType: "EMAIL_VERIFIED", triggerRef: invitation.organization.id,

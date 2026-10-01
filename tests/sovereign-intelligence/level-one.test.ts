@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { LEVEL_ONE_PROBES, levelOneManifest, levelOneFingerprint, levelOneChecksPassed, assessLevelOneAnswer, isLevelOneProfile } from "../../lib/sovereign-intelligence/level-one";
+import { LEVEL_ONE_PROBES, RAPID_PREVIEW_SLA_MS, levelOneManifest, levelOneFingerprint, levelOneChecksPassed, assessLevelOneAnswer, isLevelOneProfile, previewProbes } from "../../lib/sovereign-intelligence/level-one";
 import type { KnowledgeBase, KnowledgeAnswer } from "../../lib/services/website-knowledge-service";
 import type { GroundingReview } from "../../lib/sovereign-intelligence/answer-grounding";
 
@@ -19,6 +19,15 @@ test("automatic trial authority never covers action-performing or extra-channel 
   assert.equal(isLevelOneProfile({ ...profile, operatingMode: "APPROVED_ACTIONS" }), false);
   assert.equal(isLevelOneProfile({ ...profile, channels: ["WEBSITE", "WHATSAPP"] }), false);
   assert.equal(isLevelOneProfile({ ...profile, capabilities: ["ANSWER_QUESTIONS", "BOOK_APPOINTMENTS"] }), false);
+});
+test("rapid preview supports ordinary website bots and exposes the four-minute target", () => {
+  const profile = { category: "BUSINESS_AI", operatingMode: "LEAD_CAPTURE", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS"] };
+  assert.equal(isLevelOneProfile(profile), true);
+  assert.equal(previewProbes("BUSINESS_AI").length, 4);
+  assert.equal(RAPID_PREVIEW_SLA_MS, 240000);
+  const kb = snapshot();
+  kb.structuredFacts.push({ field: "service", sourceType: "WEBSITE", sourceUrl: kb.pages[0].url } as never);
+  assert.equal(levelOneManifest(kb, kb.baseUrl, Date.now(), "BUSINESS_AI").ready, true);
 });
 test("Level-1 requires a fresh same-site manifest and all five essential topics", () => {
   const kb = snapshot();

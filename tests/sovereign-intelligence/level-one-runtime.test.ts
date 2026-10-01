@@ -31,6 +31,8 @@ const db = {
     findFirst: async ({ where }: any) => matches(f.job, where) ? structuredClone(f.job) : null,
     findUnique: async () => structuredClone(f.job), findUniqueOrThrow: async () => structuredClone(f.job),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    update: async ({ data }: any) => { update(f.job, data); return structuredClone(f.job); },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateMany: async ({ where, data }: any) => { if (!matches(f.job, where)) return { count: 0 }; update(f.job, data); return { count: 1 }; }
   },
   botProfile: {
@@ -52,6 +54,7 @@ let runtime: typeof import("../../lib/services/level-one-preparation");
 const runLevelOnePreparation = () => runtime.runLevelOnePreparation();
 const executeLevelOneJob: typeof runtime.executeLevelOneJob = job => runtime.executeLevelOneJob(job);
 const retryLevelOne = (id: string) => runtime.retryLevelOne(id);
+const queueRapidPreview = (id: string, actor: string) => runtime.queueRapidPreview(id, actor);
 test.before(async () => {
 const bundled = await build({ entryPoints: [path.resolve("lib/services/level-one-preparation.ts")], bundle: true, write: false, platform: "node", format: "cjs", packages: "external", plugins: [{ name: "synthetic-adapters", setup(b) {
   b.onResolve({ filter: /^@\/lib\// }, args => adapters[args.path] ? { path: args.path, namespace: "fixture" } : undefined);
@@ -68,23 +71,42 @@ test.beforeEach(() => {
     property: { id: "p1", slug: "hotel", organizationId: "org1", organization: { id: "org1", name: "Hotel", website: "https://hotel.example", status: "ONBOARDING", updatedAt: now, members: [{ email: "owner@example.test", status: "ACTIVE", role: "OWNER", invitedBy: "SELF_SERVICE_REGISTRATION" }], botProfile: { organizationId: "org1", category: "STAY", operatingMode: "LEAD_CAPTURE", channels: ["WEBSITE"], capabilities: ["ANSWER_QUESTIONS"], status: "DRAFT", updatedAt: now } } },
     settings: { sourceUrl: "https://hotel.example", status: "DRAFT", approvedForAi: true, updatedAt: now.toISOString() },
     snapshot: { baseUrl: "https://hotel.example", crawledAt: now.toISOString(), pages: ["/", "/stay"].map(p => ({ url: `https://hotel.example${p}`, text: "Hotel has cottages.", title: "Hotel" })), structuredFacts: ["business_name", "address", "phone", "rooms", "amenities"].map(field => ({ field, sourceType: "WEBSITE", sourceUrl: "https://hotel.example/" })), truthReview: { counts: { conflicts: 0, stale: 0 } }, crawlReport: { readiness: "READY", reasons: [] } },
-    job: { id: "job1", propertyId: "p1", idempotencyKey: "level-one:p1", actionType: "PREPARE_LEVEL_ONE", status: "QUEUED", attemptCount: 0, maxAttempts: 3, nextRunAt: new Date(0), result: { stage: "QUEUED", rows: [] } }
+    job: { id: "job1", propertyId: "p1", idempotencyKey: "level-one:p1", actionType: "PREPARE_LEVEL_ONE", status: "QUEUED", attemptCount: 0, maxAttempts: 3, createdAt: now, nextRunAt: new Date(0), result: { stage: "QUEUED", rows: [] } }
   });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  f.answer = async (input: any) => { f.calls++; f.mutate?.(input); return { answer: "We have cottages.", sourceUrls: ["https://hotel.example/stay"], model: input.question.includes("guest who") || input.question.startsWith("Book") ? "CONSTITUTIONAL" : "MODEL", decision: { disposition: input.question.includes("guest who") ? "REFUSE" : "ANSWER" }, reliability: { failureCode: null, attemptCount: 1 }, modelUsage: { inputTokens: 10, outputTokens: 10 } }; };
+  f.answer = async (input: any) => { f.calls++; f.mutate?.(input); const privacy = /private|guest who/i.test(input.question); return { answer: "We have cottages.", sourceUrls: ["https://hotel.example/stay"], model: privacy || input.question.startsWith("Book") ? "CONSTITUTIONAL" : "MODEL", decision: { disposition: privacy ? "REFUSE" : "ANSWER" }, reliability: { failureCode: null, attemptCount: 1 }, modelUsage: { inputTokens: 10, outputTokens: 10 } }; };
   process.env.OPENAI_API_KEY = "synthetic-test-only";
 });
 test.after(() => { if (priorKey === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = priorKey; delete (globalThis as Record<string, unknown>).__levelOne; });
 
-test("verified hotel advances through durable batches and becomes live only after all eight checks", async () => {
+test("verified hotel crawls once and creates a governed preview with one concurrent eight-check gate", async () => {
   await runLevelOnePreparation();
   assert.equal(f.job.result.stage, "TESTING"); assert.equal(f.calls, 0);
-  for (let i = 0; i < 3; i++) { await runLevelOnePreparation(); assert.equal(f.property.organization.botProfile.status, "DRAFT"); }
   await runLevelOnePreparation();
   assert.equal(f.job.status, "SUCCEEDED"); assert.equal(f.job.result.rows.length, 8);
-  assert.equal(f.property.organization.botProfile.status, "LIVE"); assert.equal(f.activities.length, 1); assert.equal(f.usage.length, 8);
+  assert.equal(f.property.organization.botProfile.status, "INSTALLATION_READY"); assert.equal(f.activities.length, 1); assert.equal(f.activities[0].action, "BRANDED_BOT_PREVIEW_READY"); assert.equal(f.usage.length, 8);
   assert.deepEqual(await runLevelOnePreparation(), { processed: 0 });
   assert.ok(f.identities.some((i: { organizationId: string; platformAuthority: boolean }) => i.organizationId === "org1" && !i.platformAuthority));
+});
+test("ordinary business bot reaches a measured preview without becoming public", async () => {
+  f.property.organization.botProfile.category = "BUSINESS_AI";
+  f.snapshot.structuredFacts.push({ field: "service", sourceType: "WEBSITE", sourceUrl: "https://hotel.example/" });
+  await runLevelOnePreparation();
+  await runLevelOnePreparation();
+  await runLevelOnePreparation();
+  assert.equal(f.job.status, "SUCCEEDED");
+  assert.equal(f.job.result.rows.length, 4);
+  assert.equal(f.job.result.slaMs, 240000);
+  assert.equal(f.job.result.slaMet, true);
+  assert.equal(f.property.organization.botProfile.status, "INSTALLATION_READY");
+});
+test("an approved source sync requeues a completed preview with a new SLA clock", async () => {
+  f.job.status = "SUCCEEDED"; f.job.result = { stage: "READY", rows: [{ id: "old" }] }; f.job.completedAt = new Date();
+  const before = Date.now();
+  const status = await queueRapidPreview("p1", "owner@example.test");
+  assert.equal(f.job.status, "QUEUED"); assert.equal(f.job.result.stage, "QUEUED"); assert.deepEqual(f.job.result.rows, []);
+  assert.equal(f.job.result.slaMs, 240000); assert.ok(Date.parse(f.job.result.startedAt) >= before); assert.equal(f.job.createdBy, "owner@example.test");
+  assert.equal(status?.previewReady, false);
 });
 test("review-required capture cannot activate and supports explicit retry", async () => {
   f.snapshot.crawlReport.readiness = "REVIEW_REQUIRED";
@@ -98,39 +120,39 @@ test("failed refresh with an old snapshot is retried, never passed", async () =>
 });
 test("failed real-answer review stops preparation with the answer visible", async () => {
   await runLevelOnePreparation(); f.failReview = true; await runLevelOnePreparation();
-  assert.equal(f.job.status, "DEAD"); assert.equal(f.job.result.rows.length, 2); assert.equal(f.job.result.rows[0].passed, false);
+  assert.equal(f.job.status, "DEAD"); assert.equal(f.job.result.rows.length, 8); assert.equal(f.job.result.rows[0].passed, false);
 });
 test("changed governed knowledge invalidates the checked source revision", async () => {
   await runLevelOnePreparation(); f.entries.push({ id: "new", status: "PUBLISHED", updatedAt: new Date() }); await runLevelOnePreparation();
   assert.equal(f.job.status, "DEAD"); assert.equal(f.calls, 0);
 });
 test("paused knowledge is never silently re-enabled at activation", async () => {
-  for (let n = 0; n < 4; n++) await runLevelOnePreparation();
+  await runLevelOnePreparation();
   f.mutate = () => { f.settings.approvedForAi = false; };
   await runLevelOnePreparation();
   assert.equal(f.settings.approvedForAi, false); assert.equal(f.job.status, "DEAD"); assert.equal(f.property.organization.botProfile.status, "DRAFT");
 });
 test("trial expiry and a concurrent lifecycle edit both prevent the final commit", async () => {
-  for (let n = 0; n < 4; n++) await runLevelOnePreparation();
+  await runLevelOnePreparation();
   f.expired = true; await runLevelOnePreparation();
   assert.notEqual(f.job.status, "SUCCEEDED"); assert.equal(f.property.organization.botProfile.status, "DRAFT");
   f.expired = false; f.activationRace = true; f.job.nextRunAt = new Date(0); await runLevelOnePreparation();
   assert.notEqual(f.job.status, "SUCCEEDED"); assert.equal(f.activities.length, 0);
 });
 test("lease owner changes stop an old worker from publishing", async () => {
-  for (let n = 0; n < 4; n++) await runLevelOnePreparation();
+  await runLevelOnePreparation();
   f.mutate = () => { f.job.lockedBy = "replacement-worker"; };
   await runLevelOnePreparation();
   assert.notEqual(f.job.status, "SUCCEEDED"); assert.equal(f.property.organization.botProfile.status, "DRAFT");
 });
 test("owner revocation immediately before activation rolls back readiness", async () => {
-  for (let n = 0; n < 4; n++) await runLevelOnePreparation();
+  await runLevelOnePreparation();
   f.beforeActivation = () => { f.property.organization.members = []; };
   await runLevelOnePreparation();
   assert.notEqual(f.job.status, "SUCCEEDED"); assert.equal(f.property.organization.botProfile.status, "DRAFT"); assert.equal(f.activities.length, 0);
 });
 test("organization removal immediately before activation rolls back readiness", async () => {
-  for (let n = 0; n < 4; n++) await runLevelOnePreparation();
+  await runLevelOnePreparation();
   f.beforeActivation = () => { f.property.organization.status = "REMOVED"; };
   await runLevelOnePreparation();
   assert.notEqual(f.job.status, "SUCCEEDED"); assert.equal(f.property.organization.botProfile.status, "DRAFT"); assert.equal(f.activities.length, 0);
@@ -140,8 +162,8 @@ test("expired leases recover, but a valid lease is not stolen", async () => {
   assert.deepEqual(await runLevelOnePreparation(), { processed: 0 });
   f.job.leaseExpiresAt = new Date(0); await runLevelOnePreparation(); assert.equal(f.job.status, "QUEUED"); assert.equal(f.job.result.stage, "TESTING");
 });
-test("unverified owner, wrong category and paused bot are not activated", async () => {
-  for (const change of [() => { f.property.organization.members = []; }, () => { f.property.organization.botProfile.category = "BUSINESS_AI"; }, () => { f.property.organization.botProfile.status = "PAUSED"; }]) {
+test("unverified owner, action-performing profile and paused bot cannot prepare a preview", async () => {
+  for (const change of [() => { f.property.organization.members = []; }, () => { f.property.organization.botProfile.operatingMode = "APPROVED_ACTIONS"; }, () => { f.property.organization.botProfile.status = "PAUSED"; }]) {
     change(); f.job.status = "RUNNING"; f.job.lockedBy = "test"; f.job.leaseExpiresAt = new Date(Date.now() + 60000);
     await executeLevelOneJob(structuredClone(f.job)); assert.equal(f.job.status, "DEAD"); assert.equal(f.calls, 0);
   }

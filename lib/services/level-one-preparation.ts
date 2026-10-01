@@ -7,9 +7,9 @@ import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { reviewAnswerGrounding } from "@/lib/sovereign-intelligence/answer-grounding";
 import { evaluateVisitorAnswerQuality } from "@/lib/sovereign-intelligence/answer-quality-gate";
 import { recordTenantAnswerUsage } from "@/lib/tenant-usage-metering";
-import { LEVEL_ONE_JOB, LEVEL_ONE_VERSION, LEVEL_ONE_PROBES, levelOneJobKey, levelOneManifest, levelOneFingerprint, assessLevelOneAnswer, levelOneChecksPassed, isLevelOneProfile, type LevelOneProbeResult } from "@/lib/sovereign-intelligence/level-one";
+import { LEVEL_ONE_JOB, LEVEL_ONE_VERSION, RAPID_PREVIEW_SLA_MS, levelOneJobKey, levelOneManifest, levelOneFingerprint, assessLevelOneAnswer, levelOneChecksPassed, isLevelOneProfile, previewProbes, type LevelOneProbeResult } from "@/lib/sovereign-intelligence/level-one";
 
-type Progress = { stage: "QUEUED" | "CRAWLING" | "TESTING" | "READY" | "NEEDS_ATTENTION"; rows: LevelOneProbeResult[]; fingerprint?: string; manifest?: ReturnType<typeof levelOneManifest>; blockers?: string[] };
+type Progress = { stage: "QUEUED" | "CRAWLING" | "TESTING" | "READY" | "NEEDS_ATTENTION"; rows: LevelOneProbeResult[]; fingerprint?: string; manifest?: ReturnType<typeof levelOneManifest>; blockers?: string[]; startedAt?: string; readyAt?: string; durationMs?: number; slaMs?: number; slaMet?: boolean };
 const json = (value: unknown) => JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 const editableStatuses = ["DRAFT", "INSTALLATION_READY", "INSTALLATION_DETECTED"];
 function progress(job: AutomationJob): Progress {
@@ -35,9 +35,10 @@ export async function levelOneStatus(propertyId: string) {
   if (!job || job.propertyId !== propertyId || job.actionType !== LEVEL_ONE_JOB) return null;
   const state = progress(job);
   const property = await target(propertyId);
+  const probes = previewProbes(property?.organization?.botProfile?.category || "BUSINESS_AI");
   return { ...state, status: job.status, attemptCount: job.attemptCount, maxAttempts: job.maxAttempts, updatedAt: job.updatedAt, nextRunAt: job.nextRunAt,
     botLive: property?.organization?.botProfile?.status === "LIVE", propertySlug: property?.slug,
-    totalChecks: LEVEL_ONE_PROBES.length, canRetry: ["DEAD", "CANCELED"].includes(job.status) && editableStatuses.includes(property?.organization?.botProfile?.status || "") };
+    previewReady: state.stage === "READY", totalChecks: probes.length, canRetry: ["DEAD", "CANCELED"].includes(job.status) && editableStatuses.includes(property?.organization?.botProfile?.status || "") };
 }
 
 export async function retryLevelOne(propertyId: string) {
@@ -56,6 +57,31 @@ export async function retryLevelOne(propertyId: string) {
   return levelOneStatus(propertyId);
 }
 
+/** Queue a fresh private preview when an owner approves and synchronizes a source. */
+export async function queueRapidPreview(propertyId: string, actor: string) {
+  const db = getDb();
+  if (!db) throw new Error("Database unavailable.");
+  const now = new Date();
+  const queued = json({ stage: "QUEUED", rows: [], startedAt: now.toISOString(), slaMs: RAPID_PREVIEW_SLA_MS });
+  const existing = await db.automationJob.findUnique({ where: { idempotencyKey: levelOneJobKey(propertyId) }, select: { id: true, propertyId: true, actionType: true, status: true } });
+  if (!existing) {
+    await db.automationJob.create({ data: {
+      propertyId, workflowId: "rapid-branded-preview-v2", triggerType: "APPROVED_SOURCE_CONNECTED", triggerRef: propertyId,
+      actionType: LEVEL_ONE_JOB, payload: {}, result: queued, idempotencyKey: levelOneJobKey(propertyId), scheduledFor: now,
+      nextRunAt: now, priority: 2, maxAttempts: 3, createdBy: actor
+    } });
+    return levelOneStatus(propertyId);
+  }
+  if (existing.propertyId !== propertyId || existing.actionType !== LEVEL_ONE_JOB) throw new Error("Preview job identity mismatch.");
+  if (existing.status === "RUNNING") return levelOneStatus(propertyId);
+  await db.automationJob.update({ where: { id: existing.id }, data: {
+    workflowId: "rapid-branded-preview-v2", triggerType: "APPROVED_SOURCE_CONNECTED", triggerRef: propertyId,
+    status: "QUEUED", result: queued, attemptCount: 0, scheduledFor: now, nextRunAt: now, completedAt: null,
+    lastError: null, deadLetterReason: null, lockedAt: null, lockedBy: null, leaseExpiresAt: null, createdBy: actor
+  } });
+  return levelOneStatus(propertyId);
+}
+
 async function checkpoint(job: AutomationJob, state: Progress, terminal = false) {
   const db = getDb()!;
   return db.automationJob.updateMany({ where: ownership(job), data: {
@@ -67,7 +93,7 @@ async function checkpoint(job: AutomationJob, state: Progress, terminal = false)
   } });
 }
 
-/** One bounded unit per invocation: a crawl or up to two real-answer probes. */
+/** One bounded unit per invocation: a crawl or one concurrent preview gate. */
 export async function executeLevelOneJob(job: AutomationJob) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
@@ -80,28 +106,30 @@ export async function executeLevelOneJob(job: AutomationJob) {
   if (!access?.canUsePaidActions) return checkpoint(job, { ...progress(job), stage: "NEEDS_ATTENTION", blockers: ["Trial or subscription is paused."] }, true);
   let settings = await readKnowledgeSettings(property.slug);
   const state = progress(job);
+  const startedAt = state.startedAt || job.createdAt?.toISOString?.() || new Date().toISOString();
+  const probes = previewProbes(org.botProfile!.category);
   if (state.stage === "QUEUED" || state.stage === "CRAWLING") {
     if (!settings.sourceUrl && !org.website) return checkpoint(job, { stage: "NEEDS_ATTENTION", rows: [], blockers: ["Add your official website in Intelligence, then retry preparation."] }, true);
     // Public serving is still blocked by the DRAFT bot lifecycle. Never turn a
     // previously saved owner knowledge pause back on while activating the bot.
     if (!settings.sourceUrl) settings = await writeKnowledgeSettings(property.slug, { sourceUrl: org.website!, status: "DRAFT" });
-    const started = await db.automationJob.updateMany({ where: ownership(job), data: { result: json({ stage: "CRAWLING", rows: [] }) } });
+    const started = await db.automationJob.updateMany({ where: ownership(job), data: { result: json({ stage: "CRAWLING", rows: [], startedAt, slaMs: RAPID_PREVIEW_SLA_MS }) } });
     if (!started.count) return null;
     const snapshot = await getWebsiteKnowledgeBase(property.slug, true);
     settings = await readKnowledgeSettings(property.slug);
     if (settings.status !== "READY") throw new Error("The website could not be refreshed. Preparation will retry; the previous capture is not treated as a successful crawl.");
-    const manifest = levelOneManifest(snapshot, settings.sourceUrl);
+    const manifest = levelOneManifest(snapshot, settings.sourceUrl, Date.now(), org.botProfile!.category);
     if (!manifest.ready) return checkpoint(job, { stage: "NEEDS_ATTENTION", rows: [], manifest, blockers: manifest.blockers }, true);
-    return checkpoint(job, { stage: "TESTING", rows: [], manifest, fingerprint: levelOneFingerprint(snapshot, await config(property, settings)) });
+    return checkpoint(job, { stage: "TESTING", rows: [], manifest, fingerprint: levelOneFingerprint(snapshot, await config(property, settings)), startedAt, slaMs: RAPID_PREVIEW_SLA_MS });
   }
   if (state.stage !== "TESTING" || !state.fingerprint) throw new Error("Invalid preparation checkpoint.");
   const snapshot = await readCachedKnowledgeBase(property.slug, settings.sourceUrl, 6 * 3600000);
   if (!snapshot || settings.status !== "READY" || levelOneFingerprint(snapshot, await config(property, settings)) !== state.fingerprint) {
-    return checkpoint(job, { ...state, stage: "NEEDS_ATTENTION", blockers: ["Hotel information changed during testing. Retry to test the current version."] }, true);
+    return checkpoint(job, { ...state, stage: "NEEDS_ATTENTION", blockers: ["Business information changed during testing. Retry to test the current version."] }, true);
   }
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) throw new Error("The answer service is unavailable. Preparation will retry.");
-  const pending = LEVEL_ONE_PROBES.filter(probe => !state.rows.some(row => row.id === probe.id)).slice(0, 2);
+  const pending = probes.filter(probe => !state.rows.some(row => row.id === probe.id));
   const context = snapshot.pages.map(page => `Source: ${page.url}\n${page.text}`).join("\n\n");
   // Limit review input deterministically; oversized captures need a scoped test
   // path before activation rather than silently dropping evidence.
@@ -120,8 +148,8 @@ export async function executeLevelOneJob(job: AutomationJob) {
     return { id: probe.id, question: probe.question, answer: answer?.answer || "", passed: issues.length === 0, issues, latencyMs: Date.now() - started, sourceUrls: answer?.sourceUrls || [] };
   }));
   const next = { ...state, rows: [...state.rows, ...rows] };
-  if (rows.some(row => !row.passed)) return checkpoint(job, { ...next, stage: "NEEDS_ATTENTION", blockers: ["Some guest answers need attention. Review the failed questions below and correct the information or contact support."] }, true);
-  if (!levelOneChecksPassed(next.rows)) return checkpoint(job, next);
+  if (rows.some(row => !row.passed)) return checkpoint(job, { ...next, stage: "NEEDS_ATTENTION", blockers: ["Some customer answers need attention. Review the failed questions below and correct the information or contact support."] }, true);
+  if (!levelOneChecksPassed(next.rows, probes)) return checkpoint(job, next);
   const current = await target(property.id);
   const latestSettings = await readKnowledgeSettings(property.slug);
   const latestSnapshot = await readCachedKnowledgeBase(property.slug, latestSettings.sourceUrl, 6 * 3600000);
@@ -131,16 +159,17 @@ export async function executeLevelOneJob(job: AutomationJob) {
   return db.$transaction(async tx => {
     const entitlement = await getOrganizationSubscriptionAccess(org.id);
     if (!entitlement?.canUsePaidActions || (entitlement.trialEndsAt && entitlement.trialEndsAt <= new Date())) throw new Error("The trial or subscription expired before activation.");
-    const completed = await tx.automationJob.updateMany({ where: ownership(job), data: { status: "SUCCEEDED", result: json({ ...next, stage: "READY" }), completedAt: new Date(), lockedAt: null, lockedBy: null, leaseExpiresAt: null, lastError: null } });
+    const readyAt = new Date(); const durationMs = readyAt.getTime() - Date.parse(startedAt); const slaMet = durationMs <= RAPID_PREVIEW_SLA_MS;
+    const completed = await tx.automationJob.updateMany({ where: ownership(job), data: { status: "SUCCEEDED", result: json({ ...next, stage: "READY", readyAt: readyAt.toISOString(), durationMs, slaMs: RAPID_PREVIEW_SLA_MS, slaMet }), completedAt: readyAt, lockedAt: null, lockedBy: null, leaseExpiresAt: null, lastError: null } });
     if (!completed.count) return null;
     const activated = await tx.botProfile.updateMany({ where: {
       organizationId: org.id, status: { in: editableStatuses }, updatedAt: current.organization!.botProfile!.updatedAt,
       // Owner revocation need not update the profile timestamp. Check authority
       // in the activation statement itself, not only before model/network work.
       organization: { is: { updatedAt: current.organization!.updatedAt, status: { notIn: ["REMOVED", "PENDING_EMAIL"] }, members: { some: { status: "ACTIVE", role: "OWNER", invitedBy: "SELF_SERVICE_REGISTRATION" } } } }
-    }, data: { status: "LIVE", liveAt: new Date(), kbGateVersion: LEVEL_ONE_VERSION, lifecycleUpdatedBy: "level-one-preparation" } });
-    if (!activated.count) throw new Error("Bot lifecycle changed before activation.");
-    await tx.onboardingActivity.create({ data: { organizationId: org.id, actorEmail: "level-one-preparation", action: "TRIAL_BASIC_PUBLIC_BOT_ACTIVATED", detail: `${LEVEL_ONE_VERSION}: ${next.rows.length}/${LEVEL_ONE_PROBES.length} automated real-answer checks; source ${state.fingerprint}. Public information only; live bookings require reservations. Not a human accuracy certification.` } });
+    }, data: { status: current.organization!.botProfile!.installationDetectedAt ? "INSTALLATION_DETECTED" : "INSTALLATION_READY", kbGateVersion: LEVEL_ONE_VERSION, lifecycleUpdatedBy: "rapid-preview-preparation" } });
+    if (!activated.count) throw new Error("Bot lifecycle changed before preview completion.");
+    await tx.onboardingActivity.create({ data: { organizationId: org.id, actorEmail: "rapid-preview-preparation", action: "BRANDED_BOT_PREVIEW_READY", detail: `${LEVEL_ONE_VERSION}: ${next.rows.length}/${probes.length} automated checks; ${durationMs}ms; four-minute SLA ${slaMet ? "met" : "missed"}; source ${state.fingerprint}. Production activation still requires approval.` } });
     return completed;
   });
 }

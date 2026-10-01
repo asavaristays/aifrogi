@@ -7,6 +7,7 @@ import { getKnowledgeGovernanceSummary } from "@/lib/repositories/knowledge-cont
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
 import { getDb } from "@/lib/db";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
+import { queueRapidPreview } from "@/lib/services/level-one-preparation";
 
 export async function GET() {
   const access = await getCurrentClientAccess();
@@ -64,11 +65,16 @@ export async function POST() {
 
   const propertySlug = await getCurrentWorkspaceSlug();
   try {
-    const { knowledgeBase, summary } = await withClientDatabaseContext(access, "knowledge-website-sync", async () => ({
-      knowledgeBase: await getWebsiteKnowledgeBase(propertySlug, true),
-      summary: await getKnowledgeWorkspaceSummary(propertySlug)
-    }));
-    return NextResponse.json({ ok: true, ...summary, pagesSynced: knowledgeBase.pages.length });
+    const { knowledgeBase, summary, preview } = await withClientDatabaseContext(access, "knowledge-website-sync", async () => {
+      const knowledgeBase = await getWebsiteKnowledgeBase(propertySlug, true);
+      const summary = await getKnowledgeWorkspaceSummary(propertySlug);
+      const db = getDb();
+      if (!db) throw new Error("Database unavailable.");
+      const property = await db.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
+      const preview = property && summary.settings.approvedForAi ? await queueRapidPreview(property.id, access.user.username) : null;
+      return { knowledgeBase, summary, preview };
+    });
+    return NextResponse.json({ ok: true, ...summary, pagesSynced: knowledgeBase.pages.length, preview });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Knowledge sync failed." }, { status: 502 });
   }
