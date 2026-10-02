@@ -65,7 +65,9 @@
   .root[data-mobile] .content { font-size: 14px; line-height: 1.5; }
   .root[data-mobile] section[data-chat-active] p { font-size: 14px; line-height: 1.55; }
   .root[data-mobile] .title { font-size: 21px; font-weight: 600; letter-spacing: -.02em; }
-  .root[data-mobile][data-mobile-chat] > header:not(.mobileChatHeader), .root[data-mobile][data-mobile-chat] > .backRow { display: none; }
+  .root[data-mobile][data-mobile-chat] > header:not(.mobileChatHeader) { display: none; }
+  .root[data-mobile][data-mobile-chat] > .backRow { display: flex; min-height: 42px; align-items: center; padding: 4px 12px; }
+  .root[data-mobile][data-mobile-chat] > .backRow button { min-height: 34px; padding: 6px 8px; font-size: 13px; font-weight: 600; }
   .root[data-mobile][data-mobile-chat] > .mobileChatHeader { position: relative; display: flex; align-items: center; gap: 6px; min-height: 52px; padding: 4px 8px; flex-shrink: 0; border-bottom: 1px solid var(--widget-line); }
   .mobileChatHeader h1 { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; }
   .mobileChatHeader > button { width: 40px; height: 40px; display: grid; place-items: center; flex-shrink: 0; }
