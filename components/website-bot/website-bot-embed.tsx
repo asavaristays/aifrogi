@@ -303,6 +303,7 @@ export function WebsiteBotEmbed({ slug, demo = false, botName = "AI Business Ass
     {slug==='showcase-clinicgpt'&&<button className="px-5 py-3 text-left text-sm" style={{background:'#e8c866',color:'#111'}} onClick={()=>setGuidedClinic(true)}>Book a demo appointment →</button>}
     {demo && <a href="/ai-bot-demos" target="_blank" rel="noopener noreferrer" className="block border-b border-white/10 px-5 py-3 text-sm font-semibold" style={{color:'#f3e5b5',background:'#161616'}}>Explore AI Bot Demos ↗</a>}
     {!demo && (!portalEnabled || portalView === "chat") && !menuOpen && !bookingItem && <header className={portal.mobileChatHeader}>
+      {portalEnabled && portalView === "chat" && <button type="button" aria-label="Back to messages" onClick={() => { composerRef.current?.blur(); setMobileInfoOpen(false); setPortalView("messages"); }}><ChevronLeft size={22} aria-hidden="true" /></button>}
       {menu.enabled && <button type="button" aria-label="Show options" onClick={() => { composerRef.current?.blur(); setMobileInfoOpen(false); setMenuOpen(true); }}><LayoutGrid size={20} /></button>}
       <span className={portal.mobileLogo} aria-hidden="true" style={{backgroundColor:accent,color:accentText}}><SafeBotLogo src={logoUrl} fallback={botName.slice(0, 1).toUpperCase()} /></span><div className={portal.mobileIdentity}><h1>{botName}</h1><span><i aria-hidden="true" />AI ready</span></div>
       <button type="button" aria-label="Bot information" aria-expanded={mobileInfoOpen} onClick={() => setMobileInfoOpen(value => !value)}><Info size={19} /></button>
