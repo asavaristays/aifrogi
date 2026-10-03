@@ -1,64 +1,69 @@
-import {publicFactRetrievalQuery,publicFactRetrievalQueries} from './public-business-facts';
+import {normalizeRagQuestion} from './rag-query-normalization';
+import {readPublicRagCatalog,liveRagRequest} from './rag-live-read';
+import {publicFactRetrievalQueries} from './public-business-facts';
 import {withCanonicalRole,type CanonicalIdentity} from './canonical-db-context';
 import {type ActiveWebsiteChunk} from './active-website-crawl-retrieval';
 import {SharedAnswerProvider,sharedProviderConfig} from './shared-answer-provider';
 import {runSharedAnswer,evidenceDigest,type AnswerEvidence,type AnswerScope,type SharedAnswerResult} from './shared-answer-engine';
 
-export async function answerFromSharedCrawl(identity:CanonicalIdentity,question:string):Promise<SharedAnswerResult & {capturedAt:string|null;modelUsage:{inputTokens:number;outputTokens:number}}> {
-  let capturedAt:string|null=null;
-  let sourceUrl:string|null=null;
+type RagSnapshot={snapshot_hash:string;crawl_generation:string|null;claim_count:bigint;knowledge_as_of:Date|null};
+type RagClaim={entry_id:string;content:string;question:string;title:string;seal_hash:string;field_key:string;entity_key:string;value_hash:string;authority_rank:number;effective_from:Date|null;effective_until:Date|null};
+
+/** One runtime adapter for approved documents and authorised website captures. */
+export async function answerFromSharedKnowledge(identity:CanonicalIdentity,question:string):Promise<SharedAnswerResult & {capturedAt:string|null;modelUsage:{inputTokens:number;outputTokens:number}}> {
+  question=normalizeRagQuestion(question);
   let provider:SharedAnswerProvider|undefined;
+  let active:RagSnapshot|undefined;
   const getProvider=()=>provider??(provider=new SharedAnswerProvider(sharedProviderConfig()));
-  const state=async()=>{
-    sourceUrl=await resolveSharedCrawlSource(identity);
-    const rows=await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<Array<{state:string;generation_id:string|null;base_url:string|null;captured_at:string|null}>>`SELECT * FROM aifrogi_security.shared_answer_source_state(${identity.propertyId})`);
-    const value=rows[0];if(!value || !['READY','NO_ACTIVE_SOURCE','REVOKED','EXPIRED','INDEX_NOT_READY'].includes(value.state)) throw new Error('SOURCE_STATE_INVALID');
-    if(value.state === 'READY' && (!value.base_url || new URL(value.base_url).origin !== new URL(sourceUrl!).origin)) throw new Error('SOURCE_ORIGIN_MISMATCH');
-    capturedAt=value.captured_at ? new Date(value.captured_at).toISOString() : null;
-    return value;
+  const snapshot=async()=>{
+    const rows=await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<RagSnapshot[]>`SELECT * FROM aifrogi_security.rag_snapshot(${identity.propertyId})`);
+    if(rows.length!==1 || !/^[a-f0-9]{64}$/.test(rows[0].snapshot_hash)) throw new Error('SOURCE_STATE_INVALID');
+    return rows[0];
   };
-  const evidence=(scope:AnswerScope,rows:ActiveWebsiteChunk[]):AnswerEvidence[]=>rows.map(row=>{
-    if(new URL(row.url).origin !== new URL(sourceUrl!).origin) throw new Error('SOURCE_ORIGIN_MISMATCH');
-    return {...scope,generationId:row.generation_id,id:row.chunk_id,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title};
-  });
-  const sheetRequests=new Map<string,Promise<AnswerEvidence[]>>();
-  const loadSpreadsheetEvidence=async(scope:AnswerScope,query:string)=>{
-    // Published workbook evidence is scoped and checked by the same database
-    // authority as crawl evidence, including contact queries.
-    const rows=await searchCanonicalPublicCrawlEvidence(identity,publicFactRetrievalQuery(query),3);
-    return rows.map(row=>({...scope,generationId:row.generation_id,id:row.chunk_id,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title}));
-  };
-  const spreadsheetEvidence=(scope:AnswerScope,query:string)=>{
-    const key=JSON.stringify([scope.organizationId,scope.propertyId,scope.generationId,query]);
-    let pending=sheetRequests.get(key);
-    if(!pending){pending=loadSpreadsheetEvidence(scope,query);sheetRequests.set(key,pending);}
+  const requests=new Map<string,Promise<AnswerEvidence[]>>();
+  const claims=(scope:AnswerScope,query:string,vector:number[]|null=null)=>{
+    const key=JSON.stringify([scope,query,vector]);
+    let pending=requests.get(key);
+    if(!pending) {
+      pending=withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<RagClaim[]>`SELECT * FROM aifrogi_security.rag_search_claims(${identity.propertyId},${query},${vector}::double precision[],24)`).then(rows=>rows.map(row=>({
+        ...scope,id:`claim:${row.entry_id}`,content:row.content,digest:evidenceDigest(row.content),url:'',title:`${row.title}: ${row.question}`,
+        sourceKind:'CLAIM' as const,sourceId:row.entry_id,sourceVersion:row.seal_hash,fieldKey:row.field_key,entityKey:row.entity_key,valueHash:row.value_hash,authorityRank:row.authority_rank,
+        effectiveFrom:row.effective_from?.toISOString()??null,effectiveUntil:row.effective_until?.toISOString()??null
+      })));
+      requests.set(key,pending);
+    }
     return pending;
   };
+  const crawl=(scope:AnswerScope,rows:ActiveWebsiteChunk[])=>rows.filter(row=>row.generation_id===active?.crawl_generation).map(row=>({
+    ...scope,id:`crawl:${row.chunk_id}`,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title,
+    sourceKind:'CRAWL' as const,sourceId:row.chunk_id,sourceVersion:row.generation_id,authorityRank:3
+  }));
   const result=await runSharedAnswer(question,{
-    state:async()=>{
-      try {const active=await state();return active.state==='READY' && active.generation_id?{state:'READY',scope:{organizationId:identity.organizationId,propertyId:identity.propertyId,generationId:active.generation_id}}:{state:active.state as 'NO_ACTIVE_SOURCE'|'REVOKED'|'EXPIRED'|'INDEX_NOT_READY'};}
-      catch{return {state:'ACCESS_ERROR'};}
-    },
-    lexical:async (scope,query)=>{
-      const [sheet,website]=await Promise.all([
-        spreadsheetEvidence(scope,query),
-        Promise.all(publicFactRetrievalQueries(query).map(search=>withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${search},12)`))).then(groups=>groups.flat())
+    state:async()=>{active=await snapshot();return active.crawl_generation || Number(active.claim_count)>0 || liveRagRequest(question) ? {state:'READY',scope:{organizationId:identity.organizationId,propertyId:identity.propertyId,generationId:active.snapshot_hash}} : {state:'NO_ACTIVE_SOURCE'};},
+    live:(scope,q)=>readPublicRagCatalog(scope,q),
+    lexical:async(scope,q)=>{
+      const queries=publicFactRetrievalQueries(q);
+      const [published,website]=await Promise.all([
+        Promise.all(queries.map(query=>claims(scope,query))),
+        active?.crawl_generation ? Promise.all(queries.map(query=>withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${query},12)`))) : Promise.resolve([])
       ]);
-      // Approved spreadsheet rows are owner-controlled and therefore precede
-      // crawl passages. The shared engine still verifies every delivered fact.
-      return [...sheet,...evidence(scope,website)];
+      return [...published.flat(),...crawl(scope,website.flat())];
     },
-    semantic:async (scope,query)=>{
-      const [[vector],sheet]=await Promise.all([getProvider().embed([query]),spreadsheetEvidence(scope,query)]);
-      const website=evidence(scope,await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.shared_answer_semantic_chunks(${identity.propertyId},${scope.generationId},${vector}::double precision[],24)`));
-      return [...sheet,...website];
+    semantic:async(scope,q)=>{
+      const [vector]=await getProvider().embed([q]);
+      const outcomes=await Promise.allSettled([
+        claims(scope,q,vector),
+        active?.crawl_generation ? withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.shared_answer_semantic_chunks(${identity.propertyId},${active!.crawl_generation},${vector}::double precision[],24)`).then(rows=>crawl(scope,rows)) : Promise.resolve([])
+      ]);
+      for(const outcome of outcomes) if(outcome.status==='rejected' && /SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(outcome.reason))) throw outcome.reason;
+      if(outcomes.every(o=>o.status==='rejected')) throw new Error('SEMANTIC_RETRIEVAL_UNAVAILABLE');
+      return outcomes.flatMap(o=>o.status==='fulfilled'?o.value:[]);
     },
-    // Fusion is deterministic; avoid a model ranking call on the normal path.
     generate:(q,e)=>getProvider().generate(q,e),
-    verify:(claims,e)=>getProvider().verifyClaims(claims,e),
-    recheck:async scope=>{const current=await state();return current.state==='READY'&&current.generation_id===scope.generationId;}
+    verify:(c,e,q)=>getProvider().verifyClaims(c,e,q),
+    recheck:async(scope)=>(await snapshot()).snapshot_hash===scope.generationId
   });
-  return {...result,capturedAt,modelUsage:{inputTokens:provider?.usage.inputTokens??0,outputTokens:provider?.usage.outputTokens??0}};
+  return {...result,capturedAt:active?.knowledge_as_of?.toISOString()??null,modelUsage:{inputTokens:provider?.usage.inputTokens??0,outputTokens:provider?.usage.outputTokens??0}};
 }
 
 /** Formatting and existing qualification prompts happen after composition.

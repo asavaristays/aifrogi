@@ -1,3 +1,4 @@
+import { recordDeliveredRagAnswer } from '@/lib/rag-answer-delivery';
 import { assertSharedAnswerDelivery } from '@/lib/shared-answer-engine';
 import { requestedPublicFactFields } from '@/lib/public-business-facts';
 import { emojiAcknowledgement, resolveWebsiteBotQuestion } from "@/lib/website-bot-conversation";
@@ -424,8 +425,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       reliability: result.reliability.failureLayer === "NONE" ? {...result.reliability, failureLayer: "MODEL", failureCode: "VISITOR_ANSWER_QUALITY_REJECTED", escalationTier: "TIER_2_AIFROGI_ASYNC"} : result.reliability
     };
   }
-  const technicalFailure = Boolean(result && technicalAnswerFailure(result.reliability.failureLayer));
-  const fallbackContactPath = buildMissingAnswerRecovery({ businessName, category: profile.category, publicPhone: organization.publicPhone, handoffEnabled });
+  const recoveredWithEvidence = result?.decision.disposition === "ANSWER" && Boolean(result.claimIds.length || result.sources.length || result.sharedProof?.evidence.length);
+  const technicalFailure = Boolean(result && technicalAnswerFailure(result.reliability.failureLayer) && !recoveredWithEvidence);
+  const fallbackContactPath = buildMissingAnswerRecovery({ businessName, category: profile.category, publicPhone: result?.sharedProof ? null : organization.publicPhone, handoffEnabled });
   // REFUSE is a complete governed response (for example, protecting guest PII),
   // not a missing answer. Preserve it instead of replacing it with handover copy.
   const verifiedResultAnswer = technicalFailure ? fallbackContactPath : explicitHumanRequest || (result && ["ANSWER", "CLARIFY", "ESCALATE", "REFUSE"].includes(result.decision.disposition)) || negotiation.kind === "HUMAN_APPROVAL" ? result?.answer : "";
@@ -446,7 +448,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     question: message,
     answer: proposedAnswer,
     decision: proposedDecision,
-    previousState: technicalFailure || result?.sharedProof ? undefined : existingResolutionState,
+    previousState: technicalFailure || result?.sharedProof && ["ANSWER","PARTIAL"].includes(result.sharedProof.disposition) ? undefined : existingResolutionState,
     maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
@@ -468,7 +470,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   // Once canonical serving is required, the delivered bytes must remain the
   // exact owner-approved claim bytes. Presentation normalization would make a
   // truthful answer fail its cryptographic delivery binding.
-  const governedExactAnswer = canonicalFactsRequired() && resolution.decision.disposition === "ANSWER" && Boolean(result?.claimIds.length) && !result?.crawlGenerationId;
+  const governedExactAnswer = !result?.sharedProof && canonicalFactsRequired() && resolution.decision.disposition === "ANSWER" && Boolean(result?.claimIds.length) && !result?.crawlGenerationId;
   const canonicalRows = governedExactAnswer ? await db.knowledgeEntry.findMany({
     where: { propertyId: property.id, id: { in: [...new Set(result!.claimIds)] }, status: "PUBLISHED", sealedAt: { not: null } },
     select: { id: true, answer: true }, orderBy: { id: "asc" }
@@ -477,7 +479,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     return NextResponse.json({ error: "Canonical factual evidence is unavailable." }, { status: 503, headers: responseHeaders });
   }
   const answer = result?.sharedProof && ["ANSWER", "PARTIAL"].includes(result.sharedProof.disposition) && !safety.blocked && !explicitHumanRequest && !actionRequested
-    ? enforceExecutionResponse(preliminaryExecutionContract,result.sharedProof.answer)
+    ? result.sharedProof.answer
     : governedExactAnswer
     ? canonicalRows.map(row => row.answer.trim()).join("\n")
     : normalizePublicPhoneInText(enforceExecutionResponse(preliminaryExecutionContract, resolution.answer), organization.publicPhone);
@@ -634,7 +636,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       result.materialClaimDecisions = finalCoverage.decisions;
     }
     try {
-      assertCanonicalFactualEnvelope({channel:"WEBSITE",factual:true,answer,claimIds:result?.claimIds,crawlGenerationId:result?.crawlGenerationId,chunkIds:result?.chunkIds,materialClaimDecisions:result?.materialClaimDecisions});
+      if(result?.sharedProof) assertSharedAnswerDelivery(result.sharedProof,answer,organization.id,property.id);
+      else assertCanonicalFactualEnvelope({channel:"WEBSITE",factual:true,answer,claimIds:result?.claimIds,crawlGenerationId:result?.crawlGenerationId,chunkIds:result?.chunkIds,materialClaimDecisions:result?.materialClaimDecisions});
     } catch (error) {
       console.error("Canonical website envelope rejected", { propertyId: property.id, error });
       return NextResponse.json({error:"Canonical factual evidence is unavailable."},{status:503,headers:responseHeaders});
@@ -650,11 +653,15 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     const entryIds=[...new Set(result?.claimIds || [])];
     const chunkIds=[...new Set(result?.chunkIds || [])];
     const crawlGenerationId=result?.crawlGenerationId;
-    if (!entryIds.length && (!crawlGenerationId || !chunkIds.length)) return NextResponse.json({error:"Canonical factual evidence is unavailable."},{status:503,headers:responseHeaders});
+    if (!result?.sharedProof?.evidence.length && !entryIds.length && (!crawlGenerationId || !chunkIds.length)) return NextResponse.json({error:"Canonical factual evidence is unavailable."},{status:503,headers:responseHeaders});
     const conversation=await ensureWebsiteCanonicalConversation({propertyId:property.id,legacyLeadId:captured.lead.id,sessionHash:hashWebsiteVisitorValue(sessionId)});
     const tokenClaims=verifyWebsiteVisitorToken(visitorToken,slug);
     if (!tokenClaims) return NextResponse.json({error:"Canonical guest session could not be established."},{status:503,headers:responseHeaders});
-    canonicalDelivery=entryIds.length ? ()=>deliverCanonicalAnswer({
+    canonicalDelivery=result?.sharedProof ? ()=>recordDeliveredRagAnswer({
+      identity:{organizationId:organization.id,propertyId:property.id,principal:`public-bot:${slug}`,purpose:'PUBLIC_GUEST',guestSessionHash:hashWebsiteVisitorValue(sessionId)},
+      conversationId:conversation.id,sessionHash:hashWebsiteVisitorValue(sessionId),expiresAt:new Date(tokenClaims.exp*1000),
+      deliveryKey:`website:${evidence.id}`,question:message,answer,proof:result!.sharedProof!
+    }) : entryIds.length ? ()=>deliverCanonicalAnswer({
       identity:{organizationId:organization.id,propertyId:property.id,principal:`public-bot:${slug}`,purpose:"PUBLIC_GUEST",guestSessionHash:hashWebsiteVisitorValue(sessionId)},
       conversationId:conversation.id,
       sessionHash:hashWebsiteVisitorValue(sessionId),

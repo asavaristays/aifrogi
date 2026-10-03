@@ -19,7 +19,7 @@ test('reranker outage preserves tenant-scoped evidence and checks support once',
  assert.throws(()=>assertSharedAnswerDelivery(r,r.answer+' Extra promise.','org','tenant'));
 });
 test('unsupported generated claim is omitted while supported requested part remains',async()=>{
- const a=adapters();a.generate=async()=>({disposition:'ANSWER',sentences:[{text:'We develop iOS and Android applications.',kind:'FACT',evidenceIds:['source']},{text:'We deliver everything tomorrow.',kind:'FACT',evidenceIds:['source']}],missingParts:[]});a.verify=async()=>[{supported:true,evidenceIds:['source'],reason:'Explicit'},{supported:false,evidenceIds:[],reason:'Absent'}];
+ const a=adapters();a.generate=async()=>({disposition:'ANSWER',sentences:[{text:'We develop iOS and Android applications.',kind:'FACT',evidenceIds:['source']},{text:'We deliver everything tomorrow.',kind:'FACT',evidenceIds:['source']}],missingParts:[]});a.verify=async()=>[{supported:true,evidenceIds:['source'],reason:'Explicit'},{supported:false,evidenceIds:[],reason:'Absent',requestedPartMissing:'Delivery timeline'}];
  const r=await runSharedAnswer('Which platforms and delivery timeline?',a);assert.equal(r.disposition,'PARTIAL');assert.doesNotMatch(r.answer,/tomorrow/);assert.match(r.answer,/iOS/);
 });
 test('cross-tenant evidence and authority changes fail closed',async()=>{
@@ -36,4 +36,8 @@ test('formatting preference never rejects a long supported answer',async()=>{
 });
 test('support-service outage cannot emit an unverified generated answer',async()=>{
  const a=adapters();a.verify=async()=>{throw new Error('MODEL_HTTP_503')};const r=await runSharedAnswer('Application platforms?',a);assert.equal(r.disposition,'TECHNICAL_FAILURE');assert.equal(r.factualClaims.length,0);
+});
+test('supported factual sentences cannot bypass delivery through a NO_EVIDENCE label',async()=>{
+ const a=adapters();a.generate=async()=>({disposition:'NO_EVIDENCE',sentences:[{text:'We develop iOS and Android applications.',kind:'FACT',evidenceIds:['source']}],missingParts:[]});
+ const r=await runSharedAnswer('Application platforms?',a);assert.equal(r.disposition,'ANSWER');assert.equal(assertSharedAnswerDelivery(r,r.answer,'org','tenant').length,1);
 });

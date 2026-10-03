@@ -23,7 +23,7 @@ const matches = (row: any, where: any): boolean => Object.entries(where || {}).e
   return row[key] === value;
 });
 fixture.db = {
-  $queryRaw: async () => [{ acquired: !fixture.busy, organization_id: "org-a" }],
+  $queryRaw: async (query:any) => String(query?.text || query).includes('is_bot_factual_open') ? [{open:true}] : [{ acquired: !fixture.busy, organization_id: "org-a" }],
   demoSandbox: { findUnique: async ({ where }: any) => org.isDemo && where.organizationId === org.id ? { id: "sandbox-a", status: "READY" } : null },
   demoConnectorEvent: { upsert: async ({ where, create, update }: any) => { const key = where.demoSandboxId_idempotencyKey.idempotencyKey; const old = fixture.connectorEvents.get(key); const row = old ? { ...old, ...update } : create; fixture.connectorEvents.set(key, row); return row; } },
   $transaction: async (fn: any) => {
@@ -64,13 +64,13 @@ const adapters: Record<string, string> = {
   "@/lib/repositories/knowledge-content-repository": "export const recordKnowledgeGap=async()=>{};",
   "@/lib/repositories/bot-profile-repository": "export const getBotPersonaForPropertySlug=async()=>globalThis.__bucketOne.profile;",
   "@/lib/services/lead-service": "export const captureIncomingAiBotMessage=(x)=>globalThis.__bucketOne.capture(x);",
-  "@/generated/prisma/client": "export const Prisma={};",
+  "@/generated/prisma/client": "export const Prisma={sql:(strings,...values)=>({text:strings.join('?'),values})};export class PrismaClient {constructor(){throw Error('Unexpected real database in HTTP fixture')}};",
   "@/lib/subscription-access": "export const getOrganizationSubscriptionAccess=async()=>({canUsePaidActions:true});"
   ,"@/lib/billing-super-admin": "export const checkOrganizationEntitlement=async()=>({allowed:true,remaining:999});"
 };
 export let POST: any, GET: any, PATCH: any;
 test.before(async () => {
-const compiled = await build({ entryPoints: [path.resolve("app/api/public/website-bot/[slug]/route.ts")], bundle: true, write: false, platform: "node", format: "cjs", packages: "external", plugins: [{ name: "isolated-adapters", setup(b) {
+const compiled = await build({ entryPoints: [path.resolve("app/api/public/website-bot/[slug]/route.ts")], bundle: true, write: false, platform: "node", format: "cjs", packages: "external", define:{"import.meta.url":JSON.stringify(new URL("../../app/api/public/website-bot/[slug]/route.ts",import.meta.url).href)}, plugins: [{ name: "isolated-adapters", setup(b) {
   b.onResolve({ filter: /^@\// }, (args) => adapters[args.path] ? { path: args.path, namespace: "fixture" } : undefined);
   b.onLoad({ filter: /.*/, namespace: "fixture" }, (args) => ({ contents: adapters[args.path], loader: "js" }));
 } }] });
@@ -93,7 +93,7 @@ globalThis.fetch = async (_url, init) => {
   return Response.json({ output_text: fixture.modelAnswer });
 };
 const link = "https://fixture.example/training-booking/";
-export function claim(status = "PUBLISHED", extra = {}) { return { id: "claim-a", propertyId: "tenant-a", claimKey: "training", question: "How can I book training?", answer: `Book training at ${link}`, category: "Training", status, conflictStatus: "NONE", version: 1, expiresAt: null, effectiveAt: new Date(0), fieldApprovedBy: "owner", previewApprovedBy: "owner", ...extra }; }
+export function claim(status = "PUBLISHED", extra = {}) { return { id: "claim-a", propertyId: "tenant-a", claimKey: "training", question: "How can I book training?", answer: `Book training at ${link}`, category: "Training", status, conflictStatus: "NONE", version: 1, sealedAt: null, expiresAt: null, effectiveAt: new Date(0), fieldApprovedBy: "owner", previewApprovedBy: "owner", ...extra }; }
 let counter = 0;
 export function session() {
   const sessionId = `case-${++counter}`; let visitorToken: string | undefined;

@@ -7,6 +7,7 @@ export type ConnectorAuthType = typeof CONNECTOR_AUTH_TYPES[number];
 
 export type ConnectorOperationMapping = {
   health?: string;
+  catalog?: string;
   availability?: string;
   quote?: string;
   create?: string;
@@ -34,7 +35,7 @@ export function parseConnectorApiConfiguration(input: { apiBaseUrl?: string | nu
   if (!CONNECTOR_AUTH_TYPES.includes(authType)) throw new Error("Select a supported API authentication method.");
   const source = input.operationMapping || {};
   const operationMapping: ConnectorOperationMapping = {
-    health: safePath(source.health) || "/health",
+    health: safePath(source.health) || "/health", catalog:safePath(source.catalog),
     availability: safePath(source.availability), quote: safePath(source.quote), create: safePath(source.create), status: safePath(source.status), cancel: safePath(source.cancel), paymentVerification: safePath(source.paymentVerification)
   };
   return { apiBaseUrl: url.toString().replace(/\/$/, ""), authType, operationMapping };

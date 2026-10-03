@@ -9,7 +9,7 @@ let api: any;
 test.before(async () => {
   const stubs: Record<string, string> = {
     "@/lib/db": "export const getDb=()=>globalThis.__b2worker.db;",
-    "../generated/prisma/client": "export const Prisma={};",
+    "../generated/prisma/client": "export const Prisma={};export class PrismaClient {constructor(){throw Error('Unexpected real database in worker fixture')}};",
     "@/lib/website-handover-notifications": "export const WEBSITE_HANDOVER_EMAIL='WEBSITE_HANDOVER_EMAIL';export const deliverWebsiteHandoverNotification=async()=>{globalThis.__b2worker.sent++;return {smtpAccepted:true,inboxReceiptVerified:false};};",
     "@/lib/services/whatsapp-service": "export const sendWhatsAppTemplateMessage=async()=>{throw Error('Outside test scope')};",
     "@/lib/repositories/campaign-repository": "export const finalizeCampaignRun=async()=>{};export const recordCampaignRecipientResult=async()=>{};",

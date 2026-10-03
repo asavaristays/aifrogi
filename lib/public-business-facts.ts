@@ -1,3 +1,4 @@
+import {normalizeRagQuestion} from './rag-query-normalization';
 import type { AnswerDraft, AnswerEvidence } from './shared-answer-engine';
 
 export type PublicFactField = 'phone' | 'email' | 'address' | 'hours';
@@ -8,7 +9,7 @@ export type PublicBusinessFact = { field: PublicFactField; value: string; eviden
 export function currentQuestion(question:string) { return question.split(/(?:CURRENT visitor question:|Follow-up question:)\s*/i).at(-1) || question; }
 
 export function requestedPublicFactFields(question: string): PublicFactField[] {
-  question=currentQuestion(question);
+  question=normalizeRagQuestion(currentQuestion(question));
   const fields: PublicFactField[] = [];
   if (/\b(?:phone|telephone|mobile|whatsapp|contact num(?:ber|br)|call you|call them)\b|फोन|मोबाइल/iu.test(question)) fields.push('phone');
   if (/\b(?:email|e-mail)\b/iu.test(question)) fields.push('email');
@@ -45,7 +46,7 @@ export function extractPublicBusinessFacts(evidence: AnswerEvidence[]): PublicBu
     else facts.set(key, { field, value, evidenceIds: [id] });
   };
   for (const unit of evidence) {
-    if (!/\b(?:contact|address|location|telephone|phone|whatsapp|email|PostalAddress|opening hours|operates from|registered office)\b/i.test(`${unit.title} ${unit.url} ${unit.content}`)) continue;
+    if (!/\b(?:contact|address|location|telephone|phone|whatsapp|email|PostalAddress|opening hours|operates from|registered office)\b|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(`${unit.title} ${unit.url} ${unit.content}`)) continue;
     // Prefer explicit labels. This supports international coordinates without
     // interpreting postal codes, prices or account numbers as contact details.
     for (const m of unit.content.matchAll(/\b(?:phone|telephone|mobile|whatsapp(?: us)?|tel)\s*(?:[:：]\s*|\s+)(\+?\d[\d ()-]{5,24}\d)/gi)) {
@@ -61,7 +62,11 @@ export function extractPublicBusinessFacts(evidence: AnswerEvidence[]): PublicBu
     for (const m of unit.content.matchAll(/\bPostalAddress\s+(.{8,240}?\b\d{6})(?=\s+IN\b|$)/gi)) add('address', m[1], unit.id);
     for (const m of unit.content.matchAll(/\b(?:opening hours|business hours|office hours|timings)\s*[:：]\s*([^\n]{3,120})/gi)) add('hours', m[1], unit.id);
   }
-  return [...facts.values()].map(f => ({ ...f, evidenceIds: [...new Set(f.evidenceIds)] }));
+  const all=[...facts.values()];
+  const rank=(fact:PublicBusinessFact)=>Math.min(...fact.evidenceIds.map(id=>evidence.find(e=>e.id===id)?.authorityRank??100));
+  const strongest=new Map<PublicFactField,number>();
+  for(const fact of all) strongest.set(fact.field,Math.min(strongest.get(fact.field)??100,rank(fact)));
+  return all.filter(f=>rank(f)===strongest.get(f.field)).map(f => ({ ...f, evidenceIds: [...new Set(f.evidenceIds)] }));
 }
 
 export function composePublicFactDraft(question: string, evidence: AnswerEvidence[]): AnswerDraft | null {

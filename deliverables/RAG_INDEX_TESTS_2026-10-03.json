@@ -1,0 +1,65 @@
+{
+  "mode": "real OpenAI derived embeddings; isolated copy of approved public content",
+  "first": {
+    "indexed": 0,
+    "inputTokens": 0,
+    "continuationQueued": false
+  },
+  "second": {
+    "indexed": 0,
+    "inputTokens": 0,
+    "continuationQueued": false
+  },
+  "paraphraseRetrieval": [
+    {
+      "entryId": "webtechnosys-excel-row-60",
+      "score": 0.5246453341541011
+    },
+    {
+      "entryId": "webtechnosys-excel-row-61",
+      "score": 0.45366145080997444
+    },
+    {
+      "entryId": "webtechnosys-excel-row-58",
+      "score": 0.41891287485535317
+    },
+    {
+      "entryId": "webtechnosys-excel-row-59",
+      "score": 0.39861006226716866
+    },
+    {
+      "entryId": "webtechnosys-excel-row-55",
+      "score": 0.3847789961776481
+    },
+    {
+      "entryId": "webtechnosys-excel-row-32",
+      "score": 0.38420974903302313
+    },
+    {
+      "entryId": "webtechnosys-excel-row-15",
+      "score": 0.3609573741475945
+    },
+    {
+      "entryId": "webtechnosys-excel-row-3",
+      "score": 0.34482203326092103
+    },
+    {
+      "entryId": "webtechnosys-excel-row-33",
+      "score": 0.34347396863841634
+    },
+    {
+      "entryId": "webtechnosys-excel-row-21",
+      "score": 0.33778194251308363
+    },
+    {
+      "entryId": "webtechnosys-excel-row-19",
+      "score": 0.3376488364333389
+    },
+    {
+      "entryId": "webtechnosys-excel-row-56",
+      "score": 0.33650924551823913
+    }
+  ],
+  "elapsedMs": 2078,
+  "passed": true
+}

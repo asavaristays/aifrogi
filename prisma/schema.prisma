@@ -1306,6 +1306,7 @@ model KnowledgeDocument {
   mimeType        String
   sizeBytes       Int
   content         Bytes
+  contentHash     String?
   extractedText   String           @db.Text
   status          String           @default("PENDING")
   conflictSummary String?          @db.Text
@@ -1316,6 +1317,7 @@ model KnowledgeDocument {
   updatedAt       DateTime         @updatedAt
   entries         KnowledgeEntry[]
 
+  @@unique([propertyId, mimeType, contentHash])
   @@index([propertyId, status])
 }
 

@@ -1,0 +1,65 @@
+{
+  "mode": "isolated PostgreSQL; synthetic approval fixture",
+  "results": [
+    {
+      "case": "document-only publication is ready without a crawl",
+      "passed": true,
+      "elapsedMs": 24
+    },
+    {
+      "case": "lexical retrieval reads only current published claim",
+      "passed": true,
+      "elapsedMs": 13
+    },
+    {
+      "case": "wrong tenant context is denied",
+      "passed": true,
+      "elapsedMs": 0
+    },
+    {
+      "case": "runtime roles cannot read raw index or receipts",
+      "passed": true,
+      "elapsedMs": 3
+    },
+    {
+      "case": "derived semantic index is idempotent and supports retrieval",
+      "passed": true,
+      "elapsedMs": 65
+    },
+    {
+      "case": "grounded paraphrase receipt binds exact evidence and is idempotent",
+      "passed": true,
+      "elapsedMs": 88
+    },
+    {
+      "case": "index-only worker cannot capture or publish knowledge",
+      "passed": true,
+      "elapsedMs": 1
+    },
+    {
+      "case": "owner publication rejects an entry lacking preview approval",
+      "passed": true,
+      "elapsedMs": 4
+    },
+    {
+      "case": "publication index queue deduplicates repeated requests",
+      "passed": true,
+      "elapsedMs": 2
+    },
+    {
+      "case": "source revocation invalidates retrieval, index and previous snapshot",
+      "passed": true,
+      "elapsedMs": 23
+    },
+    {
+      "case": "approved replacement publishes without mutating its sealed predecessor",
+      "passed": true,
+      "elapsedMs": 48
+    },
+    {
+      "case": "unchanged publication is idempotent and retains one stable owner source",
+      "passed": true,
+      "elapsedMs": 2
+    }
+  ]
+}

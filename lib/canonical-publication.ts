@@ -15,10 +15,12 @@ export async function publishCurrentOwnerApprovedKnowledge(input:{
 }) {
   const db=getDb();
   if(!db) throw new Error("Database unavailable.");
-  const entries=await db.knowledgeEntry.findMany({
-    where:{propertyId:input.propertyId,status:"PUBLISHED",previewApprovedAt:{not:null},previewApprovedBy:{not:null},conflictStatus:"CLEAR",OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]},
-    select:{id:true,previewApprovedBy:true},orderBy:{id:"asc"}
+  const candidates=await db.knowledgeEntry.findMany({
+    where:{propertyId:input.propertyId,status:"PUBLISHED",previewApprovedAt:{not:null},previewApprovedBy:{not:null},conflictStatus:"CLEAR",revisionEvents:{none:{eventType:{in:["SUPERSEDED","WITHDRAWN"]}}},AND:[{OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]},{OR:[{effectiveAt:null},{effectiveAt:{lte:new Date()}}]}]},
+    select:{id:true,previewApprovedBy:true,supersedesId:true},orderBy:{id:"asc"}
   });
+  const replaced=new Set(candidates.flatMap(entry=>entry.supersedesId?[entry.supersedesId]:[]));
+  const entries=candidates.filter(entry=>!replaced.has(entry.id));
   if(!entries.length) throw new Error("No current owner-approved knowledge is available for canonical publication.");
   const approvers=[...new Set(entries.map(entry=>entry.previewApprovedBy!.trim().toLowerCase()))];
   if(approvers.length!==1) throw new Error("Canonical publication requires one accountable owner approval identity.");

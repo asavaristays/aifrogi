@@ -1,0 +1,17 @@
+import {Pool} from 'pg';import {readFile} from 'node:fs/promises';import {createHash} from 'node:crypto';
+const url=process.env.RAG_TEST_DATABASE_URL!;if(!url||!['localhost','127.0.0.1'].includes(new URL(url).hostname)||new URL(url).pathname!=='/rag_candidate')throw new Error('ISOLATED_TEST_DATABASE_REQUIRED');
+const pool=new Pool({connectionString:url,max:1});const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
+async function main(){const rows=JSON.parse(await readFile(process.env.RAG_TEST_CLAIM_FILE!,'utf8')) as Array<{id:string;question:string;answer:string;category:string;fieldKey:string;entityKey:string}>;if(!Array.isArray(rows)||!rows.length)throw new Error('PUBLIC_CLAIM_COPY_EMPTY');
+ await pool.query('BEGIN');
+ await pool.query(`INSERT INTO "KnowledgePublication"(id,"propertyId",audience,"manifestHash","policyVersion","evidencePolicyVersion","approvalId") VALUES('rag-publication','delivery-property','PUBLIC','isolated-public-claim-copy','v1','v1','delivery-approval')`);
+ for(const r of rows){const ci='rag-identity:'+r.id;const ev='rag-evidence:'+r.id;const seal=hash(r.question+'\n'+r.answer);
+ await pool.query(`INSERT INTO "KnowledgeClaimIdentity"(id,"propertyId","stableKey","entityKey","fieldKey",qualifiers,"keyVersion") VALUES($1,'delivery-property',$2,$3,$4,'{}',1)`,[ci,r.id,r.entityKey,r.fieldKey]);
+ await pool.query(`INSERT INTO "KnowledgeEntry"(id,"propertyId",question,answer,category,status,"createdBy","updatedAt","claimIdentityId","revisionNumber","normalizedValue","valueHash","quoteText",audience,"verificationStatus","revisionState","requiredComponents","sealManifestHash","sealPolicyVersion","sealedAt","sealedBy") VALUES($1,'delivery-property',$2,$3,$4,'PUBLISHED','authorised-public-test-copy',clock_timestamp(),$5,1,$6::jsonb,$7,$3,'PUBLIC','SUPPORTED','DRAFT',ARRAY['answer'],$8,'v1',NULL,'isolated-test-copy')`,[r.id,r.question,r.answer,r.category,ci,JSON.stringify({answer:r.answer}),hash(r.answer),seal]);
+ await pool.query(`INSERT INTO "KnowledgeClaimEvidence"(id,"propertyId","entryId","captureVersionId",locator,"locatorHash",quotation,"quotationHash","supportedComponents","bindingHash") VALUES($1,'delivery-property',$2,'delivery-capture-version',$3::jsonb,$4,$5,$6,ARRAY['answer'],$4)`,[ev,r.id,JSON.stringify({originalPublicClaim:r.id}),hash(ev),r.answer,hash(r.answer)]);
+ await pool.query(`INSERT INTO "KnowledgeRevisionEvidenceBinding"(id,"propertyId","entryId","evidenceId","bindingHash") VALUES($1,'delivery-property',$2,$3,$4)`,['rag-binding:'+r.id,r.id,ev,hash(ev)]);
+ await pool.query(`UPDATE "KnowledgeEntry" SET "revisionState"='SEALED',"sealedAt"=clock_timestamp() WHERE id=$1`,[r.id]);
+ await pool.query(`INSERT INTO "KnowledgePublicationClaim"(id,"propertyId","publicationId","claimIdentityId","entryId","sealManifestHash") VALUES($1,'delivery-property','rag-publication',$2,$3,$4)`,['rag-member:'+r.id,ci,r.id,seal]);}
+ await pool.query(`UPDATE "KnowledgePublication" SET state='SEALED',"sealedAt"=clock_timestamp(),"membershipClosedAt"=clock_timestamp() WHERE id='rag-publication'`);
+ await pool.query(`UPDATE "KnowledgeServingPointer" SET "publicationId"='rag-publication',"pointerGeneration"="pointerGeneration"+1 WHERE "propertyId"='delivery-property'`);
+ await pool.query('COMMIT');console.log(JSON.stringify({mode:'isolated copy of current public approved claims; no added FAQs',claims:rows.length}));}
+main().catch(async e=>{await pool.query('ROLLBACK');console.error(String(e));process.exitCode=1;}).finally(()=>pool.end());

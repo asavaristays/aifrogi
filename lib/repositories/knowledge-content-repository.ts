@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import { getDb } from "@/lib/db";
 import { redactBeforePersistence } from "@/lib/pre-persistence-redaction";
 
@@ -50,7 +51,8 @@ export async function detectDocumentConflict(propertyId: string, text: string) {
 export async function createKnowledgeDocument(input: { propertyId: string; fileName: string; mimeType: string; sizeBytes: number; content: Uint8Array<ArrayBuffer>; extractedText: string; uploadedBy: string; conflictSummary?: string | null }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
-  return db.knowledgeDocument.create({ data: { ...input, extractedText: redactBeforePersistence(input.extractedText).redacted, status: input.conflictSummary ? "CONFLICT" : "PENDING" }, select: { id: true, fileName: true, mimeType: true, sizeBytes: true, status: true, conflictSummary: true, uploadedBy: true, createdAt: true } });
+  const contentHash=createHash('sha256').update(input.content).digest('hex');
+  return db.knowledgeDocument.upsert({where:{propertyId_mimeType_contentHash:{propertyId:input.propertyId,mimeType:input.mimeType,contentHash}},update:{},create: { ...input, contentHash, extractedText: redactBeforePersistence(input.extractedText).redacted, status: input.conflictSummary ? "CONFLICT" : "PENDING" }, select: { id: true, fileName: true, mimeType: true, sizeBytes: true, status: true, conflictSummary: true, uploadedBy: true, createdAt: true } });
 }
 
 export async function reviewKnowledgeDocument(input: { propertyId: string; id: string; action: "APPROVE" | "REJECT" | "DELETE"; actorEmail: string; confirmConflict?: boolean }) {
@@ -58,7 +60,7 @@ export async function reviewKnowledgeDocument(input: { propertyId: string; id: s
   if (!db) throw new Error("Database unavailable.");
   const document = await db.knowledgeDocument.findFirst({ where: { id: input.id, propertyId: input.propertyId } });
   if (!document) throw new Error("Knowledge document not found.");
-  if (input.action === "DELETE") return db.knowledgeDocument.delete({ where: { id: document.id } });
+  if (input.action === "DELETE") return db.knowledgeDocument.update({where:{id:document.id},data:{status:"ARCHIVED",approvedBy:null,approvedAt:null}});
   if (input.action === "APPROVE" && document.conflictSummary && !input.confirmConflict) throw new Error("Review and confirm the detected conflict before approval.");
   return db.knowledgeDocument.update({ where: { id: document.id }, data: { status: input.action === "APPROVE" ? "APPROVED" : "REJECTED", approvedBy: input.action === "APPROVE" ? input.actorEmail : null, approvedAt: input.action === "APPROVE" ? new Date() : null } });
 }

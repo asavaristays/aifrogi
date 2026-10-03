@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/db";
+import { getDb, withDatabaseTransaction } from "@/lib/db";
 import { trialEssentialCoverage, hasSafeKnowledge } from "@/lib/trial-readiness";
 import { scoreRetrievalCandidate, type RetrievalCandidate } from "@/lib/sovereign-intelligence/evidence-pipeline";
 import { calculateCoverage, KB_FRAMEWORK_VERSION, KB_MINIMUM_COVERAGE, validateAtomicClaim } from "@/lib/knowledge-verification";
@@ -9,7 +9,7 @@ export async function expirePublishedClaims(propertyId?: string) {
   const db = getDb();
   if (!db) return 0;
   const result = await db.knowledgeEntry.updateMany({
-    where: { ...(propertyId ? { propertyId } : {}), status: "PUBLISHED", expiresAt: { lte: new Date() } },
+    where: { ...(propertyId ? { propertyId } : {}), sealedAt: null, status: "PUBLISHED", expiresAt: { lte: new Date() } },
     data: { status: "EXPIRED", pausedAt: new Date(), pauseReason: "Validity period expired; client re-confirmation is required." }
   });
   return result.count;
@@ -27,7 +27,7 @@ export async function createAtomicClaim(input: { propertyId: string; question: s
   const conflictSummary = existingConflict ? `Conflicts with active claim version ${existingConflict.version}. Resolve by explicitly superseding that version.` : null;
     if (conflictSummary) {
       await tx.knowledgeEntry.updateMany({
-        where: { propertyId: input.propertyId, claimKey: validation.claimKey, status: { in: ["PUBLISHED", "APPROVED", "FIELD_APPROVED", "PREVIEW_PENDING"] } },
+        where: { propertyId: input.propertyId, sealedAt: null, claimKey: validation.claimKey, status: { in: ["PUBLISHED", "APPROVED", "FIELD_APPROVED", "PREVIEW_PENDING"] } },
         data: { status: "PAUSED", conflictStatus: "UNRESOLVED", pausedAt: new Date(), pauseReason: "Claim family suppressed because a conflicting version requires authorised review." }
       });
     }
@@ -48,11 +48,14 @@ export async function stageDocumentAtomicClaims(input: { propertyId: string; doc
   if (!db) throw new Error("Database unavailable.");
   const document = await db.knowledgeDocument.findFirst({ where: { id: input.documentId, propertyId: input.propertyId }, select: { id: true } });
   if (!document) throw new Error("Trusted source document not found in this workspace.");
-  const existing = await db.knowledgeEntry.count({ where: { documentId: document.id } });
-  if (existing) throw new Error("This source has already been structured. Review its existing staged claims.");
+  return db.$transaction(tx=>withDatabaseTransaction(tx,async()=>{
+  await db.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`document-stage:${input.propertyId}:${input.documentId}`},0))`;
+  const existing = await getDb()!.knowledgeEntry.count({ where: { documentId: document.id } });
+  if (existing) return getDb()!.knowledgeEntry.findMany({where:{propertyId:input.propertyId,documentId:document.id},orderBy:{createdAt:"asc"}});
   const entries = [];
   for (const claim of input.claims.slice(0, 100)) entries.push(await createAtomicClaim({ ...claim, propertyId: input.propertyId, documentId: document.id, createdBy: input.createdBy }));
   return entries;
+  }));
 }
 
 export async function fieldApproveClaim(input: { propertyId: string; entryId: string; actorEmail: string; supersedesId?: string }) {
@@ -110,10 +113,12 @@ export async function reviewClaimPreview(input: { propertyId: string; previewId:
     if (supersedesId) {
       const prior=await tx.knowledgeEntry.findFirst({where:{id:supersedesId,propertyId:input.propertyId,claimKey:preview.entry.claimKey}});
       if(!prior||prior.id===preview.entryId||prior.version>=preview.entry.version)throw new Error('Superseded version is invalid.');
-      await tx.knowledgeEntry.update({ where: { id: prior.id }, data: { status: "SUPERSEDED", conflictStatus:'CLEAR', pausedAt: new Date(), pauseReason: `Superseded by claim version ${preview.entry.version}.` } });
+      // Sealed revisions remain immutable. The publication transaction records
+      // their supersession together with the new serving pointer.
+      if (!prior.sealedAt) await tx.knowledgeEntry.update({ where: { id: prior.id }, data: { status: "SUPERSEDED", conflictStatus:'CLEAR', pausedAt: new Date(), pauseReason: `Superseded by claim version ${preview.entry.version}.` } });
       if (preview.entry.supersedesId !== supersedesId) await tx.knowledgeEntry.update({ where: { id: preview.entryId }, data: { supersedesId } });
     }
-    const competing=await tx.knowledgeEntry.count({where:{propertyId:input.propertyId,claimKey:preview.entry.claimKey,id:{not:preview.entryId},OR:[{status:'PUBLISHED'},{conflictStatus:'UNRESOLVED',status:{notIn:['SUPERSEDED','REJECTED']}}]}});
+    const competing=await tx.knowledgeEntry.count({where:{propertyId:input.propertyId,claimKey:preview.entry.claimKey,id:{notIn:[preview.entryId,...(supersedesId?[supersedesId]:[])]},revisionEvents:{none:{eventType:{in:['SUPERSEDED','WITHDRAWN']}}},OR:[{status:'PUBLISHED'},{conflictStatus:'UNRESOLVED',status:{notIn:['SUPERSEDED','REJECTED']}}]}});
     if(competing)throw new Error('Another active or unresolved version exists. Resolve the claim family before publishing.');
     const staleSiblings = await tx.knowledgeEntry.findMany({ where: { propertyId: input.propertyId, claimKey: preview.entry.claimKey, id: { not: preview.entryId }, status: { in: ["VALIDATED", "FIELD_APPROVED", "PREVIEW_PENDING", "CONFLICT", "INVALID"] } }, select: { id: true } });
     const staleIds = staleSiblings.map((item) => item.id);
@@ -132,6 +137,11 @@ export async function reviewClaimPreview(input: { propertyId: string; previewId:
 export async function pauseClaim(input: { propertyId: string; entryId: string; actorEmail: string; reason: string }) {
   const db = getDb();
   if (!db) throw new Error("Database unavailable.");
+  const entry=await db.knowledgeEntry.findFirst({where:{id:input.entryId,propertyId:input.propertyId},select:{sealedAt:true}});
+  if(entry?.sealedAt) {
+    await db.$executeRaw`SELECT aifrogi_security.withdraw_rag_claim(${input.propertyId},${input.entryId},${input.actorEmail},${input.reason})`;
+    return {paused:true,actorEmail:input.actorEmail};
+  }
   const result = await db.knowledgeEntry.updateMany({ where: { id: input.entryId, propertyId: input.propertyId }, data: { status: "PAUSED", pausedAt: new Date(), pauseReason: input.reason.slice(0, 1000) } });
   if (!result.count) throw new Error("Knowledge claim not found.");
   return { paused: true, actorEmail: input.actorEmail };
@@ -142,7 +152,7 @@ export async function editKnowledgeClaim(input: { propertyId: string; entryId: s
   if (!db) throw new Error("Database unavailable.");
   const current = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!current) throw new Error("Knowledge claim not found.");
-  if (current.status === "SUPERSEDED") throw new Error("A superseded answer cannot be edited. Edit the current version instead.");
+  if (current.status === "SUPERSEDED" || await db.knowledgeRevisionEvent.count({where:{propertyId:input.propertyId,entryId:current.id,eventType:"SUPERSEDED"}})) throw new Error("A superseded answer cannot be edited. Edit the current version instead.");
   const validation = validateAtomicClaim({ question: input.question, answer: input.answer, category: input.category });
   if (!validation.valid) throw new Error(`Please correct: ${validation.errors.join(", ")}`);
   const wasApproved = Boolean(current.fieldApprovedAt || current.previewApprovedAt || current.publishedAt || ["FIELD_APPROVED", "PREVIEW_PENDING", "PUBLISHED", "APPROVED"].includes(current.status));
@@ -189,7 +199,7 @@ export async function retireKnowledgeClaim(input: { propertyId: string; entryId:
     await deleteUnpublishedClaim({ propertyId: input.propertyId, entryId: entry.id });
     return { retired: true, retainedForAudit: false };
   }
-  await db.knowledgeEntry.update({ where: { id: entry.id }, data: { status: "PAUSED", pausedAt: new Date(), pauseReason: "Removed from bot use by Client Admin; audit history retained." } });
+  await pauseClaim({propertyId:input.propertyId,entryId:entry.id,actorEmail:input.actorEmail,reason:"Removed from bot use by Client Admin; audit history retained."});
   return { retired: true, retainedForAudit: true, actorEmail: input.actorEmail };
 }
 
@@ -215,9 +225,17 @@ export async function reconfirmClaim(input: { propertyId: string; entryId: strin
   if (!db) throw new Error("Database unavailable.");
   const entry = await db.knowledgeEntry.findFirst({ where: { id: input.entryId, propertyId: input.propertyId } });
   if (!entry || !entry.previewApprovedAt) throw new Error("Preview approval is required before re-confirmation.");
+
   if(entry.status==='SUPERSEDED'||await db.knowledgeEntry.count({where:{propertyId:input.propertyId,supersedesId:entry.id,status:'PUBLISHED'}}))throw new Error('A superseded version cannot be reconfirmed. Create and approve a new version.');
   const openFlags = await db.knowledgeAnswerFlag.count({ where: { entryId: entry.id, status: { in: ["OPEN", "ACKNOWLEDGED"] } } });
   if (openFlags || entry.conflictStatus !== "CLEAR") throw new Error("Resolve open flags and conflicts before re-confirming this claim.");
+  if(entry.sealedAt) {
+    const edited=await editKnowledgeClaim({propertyId:input.propertyId,entryId:entry.id,question:entry.question,answer:entry.answer,category:entry.category,actorEmail:input.actorEmail});
+    await fieldApproveClaim({propertyId:input.propertyId,entryId:edited.entry.id,actorEmail:input.actorEmail,supersedesId:entry.id});
+    const preview=await generateClaimPreview({propertyId:input.propertyId,entryId:edited.entry.id});
+    await reviewClaimPreview({propertyId:input.propertyId,previewId:preview.id,actorEmail:input.actorEmail,approve:true});
+    return getDb()!.knowledgeEntry.findUniqueOrThrow({where:{id:edited.entry.id}});
+  }
   const regression = runKnowledgePublicationGate({ question: entry.question, answer: entry.answer, category: entry.category, claimType: entry.claimType, valueType: entry.valueType, currency: entry.currency, effectiveAt: entry.effectiveAt, expiresAt: entry.expiresAt, refreshDays: entry.refreshDays });
   if (!regression.passed) throw new Error(`Publication regression gate failed: ${regression.failures.join(", ")}`);
   const now = new Date();
@@ -239,7 +257,7 @@ export async function flagKnowledgeAnswer(input: { propertyId: string; entryId?:
     if (!property) throw new Error("Knowledge workspace not found.");
     const organizationId = property.organizationId;
     if (!organizationId) throw new Error("Knowledge workspace is not attached to an organization.");
-    if (input.entryId) await tx.knowledgeEntry.updateMany({ where: { id: input.entryId, propertyId: input.propertyId, status: { in: ["PUBLISHED", "APPROVED"] } }, data: { status: "PAUSED", pausedAt: new Date(), pauseReason: "Answer flagged for review." } });
+    if (input.entryId) await tx.knowledgeEntry.updateMany({ where: { id: input.entryId, propertyId: input.propertyId, sealedAt:null, status: { in: ["PUBLISHED", "APPROVED"] } }, data: { status: "PAUSED", pausedAt: new Date(), pauseReason: "Answer flagged for review." } });
     const flag = await tx.knowledgeAnswerFlag.create({ data: { propertyId: input.propertyId, entryId: input.entryId || null, evidenceId: input.evidenceId || null, reporterType: input.reporterType, reporterId: input.reporterId || null, reason: input.reason.trim().slice(0, 2000), acknowledgeDueAt: new Date(Date.now() + 2 * 3600000), resolveDueAt: new Date(Date.now() + 24 * 3600000) } });
     await tx.supportTicket.create({ data: { organizationId, reference: `KBF-${flag.id}`, subject: `Knowledge flag ${flag.id}`, category: "KNOWLEDGE_ACCURACY", priority: "HIGH", description: `Incorrect-fact flag requires acknowledgment within two hours and resolution within 24 hours.\n\n${flag.reason}`, createdByEmail: input.reporterId || "system@aifrogi.com" } });
     await tx.onboardingActivity.create({ data: { organizationId, actorEmail: input.reporterId || "system@aifrogi.com", action: "KNOWLEDGE_FLAG_OPENED", detail: `Flag ${flag.id}; acknowledge by ${flag.acknowledgeDueAt.toISOString()}; resolve by ${flag.resolveDueAt.toISOString()}.` } });

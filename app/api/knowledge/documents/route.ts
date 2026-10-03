@@ -1,7 +1,8 @@
+import {activateReviewedRagKnowledge} from '@/lib/rag-owner-publication';
 import { NextResponse } from "next/server";
 import { resolveClientWorkspaceAccess } from "@/lib/client-access";
 import { getCurrentWorkspaceSlug } from "@/lib/workspace";
-import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { withTenantPropertyDatabaseContext } from "@/lib/security/tenant-database-context";
 import { createKnowledgeDocument, detectDocumentConflict, reviewKnowledgeDocument } from "@/lib/repositories/knowledge-content-repository";
 import { extractKnowledgeDocument, stageAtomicClaims } from "@/lib/services/knowledge-document-service";
 import { stageDocumentAtomicClaims } from "@/lib/repositories/knowledge-verification-repository";
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
   const file = formData.get("file");
   if (!(file instanceof File)) return NextResponse.json({ error: "Choose a knowledge document." }, { status: 400 });
   try {
-    const { document, stagedClaims } = await withTenantDatabaseContext({ kind: "tenant", organizationId: current.access.organization.id, actor: `knowledge-document-upload:${current.access.user.username}` }, async () => {
+    const { document, stagedClaims } = await withTenantPropertyDatabaseContext({ organizationId: current.access.organization.id, propertyId: current.property.id, actor: current.access.user.username }, async () => {
       const extracted = await extractKnowledgeDocument(file);
       const conflictSummary = await detectDocumentConflict(current.property.id, extracted.extractedText);
       const document = await createKnowledgeDocument({ propertyId: current.property.id, fileName: file.name.replace(/[\r\n]/g, " ").slice(0, 180), mimeType: file.type, sizeBytes: file.size, content: extracted.content, extractedText: extracted.extractedText, uploadedBy: current.access.user.username, conflictSummary });
@@ -37,8 +38,9 @@ export async function PATCH(request: Request) {
   if (!current) return NextResponse.json({ error: "Client Admin access is required." }, { status: 403 });
   const payload = await request.json().catch(() => null) as { id?: string; action?: "APPROVE" | "REJECT" | "DELETE"; confirmConflict?: boolean } | null;
   try {
-    const document = await withTenantDatabaseContext({ kind: "tenant", organizationId: current.access.organization.id, actor: `knowledge-document-review:${current.access.user.username}` }, () => reviewKnowledgeDocument({ propertyId: current.property.id, id: payload?.id || "", action: payload?.action || "REJECT", actorEmail: current.access.user.username, confirmConflict: payload?.confirmConflict }));
-    return NextResponse.json({ ok: true, document });
+    const document = await withTenantPropertyDatabaseContext({ organizationId: current.access.organization.id, propertyId: current.property.id, actor: current.access.user.username }, () => reviewKnowledgeDocument({ propertyId: current.property.id, id: payload?.id || "", action: payload?.action || "REJECT", actorEmail: current.access.user.username, confirmConflict: payload?.confirmConflict }));
+    const publication=payload?.action === "APPROVE" ? await activateReviewedRagKnowledge({organizationId:current.access.organization.id,propertyId:current.property.id,actor:current.access.user.username}) : null;
+    return NextResponse.json({ ok: true, document, publication });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update this document." }, { status: 400 });
   }

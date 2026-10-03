@@ -70,5 +70,18 @@ test('follow-up contact request uses current question without treating history a
 });
 test('absence of a guarantee is not a negative guarantee policy',async()=>{
  const r=await runSharedAnswer('Do you guarantee a specific business outcome?',adapters([unit('We build software around measurable business outcomes.')]));
- assert.equal(r.disposition,'NO_EVIDENCE');assert.match(r.answer,/could not verify/i);assert.doesNotMatch(r.answer,/does not guarantee/i);
+ assert.equal(r.disposition,'NO_EVIDENCE');assert.match(r.answer,/cannot confirm/i);assert.doesNotMatch(r.answer,/does not guarantee/i);
+});
+
+test('missing information offers only an extracted permitted phone with a delivery proof',async()=>{
+ const phone=unit('Phone: +44 20 7946 0958','phone');
+ const a=adapters([unit('Support visits can be arranged.','support')]);
+ a.lexical=async(_scope,q)=>q==='phone number'?[phone]:[unit('Support visits can be arranged.','support')];
+ const r=await runSharedAnswer('What are your exact opening hours?',a);
+ assert.equal(r.disposition,'PARTIAL');assert.match(r.answer,/Phone: \+44 20 7946 0958/);assert.match(r.answer,/confirm: Exact opening hours/);assertSharedAnswerDelivery(r,r.answer,scope.organizationId,scope.propertyId);
+ assert.deepEqual(r.factualClaims,['Phone: +44 20 7946 0958']);
+});
+test('explicit email in a permitted passage needs no contact-page label',()=>{
+ const e={...unit('Questions may be sent to help@example.com.'),title:'Terms',url:'https://example.com/terms'};
+ assert.equal(composePublicFactDraft('Email address?',[e])?.sentences[0].text,'Email: help@example.com');
 });

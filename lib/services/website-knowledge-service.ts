@@ -1,6 +1,6 @@
 import { websiteNeedsRendering, renderApprovedWebsite } from '@/lib/rendered-website-crawl';
 import { sharedCrawlEnabled } from "@/lib/shared-crawl-mode";
-import { answerFromSharedCrawl, resolveSharedCrawlSource } from "@/lib/shared-answer-runtime";
+import { answerFromSharedKnowledge, resolveSharedCrawlSource } from "@/lib/shared-answer-runtime";
 import type { SharedAnswerResult } from "@/lib/shared-answer-engine";
 import { websiteBotClarification } from "@/lib/website-bot-conversation";
 import { mkdir, readFile, readdir, writeFile } from "fs/promises";
@@ -758,9 +758,9 @@ export async function buildWebsiteKnowledgeAnswer({
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
   const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], retrieval: emptyRetrieval(), reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
-  // An opted-in bot never falls through to manual entries, historical releases,
+  // A production bot never falls through to manual entries, historical releases,
   // profile facts or general model knowledge when retrieval fails.
-  if (business?.organizationId && sharedCrawlEnabled(business.id)) {
+  if (business?.organizationId && !evaluationMode) {
     const categoryBoundary = persona ? evaluateCategoryHardBoundary(persona.category, question) : null;
     if (categoryBoundary) return direct(categoryBoundary.answer, { ...resolved.decision, intent: "SENSITIVE", disposition: "ESCALATE", reason: `Hard category boundary ${categoryBoundary.code}.` });
     if (resolved.intent === "GREETING") return direct(buildWarmGreeting(question, assistantName, validTimeZone(visitorTimeZone, business?.timezone || "Asia/Kolkata")));
@@ -769,17 +769,17 @@ export async function buildWebsiteKnowledgeAnswer({
     if (resolved.intent === "SENSITIVE") return direct(`I can’t provide private customer, guest, owner, booking, credential or payment information. I can share ${businessName}’s public contact details or help with general business information.` , { ...resolved.decision, disposition: "REFUSE", reason: "Private-data and credential boundary enforced before public contact routing." });
     if (resolved.intent === "HUMAN_REQUEST") return direct(`I’ll keep this request for the ${businessName} team because it needs human attention. Please use the human-contact option and share your name, preferred callback time, and either an email address or mobile number with consent. Never share a password, OTP, or payment-card detail.`);
     const identity={organizationId:business.organizationId,propertyId:business.id,principal:`public-bot:${propertySlug}`,purpose:"PUBLIC_ANSWER"};
-    const proof = await answerFromSharedCrawl({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}`, purpose: "PUBLIC_ANSWER" }, resolved.retrievalQuestion);
+    const proof = await answerFromSharedKnowledge({ organizationId: business.organizationId, propertyId: business.id, principal: `public-bot:${propertySlug}`, purpose: "PUBLIC_ANSWER" }, resolved.retrievalQuestion);
     const factual = proof.disposition === "ANSWER" || proof.disposition === "PARTIAL";
     const disposition: SovereignDecision["disposition"] = factual ? "ANSWER" : proof.disposition === "LIVE_ACTION_REQUIRED" ? "ESCALATE" : proof.disposition === "TECHNICAL_FAILURE" ? "FALLBACK" : "CLARIFY";
-    const decision = { ...resolved.decision, disposition, reason: proof.failureCode || `Crawl-only ${proof.disposition}` };
-    const sourceUrls = [...new Set(proof.evidence.map(e => e.url))];
-    const crawlEvidence = proof.retrievedEvidence.filter(e => !e.id.startsWith("sheet:"));
-    const asOf = proof.capturedAt || new Date().toISOString();
+    const decision = { ...resolved.decision, disposition, reason: proof.failureCode || `Unified RAG ${proof.disposition}` };
+    const sourceUrls = [...new Set(proof.evidence.map(e => e.url).filter(Boolean))];
+    const crawlEvidence = proof.evidence.filter(e => e.sourceKind === "CRAWL");
+    const asOf = proof.capturedAt ?? "";
     return { answer: proof.answer, sharedProof: proof, sourceUrls,
-      sources: sourceUrls.map(url => { const item=proof.evidence.find(e => e.url === url)!; return { url, title:item.title, crawledAt:asOf, authority:item.id.startsWith("sheet:") ? "APPROVED_CLIENT_CORRECTION" as const : "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness:"CURRENT" as const }; }),
-      knowledgeAsOf: asOf, usedOpenAi: proof.modelUsage.inputTokens > 0, model: process.env.OPENAI_MODEL || "gpt-4.1-mini", decision, claimIds: [], retrieval: emptyRetrieval(), modelUsage: proof.modelUsage,
-      crawlGenerationId: crawlEvidence[0]?.generationId, chunkIds: crawlEvidence.map(e => e.id),
+      sources: sourceUrls.map(url => { const item=proof.evidence.find(e => e.url === url)!; return { url, title:item.title, crawledAt:asOf ?? "", authority:item.sourceKind === "CLAIM" ? "APPROVED_CLIENT_CORRECTION" as const : "APPROVED_FIRST_PARTY_WEBSITE" as const, freshness:"CURRENT" as const }; }),
+      knowledgeAsOf: asOf, usedOpenAi: proof.modelUsage.inputTokens > 0, model: process.env.OPENAI_MODEL || "gpt-4.1-mini", decision, claimIds: proof.evidence.filter(e=>e.sourceKind=== "CLAIM").map(e=>e.sourceId!), retrieval: emptyRetrieval(), modelUsage: proof.modelUsage,
+      crawlGenerationId: crawlEvidence[0]?.sourceVersion, chunkIds: crawlEvidence.map(e => e.sourceId!),
       materialEvidenceUnits: crawlEvidence.map(e => e.content),
       materialClaimDecisions: proof.factualClaims.map(claim => ({ claim, supported: true, matchedTerms: [], missingNumbers: [] })),
       replayTrace: { retrievalQuestion: resolved.retrievalQuestion, contextSourceUrls: sourceUrls, contextChars: proof.evidence.reduce((n,e) => n + e.content.length,0), finalAnswer: proof.answer, validatorViolations: proof.failureCode ? [proof.failureCode] : [], sharedEngine: proof.trace },

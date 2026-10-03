@@ -1014,6 +1014,7 @@ export const KnowledgeDocumentScalarFieldEnum = {
   mimeType: 'mimeType',
   sizeBytes: 'sizeBytes',
   content: 'content',
+  contentHash: 'contentHash',
   extractedText: 'extractedText',
   status: 'status',
   conflictSummary: 'conflictSummary',

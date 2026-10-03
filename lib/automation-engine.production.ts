@@ -1,3 +1,4 @@
+import {executeRagIndexJob} from '@/lib/rag-claim-index';
 import { getDb, withDatabaseIdentity } from "@/lib/db";
 import { Prisma, type AutomationJob } from "../generated/prisma/client";
 import { sendWhatsAppTemplateMessage } from "@/lib/services/whatsapp-service";
@@ -232,6 +233,10 @@ export async function cancelAutomationJob(jobId: string, reason: string) {
 }
 
 export async function executeAutomationJob(job: AutomationJob, options: { dryRun?: boolean } = {}) {
+  if(job.actionType==='RAG_CLAIM_INDEX') {
+    if(options.dryRun) return completeAutomationJob(job.id,{dryRun:true,index:'published-claims'});
+    return completeAutomationJob(job.id,await executeRagIndexJob(job.propertyId));
+  }
   if (job.actionType === BILLING_NOTIFICATION_EMAIL) {
     const payload = job.payload && typeof job.payload === "object" && !Array.isArray(job.payload) ? job.payload as Record<string, unknown> : {};
     if (options.dryRun) return completeAutomationJob(job.id, { dryRun: true, notification: "billing" });

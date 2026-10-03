@@ -41,6 +41,7 @@ export type KnowledgeDocumentMinAggregateOutputType = {
   mimeType: string | null
   sizeBytes: number | null
   content: runtime.Bytes | null
+  contentHash: string | null
   extractedText: string | null
   status: string | null
   conflictSummary: string | null
@@ -58,6 +59,7 @@ export type KnowledgeDocumentMaxAggregateOutputType = {
   mimeType: string | null
   sizeBytes: number | null
   content: runtime.Bytes | null
+  contentHash: string | null
   extractedText: string | null
   status: string | null
   conflictSummary: string | null
@@ -75,6 +77,7 @@ export type KnowledgeDocumentCountAggregateOutputType = {
   mimeType: number
   sizeBytes: number
   content: number
+  contentHash: number
   extractedText: number
   status: number
   conflictSummary: number
@@ -102,6 +105,7 @@ export type KnowledgeDocumentMinAggregateInputType = {
   mimeType?: true
   sizeBytes?: true
   content?: true
+  contentHash?: true
   extractedText?: true
   status?: true
   conflictSummary?: true
@@ -119,6 +123,7 @@ export type KnowledgeDocumentMaxAggregateInputType = {
   mimeType?: true
   sizeBytes?: true
   content?: true
+  contentHash?: true
   extractedText?: true
   status?: true
   conflictSummary?: true
@@ -136,6 +141,7 @@ export type KnowledgeDocumentCountAggregateInputType = {
   mimeType?: true
   sizeBytes?: true
   content?: true
+  contentHash?: true
   extractedText?: true
   status?: true
   conflictSummary?: true
@@ -240,6 +246,7 @@ export type KnowledgeDocumentGroupByOutputType = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash: string | null
   extractedText: string
   status: string
   conflictSummary: string | null
@@ -280,6 +287,7 @@ export type KnowledgeDocumentWhereInput = {
   mimeType?: Prisma.StringFilter<"KnowledgeDocument"> | string
   sizeBytes?: Prisma.IntFilter<"KnowledgeDocument"> | number
   content?: Prisma.BytesFilter<"KnowledgeDocument"> | runtime.Bytes
+  contentHash?: Prisma.StringNullableFilter<"KnowledgeDocument"> | string | null
   extractedText?: Prisma.StringFilter<"KnowledgeDocument"> | string
   status?: Prisma.StringFilter<"KnowledgeDocument"> | string
   conflictSummary?: Prisma.StringNullableFilter<"KnowledgeDocument"> | string | null
@@ -299,6 +307,7 @@ export type KnowledgeDocumentOrderByWithRelationInput = {
   mimeType?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrderInput | Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   status?: Prisma.SortOrder
   conflictSummary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -313,6 +322,7 @@ export type KnowledgeDocumentOrderByWithRelationInput = {
 
 export type KnowledgeDocumentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  propertyId_mimeType_contentHash?: Prisma.KnowledgeDocumentPropertyIdMimeTypeContentHashCompoundUniqueInput
   AND?: Prisma.KnowledgeDocumentWhereInput | Prisma.KnowledgeDocumentWhereInput[]
   OR?: Prisma.KnowledgeDocumentWhereInput[]
   NOT?: Prisma.KnowledgeDocumentWhereInput | Prisma.KnowledgeDocumentWhereInput[]
@@ -321,6 +331,7 @@ export type KnowledgeDocumentWhereUniqueInput = Prisma.AtLeast<{
   mimeType?: Prisma.StringFilter<"KnowledgeDocument"> | string
   sizeBytes?: Prisma.IntFilter<"KnowledgeDocument"> | number
   content?: Prisma.BytesFilter<"KnowledgeDocument"> | runtime.Bytes
+  contentHash?: Prisma.StringNullableFilter<"KnowledgeDocument"> | string | null
   extractedText?: Prisma.StringFilter<"KnowledgeDocument"> | string
   status?: Prisma.StringFilter<"KnowledgeDocument"> | string
   conflictSummary?: Prisma.StringNullableFilter<"KnowledgeDocument"> | string | null
@@ -331,7 +342,7 @@ export type KnowledgeDocumentWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"KnowledgeDocument"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
   entries?: Prisma.KnowledgeEntryListRelationFilter
-}, "id">
+}, "id" | "propertyId_mimeType_contentHash">
 
 export type KnowledgeDocumentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -340,6 +351,7 @@ export type KnowledgeDocumentOrderByWithAggregationInput = {
   mimeType?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrderInput | Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   status?: Prisma.SortOrder
   conflictSummary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -365,6 +377,7 @@ export type KnowledgeDocumentScalarWhereWithAggregatesInput = {
   mimeType?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
   sizeBytes?: Prisma.IntWithAggregatesFilter<"KnowledgeDocument"> | number
   content?: Prisma.BytesWithAggregatesFilter<"KnowledgeDocument"> | runtime.Bytes
+  contentHash?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeDocument"> | string | null
   extractedText?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
   status?: Prisma.StringWithAggregatesFilter<"KnowledgeDocument"> | string
   conflictSummary?: Prisma.StringNullableWithAggregatesFilter<"KnowledgeDocument"> | string | null
@@ -381,6 +394,7 @@ export type KnowledgeDocumentCreateInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -400,6 +414,7 @@ export type KnowledgeDocumentUncheckedCreateInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -417,6 +432,7 @@ export type KnowledgeDocumentUpdateInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -436,6 +452,7 @@ export type KnowledgeDocumentUncheckedUpdateInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -454,6 +471,7 @@ export type KnowledgeDocumentCreateManyInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -470,6 +488,7 @@ export type KnowledgeDocumentUpdateManyMutationInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -487,6 +506,7 @@ export type KnowledgeDocumentUncheckedUpdateManyInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -507,6 +527,12 @@ export type KnowledgeDocumentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type KnowledgeDocumentPropertyIdMimeTypeContentHashCompoundUniqueInput = {
+  propertyId: string
+  mimeType: string
+  contentHash: string
+}
+
 export type KnowledgeDocumentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
@@ -514,6 +540,7 @@ export type KnowledgeDocumentCountOrderByAggregateInput = {
   mimeType?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   status?: Prisma.SortOrder
   conflictSummary?: Prisma.SortOrder
@@ -535,6 +562,7 @@ export type KnowledgeDocumentMaxOrderByAggregateInput = {
   mimeType?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   status?: Prisma.SortOrder
   conflictSummary?: Prisma.SortOrder
@@ -552,6 +580,7 @@ export type KnowledgeDocumentMinOrderByAggregateInput = {
   mimeType?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  contentHash?: Prisma.SortOrder
   extractedText?: Prisma.SortOrder
   status?: Prisma.SortOrder
   conflictSummary?: Prisma.SortOrder
@@ -639,6 +668,7 @@ export type KnowledgeDocumentCreateWithoutPropertyInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -656,6 +686,7 @@ export type KnowledgeDocumentUncheckedCreateWithoutPropertyInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -703,6 +734,7 @@ export type KnowledgeDocumentScalarWhereInput = {
   mimeType?: Prisma.StringFilter<"KnowledgeDocument"> | string
   sizeBytes?: Prisma.IntFilter<"KnowledgeDocument"> | number
   content?: Prisma.BytesFilter<"KnowledgeDocument"> | runtime.Bytes
+  contentHash?: Prisma.StringNullableFilter<"KnowledgeDocument"> | string | null
   extractedText?: Prisma.StringFilter<"KnowledgeDocument"> | string
   status?: Prisma.StringFilter<"KnowledgeDocument"> | string
   conflictSummary?: Prisma.StringNullableFilter<"KnowledgeDocument"> | string | null
@@ -719,6 +751,7 @@ export type KnowledgeDocumentCreateWithoutEntriesInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -737,6 +770,7 @@ export type KnowledgeDocumentUncheckedCreateWithoutEntriesInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -769,6 +803,7 @@ export type KnowledgeDocumentUpdateWithoutEntriesInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -787,6 +822,7 @@ export type KnowledgeDocumentUncheckedUpdateWithoutEntriesInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -803,6 +839,7 @@ export type KnowledgeDocumentCreateManyPropertyInput = {
   mimeType: string
   sizeBytes: number
   content: runtime.Bytes
+  contentHash?: string | null
   extractedText: string
   status?: string
   conflictSummary?: string | null
@@ -819,6 +856,7 @@ export type KnowledgeDocumentUpdateWithoutPropertyInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -836,6 +874,7 @@ export type KnowledgeDocumentUncheckedUpdateWithoutPropertyInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -853,6 +892,7 @@ export type KnowledgeDocumentUncheckedUpdateManyWithoutPropertyInput = {
   mimeType?: Prisma.StringFieldUpdateOperationsInput | string
   sizeBytes?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   extractedText?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   conflictSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -901,6 +941,7 @@ export type KnowledgeDocumentSelect<ExtArgs extends runtime.Types.Extensions.Int
   mimeType?: boolean
   sizeBytes?: boolean
   content?: boolean
+  contentHash?: boolean
   extractedText?: boolean
   status?: boolean
   conflictSummary?: boolean
@@ -921,6 +962,7 @@ export type KnowledgeDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.T
   mimeType?: boolean
   sizeBytes?: boolean
   content?: boolean
+  contentHash?: boolean
   extractedText?: boolean
   status?: boolean
   conflictSummary?: boolean
@@ -939,6 +981,7 @@ export type KnowledgeDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   mimeType?: boolean
   sizeBytes?: boolean
   content?: boolean
+  contentHash?: boolean
   extractedText?: boolean
   status?: boolean
   conflictSummary?: boolean
@@ -957,6 +1000,7 @@ export type KnowledgeDocumentSelectScalar = {
   mimeType?: boolean
   sizeBytes?: boolean
   content?: boolean
+  contentHash?: boolean
   extractedText?: boolean
   status?: boolean
   conflictSummary?: boolean
@@ -967,7 +1011,7 @@ export type KnowledgeDocumentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type KnowledgeDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "fileName" | "mimeType" | "sizeBytes" | "content" | "extractedText" | "status" | "conflictSummary" | "uploadedBy" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeDocument"]>
+export type KnowledgeDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "fileName" | "mimeType" | "sizeBytes" | "content" | "contentHash" | "extractedText" | "status" | "conflictSummary" | "uploadedBy" | "approvedBy" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeDocument"]>
 export type KnowledgeDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.KnowledgeDocument$entriesArgs<ExtArgs>
@@ -993,6 +1037,7 @@ export type $KnowledgeDocumentPayload<ExtArgs extends runtime.Types.Extensions.I
     mimeType: string
     sizeBytes: number
     content: runtime.Bytes
+    contentHash: string | null
     extractedText: string
     status: string
     conflictSummary: string | null
@@ -1432,6 +1477,7 @@ export interface KnowledgeDocumentFieldRefs {
   readonly mimeType: Prisma.FieldRef<"KnowledgeDocument", 'String'>
   readonly sizeBytes: Prisma.FieldRef<"KnowledgeDocument", 'Int'>
   readonly content: Prisma.FieldRef<"KnowledgeDocument", 'Bytes'>
+  readonly contentHash: Prisma.FieldRef<"KnowledgeDocument", 'String'>
   readonly extractedText: Prisma.FieldRef<"KnowledgeDocument", 'String'>
   readonly status: Prisma.FieldRef<"KnowledgeDocument", 'String'>
   readonly conflictSummary: Prisma.FieldRef<"KnowledgeDocument", 'String'>

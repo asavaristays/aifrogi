@@ -1,0 +1,40 @@
+{
+  "mode": "isolated PostgreSQL; synthetic owner/source and application-role permission fixture",
+  "results": [
+    {
+      "case": "repeat upload and staging reuse one private document and claim",
+      "passed": true,
+      "elapsedMs": 157
+    },
+    {
+      "case": "document approval alone never publishes unreviewed rows",
+      "passed": true,
+      "elapsedMs": 34
+    },
+    {
+      "case": "owner field and preview approval publish, queue indexing and enable retrieval",
+      "passed": true,
+      "elapsedMs": 82
+    },
+    {
+      "case": "owner correction supersedes sealed content through the same approval path",
+      "passed": true,
+      "elapsedMs": 63
+    },
+    {
+      "case": "sealed reconfirmation creates a fresh approved version rather than editing history",
+      "passed": true,
+      "elapsedMs": 45
+    },
+    {
+      "case": "owner withdrawal removes the sealed claim immediately and keeps audit history",
+      "passed": true,
+      "elapsedMs": 14
+    },
+    {
+      "case": "wrong owner and wrong tenant cannot provision publication authority",
+      "passed": true,
+      "elapsedMs": 11
+    }
+  ]
+}
