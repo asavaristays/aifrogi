@@ -1,4 +1,5 @@
 import {preserveOfferingInventory} from "./rag-offering-completeness";
+import {quantityAlternativesSupported} from './rag-quantity-binding';
 import {selectEvidenceForSubject} from "./rag-subject-evidence";
 import { resolveRagSourceAuthority } from './rag-source-authority';
 import { createHash } from 'node:crypto';
@@ -197,6 +198,12 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       }
 
       stage='VERIFICATION';start=Date.now();
+      const boundFacts=facts.filter(fact=>quantityAlternativesSupported(fact.text,evidence.filter(e=>fact.evidenceIds.includes(e.id)).map(e=>e.content)));
+      if(boundFacts.length!==facts.length){
+        if(!boundFacts.length)throw new Error('DRAFT_QUANTITY_BINDING_REJECTED');
+        facts.splice(0,facts.length,...boundFacts);
+        trace.stages.push({stage:'QUANTITY_BINDING',outcome:'UNSUPPORTED_ALTERNATIVE_OMITTED',elapsedMs:0,ids:[]});
+      }
       for(const fact of facts) {
         const units=evidence.filter(e=>fact.evidenceIds.includes(e.id));
         const source=units.map(e=>e.content).join('\n');
