@@ -1,0 +1,91 @@
+{
+  "releaseCommit": "ede70a2",
+  "productionUrl": "https://app.aifrogi.com/bot/webtechnosys-fresh-ai-bot-03e89f",
+  "testedAt": "2026-10-03T04:23:11.893Z",
+  "measurement": "Approximate browser click-to-visible response including UI automation overhead. Two initial timings unavailable due observation deadline. Candidate/production API reports use request-to-response timings.",
+  "initialTen": [
+    {
+      "question": "Please share your complete postal address.",
+      "reply": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+      "elapsedMs": 1552,
+      "assessment": "Pass"
+    },
+    {
+      "question": "Which WhatsApp number can customers use?",
+      "reply": "Phone: +91 74105 82898",
+      "elapsedMs": 1655,
+      "assessment": "Pass"
+    },
+    {
+      "question": "Where should I email a business enquiry?",
+      "reply": "Email: info@webtechnosys.com",
+      "elapsedMs": 289,
+      "assessment": "Pass"
+    },
+    {
+      "question": "Can you build an Android app for our customers?",
+      "reply": "Webtechnosys can build custom Android mobile applications for your customers, offering polished products for guests, customers, field teams, and service operations with full source-code ownership.\n\nWhat outcome or service would you like help with?",
+      "elapsedMs": 2381,
+      "assessment": "Pass"
+    },
+    {
+      "question": "Can it also run on iPhones?",
+      "reply": "I don’t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. You can also call +91 74105 82898. Please share your name and mobile number below if you would like the business team to call you back.",
+      "elapsedMs": 2085,
+      "assessment": "Fail — referential iPhone follow-up lost context"
+    },
+    {
+      "question": "What would your team teach our staff about AI?",
+      "reply": "Canonical factual evidence is unavailable.",
+      "elapsedMs": null,
+      "assessment": "Fail — API evidence error in reused conversation; fresh-chat retest passed"
+    },
+    {
+      "question": "Can you make social media videos from our hotel footage?",
+      "reply": "Yes, we can create social media videos from your hotel footage by using real property assets to build cinematic AI-assisted films, commercial videos, and focused social media content sets such as reels and campaign cuts.",
+      "elapsedMs": null,
+      "assessment": "Pass"
+    },
+    {
+      "question": "Can you integrate an application with our existing CRM?",
+      "reply": "Yes, Webtechnosys can integrate applications with your existing CRM by mapping your current systems and designing integrations around measurable outcomes, provided suitable APIs are available.",
+      "elapsedMs": 3666,
+      "assessment": "Pass"
+    },
+    {
+      "question": "What support can we get after the software goes live?",
+      "reply": "After the software goes live, you can get maintenance, enhancements, and AI optimisation through flexible post-launch support plans offered by Webtechnosys.",
+      "elapsedMs": 2295,
+      "assessment": "Pass"
+    },
+    {
+      "question": "What are your Sunday opening hours?",
+      "reply": "I could not verify the following from the published information: Exact opening hours.",
+      "elapsedMs": 721,
+      "assessment": "Safe abstention — Sunday schedule not verified"
+    }
+  ],
+  "retests": [
+    {
+      "question": "What would your team teach our staff about AI?",
+      "reply": "Our team would teach your staff practical AI skills focused on your business context, helping them experiment safely with AI tools for research, document handling, analytics, communication and workflow assistance, plus a live project to build usable AI outputs within your processes. The training covers defining business policy for AI use, identifying AI opportunities without losing control of business judgement, and hands-on practice with AI models and automation tools to improve productivity responsibly.",
+      "elapsedMs": 3568
+    },
+    {
+      "question": "Please share your complete postal address.",
+      "reply": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+      "elapsedMs": 1554
+    }
+  ],
+  "summary": {
+    "answered": 7,
+    "failed": 2,
+    "safeAbstention": 1
+  },
+  "notes": [
+    "First six cases used the pre-existing conversation; subsequent cases used Start a new AI chat after the API error.",
+    "The pre-existing human-help state came from the earlier baseline phone failure.",
+    "Training passed when retried in the fresh chat; initial failure is retained.",
+    "Only existing authorised source information was used."
+  ]
+}

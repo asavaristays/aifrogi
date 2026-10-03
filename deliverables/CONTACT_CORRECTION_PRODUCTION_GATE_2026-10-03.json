@@ -1,0 +1,125 @@
+[
+  {
+    "question": "Can you tell me about AI Filmmaking?",
+    "reply": "AI filmmaking in Goa creates cinematic films, commercials, and social videos for hotels and tourism brands by starting with real property footage and enhancing storytelling with AI to build emotional guest journeys. The workflow involves brand discovery, shot planning, storyboard creation, AI-assisted cinematic production, and editing to produce multiple content outputs such as social media content banks and commercial films.",
+    "status": 200,
+    "elapsedMs": 4022,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-filmmaking/",
+        "title": "AI Filmmaking and Commercial Videos in Goa",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "What video outputs can you create?",
+    "reply": "We create cinematic AI films, commercials, and social-media videos for hospitality and local businesses. Output formats include sets of social media content with 10 or 25 clips, 30-second AI commercials, and 60-second AI brand films. The final commercial includes the main film plus platform-specific social cuts with edits, sound, music, ambience, captions, and narrative.",
+    "status": 200,
+    "elapsedMs": 3782,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-filmmaking/",
+        "title": "AI Filmmaking and Commercial Videos in Goa",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "What training does Webtechnosys offer?",
+    "reply": "",
+    "status": 503,
+    "elapsedMs": 2458,
+    "signalPass": false
+  },
+  {
+    "question": "Who is the corporate AI training for?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 27,
+    "signalPass": false
+  },
+  {
+    "question": "Do you develop mobile apps?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 24,
+    "signalPass": false
+  },
+  {
+    "question": "Which platforms do those apps support?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 26,
+    "signalPass": false
+  },
+  {
+    "question": "Where are your offices?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 24,
+    "signalPass": false
+  },
+  {
+    "question": "How can I contact Webtechnosys?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 23,
+    "signalPass": false
+  },
+  {
+    "question": "How do you start a project?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 57,
+    "signalPass": false
+  },
+  {
+    "question": "Who owns the source code after delivery?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 73,
+    "signalPass": false
+  },
+  {
+    "question": "Do you sign NDAs?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 31,
+    "signalPass": false
+  },
+  {
+    "question": "How are project payments structured?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 29,
+    "signalPass": false
+  },
+  {
+    "question": "Do you provide post-launch support?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 32,
+    "signalPass": false
+  },
+  {
+    "question": "What is the exact price of an AI filmmaking project?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 35,
+    "signalPass": false
+  },
+  {
+    "question": "Do you guarantee that your software will double my revenue?",
+    "reply": "",
+    "status": 401,
+    "elapsedMs": 26,
+    "signalPass": false
+  }
+]

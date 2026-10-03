@@ -1,0 +1,279 @@
+[
+  {
+    "question": "What training does Webtechnosys offer?",
+    "reply": "Webtechnosys offers an on-demand Corporate In-House AI Skill Program that focuses on practical AI adoption, workflow experiments, and applied team training tailored to a company's specific business context and team workflows. They also provide the AI Tool Universe Bootcamp as a paid seat program with scheduled Saturday cohorts.",
+    "status": 200,
+    "elapsedMs": 3478,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/training/ai-build-accelerator/",
+        "title": "Corporate In-House AI Skill Program | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/training-booking/",
+        "title": "Book AI Tool Universe Bootcamp Seat | Webtechnosys Training",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Who is the corporate AI training for?",
+    "reply": "The corporate AI training is for companies that want practical AI adoption by their own people, including founders, managers, operations teams, sales teams, and departments aiming to use AI responsibly in daily work.",
+    "status": 200,
+    "elapsedMs": 2000,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/training/ai-build-accelerator/",
+        "title": "Corporate In-House AI Skill Program | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Do you develop mobile apps?",
+    "reply": "Yes, we develop mobile apps as part of our custom software development services, including polished iOS and Android products integrated with core business systems across Mumbai, Bengaluru, Gurugram, and other locations in India.",
+    "status": 200,
+    "elapsedMs": 2810,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/custom-software-development-india/",
+        "title": "Custom Software Development India | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/ai-software-development-mumbai/",
+        "title": "AI Software Development Mumbai | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/ai-software-development-bengaluru/",
+        "title": "AI Software Development Bengaluru | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Which platforms do those apps support?",
+    "reply": "Webtechnosys develops polished mobile applications supporting iOS and Android platforms, along with web products and cross-platform apps integrated with core business systems.",
+    "status": 200,
+    "elapsedMs": 3202,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-software-development-mumbai/",
+        "title": "AI Software Development Mumbai | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+        "title": "AI Software Development Gurugram | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/custom-software-development-india/",
+        "title": "Custom Software Development India | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Where are your offices?",
+    "reply": "Webtechnosys operates with a physical office in Gurgaon serving Gurugram/NCR businesses and has its base in Goa, India, at H.No 746 - TF, New Wada, Morjim, Goa 403512, without a physical office in Mumbai.",
+    "status": 200,
+    "elapsedMs": 2308,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+        "title": "AI Software Development Gurugram | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/terms-of-service/",
+        "title": "Terms of Service | Webtechnosys AI Agency",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "How can I contact Webtechnosys?",
+    "reply": "You can contact Webtechnosys via WhatsApp at +91 74105 82898 or by email at info@webtechnosys.com.",
+    "status": 200,
+    "elapsedMs": 2591,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-filmmaking/",
+        "title": "AI Filmmaking and Commercial Videos in Goa",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/terms-of-service/",
+        "title": "Terms of Service | Webtechnosys AI Agency",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "How do you start a project?",
+    "reply": "Projects start with a discovery session followed by a detailed proposal, Statement of Work (SOW), project timeline, and commercial agreement before development begins.",
+    "status": 200,
+    "elapsedMs": 1811,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/",
+        "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Who owns the source code after delivery?",
+    "reply": "After successful completion of the project and full payment, the agreed source code and deliverables are transferred to the client unless otherwise specified in the agreement.",
+    "status": 200,
+    "elapsedMs": 2206,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/",
+        "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/ai-software-development-goa/",
+        "title": "AI Software Development Goa | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/ai-software-development-mumbai/",
+        "title": "AI Software Development Mumbai | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Do you sign NDAs?",
+    "reply": "Webtechnosys signs Non-Disclosure Agreements (NDA) along with other agreements like Master Service Agreements and Software Development Agreements to protect both parties during projects.",
+    "status": 200,
+    "elapsedMs": 2086,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/",
+        "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "How are project payments structured?",
+    "reply": "Project payments at Webtechnosys are typically structured around agreed delivery milestones, ensuring transparency and reducing risk for both the client and the company.",
+    "status": 200,
+    "elapsedMs": 2106,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-software-development-bengaluru/",
+        "title": "AI Software Development Bengaluru | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/",
+        "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Do you provide post-launch support?",
+    "reply": "Yes, Webtechnosys provides post-launch support including maintenance, enhancements, and AI optimization through flexible support plans after project launch.",
+    "status": 200,
+    "elapsedMs": 1880,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-software-development-bengaluru/",
+        "title": "AI Software Development Bengaluru | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      },
+      {
+        "url": "https://webtechnosys.com/",
+        "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "What is the exact price of an AI filmmaking project?",
+    "reply": "The exact price of an AI filmmaking project is not published and depends on the property's assets, campaign needs, and final formats, with commercial pricing available on request.\n\nWhat outcome or service would you like help with?",
+    "status": 200,
+    "elapsedMs": 1806,
+    "signalPass": true,
+    "sources": [
+      {
+        "url": "https://webtechnosys.com/ai-filmmaking/",
+        "title": "AI Filmmaking and Commercial Videos in Goa",
+        "crawledAt": "2026-09-30T23:18:42.165Z",
+        "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+        "freshness": "CURRENT"
+      }
+    ]
+  },
+  {
+    "question": "Do you guarantee that your software will double my revenue?",
+    "reply": "I could not verify the following from the published information: A published guarantee for the requested outcome.",
+    "status": 200,
+    "elapsedMs": 952,
+    "signalPass": true,
+    "sources": []
+  }
+]
