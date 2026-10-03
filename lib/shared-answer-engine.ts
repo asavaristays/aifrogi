@@ -67,7 +67,7 @@ export function fuseAnswerEvidence(scope: AnswerScope, lexical: AnswerEvidence[]
 }
 
 const retrievalStopWords=new Set(['about','after','again','also','are','before','being','can','could','current','does','from','have','how','into','more','offer','offers','only','previous','question','tell','their','there','these','those','visitor','what','when','where','which','who','with','would','you','your']);
-export function prioritizeAnswerEvidence(question:string,evidence:AnswerEvidence[],limit=16) {
+export function prioritizeAnswerEvidence(question:string,evidence:AnswerEvidence[],limit=16,semanticIds:string[]=[]) {
   const terms=[...new Set((question.toLowerCase().match(/[a-z0-9]+/g)??[]).filter(term=>term.length>=3&&!retrievalStopWords.has(term)).map(term=>term.length>4&&term.endsWith('s')?term.slice(0,-1):term))];
   if(terms.includes('office')) terms.push('address','operates');
   if(terms.includes('contact')) terms.push('email','phone','address','whatsapp','questions');
@@ -80,7 +80,11 @@ export function prioritizeAnswerEvidence(question:string,evidence:AnswerEvidence
   const direct=ranked.filter(item=>item.score>0);
   const strongest=direct[0]?.score??0;
   const focused=direct.filter(item=>item.score>=Math.max(1,strongest-4));
-  return (focused.length?focused:ranked).slice(0,limit).map(item=>item.unit);
+  // Keyword overlap cannot discard the strongest admitted semantic matches:
+  // a beneficiary's industry name may outscore the requested service's synonyms.
+  const anchors=semanticIds.map(id=>evidence.find(unit=>unit.id===id)).filter((unit):unit is AnswerEvidence=>Boolean(unit)).slice(0,Math.min(3,Math.floor(limit/2)));
+  const selected=[...anchors,...(focused.length?focused:ranked).map(item=>item.unit)];
+  return [...new Map(selected.map(unit=>[unit.id,unit])).values()].slice(0,limit);
 }
 
 /** Constitution: concise by default; extra detail only when explicitly requested. */
@@ -130,7 +134,7 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     const [lexical,semantic]=retrieved.map(r=>r.status==='fulfilled'?r.value:[]);
     if(retrieved.every(r=>r.status==='rejected')) throw new Error('RETRIEVAL_UNAVAILABLE');
     for(const r of retrieved) if(r.status==='rejected' && /SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(r.reason))) throw r.reason;
-    let evidence=exactDraft ? directUnits : prioritizeAnswerEvidence(question,selectEvidenceForSubject(question,fuseAnswerEvidence(state.scope,lexical,semantic,24)),8);
+    let evidence=exactDraft ? directUnits : prioritizeAnswerEvidence(question,selectEvidenceForSubject(question,fuseAnswerEvidence(state.scope,lexical,semantic,24)),8,semantic.map(unit=>unit.id));
     const authority=resolveRagSourceAuthority(evidence);
     retrievedEvidence=evidence;
     if(authority.conflicts.length || directAuthority.conflicts.length) {

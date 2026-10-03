@@ -8,6 +8,13 @@ const scope={organizationId:'org',propertyId:'tenant',generationId:'snapshot'};
 const unit=(id:string,title:string,content:string):AnswerEvidence=>({...scope,id,title,content,digest:evidenceDigest(content),url:'https://example.com'});
 const general=unit('general','Mobile services','Our customer applications support iOS and Android.');
 const product=unit('product','Project ALPHA Field Intelligence | Example','The ALPHA application uses Android and a proprietary offline engine.');
+test('industry keywords cannot discard a semantic match for the requested service',async()=>{
+ const industry=unit('industry','School Management','School accounts and billing are connected.');
+ const requested=unit('requested','Visual Design','We produce custom artwork.');
+ const a:AnswerAdapters={state:async()=>({state:'READY',scope}),lexical:async()=>[industry],semantic:async()=>[requested],generate:async(_q,e)=>{assert.ok(e.some(u=>u.id==='requested'));return {disposition:'ANSWER',sentences:[{text:requested.content,kind:'FACT',evidenceIds:['requested']}],missingParts:[]};},verify:async()=>[{supported:true,evidenceIds:['requested'],reason:'direct service evidence'}],recheck:async()=>true};
+ const r=await runSharedAnswer('Can you create an illustration for our school?',a);
+ assert.equal(r.answer,requested.content);
+});
 test('a named case study is excluded from general capability evidence but retained for an explicit product question',()=>{
  assert.deepEqual(selectEvidenceForSubject('Which platforms do those customer apps support?',[product,general]).map(e=>e.id),['general']);
  assert.deepEqual(selectEvidenceForSubject('Which platforms does ALPHA support?',[product,general]).map(e=>e.id),['product']);
