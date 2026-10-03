@@ -1,3 +1,4 @@
+import { isSafeResolution } from '../../lib/sovereign-intelligence/evidence-pipeline';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { websiteAnswerActions, safeWebsiteAnswerActionUrl } from '../../lib/website-answer-presentation';
@@ -26,4 +27,10 @@ test('partial contact recovery stays active without changing approved answer or 
 test('client action URLs allow strict telephone links and reject executable payloads',()=>{
  assert.equal(safeWebsiteAnswerActionUrl('tel:+442079460958'),'tel:+442079460958');
  for(const url of ['tel:+123;ext=javascript:alert(1)','tel:abc','javascript:alert(1)'])assert.equal(safeWebsiteAnswerActionUrl(url),null);
+});
+
+test('analytics excludes grounded contact-only recovery from safely resolved totals',()=>{
+ const base={classification:'NONE' as const,decisionConsistent:true,disposition:'ANSWER',grounded:true,intent:'BUSINESS'};
+ assert.equal(isSafeResolution({...base,resolutionState:'ACTIVE',terminalOutcome:'PARTIALLY_ANSWERED'}),false);
+ assert.equal(isSafeResolution({...base,resolutionState:'RESOLVED',terminalOutcome:'ANSWERED'}),true);
 });

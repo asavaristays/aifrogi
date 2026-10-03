@@ -78,7 +78,8 @@ export function classifyEvidenceFailure(input: {
   return "NONE";
 }
 
-export function isSafeResolution(input: { classification: FailureClassification; decisionConsistent: boolean; disposition: string; grounded: boolean; intent: string }) {
+export function isSafeResolution(input: { classification: FailureClassification; decisionConsistent: boolean; disposition: string; grounded: boolean; intent: string; resolutionState?: string; terminalOutcome?: string }) {
+  if (input.resolutionState === "ACTIVE" || input.terminalOutcome === "PARTIALLY_ANSWERED") return false;
   if (!input.decisionConsistent) return false;
   if (["RETRIEVAL_MISS", "GROUNDED_WRONG", "UNGROUNDED_GENERATION", "CONNECTOR_FAILURE", "CONVERSATION_STATE", "INFRASTRUCTURE_FAILURE"].includes(input.classification)) return false;
   if (input.disposition === "ANSWER") return input.grounded || ["GREETING", "IDENTITY", "OFF_TOPIC", "CONTACT_INFO"].includes(input.intent);

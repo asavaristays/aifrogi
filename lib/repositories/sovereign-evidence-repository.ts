@@ -41,7 +41,7 @@ export async function recordSovereignAnswerEvidence(input: {
   const persisted = sanitizePersistencePayload(input);
   const consistency = evaluateDecisionBehaviourConsistency({ disposition: input.decision.disposition, answer: input.answer, resolutionState: input.resolutionState || "RESOLVED", circuitBreaker: Boolean(input.circuitBreaker), actionPerformed: input.actionPerformed, failureLayer: input.reliability?.failureLayer || "NONE" });
   const failureClassification = classifyEvidenceFailure({ decision: input.decision, grounded: input.grounded, failureLayer: input.reliability?.failureLayer, nearMissClaimIds: input.retrieval?.nearMissClaimIds, circuitBreaker: input.circuitBreaker, decisionConsistent: consistency.decisionConsistent });
-  const safeResolution = isSafeResolution({ classification: failureClassification, decisionConsistent: consistency.decisionConsistent, disposition: input.decision.disposition, grounded: input.grounded, intent: input.decision.intent });
+  const safeResolution = isSafeResolution({ classification: failureClassification, decisionConsistent: consistency.decisionConsistent, disposition: input.decision.disposition, grounded: input.grounded, intent: input.decision.intent, resolutionState: input.resolutionState, terminalOutcome: input.executionContract?.terminalOutcome });
   return db.sovereignAnswerEvidence.create({ data: {
     propertyId: input.propertyId, leadId: input.leadId || null, sessionIdHash: input.sessionIdHash,
     constitutionVersion: input.decision.constitutionVersion, blueprintVersion: input.decision.blueprintVersion,
