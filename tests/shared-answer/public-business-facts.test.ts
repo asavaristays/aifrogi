@@ -4,6 +4,12 @@ import assert from 'node:assert/strict';
 import {runSharedAnswer,evidenceDigest,assertSharedAnswerDelivery,type AnswerEvidence,type AnswerAdapters} from '../../lib/shared-answer-engine';
 import {composePublicFactDraft,extractPublicBusinessFacts} from '../../lib/public-business-facts';
 const scope={organizationId:'tenant-a',propertyId:'property-a',generationId:'release-a'};
+test('visiting-time requests do not become destination-address requests',()=>{
+ assert.deepEqual(requestedPublicFactFields('When can we visit your store?'),['hours']);
+ assert.deepEqual(requestedPublicFactFields('What time can I visit your office on Sunday?'),['hours']);
+ assert.deepEqual(requestedPublicFactFields('What are your office hours?'),['hours']);
+ assert.deepEqual(requestedPublicFactFields('Where is your office and when can I visit?'),['address','hours']);
+});
 const unit=(content:string,id='contact'):AnswerEvidence=>({...scope,id,content,digest:evidenceDigest(content),url:'https://example.com/contact',title:'Contact'});
 function adapters(evidence:AnswerEvidence[]):AnswerAdapters {return {state:async()=>({state:'READY',scope}),lexical:async()=>evidence,semantic:async()=>{throw new Error('EMBEDDING_UNAVAILABLE')},generate:async()=>{throw new Error('GENERATION_UNAVAILABLE')},recheck:async()=>true};}
 test('public phone is grounded and delivered without embedding or generation',async()=>{
