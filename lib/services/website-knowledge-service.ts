@@ -737,6 +737,9 @@ export async function buildWebsiteKnowledgeAnswer({
   const businessName = organization?.name || "the business";
   const assistantName = persona?.personaName || `${businessName} AI`;
   const direct = (answer: string, decision = resolved.decision): KnowledgeAnswer => ({ answer, sourceUrls: [], sources: [], knowledgeAsOf: new Date().toISOString(), usedOpenAi: false, model: "CONSTITUTIONAL", decision, claimIds: [], retrieval: emptyRetrieval(), reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: "NONE", failureCode: null, latencyMs: 0, attemptCount: 0, escalationTier: escalationTierFor({ disposition: decision.disposition }), degradedMode: false } });
+  if (/^(?:yes|yes please|sure|ok|okay|please do|go ahead)[.!\s]*$/i.test(question.trim()) && !/(?:would you like|do you want|shall i|can i help)[^?]*\b(?:link|url)\b[^?]*\?/i.test(lastAssistantAnswer)) {
+    return direct(`Which service or detail would you like help with?`, {...resolved.decision,disposition:"CLARIFY",reason:"No specific approved next-step link offer to continue; clarification grants no action authority."});
+  }
   // A production bot never falls through to manual entries, historical releases,
   // profile facts or general model knowledge when retrieval fails.
   if (business?.organizationId && !evaluationMode) {

@@ -1,0 +1,71 @@
+{
+  "regressions": {
+    "tests": 821,
+    "passed": 821,
+    "failed": 0
+  },
+  "typecheck": "PASS",
+  "webpackBuild": "PASS",
+  "originalGate": {
+    "passed": 15,
+    "total": 15
+  },
+  "additionalGate": {
+    "passed": 6,
+    "total": 6
+  },
+  "policyComparison": [
+    {
+      "mode": "existing-policy",
+      "sourceSupported": 11,
+      "safeMissingInformation": 2,
+      "failed": 0,
+      "medianLatencyMs": 4461
+    },
+    {
+      "mode": "rag",
+      "sourceSupported": 11,
+      "safeMissingInformation": 2,
+      "failed": 0,
+      "medianLatencyMs": 4117
+    },
+    {
+      "mode": "combined",
+      "sourceSupported": 11,
+      "safeMissingInformation": 2,
+      "failed": 0,
+      "medianLatencyMs": 4127
+    }
+  ],
+  "realDatabaseFailureRecovery": {
+    "passed": 2,
+    "total": 2
+  },
+  "priorDatabaseControls": {
+    "passed": 12,
+    "total": 12,
+    "rerunThisTurn": false
+  },
+  "priorOwnerWorkflow": {
+    "passed": 7,
+    "total": 7,
+    "rerunThisTurn": false
+  },
+  "failedIntermediateRun": [
+    {
+      "number": 1,
+      "question": "Can you tell me about AI Filmmaking?",
+      "signalAssessment": "FAIL",
+      "failureCode": null,
+      "totalLatencyMs": 9893
+    },
+    {
+      "number": 20,
+      "question": "Can it also run on iPhones?",
+      "signalAssessment": "FAIL",
+      "failureCode": "COMPOSITION_FAILED",
+      "totalLatencyMs": 16173
+    }
+  ],
+  "deployment": "NOT_DEPLOYED"
+}

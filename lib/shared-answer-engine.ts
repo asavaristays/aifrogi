@@ -1,3 +1,5 @@
+import {preserveOfferingInventory} from "./rag-offering-completeness";
+import {selectEvidenceForSubject} from "./rag-subject-evidence";
 import { resolveRagSourceAuthority } from './rag-source-authority';
 import { createHash } from 'node:crypto';
 import { composePublicFactDraft, currentQuestion, requestedPublicFactFields } from './public-business-facts';
@@ -99,6 +101,7 @@ function validateDraft(draft: AnswerDraft, evidence: AnswerEvidence[]) {
 
 export async function runSharedAnswer(question: string, adapters: AnswerAdapters): Promise<SharedAnswerResult> {
   const startedAt=Date.now();
+  let servingScope:AnswerScope|undefined;
   let retrievedEvidence:AnswerEvidence[]=[];
   let claimEvidence:Array<{claim:string;evidenceIds:string[]}>=[];
   const trace: AnswerTrace = {version:'shared-answer-v1',stages:[]};
@@ -110,6 +113,7 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     if (!question.trim() || question.length>8000) throw new Error('QUESTION_INVALID');
     start=Date.now(); const state=await adapters.state();record(state.state,start);
     if (state.state!=='READY') return result(state.state==='NO_ACTIVE_SOURCE'?'NO_EVIDENCE':'TECHNICAL_FAILURE',state.state==='NO_ACTIVE_SOURCE'?'I do not have published business information available yet.':'I’m having trouble accessing the approved business information. Please try again.',[],state.state);
+    servingScope=state.scope;
     stage='RETRIEVAL';start=Date.now();
     const live=adapters.live ? await adapters.live(state.scope,question) : null;
     if(live && !live.length) return result('LIVE_ACTION_REQUIRED','I cannot check that current value right now. Please contact the business team for a live confirmation.');
@@ -125,7 +129,7 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     const [lexical,semantic]=retrieved.map(r=>r.status==='fulfilled'?r.value:[]);
     if(retrieved.every(r=>r.status==='rejected')) throw new Error('RETRIEVAL_UNAVAILABLE');
     for(const r of retrieved) if(r.status==='rejected' && /SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(r.reason))) throw r.reason;
-    let evidence=exactDraft ? directUnits : prioritizeAnswerEvidence(question,fuseAnswerEvidence(state.scope,lexical,semantic,16),8);
+    let evidence=exactDraft ? directUnits : prioritizeAnswerEvidence(question,selectEvidenceForSubject(question,fuseAnswerEvidence(state.scope,lexical,semantic,24)),8);
     const authority=resolveRagSourceAuthority(evidence);
     retrievedEvidence=evidence;
     if(authority.conflicts.length || directAuthority.conflicts.length) {
@@ -158,6 +162,14 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
         ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['Exact opening hours']}
         : await adapters.generate!(question,evidence));
       if(exactDraft) evidence=directUnits;
+      if(!exactDraft && Array.isArray(draft.sentences)) preserveOfferingInventory(question,draft,evidence);
+      // Repair labels from the actual structured parts, without inventing facts
+      // or discarding missing requested details, before the support review.
+      if(Array.isArray(draft.sentences)&&Array.isArray(draft.missingParts)) {
+        if(draft.disposition==='ANSWER'&&draft.missingParts.length) draft.disposition=draft.sentences.length?'PARTIAL':'NO_EVIDENCE';
+        else if(draft.disposition==='PARTIAL'&&!draft.missingParts.length) draft.disposition=draft.sentences.length?'ANSWER':'NO_EVIDENCE';
+        else if(draft.disposition==='NO_EVIDENCE'&&draft.sentences.length) draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
+      }
       validateDraft(draft,evidence);
       record(exactDraft?'STRUCTURED_FACTS_NO_MODEL':'READY',start);
       const facts=draft.sentences.filter(s=>s.kind==='FACT');
@@ -228,6 +240,28 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     record('ERROR',start);
     // Error details remain server-side; never expose credentials/provider payloads.
     const code=error instanceof Error && /^[A-Z][A-Z0-9_]+$/.test(error.message)?error.message:`${stage}_FAILED`;
+    if(servingScope && ['COMPOSITION','VERIFICATION'].includes(stage) && !/SCOPE|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(code)) {
+      try {
+        stage='CONTACT_RECOVERY';start=Date.now();
+        const allowed=eligibleEvidence(servingScope,await adapters.lexical(servingScope,'phone number'));
+        const authority=resolveRagSourceAuthority(allowed);
+        const contact=authority.conflicts.length?null:composePublicFactDraft('phone number',authority.evidence);
+        if(contact) {
+          const ids=new Set(contact.sentences.flatMap(s=>s.evidenceIds));
+          const cited=authority.evidence.filter(e=>ids.has(e.id));
+          record(`RECOVERED_FROM_${code}`,start,[...ids]);
+          stage='VERIFICATION';start=Date.now();record('SUPPORTED',start,[...ids]);
+          stage='DELIVERY_AUTHORITY';start=Date.now();
+          if(!await adapters.recheck(servingScope)) throw Error('AUTHORITY_CHANGED');
+          record('CURRENT',start);
+          claimEvidence=contact.sentences.map(s=>({claim:s.text,evidenceIds:s.evidenceIds}));
+          retrievedEvidence=[...retrievedEvidence,...cited.filter(e=>!retrievedEvidence.some(old=>old.id===e.id))];
+          const facts=contact.sentences.map(s=>s.text);
+          return result('PARTIAL',`${facts.join(' ')} I couldn't complete that answer right now. Please call the business team for help with your question.`,cited,null,facts);
+        }
+        record('NO_APPROVED_PHONE',start);
+      } catch { record('RECOVERY_UNAVAILABLE',start); }
+    }
     return result('TECHNICAL_FAILURE','I’m having trouble preparing your answer. Please try again.',[],code);
   }
 }

@@ -16,7 +16,7 @@ export function requestedPublicFactFields(question: string): PublicFactField[] {
   if (explicitNumberRequest || (!deviceQuestion && /\b(?:phone|telephone|mobile)\b|फोन|मोबाइल/iu.test(question))) fields.push('phone');
   if (/\b(?:email|e-mail)\b/iu.test(question)) fields.push('email');
   if (/\b(?:address|location|located|office|where are you|where is your|where are they)\b|पता/iu.test(question) && !/\b(?:email|e-mail) address\b/i.test(question)) fields.push('address');
-  if (/\b(?:opening hours|business hours|office hours|timings)\b/i.test(question)) fields.push('hours');
+  if (/\b(?:opening hours|business hours|office hours|timings)\b|\b(?:are|is)\b.{0,35}\bopen\b|\b(?:what|which)\b.{0,35}\b(?:time|days?)\b.{0,25}\b(?:open|close)\b/i.test(question) && !/\b(?:open source|source code|openai)\b/i.test(question)) fields.push('hours');
   if (!fields.length && /\b(?:contact details|contact information|how (?:can|do) i (?:contact|reach))\b/i.test(question)) fields.push('phone', 'email');
   return fields;
 }

@@ -75,6 +75,8 @@ export function classifySovereignIntent(question: string): SovereignIntent {
 }
 
 export function resolveSovereignQuestion(question: string, priorQuestions: string[] = [], blueprintVersion = "1.0", lastAssistantAnswer = ""): SovereignDecision {
+  const framed=question.trim().match(/^(?:please\s+)?(?:explain|describe|summari[sz]e|clarify)\b[^:]{0,80}:\s*(.+)$/i);
+  if(framed) return resolveSovereignQuestion(framed[1],priorQuestions,blueprintVersion,lastAssistantAnswer);
   if (/^(yes|yes please|sure|ok|okay|please do|go ahead)[.!\s]*$/i.test(question.trim())) {
     const offer = lastAssistantAnswer.match(/(?:would you like|do you want|shall i|can i help)[^?]*\?/i)?.[0];
     const prior = priorQuestions.find((candidate) => ["BUSINESS", "CONTACT_INFO", "CONTEXT_FOLLOW_UP"].includes(classifySovereignIntent(candidate)));

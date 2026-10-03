@@ -6,7 +6,7 @@ This document records the agreed architecture and its implementation boundary. A
 
 ## Implementation status
 
-The shared RAG candidate now includes source-to-answer integration. It is **not deployed and has not passed the complete release gate**. See [implementation and actual test report](../deliverables/RAG_IMPLEMENTATION_REPORT_2026-10-03.md).
+The shared RAG candidate now includes source-to-answer integration. It is **not deployed**. The answering test gate is now green; production rollout preflight and online validation remain pending. See the latest [fixed candidate report](../deliverables/RAG_FIXED_REPORT_2026-10-03.md). Earlier reports are retained as historical evidence.
 
 | Capability | Status |
 | --- | --- |
@@ -16,9 +16,9 @@ The shared RAG candidate now includes source-to-answer integration. It is **not 
 | Mixed-source retrieval, immutable indexing and exact delivery receipts | Implemented and candidate tested |
 | Owner review/publication, correction, reconfirmation and withdrawal | Implemented; seven lifecycle cases passed |
 | Typed authorised live evidence | Public catalogue adapter implemented; private PMS/orders require separate integration |
-| Original 15-question factual gate | 14/15 supported; cross-entity Flutter claim failed |
+| Original 15-question factual gate | 15/15 met unchanged criteria and source-review expectations; missing details handled explicitly |
 | Additional contact/follow-up/missing-information cases | 6/6 supported |
-| Broader regression suite | 798/808; ten failures unresolved |
+| Broader regression suite | 821/821 passed |
 | Production HTTP/Chrome checks | Pending |
 | Future-dated publication activation | Requires republishing; scheduling remains unfinished |
 
@@ -124,7 +124,7 @@ Connector failure must be reported as inability to check the specific current va
 7. Select the unified engine explicitly for each bot. A failed unified answer must never fall through to the old factual pipeline.
 8. Deploy only after the release gate, repeat approved tests online, then remove the retired factual path. Retain the previous release for rollback.
 
-Every production property with an organisation identifier selects the shared engine. The retained legacy service body is limited to offline evaluation and incomplete synthetic fixtures; migration of those fixtures remains required. A failed shared answer does not invoke that body.
+Every production property with an organisation identifier selects the shared engine. The retained legacy service body is limited to offline evaluation and incomplete synthetic fixtures; paraphrase and affirmative regression failures are now corrected without changing their criteria. A failed shared answer does not invoke that body.
 
 ## Acceptance gate and evidence
 
@@ -139,7 +139,7 @@ For every case save:
 - Authority, context, retrieval, optional reranking, composition, verification and delivery latency, plus total latency.
 - Failure classification and separate content-coverage gaps.
 
-Candidate validation: 12 database cases and seven owner lifecycle cases passed. The broad suite passed 798/808. Real OpenAI tests passed the original keyword signals for all 15 questions, but source review failed question 6; six additional cases were supported. The full gate remains failed and online verification has not run. Exact replies, passages and stage timing are saved in the report above.
+Latest candidate validation: 821/821 regressions, 15/15 unchanged approved cases and six additional cases passed. The corrected comparison has 11 source-supported replies plus two safe missing-information replies per composition mode, with no reviewed failures. Two injected model-failure recoveries passed canonical database receipts. Earlier 12 database controls and seven owner lifecycle cases remain recorded, not rerun in this recovery. Production preflight and online rollout verification remain pending; exact replies and timing are in the fixed candidate report.
 
 The onboarding aspiration is a bot answering its brand within four minutes after wiring and approved knowledge publication. This is a target requiring measurement, not an established guarantee. The 15-question checkpoint does not certify reliability across 1,000 bots.
 
@@ -152,3 +152,7 @@ This candidate includes a database migration replacing SQL functions and publica
 ## Existing-policy combination experiment
 
 An isolated composition comparison is recorded in [quality report](../deliverables/ANSWER_ENGINE_COMPARISON_2026-10-03.md). Existing composition policy is reused through the same RAG adapter for a controlled reference; this is not a replay of the full old production engine. In 13 cases, existing-policy/RAG/combined produced 11/10/9 source-supported replies, with two coverage gaps in each mode and zero/one/two failures respectively. Combined mode remains trial-only and is not selected by production callers. Product entity binding and consistent partial-answer schemas remain required; policy merging alone is not a demonstrated improvement.
+
+## Recovery of comparison failures
+
+The latest [fixed report](../deliverables/RAG_FIXED_REPORT_2026-10-03.md) supersedes the failed comparison's current-status conclusions while preserving its raw evidence. Subject-scoped retrieval prevents cross-product detail transfer; disposition reconciliation preserves facts/missing parts; source-opening inventory checks preserve requested deliverables; generic paraphrase/affirmative routing and operating-hour recognition are corrected. Model composition/review failures may recover only an exact approved public phone after a fresh authority check, with a clear limitation and no model retry. Source metadata quality and upstream service availability remain practical limits, not guarantees.
