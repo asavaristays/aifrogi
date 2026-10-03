@@ -1,3 +1,4 @@
+import {publicFactRetrievalQuery,publicFactRetrievalQueries} from './public-business-facts';
 import {withCanonicalRole,type CanonicalIdentity} from './canonical-db-context';
 import {type ActiveWebsiteChunk} from './active-website-crawl-retrieval';
 import {SharedAnswerProvider,sharedProviderConfig} from './shared-answer-provider';
@@ -20,13 +21,18 @@ export async function answerFromSharedCrawl(identity:CanonicalIdentity,question:
     if(new URL(row.url).origin !== new URL(sourceUrl!).origin) throw new Error('SOURCE_ORIGIN_MISMATCH');
     return {...scope,generationId:row.generation_id,id:row.chunk_id,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title};
   });
-  const spreadsheetEvidence=async(scope:AnswerScope,query:string)=>{
-    // Public contact coordinates are governed structured fields and already
-    // have a canonical crawl-delivery path. Keep them out of mixed spreadsheet
-    // evidence so the exact public address, phone and email remain auditable.
-    if (/\b(?:contact|email|e-mail|phone|telephone|whatsapp)\b/i.test(query)) return [];
-    const rows=await searchCanonicalPublicCrawlEvidence(identity,query,3);
+  const sheetRequests=new Map<string,Promise<AnswerEvidence[]>>();
+  const loadSpreadsheetEvidence=async(scope:AnswerScope,query:string)=>{
+    // Published workbook evidence is scoped and checked by the same database
+    // authority as crawl evidence, including contact queries.
+    const rows=await searchCanonicalPublicCrawlEvidence(identity,publicFactRetrievalQuery(query),3);
     return rows.map(row=>({...scope,generationId:row.generation_id,id:row.chunk_id,content:row.content,digest:evidenceDigest(row.content),url:row.url,title:row.title}));
+  };
+  const spreadsheetEvidence=(scope:AnswerScope,query:string)=>{
+    const key=JSON.stringify([scope.organizationId,scope.propertyId,scope.generationId,query]);
+    let pending=sheetRequests.get(key);
+    if(!pending){pending=loadSpreadsheetEvidence(scope,query);sheetRequests.set(key,pending);}
+    return pending;
   };
   const result=await runSharedAnswer(question,{
     state:async()=>{
@@ -36,7 +42,7 @@ export async function answerFromSharedCrawl(identity:CanonicalIdentity,question:
     lexical:async (scope,query)=>{
       const [sheet,website]=await Promise.all([
         spreadsheetEvidence(scope,query),
-        withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${query},24)`)
+        Promise.all(publicFactRetrievalQueries(query).map(search=>withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${search},12)`))).then(groups=>groups.flat())
       ]);
       // Approved spreadsheet rows are owner-controlled and therefore precede
       // crawl passages. The shared engine still verifies every delivered fact.

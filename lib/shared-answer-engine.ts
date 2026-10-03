@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { composePublicFactDraft, requestedPublicFactFields } from './public-business-facts';
 
 /** One contract for all businesses. Provider adapters cannot expand authority. */
 export type AnswerScope = { organizationId: string; propertyId: string; generationId: string };
@@ -75,7 +76,7 @@ export function sharedAnswerBudget(question:string) {
 }
 function validateDraft(draft: AnswerDraft, evidence: AnswerEvidence[]) {
   const ids = new Set(evidence.map(e=>e.id));
-  if (!['ANSWER','PARTIAL','CLARIFY','NO_EVIDENCE','LIVE_ACTION_REQUIRED'].includes(draft.disposition) || !Array.isArray(draft.sentences) || draft.sentences.length>3 || !Array.isArray(draft.missingParts)) throw new Error('DRAFT_SCHEMA_INVALID');
+  if (!['ANSWER','PARTIAL','CLARIFY','NO_EVIDENCE','LIVE_ACTION_REQUIRED'].includes(draft.disposition) || !Array.isArray(draft.sentences) || draft.sentences.length>32 || !Array.isArray(draft.missingParts)) throw new Error('DRAFT_SCHEMA_INVALID');
   for (const s of draft.sentences) {
     if (!s || s.kind!=='FACT' || typeof s.text !== 'string' || !s.text.trim() || !Array.isArray(s.evidenceIds) || !s.evidenceIds.length || s.evidenceIds.length>4 || s.evidenceIds.some(id=>!ids.has(id))) throw new Error('DRAFT_EVIDENCE_INVALID');
   }
@@ -98,11 +99,17 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     start=Date.now(); const state=await adapters.state();record(state.state,start);
     if (state.state!=='READY') return result(state.state==='NO_ACTIVE_SOURCE'?'NO_EVIDENCE':'TECHNICAL_FAILURE',state.state==='NO_ACTIVE_SOURCE'?'I do not have published business information available yet.':'I’m having trouble accessing the approved business information. Please try again.',[],state.state);
     stage='RETRIEVAL';start=Date.now();
-    const retrieved=await Promise.allSettled([adapters.lexical(state.scope,question),adapters.semantic(state.scope,question)]);
+    const contactRequest=requestedPublicFactFields(question).length>0;
+    const lexicalFirst=contactRequest ? await Promise.allSettled([adapters.lexical(state.scope,question)]) : null;
+    const directUnits=lexicalFirst?.[0]?.status==='fulfilled' ? eligibleEvidence(state.scope,lexicalFirst[0].value) : [];
+    const exactDraft=composePublicFactDraft(question,directUnits);
+    const retrieved=lexicalFirst
+      ? [...lexicalFirst, ...(exactDraft ? [{status:'fulfilled' as const,value:[] as AnswerEvidence[]}] : await Promise.allSettled([adapters.semantic(state.scope,question)]))]
+      : await Promise.allSettled([adapters.lexical(state.scope,question),adapters.semantic(state.scope,question)]);
     const [lexical,semantic]=retrieved.map(r=>r.status==='fulfilled'?r.value:[]);
     if(retrieved.every(r=>r.status==='rejected')) throw new Error('RETRIEVAL_UNAVAILABLE');
     for(const r of retrieved) if(r.status==='rejected' && /SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(r.reason))) throw r.reason;
-    let evidence=prioritizeAnswerEvidence(question,fuseAnswerEvidence(state.scope,lexical,semantic,16),8);
+    let evidence=exactDraft ? directUnits : prioritizeAnswerEvidence(question,fuseAnswerEvidence(state.scope,lexical,semantic,16),8);
     retrievedEvidence=evidence;
     record(retrieved.some(r=>r.status==='rejected')?'DEGRADED':'READY',start,evidence.map(e=>e.id));
     if(evidence.length && adapters.rerank) {
@@ -118,11 +125,15 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       stage='RETRIEVAL';
     }
     if (!evidence.length) return result('NO_EVIDENCE','I could not find evidence answering that question in the published business information.');
-    if(adapters.generate) {
+    if(exactDraft || adapters.generate) {
       stage='COMPOSITION';start=Date.now();
-      const draft=await adapters.generate(question,evidence);
+      const onlyHours=requestedPublicFactFields(question).join(',')==='hours';
+      const draft=exactDraft ?? (onlyHours && !composePublicFactDraft(question,evidence)
+        ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['Exact opening hours']}
+        : await adapters.generate!(question,evidence));
+      if(exactDraft) evidence=directUnits;
       validateDraft(draft,evidence);
-      record('READY',start);
+      record(exactDraft?'STRUCTURED_FACTS_NO_MODEL':'READY',start);
       const facts=draft.sentences.filter(s=>s.kind==='FACT');
       if (/\b(?:develop|build|create|offer|provide)\b.{0,50}\bmobile apps?\b|\bmobile apps?\b.{0,50}\b(?:develop|build|create|offer|provide)\b/i.test(question)) {
         const platformUnits=evidence.filter(unit=>/\bios\b/i.test(unit.content)&&/\bandroid\b/i.test(unit.content));
