@@ -84,7 +84,7 @@ export function validateMaterialClaimCoverage(input: { answer: string; evidenceU
     if (claim.length < 12) continue;
     const terms = claimTerms(claim);
     const numbers = claim.match(/\d[\d,.]*(?:\s*%|\s*(?:minutes?|hours?|days?|weeks?|months?|years?))?/gi) || [];
-    if (includeDescriptions && !numbers.length && (claim.endsWith("?") || /^I\s+(?:(?:cannot|can’t|can't) confirm|(?:could not|couldn’t|couldn't|did not|didn’t|didn't) find)\b/i.test(claim))) continue;
+    if (!numbers.length && (claim.endsWith("?") || /^I\s+(?:(?:cannot|can’t|can't) confirm|(?:could not|couldn’t|couldn't|did not|didn’t|didn't) find)\b/i.test(claim))) continue;
     // Website descriptions can say "develops apps" or "creates films" without
     // a copula. Check those assertions too; never lower numeric/support rules.
     const factualShape = includeDescriptions && terms.length >= 2 && !claim.endsWith("?") || numbers.length > 0 || /\b(?:is|are|has|have|offers?|provides?|located|founded|serves?|speciali[sz]es?|works?|supports?|contact|email|phone|address)\b/i.test(claim);

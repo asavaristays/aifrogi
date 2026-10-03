@@ -128,7 +128,11 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     if(exactDraft || adapters.generate) {
       stage='COMPOSITION';start=Date.now();
       const onlyHours=requestedPublicFactFields(question).join(',')==='hours';
-      const draft=exactDraft ?? (onlyHours && !composePublicFactDraft(question,evidence)
+      const requestedGuarantee=/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(question);
+      const explicitGuarantee=evidence.some(unit=>/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(unit.content));
+      const draft=exactDraft ?? (requestedGuarantee && !explicitGuarantee
+        ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['A published guarantee for the requested outcome']}
+        : onlyHours && !composePublicFactDraft(question,evidence)
         ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['Exact opening hours']}
         : await adapters.generate!(question,evidence));
       if(exactDraft) evidence=directUnits;

@@ -68,3 +68,7 @@ test('follow-up contact request uses current question without treating history a
  const r=await runSharedAnswer('Previous subject question (context only): Do you develop mobile apps?\nCURRENT visitor question: Can I call them?',adapters([unit('Phone: +91 74105 82898')]));
  assert.equal(r.answer,'Phone: +91 74105 82898');assert.equal(r.failureCode,null);
 });
+test('absence of a guarantee is not a negative guarantee policy',async()=>{
+ const r=await runSharedAnswer('Do you guarantee a specific business outcome?',adapters([unit('We build software around measurable business outcomes.')]));
+ assert.equal(r.disposition,'NO_EVIDENCE');assert.match(r.answer,/could not verify/i);assert.doesNotMatch(r.answer,/does not guarantee/i);
+});
