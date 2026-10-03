@@ -1,0 +1,90 @@
+- link "Skip to main content":
+  - /url: "#main-content"
+- main:
+  - button "Share bot"
+  - button "Add to Home Screen"
+  - main:
+    - strong: W
+    - heading "Webtechnosys AI" [level=1]
+    - button "Human help":
+      - text: Human help
+    - button "Messages":
+      - text: Messages
+    - paragraph: Hello. How can I help with your business enquiry today?
+    - paragraph: Could you give me your business address?
+    - paragraph: "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India"
+    - link "Learn more":
+      - /url: https://webtechnosys.com/terms-of-service/
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: Do you develop mobile apps?
+    - paragraph: Webtechnosys develops mobile applications including polished iOS and Android products and cross-platform customer and workforce apps integrated with core business systems for customers in Mumbai, Goa, Bengaluru, Gurugram and across India.
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: Can it also run on iPhones?
+    - paragraph: Webtechnosys develops custom mobile applications, including polished iOS products that run on iPhones, alongside Android apps, for various Indian business sectors.
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: Can you make a short AI advertisement for our hotel?
+    - paragraph: Webtechnosys offers AI filmmaking services to create short AI commercials and social media content for hotels, crafting emotional guest journeys with real footage and cinematic sequences tailored to your hotel's story and assets.
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: What time can I visit your office on Sunday?
+    - paragraph: "Phone: +91 74105 82898 I cannot confirm: Exact opening hours. Please contact the team."
+    - link "Learn more":
+      - /url: https://webtechnosys.com/ai-filmmaking/
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: What time can I visit your office on Sunday?
+    - paragraph: "Phone: +91 74105 82898 I cannot confirm: Exact opening hours. Please contact the team."
+    - link "Call the business":
+      - /url: tel:+917410582898
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: How can I contact Webtechnosys?
+    - paragraph: "Phone: +91 74105 82898 Email: info@webtechnosys.com"
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: What time can I visit your office on Sunday?
+    - paragraph: "Phone: +91 74105 82898 I cannot confirm: Exact opening hours. Please contact the team."
+    - link "Call the business":
+      - /url: tel:+917410582898
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: We need a hotel promo video. Can you help?
+    - paragraph: Webtechnosys offers AI-assisted cinematic filmmaking services to create hotel promo videos, including social media content, 30 and 60 second commercials, and brand films, based on your actual property footage and storytelling needs. They can craft a complete guest journey film covering arrival, stay, cuisine, experience, sundowner, and brand close, leveraging AI to enhance real hospitality stories with cinematic mood and narrative.
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - paragraph: Could you share your postal adress?
+    - paragraph: "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India"
+    - generic: Did this answer help?
+    - button "Yes"
+    - button "No"
+    - button "Speak your message":
+    - button "Choose an emoji":
+    - textbox "Message":
+      - /placeholder: Ask Webtechnosys…
+    - button "Send message" [disabled]:
+    - paragraph: Please do not share passwords, OTPs or payment details.
+    - link "Privacy":
+      - /url: /privacy-policy
+    - generic: Powered by AiFrogi
+    - navigation "Assistant navigation":
+      - button "Home":
+        - generic: Home
+      - button "Messages":
+        - generic: Messages
+      - button "Help":
+        - generic: Help
+      - button "Updates":
+        - generic: Updates
+- alert

@@ -1,0 +1,22 @@
+MATCH app/api/public/website-bot/[slug]/route.ts
+MATCH lib/public-business-facts.ts
+MATCH lib/rag-query-normalization.ts
+MATCH lib/services/website-knowledge-service.ts
+MATCH lib/shared-answer-engine.ts
+MATCH lib/shared-answer-provider.ts
+MATCH lib/shared-answer-runtime.ts
+MATCH lib/rag-answer-coverage.ts
+MATCH lib/rag-query-embedding-cache.ts
+MATCH lib/rag-claim-relations.ts
+curl: (7) Failed to connect to 127.0.0.1 port 3011 after 0 ms: Connection refused
+{"status": "ok", "service": "aifrogi", "release": "rag-fc09918", "timestamp": "2026-10-03T10:52:53.461Z", "checks": {"database": "ok", "sessionSecret": "ok", "publicUrl": "ok", "webhookSecurity": "ok", "inboundCompatibility": "ok"}}
+MATCH app/api/public/website-bot/[slug]/route.ts
+MATCH lib/public-business-facts.ts
+MATCH lib/rag-query-normalization.ts
+MATCH lib/services/website-knowledge-service.ts
+MATCH lib/shared-answer-engine.ts
+MATCH lib/shared-answer-provider.ts
+MATCH lib/shared-answer-runtime.ts
+MATCH lib/rag-answer-coverage.ts
+MATCH lib/rag-query-embedding-cache.ts
+MATCH lib/rag-claim-relations.ts
