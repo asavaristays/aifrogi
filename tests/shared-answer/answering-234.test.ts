@@ -73,3 +73,16 @@ test('optional unsupported detail cannot discard the supported requested answer'
  const adapters:AnswerAdapters={state:async()=>({state:'READY',scope}),lexical:async()=>[unit],semantic:async()=>[],generate:async()=>({disposition:'ANSWER',sentences:[{text:content,kind:'FACT',evidenceIds:['a']},{text:'Our team includes 999 developers.',kind:'FACT',evidenceIds:['a']}],missingParts:[]}),verify:async()=>[{supported:true,evidenceIds:['a'],reason:'Explicit'},{supported:true,evidenceIds:['a'],reason:'Incorrect model approval',requestedPartMissing:null}],recheck:async()=>true};
  const r=await runSharedAnswer('Do you build custom applications?',adapters);assert.equal(r.answer,content);assert.equal(r.disposition,'ANSWER');assert.ok(r.trace.stages.some(s=>s.outcome==='UNSUPPORTED_CLAIM_OMITTED'));
 });
+test('rejecting an unasked promise keeps a supported capability without false uncertainty',async()=>{
+ const content='We create product demonstrations. We can tailor demonstrations to the agreed scope.';
+ const unit:AnswerEvidence={...scope,id:'a',content,digest:evidenceDigest(content),title:'Demonstrations',url:''};
+ const adapters:AnswerAdapters={state:async()=>({state:'READY',scope}),lexical:async()=>[unit],semantic:async()=>[],generate:async()=>({disposition:'ANSWER',sentences:[{text:'We create product demonstrations.',kind:'FACT',evidenceIds:['a']},{text:'We will tailor every demonstration.',kind:'FACT',evidenceIds:['a']}],missingParts:[]}),verify:async claims=>{assert.deepEqual(claims,['We create product demonstrations.']);return [{supported:true,evidenceIds:['a'],reason:'Explicit'}]},recheck:async()=>true};
+ const r=await runSharedAnswer('Can you create a product demonstration?',adapters);
+ assert.equal(r.disposition,'ANSWER');assert.equal(r.answer,'We create product demonstrations.');assert.equal(r.coverage?.status,'SUPPORTED');assert.deepEqual(r.coverage?.missingParts,[]);
+});
+test('a requested promise remains missing when only capability is supported',async()=>{
+ const content='We create product demonstrations. We can tailor demonstrations to the agreed scope.';
+ const unit:AnswerEvidence={...scope,id:'a',content,digest:evidenceDigest(content),title:'Demonstrations',url:''};
+ const adapters:AnswerAdapters={state:async()=>({state:'READY',scope}),lexical:async()=>[unit],semantic:async()=>[],generate:async()=>({disposition:'ANSWER',sentences:[{text:'We create product demonstrations.',kind:'FACT',evidenceIds:['a']},{text:'We will tailor every demonstration.',kind:'FACT',evidenceIds:['a']}],missingParts:[]}),verify:async()=>[{supported:true,evidenceIds:['a'],reason:'Explicit'}],recheck:async()=>true};
+ const r=await runSharedAnswer('Will you tailor every product demonstration?',adapters);assert.equal(r.disposition,'PARTIAL');assert.ok(r.coverage?.missingParts.length);assert.doesNotMatch(r.answer,/We will tailor/);
+});

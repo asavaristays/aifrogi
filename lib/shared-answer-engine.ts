@@ -1,4 +1,4 @@
-import {unsupportedClaimRelation} from './rag-claim-relations';
+import {unsupportedClaimRelation,requestedClaimRelation} from './rag-claim-relations';
 import {classifyAnswerCoverage,type AnswerCoverage} from "./rag-answer-coverage";
 import {preserveOfferingInventory} from "./rag-offering-completeness";
 import {quantityAlternativesSupported} from './rag-quantity-binding';
@@ -183,11 +183,12 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       record(exactDraft?'STRUCTURED_FACTS_NO_MODEL':'READY',start);
       const facts=draft.sentences.filter(s=>s.kind==='FACT');
       const relationMissing:string[]=[];
-      const relationSupported=facts.filter(fact=>{const missing=unsupportedClaimRelation(fact.text,evidence.filter(e=>fact.evidenceIds.includes(e.id)).map(e=>e.content));if(missing)relationMissing.push(missing);return !missing;});
-      if(relationMissing.length){
+      const relationSupported=facts.filter(fact=>{const missing=unsupportedClaimRelation(fact.text,evidence.filter(e=>fact.evidenceIds.includes(e.id)).map(e=>e.content));if(missing && requestedClaimRelation(question,missing))relationMissing.push(missing);return !missing;});
+      if(relationSupported.length!==facts.length){
         facts.splice(0,facts.length,...relationSupported);
         draft.missingParts=[...new Set([...draft.missingParts,...relationMissing])];
-        draft.disposition=facts.length?'PARTIAL':'NO_EVIDENCE';
+        if(!facts.length && !draft.missingParts.length)throw new Error('DRAFT_RELATION_SUPPORT_REJECTED');
+        draft.disposition=facts.length?(draft.missingParts.length?'PARTIAL':'ANSWER'):'NO_EVIDENCE';
         missingParts=[...draft.missingParts];
         trace.stages.push({stage:'CLAIM_RELATIONS',outcome:'UNSUPPORTED_RELATION_OMITTED',elapsedMs:0,ids:[]});
       }

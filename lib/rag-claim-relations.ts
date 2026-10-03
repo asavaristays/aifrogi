@@ -20,3 +20,11 @@ export function unsupportedClaimRelation(claim:string,passages:string[]):string|
  }
  return null;
 }
+
+/** A rejected optional claim is not automatically an unanswered user request. */
+export function requestedClaimRelation(question:string,relation:string):boolean {
+ const current=question.split(/(?:CURRENT visitor question:|Follow-up question:)\s*/i).at(-1)||question;
+ if(relation==='The requested per-unit quantity')return /\b(?:how many|how much|per|each|every|one|single)\b/i.test(current);
+ if(relation==='The requested unconditional commitment')return /\b(?:will|would|promise|guarantee|always|never|policy|share|sharing|disclose|disclosure|confidentiality)\b/i.test(current);
+ return false;
+}
