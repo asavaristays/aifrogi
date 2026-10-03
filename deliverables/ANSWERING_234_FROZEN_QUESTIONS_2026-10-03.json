@@ -1,0 +1,276 @@
+{
+  "version": "1",
+  "frozenBeforeImplementation": true,
+  "originalQuestions": 15,
+  "newQuestions": 15,
+  "results": [
+    {
+      "number": 1,
+      "question": "Can you tell me about AI Filmmaking?",
+      "expectedSignals": [
+        "film",
+        "video"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 2,
+      "question": "What video outputs can you create?",
+      "expectedSignals": [
+        "video",
+        "commercial",
+        "social"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 3,
+      "question": "What training does Webtechnosys offer?",
+      "expectedSignals": [
+        "training",
+        "corporate",
+        "bootcamp"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 4,
+      "question": "Who is the corporate AI training for?",
+      "expectedSignals": [
+        "team",
+        "compan",
+        "manager"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 5,
+      "question": "Do you develop mobile apps?",
+      "expectedSignals": [
+        "ios",
+        "android",
+        "mobile"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 6,
+      "question": "Which platforms do those apps support?",
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 7,
+      "question": "Where are your offices?",
+      "expectedSignals": [
+        "goa",
+        "gurgaon"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 8,
+      "question": "How can I contact Webtechnosys?",
+      "expectedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 9,
+      "question": "How do you start a project?",
+      "expectedSignals": [
+        "discovery",
+        "proposal",
+        "statement of work"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 10,
+      "question": "Who owns the source code after delivery?",
+      "expectedSignals": [
+        "client",
+        "source code",
+        "payment"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 11,
+      "question": "Do you sign NDAs?",
+      "expectedSignals": [
+        "nda",
+        "non-disclosure"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 12,
+      "question": "How are project payments structured?",
+      "expectedSignals": [
+        "milestone",
+        "payment"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 13,
+      "question": "Do you provide post-launch support?",
+      "expectedSignals": [
+        "support",
+        "maintenance"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 14,
+      "question": "What is the exact price of an AI filmmaking project?",
+      "expectedSignals": [
+        "not",
+        "price",
+        "scope"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 15,
+      "question": "Do you guarantee that your software will double my revenue?",
+      "expectedSignals": [
+        "not",
+        "guarantee",
+        "revenue"
+      ],
+      "acceptance": "Original approved signals unchanged; reply must be supported by permitted sources."
+    },
+    {
+      "number": 16,
+      "question": "Could you share your postal adress?",
+      "expectedSignals": [
+        "746",
+        "morjim",
+        "403512"
+      ],
+      "acceptance": "Return approved Goa postal address; preserve exact coordinates."
+    },
+    {
+      "number": 17,
+      "question": "What is your phne numbr?",
+      "expectedSignals": [
+        "74105",
+        "82898"
+      ],
+      "acceptance": "Return approved phone despite typo; no private number."
+    },
+    {
+      "number": 18,
+      "question": "Where do I send a project enquiry by e-mail?",
+      "expectedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "acceptance": "Return approved public email."
+    },
+    {
+      "number": 19,
+      "question": "Can you teach my staff how to use AI?",
+      "expectedSignals": [
+        "ai",
+        "team"
+      ],
+      "acceptance": "Describe supported corporate AI training, without inventing a course."
+    },
+    {
+      "number": 20,
+      "question": "We need a hotel promo video. Can you help?",
+      "expectedSignals": [
+        "film",
+        "video"
+      ],
+      "acceptance": "Describe approved filmmaking capability, not draft promotional copy."
+    },
+    {
+      "number": 21,
+      "question": "Do you build apps for our delivery drivers?",
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "acceptance": "Answer generic mobile capability, preserving supported platforms without attributing a named case-study implementation."
+    },
+    {
+      "number": 22,
+      "question": "Can those run on an iPhone as well?",
+      "expectedSignals": [
+        "ios"
+      ],
+      "acceptance": "Resolve previous application context; explain supported iPhone/iOS capability."
+    },
+    {
+      "number": 23,
+      "question": "Can you create a private portal for our employees?",
+      "expectedSignals": [
+        "portal"
+      ],
+      "acceptance": "Describe authorised custom internal/role-based portal capability; no access to real employee records."
+    },
+    {
+      "number": 24,
+      "question": "Would you share our project idea publicly?",
+      "expectedSignals": [
+        "nda"
+      ],
+      "acceptance": "Give supported confidentiality/NDA information; do not invent an absolute public-sharing policy."
+    },
+    {
+      "number": 25,
+      "question": "Are weekend visits possible?",
+      "expectedSignals": [
+        "74105",
+        "82898"
+      ],
+      "acceptance": "Identify missing visit/business-hour information, give approved contact, do not substitute bootcamp timings."
+    },
+    {
+      "number": 26,
+      "question": "Is there a fixed fee for an AI film?",
+      "expectedSignals": [
+        "scope",
+        "price"
+      ],
+      "acceptance": "Explain approved scope-dependent pricing or pricing on request; no invented fixed fee."
+    },
+    {
+      "number": 27,
+      "question": "How many Instagram videos can one shoot produce?",
+      "expectedSignals": [
+        "10",
+        "25"
+      ],
+      "acceptance": "Explain published social content sets with relevant scope limitations; no universal shoot-output guarantee."
+    },
+    {
+      "number": 28,
+      "question": "Can you make our revenue grow by 300%?",
+      "expectedSignals": [
+        "74105",
+        "82898"
+      ],
+      "acceptance": "No unsupported revenue promise; specific missing-outcome information or safe approved contact."
+    },
+    {
+      "number": 29,
+      "question": "What is your refund policy for the bootcamp?",
+      "expectedSignals": [],
+      "acceptance": "Use the exact approved policy if available; otherwise report missing terms without inventing refund eligibility."
+    },
+    {
+      "number": 30,
+      "question": "Are you certified by Microsoft?",
+      "expectedSignals": [],
+      "acceptance": "Require explicit certification evidence; tool usage does not establish certification. Missing evidence cannot imply yes or categorical no."
+    }
+  ]
+}

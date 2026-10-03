@@ -1,3 +1,5 @@
+import {unsupportedClaimRelation} from './rag-claim-relations';
+import {classifyAnswerCoverage,type AnswerCoverage} from "./rag-answer-coverage";
 import {preserveOfferingInventory} from "./rag-offering-completeness";
 import {quantityAlternativesSupported} from './rag-quantity-binding';
 import {selectEvidenceForSubject} from "./rag-subject-evidence";
@@ -12,8 +14,8 @@ export type SourceState = { state: 'READY'; scope: AnswerScope } | { state: 'NO_
 export type AnswerDraft = { disposition: 'ANSWER' | 'PARTIAL' | 'CLARIFY' | 'NO_EVIDENCE' | 'LIVE_ACTION_REQUIRED'; sentences: Array<{ text: string; kind: 'FACT'; evidenceIds: string[] }>; missingParts: string[] };
 export type EvidencePlan = {parts:Array<{questionPart:string;requiredSourceTerms?:string[];state:'SUPPORTED'|'MISSING'|'AMBIGUOUS'|'LIVE';evidenceIds:string[]}>};
 export type SupportReview = { supported: boolean; evidenceIds: string[]; reason: string; requestedPartMissing?:string|null };
-export type AnswerTrace = { version: 'shared-answer-v1'; stages: Array<{ stage: string; outcome: string; elapsedMs: number; ids: string[]; reasons?:string[] }> };
-export type SharedAnswerResult = { disposition: AnswerDraft['disposition'] | 'TECHNICAL_FAILURE'; answer: string; evidence: AnswerEvidence[]; factualClaims: string[]; answerHash: string; trace: AnswerTrace; failureCode: string | null; retrievedEvidence:AnswerEvidence[]; totalMs:number; claimEvidence?:Array<{claim:string;evidenceIds:string[]}> };
+export type AnswerTrace = { version: 'shared-answer-v1'; coverage?:AnswerCoverage; modelRequests?:Array<{operation:string;elapsedMs:number;inputTokens:number;outputTokens:number;status:'OK'|'ERROR'}>; queryEmbedding?:{cacheHit:boolean;elapsedMs:number}; stages: Array<{ stage: string; outcome: string; elapsedMs: number; ids: string[]; reasons?:string[] }> };
+export type SharedAnswerResult = { disposition: AnswerDraft['disposition'] | 'TECHNICAL_FAILURE'; answer: string; evidence: AnswerEvidence[]; factualClaims: string[]; answerHash: string; trace: AnswerTrace; failureCode: string | null; retrievedEvidence:AnswerEvidence[]; totalMs:number; claimEvidence?:Array<{claim:string;evidenceIds:string[]}>;coverage?:AnswerCoverage };
 export type AnswerAdapters = {
   state(): Promise<SourceState>;
   generate?(question:string,evidence:AnswerEvidence[]):Promise<AnswerDraft>;
@@ -107,13 +109,14 @@ function validateDraft(draft: AnswerDraft, evidence: AnswerEvidence[]) {
 export async function runSharedAnswer(question: string, adapters: AnswerAdapters): Promise<SharedAnswerResult> {
   const startedAt=Date.now();
   let servingScope:AnswerScope|undefined;
+  let missingParts:string[]=[];
   let retrievedEvidence:AnswerEvidence[]=[];
   let claimEvidence:Array<{claim:string;evidenceIds:string[]}>=[];
   const trace: AnswerTrace = {version:'shared-answer-v1',stages:[]};
   let stage='AUTHORITY';
   let start=startedAt;
   const record = (outcome:string,start:number,ids:string[]=[]) => trace.stages.push({stage,outcome,elapsedMs:Date.now()-start,ids});
-  const result=(disposition:SharedAnswerResult['disposition'],answer:string,evidence:AnswerEvidence[]=[],failureCode:string|null=null,factualClaims:string[]=[]):SharedAnswerResult=>({disposition,answer,evidence,factualClaims,answerHash:evidenceDigest(answer),trace,failureCode,retrievedEvidence,claimEvidence,totalMs:Date.now()-startedAt});
+  const result=(disposition:SharedAnswerResult['disposition'],answer:string,evidence:AnswerEvidence[]=[],failureCode:string|null=null,factualClaims:string[]=[]):SharedAnswerResult=>{const coverage=classifyAnswerCoverage(disposition,missingParts,failureCode,trace.stages.map(s=>s.outcome));trace.coverage=coverage;return {disposition,answer,evidence,factualClaims,answerHash:evidenceDigest(answer),trace,failureCode,retrievedEvidence,claimEvidence,coverage,totalMs:Date.now()-startedAt};};
   try {
     if (!question.trim() || question.length>8000) throw new Error('QUESTION_INVALID');
     start=Date.now(); const state=await adapters.state();record(state.state,start);
@@ -176,8 +179,18 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
         else if(draft.disposition==='NO_EVIDENCE'&&draft.sentences.length) draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
       }
       validateDraft(draft,evidence);
+      missingParts=[...draft.missingParts];
       record(exactDraft?'STRUCTURED_FACTS_NO_MODEL':'READY',start);
       const facts=draft.sentences.filter(s=>s.kind==='FACT');
+      const relationMissing:string[]=[];
+      const relationSupported=facts.filter(fact=>{const missing=unsupportedClaimRelation(fact.text,evidence.filter(e=>fact.evidenceIds.includes(e.id)).map(e=>e.content));if(missing)relationMissing.push(missing);return !missing;});
+      if(relationMissing.length){
+        facts.splice(0,facts.length,...relationSupported);
+        draft.missingParts=[...new Set([...draft.missingParts,...relationMissing])];
+        draft.disposition=facts.length?'PARTIAL':'NO_EVIDENCE';
+        missingParts=[...draft.missingParts];
+        trace.stages.push({stage:'CLAIM_RELATIONS',outcome:'UNSUPPORTED_RELATION_OMITTED',elapsedMs:0,ids:[]});
+      }
       let contactRecovery=false;
       if(!facts.length && draft.disposition==='NO_EVIDENCE' && draft.missingParts.length) {
         stage='CONTACT_RECOVERY';start=Date.now();
@@ -208,25 +221,28 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
         facts.splice(0,facts.length,...boundFacts);
         trace.stages.push({stage:'QUANTITY_BINDING',outcome:'UNSUPPORTED_ALTERNATIVE_OMITTED',elapsedMs:0,ids:[]});
       }
-      for(const fact of facts) {
+      const rejectedFacts=new Set(facts.filter(fact=>{
         const units=evidence.filter(e=>fact.evidenceIds.includes(e.id));
         const source=units.map(e=>e.content).join('\n');
-        if(numeric(fact.text).some(n=>!numeric(source).includes(n)) || unsupportedExclusion(fact.text,source) || (fact.text.match(/https?:\/\/[^\s)]+/g)??[]).some(url=>!units.some(e=>e.url===url||e.content.includes(url)))) throw new Error('DRAFT_FACT_GUARD_REJECTED');
-      }
+        return numeric(fact.text).some(n=>!numeric(source).includes(n)) || unsupportedExclusion(fact.text,source) || (fact.text.match(/https?:\/\/[^\s)]+/g)??[]).some(url=>!units.some(e=>e.url===url||e.content.includes(url)));
+      }));
+      if(rejectedFacts.size && (rejectedFacts.size===facts.length || !adapters.verify))throw new Error('DRAFT_FACT_GUARD_REJECTED');
+      if(rejectedFacts.size)trace.stages.push({stage:'FACT_GUARD',outcome:'UNSUPPORTED_CLAIM_OMITTED',elapsedMs:0,ids:[]});
       // One batch support check for generated claims; exact extracted facts need no model.
       if(!exactDraft && !contactRecovery && facts.length && adapters.verify) {
-        const reviews=await adapters.verify(facts.map(f=>f.text),evidence,question);
+        const verificationIds=new Set(facts.flatMap(f=>f.evidenceIds));
+        const reviews=await adapters.verify(facts.map(f=>f.text),evidence.filter(unit=>verificationIds.has(unit.id)),question);
         if(reviews.length!==facts.length) throw new Error('SUPPORT_SCHEMA_INVALID');
         const supported=facts.filter((fact,index)=>{
-          const review=reviews[index];
-          if(typeof review.supported!=='boolean'||!Array.isArray(review.evidenceIds)||review.evidenceIds.some(id=>!evidence.some(e=>e.id===id))) throw new Error('SUPPORT_SCHEMA_INVALID');
+          const review=rejectedFacts.has(fact) ? {...reviews[index],supported:false,evidenceIds:[]} : reviews[index];
+          if(typeof review.supported!=='boolean'||!Array.isArray(review.evidenceIds)||review.evidenceIds.some(id=>!verificationIds.has(id))) throw new Error('SUPPORT_SCHEMA_INVALID');
           if(review.supported && review.evidenceIds.length>0) {fact.evidenceIds=review.evidenceIds;return true;}
           return false;
         });
         if(supported.length!==facts.length) {
           if(!supported.length) throw new Error('DRAFT_SUPPORT_REJECTED');
+          const missing=reviews.flatMap((r,index)=>(!r.supported || rejectedFacts.has(facts[index])) && typeof r.requestedPartMissing==='string' && r.requestedPartMissing.trim() ? [r.requestedPartMissing.trim()] : []);
           facts.splice(0,facts.length,...supported);
-          const missing=reviews.flatMap(r=>!r.supported && typeof r.requestedPartMissing==='string' && r.requestedPartMissing.trim() ? [r.requestedPartMissing.trim()] : []);
           draft.missingParts=[...new Set([...draft.missingParts,...missing])];
           draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
         }
@@ -239,9 +255,10 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       stage='DELIVERY_AUTHORITY';start=Date.now();
       if(!await adapters.recheck(state.scope)) throw new Error('AUTHORITY_CHANGED');
       record('CURRENT',start);
-      const factualText=facts.map(s=>s.text.trim()).join(' ');
+      missingParts=[...draft.missingParts];
+      const factualText=facts.map(s=>s.text.trim()).join(!exactDraft && facts.length>1?'\n':' ');
       const limitation=draft.missingParts.length && !/\b(?:no|not|isn't|is not|aren't|are not|doesn't|does not|depends? on|not published|not provided|not available|cannot guarantee|can't guarantee)\b/i.test(factualText)
-        ? `I cannot confirm: ${draft.missingParts.join('; ')}. Please contact the team.`:'';
+        ? `I cannot confirm: ${draft.missingParts.map(part=>part.trim().replace(/[.!?]+$/, '')).join('; ')}. Please contact the team.`:'';
       const answer=[factualText,limitation].filter(Boolean).join(' ') || (draft.disposition==='CLARIFY'?'Which service or detail do you mean?':draft.disposition==='LIVE_ACTION_REQUIRED'?'That request needs an authorised live service or assistance from the business team.':'I could not verify that detail from the published business information.');
       claimEvidence=facts.map(s=>({claim:s.text.trim(),evidenceIds:s.evidenceIds}));
       return result(draft.disposition,answer,cited,null,facts.map(s=>s.text.trim()));

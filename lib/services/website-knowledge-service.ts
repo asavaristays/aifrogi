@@ -765,7 +765,7 @@ export async function buildWebsiteKnowledgeAnswer({
       materialEvidenceUnits: crawlEvidence.map(e => e.content),
       materialClaimDecisions: proof.factualClaims.map(claim => ({ claim, supported: true, matchedTerms: [], missingNumbers: [] })),
       replayTrace: { retrievalQuestion: resolved.retrievalQuestion, contextSourceUrls: sourceUrls, contextChars: proof.evidence.reduce((n,e) => n + e.content.length,0), finalAnswer: proof.answer, validatorViolations: proof.failureCode ? [proof.failureCode] : [], sharedEngine: proof.trace },
-      reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: proof.disposition === "TECHNICAL_FAILURE" ? "MODEL" : "NONE", failureCode: proof.failureCode, latencyMs: proof.trace.stages.reduce((n,s) => n + s.elapsedMs,0), attemptCount: proof.trace.stages.filter(s => s.stage === "COMPOSITION").length, escalationTier: escalationTierFor({disposition}), degradedMode: false }
+      reliability: { frameworkVersion: RELIABILITY_FRAMEWORK_VERSION, failureLayer: proof.disposition === "TECHNICAL_FAILURE" || proof.coverage?.status === "ENGINE_FAILURE" ? "MODEL" : "NONE", failureCode: proof.coverage?.failureCode || proof.failureCode, latencyMs: proof.trace.stages.reduce((n,s) => n + s.elapsedMs,0), attemptCount: proof.trace.stages.filter(s => s.stage === "COMPOSITION").length, escalationTier: escalationTierFor({disposition}), degradedMode: false }
     };
   }
   const exactContactRequest = /\b(contact|phone|telephone|email|address|located|location|offices?)\b/i.test(question);

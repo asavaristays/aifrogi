@@ -7,9 +7,10 @@ function distance(a:string,b:string) {
  }
  return d[a.length][b.length];
 }
-/** Correct a unique close vocabulary match; never rewrite names, numbers or URLs. */
+/** Correct a unique close vocabulary match; preserve URLs, emails and mixed-case brands. */
 export function normalizeRagQuestion(value:string) {
- return value.normalize('NFKC').replace(/[A-Za-z]{4,}/g,word=>{
+ return value.normalize('NFKC').replace(/https?:\/\/[^\s]+|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|[A-Za-z]{4,}/gi,word=>{
+  if(word.includes('://')||word.includes('@')||/[a-z][A-Z]/.test(word))return word;
   const lower=word.toLowerCase();if(vocabulary.includes(lower)) return word;
   const matches=vocabulary.filter(candidate=>Math.abs(candidate.length-lower.length)<=1&&distance(candidate,lower)<=1);
   return matches.length===1?matches[0]:word;

@@ -1,3 +1,4 @@
+import {ragQueryEmbeddingCache} from './rag-query-embedding-cache';
 import {normalizeRagQuestion} from './rag-query-normalization';
 import {readPublicRagCatalog,liveRagRequest} from './rag-live-read';
 import {publicFactRetrievalQueries} from './public-business-facts';
@@ -14,6 +15,7 @@ export async function answerFromSharedKnowledge(identity:CanonicalIdentity,quest
   question=normalizeRagQuestion(question);
   let provider:SharedAnswerProvider|undefined;
   let active:RagSnapshot|undefined;
+  let queryEmbedding:{cacheHit:boolean;elapsedMs:number}|undefined;
   const getProvider=()=>provider??(provider=new SharedAnswerProvider({...sharedProviderConfig(),compositionMode:options.compositionMode}));
   const snapshot=async()=>{
     const rows=await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<RagSnapshot[]>`SELECT * FROM aifrogi_security.rag_snapshot(${identity.propertyId})`);
@@ -50,7 +52,10 @@ export async function answerFromSharedKnowledge(identity:CanonicalIdentity,quest
       return [...published.flat(),...crawl(scope,website.flat())];
     },
     semantic:async(scope,q)=>{
-      const [vector]=await getProvider().embed([q]);
+      const embeddingStart=Date.now();
+      const config=sharedProviderConfig();
+      const cached=await ragQueryEmbeddingCache.read(scope,`${config.embeddingModel}:${config.dimensions}`,q,async()=>{const [vector]=await getProvider().embed([q]);return vector;});
+      const vector=cached.vector;queryEmbedding={cacheHit:cached.hit,elapsedMs:Date.now()-embeddingStart};
       const outcomes=await Promise.allSettled([
         claims(scope,q,vector),
         active?.crawl_generation ? withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.shared_answer_semantic_chunks(${identity.propertyId},${active!.crawl_generation},${vector}::double precision[],24)`).then(rows=>crawl(scope,rows)) : Promise.resolve([])
@@ -63,6 +68,8 @@ export async function answerFromSharedKnowledge(identity:CanonicalIdentity,quest
     verify:(c,e,q)=>getProvider().verifyClaims(c,e,q),
     recheck:async(scope)=>(await snapshot()).snapshot_hash===scope.generationId
   });
+  result.trace.modelRequests=provider?.metrics??[];
+  result.trace.queryEmbedding=queryEmbedding;
   return {...result,capturedAt:active?.knowledge_as_of?.toISOString()??null,modelUsage:{inputTokens:provider?.usage.inputTokens??0,outputTokens:provider?.usage.outputTokens??0}};
 }
 
