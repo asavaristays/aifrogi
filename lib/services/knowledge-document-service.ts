@@ -13,6 +13,7 @@ export type StagedAtomicClaim = {
 
 export const KNOWLEDGE_DOCUMENT_MIME_TYPES = new Set([
   "application/pdf",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "text/plain",
   "text/markdown",
@@ -21,7 +22,7 @@ export const KNOWLEDGE_DOCUMENT_MIME_TYPES = new Set([
 ]);
 
 export async function extractKnowledgeDocument(file: File) {
-  if (!KNOWLEDGE_DOCUMENT_MIME_TYPES.has(file.type)) throw new Error("Upload a PDF, DOCX, TXT, Markdown, CSV, or JSON document.");
+  if (!KNOWLEDGE_DOCUMENT_MIME_TYPES.has(file.type)) throw new Error("Upload a PDF, XLSX, DOCX, TXT, Markdown, CSV, or JSON document.");
   if (!file.size || file.size > 8 * 1024 * 1024) throw new Error("Knowledge documents must be between 1 byte and 8 MB.");
   const buffer = Buffer.from(await file.arrayBuffer());
   let text = "";
@@ -36,6 +37,28 @@ export async function extractKnowledgeDocument(file: File) {
     const mammoth = await import("mammoth");
     const parsed = await mammoth.extractRawText({ buffer });
     text = parsed.value || "";
+  } else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+    const {default:ExcelJS}=await import('exceljs');
+    const workbook=new ExcelJS.Workbook();
+    await workbook.xlsx.load(buffer as unknown as Parameters<typeof workbook.xlsx.load>[0]);
+    const records:Array<Record<string,string>>=[];
+    for(const sheet of workbook.worksheets) {
+      const headers:string[]=[];
+      sheet.getRow(1).eachCell((cell,index)=>{headers[index]=cell.text.toLowerCase().replace(/[^a-z0-9]+/g,'_');});
+      sheet.eachRow((row,index)=>{
+        if(index===1) return;
+        if(records.length>=MAX_STAGED_CLAIMS) throw new Error('Workbook exceeds the supported 100-row review batch. Split the workbook before uploading.');
+        const record:Record<string,string>={category:sheet.name};
+        row.eachCell((cell,column)=>{
+          // Formula results and external references are not approved source values.
+          if(cell.type===ExcelJS.ValueType.Formula) throw new Error('Replace workbook formulas with explicit values before uploading.');
+          record[headers[column]||`column_${column}`]=cell.text;
+        });
+        records.push(record);
+      });
+    }
+    text=JSON.stringify(records);
+    if(text.length>MAX_EXTRACTED_CHARS) throw new Error('Workbook text exceeds the supported review batch.');
   } else {
     text = buffer.toString("utf8");
   }
@@ -77,7 +100,7 @@ function parseCsvLine(line: string) {
 }
 
 function structuredRows(text: string, mimeType: string): Array<Record<string, unknown>> {
-  if (mimeType === "application/json") {
+  if (mimeType === "application/json" || mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
     try {
       const parsed = JSON.parse(text) as unknown;
       if (Array.isArray(parsed)) return parsed.filter((item): item is Record<string, unknown> => Boolean(item && typeof item === "object" && !Array.isArray(item)));

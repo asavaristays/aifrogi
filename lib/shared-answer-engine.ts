@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { composePublicFactDraft, requestedPublicFactFields } from './public-business-facts';
+import { composePublicFactDraft, currentQuestion, requestedPublicFactFields } from './public-business-facts';
 
 /** One contract for all businesses. Provider adapters cannot expand authority. */
 export type AnswerScope = { organizationId: string; propertyId: string; generationId: string };
@@ -13,6 +13,7 @@ export type SharedAnswerResult = { disposition: AnswerDraft['disposition'] | 'TE
 export type AnswerAdapters = {
   state(): Promise<SourceState>;
   generate?(question:string,evidence:AnswerEvidence[]):Promise<AnswerDraft>;
+  verify?(claims:string[],evidence:AnswerEvidence[]):Promise<SupportReview[]>;
   lexical(scope: AnswerScope, question: string): Promise<AnswerEvidence[]>;
   semantic(scope: AnswerScope, question: string): Promise<AnswerEvidence[]>;
   rerank?(question:string,evidence:AnswerEvidence[]):Promise<AnswerEvidence[]>;
@@ -52,7 +53,7 @@ export function fuseAnswerEvidence(scope: AnswerScope, lexical: AnswerEvidence[]
   return units.sort((a,b)=>(scores.get(b.id)??0)-(scores.get(a.id)??0)||a.id.localeCompare(b.id)).slice(0,limit);
 }
 
-const retrievalStopWords=new Set(['about','after','again','also','are','before','being','can','could','current','does','from','have','how','into','more','offer','offers','only','previous','question','tell','their','there','these','those','visitor','webtechnosys','what','when','where','which','who','with','would','you','your']);
+const retrievalStopWords=new Set(['about','after','again','also','are','before','being','can','could','current','does','from','have','how','into','more','offer','offers','only','previous','question','tell','their','there','these','those','visitor','what','when','where','which','who','with','would','you','your']);
 export function prioritizeAnswerEvidence(question:string,evidence:AnswerEvidence[],limit=16) {
   const terms=[...new Set((question.toLowerCase().match(/[a-z0-9]+/g)??[]).filter(term=>term.length>=3&&!retrievalStopWords.has(term)).map(term=>term.length>4&&term.endsWith('s')?term.slice(0,-1):term))];
   if(terms.includes('office')) terms.push('address','operates');
@@ -128,7 +129,7 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     if(exactDraft || adapters.generate) {
       stage='COMPOSITION';start=Date.now();
       const onlyHours=requestedPublicFactFields(question).join(',')==='hours';
-      const requestedGuarantee=/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(question);
+      const requestedGuarantee=/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(currentQuestion(question));
       const explicitGuarantee=evidence.some(unit=>/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(unit.content));
       const draft=exactDraft ?? (requestedGuarantee && !explicitGuarantee
         ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['A published guarantee for the requested outcome']}
@@ -143,14 +144,31 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
         const platformUnits=evidence.filter(unit=>/\bios\b/i.test(unit.content)&&/\bandroid\b/i.test(unit.content));
         if(platformUnits.length&&!facts.some(fact=>/\bios\b/i.test(fact.text)&&/\bandroid\b/i.test(fact.text))) facts.push({text:'The published mobile offering includes iOS and Android products.',kind:'FACT',evidenceIds:platformUnits.slice(0,4).map(unit=>unit.id)});
       }
-      const citedIds=new Set(facts.flatMap(s=>s.evidenceIds));
-      const cited=evidence.filter(e=>citedIds.has(e.id));
+
       stage='VERIFICATION';start=Date.now();
       for(const fact of facts) {
         const units=evidence.filter(e=>fact.evidenceIds.includes(e.id));
         const source=units.map(e=>e.content).join('\n');
         if(numeric(fact.text).some(n=>!numeric(source).includes(n)) || unsupportedExclusion(fact.text,source) || (fact.text.match(/https?:\/\/[^\s)]+/g)??[]).some(url=>!units.some(e=>e.url===url||e.content.includes(url)))) throw new Error('DRAFT_FACT_GUARD_REJECTED');
       }
+      // One batch support check for generated claims; exact extracted facts need no model.
+      if(!exactDraft && facts.length && adapters.verify) {
+        const reviews=await adapters.verify(facts.map(f=>f.text),evidence);
+        if(reviews.length!==facts.length) throw new Error('SUPPORT_SCHEMA_INVALID');
+        const supported=facts.filter((fact,index)=>{
+          const review=reviews[index];
+          if(typeof review.supported!=='boolean'||!Array.isArray(review.evidenceIds)||review.evidenceIds.some(id=>!evidence.some(e=>e.id===id))) throw new Error('SUPPORT_SCHEMA_INVALID');
+          return review.supported && review.evidenceIds.length>0 && review.evidenceIds.every(id=>fact.evidenceIds.includes(id));
+        });
+        if(supported.length!==facts.length) {
+          if(!supported.length) throw new Error('DRAFT_SUPPORT_REJECTED');
+          facts.splice(0,facts.length,...supported);
+          draft.disposition='PARTIAL';
+          draft.missingParts=['The remaining requested detail'];
+        }
+      }
+      const citedIds=new Set(facts.flatMap(s=>s.evidenceIds));
+      const cited=evidence.filter(e=>citedIds.has(e.id));
       record('SUPPORTED',start,[...citedIds]);
       stage='DELIVERY_AUTHORITY';start=Date.now();
       if(!await adapters.recheck(state.scope)) throw new Error('AUTHORITY_CHANGED');

@@ -5,7 +5,7 @@ export type PublicBusinessFact = { field: PublicFactField; value: string; eviden
 
 /** Only requested public business coordinates enter this path; private requests
  * remain subject to the intent boundary before the answering engine. */
-function currentQuestion(question:string) { return question.split(/(?:CURRENT visitor question:|Follow-up question:)\s*/i).at(-1) || question; }
+export function currentQuestion(question:string) { return question.split(/(?:CURRENT visitor question:|Follow-up question:)\s*/i).at(-1) || question; }
 
 export function requestedPublicFactFields(question: string): PublicFactField[] {
   question=currentQuestion(question);

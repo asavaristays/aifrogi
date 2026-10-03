@@ -531,19 +531,6 @@ export function buildPublishedWebsiteContactAnswer(question: string, businessNam
 
 export function resolveWebsiteKnowledgeQuestion(question: string, priorQuestions: string[] = [], lastAssistantAnswer = "") {
   const decision = resolveSovereignQuestion(question, priorQuestions, CATEGORY_BLUEPRINT_VERSION, lastAssistantAnswer);
-  // Only server-validated tenant/session history reaches this service. History
-  // identifies a subject; it never becomes factual evidence or action consent.
-  const dependent = /\b(?:it|its|they|their|them|those|these|that|this|such|same)\b/i.test(question)
-    || /\b(?:outputs?|formats?|platforms?)\b/i.test(question) && !/\b(?:filmmaking|training|software|mobile|application|service|project)\b/i.test(question);
-  if (!decision.contextUsed && dependent && ['BUSINESS','UNKNOWN','CONTEXT_FOLLOW_UP'].includes(decision.intent)) {
-    const prior = priorQuestions.slice(0,6).find(q => ['BUSINESS','CONTACT_INFO'].includes(resolveSovereignQuestion(q).intent));
-    if (prior) {
-      decision.resolvedQuestion = `Previous subject question (context only): ${prior.slice(0,1000)}\nCURRENT visitor question: ${question.trim()}`;
-      decision.contextUsed = true;
-      decision.intent = 'CONTEXT_FOLLOW_UP';
-      decision.reason = 'Resolved a dependent question using the latest relevant tenant-session subject; history is not evidence.';
-    }
-  }
   return { intent: decision.intent, retrievalQuestion: decision.resolvedQuestion, priorQuestion: decision.contextUsed ? decision.resolvedQuestion : null, decision };
 }
 

@@ -55,6 +55,7 @@ export async function answerFromSharedCrawl(identity:CanonicalIdentity,question:
     },
     // Fusion is deterministic; avoid a model ranking call on the normal path.
     generate:(q,e)=>getProvider().generate(q,e),
+    verify:(claims,e)=>getProvider().verifyClaims(claims,e),
     recheck:async scope=>{const current=await state();return current.state==='READY'&&current.generation_id===scope.generationId;}
   });
   return {...result,capturedAt,modelUsage:{inputTokens:provider?.usage.inputTokens??0,outputTokens:provider?.usage.outputTokens??0}};

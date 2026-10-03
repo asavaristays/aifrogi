@@ -1,3 +1,4 @@
+import { assertSharedAnswerDelivery } from '@/lib/shared-answer-engine';
 import { requestedPublicFactFields } from '@/lib/public-business-facts';
 import { emojiAcknowledgement, resolveWebsiteBotQuestion } from "@/lib/website-bot-conversation";
 import { NextResponse } from "next/server";
@@ -90,7 +91,16 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     // The tenant transaction must commit the lead and canonical conversation
     // before the separate least-privilege web role can create its guest audit.
     // Delivery remains before the HTTP response crosses the network boundary.
-    if(turn.canonicalDelivery) await turn.canonicalDelivery();
+    if(turn.canonicalDelivery) {
+      try { await turn.canonicalDelivery(); }
+      catch(error) {
+        console.error('[website-bot] Canonical delivery failed',error instanceof Error ? error.message : 'Unknown error');
+        // The session rotation has committed. Preserve its capability on a
+        // recoverable receipt failure; never send the unreceipted factual answer.
+        const committed=await turn.clone().json() as {visitorToken?:string};
+        return NextResponse.json({error:'Your answer could not be delivered. Please retry shortly.',visitorToken:committed.visitorToken},{status:503,headers:responseHeaders});
+      }
+    }
     return turn;
   }
   catch (error) {
@@ -404,7 +414,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     contact: consentedContact || undefined,
     enabled: profile.category !== "STAY" && (profile.capabilities || []).includes("CAPTURE_LEADS") && (profile.capabilities || []).includes("QUALIFY_LEADS") && !explicitHumanRequest && !safety.blocked && !categoryBoundary && !["OFF_TOPIC", "GREETING", "IDENTITY"].includes(fallbackDecision.intent)
   });
-  if (result) {
+  if (result && !result.sharedProof) {
     result.answer = normalizeVisitorAnswerLanguage(result.answer);
     const quality = evaluateVisitorAnswerQuality({ question: message, answer: result.answer, decision: result.decision });
     if (!quality.passed) result = {
@@ -425,7 +435,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       ? `What would you like help with about ${businessName}? Please share the service, product or booking detail you mean.`
       : fallbackContactPath);
   const hasVerifiedAnswer = result?.decision.disposition === "ANSWER" && Boolean(result.sources.length || result.claimIds.length || result.reliability.failureLayer === "NONE");
-  const proposedAnswer = qualification.state && hasVerifiedAnswer && !requestedPublicFactFields(message).length ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
+  const proposedAnswer = qualification.state && hasVerifiedAnswer && !result?.sharedProof && !requestedPublicFactFields(message).length ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
     : fallbackDecision.intent === "OFF_TOPIC" || fallbackDecision.disposition === "CLARIFY" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
@@ -436,7 +446,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     question: message,
     answer: proposedAnswer,
     decision: proposedDecision,
-    previousState: technicalFailure ? undefined : existingResolutionState,
+    previousState: technicalFailure || result?.sharedProof ? undefined : existingResolutionState,
     maxClarifyCycles: repeatsUnresolvedAffirmative ? 1 : undefined,
     consentedFacts: payload?.consent ? { name: String(payload.name || ""), contact: String(payload.contact || "") } : {}
   });
@@ -466,7 +476,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   if (governedExactAnswer && canonicalRows.length !== new Set(result!.claimIds).size) {
     return NextResponse.json({ error: "Canonical factual evidence is unavailable." }, { status: 503, headers: responseHeaders });
   }
-  const answer = governedExactAnswer
+  const answer = result?.sharedProof && ["ANSWER", "PARTIAL"].includes(result.sharedProof.disposition) && !safety.blocked && !explicitHumanRequest && !actionRequested
+    ? enforceExecutionResponse(preliminaryExecutionContract,result.sharedProof.answer)
+    : governedExactAnswer
     ? canonicalRows.map(row => row.answer.trim()).join("\n")
     : normalizePublicPhoneInText(enforceExecutionResponse(preliminaryExecutionContract, resolution.answer), organization.publicPhone);
   const evidenceDecision = resolution.decision;
@@ -609,7 +621,9 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     // knowledge service validated its draft, so draft decisions cannot be
     // reused as proof of the delivered response.
     if (result?.crawlGenerationId && result.chunkIds?.length) {
-      const finalCoverage = validateMaterialClaimCoverage({
+      const finalCoverage = result.sharedProof
+        ? {valid:true,decisions:assertSharedAnswerDelivery(result.sharedProof,answer,organization.id,property.id)}
+        : validateMaterialClaimCoverage({
         answer,
         evidenceUnits: result.materialEvidenceUnits || []
       });
