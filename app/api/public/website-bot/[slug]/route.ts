@@ -1,3 +1,4 @@
+import { requestedPublicFactFields } from '@/lib/public-business-facts';
 import { emojiAcknowledgement, resolveWebsiteBotQuestion } from "@/lib/website-bot-conversation";
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
@@ -424,7 +425,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
       ? `What would you like help with about ${businessName}? Please share the service, product or booking detail you mean.`
       : fallbackContactPath);
   const hasVerifiedAnswer = result?.decision.disposition === "ANSWER" && Boolean(result.sources.length || result.claimIds.length || result.reliability.failureLayer === "NONE");
-  const proposedAnswer = qualification.state && hasVerifiedAnswer ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
+  const proposedAnswer = qualification.state && hasVerifiedAnswer && !requestedPublicFactFields(message).length ? appendQualificationPrompt(baseAnswer, qualification.prompt) : baseAnswer;
   const proposedDecision = result?.decision || (safety.blocked
     ? { ...fallbackDecision, disposition: "ESCALATE" as const, reason: "Sensitive input guard returned the approved safety response and requires human governance." }
     : fallbackDecision.intent === "OFF_TOPIC" || fallbackDecision.disposition === "CLARIFY" ? fallbackDecision : { ...fallbackDecision, disposition: "FALLBACK" as const, reason: "No sufficient approved answer context or model result was available." });
