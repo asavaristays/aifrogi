@@ -1,0 +1,877 @@
+{
+  "kind": "Isolated synthetic adapter failures; no production fault injection",
+  "results": [
+    {
+      "name": "Reranker unavailable",
+      "expected": "SUPPORTED",
+      "pass": true,
+      "actualReply": "We build custom applications.",
+      "coverage": {
+        "status": "SUPPORTED",
+        "missingParts": [],
+        "failureCode": null
+      },
+      "disposition": "ANSWER",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 2,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "RERANK",
+            "outcome": "FALLBACK_ORIGINAL_ORDER",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "SUPPORTED",
+          "missingParts": [],
+          "failureCode": null
+        }
+      },
+      "totalLatencyMs": 4
+    },
+    {
+      "name": "Invalid reranker schema",
+      "expected": "SUPPORTED",
+      "pass": true,
+      "actualReply": "We build custom applications.",
+      "coverage": {
+        "status": "SUPPORTED",
+        "missingParts": [],
+        "failureCode": null
+      },
+      "disposition": "ANSWER",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "RERANK",
+            "outcome": "FALLBACK_ORIGINAL_ORDER",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "SUPPORTED",
+          "missingParts": [],
+          "failureCode": null
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Embedding unavailable, lexical usable",
+      "expected": "SUPPORTED",
+      "pass": true,
+      "actualReply": "We build custom applications.",
+      "coverage": {
+        "status": "SUPPORTED",
+        "missingParts": [],
+        "failureCode": null
+      },
+      "disposition": "ANSWER",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "DEGRADED",
+            "elapsedMs": 1,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "SUPPORTED",
+          "missingParts": [],
+          "failureCode": null
+        }
+      },
+      "totalLatencyMs": 1
+    },
+    {
+      "name": "Lexical unavailable, semantic usable",
+      "expected": "SUPPORTED",
+      "pass": true,
+      "actualReply": "We build custom applications.",
+      "coverage": {
+        "status": "SUPPORTED",
+        "missingParts": [],
+        "failureCode": null
+      },
+      "disposition": "ANSWER",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "DEGRADED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "SUPPORTED",
+          "missingParts": [],
+          "failureCode": null
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Both retrieval services unavailable",
+      "expected": "ENGINE_FAILURE",
+      "pass": true,
+      "actualReply": "I’m having trouble preparing your answer. Please try again.",
+      "coverage": {
+        "status": "ENGINE_FAILURE",
+        "missingParts": [],
+        "failureCode": "RETRIEVAL_UNAVAILABLE"
+      },
+      "disposition": "TECHNICAL_FAILURE",
+      "failureCode": "RETRIEVAL_UNAVAILABLE",
+      "retrievedSourcePassages": [],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "ENGINE_FAILURE",
+          "missingParts": [],
+          "failureCode": "RETRIEVAL_UNAVAILABLE"
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Generation unavailable, approved phone retained",
+      "expected": "ENGINE_FAILURE",
+      "pass": true,
+      "actualReply": "Phone: +44 20 7946 0958 I couldn't complete that answer right now. Please call the business team for help with your question.",
+      "coverage": {
+        "status": "ENGINE_FAILURE",
+        "missingParts": [],
+        "failureCode": "MODEL_HTTP_503"
+      },
+      "disposition": "PARTIAL",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "CONTACT_RECOVERY",
+            "outcome": "RECOVERED_FROM_MODEL_HTTP_503",
+            "elapsedMs": 1,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "ENGINE_FAILURE",
+          "missingParts": [],
+          "failureCode": "MODEL_HTTP_503"
+        }
+      },
+      "totalLatencyMs": 1
+    },
+    {
+      "name": "Verification unavailable, generated answer withheld",
+      "expected": "ENGINE_FAILURE",
+      "pass": true,
+      "actualReply": "Phone: +44 20 7946 0958 I couldn't complete that answer right now. Please call the business team for help with your question.",
+      "coverage": {
+        "status": "ENGINE_FAILURE",
+        "missingParts": [],
+        "failureCode": "MODEL_HTTP_503"
+      },
+      "disposition": "PARTIAL",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "CONTACT_RECOVERY",
+            "outcome": "RECOVERED_FROM_MODEL_HTTP_503",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "ENGINE_FAILURE",
+          "missingParts": [],
+          "failureCode": "MODEL_HTTP_503"
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Invalid verification schema",
+      "expected": "ENGINE_FAILURE",
+      "pass": true,
+      "actualReply": "Phone: +44 20 7946 0958 I couldn't complete that answer right now. Please call the business team for help with your question.",
+      "coverage": {
+        "status": "ENGINE_FAILURE",
+        "missingParts": [],
+        "failureCode": "SUPPORT_SCHEMA_INVALID"
+      },
+      "disposition": "PARTIAL",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 1,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "CONTACT_RECOVERY",
+            "outcome": "RECOVERED_FROM_SUPPORT_SCHEMA_INVALID",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "ENGINE_FAILURE",
+          "missingParts": [],
+          "failureCode": "SUPPORT_SCHEMA_INVALID"
+        }
+      },
+      "totalLatencyMs": 1
+    },
+    {
+      "name": "Other tenant passage returned",
+      "expected": "AUTHORITY_DENIED",
+      "pass": true,
+      "actualReply": "I’m having trouble preparing your answer. Please try again.",
+      "coverage": {
+        "status": "AUTHORITY_DENIED",
+        "missingParts": [],
+        "failureCode": "EVIDENCE_SCOPE_MISMATCH"
+      },
+      "disposition": "TECHNICAL_FAILURE",
+      "failureCode": "EVIDENCE_SCOPE_MISMATCH",
+      "retrievedSourcePassages": [],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "AUTHORITY_DENIED",
+          "missingParts": [],
+          "failureCode": "EVIDENCE_SCOPE_MISMATCH"
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Other organization passage returned",
+      "expected": "AUTHORITY_DENIED",
+      "pass": true,
+      "actualReply": "I’m having trouble preparing your answer. Please try again.",
+      "coverage": {
+        "status": "AUTHORITY_DENIED",
+        "missingParts": [],
+        "failureCode": "EVIDENCE_SCOPE_MISMATCH"
+      },
+      "disposition": "TECHNICAL_FAILURE",
+      "failureCode": "EVIDENCE_SCOPE_MISMATCH",
+      "retrievedSourcePassages": [],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "AUTHORITY_DENIED",
+          "missingParts": [],
+          "failureCode": "EVIDENCE_SCOPE_MISMATCH"
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Authority changed before delivery",
+      "expected": "AUTHORITY_DENIED",
+      "pass": true,
+      "actualReply": "I’m having trouble preparing your answer. Please try again.",
+      "coverage": {
+        "status": "AUTHORITY_DENIED",
+        "missingParts": [],
+        "failureCode": "AUTHORITY_CHANGED"
+      },
+      "disposition": "TECHNICAL_FAILURE",
+      "failureCode": "AUTHORITY_CHANGED",
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "ERROR",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "AUTHORITY_DENIED",
+          "missingParts": [],
+          "failureCode": "AUTHORITY_CHANGED"
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Missing requested fact with approved contact",
+      "expected": "PARTIAL",
+      "pass": true,
+      "actualReply": "Phone: +44 20 7946 0958 I cannot confirm: Delivery date. Please contact the team.",
+      "coverage": {
+        "status": "PARTIAL",
+        "missingParts": [
+          "Delivery date"
+        ],
+        "failureCode": null
+      },
+      "disposition": "PARTIAL",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": ""
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "COMPOSITION",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "CONTACT_RECOVERY",
+            "outcome": "APPROVED_PHONE_FOUND",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "VERIFICATION",
+            "outcome": "SUPPORTED",
+            "elapsedMs": 0,
+            "ids": [
+              "fixture-source"
+            ]
+          },
+          {
+            "stage": "DELIVERY_AUTHORITY",
+            "outcome": "CURRENT",
+            "elapsedMs": 0,
+            "ids": []
+          }
+        ],
+        "coverage": {
+          "status": "PARTIAL",
+          "missingParts": [
+            "Delivery date"
+          ],
+          "failureCode": null
+        }
+      },
+      "totalLatencyMs": 0
+    },
+    {
+      "name": "Equal-authority conflicting public field",
+      "expected": "SOURCE_CONFLICT",
+      "pass": true,
+      "actualReply": "The approved sources contain conflicting values for this detail. Please confirm which value is current with the business team.",
+      "coverage": {
+        "status": "SOURCE_CONFLICT",
+        "missingParts": [],
+        "failureCode": null
+      },
+      "disposition": "CLARIFY",
+      "failureCode": null,
+      "retrievedSourcePassages": [
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "fixture-source",
+          "content": "We build custom applications. Phone: +44 20 7946 0958",
+          "digest": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e",
+          "title": "Applications",
+          "url": "",
+          "fieldKey": "phone",
+          "entityKey": "business",
+          "authorityRank": 1,
+          "valueHash": "1ed98897cf3d3cb445101dd492fbb55f6cc0e5f744e1f7a098867dd2a778502e"
+        },
+        {
+          "organizationId": "fixture-org",
+          "propertyId": "fixture-tenant",
+          "generationId": "fixture-snapshot",
+          "id": "other-source",
+          "content": "Phone: +44 20 7946 0959",
+          "digest": "967b76adb6a0040d47c36c6b328d6d6db38d981c9cfa96577166e4411ba0482b",
+          "title": "Applications",
+          "url": "",
+          "fieldKey": "phone",
+          "entityKey": "business",
+          "authorityRank": 1,
+          "valueHash": "967b76adb6a0040d47c36c6b328d6d6db38d981c9cfa96577166e4411ba0482b"
+        }
+      ],
+      "trace": {
+        "version": "shared-answer-v1",
+        "stages": [
+          {
+            "stage": "AUTHORITY",
+            "outcome": "READY",
+            "elapsedMs": 0,
+            "ids": []
+          },
+          {
+            "stage": "RETRIEVAL",
+            "outcome": "CONFLICT",
+            "elapsedMs": 1,
+            "ids": [
+              "fixture-source",
+              "other-source"
+            ]
+          }
+        ],
+        "coverage": {
+          "status": "SOURCE_CONFLICT",
+          "missingParts": [],
+          "failureCode": null
+        }
+      },
+      "totalLatencyMs": 1
+    }
+  ]
+}

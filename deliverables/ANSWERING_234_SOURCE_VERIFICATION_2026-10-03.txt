@@ -1,0 +1,11 @@
+MATCH app/api/public/website-bot/[slug]/route.ts
+MATCH lib/public-business-facts.ts
+MATCH lib/rag-query-normalization.ts
+MATCH lib/services/website-knowledge-service.ts
+MATCH lib/shared-answer-engine.ts
+MATCH lib/shared-answer-provider.ts
+MATCH lib/shared-answer-runtime.ts
+MATCH lib/rag-answer-coverage.ts
+MATCH lib/rag-query-embedding-cache.ts
+MATCH lib/rag-claim-relations.ts
+{"status":"ok","service":"aifrogi","release":"rag-7c395d4","timestamp":"2026-10-03T10:37:00.996Z","checks":{"database":"ok","sessionSecret":"ok","publicUrl":"ok","webhookSecurity":"ok","inboundCompatibility":"ok"}}

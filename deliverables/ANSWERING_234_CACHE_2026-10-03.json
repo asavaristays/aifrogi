@@ -1,0 +1,418 @@
+{
+  "endpoint": "http://127.0.0.1:3217",
+  "results": [
+    {
+      "number": 1,
+      "question": "Which types of videos do you produce?",
+      "actualReply": "Webtechnosys produces various types of videos focused on hospitality and tourism including social media content sets (10 or 25 videos), 30 second AI commercials, and 60 second AI brand films that tell a complete cinematic hospitality story. I cannot confirm: The requested unconditional commitment. Please contact the team.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4411,
+      "expectedSignals": [
+        "video",
+        "commercial"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "Supported video-output formats, source reviewed. Cache experiment is not a frozen-gate case.",
+      "response": {
+        "answer": "Webtechnosys produces various types of videos focused on hospitality and tourism including social media content sets (10 or 25 videos), 30 second AI commercials, and 60 second AI brand films that tell a complete cinematic hospitality story. I cannot confirm: The requested unconditional commitment. Please contact the team.",
+        "answerCoverage": {
+          "status": "PARTIAL",
+          "missingParts": [
+            "The requested unconditional commitment"
+          ],
+          "failureCode": null
+        },
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus90whu00a8zrkx8lgped3i",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "PARTIALLY_ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "ACTIVE",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "deliveryReceipt": {
+        "id": "695e5e44-243c-43d6-bf3d-7312ff73f70c",
+        "propertyId": "cmumdx1t0000b01kxql82a3f3",
+        "conversationId": "cmus90wib00agzrkxssf29u27",
+        "deliveryKey": "website:cmus90whu00a8zrkx8lgped3i",
+        "snapshotHash": "7c4357b07d9e6dbf28e9d19bb684df289c98016029a7f55c007bf25a974d82f4",
+        "question": "Which types of videos do you produce?",
+        "answer": "Webtechnosys produces various types of videos focused on hospitality and tourism including social media content sets (10 or 25 videos), 30 second AI commercials, and 60 second AI brand films that tell a complete cinematic hospitality story. I cannot confirm: The requested unconditional commitment. Please contact the team.",
+        "answerHash": "0ea4446ddfc3632bed130a1b817d925351b903f89d488125ac39ddfde0c70b80",
+        "evidence": [
+          {
+            "id": "claim:webtechnosys-excel-row-10",
+            "kind": "CLAIM",
+            "digest": "74c2efcfd3da864307b6a987bd9f7e6de8919176de53b7986adac743c3f567bd",
+            "sourceId": "webtechnosys-excel-row-10",
+            "sourceVersion": "8216dbd09813d2795518cd0ae77b28748a0e9262ccd0d2520ccd5c688da5f6c9"
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Webtechnosys produces various types of videos focused on hospitality and tourism including social media content sets (10 or 25 videos), 30 second AI commercials, and 60 second AI brand films that tell a complete cinematic hospitality story.",
+            "supported": true,
+            "evidenceIds": [
+              "claim:webtechnosys-excel-row-10"
+            ]
+          }
+        ],
+        "trace": {
+          "stages": [
+            {
+              "ids": [],
+              "stage": "AUTHORITY",
+              "outcome": "READY",
+              "elapsedMs": 54
+            },
+            {
+              "ids": [
+                "claim:webtechnosys-excel-row-10",
+                "claim:webtechnosys-excel-row-9",
+                "claim:webtechnosys-excel-row-11",
+                "claim:webtechnosys-excel-row-8",
+                "claim:webtechnosys-excel-row-57"
+              ],
+              "stage": "RETRIEVAL",
+              "outcome": "READY",
+              "elapsedMs": 601
+            },
+            {
+              "ids": [],
+              "stage": "COMPOSITION",
+              "outcome": "READY",
+              "elapsedMs": 2362
+            },
+            {
+              "ids": [],
+              "stage": "CLAIM_RELATIONS",
+              "outcome": "UNSUPPORTED_RELATION_OMITTED",
+              "elapsedMs": 0
+            },
+            {
+              "ids": [
+                "claim:webtechnosys-excel-row-10"
+              ],
+              "stage": "VERIFICATION",
+              "outcome": "SUPPORTED",
+              "elapsedMs": 1110
+            },
+            {
+              "ids": [],
+              "stage": "DELIVERY_AUTHORITY",
+              "outcome": "CURRENT",
+              "elapsedMs": 36
+            }
+          ],
+          "version": "shared-answer-v1",
+          "coverage": {
+            "status": "PARTIAL",
+            "failureCode": null,
+            "missingParts": [
+              "The requested unconditional commitment"
+            ]
+          },
+          "modelRequests": [
+            {
+              "status": "OK",
+              "elapsedMs": 562,
+              "operation": "EMBEDDING",
+              "inputTokens": 8,
+              "outputTokens": 0
+            },
+            {
+              "status": "OK",
+              "elapsedMs": 2362,
+              "operation": "GENERATION",
+              "inputTokens": 2706,
+              "outputTokens": 160
+            },
+            {
+              "status": "OK",
+              "elapsedMs": 1110,
+              "operation": "VERIFICATION",
+              "inputTokens": 761,
+              "outputTokens": 41
+            }
+          ],
+          "queryEmbedding": {
+            "cacheHit": false,
+            "elapsedMs": 562
+          }
+        },
+        "createdAt": "2026-10-03T10:28:11.891527+00:00",
+        "reportingMetadata": {
+          "id": "cmus90whu00a8zrkx8lgped3i",
+          "safeResolution": false,
+          "resolutionState": "ACTIVE",
+          "terminalOutcome": "PARTIALLY_ANSWERED",
+          "decisionConsistent": true
+        },
+        "retrievedPassages": [
+          {
+            "id": "claim:webtechnosys-excel-row-8",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Create cinematic AI films, commercials and social-media videos in Goa for hotels, resorts, tourism brands, properties and local businesses.\nAI Filmmaking in Goa starts with the real property.\n\nAI filmmaking is not about creating a hotel that does not exist. We begin with the actual property \u2014 its architecture, rooms, pool, food, people, surroundings and destination.\n\n01 Real Location\nWe work from actual hotel footage, photography, architecture and guest experiences.\n\n02 Cinematic Mood\nDaylight can move into golden hour, twilight or an atmospheric evening while keeping the property recognisable.\n\n03 Expanded Storytelling\nA room, restaurant, beach, pool or arrival sequence can become part of one continuous guest journey.\n\n04 More Content From Every Shoot\nOne planned production can create commercial films, reels, campaign cuts, website visuals and social content.\n\nWe use AI to enhance the story \u2014 not replace the hotel.\n\nBefore AI comes the story.\n\nA beautiful AI-generated shot is not a commercial. We first understand what the hotel should make a guest feel \u2014 privacy, heritage, celebration, escape, food, design, wellness, Goa, beach life or something entirely different.\n\nBrand Discovery\nProperty, positioning, audience and campaign objective.\n\nShot Planning\nWhat we need to photograph or film at the actual property.\n\nStoryboard",
+            "version": "2bdd757db9a136543533cc49220cea0c0e16e3867f0688421b8b4f35d0fe4973"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-9",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Arrival. Stay. Cuisine. Pool. Destination. Sundowner. Departure.\n\nAI Production\nReal footage and reference frames are developed into cinematic sequences.\n\nEdit + Sound\nFilm edit, pacing, music, ambience, captions and narrative.\n\nFinal Commercial\nMain film plus platform-specific social cuts.\n\nWe design the guest journey before we generate the film.\n\nThe story is shaped as a vertical film treatment: arrival, stay, cuisine, experience, sundowner and brand close.\n\n01 Arrival\nThe first glimpse of the property.\n\n02 Stay\nArchitecture, room, textures, view and privacy.\n\n03 Cuisine\nThe place, light, table and occasion.\n\n04 Experience\nPool, spa, beach, neighbourhood or destination.\n\n05 Sundowner\nThe emotional peak of the story.\n\n06 Brand Close\nProperty identity, invitation and CTA.\n\nSee what AI can add to a real hospitality story.\n\nEach film receives enough space to breathe. No tiny thumbnails, no generic AI graphics \u2014 just hospitality mood, movement and story.\n\nPlay film \nLight & Atmosphere\nGolden hour, twilight and evening.\nTurning real architecture into richer cinematic moods without losing the identity of the property.\n\nPlay film \nDestination Story\nThe stay beyond the room.\nCoastline, food, movement and the atmosphere around the hotel become part of the commercial story.\n\nPlay film \nHospitality Experience\nArrival, stay, cuisine and sundowner.",
+            "version": "d896c4fa4762bafd1f0b5adff47908fc793c25394edc2f938c4e6e22f514c679"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-10",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Building an emotional guest journey from actual hospitality moments and AI-assisted cinematic production.\n\nOne Story. Multiple Content Outputs.\n\nNo pricing on this page. The scope depends on property assets, campaign need and final formats.\n\nSocial Media Content \u2014 Set of 10\nA focused content bank for regular posting, launch communication and seasonal promotions.\nArrival reel\nRoom story\nCuisine\nPool / beach\nSundowner\n\nSocial Media Content \u2014 Set of 25\nA deeper library for hotels that need continuity across property, rooms, food, people, destination, offers and seasonality.\nBrand story\nDestination\nExperience reel\nCampaign cut\n\n30 Second AI Commercial\nA focused campaign film for paid advertising, hotel launches, packages, seasonal promotion and brand awareness.\nRequest Commercial Pricing \n\n60 Second AI Brand Film\nA complete cinematic hospitality story combining property, guest journey, experience, destination, narrative, sound and brand close.\nRequest Commercial Pricing \n\nHospitality knowledge before AI hype.\n\nWebtechnosys brings together hospitality understanding, visual storytelling, technology and practical AI production.\n\nSince 1996\nLong-term experience across technology, hospitality and digital communication.\n\n500+ Projects\nWebsite development, digital marketing, branding, photography and hospitality presentation.\n\nHospitality + Photography",
+            "version": "8216dbd09813d2795518cd0ae77b28748a0e9262ccd0d2520ccd5c688da5f6c9"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-11",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Hotel and architectural photography informs how we see light, architecture, space and guest psychology.\n\nAI Applications + Training\nThat experience now extends into practical AI production, automation and business applications.\n\nFounder: Manish Purohit \n\nAI Filmmaking Presentation\n\nExplore the complete AI Filmmaking presentation.\n\nOur brochure explains the filmmaking workflow, storyboard approach, content formats, production stack and hospitality use cases.\n\nDownload AI Filmmaking Brochure \u2192 \n\nWebtechnosys AI Agency\n\nYour hotel already has the location. Let\u2019s build the story.\n\nWhether you need a single commercial or a complete social content library, we can start with your existing property assets and identify what should be shot, enhanced or created.\n\nDiscuss Your Hotel Film \u2192 \nWhatsApp Us \n\n+91 74105 82898 \n[email&#160;protected] \nGurugram \u00b7 Goa \u00b7 Mumbai",
+            "version": "480c09d743bdd907aadfb665723cd29ef5c2b9cfc353fb6ad81b1f141b92eb29"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-57",
+            "url": "",
+            "title": "AI Training",
+            "content": "Research a business opportunity, create an automation, build a small application, deploy it online and produce a short promotional video.\n\nGemini, Claude, ChatGPT, Cursor, MCP, automation tools, Git/VPS deployment, Kling and Higgsfield are introduced only where they help the project move forward.\n\nHow the day moves\n\nFrom idea to live demo, without pretending one day makes anyone a master.\n\nThe promise is working confidence: knowing which AI tool to use, what to ask, what to verify, and how to move from output to action.\n\n9:00 Set up the room\nAccounts, Cursor, files and team roles checked before serious work starts.\n\n9:40 Research with three models\nGemini, Claude and ChatGPT are compared for source quality, structure and hallucination risk.\n\n10:45 Create better prompts\nOne reusable master prompt is adapted across different AI models.\n\n11:20 Connect AI safely\nMCP and plugins are explained as approved tool access, with permission and review kept visible.\n\n12:00 Automate one workflow\nTeams build one useful flow: hotel enquiry, prospect research, document summary or content planning.\n\n1:45 Build with AI coding\nCursor and Claude Code help produce a dashboard, landing page or small business utility from a starter project.\n\n2:35 Deploy the result\nThe application goes live on prepared workshop infrastructure, not a customer production server.\n\n3:20 Create the promo",
+            "version": "8589a5e0c415d09e398e0d070ee112eb7e05ae535877f85ab7b46aae548def4d"
+          }
+        ]
+      }
+    },
+    {
+      "number": 2,
+      "question": "Which types of videos do you produce?",
+      "actualReply": "Webtechnosys produces various types of videos including social media content sets (10 or 25 clips) showcasing guest journeys, 30-second AI commercials for advertising and seasonal promotions, and 60-second AI brand films with cinematic hospitality stories combining property, experience, destination and brand narrative.\nTheir videos cover arrival, stay, cuisine, pool, destination, sundowner and departure sequences, using AI production with real footage and cinematic editing, to create engaging hospitality stories designed as vertical film treatments.\nThey specialize in AI filmmaking for hotels, resorts, tourism brands, properties and local businesses, starting with real property assets and enhancing them with cinematic mood and storytelling to produce commercials, reels, campaign cuts, website visuals, and social content.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4461,
+      "expectedSignals": [
+        "video",
+        "commercial"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "Supported video-output formats, source reviewed. Cache experiment is not a frozen-gate case.",
+      "response": {
+        "answer": "Webtechnosys produces various types of videos including social media content sets (10 or 25 clips) showcasing guest journeys, 30-second AI commercials for advertising and seasonal promotions, and 60-second AI brand films with cinematic hospitality stories combining property, experience, destination and brand narrative.\nTheir videos cover arrival, stay, cuisine, pool, destination, sundowner and departure sequences, using AI production with real footage and cinematic editing, to create engaging hospitality stories designed as vertical film treatments.\nThey specialize in AI filmmaking for hotels, resorts, tourism brands, properties and local businesses, starting with real property assets and enhancing them with cinematic mood and storytelling to produce commercials, reels, campaign cuts, website visuals, and social content.",
+        "answerCoverage": {
+          "status": "SUPPORTED",
+          "missingParts": [],
+          "failureCode": null
+        },
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus911je00akzrkxrk2dmsn7",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "deliveryReceipt": {
+        "id": "a4870b05-4dcc-4113-b366-5247ec9bf1e5",
+        "propertyId": "cmumdx1t0000b01kxql82a3f3",
+        "conversationId": "cmus90wib00agzrkxssf29u27",
+        "deliveryKey": "website:cmus911je00akzrkxrk2dmsn7",
+        "snapshotHash": "7c4357b07d9e6dbf28e9d19bb684df289c98016029a7f55c007bf25a974d82f4",
+        "question": "Which types of videos do you produce?",
+        "answer": "Webtechnosys produces various types of videos including social media content sets (10 or 25 clips) showcasing guest journeys, 30-second AI commercials for advertising and seasonal promotions, and 60-second AI brand films with cinematic hospitality stories combining property, experience, destination and brand narrative.\nTheir videos cover arrival, stay, cuisine, pool, destination, sundowner and departure sequences, using AI production with real footage and cinematic editing, to create engaging hospitality stories designed as vertical film treatments.\nThey specialize in AI filmmaking for hotels, resorts, tourism brands, properties and local businesses, starting with real property assets and enhancing them with cinematic mood and storytelling to produce commercials, reels, campaign cuts, website visuals, and social content.",
+        "answerHash": "e396d12ff51bdb49f30f865f7c2c81afb56c81e7abc1fa3261a24a89fd9f5120",
+        "evidence": [
+          {
+            "id": "claim:webtechnosys-excel-row-10",
+            "kind": "CLAIM",
+            "digest": "74c2efcfd3da864307b6a987bd9f7e6de8919176de53b7986adac743c3f567bd",
+            "sourceId": "webtechnosys-excel-row-10",
+            "sourceVersion": "8216dbd09813d2795518cd0ae77b28748a0e9262ccd0d2520ccd5c688da5f6c9"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-9",
+            "kind": "CLAIM",
+            "digest": "0c92fb1c9c5d4cba9ddcdaf15151583b18a34cb87d86b23adb0a772b2b0337a5",
+            "sourceId": "webtechnosys-excel-row-9",
+            "sourceVersion": "d896c4fa4762bafd1f0b5adff47908fc793c25394edc2f938c4e6e22f514c679"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-8",
+            "kind": "CLAIM",
+            "digest": "595d1281327f5d00ff6938ca1dcdbcb046f0a3fb39f3cbf93be61dd0389a27b2",
+            "sourceId": "webtechnosys-excel-row-8",
+            "sourceVersion": "2bdd757db9a136543533cc49220cea0c0e16e3867f0688421b8b4f35d0fe4973"
+          }
+        ],
+        "claims": [
+          {
+            "claim": "Webtechnosys produces various types of videos including social media content sets (10 or 25 clips) showcasing guest journeys, 30-second AI commercials for advertising and seasonal promotions, and 60-second AI brand films with cinematic hospitality stories combining property, experience, destination and brand narrative.",
+            "supported": true,
+            "evidenceIds": [
+              "claim:webtechnosys-excel-row-10"
+            ]
+          },
+          {
+            "claim": "Their videos cover arrival, stay, cuisine, pool, destination, sundowner and departure sequences, using AI production with real footage and cinematic editing, to create engaging hospitality stories designed as vertical film treatments.",
+            "supported": true,
+            "evidenceIds": [
+              "claim:webtechnosys-excel-row-9"
+            ]
+          },
+          {
+            "claim": "They specialize in AI filmmaking for hotels, resorts, tourism brands, properties and local businesses, starting with real property assets and enhancing them with cinematic mood and storytelling to produce commercials, reels, campaign cuts, website visuals, and social content.",
+            "supported": true,
+            "evidenceIds": [
+              "claim:webtechnosys-excel-row-8"
+            ]
+          }
+        ],
+        "trace": {
+          "stages": [
+            {
+              "ids": [],
+              "stage": "AUTHORITY",
+              "outcome": "READY",
+              "elapsedMs": 45
+            },
+            {
+              "ids": [
+                "claim:webtechnosys-excel-row-10",
+                "claim:webtechnosys-excel-row-9",
+                "claim:webtechnosys-excel-row-11",
+                "claim:webtechnosys-excel-row-8",
+                "claim:webtechnosys-excel-row-57"
+              ],
+              "stage": "RETRIEVAL",
+              "outcome": "READY",
+              "elapsedMs": 86
+            },
+            {
+              "ids": [],
+              "stage": "COMPOSITION",
+              "outcome": "READY",
+              "elapsedMs": 2407
+            },
+            {
+              "ids": [
+                "claim:webtechnosys-excel-row-10",
+                "claim:webtechnosys-excel-row-9",
+                "claim:webtechnosys-excel-row-8"
+              ],
+              "stage": "VERIFICATION",
+              "outcome": "SUPPORTED",
+              "elapsedMs": 1651
+            },
+            {
+              "ids": [],
+              "stage": "DELIVERY_AUTHORITY",
+              "outcome": "CURRENT",
+              "elapsedMs": 44
+            }
+          ],
+          "version": "shared-answer-v1",
+          "coverage": {
+            "status": "SUPPORTED",
+            "failureCode": null,
+            "missingParts": []
+          },
+          "modelRequests": [
+            {
+              "status": "OK",
+              "elapsedMs": 2406,
+              "operation": "GENERATION",
+              "inputTokens": 2706,
+              "outputTokens": 226
+            },
+            {
+              "status": "OK",
+              "elapsedMs": 1651,
+              "operation": "VERIFICATION",
+              "inputTokens": 1506,
+              "outputTokens": 117
+            }
+          ],
+          "queryEmbedding": {
+            "cacheHit": true,
+            "elapsedMs": 1
+          }
+        },
+        "createdAt": "2026-10-03T10:28:18.443737+00:00",
+        "reportingMetadata": {
+          "id": "cmus911je00akzrkxrk2dmsn7",
+          "safeResolution": true,
+          "resolutionState": "RESOLVED",
+          "terminalOutcome": "ANSWERED",
+          "decisionConsistent": true
+        },
+        "retrievedPassages": [
+          {
+            "id": "claim:webtechnosys-excel-row-8",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Create cinematic AI films, commercials and social-media videos in Goa for hotels, resorts, tourism brands, properties and local businesses.\nAI Filmmaking in Goa starts with the real property.\n\nAI filmmaking is not about creating a hotel that does not exist. We begin with the actual property \u2014 its architecture, rooms, pool, food, people, surroundings and destination.\n\n01 Real Location\nWe work from actual hotel footage, photography, architecture and guest experiences.\n\n02 Cinematic Mood\nDaylight can move into golden hour, twilight or an atmospheric evening while keeping the property recognisable.\n\n03 Expanded Storytelling\nA room, restaurant, beach, pool or arrival sequence can become part of one continuous guest journey.\n\n04 More Content From Every Shoot\nOne planned production can create commercial films, reels, campaign cuts, website visuals and social content.\n\nWe use AI to enhance the story \u2014 not replace the hotel.\n\nBefore AI comes the story.\n\nA beautiful AI-generated shot is not a commercial. We first understand what the hotel should make a guest feel \u2014 privacy, heritage, celebration, escape, food, design, wellness, Goa, beach life or something entirely different.\n\nBrand Discovery\nProperty, positioning, audience and campaign objective.\n\nShot Planning\nWhat we need to photograph or film at the actual property.\n\nStoryboard",
+            "version": "2bdd757db9a136543533cc49220cea0c0e16e3867f0688421b8b4f35d0fe4973"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-9",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Arrival. Stay. Cuisine. Pool. Destination. Sundowner. Departure.\n\nAI Production\nReal footage and reference frames are developed into cinematic sequences.\n\nEdit + Sound\nFilm edit, pacing, music, ambience, captions and narrative.\n\nFinal Commercial\nMain film plus platform-specific social cuts.\n\nWe design the guest journey before we generate the film.\n\nThe story is shaped as a vertical film treatment: arrival, stay, cuisine, experience, sundowner and brand close.\n\n01 Arrival\nThe first glimpse of the property.\n\n02 Stay\nArchitecture, room, textures, view and privacy.\n\n03 Cuisine\nThe place, light, table and occasion.\n\n04 Experience\nPool, spa, beach, neighbourhood or destination.\n\n05 Sundowner\nThe emotional peak of the story.\n\n06 Brand Close\nProperty identity, invitation and CTA.\n\nSee what AI can add to a real hospitality story.\n\nEach film receives enough space to breathe. No tiny thumbnails, no generic AI graphics \u2014 just hospitality mood, movement and story.\n\nPlay film \nLight & Atmosphere\nGolden hour, twilight and evening.\nTurning real architecture into richer cinematic moods without losing the identity of the property.\n\nPlay film \nDestination Story\nThe stay beyond the room.\nCoastline, food, movement and the atmosphere around the hotel become part of the commercial story.\n\nPlay film \nHospitality Experience\nArrival, stay, cuisine and sundowner.",
+            "version": "d896c4fa4762bafd1f0b5adff47908fc793c25394edc2f938c4e6e22f514c679"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-10",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Building an emotional guest journey from actual hospitality moments and AI-assisted cinematic production.\n\nOne Story. Multiple Content Outputs.\n\nNo pricing on this page. The scope depends on property assets, campaign need and final formats.\n\nSocial Media Content \u2014 Set of 10\nA focused content bank for regular posting, launch communication and seasonal promotions.\nArrival reel\nRoom story\nCuisine\nPool / beach\nSundowner\n\nSocial Media Content \u2014 Set of 25\nA deeper library for hotels that need continuity across property, rooms, food, people, destination, offers and seasonality.\nBrand story\nDestination\nExperience reel\nCampaign cut\n\n30 Second AI Commercial\nA focused campaign film for paid advertising, hotel launches, packages, seasonal promotion and brand awareness.\nRequest Commercial Pricing \n\n60 Second AI Brand Film\nA complete cinematic hospitality story combining property, guest journey, experience, destination, narrative, sound and brand close.\nRequest Commercial Pricing \n\nHospitality knowledge before AI hype.\n\nWebtechnosys brings together hospitality understanding, visual storytelling, technology and practical AI production.\n\nSince 1996\nLong-term experience across technology, hospitality and digital communication.\n\n500+ Projects\nWebsite development, digital marketing, branding, photography and hospitality presentation.\n\nHospitality + Photography",
+            "version": "8216dbd09813d2795518cd0ae77b28748a0e9262ccd0d2520ccd5c688da5f6c9"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-11",
+            "url": "",
+            "title": "AI Filmmaking",
+            "content": "Hotel and architectural photography informs how we see light, architecture, space and guest psychology.\n\nAI Applications + Training\nThat experience now extends into practical AI production, automation and business applications.\n\nFounder: Manish Purohit \n\nAI Filmmaking Presentation\n\nExplore the complete AI Filmmaking presentation.\n\nOur brochure explains the filmmaking workflow, storyboard approach, content formats, production stack and hospitality use cases.\n\nDownload AI Filmmaking Brochure \u2192 \n\nWebtechnosys AI Agency\n\nYour hotel already has the location. Let\u2019s build the story.\n\nWhether you need a single commercial or a complete social content library, we can start with your existing property assets and identify what should be shot, enhanced or created.\n\nDiscuss Your Hotel Film \u2192 \nWhatsApp Us \n\n+91 74105 82898 \n[email&#160;protected] \nGurugram \u00b7 Goa \u00b7 Mumbai",
+            "version": "480c09d743bdd907aadfb665723cd29ef5c2b9cfc353fb6ad81b1f141b92eb29"
+          },
+          {
+            "id": "claim:webtechnosys-excel-row-57",
+            "url": "",
+            "title": "AI Training",
+            "content": "Research a business opportunity, create an automation, build a small application, deploy it online and produce a short promotional video.\n\nGemini, Claude, ChatGPT, Cursor, MCP, automation tools, Git/VPS deployment, Kling and Higgsfield are introduced only where they help the project move forward.\n\nHow the day moves\n\nFrom idea to live demo, without pretending one day makes anyone a master.\n\nThe promise is working confidence: knowing which AI tool to use, what to ask, what to verify, and how to move from output to action.\n\n9:00 Set up the room\nAccounts, Cursor, files and team roles checked before serious work starts.\n\n9:40 Research with three models\nGemini, Claude and ChatGPT are compared for source quality, structure and hallucination risk.\n\n10:45 Create better prompts\nOne reusable master prompt is adapted across different AI models.\n\n11:20 Connect AI safely\nMCP and plugins are explained as approved tool access, with permission and review kept visible.\n\n12:00 Automate one workflow\nTeams build one useful flow: hotel enquiry, prospect research, document summary or content planning.\n\n1:45 Build with AI coding\nCursor and Claude Code help produce a dashboard, landing page or small business utility from a starter project.\n\n2:35 Deploy the result\nThe application goes live on prepared workshop infrastructure, not a customer production server.\n\n3:20 Create the promo",
+            "version": "8589a5e0c415d09e398e0d070ee112eb7e05ae535877f85ab7b46aae548def4d"
+          }
+        ]
+      }
+    }
+  ]
+}
