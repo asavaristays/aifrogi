@@ -1,3 +1,4 @@
+import type { SharedAnswerResult } from "@/lib/shared-answer-engine";
 import { validateGeneratedClaims } from "@/lib/sovereign-intelligence/claim-validator";
 export type WebsiteAnswerAction = { label: string; url: string };
 type Source = { title: string; url: string; authority?: string };
@@ -9,14 +10,26 @@ export function safeAnswerUrl(value: string) {
   } catch { return null; }
 }
 
+export function safeWebsiteAnswerActionUrl(value: string) {
+  return /^tel:\+?\d{7,15}$/.test(value) ? value : safeAnswerUrl(value);
+}
+
 // Actions come from tenant-authorised retrieved sources, never from model URLs.
 // They navigate to information; they do not imply a booking or payment occurred.
-export function websiteAnswerActions(question: string, disposition: string, sources: Source[]): WebsiteAnswerAction[] {
+export function websiteAnswerActions(question: string, disposition: string, sources: Source[], proof?: Pick<SharedAnswerResult, "disposition" | "factualClaims">): WebsiteAnswerAction[] {
+  // A contact recovery supports the contact, not an answer to the original question.
+  if (proof?.disposition === "PARTIAL") {
+    const phone = proof.factualClaims.map(claim => claim.match(/^Phone:\s*(\+?[\d ()-]+)$/i)?.[1]).find(Boolean);
+    const digits = phone?.replace(/\D/g, "");
+    return digits && digits.length >= 7 && digits.length <= 15
+      ? [{ label: "Call the business", url: `tel:${phone!.trim().startsWith("+") ? "+" : ""}${digits}` }] : [];
+  }
   if (disposition !== "ANSWER") return [];
-  const terms = question.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) || [];
+  const stopWords = new Set(["the", "and", "can", "could", "would", "you", "your", "our", "what", "which", "how", "please", "tell", "about", "for", "with", "does", "have", "business"]);
+  const terms = (question.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) || []).filter(term => !stopWords.has(term));
   const candidates = sources.filter(source => source.authority?.startsWith("APPROVED_") && safeAnswerUrl(source.url));
   const ranked = candidates.map((source, index) => ({source,index,score:terms.filter(term => `${source.title} ${source.url}`.toLowerCase().includes(term)).length})).sort((a,b)=>b.score-a.score || a.index-b.index);
-  const source = ranked[0]?.source;
+  const source = ranked[0]?.score > 0 ? ranked[0].source : undefined;
   if (!source) return [];
   const pricingPage = /pricing|prices|plans/i.test(`${source.title} ${new URL(source.url).pathname}`);
   return [{label:pricingPage ? "View pricing" : "Learn more",url:safeAnswerUrl(source.url)!}];

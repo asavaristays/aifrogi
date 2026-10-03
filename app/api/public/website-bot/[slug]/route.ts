@@ -446,6 +446,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const assistedFallback = !explicitHumanRequest && !safety.blocked && fallbackDecision.intent !== "OFF_TOPIC" && (technicalFailure || ["FALLBACK", "ESCALATE"].includes(proposedDecision.disposition));
   const resolution = governResolutionOutcome({
     question: message,
+    answerComplete: result?.sharedProof ? result.sharedProof.disposition === "ANSWER" : undefined,
     answer: proposedAnswer,
     decision: proposedDecision,
     previousState: technicalFailure || result?.sharedProof && ["ANSWER","PARTIAL"].includes(result.sharedProof.disposition) ? undefined : existingResolutionState,
@@ -465,7 +466,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     actionRequested,
     actionPerformed,
     endpointVerified,
-    clarifyCount: resolution.state.clarifyCount
+    clarifyCount: resolution.state.clarifyCount,
+    answerComplete: result?.sharedProof ? result.sharedProof.disposition === "ANSWER" : undefined
   });
   // Once canonical serving is required, the delivered bytes must remain the
   // exact owner-approved claim bytes. Presentation normalization would make a
@@ -531,7 +533,8 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
     actionRequested,
     actionPerformed,
     endpointVerified,
-    clarifyCount: resolution.state.clarifyCount
+    clarifyCount: resolution.state.clarifyCount,
+    answerComplete: result?.sharedProof ? result.sharedProof.disposition === "ANSWER" : undefined
   });
   const evidence = await recordSovereignAnswerEvidence({
     propertyId: property.id, leadId: captured.lead.id, sessionIdHash: hashWebsiteVisitorValue(sessionId), question: safety.storageText,
@@ -615,7 +618,7 @@ async function handleVisitorTurn(request: Request, context: { params: Promise<{ 
   const bookingContext = { ...(requestedDestination ? { destination: requestedDestination } : {}), ...(requestedDates[0] ? { checkIn: requestedDates[0] } : {}), ...(requestedDates[1] ? { checkOut: requestedDates[1] } : {}), ...(contextualStayName ? { stay: contextualStayName } : {}) };
   const preStayFlow = profile.category === "STAY" ? matchPublishedHotelFlow(knowledgeSettings.tenantFlows || [], "PRE_STAY", message) : null;
   const preStaySmartContent = preStayFlow ? { flowId:preStayFlow.flow.id,journey:"PRE_STAY",kind:preStayFlow.flow.templateKey,quickReplies:preStayFlow.flow.templateKey==="HOTEL_DISCOVER"?["Rooms and stays","Experiences","Plan my arrival"]:preStayFlow.flow.templateKey==="HOTEL_PLAN_ARRIVAL"?["Check-in time","Directions","Request a transfer"]:["Share dates","Compare stays","Talk to reservations"] } : undefined;
-  const responseBody = { answer, answerActions: websiteAnswerActions(message, evidenceDecision.disposition, result?.sources || []), smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact && handoffEnabled ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" };
+  const responseBody = { answer, answerActions: websiteAnswerActions(message, evidenceDecision.disposition, result?.sources || [], result?.sharedProof), smartContent:preStaySmartContent, ...((requestsOnlineBooking || negotiation.kind === "ACCEPTED") && bookingLink?.action === "BOOKING" ? { uiAction: "OPEN_BOOKING", bookingContext } : {}), grounded: Boolean(result?.sources.length || result?.claimIds.length), sources: result?.sources.slice(0, 3) || [], knowledgeAsOf: result?.knowledgeAsOf || null, answerEvidenceId: evidence?.id || null, governance: { constitutionVersion: evidenceDecision.constitutionVersion, blueprintVersion: evidenceDecision.blueprintVersion, executionContractVersion: executionContract.version, terminalOutcome: executionContract.terminalOutcome, authority: executionContract.authority, intent: evidenceDecision.intent, disposition: evidenceDecision.disposition, resolutionState: resolution.state.status, clarifyCount: resolution.state.clarifyCount, circuitBreaker: resolution.state.circuitBreakerTriggered }, qualification: (explicitHumanRequest || assistedFallback) && !consentedContact && handoffEnabled ? { contactEligible: true, nextField: "contact" } : qualification.state ? { contactEligible: qualification.state.contactEligible, nextField: qualification.state.nextField } : null, responseSlaMinutes: profile.responseSlaMinutes, handoffAvailable: handoffEnabled, visitorToken, conversationState: humanRequested ? "HUMAN_REQUESTED" : "AI_READY" };
   let canonicalDelivery:(()=>Promise<unknown>)|null=null;
   if (canonicalFactsRequired() && factualAnswerIntent && evidenceDecision.disposition === "ANSWER") {
     // Bind crawl evidence to the exact bytes crossing the HTTP boundary. The

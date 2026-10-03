@@ -5,6 +5,7 @@ export const EXECUTION_CONTRACT_VERSION = "2.0" as const;
 
 export type IntelligenceTerminalOutcome =
   | "ANSWERED"
+  | "PARTIALLY_ANSWERED"
   | "NEEDS_ONE_CLARIFICATION"
   | "WAITING_FOR_VERIFIED_RESULT"
   | "WAITING_FOR_STAFF"
@@ -109,6 +110,7 @@ export function evaluateExecutionContract(input: {
   actionPerformed?: boolean;
   endpointVerified?: boolean;
   clarifyCount?: number;
+  answerComplete?: boolean;
 }): IntelligenceExecutionContract {
   const flow = resolveFlowTrace({
     flow: input.flow || null,
@@ -130,6 +132,7 @@ export function evaluateExecutionContract(input: {
     return { ...base, terminalOutcome: "COMPLETED_AND_VERIFIED", authority: "VERIFY", responseAllowed: true, completionClaimAllowed: true, reason: "The authorised operation completed and its result was verified." };
   }
   if (input.decision.disposition === "CLARIFY") return { ...base, terminalOutcome: input.clarifyCount && input.clarifyCount > 1 ? "WAITING_FOR_STAFF" : "NEEDS_ONE_CLARIFICATION", authority: "INFORMATION", responseAllowed: true, completionClaimAllowed: false, reason: input.clarifyCount && input.clarifyCount > 1 ? "The clarification limit was reached; do not continue the loop." : "One bounded clarification is permitted." };
+  if (input.decision.disposition === "ANSWER" && input.answerComplete === false) return { ...base, terminalOutcome: "PARTIALLY_ANSWERED", authority: "INFORMATION", responseAllowed: true, completionClaimAllowed: false, reason: "Supported information was delivered, but the original request remains unresolved." };
   if (["ANSWER"].includes(input.decision.disposition)) return { ...base, terminalOutcome: "ANSWERED", authority: "INFORMATION", responseAllowed: true, completionClaimAllowed: false, reason: "The turn was answered without claiming a material action completed." };
   return { ...base, terminalOutcome: "WAITING_FOR_STAFF", authority: "STAFF_ONLY", responseAllowed: true, completionClaimAllowed: false, reason: "No safe autonomous terminal outcome was available." };
 }

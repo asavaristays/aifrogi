@@ -102,6 +102,7 @@ export function governResolutionOutcome(input: {
   answer: string;
   decision: SovereignDecision;
   previousState?: unknown;
+  answerComplete?: boolean;
   maxClarifyCycles?: number;
   consentedFacts?: Record<string, string>;
 }) {
@@ -131,7 +132,7 @@ export function governResolutionOutcome(input: {
   const answer = circuitBreakerTriggered ? circuitBreakerAnswer(breakerReason!) : input.answer;
   const status: SovereignResolutionState["status"] = circuitBreakerTriggered || decision.disposition === "ESCALATE"
     ? "ESCALATED"
-    : decision.disposition === "REFUSE" ? "REFUSED" : unresolved ? "ACTIVE" : "RESOLVED";
+    : decision.disposition === "REFUSE" ? "REFUSED" : unresolved || input.answerComplete === false ? "ACTIVE" : "RESOLVED";
   const state: SovereignResolutionState = {
     version: "1.1",
     activeIntentKey: currentIntentKey,
