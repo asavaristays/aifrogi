@@ -11,7 +11,9 @@ export function currentQuestion(question:string) { return question.split(/(?:CUR
 export function requestedPublicFactFields(question: string): PublicFactField[] {
   question=normalizeRagQuestion(currentQuestion(question));
   const fields: PublicFactField[] = [];
-  if (/\b(?:phone|telephone|mobile|whatsapp|contact num(?:ber|br)|call you|call them)\b|फोन|मोबाइल/iu.test(question)) fields.push('phone');
+  const explicitNumberRequest = /\b(?:(?:phone|telephone|mobile|contact)\s+num(?:ber|br)|whatsapp|call you|call them|(?:your|business|office)\s+(?:phone|telephone|mobile))\b|फोन नंबर|मोबाइल नंबर/iu.test(question);
+  const deviceQuestion = /\b(?:android|iphone|ios|smartphone|mobile\s+(?:apps?|applications?)|phone\s+apps?|(?:run|work|compatible|support).{0,60}\bphones?)\b/iu.test(question);
+  if (explicitNumberRequest || (!deviceQuestion && /\b(?:phone|telephone|mobile)\b|फोन|मोबाइल/iu.test(question))) fields.push('phone');
   if (/\b(?:email|e-mail)\b/iu.test(question)) fields.push('email');
   if (/\b(?:address|location|located|office|where are you|where is your|where are they)\b|पता/iu.test(question) && !/\b(?:email|e-mail) address\b/i.test(question)) fields.push('address');
   if (/\b(?:opening hours|business hours|office hours|timings)\b/i.test(question)) fields.push('hours');

@@ -1,0 +1,488 @@
+{
+  "testedAt": "2026-10-03T06:33:55.065732+00:00",
+  "mode": "Existing production release; candidate aa6ce68 NOT deployed",
+  "measurement": "Public HTTPS round trip; no production per-stage timings",
+  "results": [
+    {
+      "number": 1,
+      "question": "Where can I visit your Goa office?",
+      "actualReply": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+      "totalLatencyMs": 1898,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/terms-of-service/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/terms-of-service/",
+            "title": "Terms of Service | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0n4wi00amunkxzcmiv1ug",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "Exact authorised Goa operating address."
+    },
+    {
+      "number": 2,
+      "question": "What phone number can I use to discuss a project?",
+      "actualReply": "Phone: +91 74105 82898",
+      "totalLatencyMs": 475,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Phone: +91 74105 82898",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/ai-filmmaking/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/ai-filmmaking/",
+            "title": "AI Filmmaking and Commercial Videos in Goa",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0n5cc00b1unkxoi8how4j",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTACT_INFO",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "Exact approved public phone."
+    },
+    {
+      "number": 3,
+      "question": "Can you help train our internal operations team in AI?",
+      "actualReply": "Yes, Webtechnosys offers an on-demand Corporate In-House AI Skill Program designed to train internal operations teams in practical AI adoption, workflow experiments, and applied team training focused on your company's real business context and processes. The program helps the team use AI for research, documents, analytics, follow-up, content, and workflow assistance with business policy on AI usage and data sharing. It improves reporting, productivity, follow-up quality, and resource optimization by practicing AI-assisted workflows that reduce repetitive work and improve execution rhythm.",
+      "totalLatencyMs": 3660,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Yes, Webtechnosys offers an on-demand Corporate In-House AI Skill Program designed to train internal operations teams in practical AI adoption, workflow experiments, and applied team training focused on your company's real business context and processes. The program helps the team use AI for research, documents, analytics, follow-up, content, and workflow assistance with business policy on AI usage and data sharing. It improves reporting, productivity, follow-up quality, and resource optimization by practicing AI-assisted workflows that reduce repetitive work and improve execution rhythm.",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/training/ai-build-accelerator/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/training/ai-build-accelerator/",
+            "title": "Corporate In-House AI Skill Program | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0n86o00bgunkxlawgtmou",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "Matches corporate internal-team programme evidence."
+    },
+    {
+      "number": 4,
+      "question": "What kind of film can you make for a resort?",
+      "actualReply": "You can make cinematic AI films for resorts that tell an emotional guest journey, including arrival, stay, cuisine, experience, sundowner, and brand close, using real property footage enhanced with AI for commercial films, social media videos, campaign cuts, and website visuals.",
+      "totalLatencyMs": 6429,
+      "httpStatus": 200,
+      "response": {
+        "answer": "You can make cinematic AI films for resorts that tell an emotional guest journey, including arrival, stay, cuisine, experience, sundowner, and brand close, using real property footage enhanced with AI for commercial films, social media videos, campaign cuts, and website visuals.",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/ai-filmmaking/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/ai-filmmaking/",
+            "title": "AI Filmmaking and Commercial Videos in Goa",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0nd5x00bvunkx7tzgzh3v",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "UNKNOWN",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "Matches authorised hospitality filmmaking evidence."
+    },
+    {
+      "number": 5,
+      "question": "Can you build an app for my customers?",
+      "actualReply": "Webtechnosys can build custom apps for your customers, delivering dashboards and multi-agent systems on a compressed timeline, deploying them on cloud infrastructure under your control, and training your team to manage and improve these solutions independently.\n\nWhat outcome or service would you like help with?",
+      "totalLatencyMs": 3564,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Webtechnosys can build custom apps for your customers, delivering dashboards and multi-agent systems on a compressed timeline, deploying them on cloud infrastructure under your control, and training your team to manage and improve these solutions independently.\n\nWhat outcome or service would you like help with?",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/",
+            "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0nfx300caunkxkl7foonw",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": false,
+          "nextField": "need"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PARTIAL",
+      "assessmentReason": "General app capability answer; includes broad dashboards/multi-agent delivery instead of answering the customer-app use case clearly."
+    },
+    {
+      "number": 6,
+      "question": "Would that work on both an iPhone and an Android phone?",
+      "actualReply": "Phone: +91 74105 82898",
+      "totalLatencyMs": 556,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Phone: +91 74105 82898",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/ai-filmmaking/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/ai-filmmaking/",
+            "title": "AI Filmmaking and Commercial Videos in Goa",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0ng9g00cmunkxpx3ybz08",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTEXT_FOLLOW_UP",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": false,
+          "nextField": "need"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "FAIL",
+      "assessmentReason": "Returns phone number rather than answering device compatibility; context/contact routing error."
+    },
+    {
+      "number": 7,
+      "question": "Will my company receive the source code once the project is paid for?",
+      "actualReply": "Upon successful project completion and full payment, the agreed source code and deliverables are transferred to the client as specified in the project agreement.",
+      "totalLatencyMs": 2657,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Upon successful project completion and full payment, the agreed source code and deliverables are transferred to the client as specified in the project agreement.",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/",
+            "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          },
+          {
+            "url": "https://webtechnosys.com/ai-software-development-mumbai/",
+            "title": "AI Software Development Mumbai | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          },
+          {
+            "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+            "title": "AI Software Development Gurugram | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0nief00d1unkxdvmqzqfu",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "Preserves completion/full-payment and agreement conditions."
+    },
+    {
+      "number": 8,
+      "question": "Could you sign an NDA before we discuss our idea?",
+      "actualReply": "Yes, Webtechnosys can sign Non-Disclosure Agreements (NDA) to protect both parties before starting project discussions.",
+      "totalLatencyMs": 1873,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Yes, Webtechnosys can sign Non-Disclosure Agreements (NDA) to protect both parties before starting project discussions.",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/",
+            "title": "AI Solutions for Businesses in Goa | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0njtg00dgunkxlsubhe75",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "UNKNOWN",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "NDA capability supported."
+    },
+    {
+      "number": 9,
+      "question": "Where should I email a project brief?",
+      "actualReply": "Email: info@webtechnosys.com",
+      "totalLatencyMs": 402,
+      "httpStatus": 200,
+      "response": {
+        "answer": "Email: info@webtechnosys.com",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/disclaimer/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/disclaimer/",
+            "title": "Disclaimer | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0nk5a00dvunkxnnypi994",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTACT_INFO",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      },
+      "assessment": "PASS",
+      "assessmentReason": "Exact public email."
+    },
+    {
+      "number": 10,
+      "question": "Are you open this Sunday, and what time?",
+      "actualReply": "I don\u2019t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. You can also call +91 74105 82898. Please share your name and mobile number below if you would like the business team to call you back.",
+      "totalLatencyMs": 2886,
+      "httpStatus": 200,
+      "response": {
+        "answer": "I don\u2019t have enough verified Webtechnosys Fresh AI Bot information to answer that accurately. You can also call +91 74105 82898. Please share your name and mobile number below if you would like the business team to call you back.",
+        "answerActions": [],
+        "grounded": false,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus0nmdg00eaunkxbaytc39f",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "HANDED_OVER",
+          "authority": "STAFF_ONLY",
+          "intent": "UNKNOWN",
+          "disposition": "FALLBACK",
+          "resolutionState": "ACTIVE",
+          "clarifyCount": 1,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "contact"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "HUMAN_REQUESTED"
+      },
+      "assessment": "COVERAGE_GAP",
+      "assessmentReason": "Sunday hours not available in tested authorised evidence; generic fallback and unsolicited callback wording need improvement."
+    }
+  ],
+  "deployment": {
+    "performed": false,
+    "reason": "Original conditional deployment approval requires the complete gate to pass; candidate factual and regression failures remain."
+  },
+  "summary": {
+    "pass": 7,
+    "partial": 1,
+    "fail": 1,
+    "coverageGap": 1,
+    "medianHttpLatencyMs": 2277.5
+  }
+}

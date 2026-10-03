@@ -1,3 +1,4 @@
+import {requestedPublicFactFields} from '../../lib/public-business-facts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {runSharedAnswer,evidenceDigest,assertSharedAnswerDelivery,type AnswerEvidence,type AnswerAdapters} from '../../lib/shared-answer-engine';
@@ -84,4 +85,10 @@ test('missing information offers only an extracted permitted phone with a delive
 test('explicit email in a permitted passage needs no contact-page label',()=>{
  const e={...unit('Questions may be sent to help@example.com.'),title:'Terms',url:'https://example.com/terms'};
  assert.equal(composePublicFactDraft('Email address?',[e])?.sentences[0].text,'Email: help@example.com');
+});
+
+test('device compatibility does not request the business contact number',()=>{
+ assert.deepEqual(requestedPublicFactFields('Would that work on both an iPhone and an Android phone?'),[]);
+ assert.deepEqual(requestedPublicFactFields('Do you develop mobile applications?'),[]);
+ assert.deepEqual(requestedPublicFactFields('What phone number can I use to discuss an Android app?'),['phone']);
 });
