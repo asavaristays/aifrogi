@@ -1,0 +1,213 @@
+▲ Next.js 16.3.5 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 21ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 14.9s
+  Running TypeScript ...
+  Finished TypeScript in 5.8s ...
+  Collecting page data using 1 worker ...
+  Generating static pages using 1 worker (0/100) ...
+  Generating static pages using 1 worker (25/100) 
+  Generating static pages using 1 worker (50/100) 
+  Generating static pages using 1 worker (75/100) 
+✓ Generating static pages using 1 worker (100/100) in 1636ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /activate
+├ ƒ /admin
+├ ƒ /admin/appointments
+├ ƒ /admin/audit
+├ ƒ /admin/billing
+├ ƒ /admin/billing/[organizationId]
+├ ƒ /admin/capacity
+├ ƒ /admin/customers
+├ ƒ /admin/customers/[id]
+├ ƒ /admin/demo-sandboxes
+├ ƒ /admin/fleet-health
+├ ƒ /admin/flow-library
+├ ƒ /admin/knowledge
+├ ƒ /admin/message-matrix
+├ ƒ /admin/onboard
+├ ƒ /admin/pingbook-demo
+├ ƒ /admin/sovereign-intelligence
+├ ƒ /admin/sovereign-intelligence/reviews
+├ ƒ /admin/support
+├ ƒ /admin/support/[id]
+├ ƒ /admin/typesafe
+├ ƒ /ai-bot-demos
+├ ƒ /analytics
+├ ƒ /api/admin/appointment-journey
+├ ƒ /api/admin/billing/[organizationId]
+├ ƒ /api/admin/customers/[id]
+├ ƒ /api/admin/customers/[id]/workbook-import
+├ ƒ /api/admin/demo-sandboxes
+├ ƒ /api/admin/fleet-health
+├ ƒ /api/admin/message-matrix/[organizationId]
+├ ƒ /api/admin/release-integrity
+├ ƒ /api/agent-gateway/clients
+├ ƒ /api/agent/v1/[slug]/availability
+├ ƒ /api/agent/v1/[slug]/profile
+├ ƒ /api/ai-operations/[leadId]
+├ ƒ /api/appointment-journey/current
+├ ƒ /api/appointment-journey/google/oauth/callback
+├ ƒ /api/appointment-journey/google/oauth/start
+├ ƒ /api/appointment-journey/tenants
+├ ƒ /api/appointment-journey/webhook/aifrogi
+├ ƒ /api/assets
+├ ƒ /api/auth/hotelradar-sso
+├ ƒ /api/auth/invitation
+├ ƒ /api/auth/login
+├ ƒ /api/auth/logout
+├ ƒ /api/auth/password-reset
+├ ƒ /api/auth/password-reset/request
+├ ƒ /api/auth/register
+├ ƒ /api/auth/sessions
+├ ƒ /api/automation/jobs
+├ ƒ /api/automation/run
+├ ƒ /api/billing/checkout/order
+├ ƒ /api/billing/checkout/verify
+├ ƒ /api/billing/credits/order
+├ ƒ /api/billing/credits/verify
+├ ƒ /api/billing/readiness/order
+├ ƒ /api/billing/readiness/verify
+├ ƒ /api/billing/webhook/razorpay
+├ ƒ /api/dashboard
+├ ƒ /api/dashboard/actions
+├ ƒ /api/dashboard/demand
+├ ƒ /api/dashboard/funnel
+├ ƒ /api/dashboard/recovery
+├ ƒ /api/dashboard/summary
+├ ƒ /api/flow-intelligence
+├ ƒ /api/flowcart/catalog
+├ ƒ /api/flowcart/current
+├ ƒ /api/flowcart/orders
+├ ƒ /api/flowcart/webhook/aifrogi
+├ ƒ /api/flowcart/webhook/razorpay
+├ ƒ /api/health/live
+├ ƒ /api/health/ready
+├ ƒ /api/hotelgpt-stay/access
+├ ƒ /api/hotelgpt-stay/cases
+├ ƒ /api/hotelgpt-stay/qr
+├ ƒ /api/hotelgpt/quick-replies
+├ ƒ /api/improve/answers
+├ ƒ /api/knowledge
+├ ƒ /api/knowledge/categorized-workbook
+├ ƒ /api/knowledge/documents
+├ ƒ /api/knowledge/entries
+├ ƒ /api/knowledge/flags
+├ ƒ /api/knowledge/gaps
+├ ƒ /api/knowledge/test
+├ ƒ /api/leads
+├ ƒ /api/leads/[id]
+├ ƒ /api/leads/[id]/assets
+├ ƒ /api/leads/[id]/messages
+├ ƒ /api/media/[...path]
+├ ƒ /api/onboarding
+├ ƒ /api/onboarding/bot-profile
+├ ƒ /api/onboarding/documents
+├ ƒ /api/onboarding/documents/[id]
+├ ƒ /api/onboarding/intelligence
+├ ƒ /api/onboarding/workbook-import
+├ ƒ /api/pilot-measurement
+├ ƒ /api/pilot-measurement/review-queue
+├ ƒ /api/pilot-measurement/reviews
+├ ƒ /api/public/hotelgpt-stay/[slug]/session
+├ ƒ /api/public/website-bot/[slug]
+├ ƒ /api/public/website-bot/[slug]/availability
+├ ƒ /api/public/website-bot/[slug]/feedback
+├ ƒ /api/public/website-bot/[slug]/flag
+├ ƒ /api/public/website-bot/[slug]/install
+├ ƒ /api/reports/website/pdf
+├ ƒ /api/settings/credentials
+├ ƒ /api/setup/certification
+├ ƒ /api/setup/connectors
+├ ƒ /api/setup/menu
+├ ƒ /api/setup/showcase-upload
+├ ƒ /api/support/access
+├ ƒ /api/support/tickets
+├ ƒ /api/team
+├ ƒ /api/team-inbox/summary
+├ ƒ /api/workflows
+├ ƒ /api/workspaces
+├ ƒ /api/workspaces/select
+├ ƒ /billing
+├ ƒ /bot/[slug]
+├ ƒ /bot/[slug]/manifest.webmanifest
+├ ○ /contact
+├ ƒ /contacts
+├ ƒ /dashboard
+├ ○ /data-deletion
+├ ○ /disclaimer
+├ ƒ /embed/[slug]
+├ ○ /experience
+├ ƒ /flow-intelligence
+├ ƒ /forgot-password
+├ ○ /help
+├   /help/[slug]
+│ ├ ● /help/create-aifrogi-workspace
+│ ├ ● /help/upload-business-knowledge
+│ ├ ● /help/review-approve-bot-answers
+│ └ ● [+8 more paths]
+├ ƒ /improve
+├ ƒ /in-stay
+├ ƒ /in-stay/access
+├ ƒ /in-stay/complaints
+├ ƒ /in-stay/inbox
+├ ƒ /in-stay/queries
+├ ƒ /in-stay/reports
+├ ƒ /in-stay/resolved
+├ ƒ /in-stay/team
+├ ○ /install-ai-bot
+├ ○ /integration
+├ ƒ /knowledge
+├ ƒ /login
+├ ƒ /onboarding
+├ ○ /onboarding-process
+├ ○ /preview/analytics
+├ ○ /preview/team
+├ ○ /pricing
+├ ○ /privacy-policy
+├ ƒ /register
+├ ƒ /reset-password
+├ ○ /resources
+├ ○ /robots.txt
+├ ○ /security
+├ ○ /security-compliance
+├ ƒ /settings
+├ ƒ /settings/guest-communication/saved-replies
+├ ƒ /settings/integrations
+├ ƒ /settings/security
+├ ƒ /settings/users
+├ ƒ /setup
+├ ○ /sitemap.xml
+├ ○ /solutions
+├   /solutions/[slug]
+│ ├ ● /solutions/hotelgpt
+│ ├ ● /solutions/dinegpt
+│ ├ ● /solutions/edugpt
+│ └ ● [+3 more paths]
+├ ○ /solutions/clinicgpt
+├ ○ /solutions/pingbook
+├ ○ /status
+├ ƒ /stay/[slug]
+├ ƒ /stay/[slug]/manifest.webmanifest
+├ ƒ /support
+├ ƒ /team-inbox
+├ ○ /terms-of-service
+└ ƒ /workflows
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
