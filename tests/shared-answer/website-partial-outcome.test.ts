@@ -34,3 +34,9 @@ test('analytics excludes grounded contact-only recovery from safely resolved tot
  assert.equal(isSafeResolution({...base,resolutionState:'ACTIVE',terminalOutcome:'PARTIALLY_ANSWERED'}),false);
  assert.equal(isSafeResolution({...base,resolutionState:'RESOLVED',terminalOutcome:'ANSWERED'}),true);
 });
+
+test('a tenant brand in the question or source title cannot make an unrelated page relevant',()=>{
+ const pages=[{title:'Webtechnosys AI filmmaking',url:'https://webtechnosys.example/ai-filmmaking',authority:'APPROVED_FIRST_PARTY_WEBSITE'}];
+ assert.deepEqual(websiteAnswerActions('How can I contact Webtechnosys?','ANSWER',pages),[]);
+ assert.deepEqual(websiteAnswerActions('Webtechnosys filmmaking','ANSWER',pages),[{label:'Learn more',url:'https://webtechnosys.example/ai-filmmaking'}]);
+});

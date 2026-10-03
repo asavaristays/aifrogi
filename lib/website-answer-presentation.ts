@@ -28,7 +28,7 @@ export function websiteAnswerActions(question: string, disposition: string, sour
   const stopWords = new Set(["the", "and", "can", "could", "would", "you", "your", "our", "what", "which", "how", "please", "tell", "about", "for", "with", "does", "have", "business"]);
   const terms = (question.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) || []).filter(term => !stopWords.has(term));
   const candidates = sources.filter(source => source.authority?.startsWith("APPROVED_") && safeAnswerUrl(source.url));
-  const ranked = candidates.map((source, index) => ({source,index,score:terms.filter(term => `${source.title} ${source.url}`.toLowerCase().includes(term)).length})).sort((a,b)=>b.score-a.score || a.index-b.index);
+  const ranked = candidates.map((source, index) => ({source,index,score:terms.filter(term => !new URL(source.url).hostname.toLowerCase().includes(term) && `${source.title} ${new URL(source.url).pathname}`.toLowerCase().includes(term)).length})).sort((a,b)=>b.score-a.score || a.index-b.index);
   const source = ranked[0]?.score > 0 ? ranked[0].source : undefined;
   if (!source) return [];
   const pricingPage = /pricing|prices|plans/i.test(`${source.title} ${new URL(source.url).pathname}`);
