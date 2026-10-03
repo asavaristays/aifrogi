@@ -1,0 +1,14 @@
+{
+  "database": "rag_release_1f338f3",
+  "first": {
+    "indexed": 62,
+    "inputTokens": 15536,
+    "continuationQueued": false
+  },
+  "second": {
+    "indexed": 0,
+    "inputTokens": 0,
+    "continuationQueued": false
+  },
+  "source": "Existing approved public workbook; no content changes"
+}

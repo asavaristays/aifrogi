@@ -1,0 +1,38 @@
+{
+  "database": "rag_release_1f338f3",
+  "results": [
+    {
+      "role": "aifrogi_public",
+      "wrongOrganisation": false,
+      "passed": true,
+      "result": [
+        {
+          "snapshot_hash": "7c4357b07d9e6dbf28e9d19bb684df289c98016029a7f55c007bf25a974d82f4",
+          "crawl_generation": "4a0ec76b-18fa-4951-80a3-eff70504278f",
+          "claim_count": "62",
+          "knowledge_as_of": "2026-09-30T23:18:42.165Z"
+        }
+      ]
+    },
+    {
+      "role": "aifrogi_public",
+      "wrongOrganisation": true,
+      "passed": true,
+      "error": "AUTHORITY_CONTEXT_DENIED"
+    },
+    {
+      "role": "aifrogi_worker",
+      "wrongOrganisation": false,
+      "passed": true,
+      "result": {
+        "pendingClaims": 0
+      }
+    },
+    {
+      "role": "aifrogi_worker",
+      "wrongOrganisation": true,
+      "passed": true,
+      "error": "AUTHORITY_CONTEXT_DENIED"
+    }
+  ]
+}

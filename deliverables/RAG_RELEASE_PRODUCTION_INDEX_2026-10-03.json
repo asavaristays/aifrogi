@@ -1,0 +1,14 @@
+{
+  "database": "lead_os_ai",
+  "first": {
+    "indexed": 62,
+    "inputTokens": 15536,
+    "continuationQueued": false
+  },
+  "second": {
+    "indexed": 0,
+    "inputTokens": 0,
+    "continuationQueued": false
+  },
+  "source": "Existing approved public workbook; no content changes"
+}

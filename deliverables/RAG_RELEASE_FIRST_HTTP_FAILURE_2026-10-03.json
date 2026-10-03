@@ -1,0 +1,615 @@
+{
+  "endpoint": "http://127.0.0.1:3217",
+  "results": [
+    {
+      "number": 1,
+      "question": "Can you tell me about AI Filmmaking?",
+      "actualReply": "AI Filmmaking creates cinematic films, commercials, and social-media videos by starting with real hotel properties, their architecture, guests, and surroundings. The process involves understanding the hotel's brand story, mood, and guest journey, then enhancing it with AI to produce continuous storytelling content across multiple formats. It uses real footage combined with AI-assisted cinematic production to deliver various outputs like social media content sets, 30 or 60-second commercials, and brand films tailored for hospitality marketing.",
+      "httpStatus": 200,
+      "totalLatencyMs": 8813,
+      "expectedSignals": [
+        "film",
+        "video"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "AI Filmmaking creates cinematic films, commercials, and social-media videos by starting with real hotel properties, their architecture, guests, and surroundings. The process involves understanding the hotel's brand story, mood, and guest journey, then enhancing it with AI to produce continuous storytelling content across multiple formats. It uses real footage combined with AI-assisted cinematic production to deliver various outputs like social media content sets, 30 or 60-second commercials, and brand films tailored for hospitality marketing.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2yr3t000548kxqpsuw6xx",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 2,
+      "question": "What video outputs can you create?",
+      "actualReply": "You can create social media content sets of 10 or 25 videos for regular posting and seasonal promotions, covering arrival, room, cuisine, pool, beach, sundowner, brand story, destination, experience, campaign cuts, and more. You can create focused 30-second AI commercials for paid advertising, launches, packages, promotions, and brand awareness. You can create complete 60-second AI brand films that tell cinematic hospitality stories combining property, guest journey, experience, destination, narrative, sound, and brand close. Final commercial outputs include the main film and platform-specific social media cuts, all edited with pacing, music, ambience, captions, and narrative.",
+      "httpStatus": 200,
+      "totalLatencyMs": 6740,
+      "expectedSignals": [
+        "video",
+        "commercial",
+        "social"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "You can create social media content sets of 10 or 25 videos for regular posting and seasonal promotions, covering arrival, room, cuisine, pool, beach, sundowner, brand story, destination, experience, campaign cuts, and more. You can create focused 30-second AI commercials for paid advertising, launches, packages, promotions, and brand awareness. You can create complete 60-second AI brand films that tell cinematic hospitality stories combining property, guest journey, experience, destination, narrative, sound, and brand close. Final commercial outputs include the main film and platform-specific social media cuts, all edited with pacing, music, ambience, captions, and narrative.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2ywew000h48kxspws56m0",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTEXT_FOLLOW_UP",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 3,
+      "question": "What training does Webtechnosys offer?",
+      "actualReply": "Webtechnosys offers a Corporate In-House AI Skill Program, an on-demand team training focused on practical AI adoption, workflow experiments, and applied team output within a company's own processes. They also provide the Practical AI Tool Universe Bootcamp, a one-day hands-on workshop covering AI tools like Gemini, Claude, ChatGPT, Cursor, automation, deployment, and AI video production through a live team project.",
+      "httpStatus": 200,
+      "totalLatencyMs": 5043,
+      "expectedSignals": [
+        "training",
+        "corporate",
+        "bootcamp"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys offers a Corporate In-House AI Skill Program, an on-demand team training focused on practical AI adoption, workflow experiments, and applied team output within a company's own processes. They also provide the Practical AI Tool Universe Bootcamp, a one-day hands-on workshop covering AI tools like Gemini, Claude, ChatGPT, Cursor, automation, deployment, and AI video production through a live team project.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2z0b7000t48kxk2asl7pp",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 4,
+      "question": "Who is the corporate AI training for?",
+      "actualReply": "The corporate AI training by Webtechnosys is designed for companies that want practical AI adoption with their own teams, including founders, managers, operations, sales teams, and departments aiming to use AI responsibly in daily work.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4039,
+      "expectedSignals": [
+        "team",
+        "compan",
+        "manager"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "The corporate AI training by Webtechnosys is designed for companies that want practical AI adoption with their own teams, including founders, managers, operations, sales teams, and departments aiming to use AI responsibly in daily work.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2z3gv001k48kxgn2oujef",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 5,
+      "question": "Do you develop mobile apps?",
+      "actualReply": "Yes, Webtechnosys develops mobile apps, including polished iOS and Android products for customers, field teams, and service operations across Mumbai, Goa, Bengaluru, Gurugram, and wider India.",
+      "httpStatus": 200,
+      "totalLatencyMs": 5190,
+      "expectedSignals": [
+        "ios",
+        "android",
+        "mobile"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Yes, Webtechnosys develops mobile apps, including polished iOS and Android products for customers, field teams, and service operations across Mumbai, Goa, Bengaluru, Gurugram, and wider India.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2z7ea001w48kxtwy3a0gh",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 6,
+      "question": "Which platforms do those apps support?",
+      "actualReply": "Yes, Webtechnosys develops mobile applications supporting polished iOS and Android products as well as cross-platform customer and workforce apps integrated with core business systems.",
+      "httpStatus": 200,
+      "totalLatencyMs": 3842,
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Yes, Webtechnosys develops mobile applications supporting polished iOS and Android products as well as cross-platform customer and workforce apps integrated with core business systems.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2zaf3002848kxfw6l7e5c",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTEXT_FOLLOW_UP",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 7,
+      "question": "Where are your offices?",
+      "actualReply": "Webtechnosys has an office located in Gurgaon supporting Gurugram/NCR businesses, and the company is also based in Goa, India but operates remotely without a physical office in Mumbai.",
+      "httpStatus": 200,
+      "totalLatencyMs": 5590,
+      "expectedSignals": [
+        "goa",
+        "gurgaon"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys has an office located in Gurgaon supporting Gurugram/NCR businesses, and the company is also based in Goa, India but operates remotely without a physical office in Mumbai.",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/ai-software-development-gurugram/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/ai-software-development-gurugram/",
+            "title": "AI Software Development Gurugram | Webtechnosys",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2zepe002k48kxspnicww8",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 8,
+      "question": "How can I contact Webtechnosys?",
+      "actualReply": "Phone: +91 74105 82898 Email: info@webtechnosys.com",
+      "httpStatus": 200,
+      "totalLatencyMs": 653,
+      "expectedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Phone: +91 74105 82898 Email: info@webtechnosys.com",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/ai-filmmaking/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/ai-filmmaking/",
+            "title": "AI Filmmaking and Commercial Videos in Goa",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          },
+          {
+            "url": "https://webtechnosys.com/disclaimer/",
+            "title": "Disclaimer | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          },
+          {
+            "url": "https://webtechnosys.com/terms-of-service/",
+            "title": "Terms of Service | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2zf55002w48kxcrvevymd",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTACT_INFO",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 9,
+      "question": "How do you start a project?",
+      "actualReply": "Every project at Webtechnosys starts with a discovery session, followed by a detailed proposal, Statement of Work (SOW), project timeline, and commercial agreement before development begins.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4010,
+      "expectedSignals": [
+        "discovery",
+        "proposal",
+        "statement of work"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Every project at Webtechnosys starts with a discovery session, followed by a detailed proposal, Statement of Work (SOW), project timeline, and commercial agreement before development begins.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2zics003848kxj3id47em",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 10,
+      "question": "Who owns the source code after delivery?",
+      "actualReply": "After successful completion of the project and receipt of full payment, the agreed source code and deliverables are transferred to the client as defined in the project agreement.",
+      "httpStatus": 200,
+      "totalLatencyMs": 3647,
+      "expectedSignals": [
+        "client",
+        "source code",
+        "payment"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "After successful completion of the project and receipt of full payment, the agreed source code and deliverables are transferred to the client as defined in the project agreement.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2zl5h003k48kx6c0v9iyv",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "UNKNOWN",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 11,
+      "question": "Do you sign NDAs?",
+      "actualReply": "Webtechnosys signs Non-Disclosure Agreements (NDAs) along with Master Service Agreements, Statements of Work, and Software Development Agreements to protect both parties.",
+      "httpStatus": 200,
+      "totalLatencyMs": 3545,
+      "expectedSignals": [
+        "nda",
+        "non-disclosure"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys signs Non-Disclosure Agreements (NDAs) along with Master Service Agreements, Statements of Work, and Software Development Agreements to protect both parties.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus2znwl003w48kxp9au5091",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "UNKNOWN",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 12,
+      "question": "How are project payments structured?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 11,
+      "expectedSignals": [
+        "milestone",
+        "payment"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 13,
+      "question": "Do you provide post-launch support?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 10,
+      "expectedSignals": [
+        "support",
+        "maintenance"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 14,
+      "question": "What is the exact price of an AI filmmaking project?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 15,
+      "expectedSignals": [
+        "not",
+        "price",
+        "scope"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 15,
+      "question": "Do you guarantee that your software will double my revenue?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 12,
+      "expectedSignals": [
+        "not",
+        "guarantee",
+        "revenue"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 16,
+      "question": "What is your phone number?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 15,
+      "expectedSignals": [
+        "74105",
+        "82898"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 17,
+      "question": "Could you give me your business address?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 11,
+      "expectedSignals": [
+        "746",
+        "morjim",
+        "403512"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 18,
+      "question": "What is your email address?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 11,
+      "expectedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 19,
+      "question": "Do you develop mobile apps?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 8,
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 20,
+      "question": "Can it also run on iPhones?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 11,
+      "expectedSignals": [
+        "ios"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    },
+    {
+      "number": 21,
+      "question": "What are your exact opening hours?",
+      "actualReply": "",
+      "httpStatus": 429,
+      "totalLatencyMs": 10,
+      "expectedSignals": [],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "error": "Please wait a moment before sending another message."
+      }
+    }
+  ]
+}

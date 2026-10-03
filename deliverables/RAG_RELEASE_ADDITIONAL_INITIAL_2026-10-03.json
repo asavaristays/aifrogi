@@ -1,0 +1,445 @@
+{
+  "endpoint": "https://app.aifrogi.com",
+  "results": [
+    {
+      "number": 1,
+      "question": "What is the street address of your Goa business?",
+      "actualReply": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+      "httpStatus": 200,
+      "totalLatencyMs": 472,
+      "expectedSignals": [
+        "746",
+        "morjim"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/terms-of-service/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/terms-of-service/",
+            "title": "Terms of Service | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3jm2g007zixkxxduabhy1",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": null,
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 2,
+      "question": "Where should I email our project proposal?",
+      "actualReply": "Email: info@webtechnosys.com",
+      "httpStatus": 200,
+      "totalLatencyMs": 404,
+      "expectedSignals": [
+        "info@webtechnosys.com"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Email: info@webtechnosys.com",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/disclaimer/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/disclaimer/",
+            "title": "Disclaimer | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          },
+          {
+            "url": "https://webtechnosys.com/terms-of-service/",
+            "title": "Terms of Service | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3jqmr008bixkxjzv47rt2",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTACT_INFO",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "contact"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 3,
+      "question": "Can you train our operations team to use AI at work?",
+      "actualReply": "Webtechnosys offers an on-demand Corporate In-House AI Skill Program designed to train operations teams to adopt practical AI use in their workflows, including live projects and governance tailored to the company's business context.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4266,
+      "expectedSignals": [
+        "team",
+        "training"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys offers an on-demand Corporate In-House AI Skill Program designed to train operations teams to adopt practical AI use in their workflows, including live projects and governance tailored to the company's business context.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3jy47008nixkxyfzskgv9",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "contact"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 4,
+      "question": "Can you make a short AI advertisement for our hotel?",
+      "actualReply": "We can create a short AI advertisement for your hotel that features cinematic AI-enhanced footage of your real property, showcasing its architecture, rooms, pool, food, and surroundings to tell a compelling guest journey story.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4179,
+      "expectedSignals": [
+        "commercial",
+        "film"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "We can create a short AI advertisement for your hotel that features cinematic AI-enhanced footage of your real property, showcasing its architecture, rooms, pool, food, and surroundings to tell a compelling guest journey story.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3k5n2008zixkxtou4lygc",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "need"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 5,
+      "question": "Can you build a customer mobile application?",
+      "actualReply": "Webtechnosys builds custom mobile applications for customers, integrating them with core business systems, and delivers polished apps for iOS and Android platforms across Mumbai, Goa, Bengaluru, and Gurugram.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4672,
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys builds custom mobile applications for customers, integrating them with core business systems, and delivers polished apps for iOS and Android platforms across Mumbai, Goa, Bengaluru, and Gurugram.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3kdgi009bixkxpi257a72",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "need"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 6,
+      "question": "Would that work on both Android phones and iPhones?",
+      "actualReply": "Webtechnosys builds custom mobile applications that work on both Android phones and iPhones, delivering polished native iOS and Android products integrated with your business systems.",
+      "httpStatus": 200,
+      "totalLatencyMs": 3365,
+      "expectedSignals": [
+        "ios",
+        "android"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys builds custom mobile applications that work on both Android phones and iPhones, delivering polished native iOS and Android products integrated with your business systems.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3kkcj009zixkx0nxaa8pt",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "CONTEXT_FOLLOW_UP",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "timeline"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 7,
+      "question": "Would we pay for software in milestones?",
+      "actualReply": "Webtechnosys usually structures software project payments around agreed delivery milestones to keep progress and commercial commitments transparent.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4227,
+      "expectedSignals": [
+        "milestone"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Webtechnosys usually structures software project payments around agreed delivery milestones to keep progress and commercial commitments transparent.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3krvi00abixkxp4e8gj0v",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "timeline"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 8,
+      "question": "After full payment, will we own the agreed source code?",
+      "actualReply": "After full payment and successful project completion, ownership of the agreed source code and deliverables is transferred to the client according to the project agreement.",
+      "httpStatus": 200,
+      "totalLatencyMs": 4380,
+      "expectedSignals": [
+        "source code",
+        "payment"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "After full payment and successful project completion, ownership of the agreed source code and deliverables is transferred to the client according to the project agreement.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3kzgw00anixkx8m4fjot8",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "BUSINESS",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": true,
+          "nextField": "budget"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 9,
+      "question": "Can we sign an NDA before sharing our business idea?",
+      "actualReply": "Yes, Webtechnosys can sign Non-Disclosure Agreements (NDAs) to protect both parties before you share your business idea.",
+      "httpStatus": 200,
+      "totalLatencyMs": 3942,
+      "expectedSignals": [
+        "nda"
+      ],
+      "signalPass": true,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Yes, Webtechnosys can sign Non-Disclosure Agreements (NDAs) to protect both parties before you share your business idea.",
+        "answerActions": [],
+        "grounded": true,
+        "sources": [],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3l6nt00azixkxtwmnr8gx",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "UNKNOWN",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": false,
+          "nextField": "budget"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    },
+    {
+      "number": 10,
+      "question": "What time can I visit your office on Sunday?",
+      "actualReply": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+      "httpStatus": 200,
+      "totalLatencyMs": 697,
+      "expectedSignals": [
+        "74105",
+        "82898"
+      ],
+      "signalPass": false,
+      "sourceAssessment": "REVIEW_REQUIRED",
+      "response": {
+        "answer": "Address: H.No 746 - TF, New Wada, Morjim, Goa 403512, India",
+        "answerActions": [
+          {
+            "label": "Learn more",
+            "url": "https://webtechnosys.com/terms-of-service/"
+          }
+        ],
+        "grounded": true,
+        "sources": [
+          {
+            "url": "https://webtechnosys.com/terms-of-service/",
+            "title": "Terms of Service | Webtechnosys AI Agency",
+            "crawledAt": "2026-09-30T23:18:42.165Z",
+            "authority": "APPROVED_FIRST_PARTY_WEBSITE",
+            "freshness": "CURRENT"
+          }
+        ],
+        "knowledgeAsOf": "2026-09-30T23:18:42.165Z",
+        "answerEvidenceId": "cmus3lbjz00bbixkxt32gxtp7",
+        "governance": {
+          "constitutionVersion": "1.1",
+          "blueprintVersion": "1.0",
+          "executionContractVersion": "2.0",
+          "terminalOutcome": "ANSWERED",
+          "authority": "INFORMATION",
+          "intent": "UNKNOWN",
+          "disposition": "ANSWER",
+          "resolutionState": "RESOLVED",
+          "clarifyCount": 0,
+          "circuitBreaker": false
+        },
+        "qualification": {
+          "contactEligible": false,
+          "nextField": "location"
+        },
+        "responseSlaMinutes": 60,
+        "handoffAvailable": true,
+        "conversationState": "AI_READY"
+      }
+    }
+  ]
+}

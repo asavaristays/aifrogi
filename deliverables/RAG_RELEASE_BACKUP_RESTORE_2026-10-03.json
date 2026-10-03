@@ -1,0 +1,9 @@
+{
+  "encryptedBackupRestored": true,
+  "restore": {
+    "database": "rag_rollback_d52ba3c",
+    "oldRagFunctionCount": 0,
+    "approvedWebtechnosysRows": 67
+  },
+  "notes": "The raw count labelled approvedWebtechnosysRows is all PUBLISHED rows (67), not public eligibility. Actual tenant snapshot admits 62 approved public claims. Backup restored prior schema; function rollback also rehearsed transactionally."
+}
