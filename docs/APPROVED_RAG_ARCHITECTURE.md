@@ -148,3 +148,7 @@ The onboarding aspiration is a bot answering its brand within four minutes after
 Keep a concrete candidate commit, test evidence and a recoverable prior release before activation. Preserve database compatibility or provide a reviewed migration rollback strategy before any future schema change. Restore the corresponding previous application build and source snapshot, restart the existing service and verify readiness and approved questions if rollback is required.
 
 This candidate includes a database migration replacing SQL functions and publication behaviour. Capture prior function definitions, grants, application build and a rehearsed database recovery point before release. Follow the detailed release/rollback procedure in the implementation report. Production remains unchanged.
+
+## Existing-policy combination experiment
+
+An isolated composition comparison is recorded in [quality report](../deliverables/ANSWER_ENGINE_COMPARISON_2026-10-03.md). Existing composition policy is reused through the same RAG adapter for a controlled reference; this is not a replay of the full old production engine. In 13 cases, existing-policy/RAG/combined produced 11/10/9 source-supported replies, with two coverage gaps in each mode and zero/one/two failures respectively. Combined mode remains trial-only and is not selected by production callers. Product entity binding and consistent partial-answer schemas remain required; policy merging alone is not a demonstrated improvement.

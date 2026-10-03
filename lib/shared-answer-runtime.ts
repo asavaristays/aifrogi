@@ -3,18 +3,18 @@ import {readPublicRagCatalog,liveRagRequest} from './rag-live-read';
 import {publicFactRetrievalQueries} from './public-business-facts';
 import {withCanonicalRole,type CanonicalIdentity} from './canonical-db-context';
 import {type ActiveWebsiteChunk} from './active-website-crawl-retrieval';
-import {SharedAnswerProvider,sharedProviderConfig} from './shared-answer-provider';
+import {SharedAnswerProvider,sharedProviderConfig,type AnswerCompositionMode} from './shared-answer-provider';
 import {runSharedAnswer,evidenceDigest,type AnswerEvidence,type AnswerScope,type SharedAnswerResult} from './shared-answer-engine';
 
 type RagSnapshot={snapshot_hash:string;crawl_generation:string|null;claim_count:bigint;knowledge_as_of:Date|null};
 type RagClaim={entry_id:string;content:string;question:string;title:string;seal_hash:string;field_key:string;entity_key:string;value_hash:string;authority_rank:number;effective_from:Date|null;effective_until:Date|null};
 
 /** One runtime adapter for approved documents and authorised website captures. */
-export async function answerFromSharedKnowledge(identity:CanonicalIdentity,question:string):Promise<SharedAnswerResult & {capturedAt:string|null;modelUsage:{inputTokens:number;outputTokens:number}}> {
+export async function answerFromSharedKnowledge(identity:CanonicalIdentity,question:string,options:{compositionMode?:AnswerCompositionMode}={}):Promise<SharedAnswerResult & {capturedAt:string|null;modelUsage:{inputTokens:number;outputTokens:number}}> {
   question=normalizeRagQuestion(question);
   let provider:SharedAnswerProvider|undefined;
   let active:RagSnapshot|undefined;
-  const getProvider=()=>provider??(provider=new SharedAnswerProvider(sharedProviderConfig()));
+  const getProvider=()=>provider??(provider=new SharedAnswerProvider({...sharedProviderConfig(),compositionMode:options.compositionMode}));
   const snapshot=async()=>{
     const rows=await withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<RagSnapshot[]>`SELECT * FROM aifrogi_security.rag_snapshot(${identity.propertyId})`);
     if(rows.length!==1 || !/^[a-f0-9]{64}$/.test(rows[0].snapshot_hash)) throw new Error('SOURCE_STATE_INVALID');

@@ -30,7 +30,7 @@ test("training booking intent selects the active training route over the hotel b
   const hotel = scoreWebsiteKnowledgePage({ url: "https://webtechnosys.com/booking-engine/", title: "Hotel Booking Engine", bucket: "Hospitality", text: "Direct hotel room booking engine.", crawledAt }, "Give me the link to book the upcoming training");
   assert.ok(training > hotel + 40);
   assert.match(source, /"\/training-booking\/"/);
-  assert.match(source, /Never substitute a different booking, training, product, or contact URL/);
+  assert.match(BOT_ANSWER_CONSTITUTION, /Never substitute a different booking, training, product, or contact URL/);
 });
 
 test("multipart retrieval retains topic evidence independently of the strongest page", () => {
