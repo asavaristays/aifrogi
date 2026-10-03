@@ -1,6 +1,6 @@
 # Combined priorities 2–3–4: candidate review
 
-**Candidate source commit: `dc6eeb7`. Not deployed. Release gate failed. Production remains healthy on `rag-7c395d4`.** This work combines answer clarity/latency, knowledge-gap diagnosis and expanded quality tests in the existing shared RAG engine. It does not add another answering pipeline.
+**Candidate source commit: `dc6eeb7`; isolated build: `WnDrsSMvo9t4_TwzbQqK0`. Not deployed. Release gate failed. Production remains healthy on `rag-7c395d4`.** This work combines answer clarity/latency, knowledge-gap diagnosis and expanded quality tests in the existing shared RAG engine. It does not add another answering pipeline.
 
 ## Current results
 
