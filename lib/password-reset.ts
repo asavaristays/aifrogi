@@ -5,6 +5,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { isAllowedCredentialIdentity, writeCredentialSettings } from "@/lib/credential-store";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
+import { buildPasswordResetEmail } from "@/lib/password-reset-email";
 import {
   createTeamPasswordReset,
   getTeamPasswordReset,
@@ -82,8 +83,7 @@ async function sendResetEmail(email: string, link: string, expiresAt: Date) {
   try {
     const result = await sendBookingMail({
       to: email,
-      subject: "Reset your AiFrogi password",
-      body: `Hello,\n\nUse this secure link to reset your AiFrogi password:\n${link}\n\nThis link expires at ${expiresAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST.\n\nIf you did not request this, ignore this email. Never share passwords, OTPs, or Meta credentials.\n\nAiFrogi`
+      ...buildPasswordResetEmail(link, expiresAt)
     });
     return !result.error;
   } catch {
