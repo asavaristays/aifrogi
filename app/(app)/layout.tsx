@@ -29,12 +29,13 @@ export default async function ProductLayout({ children }: { children: React.Reac
   }
 
   const organization = await loadOnboardingForUser(user.username);
+  const membership = organization?.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   // Verified automatic trials need access to Intelligence to repair a failed
   // capture before the public bot is live. This does not grant serving rights.
   const automaticTrial = organization?.status === "ONBOARDING" && Boolean(organization.botProfile) && organization.members.some(member => member.email.toLowerCase() === user.username.toLowerCase() && member.status === "ACTIVE")
     ? await withTenantDatabaseContext({ kind: "tenant", organizationId: organization.id, actor: `trial-workspace:${user.username}` }, () => getDb()!.automationJob.findFirst({ where: { actionType: LEVEL_ONE_JOB, property: { organizationId: organization.id } }, select: { id: true } }))
     : null;
-  if (!organization || (!canOpenClientWorkspace(organization) && !automaticTrial)) {
+  if (!organization || (!canOpenClientWorkspace(organization, membership) && !automaticTrial)) {
     redirect("/onboarding");
   }
 
@@ -53,7 +54,6 @@ export default async function ProductLayout({ children }: { children: React.Reac
   const selectedSlug = workspaces.some((workspace) => workspace.slug === currentWorkspaceSlug)
     ? currentWorkspaceSlug
     : workspaces[0]?.slug ?? currentWorkspaceSlug;
-  const membership = organization.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase());
   const accessRole = (membership?.role || "AGENT").toUpperCase() as ClientAccessRole;
   const department = await getMemberDepartment(membership?.id, organization.id);
 
