@@ -1,8 +1,10 @@
 /* Scoped action tokens keep text readable regardless of global link styles. */
-.operations { min-width: 280px; }
+.operations { min-width: 0; width: 100%; }
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .action {
   display: inline-flex;
+  min-width: 0;
+  overflow-wrap: anywhere;
   align-items: center;
   justify-content: center;
   gap: 8px;

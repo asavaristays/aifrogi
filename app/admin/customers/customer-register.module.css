@@ -1,0 +1,24 @@
+.register { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; }
+.register th, .register td { min-width: 0; overflow-wrap: anywhere; }
+.register th:nth-child(1) { width: 17%; }
+.register th:nth-child(2) { width: 13%; }
+.register th:nth-child(3) { width: 12%; }
+.register th:nth-child(4) { width: 13%; }
+.register th:nth-child(5) { width: 10%; }
+.register th:nth-child(6) { width: 13%; }
+.register th:nth-child(7) { width: 22%; }
+@media (max-width: 1799px) {
+  .register, .register tbody { display: block; }
+  .register thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .register tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .register tbody td { display: block; padding: 16px 20px; }
+  .register tbody td::before { content: attr(data-label); display: block; margin-bottom: 8px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #68645c; }
+  .register tbody td:last-child, .register tbody td[colspan] { grid-column: 1 / -1; }
+}
+@media (max-width: 767px) {
+  .register tbody tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .register tbody td { padding: 14px 16px; }
+}
+@media (max-width: 419px) {
+  .register tbody tr { grid-template-columns: minmax(0, 1fr); }
+}
