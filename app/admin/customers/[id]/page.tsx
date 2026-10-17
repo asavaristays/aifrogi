@@ -32,7 +32,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
   const coreCertification = runCoreLaunchCertification();
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
+    <main className="mx-auto min-w-0 w-full max-w-7xl px-4 py-7 sm:px-8">
       <Link href="/admin/customers" className="text-sm font-black text-[#8a6a16]">Back to customers</Link>
       <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
         <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#8a6a16]">Customer review</p><h1 className="mt-2 text-3xl font-black">{organization.name}</h1><p className="mt-2 text-sm text-[#68645c]">{organization.ownerName} · {organization.ownerEmail}</p></div>
@@ -56,9 +56,9 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
       </section>
 
       <section id="billing-operations" className="mt-8 scroll-mt-8 border-t border-black/8 pt-8"><p className="product-eyebrow">Super Admin · customer account</p><h2 className="mt-2 text-2xl font-black">Account summary, documents and audit</h2>
-      <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+      <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]">
         {billing ? <section className="rounded-lg border border-[#d8c278] bg-[#fff9e8] p-6 lg:col-span-2"><p className="product-eyebrow">Commercial record</p><h3 className="mt-2 text-xl font-black">{billing.subscription.plan.name} · {billing.subscription.status.replaceAll("_", " ")}</h3><p className="mt-2 text-sm leading-6 text-[#68645c]">Plan changes, complimentary access, manual payments, invoices and connector charges are maintained in Billing Operations.</p><Link href={`/admin/billing/${organization.id}`} className="mt-4 inline-flex rounded-full bg-[#101010] px-5 py-2.5 text-sm font-bold text-white">Open billing record</Link></section> : null}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Section title="Company details"><Detail label="Business name" value={organization.name} /><Detail label="Industry" value={organization.industry} /><Detail label="Website" value={organization.website} /><Detail label="Google Maps" value={onboarding?.googleMapsUrl} /><Detail label="Google Business Profile" value={onboarding?.googleBusinessProfileUrl} /><Detail label="Instagram" value={onboarding?.instagramUrl} /><Detail label="Approved photos" value={onboarding?.photoUrls?.length ? `${onboarding.photoUrls.length} supplied` : null} /><Detail label="Address" value={organization.businessAddress} /></Section>
           {billing ? <Section title="Subscription and usage">
             <Detail label="Plan" value={billing.subscription.plan.name} />
@@ -71,7 +71,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
         </div>
         <Section title="Activity timeline">
           <div className="space-y-4">
-            {organization.activities.map((activity) => <div key={activity.id} className="border-l-2 border-[#25d366] pl-4"><p className="text-sm font-black">{activity.action.replaceAll("_", " ")}</p><p className="mt-1 text-xs leading-5 text-[#68645c]">{activity.detail || activity.actorEmail || "System update"}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(activity.createdAt)}</p></div>)}
+            {organization.activities.map((activity) => <div key={activity.id} className="min-w-0 border-l-2 border-[#25d366] pl-4"><p className="text-sm font-black">{activity.action.replaceAll("_", " ")}</p><p className="mt-1 whitespace-pre-wrap break-words text-xs leading-5 text-[#68645c] [overflow-wrap:anywhere]">{activity.detail || activity.actorEmail || "System update"}</p><p className="mt-1 text-[11px] text-[#9aa39f]">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(activity.createdAt)}</p></div>)}
             {!organization.activities.length ? <p className="text-sm text-[#68645c]">No activity yet.</p> : null}
           </div>
         </Section>
@@ -99,11 +99,11 @@ function TrackLink({ href, active, title, copy, status }: { href: string; active
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm"><h2 className="mb-4 text-lg font-black">{title}</h2>{children}</section>;
+  return <section className="min-w-0 rounded-lg border border-black/6 bg-white p-6 shadow-sm"><h2 className="mb-4 text-lg font-black">{title}</h2>{children}</section>;
 }
 
 function Detail({ label, value }: { label: string; value?: string | null }) {
-  return <div className="flex items-start justify-between gap-5 border-b border-black/5 py-3 text-sm"><span className="text-[#68645c]">{label}</span><strong className="max-w-[65%] text-right">{value || "Not provided"}</strong></div>;
+  return <div className="flex items-start justify-between gap-5 border-b border-black/5 py-3 text-sm"><span className="text-[#68645c]">{label}</span><strong className="min-w-0 max-w-[65%] break-words text-right [overflow-wrap:anywhere]">{value || "Not provided"}</strong></div>;
 }
 
 function UsageDetail({ label, value, limit }: { label: string; value: number; limit: number }) {

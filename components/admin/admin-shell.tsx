@@ -26,14 +26,14 @@ export function AdminShell({ userEmail, children }: { userEmail: string; childre
   const pathname = usePathname() ?? "";
   const [open, setOpen] = useState(false);
 
-  return <div className="min-h-screen bg-[#efede7] text-[#101010] lg:pl-[280px]">
+  return <div className="min-h-screen min-w-0 w-full bg-[#efede7] text-[#101010] lg:pl-[280px]">
     <header className="sticky top-0 z-40 flex h-[72px] items-center justify-between border-b border-white/8 bg-[#070707] px-5 text-white lg:hidden">
       <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125" />
-      <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls="admin-navigation" className="grid h-11 w-11 place-items-center rounded-full border border-white/12 bg-white/6"><Icon name={open ? "x" : "menu"} className="h-5 w-5" /></button>
+      <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls="admin-navigation" aria-label={open ? "Close admin navigation" : "Open admin navigation"} className="grid h-11 w-11 place-items-center rounded-full border border-white/12 bg-white/6"><Icon name={open ? "x" : "menu"} className="h-5 w-5" /></button>
     </header>
 
-    <aside id="admin-navigation" className={`${open ? "fixed inset-x-0 top-[72px] z-30 block" : "hidden"} max-h-[calc(100vh-72px)] overflow-y-auto bg-[#070707] p-4 text-white shadow-2xl lg:fixed lg:inset-y-0 lg:left-0 lg:top-0 lg:block lg:h-screen lg:max-h-none lg:w-[280px] lg:overflow-hidden`}>
-      <div className="flex min-h-full flex-col rounded-[30px] border border-white/8 bg-[#101010] p-4 shadow-[0_30px_80px_rgba(0,0,0,.28)] lg:h-full lg:min-h-0">
+    <aside id="admin-navigation" className={`${open ? "fixed inset-x-0 top-[72px] z-30 block" : "hidden"} max-h-[calc(100vh-72px)] overflow-y-auto bg-[#070707] p-4 text-white shadow-2xl lg:fixed lg:inset-y-0 lg:left-0 lg:top-0 lg:block lg:h-screen lg:max-h-none lg:w-[280px] lg:overflow-y-auto`}>
+      <div className="flex min-h-full flex-col rounded-[30px] border border-white/8 bg-[#101010] p-4 shadow-[0_30px_80px_rgba(0,0,0,.28)] lg:h-auto lg:min-h-full">
         <Link href="/admin" onClick={() => setOpen(false)} className="hidden px-3 pb-5 pt-2 lg:block"><Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[156px] grayscale contrast-125" /><span className="mt-2 block text-[9px] font-semibold uppercase tracking-[.22em] text-[#e2c66d]">Sovereign operations</span></Link>
 
         <Link href="/admin/onboard" onClick={() => setOpen(false)} className="group flex min-h-12 items-center justify-between rounded-2xl bg-[#b28728] px-4 text-sm font-bold text-white shadow-[0_18px_40px_rgba(178,135,40,.24)] transition hover:-translate-y-0.5 hover:bg-[#d4af37] hover:text-[#101010]"><span className="flex items-center gap-3"><span className="grid h-7 w-7 place-items-center rounded-full bg-black/14"><Icon name="sparkles" /></span>Bot onboarding</span><Icon name="arrow-right" /></Link>
@@ -49,6 +49,6 @@ export function AdminShell({ userEmail, children }: { userEmail: string; childre
       </div>
     </aside>
 
-    <div className="min-w-0"><div className="admin-premium-canvas min-h-screen [&_section]:rounded-[26px] [&_section]:shadow-[0_24px_70px_-52px_rgba(16,16,16,.58)]">{children}</div></div>
+    <div className="min-w-0"><div className="admin-premium-canvas min-h-screen min-w-0 [&_section]:min-w-0 [&_section]:rounded-[26px] [&_section]:shadow-[0_24px_70px_-52px_rgba(16,16,16,.58)]">{children}</div></div>
   </div>;
 }
