@@ -406,6 +406,7 @@ export async function updateWebsiteBotLifecycle(input: {
     db.onboardingActivity.create({
       data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: `WEBSITE_BOT_${input.action}`, detail: `Website Bot lifecycle changed from ${profile.status} to ${status}` }
     }),
+    db.$executeRaw`SELECT aifrogi_security.sync_website_bot_runtime(${input.organizationId},${input.actorEmail})`,
     ...(coreCertification ? [db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "CORE_LAUNCH_CERTIFICATION_PASSED", detail: `${coreCertification.passed}/${coreCertification.questionCount} Core questions passed · score ${coreCertification.score}% · certification ${coreCertification.version}` } })] : []),
     ...(tenantCertificationAdvisory ? [db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "TENANT_CERTIFICATION_ADVISORY_ACCEPTED_BY_SUPER_ADMIN", detail: `Client-confirmed knowledge was approved by Super Admin with this non-blocking diagnostic retained for follow-up: ${tenantCertificationAdvisory}` } })] : [])
   ]);

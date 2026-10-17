@@ -10,21 +10,22 @@ for (const file of ["app/api/auth/register/route.ts", "app/api/auth/invitation/r
   });
 }
 
-test("verified HotelGPT trial activates only after a successful website crawl", () => {
+test("HotelGPT email verification cannot grant serving authority from a webpage count", () => {
   const route = readFileSync(resolve(process.cwd(), "app/api/auth/invitation/route.ts"), "utf8");
   assert.match(route, /getWebsiteKnowledgeBase\(propertySlug, true\)/);
-  assert.match(route, /crawlReady = hotelMode && pagesPrepared > 0/);
-  assert.match(route, /TRIAL_BASIC_PUBLIC_BOT_ACTIVATED/);
-  assert.match(route, /status: "LIVE"/);
+  assert.match(route, /member.installation.website && !hotelMode/);
+  assert.doesNotMatch(route, /TRIAL_BASIC_PUBLIC_BOT_ACTIVATED|status: "LIVE"/);
+  const team = readFileSync(resolve(process.cwd(), "lib/repositories/team-repository.ts"), "utf8");
+  assert.match(team, /levelOneJobKey\(property.id\)/);
   assert.match(route, /TRIAL_WEBSITE_KNOWLEDGE_NEEDS_ATTENTION/);
-  assert.match(route, /remains safely in setup mode/);
+  assert.match(route, /public trial bot opens automatically when those checks pass/);
 });
 
 test("the first HotelGPT verification email identifies the product and crawl gate", () => {
   const route = readFileSync(resolve(process.cwd(), "app/api/auth/register/route.ts"), "utf8");
   assert.match(route, /const hotelMode = botCategory === "STAY"/);
   assert.match(route, /Welcome to \$\{productName\} — activate your \$\{TRIAL_DAYS\}-day trial/);
-  assert.match(route, /A successful website crawl activates your basic public trial bot/);
+  assert.match(route, /Website evidence and first-answer checks must pass before your basic public trial bot opens/);
   assert.match(route, /HotelGPT · Verified hotel intelligence/);
 });
 
@@ -45,7 +46,8 @@ test("HotelGPT activation keeps the branded email and attaches governed setup re
   assert.match(route, /AiFrogi-HotelGPT-Quick-Start-Manual\.pdf/);
   assert.match(route, /Complete hotel information/);
   assert.match(route, /Never place passwords, OTPs, payment credentials or guest records/);
-  assert.match(route, /const qr = crawlReady \?/);
+  assert.doesNotMatch(route, /const qr = crawlReady \?/);
+  assert.match(route, /Continue onboarding:/);
   assert.equal(readFileSync(resolve(process.cwd(), "public/downloads/AiFrogi-HotelGPT-Quick-Start-Manual.pdf")).subarray(0, 4).toString(), "%PDF");
   assert.equal(readFileSync(resolve(process.cwd(), "public/downloads/AiFrogi-HotelGPT-Knowledge-Onboarding.xlsx")).subarray(0, 2).toString(), "PK");
 });

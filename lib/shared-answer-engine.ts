@@ -1,3 +1,6 @@
+import {singleQuestionPlan,validateQuestionPlan,type QuestionPlan} from './rag-request-plan';
+import {answerFailure,type AnswerFailure} from './rag-answer-failure';
+import {sourceBoundNumericLimitation} from './rag-numeric-limitation';
 import {unsupportedClaimRelation,requestedClaimRelation} from './rag-claim-relations';
 import {classifyAnswerCoverage,type AnswerCoverage} from "./rag-answer-coverage";
 import {preserveOfferingInventory} from "./rag-offering-completeness";
@@ -11,15 +14,18 @@ import { composePublicFactDraft, currentQuestion, requestedPublicFactFields } fr
 export type AnswerScope = { organizationId: string; propertyId: string; generationId: string };
 export type AnswerEvidence = AnswerScope & { id: string; content: string; digest: string; url: string; title: string; sourceKind?:'CLAIM'|'CRAWL'|'LIVE'; sourceId?:string; sourceVersion?:string; fieldKey?:string; entityKey?:string; valueHash?:string; authorityRank?:number; effectiveFrom?:string|null; effectiveUntil?:string|null; liveOperation?:string; checkedAt?:string };
 export type SourceState = { state: 'READY'; scope: AnswerScope } | { state: 'NO_ACTIVE_SOURCE' | 'REVOKED' | 'EXPIRED' | 'INDEX_NOT_READY' | 'ACCESS_ERROR' };
-export type AnswerDraft = { disposition: 'ANSWER' | 'PARTIAL' | 'CLARIFY' | 'NO_EVIDENCE' | 'LIVE_ACTION_REQUIRED'; sentences: Array<{ text: string; kind: 'FACT'; evidenceIds: string[] }>; missingParts: string[] };
-export type EvidencePlan = {parts:Array<{questionPart:string;requiredSourceTerms?:string[];state:'SUPPORTED'|'MISSING'|'AMBIGUOUS'|'LIVE';evidenceIds:string[]}>};
+export type AnswerDraft = { disposition: 'ANSWER' | 'PARTIAL' | 'CLARIFY' | 'NO_EVIDENCE' | 'LIVE_ACTION_REQUIRED'; sentences: Array<{ text: string; kind: 'FACT'; evidenceIds: string[]; requestedPartIds?:string[] }>; coveragePlan?:Array<{requestedPartId:string;requestedPart:string;publishedFacts:string[];missingDetail:string|null}>; missingParts: string[] };
+export type EvidencePlan = {parts:Array<{questionPart:string;requiredSourceTerms?:string[];state:'RETRIEVED'|'NO_CANDIDATES'|'AMBIGUOUS'|'LIVE';evidenceIds:string[]}>};
+export type PartSupportReview={requestedPartId:string;answered:boolean;claimIndexes:number[];missingDetail:string|null};
+export type SupportReviews=SupportReview[] & {coverage?:PartSupportReview[]};
 export type SupportReview = { supported: boolean; evidenceIds: string[]; reason: string; requestedPartMissing?:string|null };
-export type AnswerTrace = { version: 'shared-answer-v1'; coverage?:AnswerCoverage; modelRequests?:Array<{operation:string;elapsedMs:number;inputTokens:number;outputTokens:number;status:'OK'|'ERROR'}>; queryEmbedding?:{cacheHit:boolean;elapsedMs:number}; stages: Array<{ stage: string; outcome: string; elapsedMs: number; ids: string[]; reasons?:string[] }> };
+export type AnswerTrace = { version: 'shared-answer-v1'; requestPlan?:QuestionPlan; requestCoverage?:PartSupportReview[]; evidencePlan?:EvidencePlan; failures?:AnswerFailure[]; coverage?:AnswerCoverage; modelRequests?:Array<{operation:string;elapsedMs:number;inputTokens:number;outputTokens:number;status:'OK'|'ERROR'}>; queryEmbedding?:{cacheHit:boolean;elapsedMs:number}; stages: Array<{ stage: string; outcome: string; elapsedMs: number; ids: string[]; reasons?:string[] }> };
 export type SharedAnswerResult = { disposition: AnswerDraft['disposition'] | 'TECHNICAL_FAILURE'; answer: string; evidence: AnswerEvidence[]; factualClaims: string[]; answerHash: string; trace: AnswerTrace; failureCode: string | null; retrievedEvidence:AnswerEvidence[]; totalMs:number; claimEvidence?:Array<{claim:string;evidenceIds:string[]}>;coverage?:AnswerCoverage };
 export type AnswerAdapters = {
   state(): Promise<SourceState>;
-  generate?(question:string,evidence:AnswerEvidence[]):Promise<AnswerDraft>;
-  verify?(claims:string[],evidence:AnswerEvidence[],question:string):Promise<SupportReview[]>;
+  plan?(question:string):Promise<QuestionPlan>;
+  generate?(question:string,evidence:AnswerEvidence[],plan?:QuestionPlan):Promise<AnswerDraft>;
+  verify?(claims:string[],evidence:AnswerEvidence[],question:string,plan?:QuestionPlan,claimPartIds?:string[][]):Promise<SupportReviews>;
   live?(scope:AnswerScope,question:string):Promise<AnswerEvidence[]|null>;
   lexical(scope: AnswerScope, question: string): Promise<AnswerEvidence[]>;
   semantic(scope: AnswerScope, question: string): Promise<AnswerEvidence[]>;
@@ -31,7 +37,7 @@ const numeric = (s: string) => s.match(/(?:₹|\$|€|£)?\s*\d[\d,]*(?:\.\d+)?(
 // Categorical exclusions require explicit negative source evidence. Open-world
 // website knowledge does not make unmentioned items false or unavailable.
 export function unsupportedExclusion(claim:string,source:string) {
-  const negative=/\b(?:not|never|no|cannot|can't|doesn't|don't|excluded|unavailable)\b|नहीं|\b(?:pas|jamais|aucun|nunca|ningún)\b/i;
+  const negative=/\b(?:not|never|no|cannot|can't|doesn't|don't|exclud(?:e[sd]?|ing)|unavailable)\b|नहीं|\b(?:pas|jamais|aucun|nunca|ningún)\b/i;
   if(!negative.test(claim)||negative.test(source)) return false;
   if(/\b(?:fee|charge|cost)\b/i.test(claim)&&/\b(?:free|complimentary)\b/i.test(source)) return false;
   return true;
@@ -122,25 +128,35 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
     start=Date.now(); const state=await adapters.state();record(state.state,start);
     if (state.state!=='READY') return result(state.state==='NO_ACTIVE_SOURCE'?'NO_EVIDENCE':'TECHNICAL_FAILURE',state.state==='NO_ACTIVE_SOURCE'?'I do not have published business information available yet.':'I’m having trouble accessing the approved business information. Please try again.',[],state.state);
     servingScope=state.scope;
+    stage='QUESTION_PLAN';start=Date.now();
+    const plan=validateQuestionPlan(adapters.plan?await adapters.plan(question):singleQuestionPlan(question));
+    trace.requestPlan=plan;record('PLANNED',start,plan.parts.map(part=>part.id));
+    if(plan.parts.every(part=>part.kind==='ACTION'))return result('LIVE_ACTION_REQUIRED','That request needs an authorised action service or assistance from the business team. I cannot confirm that it has been completed.');
     stage='RETRIEVAL';start=Date.now();
     const live=adapters.live ? await adapters.live(state.scope,question) : null;
-    if(live && !live.length) return result('LIVE_ACTION_REQUIRED','I cannot check that current value right now. Please contact the business team for a live confirmation.');
-    const contactRequest=requestedPublicFactFields(question).length>0;
+    if((live && !live.length)||(!live&&plan.parts.every(part=>part.kind==='LIVE'))) return result('LIVE_ACTION_REQUIRED','I cannot check that current value right now. Please contact the business team for a live confirmation.');
+    const contactRequest=plan.parts.length===1&&requestedPublicFactFields(question).length>0;
+    const perPart=!live&&plan.parts.length>1?await Promise.all(plan.parts.map(async part=>({part,results:await Promise.allSettled([adapters.lexical(state.scope,part.query),adapters.semantic(state.scope,part.query)])}))):null;
     const lexicalFirst=live ? [{status:'fulfilled' as const,value:live}] : contactRequest ? await Promise.allSettled([adapters.lexical(state.scope,question)]) : null;
     const directCandidates=lexicalFirst?.[0]?.status==='fulfilled' ? eligibleEvidence(state.scope,lexicalFirst[0].value) : [];
     const directAuthority=resolveRagSourceAuthority(directCandidates);
     const directUnits=directAuthority.conflicts.length?[]:directAuthority.evidence;
     const exactDraft=live ? null : composePublicFactDraft(question,directUnits);
-    const retrieved=lexicalFirst
+    const retrieved=perPart?perPart.flatMap(part=>part.results):lexicalFirst
       ? [...lexicalFirst, ...((exactDraft || live) ? [{status:'fulfilled' as const,value:[] as AnswerEvidence[]}] : await Promise.allSettled([adapters.semantic(state.scope,question)]))]
       : await Promise.allSettled([adapters.lexical(state.scope,question),adapters.semantic(state.scope,question)]);
-    const [lexical,semantic]=retrieved.map(r=>r.status==='fulfilled'?r.value:[]);
+    const lexical=perPart?perPart.flatMap(p=>p.results[0].status==='fulfilled'?p.results[0].value:[]):retrieved[0].status==='fulfilled'?retrieved[0].value:[];
+    const semantic=perPart?perPart.flatMap(p=>p.results[1].status==='fulfilled'?p.results[1].value:[]):retrieved[1]?.status==='fulfilled'?retrieved[1].value:[];
     if(retrieved.every(r=>r.status==='rejected')) throw new Error('RETRIEVAL_UNAVAILABLE');
     for(const r of retrieved) if(r.status==='rejected' && /SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(r.reason))) throw r.reason;
-    let evidence=exactDraft ? directUnits : prioritizeAnswerEvidence(question,selectEvidenceForSubject(question,fuseAnswerEvidence(state.scope,lexical,semantic,24)),8,semantic.map(unit=>unit.id));
+    const allAuthority=resolveRagSourceAuthority(eligibleEvidence(state.scope,[...lexical,...semantic]));
+    const allowed=new Set(allAuthority.evidence.map(unit=>unit.id));
+    const rankedParts=perPart?.map(({part,results})=>{const lists=results.map(result=>result.status==='fulfilled'?result.value.filter(unit=>allowed.has(unit.id)):[]);return {part,units:prioritizeAnswerEvidence(part.query,selectEvidenceForSubject(part.query,fuseAnswerEvidence(state.scope,lists[0],lists[1],48)),8,lists[1].map(unit=>unit.id))};});
+    let evidence=exactDraft ? directUnits : rankedParts ? [...new Map([...rankedParts.flatMap(p=>p.units.slice(0,2)),...rankedParts.flatMap(p=>p.units)].map(unit=>[unit.id,unit])).values()].slice(0,16) : prioritizeAnswerEvidence(question,selectEvidenceForSubject(question,fuseAnswerEvidence(state.scope,allAuthority.evidence.filter(unit=>lexical.some(e=>e.id===unit.id)),allAuthority.evidence.filter(unit=>semantic.some(e=>e.id===unit.id)),24)),8,semantic.map(unit=>unit.id));
+    trace.evidencePlan={parts:plan.parts.map(part=>{const units=rankedParts?.find(p=>p.part.id===part.id)?.units??evidence;return {questionPart:part.questionPart,state:part.kind==='LIVE'?'LIVE':units.length?'RETRIEVED':'NO_CANDIDATES',evidenceIds:units.filter(unit=>evidence.some(e=>e.id===unit.id)).map(unit=>unit.id)};})};
     const authority=resolveRagSourceAuthority(evidence);
     retrievedEvidence=evidence;
-    if(authority.conflicts.length || directAuthority.conflicts.length) {
+    if(authority.conflicts.length || directAuthority.conflicts.length || allAuthority.conflicts.length) {
       record('CONFLICT',start,evidence.map(e=>e.id));
       return result('CLARIFY','The approved sources contain conflicting values for this detail. Please confirm which value is current with the business team.');
     }
@@ -163,12 +179,12 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       stage='COMPOSITION';start=Date.now();
       const onlyHours=requestedPublicFactFields(question).join(',')==='hours';
       const requestedGuarantee=/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(currentQuestion(question));
-      const explicitGuarantee=evidence.some(unit=>/\b(?:guarantee|guaranteed|guarantees|promise|promised)\b/i.test(unit.content));
-      const draft=exactDraft ?? (requestedGuarantee && !explicitGuarantee
+      const outcomePolicy=evidence.some(unit=>/\b(?:guarantee|guaranteed|guarantees|promise|promises|promised|actual outcomes|illustrative|depend on|depends on)\b/i.test(unit.content));
+      const draft=exactDraft ?? (requestedGuarantee && !outcomePolicy
         ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['A published guarantee for the requested outcome']}
         : onlyHours && !composePublicFactDraft(question,evidence)
         ? {disposition:'NO_EVIDENCE' as const,sentences:[],missingParts:['Exact opening hours']}
-        : await adapters.generate!(question,evidence));
+        : await adapters.generate!(question,evidence,plan));
       if(exactDraft) evidence=directUnits;
       if(!exactDraft && Array.isArray(draft.sentences)) preserveOfferingInventory(question,draft,evidence);
       // Repair labels from the actual structured parts, without inventing facts
@@ -179,6 +195,10 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
         else if(draft.disposition==='NO_EVIDENCE'&&draft.sentences.length) draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
       }
       validateDraft(draft,evidence);
+      if(adapters.plan&&!exactDraft&&draft.sentences.length){
+        const ids=new Set(plan.parts.map(part=>part.id));
+        if(!Array.isArray(draft.coveragePlan)||draft.coveragePlan.length!==ids.size||new Set(draft.coveragePlan.map(p=>p.requestedPartId)).size!==ids.size||draft.coveragePlan.some(p=>!ids.has(p.requestedPartId))||draft.sentences.some(f=>!f.requestedPartIds?.length||f.requestedPartIds.some(id=>!ids.has(id))))throw Error('DRAFT_REQUEST_BINDING_INVALID');
+      }
       missingParts=[...draft.missingParts];
       record(exactDraft?'STRUCTURED_FACTS_NO_MODEL':'READY',start);
       const facts=draft.sentences.filter(s=>s.kind==='FACT');
@@ -216,11 +236,17 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       }
 
       stage='VERIFICATION';start=Date.now();
+      let verifiedCoverage:PartSupportReview[]|undefined;
       const boundFacts=facts.filter(fact=>quantityAlternativesSupported(fact.text,evidence.filter(e=>fact.evidenceIds.includes(e.id)).map(e=>e.content)));
       if(boundFacts.length!==facts.length){
         if(!boundFacts.length)throw new Error('DRAFT_QUANTITY_BINDING_REJECTED');
         facts.splice(0,facts.length,...boundFacts);
         trace.stages.push({stage:'QUANTITY_BINDING',outcome:'UNSUPPORTED_ALTERNATIVE_OMITTED',elapsedMs:0,ids:[]});
+      }
+      if(!exactDraft && adapters.verify)for(const fact of facts){
+        const source=evidence.filter(e=>fact.evidenceIds.includes(e.id)).map(e=>e.content);
+        const bound=sourceBoundNumericLimitation(fact.text,currentQuestion(question),source);
+        if(bound){fact.text=bound;trace.stages.push({stage:'NUMERIC_LIMITATION',outcome:'EXACT_SOURCE_REQUIRES_VERIFICATION',elapsedMs:0,ids:fact.evidenceIds});}
       }
       const rejectedFacts=new Set(facts.filter(fact=>{
         const units=evidence.filter(e=>fact.evidenceIds.includes(e.id));
@@ -232,7 +258,9 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
       // One batch support check for generated claims; exact extracted facts need no model.
       if(!exactDraft && !contactRecovery && facts.length && adapters.verify) {
         const verificationIds=new Set(facts.flatMap(f=>f.evidenceIds));
-        const reviews=await adapters.verify(facts.map(f=>f.text),evidence.filter(unit=>verificationIds.has(unit.id)),question);
+        const reviews=await adapters.verify(facts.map(f=>f.text),evidence.filter(unit=>verificationIds.has(unit.id)),question,adapters.plan?plan:undefined,facts.map(f=>f.requestedPartIds??[]));
+        verifiedCoverage=reviews.coverage;trace.requestCoverage=verifiedCoverage;
+        trace.stages.push({stage:'CLAIM_SUPPORT',outcome:'REVIEWED',elapsedMs:0,ids:[],reasons:reviews.map((review,index)=>`${index+1}: ${review.supported?'SUPPORTED':'REJECTED'} ${review.reason}`)});
         if(reviews.length!==facts.length) throw new Error('SUPPORT_SCHEMA_INVALID');
         const supported=facts.filter((fact,index)=>{
           const review=rejectedFacts.has(fact) ? {...reviews[index],supported:false,evidenceIds:[]} : reviews[index];
@@ -248,11 +276,39 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
           draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
         }
       }
+      // Completeness is checked against the pre-retrieval request, independently of
+      // the verifier's support verdict. A rejected part cannot erase other facts.
+      if(adapters.plan&&!exactDraft&&!contactRecovery){
+        const unresolved=plan.parts.filter(part=>!facts.some(f=>f.requestedPartIds?.includes(part.id))||(verifiedCoverage?verifiedCoverage.find(p=>p.requestedPartId===part.id)?.answered!==true:draft.coveragePlan?.some(p=>p.requestedPartId===part.id&&p.missingDetail?.trim())));
+        draft.missingParts=[...new Set(unresolved.map(part=>part.questionPart))];
+        draft.disposition=facts.length?(draft.missingParts.length?'PARTIAL':'ANSWER'):'NO_EVIDENCE';
+      }
       // Supported facts are factual delivery even when a model mislabels its draft.
       if(facts.length && !['ANSWER','PARTIAL'].includes(draft.disposition)) draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
+      record('SUPPORTED',start,[...new Set(facts.flatMap(f=>f.evidenceIds))]);
+      // A useful partial answer still needs an authorised route for its absent
+      // detail. Extract contacts after claim verification so contact recovery
+      // can never bypass review of the generated business facts.
+      if(draft.missingParts.length && !contactRecovery && !facts.some(f=>/\b(?:phone|telephone|tel|call)\b.{0,12}\+?\d[\d ()-]{6,}/i.test(f.text))) {
+        const recoveryStart=Date.now();
+        try {
+          const permitted=eligibleEvidence(state.scope,await adapters.lexical(state.scope,'phone number'));
+          const contactAuthority=resolveRagSourceAuthority(permitted);
+          const contact=contactAuthority.conflicts.length?null:composePublicFactDraft('phone number',contactAuthority.evidence);
+          if(contact) {
+            facts.push(...contact.sentences);
+            evidence=[...evidence,...contactAuthority.evidence.filter(e=>!evidence.some(old=>old.id===e.id))];
+            retrievedEvidence=[...retrievedEvidence,...contactAuthority.evidence.filter(e=>!retrievedEvidence.some(old=>old.id===e.id))];
+          }
+          trace.stages.push({stage:'PARTIAL_CONTACT',outcome:contact?'APPROVED_PHONE_FOUND':'NO_APPROVED_PHONE',elapsedMs:Date.now()-recoveryStart,ids:contact?.sentences.flatMap(s=>s.evidenceIds)||[]});
+        } catch(error) {
+          if(/SCOPE|DIGEST|ORIGIN|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(String(error)))throw error;
+          trace.stages.push({stage:'PARTIAL_CONTACT',outcome:'CONTACT_UNAVAILABLE',elapsedMs:Date.now()-recoveryStart,ids:[]});
+        }
+      }
+      if(facts.length&&!['ANSWER','PARTIAL'].includes(draft.disposition))draft.disposition=draft.missingParts.length?'PARTIAL':'ANSWER';
       const citedIds=new Set(facts.flatMap(s=>s.evidenceIds));
       const cited=evidence.filter(e=>citedIds.has(e.id));
-      record('SUPPORTED',start,[...citedIds]);
       stage='DELIVERY_AUTHORITY';start=Date.now();
       if(!await adapters.recheck(state.scope)) throw new Error('AUTHORITY_CHANGED');
       record('CURRENT',start);
@@ -268,7 +324,8 @@ export async function runSharedAnswer(question: string, adapters: AnswerAdapters
   } catch(error) {
     record('ERROR',start);
     // Error details remain server-side; never expose credentials/provider payloads.
-    const code=error instanceof Error && /^[A-Z][A-Z0-9_]+$/.test(error.message)?error.message:`${stage}_FAILED`;
+    const failure=answerFailure(error,stage);const code=failure.code;
+    (trace.failures??=[]).push(failure);
     if(servingScope && ['COMPOSITION','VERIFICATION'].includes(stage) && !/SCOPE|AUTHORI|DENIED|CONTEXT|ROLE|PERMISSION/.test(code)) {
       try {
         stage='CONTACT_RECOVERY';start=Date.now();

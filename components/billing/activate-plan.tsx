@@ -13,8 +13,8 @@ declare global {
 }
 
 const paidPlans = [
-  { code: "AI_STARTER_MONTHLY", name: "Monthly", price: "₹499", note: "Billed every month" },
-  { code: "AI_STARTER_YEARLY", name: "Yearly", price: "₹4,999", note: "Save ₹989 each year" }
+  { code: "AI_STARTER_YEARLY_2026", name: "Starter", price: "₹14,500", note: "Per year · 4,000 credits/month included" },
+  { code: "HOTELGPT_YEARLY_2026", name: "HotelGPT", price: "₹16,500", note: "Per year · 5,000 credits/month included" }
 ] as const;
 
 function loadCheckout() {
@@ -44,7 +44,7 @@ async function readCheckoutResponse(response: Response) {
 export function ActivatePlan({ activePlanCode, initialPlanCode, openOnLoad = false }: { activePlanCode: string; initialPlanCode?: string; openOnLoad?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<"AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY">(initialPlanCode === "AI_STARTER_YEARLY" ? "AI_STARTER_YEARLY" : "AI_STARTER_MONTHLY");
+  const [selected, setSelected] = useState<typeof paidPlans[number]["code"]>(initialPlanCode === "HOTELGPT_YEARLY_2026" ? "HOTELGPT_YEARLY_2026" : "AI_STARTER_YEARLY_2026");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const openedFromPricing = useRef(false);
@@ -106,7 +106,7 @@ export function ActivatePlan({ activePlanCode, initialPlanCode, openOnLoad = fal
           <div className="grid gap-3 sm:grid-cols-2">{paidPlans.map((plan) => <button key={plan.code} type="button" onClick={() => setSelected(plan.code)} className={`rounded-xl border p-5 text-left transition ${selected === plan.code ? "border-[#8a6a16] bg-[#fff8e3] ring-1 ring-[#8a6a16]" : "border-black/10 hover:border-[#8a6a16]/50"}`}><span className="text-sm font-bold">{plan.name}</span><strong className="mt-3 block text-3xl">{plan.price}</strong><span className="mt-1 block text-xs text-[var(--text-muted)]">{plan.note}</span></button>)}</div>
           <a href="mailto:info@aifrogi.com?subject=AiFrogi%20Custom%20Enterprise%20Plan" className="mt-3 flex items-center justify-between rounded-xl border border-black/10 p-4 text-sm"><span><strong className="block">Custom / Enterprise</strong><span className="mt-1 block text-xs text-[var(--text-muted)]">Connector, volume, governance, or multi-location requirements</span></span><span className="font-bold text-[#6d5310]">Contact us →</span></a>
           {error ? <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p> : null}
-          <div className="mt-6 flex flex-wrap justify-end gap-3"><button type="button" disabled={busy} onClick={() => setOpen(false)} className="min-h-11 rounded-lg border border-black/10 px-5 text-sm font-bold disabled:opacity-50">Cancel</button><button type="button" disabled={busy} onClick={() => void pay()} className="min-h-11 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white disabled:opacity-60">{busy ? "Opening secure checkout…" : `Pay ${selected === "AI_STARTER_YEARLY" ? "₹4,999 yearly" : "₹499 monthly"}`}</button></div>
+          <div className="mt-6 flex flex-wrap justify-end gap-3"><button type="button" disabled={busy} onClick={() => setOpen(false)} className="min-h-11 rounded-lg border border-black/10 px-5 text-sm font-bold disabled:opacity-50">Cancel</button><button type="button" disabled={busy} onClick={() => void pay()} className="min-h-11 rounded-lg bg-[#8a6a16] px-6 text-sm font-bold text-white disabled:opacity-60">{busy ? "Opening secure checkout…" : `Pay ${paidPlans.find(plan => plan.code === selected)?.price} yearly`}</button></div>
         </div>
       </div>
     </div> : null}

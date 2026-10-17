@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 test("tenant database context uses transaction-local identity", () => {
@@ -60,13 +60,14 @@ test("authenticated request surfaces have a fail-visible protected database acce
   assert.doesNotMatch(source, /!identity && process\.env\.NODE_ENV === "production"/, "bootstrap and readiness access must remain available before tenant identity resolution");
 });
 
-test("every directly tenant-keyed Prisma model appears in the RLS package", () => {
+test("every directly tenant-keyed Prisma model appears in the baseline or versioned RLS migrations", () => {
   const schema = readFileSync(resolve(process.cwd(), "prisma/schema.prisma"), "utf8");
   const sql = readFileSync(resolve(process.cwd(), "ops/tenant-rls-policies.sql"), "utf8");
+  const sqlWithMigrations = [sql, ...readdirSync(resolve(process.cwd(), "prisma/migrations"), { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => readFileSync(resolve(process.cwd(), "prisma/migrations", entry.name, "migration.sql"), "utf8"))].join("\n");
   const blocks = [...schema.matchAll(/model\s+(\w+)\s*\{([\s\S]*?)\n\}/g)];
   const tenantModels = blocks
     .filter(([, , body]) => /^\s+(organizationId|propertyId|tenantId)\s+/m.test(body))
     .map(([, name]) => name);
-  const missing = tenantModels.filter(name => !sql.includes(`'${name}'`) && !sql.includes(`\"${name}\"`));
+  const missing = tenantModels.filter(name => !sqlWithMigrations.includes(`'${name}'`) && !sqlWithMigrations.includes(`\"${name}\"`));
   assert.deepEqual(missing, [], `RLS policy coverage missing for ${missing.join(", ")}`);
 });

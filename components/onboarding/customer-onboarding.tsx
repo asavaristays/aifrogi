@@ -8,6 +8,7 @@ import { LogoutButton } from "@/components/layout/logout-button";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import { BotReviewSubmission } from "@/components/setup/bot-review-submission";
 import { Button } from "@/components/ui/button";
+import { CrawlWorkbookReview } from "@/components/knowledge/crawl-workbook-review";
 import { LevelOneProgress } from "@/components/onboarding/level-one-progress";
 
 type BotProfile = {
@@ -108,6 +109,7 @@ export function CustomerOnboarding({ initialOrganization, accountEmail, reviewRe
       {step === 2 ? <div className="space-y-5"><section className="rounded-lg border border-black/6 bg-white p-6 shadow-sm"><p className="product-eyebrow">Step 2 · add information now or later</p><h2 className="mt-2 text-2xl font-black">Website and Excel are optional at this stage.</h2><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">AiFrogi can check your public website now, and you may upload the Excel sheet now or add more intelligence after approval.</p><div className="mt-5 flex flex-wrap gap-3"><Button disabled={checkingWebsite} onClick={checkWebsiteNow}>{checkingWebsite ? "Checking website…" : organization?.website ? "Check website now" : "Continue"}</Button><button type="button" className="min-h-11 rounded-md border border-black/10 px-5 text-sm font-bold" onClick={() => setStep(3)}>Do this later</button></div></section><OnboardingWorkbookImport hotelTemplate={organization?.botProfile?.category === "STAY"} onImported={() => setStep(3)} /><button type="button" className="text-sm font-semibold text-[var(--primary-strong)]" onClick={() => setStep(1)}>← Back to business details</button></div> : null}
       {step >= 3 && organization?.botProfile ? <BotReviewSubmission intakeOnly status={status} ready tested={false} certified={false} canManage={reviewReadiness?.canManage ?? false} evidence={reviewReadiness?.evidence} /> : null}
       </>}
+      {organization?.website && organization.properties[0] && reviewReadiness?.canManage ? <CrawlWorkbookReview propertySlug={organization.properties[0].slug} onImported={() => router.refresh()} /> : null}
     </main>
   </div>;
 }

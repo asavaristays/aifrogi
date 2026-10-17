@@ -65,6 +65,7 @@ const publicApiPrefixes = [
   "/api/flowcart/webhook/aifrogi",
   "/api/flowcart/webhook/razorpay",
   "/api/billing/webhook/razorpay",
+  "/api/public/pricing-context",
   "/api/public/whatsapp-bot",
   "/api/public/website-bot",
   // HotelGPT guest access is protected by signed request/stay capabilities

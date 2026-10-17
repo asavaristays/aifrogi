@@ -1,0 +1,17 @@
+{
+  "source": "DB-IP Country Lite via sapics/ip-location-db",
+  "downloaded": "2026-10-04",
+  "countries": [
+    "CA",
+    "US",
+    "AE"
+  ],
+  "urls": [
+    "https://raw.githubusercontent.com/sapics/ip-location-db/main/dbip-country/dbip-country-ipv4.csv",
+    "https://raw.githubusercontent.com/sapics/ip-location-db/main/dbip-country/dbip-country-ipv6.csv"
+  ],
+  "sourceSha256": {
+    "ipv4": "0de8ddf35f4d07c93c59809d226b8e055da54cff377c69b2cfb61c5a674f55c6",
+    "ipv6": "18cba5a2d6cc65773e58aa779ed3fbf03037c16e5886a37f62b5b9dd687e01a7"
+  }
+}

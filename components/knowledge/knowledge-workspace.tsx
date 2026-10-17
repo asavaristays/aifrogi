@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { Icon } from "@/components/icons";
+import { CrawlWorkbookReview } from "./crawl-workbook-review";
 import { OnboardingWorkbookImport } from "@/components/onboarding/onboarding-workbook-import";
 import type { KnowledgeSettings } from "@/lib/repositories/knowledge-repository";
 
@@ -318,6 +319,7 @@ export function KnowledgeWorkspace({
 
       <section className="grid items-start gap-5 xl:grid-cols-2">
         <div className="space-y-5">
+          {canManage ? <CrawlWorkbookReview propertySlug={propertySlug} onImported={() => window.location.reload()} /> : null}
           {canManage ? <OnboardingWorkbookImport onImported={() => window.location.reload()} /> : null}
           <div id="upload-knowledge" className="soft-card overflow-hidden rounded-lg"><div className="border-b border-[var(--border)] px-5 py-4"><p className="product-eyebrow">Trusted source evidence</p><h2 className="mt-1 text-lg font-semibold">Upload supporting documents</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Use this for current service, pricing, policy, contact and operating documents. Use the Excel importer above for the completed AiFrogi onboarding workbook.</p></div>{canManage ? <form onSubmit={uploadDocument} className="flex flex-col gap-3 border-b border-[var(--border)] bg-[var(--surface-soft)] px-5 py-4"><div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="min-w-0 flex-1"><span className="field-label">PDF, DOCX, TXT, Markdown, CSV, or JSON</span><input name="file" type="file" required accept=".pdf,.docx,.txt,.md,.csv,.json" className="mt-2 block w-full text-xs file:mr-3 file:rounded-md file:border-0 file:bg-[var(--primary-soft)] file:px-3 file:py-2 file:font-semibold file:text-[var(--primary-strong)]" /></label><button disabled={uploading} className="min-h-9 rounded-md bg-[#101010] px-4 text-xs font-semibold text-white disabled:opacity-55">{uploading ? "Extracting..." : "Upload source"}</button></div>{uploadNotice ? <p role="status" className={`text-xs font-semibold ${/could not|must be|no readable|upload a /i.test(uploadNotice) ? "text-red-700" : "text-[#176b50]"}`}>{uploadNotice}</p> : null}</form> : null}<div className="divide-y divide-[var(--border)]">{summary.documents.length ? summary.documents.map((item) => <DocumentRow key={item.id} item={item} canManage={canManage} onReview={reviewDocument} />) : <EmptyState title="No source files uploaded" copy="Add supporting policies, service guides, pricing sheets, contact details, FAQs, or operating information." />}</div></div>
         </div>

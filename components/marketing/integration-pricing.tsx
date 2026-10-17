@@ -1,28 +1,30 @@
+import { LocalPrice } from "@/components/marketing/pricing-currency";
 import { Icon } from "@/components/icons";
 
 const options = [
   {
     name: "Standard connector",
-    price: "₹2,500",
+    rupees: 2500,
     billing: "one-time / connector",
     copy: "Shopify, Razorpay, or Google Sheets activation, field mapping, webhook validation, and go-live testing."
   },
   {
     name: "Assisted connector",
-    price: "₹7,500",
+    rupees: 7500,
     billing: "one-time / connector",
     copy: "WooCommerce, Zoho CRM, HubSpot, booking tools, or similar supported APIs configured with agreed fields and tests.",
     featured: true
   },
   {
     name: "Custom API connector",
-    price: "From ₹15,000",
+    rupees: 15000,
+    from: true,
     billing: "one-time after scope review",
     copy: "Internal software, complex multi-step operations, private APIs, or systems that need custom middleware."
   },
   {
     name: "Audio + Translator",
-    price: "₹7,500",
+    rupees: 7500,
     billing: "one-time / bot",
     copy: "Wispr-style voice input with language selection, transcript review and an English translation for the team. Includes configuration and go-live testing.",
     usage: "Provider usage is separate: transcription from US$0.017/min or live translation from US$0.034/min, billed at actual usage plus applicable taxes."
@@ -40,11 +42,11 @@ export function IntegrationPricing() {
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {options.map((option) => <article key={option.name} className={`border-t-2 pt-6 ${option.featured ? "border-[#8a6a16]" : "border-black/12"}`}><div className="flex items-start justify-between gap-3"><h3 className="text-lg font-bold">{option.name}</h3>{option.featured ? <span className="rounded-full bg-[#f8f0d8] px-3 py-1 text-[10px] font-bold uppercase tracking-[.08em] text-[#6d5310]">Best value</span> : null}</div><p className="mt-6 text-3xl font-semibold tracking-[-.04em]">{option.price}</p><p className="mt-1 text-xs font-semibold text-[var(--text-muted)]">{option.billing}</p><p className="mt-5 text-sm leading-6 text-[var(--text-muted)]">{option.copy}</p>{option.usage ? <p className="mt-4 border-t border-black/8 pt-4 text-xs leading-5 text-[var(--text-muted)]"><strong className="text-[#101010]">Usage:</strong> {option.usage}</p> : null}</article>)}
+          {options.map((option) => <article key={option.name} className={`border-t-2 pt-6 ${option.featured ? "border-[#8a6a16]" : "border-black/12"}`}><div className="flex items-start justify-between gap-3"><h3 className="text-lg font-bold">{option.name}</h3>{option.featured ? <span className="rounded-full bg-[#f8f0d8] px-3 py-1 text-[10px] font-bold uppercase tracking-[.08em] text-[#6d5310]">Best value</span> : null}</div><p className="mt-6 text-3xl font-semibold tracking-[-.04em]">{option.from ? "From " : ""}<LocalPrice rupees={option.rupees} /></p><p className="mt-1 text-xs font-semibold text-[var(--text-muted)]">{option.billing}</p><p className="mt-5 text-sm leading-6 text-[var(--text-muted)]">{option.copy}</p>{option.usage ? <p className="mt-4 border-t border-black/8 pt-4 text-xs leading-5 text-[var(--text-muted)]"><strong className="text-[#101010]">Usage:</strong> {option.usage}</p> : null}</article>)}
         </div>
 
         <div className="mt-10 flex flex-col gap-5 border-t border-black/10 pt-6 text-sm md:flex-row md:items-center md:justify-between">
-          <div className="grid gap-2 text-[var(--text-muted)] sm:grid-cols-2 sm:gap-8"><p><strong className="text-[#101010]">Optional maintenance:</strong> from ₹1,500/month.</p><p><strong className="text-[#101010]">UAE projects:</strong> quoted and invoiced in AED.</p><p className="sm:col-span-2 text-xs">Audio + Translator is an independent AiFrogi capability and is not affiliated with or endorsed by Wispr.</p></div>
+          <div className="grid gap-2 text-[var(--text-muted)] sm:grid-cols-2 sm:gap-8"><p><strong className="text-[#101010]">Optional maintenance:</strong> from <LocalPrice rupees={1500} />/month.</p><p><strong className="text-[#101010]">UAE projects:</strong> quoted and invoiced in AED.</p><p className="sm:col-span-2 text-xs">Audio + Translator is an independent AiFrogi capability and is not affiliated with or endorsed by Wispr.</p></div>
           <a href="mailto:info@aifrogi.com?subject=Integration%20cost%20estimate" className="inline-flex min-h-11 shrink-0 items-center gap-2 font-bold text-[#6d5310]">Request cost estimate <Icon name="arrow-right" /></a>
         </div>
       </div>

@@ -20,10 +20,11 @@ i=0
 until curl -fsS "http://127.0.0.1:$port/api/health/live" >/dev/null 2>&1; do
   i=$((i+1)); test "$i" -lt 100 || { cat "$log_file" >&2; exit 1; }; sleep 0.1
 done
-status=$(curl -sS -o "$body_file" -w '%{http_code}' -H 'content-type: application/json' --data "{\"sessionId\":\"$run_id\",\"message\":\"What is the form fact?\"}" "http://127.0.0.1:$port/api/public/website-bot/http-property")
+before_count=$(psql "$DATABASE_URL" -Atqc "SELECT count(*) FROM \"RagAnswerReceipt\" WHERE \"propertyId\"='http-property' AND answer='Check-in is at 2 PM.' AND \"answerHash\"=encode(digest(convert_to(answer,'UTF8'),'sha256'),'hex') AND evidence @> '[{\"sourceId\":\"http-entry-form\"}]'::jsonb")
+status=$(curl -sS -o "$body_file" -w '%{http_code}' -H 'content-type: application/json' --data "{\"sessionId\":\"$run_id\",\"message\":\"What time is check-in?\"}" "http://127.0.0.1:$port/api/public/website-bot/http-property")
 test "$status" = 200 || { cat "$body_file" >&2; cat "$log_file" >&2; exit 1; }
-grep -q '"answer":"Form fact."' "$body_file"
-grep -q '"grounded":true' "$body_file"
-audit_count=$(psql "$DATABASE_URL" -Atqc "SELECT count(*) FROM \"KnowledgeAnswerAudit\" a JOIN \"KnowledgeAnswerOutcome\" o ON (o.\"propertyId\",o.\"answerAuditId\")=(a.\"propertyId\",a.id) WHERE a.\"propertyId\"='http-property' AND o.state='DELIVERED'")
-test "$audit_count" -ge 1
-echo "PASS actual Next.js website route returned grounded canonical answer with $audit_count durable delivered audit(s)"
+grep -q '"answer":"Check-in is at 2 PM."' "$body_file" || { cat "$body_file" >&2; cat "$log_file" >&2; exit 1; }
+grep -q '"grounded":true' "$body_file" || { cat "$body_file" >&2; cat "$log_file" >&2; exit 1; }
+audit_count=$(psql "$DATABASE_URL" -Atqc "SELECT count(*) FROM \"RagAnswerReceipt\" WHERE \"propertyId\"='http-property' AND answer='Check-in is at 2 PM.' AND \"answerHash\"=encode(digest(convert_to(answer,'UTF8'),'sha256'),'hex') AND evidence @> '[{\"sourceId\":\"http-entry-form\"}]'::jsonb")
+test "$audit_count" -gt "$before_count"
+echo "PASS actual Next.js website route returned grounded canonical answer with $audit_count durable evidence-bound RAG receipt(s)"

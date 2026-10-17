@@ -5,7 +5,7 @@ import { verifyRazorpayCheckoutSignature } from "../../lib/razorpay-billing";
 import { BILLING_PLAN_CATALOGUE } from "../../lib/billing-super-admin";
 import { aiReplyAllowancePosition } from "../../lib/ai-credits";
 
-test("AI Bot paid plans match the public monthly and yearly pricing", () => {
+test("Legacy subscriptions retain their original plan prices", () => {
   const monthly = BILLING_PLAN_CATALOGUE.find((plan) => plan.code === "AI_STARTER_MONTHLY");
   const yearly = BILLING_PLAN_CATALOGUE.find((plan) => plan.code === "AI_STARTER_YEARLY");
   assert.equal(monthly?.amountPaisa, 49_900);
@@ -44,4 +44,16 @@ test("granted credits immediately expand the truthful AI reply allowance", () =>
     available: true
   });
   assert.equal(aiReplyAllowancePosition({ included: 100, added: 0, used: 100 }).available, false);
+});
+
+
+test("New annual offers match approved pricing and monthly allowances", () => {
+  const starter = BILLING_PLAN_CATALOGUE.find(plan => plan.code === "AI_STARTER_YEARLY_2026");
+  const hotel = BILLING_PLAN_CATALOGUE.find(plan => plan.code === "HOTELGPT_YEARLY_2026");
+  assert.equal(starter?.amountPaisa, 1450000);
+  assert.equal(hotel?.amountPaisa, 1650000);
+  assert.equal(starter?.limits.aiReplies, 4000);
+  assert.equal(hotel?.limits.aiReplies, 5000);
+  assert.equal(starter?.billingInterval, "YEARLY");
+  assert.equal(hotel?.billingInterval, "YEARLY");
 });

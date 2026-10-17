@@ -42,7 +42,7 @@ until curl -fsS "http://127.0.0.1:$app_port/api/health/live" >/dev/null 2>&1; do
 "$nginx_bin" -t -c "$work_dir/nginx.conf" >/dev/null
 "$nginx_bin" -c "$work_dir/nginx.conf"
 route="http://127.0.0.1:$edge_port/api/public/website-bot/http-property"
-request(){ curl -sS -o "$work_dir/body" -w '%{http_code}' -H 'content-type: application/json' --data "{\"sessionId\":\"$1\",\"message\":\"What is the form fact?\"}" "$route"; }
+request(){ curl -sS -o "$work_dir/body" -w '%{http_code}' -H 'content-type: application/json' --data "{\"sessionId\":\"$1\",\"message\":\"What time is check-in?\"}" "$route"; }
 test "$(request edge-closed)" = 503
 echo 'PASS real factual application route is closed at nginx before admission'
 
@@ -56,7 +56,7 @@ openssl dgst -sha256 -sign "$work_dir/private.pem" -out "$work_dir/signature" "$
 AIFROGI_RELEASE_ARCHIVE="$work_dir/release" AIFROGI_RELEASE_MANIFEST="$work_dir/manifest" AIFROGI_RELEASE_SIGNATURE="$work_dir/signature" AIFROGI_RELEASE_PUBLIC_KEY="$work_dir/public.pem" AIFROGI_ACTIVE_RELEASE_FILE="$work_dir/current-release" AIFROGI_REQUIRED_SERVING_CONTRACT=1 AIFROGI_ADMISSION_DIR="$work_dir/admitted" AIFROGI_NGINX_INCLUDE="$work_dir/admission.conf" AIFROGI_NGINX_BIN="$nginx_bin" AIFROGI_NGINX_CONFIG="$work_dir/nginx.conf" AIFROGI_DEPLOYMENT_TEST_MODE=1 "$root_dir/ops/p2b-deployment-admission.sh" >/dev/null
 sleep 0.2
 test "$(request edge-open)" = 200
-grep -q '"answer":"Form fact."' "$work_dir/body"
+grep -q '"answer":"Check-in is at 2 PM."' "$work_dir/body"
 grep -q '"grounded":true' "$work_dir/body"
 echo 'PASS signed admission opened nginx and the real route returned a grounded canonical answer'
 

@@ -1,3 +1,5 @@
+> 17 October 2026 — current-status notice: The design/evidence below is retained as a historical snapshot. It is not current architecture certification. Use [the current target](product-memory/AIFROGI_TARGET_AND_INSTRUCTIONS.md), [strategy/checklist](product-memory/AIFROGI_ARCHITECTURE_STRATEGY_AND_CHECKLIST.md), and [architecture work register](product-memory/AIFROGI_ARCHITECTURE_WORK_REGISTER.md). Older green claims and inconsistent summary counts must not be reported as today's completion percentage. Latest real-model results include proof and test-transport failures; the shared architecture remains unqualified.
+
 # AiFrogi Architecture Status Table
 
 **Purpose:** Single system overview for architecture health, Super Admin governance and engineering priorities.  

@@ -24,6 +24,7 @@ const navItems = [
     ]
   },
   { label: "How to Install", href: "/install-ai-bot" },
+  { label: "Scan AI Readiness", href: "https://signal.aifrogi.com/#scan" },
   { label: "Pricing", href: "/pricing" }
 ];
 
@@ -41,7 +42,7 @@ export function SiteHeader() {
             <Image src="/brand/aifrogi-logo-white.png" alt="AiFrogi" width={800} height={300} priority className="h-auto w-[142px] grayscale contrast-125 sm:w-[190px]" />
           </Link>
 
-          <nav aria-label="Main navigation" className="ml-auto hidden items-center gap-6 text-sm font-semibold text-white/62 lg:flex">
+          <nav aria-label="Main navigation" className="ml-auto hidden items-center gap-4 text-sm font-semibold text-white/62 xl:gap-6 lg:flex">
             {navItems.map((item) => (
               item.children ? (
                 <div key={item.href} className="group relative py-5">

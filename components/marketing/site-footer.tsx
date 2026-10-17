@@ -16,6 +16,7 @@ export function SiteFooter() {
           <Link className="block hover:text-white" href="/solutions">AI Bot</Link>
           <Link className="block hover:text-white" href="/resources">Resources</Link>
           <Link className="block hover:text-white" href="/install-ai-bot">How to install AI Bot</Link>
+          <a className="block hover:text-white" href="https://signal.aifrogi.com/#scan">Scan AI Readiness</a>
           <Link className="block hover:text-white" href="/pricing">Pricing</Link>
           <Link className="block hover:text-white" href="/contact">Contact</Link>
           <a className="block hover:text-white" href="https://webtechnosys.com/founder/" target="_blank" rel="noreferrer">Founder</a>

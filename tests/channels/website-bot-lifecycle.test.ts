@@ -58,7 +58,8 @@ test("hotel owners keep tenant authority throughout onboarding writes", () => {
   const workbookRoute = readFileSync("app/api/onboarding/workbook-import/route.ts", "utf8");
   const profileRoute = readFileSync("app/api/onboarding/bot-profile/route.ts", "utf8");
   assert.match(onboardingPage, /organization\?\.members\.find/);
-  assert.match(onboardingPage, /withTenantDatabaseContext/);
+  assert.match(onboardingPage, /withTenantPropertyDatabaseContext/);
+  assert.match(onboardingPage, /propertyId:property\.id/);
   assert.match(workbookRoute, /withTenantDatabaseContext\(\{ kind: "tenant"/);
   assert.match(profileRoute, /resolveClientWorkspaceAccess\(\{ requireManage: true \}\)/);
   assert.match(profileRoute, /onboarding-bot-profile:/);

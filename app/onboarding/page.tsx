@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/auth-server";
 import { getDb } from "@/lib/db";
 import { getKnowledgeVerificationReadiness } from "@/lib/repositories/knowledge-verification-repository";
 import { loadOnboardingForUser } from "@/lib/services/onboarding-service";
-import { withTenantDatabaseContext } from "@/lib/security/tenant-database-context";
+import { withTenantPropertyDatabaseContext } from "@/lib/security/tenant-database-context";
 import { getOrganizationSubscriptionAccess } from "@/lib/subscription-access";
 import { LEVEL_ONE_JOB, levelOneJobKey } from "@/lib/sovereign-intelligence/level-one";
 
@@ -23,10 +23,9 @@ export default async function OnboardingPage() {
   const property = organization?.properties[0];
   const db = getDb();
   const memberRole = organization?.members.find((member) => member.email.toLowerCase() === user.username.toLowerCase())?.role?.toUpperCase();
-  const onboardingData = organization && property && db ? await withTenantDatabaseContext({
-    kind: "tenant",
-    organizationId: organization.id,
-    actor: `onboarding-page:${user.username}`
+  const onboardingData = organization && property && db ? await withTenantPropertyDatabaseContext({
+    organizationId: organization.id,propertyId:property.id,
+    actor: user.username
   }, async () => {
     const tenantDb = getDb();
     if (!tenantDb) return { subscription: null, verification: null, confirmedAnswers: 0 };

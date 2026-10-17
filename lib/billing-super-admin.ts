@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { getTenantUsageCostSummary } from "@/lib/tenant-usage-metering";
 import { getActiveAiCreditTotal, getAiCreditSummary } from "@/lib/ai-credits";
 import { Prisma } from "../generated/prisma/client";
+import { annualCreditWindows, usesMonthlyCredits, monthlyCreditUsage } from "@/lib/annual-credit-policy";
 import { TRIAL_DAYS } from "@/lib/trial-policy";
 
 export type PlanLimits = {
@@ -19,6 +20,18 @@ export type BillingHealth = {
 };
 
 export const BILLING_PLAN_CATALOGUE = [
+  {
+    code: "AI_STARTER_YEARLY_2026", name: "Starter Annual",
+    description: "One AI Business Bot, billed yearly; 4,000 credits per month included.",
+    billingInterval: "YEARLY", amountPaisa: 1450000, trialDays: 0, sortOrder: 2,
+    limits: { contacts: 2000, messages: 0, campaigns: 0, aiReplies: 4000, teamUsers: 3 }
+  },
+  {
+    code: "HOTELGPT_YEARLY_2026", name: "HotelGPT Annual",
+    description: "Pre-Stay and In-Stay guest intelligence; 5,000 credits per month included.",
+    billingInterval: "YEARLY", amountPaisa: 1650000, trialDays: 0, sortOrder: 3,
+    limits: { contacts: 2000, messages: 0, campaigns: 0, aiReplies: 5000, teamUsers: 3 }
+  },
   {
     code: "AI_STARTER_MONTHLY",
     name: "AI Bot Starter Monthly",
@@ -179,6 +192,7 @@ export async function ensureOrganizationSubscription(organizationId: string, req
       organizationId,
       planId: plan.id,
       status: plan.code === "TRIAL" ? "TRIALING" : "ACTIVE",
+      aiReplyLimitOverride: plan.code === "TRIAL" ? 200 : null,
       paymentProvider: "MANUAL",
       startedAt: organization.createdAt,
       trialEndsAt: plan.trialDays ? trialEnd(organization.createdAt, plan.trialDays) : null,
@@ -410,7 +424,7 @@ export async function createManualInvoice(input: {
 export async function activateRazorpaySubscription(input: {
   organizationId: string;
   actorEmail: string;
-  planCode: "AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY";
+  planCode: "AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY" | "AI_STARTER_YEARLY_2026" | "HOTELGPT_YEARLY_2026";
   orderId: string;
   paymentId: string;
   amountPaisa: number;
@@ -441,6 +455,7 @@ export async function activateRazorpaySubscription(input: {
         planId: plan.id,
         status: "ACTIVE",
         paymentProvider: "RAZORPAY",
+        ...(usesMonthlyCredits(input.planCode) ? { aiReplyLimitOverride: null, messageLimitOverride: null } : {}),
         externalSubscriptionId: input.orderId,
         currentPeriodStart: now,
         currentPeriodEnd,
@@ -453,6 +468,7 @@ export async function activateRazorpaySubscription(input: {
         planId: plan.id,
         status: "ACTIVE",
         paymentProvider: "RAZORPAY",
+        ...(usesMonthlyCredits(input.planCode) ? { aiReplyLimitOverride: null, messageLimitOverride: null } : {}),
         externalSubscriptionId: input.orderId,
         currentPeriodStart: now,
         currentPeriodEnd
@@ -621,13 +637,17 @@ export async function getCustomerBillingDetail(organizationId: string) {
   const modelUsage = await getTenantUsageCostSummary(organizationId, organization.subscription.currentPeriodStart || organization.subscription.createdAt, organization.subscription.currentPeriodEnd || new Date());
   const limits = readLimits(organization.subscription.plan.limits);
   if (organization.subscription.aiReplyLimitOverride !== null) limits.aiReplies = organization.subscription.aiReplyLimitOverride;
-  const aiCredits = await getAiCreditSummary({ organizationId, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies });
+  const monthly = await getMonthlyAiUsage(organizationId, organization.subscription, limits.aiReplies);
+  if (monthly) usage.aiReplies = monthly.current;
+  const aiCredits = await getAiCreditSummary({ organizationId, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies + (monthly?.previousOverage || 0) });
+  const availableAddedCredits = Math.max(0, aiCredits.granted - (monthly?.previousOverage || 0));
   return {
     organization,
     subscription: organization.subscription,
     limits,
     usage,
     aiCredits,
+    availableAddedCredits,
     modelUsage
   };
 }
@@ -657,7 +677,10 @@ export async function getBillingCommandCenter() {
     const usage = subscription
       ? await getOrganizationUsage(organization.id, subscription.currentPeriodStart, subscription.currentPeriodEnd)
       : emptyUsage();
-    const aiCredits = await getAiCreditSummary({ organizationId: organization.id, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies });
+    if (subscription?.aiReplyLimitOverride !== null && subscription?.aiReplyLimitOverride !== undefined) limits.aiReplies = subscription.aiReplyLimitOverride;
+    const monthly = subscription ? await getMonthlyAiUsage(organization.id, subscription, limits.aiReplies) : null;
+    if (monthly) usage.aiReplies = monthly.current;
+    const aiCredits = await getAiCreditSummary({ organizationId: organization.id, includedCredits: limits.aiReplies, usedAiReplies: usage.aiReplies + (monthly?.previousOverage || 0) });
     const modelUsage = subscription
       ? await getTenantUsageCostSummary(organization.id, subscription.currentPeriodStart || subscription.createdAt, subscription.currentPeriodEnd || new Date())
       : { inputTokens: 0, outputTokens: 0, attempts: 0, latencyMs: 0, estimatedCostPaisa: 0 };
@@ -676,9 +699,9 @@ export async function getBillingCommandCenter() {
       failedMessages,
       deadJobs,
       usage,
-      limits: { ...limits, aiReplies: limits.aiReplies + aiCredits.granted }
+      limits: { ...limits, aiReplies: limits.aiReplies + Math.max(0, aiCredits.granted - (monthly?.previousOverage || 0)) }
     });
-    return { organization, subscription, limits, usage, aiCredits, modelUsage, health, failedMessages, deadJobs };
+    return { organization, subscription, limits, usage, aiCredits, availableAddedCredits: Math.max(0, aiCredits.granted - (monthly?.previousOverage || 0)), modelUsage, health, failedMessages, deadJobs };
   }));
 
   const [incidents, auditLogs] = await Promise.all([
@@ -805,6 +828,17 @@ export async function getOrganizationUsage(organizationId: string, periodStart: 
   return { contacts, messages, campaigns, aiReplies, teamUsers };
 }
 
+async function getMonthlyAiUsage(organizationId: string, subscription: { currentPeriodStart: Date; currentPeriodEnd: Date | null; plan: { code: string } }, included: number) {
+  if (!usesMonthlyCredits(subscription.plan.code)) return null;
+  const db = getDb();
+  if (!db) return null;
+  const windows = annualCreditWindows(subscription.currentPeriodStart, subscription.currentPeriodEnd, new Date());
+  const counts = await Promise.all(windows.map(window => db.leadMessage.count({ where: {
+    lead: { property: { organizationId } }, sender: "AI", sentAt: { gte: window.start, lt: window.end }
+  } })));
+  return monthlyCreditUsage(counts, included);
+}
+
 export async function checkOrganizationEntitlement(
   organizationId: string,
   metric: keyof PlanLimits,
@@ -818,7 +852,8 @@ export async function checkOrganizationEntitlement(
   if (subscription.messageLimitOverride !== null) limits.messages = subscription.messageLimitOverride;
   if (subscription.aiReplyLimitOverride !== null) limits.aiReplies = subscription.aiReplyLimitOverride;
   const usage = await getOrganizationUsage(organizationId, subscription.currentPeriodStart, subscription.currentPeriodEnd);
-  const used = usage[metric];
+  const monthly = metric === "aiReplies" ? await getMonthlyAiUsage(organizationId, subscription, limits.aiReplies) : null;
+  const used = monthly ? monthly.current + monthly.previousOverage : usage[metric];
   const purchasedOrGrantedCredits = metric === "aiReplies" ? await getActiveAiCreditTotal(organizationId) : 0;
   const limit = limits[metric] + purchasedOrGrantedCredits;
   const allowed = limit === 0 || used + Math.max(0, additional) <= limit || subscription.overageApproved;

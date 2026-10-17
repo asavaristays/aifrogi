@@ -21,6 +21,7 @@ export async function translateConfirmedVoiceForStaff(input: ConfirmedVoiceInput
       signal: controller.signal,
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
+        store: false,
         model: process.env.OPENAI_VOICE_TRANSLATION_MODEL?.trim() || process.env.OPENAI_MODEL?.trim() || "gpt-4.1-mini",
         input: [
           { role: "system", content: "Translate the confirmed hotel guest request into concise operational English. Preserve every name, room number, date, time, quantity, currency amount and device identifier exactly. Do not answer, interpret, add urgency or add facts. Return only the English translation." },

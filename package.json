@@ -70,7 +70,12 @@
     "apply:webtechnosys-intelligence": "node --import tsx scripts/apply-webtechnosys-tenant-intelligence.ts",
     "grant:bot-regression-credits": "node --import tsx scripts/grant-bot-regression-credits.ts",
     "verify:commercial-readiness": "npm run verify:routes && node --import tsx --test tests/commercial-readiness/*.test.ts",
-    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core"
+    "verify:all": "npm run verify:knowledge && npm run verify:registration && npm run verify:campaigns && npm run verify:automation && npm run verify:appointment && npm run verify:billing && npm run verify:flow && npm run verify:launch && npm run test:core",
+    "verify:commercial:synthetic": "node --import ./scripts/test-server-environment.mjs --import tsx scripts/verify-commercial-synthetic.ts",
+    "verify:commercial:unit": "node --import ./scripts/test-server-environment.mjs --import tsx --test tests/commercial-readiness/*.test.ts tests/onboarding/*.test.ts tests/shared-answer/*.test.ts tests/p2b/*.test.ts tests/production-hardening/*.test.ts",
+    "verify:commercial:business:unit": "node --import ./scripts/test-server-environment.mjs --import tsx --test tests/categorized-workbook.test.ts tests/website-review-robots.test.ts tests/bounded-form-data.test.ts",
+    "verify:commercial:business:journey": "node --import ./scripts/test-server-environment.mjs --import ./scripts/business-crawl-test-preload.mjs --import tsx scripts/verify-business-crawl-excel-journey.ts",
+    "verify:commercial:business:retention": "node --import ./scripts/test-server-environment.mjs --import tsx scripts/verify-commercial-retention.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.6.0",
@@ -80,7 +85,7 @@
     "lucide-react": "^1.23.0",
     "mailparser": "3.9.26",
     "mammoth": "^1.11.0",
-    "next": "16.3.5",
+    "next": "16.3.8",
     "nodemailer": "10.0.9",
     "pdf-parse": "^1.1.1",
     "pg": "latest",
@@ -97,7 +102,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.9",
+    "eslint-config-next": "16.3.8",
     "postcss": "latest",
     "prisma": "7.6.0",
     "tailwindcss": "latest",
@@ -108,6 +113,10 @@
     "@hono/node-server": "1.19.15",
     "mysql2": "3.24.4",
     "uuid": "11.1.1",
-    "valibot": "1.4.2"
+    "valibot": "1.4.2",
+    "sharp": "0.35.5",
+    "source-map-js": "1.2.2",
+    "brace-expansion@^1.1.0": "1.1.21",
+    "brace-expansion@^2.0.1": "2.1.7"
   }
 }

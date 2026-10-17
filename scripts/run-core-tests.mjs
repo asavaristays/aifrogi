@@ -25,6 +25,6 @@ const regularSuites = [
 ];
 
 for (const files of [regularSuites, ...isolatedHttpSuites.map((file) => [file])]) {
-  const run = spawnSync(process.execPath, ["--import", "tsx", "--test", ...files], { stdio: "inherit" });
+  const run = spawnSync(process.execPath, ["--import", "./scripts/test-server-environment.mjs", "--import", "tsx", "--test", ...files], { stdio: "inherit" });
   if (run.status !== 0) process.exit(run.status || 1);
 }

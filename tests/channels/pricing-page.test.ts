@@ -24,20 +24,22 @@ test("overflowing connector table exposes a labelled slider and PDF shortcut", (
 
 test("public pricing is AI Bot-first and contains the approved launch plans", () => {
   assert.match(pricing, /15-day trial/);
-  assert.match(pricing, /₹499/);
-  assert.match(pricing, /₹4,999/);
-  assert.match(pricing, /Pay ₹499 monthly or ₹4,999 yearly and save ₹989/);
-  assert.match(pricing, /Already have an account\? Pay securely/);
-  assert.match(pricing, /app\.aifrogi\.com\/billing\?checkout=1/);
-  assert.match(pricing, /aria-pressed=\{!annual\}/);
-  assert.match(pricing, /aria-pressed=\{annual\}/);
+  assert.match(pricing, /rupees=\{14500\}/);
+  assert.match(pricing, /rupees=\{16500\}/);
+  assert.match(pricing, /200 free credits/);
+  assert.match(pricing, /4,000 credits per month/);
+  assert.match(pricing, /5,000 credits per month/);
+  assert.match(pricing, /Pre-Stay/);
+  assert.match(pricing, /In-Stay/);
+  assert.match(pricing, /Optional add-on credits/);
+  assert.doesNotMatch(pricing, /setAnnual|AI_STARTER_MONTHLY|₹4,999|billed monthly/);
   assert.match(pricing, /Custom \/ Enterprise/);
-  assert.match(pricing, /1,000 AI replies/);
+  assert.match(pricing, /All Starter features/);
   assert.match(pricing, /No surprise cap/);
   assert.match(pricing, /500/);
-  assert.match(pricing, /₹399/);
-  assert.match(pricing, /₹999/);
-  assert.match(pricing, /₹2,999/);
+  assert.match(pricing, /\["500", 399\]/);
+  assert.match(pricing, /\["1,500", 999\]/);
+  assert.match(pricing, /\["5,000", 2999\]/);
   assert.match(pricing, /No automatic top-up or silent overage/);
   assert.doesNotMatch(pricing, /Fair-use limits apply/);
   assert.doesNotMatch(page, /WhatsAppCostCalculator|IntegrationPricing/);

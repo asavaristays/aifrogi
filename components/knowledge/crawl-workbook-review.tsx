@@ -1,0 +1,30 @@
+'use client';
+import {useState,type FormEvent} from 'react';
+type Preview={totalRows:number;approvedRows:number;pendingRows:number;blockedRows:number;warnings:string[];claims:Array<{question:string;answer:string;sourceUrl:string}>};
+export function CrawlWorkbookReview({propertySlug,onImported}:{propertySlug:string;onImported:()=>void}) {
+ const endpoint=`/api/knowledge/categorized-workbook?propertySlug=${encodeURIComponent(propertySlug)}`;
+ const [question,setQuestion]=useState(''),[answer,setAnswer]=useState(''),[testing,setTesting]=useState(false);
+ const [file,setFile]=useState<File|null>(null),[preview,setPreview]=useState<Preview|null>(null),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
+ async function crawl(){setBusy(true);setNotice('');try{const data=new FormData();data.set('action','CRAWL');const response=await fetch(endpoint,{method:'POST',body:data});const result=await response.json();if(!response.ok)throw Error(result.error||'Website reading failed.');setNotice(`${result.pagesSynced} pages captured privately. Download the Excel file to review and correct them.`);}catch(error){setNotice(error instanceof Error?error.message:'Website reading failed.');}finally{setBusy(false);}}
+ async function download(){setBusy(true);setNotice('');try{
+  const response=await fetch(endpoint);if(!response.ok)throw Error((await response.json()).error||'Export failed.');
+  const url=URL.createObjectURL(await response.blob());const link=document.createElement('a');link.href=url;link.download='AiFrogi-Website-Review.xlsx';link.click();URL.revokeObjectURL(url);
+  setNotice('Downloaded private draft. Review the rows, add corrections, then choose Approved and Public for rows you want to stage.');
+ }catch(error){setNotice(error instanceof Error?error.message:'Export failed.');}finally{setBusy(false);}}
+ async function upload(action:'PREVIEW'|'APPLY'){if(!file)return;setBusy(true);setNotice('');try{
+  const data=new FormData();data.set('file',file);data.set('action',action);const response=await fetch(endpoint,{method:'POST',body:data});const result=await response.json();if(!response.ok)throw Error(result.error||'Import failed.');
+  if(action==='PREVIEW')setPreview(result);else {setNotice(`${result.stagedCount} answers staged. Approve the source document and review each answer below before publication.`);setPreview(null);onImported();}
+ }catch(error){setNotice(error instanceof Error?error.message:'Import failed.');}finally{setBusy(false);}}
+ async function testAnswer(event:FormEvent){event.preventDefault();setTesting(true);setAnswer('');try{const data=new FormData();data.set('question',question);const response=await fetch(`/api/knowledge/answer-preview?propertySlug=${encodeURIComponent(propertySlug)}`,{method:'POST',body:data});const result=await response.json();if(!response.ok)throw Error(result.error||'Preview unavailable.');setAnswer(result.answer);}catch(error){setAnswer(error instanceof Error?error.message:'Preview unavailable.');}finally{setTesting(false);}}
+ function submit(event:FormEvent){event.preventDefault();void upload('PREVIEW');}
+ return <section className="soft-card rounded-lg p-5" aria-label="Website Excel review">
+  <h2 className="text-lg font-semibold">Review website knowledge in Excel</h2>
+  <p className="mt-2 text-sm leading-6">Download your latest website capture, check the information and enter corrections. Upload reviewed rows here, then approve and test the answers before making the bot live.</p>
+  <button type="button" onClick={crawl} disabled={busy} className="mt-3 mr-2 rounded-md border px-4 py-2 text-sm disabled:opacity-50">Read website for Excel review</button>
+  <button type="button" onClick={download} disabled={busy} className="mt-3 rounded-md border px-4 py-2 text-sm disabled:opacity-50">Download website review Excel</button>
+  <form onSubmit={submit} className="mt-4 space-y-3"><label className="block text-sm">Reviewed website Excel<input type="file" accept=".xlsx" required className="mt-2 block w-full text-sm" onChange={event=>{setFile(event.target.files?.[0]||null);setPreview(null);setNotice('');}} /></label><button disabled={busy||!file} className="rounded-md bg-[#101010] px-4 py-2 text-sm text-white disabled:opacity-50">{busy?'Checking…':'Preview reviewed file'}</button></form>
+  {preview&&<div className="mt-4 space-y-2"><p>{preview.approvedRows} approved public rows · {preview.pendingRows} pending · {preview.blockedRows} blocked</p>{preview.warnings.map((warning,index)=><p key={index} className="text-sm text-red-700">{warning}</p>)}<ul className="max-h-64 overflow-auto text-sm">{preview.claims.map((claim,index)=><li key={index} className="border-b py-2"><strong>{claim.question}</strong><p>{claim.answer}</p><span className="break-all text-xs">{claim.sourceUrl}</span></li>)}</ul><button type="button" disabled={busy||!preview.approvedRows||preview.blockedRows>0} onClick={()=>upload('APPLY')} className="rounded-md bg-[#101010] px-4 py-2 text-sm text-white disabled:opacity-50">Stage reviewed answers</button><p className="text-xs">Staging does not publish the file or replace live answers. Resolve blocked rows before continuing.</p></div>}
+  <form onSubmit={testAnswer} className="mt-6 border-t pt-4"><h3 className="font-semibold">Test your approved answers privately</h3><p className="mt-2 text-sm">After approving and publishing your knowledge, ask a customer question here and check the answer before submitting the bot for go-live review.</p><label className="mt-3 block text-sm">Customer question<textarea required maxLength={8000} value={question} onChange={event=>setQuestion(event.target.value)} className="mt-2 block w-full rounded-md border p-3" rows={3}/></label><button disabled={testing||!question.trim()} className="mt-3 rounded-md bg-[#101010] px-4 py-2 text-sm text-white disabled:opacity-50">{testing?'Preparing answer…':'Test private answer'}</button>{answer&&<p role="status" className="mt-3 whitespace-pre-wrap text-sm leading-6">{answer}</p>}</form>
+  {notice&&<p role="status" className="mt-3 text-sm">{notice}</p>}
+ </section>;
+}

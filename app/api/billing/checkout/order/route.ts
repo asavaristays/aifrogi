@@ -3,7 +3,7 @@ import { getCurrentClientAccess, canManageWorkspace, withClientDatabaseContext }
 import { ensureBillingPlans } from "@/lib/billing-super-admin";
 import { createRazorpayOrder } from "@/lib/razorpay-billing";
 
-const CLIENT_PLAN_CODES = new Set(["AI_STARTER_MONTHLY", "AI_STARTER_YEARLY"]);
+const CLIENT_PLAN_CODES = new Set(["AI_STARTER_YEARLY_2026", "HOTELGPT_YEARLY_2026"]);
 
 export async function POST(request: Request) {
   const access = await getCurrentClientAccess();

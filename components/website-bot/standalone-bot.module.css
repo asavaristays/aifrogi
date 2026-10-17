@@ -1,0 +1,7 @@
+/* The standalone page owns the visible viewport; the chat fills the space
+   remaining after delivery actions instead of adding another full viewport. */
+.stage { height: var(--bot-visible-height, 100dvh); overflow: hidden; padding: 16px 12px; background: #050505; }
+.frame { display: flex; flex-direction: column; gap: 12px; height: 100%; max-width: 460px; margin: 0 auto; }
+.body { flex: 1; min-height: 0; }
+.stage .body > main { height: 100%; }
+@media (min-width: 640px) { .stage { padding: 32px 24px; } }

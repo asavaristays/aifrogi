@@ -1,3 +1,4 @@
+import {exactCoordinateRequest,singleQuestionPlan} from './rag-request-plan';
 import {ragQueryEmbeddingCache} from './rag-query-embedding-cache';
 import {normalizeRagQuestion} from './rag-query-normalization';
 import {readPublicRagCatalog,liveRagRequest} from './rag-live-read';
@@ -45,6 +46,7 @@ export async function answerFromSharedKnowledge(identity:CanonicalIdentity,quest
     live:(scope,q)=>readPublicRagCatalog(scope,q),
     lexical:async(scope,q)=>{
       const queries=publicFactRetrievalQueries(q);
+      if(/\b(?:guarantee|guaranteed|promise|promises|revenue|results|outcomes)\b/i.test(q)) queries.push('results outcomes promises guarantees limitations');
       const [published,website]=await Promise.all([
         Promise.all(queries.map(query=>claims(scope,query))),
         active?.crawl_generation ? Promise.all(queries.map(query=>withCanonicalRole('aifrogi_public',identity,tx=>tx.$queryRaw<ActiveWebsiteChunk[]>`SELECT * FROM aifrogi_security.retrieve_active_website_chunks(${identity.propertyId},${query},12)`))) : Promise.resolve([])
@@ -64,8 +66,9 @@ export async function answerFromSharedKnowledge(identity:CanonicalIdentity,quest
       if(outcomes.every(o=>o.status==='rejected')) throw new Error('SEMANTIC_RETRIEVAL_UNAVAILABLE');
       return outcomes.flatMap(o=>o.status==='fulfilled'?o.value:[]);
     },
-    generate:(q,e)=>getProvider().generate(q,e),
-    verify:(c,e,q)=>getProvider().verifyClaims(c,e,q),
+    plan:q=>exactCoordinateRequest(q)?Promise.resolve(singleQuestionPlan(q)):getProvider().plan(q),
+    generate:(q,e,plan)=>getProvider().generate(q,e,plan),
+    verify:(c,e,q,plan,parts)=>getProvider().verifyClaims(c,e,q,plan,parts),
     recheck:async(scope)=>(await snapshot()).snapshot_hash===scope.generationId
   });
   result.trace.modelRequests=provider?.metrics??[];

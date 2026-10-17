@@ -9,11 +9,11 @@ if(!ownerUrl) throw new Error("DATABASE_URL required");
 initializeCanonicalRoleClients();
 const owner=new Pool({connectionString:ownerUrl});
 const cases={
- form:{entryId:"http-entry-form",conversationId:"http-conversation-form",answer:"Form fact.",selectedSource:"FORM"},
- pdf:{entryId:"http-entry-pdf",conversationId:"http-conversation-pdf",answer:"PDF fact.",selectedSource:"PDF"},
- spreadsheet:{entryId:"http-entry-spreadsheet",conversationId:"http-conversation-spreadsheet",answer:"Spreadsheet fact.",selectedSource:"SPREADSHEET"},
- website:{entryId:"http-entry-website",conversationId:"http-conversation-website",answer:"Website fact.",selectedSource:"WEBSITE"},
- "website-failed":{entryId:"http-entry-form",conversationId:"http-conversation-website-failed",answer:"Form fact.",selectedSource:"FORM"}
+ form:{entryId:"http-entry-form",conversationId:"http-conversation-form",answer:"Check-in is at 2 PM.",selectedSource:"FORM"},
+ pdf:{entryId:"http-entry-pdf",conversationId:"http-conversation-pdf",answer:"Checkout is at 11 AM.",selectedSource:"PDF"},
+ spreadsheet:{entryId:"http-entry-spreadsheet",conversationId:"http-conversation-spreadsheet",answer:"Breakfast is served from 7 AM to 10 AM.",selectedSource:"SPREADSHEET"},
+ website:{entryId:"http-entry-website",conversationId:"http-conversation-website",answer:"Reception is open 24 hours.",selectedSource:"WEBSITE"},
+ "website-failed":{entryId:"http-entry-form",conversationId:"http-conversation-website-failed",answer:"Check-in is at 2 PM.",selectedSource:"FORM"}
 } as const;
 
 const server=createServer(async(req,res)=>{

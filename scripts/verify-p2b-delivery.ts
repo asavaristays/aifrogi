@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {Pool} from "pg";
-import {initializeCanonicalRoleClients} from "../lib/canonical-db-context";
+import {disconnectCanonicalRoleClients,initializeCanonicalRoleClients} from "../lib/canonical-db-context";
 import {CanonicalDeliveryUncertainError,deliverCanonicalAnswer} from "../lib/canonical-answer-delivery";
 
 async function main(){
@@ -121,4 +121,4 @@ await client.query("COMMIT");
  await owner.end();
 }
 
-main().catch(error=>{console.error(error);process.exitCode=1;});
+main().catch(error=>{console.error(error);process.exitCode=1;}).finally(disconnectCanonicalRoleClients);

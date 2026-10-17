@@ -1,5 +1,8 @@
 import ExcelJS from "exceljs";
-import { getDb } from "@/lib/db";
+import {createHash} from "node:crypto";
+import {assertSafeReviewXlsx} from "../safe-review-xlsx";
+import {readCrawlReviewRows,CRAWL_REVIEW_MAX_ROWS} from "./crawl-review-workbook";
+import { getDb, withDatabaseTransaction } from "@/lib/db";
 import { createKnowledgeDocument, detectDocumentConflict } from "@/lib/repositories/knowledge-content-repository";
 import { stageDocumentAtomicClaims } from "@/lib/repositories/knowledge-verification-repository";
 
@@ -11,6 +14,7 @@ export type CategorizedWorkbookClaim = {
   tenantId: string;
   generationId: string;
   refreshDays: number;
+  chunkId: string;
 };
 
 export type CategorizedWorkbookPreview = {
@@ -37,9 +41,13 @@ export async function parseCategorizedKnowledgeWorkbook(input: {
   expectedTenantId: string;
   allowedSourceOrigin: string;
 }): Promise<CategorizedWorkbookPreview> {
+  if(input.bytes.byteLength > 5*1024*1024) throw new Error("Upload a workbook smaller than 5 MB.");
+  assertSafeReviewXlsx(input.bytes);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(input.bytes as unknown as ExcelJS.Buffer);
   const sheet = workbook.getWorksheet("Categorized Content");
+  if (sheet && sheet.rowCount > CRAWL_REVIEW_MAX_ROWS+1) throw new Error("The workbook exceeds the 2,000-row review limit.");
+  for(const tab of workbook.worksheets) tab.eachRow(row=>row.eachCell(cell=>{if(cell.type===ExcelJS.ValueType.Formula || cell.type===ExcelJS.ValueType.Hyperlink || cell.type===ExcelJS.ValueType.Error) throw new Error("Formulas, executable links and error cells are not accepted. Use plain text.");}));
   if (!sheet) throw new Error('The workbook must contain a "Categorized Content" sheet.');
   if (sheet.actualRowCount > 2001 || sheet.actualColumnCount > 20) throw new Error("The categorized workbook exceeds safe import limits.");
 
@@ -49,9 +57,9 @@ export async function parseCategorizedKnowledgeWorkbook(input: {
   const cols = {
     category: column("Category"), pageTitle: column("Page title"), heading: column("Section"), content: column("Extracted content"),
     sourceUrl: column("Source URL"), reviewFlag: column("Review flag"), approval: column("Approval"), visibility: column("Public visibility"),
-    tenantId: column("Tenant ID"), generationId: column("Generation ID"), correction: column("Client correction")
+    tenantId: column("Tenant ID"), generationId: column("Generation ID"), correction: column("Client correction"), chunkId: column("Source chunk ID")
   };
-  for (const required of ["category", "content", "sourceUrl", "approval", "visibility", "tenantId"] as const) if (!cols[required]) throw new Error(`Categorized Content is missing the ${required} column.`);
+  for (const required of ["category", "content", "sourceUrl", "approval", "visibility", "tenantId", "generationId", "chunkId"] as const) if (!cols[required]) throw new Error(`Categorized Content is missing the ${required} column.`);
 
   const claims: CategorizedWorkbookClaim[] = []; const warnings: string[] = [];
   let totalRows = 0, pendingRows = 0, blockedRows = 0;
@@ -69,6 +77,7 @@ export async function parseCategorizedKnowledgeWorkbook(input: {
     const sourceUrl = value(row.getCell(cols.sourceUrl).value);
     if (origin(sourceUrl) !== allowedOrigin) { blockedRows += 1; warnings.push(`Row ${rowNumber} was blocked because its source URL is outside the authorised origin.`); return; }
     if (cols.reviewFlag && value(row.getCell(cols.reviewFlag).value)) { blockedRows += 1; warnings.push(`Row ${rowNumber} remains in the review queue and cannot be imported.`); return; }
+    if(!value(row.getCell(cols.generationId).value) || !value(row.getCell(cols.chunkId).value)) throw new Error(`Row ${rowNumber} is missing source identity. Download a fresh website review workbook.`);
     const extracted = secureText(row.getCell(cols.content).value, 4000, `Row ${rowNumber} content`);
     const correction = cols.correction ? secureText(row.getCell(cols.correction).value, 4000, `Row ${rowNumber} correction`) : "";
     const answer = correction || extracted;
@@ -79,8 +88,9 @@ export async function parseCategorizedKnowledgeWorkbook(input: {
     const stable = `${category}\n${question}\n${answer}`.toLowerCase().replace(/\s+/g, " ");
     if (seen.has(stable)) { warnings.push(`Row ${rowNumber} duplicates an earlier approved row and was skipped.`); return; }
     seen.add(stable);
-    claims.push({ category, question, answer, sourceUrl, tenantId, generationId: cols.generationId ? value(row.getCell(cols.generationId).value) : "", refreshDays: 90 });
+    claims.push({ category, question, answer, sourceUrl, tenantId, generationId: value(row.getCell(cols.generationId).value), chunkId: value(row.getCell(cols.chunkId).value), refreshDays: 90 });
   });
+  if(claims.length>100) throw new Error("Approve at most 100 rows per import. Remaining rows must stay pending; no rows have been staged.");
   return { totalRows, approvedRows: claims.length, pendingRows, blockedRows, claims, warnings };
 }
 
@@ -99,10 +109,25 @@ export async function applyCategorizedKnowledgeWorkbook(input: {
   const db = getDb(); if (!db) throw new Error("Database unavailable.");
   const property = await db.property.findFirst({ where: { id: input.propertyId, organizationId: input.organizationId }, select: { id: true } });
   if (!property) throw new Error("The target property does not belong to this workspace.");
+  const sourceRows=await readCrawlReviewRows(input.propertyId,input.organizationId);
+  const book=new ExcelJS.Workbook();await book.xlsx.load(bytes as unknown as ExcelJS.Buffer);
+  const sheet=book.getWorksheet("Categorized Content")!;
+  const headers=new Map<string,number>();sheet.getRow(1).eachCell((cell,col)=>headers.set(headerKey(cell.value),col));
+  for(const claim of preview.claims){
+    const source=sourceRows.find(row=>row.id===claim.chunkId && row.generationId===claim.generationId && row.url===claim.sourceUrl);
+    if(!source)throw new Error("The website version or source row changed. Download a fresh workbook and review it.");
+    let matched=false;sheet.eachRow((row,n)=>{if(n>1 && value(row.getCell(headers.get('source chunk id')!).value)===claim.chunkId && value(row.getCell(headers.get('approval')!).value)==='Approved' && value(row.getCell(headers.get('public visibility')!).value)==='Public') {
+      if(value(row.getCell(headers.get('extracted content')!).value)!==source.content.trim())throw new Error("Keep extracted source text unchanged. Enter edits in Client correction.");matched=true;
+    }});if(!matched)throw new Error("Source row is missing.");
+  }
+  return db.$transaction(tx=>withDatabaseTransaction(tx,async()=>{
+  const importKey=`crawl-review:${input.propertyId}:${createHash("sha256").update(bytes).digest("hex")}`;
+  await getDb()!.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${importKey},0))`;
   const extractedText = preview.claims.map((claim) => `${claim.question}\n${claim.answer}\nSource: ${claim.sourceUrl}`).join("\n\n");
   const conflictSummary = await detectDocumentConflict(input.propertyId, extractedText);
   const document = await createKnowledgeDocument({ propertyId: input.propertyId, fileName: input.file.name.replace(/[\r\n]/g, " ").slice(0, 180), mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sizeBytes: bytes.byteLength, content: bytes, extractedText, uploadedBy: input.actorEmail, conflictSummary });
   const entries = await stageDocumentAtomicClaims({ propertyId: input.propertyId, documentId: document.id, createdBy: input.actorEmail, claims: preview.claims.map((claim) => ({ question: claim.question, answer: claim.answer, category: claim.category, claimType: "FACT", valueType: "TEXT", currency: null, refreshDays: claim.refreshDays })) });
   await db.onboardingActivity.create({ data: { organizationId: input.organizationId, actorEmail: input.actorEmail, action: "CATEGORIZED_CRAWL_WORKBOOK_STAGED", detail: JSON.stringify({ fileName: input.file.name, documentId: document.id, stagedCount: entries.length, tenantId: input.propertyId, sourceOrigin: new URL(input.allowedSourceOrigin).origin }) } });
   return { preview, documentId: document.id, stagedCount: entries.length };
+  }));
 }

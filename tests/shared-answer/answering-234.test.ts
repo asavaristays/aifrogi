@@ -86,3 +86,9 @@ test('a requested promise remains missing when only capability is supported',asy
  const adapters:AnswerAdapters={state:async()=>({state:'READY',scope}),lexical:async()=>[unit],semantic:async()=>[],generate:async()=>({disposition:'ANSWER',sentences:[{text:'We create product demonstrations.',kind:'FACT',evidenceIds:['a']},{text:'We will tailor every demonstration.',kind:'FACT',evidenceIds:['a']}],missingParts:[]}),verify:async()=>[{supported:true,evidenceIds:['a'],reason:'Explicit'}],recheck:async()=>true};
  const r=await runSharedAnswer('Will you tailor every product demonstration?',adapters);assert.equal(r.disposition,'PARTIAL');assert.ok(r.coverage?.missingParts.length);assert.doesNotMatch(r.answer,/We will tailor/);
 });
+
+test('informal business requests normalize without changing customer identifiers',async()=>{
+ const {normalizeRagQuestion}=await import('../../lib/rag-query-normalization');
+ assert.equal(normalizeRagQuestion('do u bild custom moblie apps?'),'do u build custom mobile apps?');
+ assert.equal(normalizeRagQuestion('https://example.com/bild AshaApp hello@bild.invalid'),'https://example.com/bild AshaApp hello@bild.invalid');
+});

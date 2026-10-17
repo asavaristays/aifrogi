@@ -1,7 +1,10 @@
+import {fetchPublicWebsiteText} from "@/lib/security/public-website-fetch";
+import {robotsAllows} from "@/lib/website-review-robots";
 import {BOT_ANSWER_CONSTITUTION} from "../business-answer-policy";
 import { websiteNeedsRendering, renderApprovedWebsite } from '@/lib/rendered-website-crawl';
+import { withCanonicalRole } from "@/lib/canonical-db-context";
 import { sharedCrawlEnabled } from "@/lib/shared-crawl-mode";
-import { answerFromSharedKnowledge, resolveSharedCrawlSource } from "@/lib/shared-answer-runtime";
+import { answerFromSharedKnowledge } from "@/lib/shared-answer-runtime";
 import type { SharedAnswerResult } from "@/lib/shared-answer-engine";
 import { websiteBotClarification } from "@/lib/website-bot-conversation";
 import { mkdir, readFile, readdir, writeFile } from "fs/promises";
@@ -236,7 +239,8 @@ function bucketFor(url: string, title: string, text: string) {
   return "Company and service overview";
 }
 
-async function fetchText(url: string) {
+async function fetchText(url: string, secure = false) {
+  if(secure)return fetchPublicWebsiteText(url);
   const response = await fetch(url, {
     headers: {
       Accept: "text/html,application/xml,text/xml;q=0.9,*/*;q=0.8",
@@ -259,7 +263,7 @@ async function fetchText(url: string) {
 }
 
 async function fetchCrawlHtml(url: string, baseUrl: string, renderShells: boolean) {
-  const html = await fetchText(url);
+  const html = await fetchText(url, renderShells);
   if (!renderShells || !websiteNeedsRendering(html)) return html;
   // A renderer failure remains a crawl failure; an empty shell is never indexed.
   return renderApprovedWebsite(url, new URL(baseUrl).origin);
@@ -292,7 +296,7 @@ async function discoverUrls(baseUrl: string, renderShells = false) {
   const sitemapUrls: string[] = [];
 
   try {
-    const sitemap = await fetchText(`${baseUrl}/sitemap.xml`);
+    const sitemap = await fetchText(`${baseUrl}/sitemap.xml`, renderShells);
     for (const match of sitemap.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)) {
       sitemapUrls.push(match[1].trim());
     }
@@ -311,8 +315,10 @@ type WebsiteCaptureScope = { organizationId: string; propertyId: string };
 
 async function crawlWebsiteKnowledgeBase(propertySlug: string, captureScope?: WebsiteCaptureScope): Promise<KnowledgeBase> {
   const settings = await readKnowledgeSettings(propertySlug);
-  if(captureScope && !sharedCrawlEnabled(captureScope.propertyId)) throw new Error("CAPTURE_SCOPE_NOT_ENABLED");
-  const baseUrl = captureScope ? await resolveSharedCrawlSource({ ...captureScope, principal: "website-capture-worker", purpose: "KNOWLEDGE_CAPTURE" }) : settings.sourceUrl;
+  const baseUrl = captureScope ? await withCanonicalRole('aifrogi_worker',{...captureScope,principal:'website-capture-worker',purpose:'KNOWLEDGE_CAPTURE'},async tx=>{
+    const rows=await tx.$queryRaw<Array<{source_url:string}>>`SELECT * FROM aifrogi_security.worker_capture_source(${captureScope.propertyId})`;
+    if(rows.length!==1)throw new Error('CURRENT_WEBSITE_CAPTURE_AUTHORIZATION_REQUIRED');return rows[0].source_url;
+  }) : settings.sourceUrl;
   if (!captureScope) await requireWebsiteSourceAuthorization(propertySlug, baseUrl);
   let previous: KnowledgeBase | null = null;
   try { previous = JSON.parse(await readFile(cachePath(propertySlug), "utf8")) as KnowledgeBase; } catch { previous = null; }
@@ -320,7 +326,12 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string, captureScope?: We
 
   try {
     const sourceProperty = captureScope ? { id: captureScope.propertyId } : await getDb()?.property.findUnique({ where: { slug: propertySlug }, select: { id: true } });
-    const cleanMain = Boolean(sourceProperty && sharedCrawlEnabled(sourceProperty.id));
+    const cleanMain = Boolean(captureScope || (sourceProperty && sharedCrawlEnabled(sourceProperty.id)));
+    let robots='';
+    if(captureScope){try{robots=await fetchText(new URL('/robots.txt',baseUrl).href,true);}catch(error){
+      if(!/HTTP 404/.test(String(error)))throw new Error('Website robots policy could not be checked. Retry or provide approved files.');
+    }
+    if(!robotsAllows(robots,baseUrl))throw new Error('Website robots policy does not allow this capture.');}
     const urls = await discoverUrls(baseUrl, Boolean(captureScope));
     const queued = new Set(urls);
     const pages: KnowledgePage[] = [];
@@ -337,6 +348,7 @@ async function crawlWebsiteKnowledgeBase(propertySlug: string, captureScope?: We
       const results = await Promise.all(batch.map(async (url) => {
         attemptedUrls += 1;
         try {
+          if(captureScope&&!robotsAllows(robots,url))throw new Error("Blocked by website robots policy.");
           const html = await fetchCrawlHtml(url, baseUrl, Boolean(captureScope));
           // Deep discovery follows same-origin links exposed by listing/detail pages.
           const discovered = uniqueSameOriginUrls(baseUrl, Array.from(html.matchAll(/href=["']([^"']+)["']/gi)).map((match) => match[1]));
@@ -1038,7 +1050,7 @@ export async function buildWebsiteKnowledgeAnswer({
       const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST", signal,
         headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model, ...(serviceTier ? { service_tier: serviceTier } : {}), input: [
+        body: JSON.stringify({ model, store: false, ...(serviceTier ? { service_tier: serviceTier } : {}), input: [
           { role: "system", content: `${BOT_ANSWER_CONSTITUTION}\n\nGoverned workspace persona:\n${personaInstructions(persona)}\n\nWorkspace instructions:\n${settings.customInstructions || "No additional instructions."}\n\nAlways hand off these topics:\n${settings.handoffTopics.join(", ") || "None configured."}\n\nEnabled service menu:\n${menu || "No menu enabled."}` },
           { role: "user", content: `Approved business knowledge:\n${context}\n\nCustomer question:\n${question.trim()}${resolved.priorQuestion ? `\n\nRelevant earlier business question:\n${resolved.priorQuestion}` : ""}\n\nCore Intelligence frame: ${intelligenceFrame.frameKey}.${frameGuidance ? ` ${frameGuidance}` : ""}${intelligenceFrame.requiresPartByPartEvidence ? ` The guest asked about ${requiredHotelParts.join(", ")}. Address each topic separately from approved evidence; if evidence is missing for one topic, say only that part cannot be confirmed.` : ""}\n\nAnswer only this business intent. Do not allow an earlier unrelated topic to change retrieval or the answer.` }
         ], max_output_tokens: intelligenceFrame.frameKey === "HOTEL_POLICY" ? 600 : 400 })

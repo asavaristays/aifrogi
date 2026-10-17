@@ -4,14 +4,14 @@ import { activateRazorpaySubscription, ensureBillingPlans } from "@/lib/billing-
 import { fetchRazorpayOrder, fetchVerifiedRazorpayPayment, verifyRazorpayCheckoutSignature } from "@/lib/razorpay-billing";
 import { notifyBillingEvent } from "@/lib/services/billing-notification";
 
-const CLIENT_PLAN_CODES = new Set(["AI_STARTER_MONTHLY", "AI_STARTER_YEARLY"]);
+const CLIENT_PLAN_CODES = new Set(["AI_STARTER_MONTHLY", "AI_STARTER_YEARLY", "AI_STARTER_YEARLY_2026", "HOTELGPT_YEARLY_2026"]);
 
 export async function POST(request: Request) {
   const access = await getCurrentClientAccess();
   if (!access) return NextResponse.json({ error: "Sign in to verify payment." }, { status: 401 });
   if (!canManageWorkspace(access.role)) return NextResponse.json({ error: "Owner or admin access is required." }, { status: 403 });
   const payload = await request.json().catch(() => null) as { planCode?: string; razorpay_order_id?: string; razorpay_payment_id?: string; razorpay_signature?: string } | null;
-  const planCode = String(payload?.planCode || "").toUpperCase() as "AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY";
+  const planCode = String(payload?.planCode || "").toUpperCase() as "AI_STARTER_MONTHLY" | "AI_STARTER_YEARLY" | "AI_STARTER_YEARLY_2026" | "HOTELGPT_YEARLY_2026";
   const orderId = String(payload?.razorpay_order_id || "");
   const paymentId = String(payload?.razorpay_payment_id || "");
   const signature = String(payload?.razorpay_signature || "");

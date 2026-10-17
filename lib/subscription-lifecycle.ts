@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/db";
+import { getDb, withDatabaseTransaction } from "@/lib/db";
 import { sendBookingMail } from "@/lib/services/mailbox-service";
 import { SUBSCRIPTION_GRACE_DAYS, SUSPENDED_DATA_RETENTION_DAYS } from "@/lib/subscription-policy";
 
@@ -65,7 +65,7 @@ export async function reconcileSubscriptionLifecycleForOrganization(organization
     if (graceRemaining <= 0) {
       subscription = await db.subscription.update({ where: { id: subscription.id }, data: { status: "SUSPENDED" }, include: { plan: true, organization: { select: { id: true, name: true, ownerName: true, ownerEmail: true } } } });
       await db.platformAuditLog.create({ data: { organizationId, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM", action: "SUBSCRIPTION_AUTOMATICALLY_SUSPENDED", targetType: "Subscription", targetId: subscription.id, summary: "Grace period ended; AI Bot actions suspended while customer data remains preserved.", metadata: { retentionEndsAt: addDays(graceEndsAt, SUSPENDED_DATA_RETENTION_DAYS).toISOString() } } });
-      await notice("SUBSCRIPTION_SUSPENDED_EMAIL", "AiFrogi AI Bot suspended", "Your AI Bot is now in suspended mode.", "No data has been deleted. Complete payment to resume service immediately. Data will be permanently removed after 30 days if payment is not received.", addDays(graceEndsAt, SUSPENDED_DATA_RETENTION_DAYS));
+      await notice("SUBSCRIPTION_SUSPENDED_EMAIL", "AiFrogi AI Bot suspended", "Your AI Bot is now in suspended mode.", "No data has been deleted. Complete payment to resume service immediately. After 30 days, retained data becomes due for review and eligible deletion, subject to applicable retention obligations.", addDays(graceEndsAt, SUSPENDED_DATA_RETENTION_DAYS));
     }
   }
 
@@ -73,12 +73,19 @@ export async function reconcileSubscriptionLifecycleForOrganization(organization
     const suspendedAt = subscription.graceEndsAt || now;
     const deletionAt = addDays(suspendedAt, SUSPENDED_DATA_RETENTION_DAYS);
     const deletionRemaining = deletionAt.getTime() - now.getTime();
-    if (deletionRemaining > 0 && deletionRemaining <= 7 * DAY_MS) await notice("SUBSCRIPTION_DELETION_REMINDER_7D", "AiFrogi data deletion warning", "Your retained workspace data is scheduled for deletion.", "Pay and reactivate within 7 days to preserve the workspace, knowledge base, conversations, and configuration.", deletionAt);
-    if (deletionRemaining > 0 && deletionRemaining <= DAY_MS) await notice("SUBSCRIPTION_DELETION_REMINDER_1D", "Final AiFrogi data deletion warning", "Permanent deletion is due within one day.", "This is the final reminder. Activate a paid plan now to retain and restore the workspace.", deletionAt);
+    if (deletionRemaining > 0 && deletionRemaining <= 7 * DAY_MS) await notice("SUBSCRIPTION_DELETION_REMINDER_7D", "AiFrogi data deletion warning", "Your retained workspace data is approaching its retention review date.", "Pay and reactivate within 7 days to preserve the workspace, knowledge base, conversations, and configuration.", deletionAt);
+    if (deletionRemaining > 0 && deletionRemaining <= DAY_MS) await notice("SUBSCRIPTION_DELETION_REMINDER_1D", "Final AiFrogi data deletion warning", "Your retention review is due within one day.", "Activate a paid plan to retain and restore eligible services. Contact support for data export or deletion requests.", deletionAt);
     if (deletionRemaining <= 0) {
-      await db.platformAuditLog.create({ data: { organizationId, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM", action: "SUBSCRIPTION_RETENTION_EXPIRED", targetType: "Organization", targetId: organizationId, summary: `${subscription.organization.name} reached the approved 30-day suspended-data retention limit; permanent deletion initiated.`, metadata: { ownerEmail: subscription.organization.ownerEmail, deletionAt: now.toISOString() } } });
-      await db.organization.delete({ where: { id: organizationId } });
-      return { state: "DELETED", deleted: true };
+      // Subscription reconciliation is called by ordinary page reads. It
+      // cannot authorise destruction of sealed knowledge or held customer data.
+      // The operator must review retention, payloads, backups and legal holds.
+      if(sendNotifications)await db.$transaction(tx=>withDatabaseTransaction(tx,async()=>{
+        const scoped=getDb()!;
+        await scoped.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`retention-review:${organizationId}`},0))`;
+        const existing=await scoped.platformAuditLog.findFirst({where:{organizationId,targetId:subscription!.id,action:"SUBSCRIPTION_RETENTION_REVIEW_REQUIRED"},select:{id:true}});
+        if(!existing)await scoped.platformAuditLog.create({data:{organizationId,actorEmail:"system@aifrogi.com",actorRole:"SYSTEM",action:"SUBSCRIPTION_RETENTION_REVIEW_REQUIRED",targetType:"Subscription",targetId:subscription!.id,summary:"Suspended-data retention period ended. Operator review of eligible deletion, held records and backups is required; no automatic purge was performed.",metadata:{retentionEndedAt:deletionAt.toISOString()}}});
+      }));
+      return { state: "SUSPENDED", deleted: false, deletionReviewRequired: true };
     }
   }
   return { state: subscription.status, deleted: false };
