@@ -1,0 +1,29 @@
+--- a/lib/subscription-lifecycle.ts
++++ b/lib/subscription-lifecycle.ts
+@@ -1,4 +1,5 @@
+ import { getDb } from "@/lib/db";
++import { reserveSubscriptionNotice } from "@/lib/subscription-notice-once";
+ import { sendBookingMail } from "@/lib/services/mailbox-service";
+ import { SUBSCRIPTION_GRACE_DAYS, SUSPENDED_DATA_RETENTION_DAYS } from "@/lib/subscription-policy";
+ 
+@@ -16,8 +17,7 @@
+ async function notifyOnce(input: { organizationId: string; subscriptionId: string; ownerEmail: string; ownerName: string; organizationName: string; action: string; subject: string; heading: string; message: string; deadline?: Date | null }) {
+   const db = getDb();
+   if (!db) return false;
+-  const exists = await db.platformAuditLog.findFirst({ where: { organizationId: input.organizationId, targetId: input.subscriptionId, action: input.action }, select: { id: true } });
+-  if (exists) return false;
++  if (!(await reserveSubscriptionNotice(input.organizationId, input.subscriptionId))) return false;
+   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://app.aifrogi.com").replace(/\/$/, "");
+   const deadline = input.deadline ? new Intl.DateTimeFormat("en-IN", { dateStyle: "long", timeZone: "Asia/Kolkata" }).format(input.deadline) : null;
+   const mail = await sendBookingMail({
+@@ -25,8 +25,8 @@
+     subject: input.subject,
+     body: `${input.heading}\n\n${input.message}${deadline ? `\nDeadline: ${deadline}` : ""}\n\nActivate or renew: ${appUrl}/billing\n\nAiFrogi\ninfo@aifrogi.com\n+91-7410582898`,
+     html: `<div style="margin:0;background:#f4f1e8;padding:36px 14px;font-family:Arial,sans-serif;color:#101010"><div style="max-width:620px;margin:auto;overflow:hidden;border:1px solid #ded8cb;border-radius:18px;background:#fff"><div style="padding:28px 30px;background:#050505"><img src="${appUrl}/brand/aifrogi-logo-white.png" alt="AiFrogi" style="width:170px;height:auto"><p style="margin:20px 0 0;color:#e2c66d;font-size:11px;letter-spacing:2px">SUBSCRIPTION NOTICE</p></div><div style="padding:30px"><p style="color:#756f64">Hello ${escapeHtml(input.ownerName)},</p><h1 style="margin:10px 0 16px;font-size:28px">${escapeHtml(input.heading)}</h1><p style="color:#5f5b54;line-height:1.7">${escapeHtml(input.message)}</p>${deadline ? `<div style="margin:22px 0;padding:16px;border-radius:10px;background:#fff6dc"><strong>Action date: ${deadline}</strong></div>` : ""}<a href="${appUrl}/billing" style="display:inline-block;background:#8a6a16;color:#fff;text-decoration:none;padding:14px 21px;border-radius:7px;font-weight:700">Open billing</a><p style="margin-top:24px;color:#756f64;font-size:12px;line-height:1.6">Your data is preserved during the 3-day grace period and for 30 days after suspension. Payment securely resumes eligible services.</p></div><div style="padding:22px 30px;background:#404040;color:#e3e3e3;font-size:12px"><strong style="color:#fff">AiFrogi</strong><br>info@aifrogi.com · +91-7410582898</div></div></div>`
+-  });
+-  if (mail.error) return false;
++  }).catch(() => ({ error: "Subscription notice delivery failed; automatic retry disabled.", messageId: null }));
++  if (mail.error || !mail.messageId) return false;
+   await db.platformAuditLog.create({ data: { organizationId: input.organizationId, actorEmail: "system@aifrogi.com", actorRole: "SYSTEM", action: input.action, targetType: "Subscription", targetId: input.subscriptionId, summary: `${input.subject} sent to ${input.ownerEmail}`, metadata: { deadline: input.deadline?.toISOString() || null, messageId: mail.messageId } } });
+   return true;
+ }
